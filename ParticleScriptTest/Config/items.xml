@@ -1,0 +1,6 @@
+<Configs>
+	<set xpath="/items/item[@name='ammoRocketHE']/property[@class='Action1']/property[@name='Explosion.ParticleIndex']/@value">#@modfolder(CustomParticleScriptTest):Resources/GuppyTest.unity3d?gupIceExplosion$gupIceExplosion</set>
+	<append xpath="/items/item[@name='ammoRocketHE']/property[@class='Action1']">
+		<property name="Explosion.Duration" value="10"/>
+	</append>
+</Configs>
