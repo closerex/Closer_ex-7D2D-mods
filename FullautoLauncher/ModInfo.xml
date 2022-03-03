@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xml>
+	<ModInfo>
+		<Name value="FullautoLauncher" />
+		<Description value="Change the way Launcher class fires and initializes projectile, so that making a full automatic launcher is possible." />
+		<Author value="closer_ex" />
+		<Version value="1.0" />
+	</ModInfo>
+</xml>
