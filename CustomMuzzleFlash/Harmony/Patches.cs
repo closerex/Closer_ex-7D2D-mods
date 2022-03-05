@@ -5,7 +5,7 @@ class MuzzlePatch
 {
     [HarmonyPatch(typeof(ItemActionAttack), nameof(ItemActionAttack.ReadFrom))]
     [HarmonyPostfix]
-    private void Postfix_ReadFrom_ItemActionAttack(DynamicProperties _props)
+    private static void Postfix_ReadFrom_ItemActionAttack(DynamicProperties _props)
     {
 		if (_props.Values.ContainsKey("Particles_muzzle_fire"))
 		{
