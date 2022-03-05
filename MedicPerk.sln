@@ -14,6 +14,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomParticleLoader", "0Cu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParticleScriptTest", "ParticleScriptTest\ParticleScriptTest.csproj", "{7B1CC7B2-9F2A-4C60-AB92-F62B7582AA79}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FullautoLauncher", "FullautoLauncher\FullautoLauncher.csproj", "{F485DD15-9EDF-42C3-A31B-66AE0DFB7356}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomMuzzleFlash", "CustomMuzzleFlash\CustomMuzzleFlash.csproj", "{6B763422-D3CD-4136-9C64-E3D34B7A1FA8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +36,14 @@ Global
 		{7B1CC7B2-9F2A-4C60-AB92-F62B7582AA79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B1CC7B2-9F2A-4C60-AB92-F62B7582AA79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B1CC7B2-9F2A-4C60-AB92-F62B7582AA79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F485DD15-9EDF-42C3-A31B-66AE0DFB7356}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F485DD15-9EDF-42C3-A31B-66AE0DFB7356}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F485DD15-9EDF-42C3-A31B-66AE0DFB7356}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F485DD15-9EDF-42C3-A31B-66AE0DFB7356}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B763422-D3CD-4136-9C64-E3D34B7A1FA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B763422-D3CD-4136-9C64-E3D34B7A1FA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B763422-D3CD-4136-9C64-E3D34B7A1FA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B763422-D3CD-4136-9C64-E3D34B7A1FA8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
