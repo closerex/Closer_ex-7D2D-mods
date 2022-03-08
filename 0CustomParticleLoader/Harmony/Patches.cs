@@ -1,6 +1,8 @@
 ﻿using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Reflection.Emit;
 using UnityEngine;
 
 [HarmonyPatch(typeof(GameManager))]
@@ -65,14 +67,14 @@ class ExplosionServerPatch
     {
         __state = false;
         int index = _explosionData.ParticleIndex;
-        Log.Out("Particle index:" + index.ToString());
+        //Log.Out("Particle index:" + index.ToString());
         if (index >= WorldStaticData.prefabExplosions.Length)
         {
-            Log.Out("Retrieving particle index:" + index.ToString());
+            //Log.Out("Retrieving particle index:" + index.ToString());
             bool flag = CustomParticleEffectLoader.GetCustomParticleComponents(index, out CustomParticleComponents components);
             if(flag && components != null)
             {
-                Log.Out("Retrieved particle index:" + index.ToString());
+                //Log.Out("Retrieved particle index:" + index.ToString());
                 components.CurrentExplosionParams = new ExplosionParams(_clrIdx, _worldPos, _blockPos, _rotation, _explosionData, _playerId);
                 //Log.Out("params:" + _clrIdx + _blockPos + _playerId + _rotation + _worldPos + _explosionData.ParticleIndex);
                 //Log.Out("params:" + components.CurrentExplosionParams._clrIdx + components.CurrentExplosionParams._blockPos + components.CurrentExplosionParams._playerId + components.CurrentExplosionParams._rotation + components.CurrentExplosionParams._worldPos + components.CurrentExplosionParams._explosionData.ParticleIndex);
