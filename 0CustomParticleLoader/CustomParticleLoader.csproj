@@ -55,6 +55,10 @@
       <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine.AssetBundleModule">
       <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
       <Private>False</Private>
@@ -73,7 +77,6 @@
     <Compile Include="Scripts\CustomParticleComponents.cs" />
     <Compile Include="Scripts\CustomParticleEffectLoader.cs" />
     <Compile Include="Harmony\Init.cs" />
-    <Compile Include="Scripts\MedicGrenadeParticleData.cs" />
     <Compile Include="Harmony\Patches.cs" />
     <Compile Include="Scripts\Timer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
