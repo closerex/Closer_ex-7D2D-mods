@@ -1,0 +1,47 @@
+<configs>
+	<insertAfter xpath="/lootcontainers/lootgroup[@name='empty']">
+		<lootgroup name="groupWeapons_MedicT0" count="1" loot_quality_template="QLTemplateT1">
+			<item name="gunMedicPistol" mods="modMedicModule" mod_chance="1" count="1"/>
+		</lootgroup>
+		<lootgroup name="groupWeapons_MedicT2" count="1" loot_quality_template="QLTemplateT2">
+			<item name="gunMedicShotgun301" mods="modMedicModule" mod_chance="1" count="1"/>
+		</lootgroup>
+		<lootgroup name="groupWeapons_MedicT3" count="1" loot_quality_template="QLTemplateT3">
+			<item name="gunMedicAssaultRifle401" mods="modMedicModule" mod_chance="1" count="1"/>
+		</lootgroup>
+	</insertAfter>
+	
+	<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT1_Demolitionist']">
+		<item name="thrownAmmoMedicGrenade" count="1" loot_prob_template="low"/>
+	</append>
+	<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT2_Demolitionist']">
+		<item name="thrownAmmoMedicGrenade" count="1" loot_prob_template="low"/>
+	</append>
+	<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3_Demolitionist']">
+		<item name="thrownAmmoMedicGrenade" count="2,3" loot_prob_template="low"/>
+	</append>
+	<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsRangedT1']">
+		<item name="gunMedicPistol" mods="modMedicModule" mod_chance="1" loot_prob_template="veryLow"/>
+	</append>
+	<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsRangedT2']">
+		<item name="gunMedicPistol" mods="modMedicModule" mod_chance="1" loot_prob_template="low"/>
+		<item name="gunMedicShotgun301" mods="modMedicModule" mod_chance="1" loot_prob_template="veryLow"/>
+		<item name="gunMedicAssaultRifle401" mods="modMedicModule" mod_chance="1" loot_prob_template="veryLow"/>
+	</append>
+	<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsRangedT3']">
+		<item name="gunMedicShotgun301" mods="modMedicModule" mod_chance="1" loot_prob_template="low"/>
+		<item name="gunMedicAssaultRifle401" mods="modMedicModule" mod_chance="1" loot_prob_template="low"/>
+	</append>
+	<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT0_Ranged']">
+		<item group="groupWeapons_MedicT0" loot_prob_template="veryLow"/>
+	</append>
+	<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT1_Ranged']">
+		<item group="groupWeapons_MedicT0" loot_prob_template="low"/>
+		<item group="groupWeapons_MedicT2" loot_prob_template="veryLow"/>
+	</append>
+	<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT2_Ranged']">
+		<item group="groupWeapons_MedicT0" loot_prob_template="low"/>
+		<item group="groupWeapons_MedicT2" loot_prob_template="low"/>
+		<item group="groupWeapons_MedicT3" loot_prob_template="veryLow"/>
+	</append>
+</configs>

@@ -1,0 +1,68 @@
+<configs>
+	<append xpath="/item_modifiers">
+		<item_modifier name="modMedicModule" installable_tags="medicgun" modifier_tags="modMedicModule" type="mod">
+			<property name="Extends" value="modGeneralMaster"/>
+			<property name="UnlockedBy" value="perkMedic"/>
+      <item_property_overrides name="*">
+        <property name="Sound_start" value=""/>
+        <property name="Sound_end" value=""/>
+        <property name="Sound_loop" value=""/>
+      </item_property_overrides>
+			<effect_group tiered="false" name="triggers">
+				<requirement name="HoldingItemHasTags" tags="medicgun"/>
+					<triggered_effect trigger="onSelfItemActivate" action="ModifyCVar" target="self" cvar="isHealMode" operation="set" value="1"/>
+					<triggered_effect trigger="onSelfItemActivate" action="PlaySound" sound="medic_module_toggle_on"/>
+					<triggered_effect trigger="onSelfItemDeactivate" action="ModifyCVar" target="self" cvar="isHealMode" operation="set" value="0"/>
+					<triggered_effect trigger="onSelfItemDeactivate" action="PlaySound" sound="medic_module_toggle_off"/>
+			</effect_group>
+			<effect_group tiered="false" name="healing mod effects">
+				<requirement name="HoldingItemHasTags" tags="medicgun"/>
+				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="1"/>
+					<passive_effect name="SpreadDegreesVertical" operation="base_set" value="0"/>
+					<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="0"/>
+					<passive_effect name="KickDegreesVerticalMin" operation="base_set" value="-0.001"/>
+					<passive_effect name="KickDegreesVerticalMax" operation="base_set" value="0.001"/>
+					<passive_effect name="KickDegreesHorizontalMin" operation="base_set" value="-0.001"/>
+					<passive_effect name="KickDegreesHorizontalMax" operation="base_set" value="0.001"/>
+					<passive_effect name="DegradationPerUse" operation="base_set" value="8" tags="medicgun"/>
+					<passive_effect name="EntityDamage" operation="base_set" value="0"/>
+					<passive_effect name="BlockDamage" operation="base_set" value="1"/>
+					<passive_effect name="BurstRoundCount" operation="base_set" value="1"/>
+					<passive_effect name="RoundRayCount" operation="base_set" value="1"/>
+					<passive_effect name="MaxRange" operation="base_set" value="50"/>
+			</effect_group>
+			<effect_group name="healing">
+				<!--basic healing-->
+				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="1"/>
+				<requirement name="IsAlive" target="other"/>
+					<triggered_effect trigger="onSelfAttackedOther" action="ModifyCVarWithSelfRef,MedicPerk" target="other" target_tags="player,npc" cvar="medicHealAmount" operation="add" value="@medicGunHealAmount"/>
+					<triggered_effect trigger="onSelfAttackedOther" action="ModifyCVar" target="self" cvar="medicHealAmount" operation="add" value="15">
+						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer1" operation="Equals" value="1"/>
+						<requirement name="EntityTagCompare" target="other" tags="player"/>
+					</triggered_effect>
+					<triggered_effect trigger="onSelfAttackedOther" action="AddBuffToTargetAndSelf,MedicPerk" target="other" target_tags="player" buff="buffMedicHeal">
+						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer1" operation="Equals" value="1"/>
+					</triggered_effect>
+					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" target_tags="npc" buff="buffMedicHeal">
+						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer1" operation="Equals" value="1"/>
+					</triggered_effect>
+					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" target_tags="player,npc" buff="buffMedicHeal">
+						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer1" operation="Equals" value="0"/>
+					</triggered_effect>
+			</effect_group>
+			<effect_group name="poison">
+				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="1"/>
+				<requirement name="IsAlive" target="other"/>
+				<requirement name="EntityTagCompare" target="other" tags="zombie"/>
+					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" buff="buffMedicDartPoison"/>
+					<triggered_effect trigger="onSelfAttackedOther" action="ModifyCVar" target="other" cvar="buffMedicDartPoisonDuration" operation="set" value="6"/>
+					<triggered_effect trigger="onSelfAttackedOther" action="ModifyCVar" target="self" cvar="medicHealAmount" operation="add" value="10">
+						<requirement name="ProgressionLevel" progression_name="perkMedicSurvivor1" operation="Equals" value="1"/>
+					</triggered_effect>
+					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="self" buff="buffMedicHeal">
+						<requirement name="ProgressionLevel" progression_name="perkMedicSurvivor1" operation="Equals" value="1"/>
+					</triggered_effect>
+			</effect_group>
+		</item_modifier>
+	</append>
+</configs>

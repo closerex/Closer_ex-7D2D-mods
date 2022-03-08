@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configs>
+	<append xpath="/buffs/buff[@name='buffStatusCheck01']/effect_group">
+		<triggered_effect trigger="onSelfEnteredGame" action="ModifyCVar" cvar="$medicBuffRegen" operation="set" value="2"/>
+		<triggered_effect trigger="onSelfEnteredGame" action="ModifyCVar" cvar="$medicHealSpeed" operation="set" value="1"/>
+		<triggered_effect trigger="onSelfEnteredGame" action="AddBuff" buff="buffCheckMedicLv"/>
+	</append>
+	<append xpath="/buffs">
+		<buff name="buffMedicBuffStockPistol" name_key="buffMedicBuffStockName" description_key="buffMedicBuffStockLongDesc" icon="icon_medic_darts" icon_color="255,0,255" icon_blink="false">
+			<stack_type value="ignore"/>
+			<duration value="0"/>
+			<update_rate value="0.45"/>
+			<display_value value="$medicBuffStockPistol"/>
+			<display_value_key value="{0}"/>
+			<effect_group name="generate stock">
+				<triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffMedicBuffStockPistolBg"/>
+				<triggered_effect trigger="onSelfBuffRemove" action="AddBuff" buff="buffMedicBuffStockPistolBg"/>
+				<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffMedicBuffStockPistol">
+					<requirement name="!HoldingItemHasTags" tags="medicpistol"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockPistol" operation="add" value="@$medicBuffRegen">
+					<requirement name="CVarCompare" cvar="$medicBuffStockPistol" operation="LT" value="@$medicBuffStockLimitation"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockPistol" operation="set" value="@$medicBuffStockLimitation">
+					<requirement name="CVarCompare" cvar="$medicBuffStockPistol" operation="GT" value="@$medicBuffStockLimitation"/>
+				</triggered_effect>
+			</effect_group>
+			<effect_group name="max hp healing">
+				<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer3" operation="GTE" value="1"/>
+				<requirement name="IsStatAtMax" stat="Health"/>
+				<requirement name="CVarCompare" cvar="$medicBuffStockPistol" operation="LT" value="@$medicBuffStockLimitation"/>
+				<requirement name="CVarCompare" cvar="medicalRegHealthAmount" operation="GT" value="0"/>
+					<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockPistol" operation="add" value="1"/>
+			</effect_group>
+		</buff>
+		<buff name="buffMedicBuffStockPistolBg" hidden="true">
+			<stack_type value="ignore"/>
+			<duration value="0"/>
+			<update_rate value="0.45"/>
+			<effect_group name="generate stock">
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockPistol" operation="add" value="@$medicBuffRegen">
+					<requirement name="CVarCompare" cvar="$medicBuffStockPistol" operation="LT" value="@$medicBuffStockLimitation"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockPistol" operation="set" value="@$medicBuffStockLimitation">
+					<requirement name="CVarCompare" cvar="$medicBuffStockPistol" operation="GT" value="@$medicBuffStockLimitation"/>
+				</triggered_effect>
+			</effect_group>
+		</buff>
+		<buff name="buffMedicBuffStockShotgun" name_key="buffMedicBuffStockName" description_key="buffMedicBuffStockLongDesc" icon="icon_medic_darts" icon_color="255,0,255" icon_blink="false">
+			<stack_type value="ignore"/>
+			<duration value="0"/>
+			<update_rate value="0.35"/>
+			<display_value value="$medicBuffStockSG301"/>
+			<display_value_key value="{0}"/>
+			<effect_group name="generate stock">
+				<triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffMedicBuffStockShotgunBg"/>
+				<triggered_effect trigger="onSelfBuffRemove" action="AddBuff" buff="buffMedicBuffStockShotgunBg"/>
+				<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffMedicBuffStockShotgun">
+					<requirement name="!HoldingItemHasTags" tags="medicshotgun"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockSG301" operation="add" value="@$medicBuffRegen">
+					<requirement name="CVarCompare" cvar="$medicBuffStockSG301" operation="LT" value="@$medicBuffStockLimitation"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockSG301" operation="set" value="@$medicBuffStockLimitation">
+					<requirement name="CVarCompare" cvar="$medicBuffStockSG301" operation="GT" value="@$medicBuffStockLimitation"/>
+				</triggered_effect>
+			</effect_group>
+			<effect_group name="max hp healing">
+				<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer3" operation="GTE" value="1"/>
+				<requirement name="IsStatAtMax" stat="Health"/>
+				<requirement name="CVarCompare" cvar="$medicBuffStockSG301" operation="LT" value="@$medicBuffStockLimitation"/>
+				<requirement name="CVarCompare" cvar="medicalRegHealthAmount" operation="GT" value="0"/>
+					<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockSG301" operation="add" value="1"/>
+			</effect_group>
+		</buff>
+		<buff name="buffMedicBuffStockShotgunBg" hidden="true">
+			<stack_type value="ignore"/>
+			<duration value="0"/>
+			<update_rate value="0.35"/>
+			<effect_group name="generate stock">
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockSG301" operation="add" value="@$medicBuffRegen">
+					<requirement name="CVarCompare" cvar="$medicBuffStockSG301" operation="LT" value="@$medicBuffStockLimitation"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockSG301" operation="set" value="@$medicBuffStockLimitation">
+					<requirement name="CVarCompare" cvar="$medicBuffStockSG301" operation="GT" value="@$medicBuffStockLimitation"/>
+				</triggered_effect>
+			</effect_group>
+		</buff>
+		<buff name="buffMedicBuffStockAR401" name_key="buffMedicBuffStockName" description_key="buffMedicBuffStockLongDesc" icon="icon_medic_darts" icon_color="255,0,255" icon_blink="false">
+			<stack_type value="ignore"/>
+			<duration value="0"/>
+			<update_rate value="0.30"/>
+			<display_value value="$medicBuffStockAR401"/>
+			<display_value_key value="{0}"/>
+			<effect_group name="generate stock">
+				<triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffMedicBuffStockAR401Bg"/>
+				<triggered_effect trigger="onSelfBuffRemove" action="AddBuff" buff="buffMedicBuffStockAR401Bg"/>
+				<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffMedicBuffStockAR401">
+					<requirement name="!HoldingItemHasTags" tags="medicar401"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockAR401" operation="add" value="@$medicBuffRegen">
+					<requirement name="CVarCompare" cvar="$medicBuffStockAR401" operation="LT" value="@$medicBuffStockLimitation"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockAR401" operation="set" value="@$medicBuffStockLimitation">
+					<requirement name="CVarCompare" cvar="$medicBuffStockAR401" operation="GT" value="@$medicBuffStockLimitation"/>
+				</triggered_effect>
+			</effect_group>
+			<effect_group name="max hp healing">
+				<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer3" operation="GTE" value="1"/>
+				<requirement name="IsStatAtMax" stat="Health"/>
+				<requirement name="CVarCompare" cvar="$medicBuffStockAR401" operation="LT" value="@$medicBuffStockLimitation"/>
+				<requirement name="CVarCompare" cvar="medicalRegHealthAmount" operation="GT" value="0"/>
+					<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockAR401" operation="add" value="1"/>
+			</effect_group>
+		</buff>
+		<buff name="buffMedicBuffStockAR401Bg" hidden="true">
+			<stack_type value="ignore"/>
+			<duration value="0"/>
+			<update_rate value="0.30"/>
+			<effect_group name="generate stock">
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockAR401" operation="add" value="@$medicBuffRegen">
+					<requirement name="CVarCompare" cvar="$medicBuffStockAR401" operation="LT" value="@$medicBuffStockLimitation"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockAR401" operation="set" value="@$medicBuffStockLimitation">
+					<requirement name="CVarCompare" cvar="$medicBuffStockAR401" operation="GT" value="@$medicBuffStockLimitation"/>
+				</triggered_effect>
+			</effect_group>
+		</buff>
+		<buff name="buffCheckMedicLv" hidden="true">
+			<stack_type value="ignore"/>
+			<duration value="1"/>
+			<effect_group name="set consumption">
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="$medicBuffConsumption" operation="set" value="33">
+					<requirement name="ProgressionLevel" progression_name="perkMedic" operation="Equals" value="1"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="$medicBuffConsumption" operation="set" value="31">
+					<requirement name="ProgressionLevel" progression_name="perkMedic" operation="Equals" value="2"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="$medicBuffConsumption" operation="set" value="29">
+					<requirement name="ProgressionLevel" progression_name="perkMedic" operation="Equals" value="3"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="$medicBuffConsumption" operation="set" value="27">
+					<requirement name="ProgressionLevel" progression_name="perkMedic" operation="Equals" value="4"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="$medicBuffConsumption" operation="set" value="25">
+					<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="5"/>
+				</triggered_effect>
+				
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="$medicBuffStockLimitation" operation="set" value="100">
+					<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="1"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="$medicBuffStockLimitation" operation="set" value="115">
+					<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="2"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="$medicBuffStockLimitation" operation="set" value="130">
+					<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="4"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="$medicBuffStockLimitation" operation="set" value="150">
+					<requirement name="ProgressionLevel" progression_name="perkMedic" operation="Equals" value="6"/>
+				</triggered_effect>
+				
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="medicGunHealAmount" operation="set" value="24">
+					<requirement name="ProgressionLevel" progression_name="perkMedic" operation="Equals" value="1"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="medicGunHealAmount" operation="set" value="28">
+					<requirement name="ProgressionLevel" progression_name="perkMedic" operation="Equals" value="2"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="medicGunHealAmount" operation="set" value="32">
+					<requirement name="ProgressionLevel" progression_name="perkMedic" operation="Equals" value="3"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="medicGunHealAmount" operation="set" value="36">
+					<requirement name="ProgressionLevel" progression_name="perkMedic" operation="Equals" value="4"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="medicGunHealAmount" operation="set" value="40">
+					<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="5"/>
+				</triggered_effect>
+				
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="$zedTimeTriggerChanceMedic" operation="set" value="5">
+					<requirement name="ProgressionLevel" progression_name="perkMedic" operation="Equals" value="1"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="$zedTimeTriggerChanceMedic" operation="set" value="10">
+					<requirement name="ProgressionLevel" progression_name="perkMedic" operation="Equals" value="2"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="$zedTimeTriggerChanceMedic" operation="set" value="15">
+					<requirement name="ProgressionLevel" progression_name="perkMedic" operation="Equals" value="3"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="$zedTimeTriggerChanceMedic" operation="set" value="20">
+					<requirement name="ProgressionLevel" progression_name="perkMedic" operation="Equals" value="4"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="$zedTimeTriggerChanceMedic" operation="set" value="25">
+					<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="5"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="$zedTimeTriggerChanceMedic" operation="set" value="30">
+					<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="6"/>
+				</triggered_effect>
+			</effect_group>
+		</buff>
+		<buff name="buffMedicHeal" name_key="buffMedicHealName" description_key="buffMedicHealLongDesc" icon="ui_game_symbol_add" icon_color="0,240,0">
+			<stack_type value="ignore"/>
+			<duration value="0"/>
+			<update_rate value="0.2"/>
+			<display_value value="medicHealAmount"/>
+			<effect_group>
+				<requirement name="CVarCompare" cvar=".NoHealingManager" operation="Equals" value="0"/>
+				<requirement name="CVarCompare" cvar="medicHealAmount" operation="GT" value="0"/>
+					<triggered_effect trigger="onSelfBuffUpdate" action="ModifyStats" stat="Health" operation="add" value="@$medicHealSpeed"/>
+					<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" cvar="medicHealAmount" operation="subtract" value="@$medicHealSpeed"/>
+			</effect_group>
+			<effect_group>
+				<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffMedicHeal">
+					<requirement name="CVarCompare" cvar="medicHealAmount" operation="LTE" value="0"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" cvar="medicHealAmount" operation="set" value="0"/>
+			</effect_group>
+			<!-- <effect_group> -->
+				<!-- <requirement name="!EntityTagCompare" tags="player"/> -->
+					<!-- <triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffMedicHeal"/> -->
+			<!-- </effect_group> -->
+		</buff>
+		<buff name="buffMedicGrenadeHeal" hidden="true">
+			<stack_type value="ignore"/>
+			<duration value="0"/>
+			<update_rate value="0.5"/>
+			<effect_group>
+				<requirement name="EntityTagCompare" tags="zombie"/>
+					<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="buffMedicGrenadePoisonDuration" operation="set" value="15"/>
+					<triggered_effect trigger="onSelfBuffStart" action="AddBuff" buff="buffMedicGrenadePoison"/>
+			</effect_group>
+			<effect_group>
+				<requirement name="EntityTagCompare" tags="player,npc" has_all_tags="false"/>
+					<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="medicHealAmount" operation="add" value="8"/>
+					<triggered_effect trigger="onSelfBuffStart" action="AddBuff" buff="buffMedicHeal"/>
+			</effect_group>
+			<effect_group>
+				<triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffMedicGrenadeHeal"/>
+				<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffMedicGrenadeHeal"/>
+			</effect_group>
+		</buff>
+		<buff name="buffMedicDartPoison" hidden="true">
+			<damage_type value="Toxic"/>
+			<stack_type value="ignore"/>
+			<duration value="0"/>
+			<update_rate value="1"/>
+			<effect_group>
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="medicPoisonStack" operation="add" value="1"/>
+				<triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" target="self" cvar="medicPoisonStack" operation="add" value="-1"/>
+				<triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffMedicDartPoison">
+					<requirement name="!EntityTagCompare" tags="zombie"/>
+				</triggered_effect>
+				<passive_effect name="HealthChangeOT" operation="base_subtract" value="2"/>
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="buffMedicDartPoisonDuration" operation="add" value="-1"/>
+				<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffMedicDartPoison">
+					<requirement name="CVarCompare" cvar="buffMedicDartPoisonDuration" operation="LTE" value="0"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" target="self" cvar="buffMedicDartPoisonDuration" operation="set" value="0"/>
+				<triggered_effect trigger="onSelfBuffStart" action="AttachParticleEffectToEntity" particle="p_impact_metal_on_organic" local_offset="0,.25,0" parent_transform="Hips"/>
+				<triggered_effect trigger="onSelfBuffUpdate" action="AttachParticleEffectToEntity" particle="p_impact_metal_on_organic" local_offset="0,.25,0" parent_transform="Hips">
+					<requirement name="CVarCompare" cvar="buffMedicDartPoisonDuration" operation="GT" value="0"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffRemove" action="RemoveParticleEffectFromEntity" particle="p_impact_metal_on_organic"/>
+				<triggered_effect trigger="onSelfDied" action="RemoveParticleEffectFromEntity" particle="p_impact_metal_on_organic"/>
+			</effect_group>
+		</buff>
+		<buff name="buffMedicGrenadePoison" hidden="true">
+			<damage_type value="Toxic"/>
+			<stack_type value="ignore"/>
+			<duration value="0"/>
+			<update_rate value="1"/>
+			<effect_group>
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="medicPoisonStack" operation="add" value="1"/>
+				<triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" target="self" cvar="medicPoisonStack" operation="add" value="-1"/>
+				<triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffMedicGrenadePoison">
+					<requirement name="!EntityTagCompare" tags="zombie"/>
+				</triggered_effect>
+				<passive_effect name="HealthChangeOT" operation="base_subtract" value="10"/>
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="buffMedicGrenadePoisonDuration" operation="add" value="-1"/>
+				<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffMedicGrenadePoison">
+					<requirement name="CVarCompare" cvar="buffMedicGrenadePoisonDuration" operation="LTE" value="0"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" target="self" cvar="buffMedicGrenadePoisonDuration" operation="set" value="0"/>
+				<triggered_effect trigger="onSelfBuffStart" action="AttachParticleEffectToEntity" particle="p_impact_metal_on_organic" local_offset="0,.25,0" parent_transform="Hips"/>
+				<triggered_effect trigger="onSelfBuffUpdate" action="AttachParticleEffectToEntity" particle="p_impact_metal_on_organic" local_offset="0,.25,0" parent_transform="Hips">
+					<requirement name="CVarCompare" cvar="buffMedicGrenadePoisonDuration" operation="GT" value="0"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffRemove" action="RemoveParticleEffectFromEntity" particle="p_impact_metal_on_organic"/>
+				<triggered_effect trigger="onSelfDied" action="RemoveParticleEffectFromEntity" particle="p_impact_metal_on_organic"/>
+			</effect_group>
+		</buff>
+		<buff name="buffMedicBoost" name_key="buffMedicBoostName" description_key="buffMedicBoostLongDesc" icon="icon_sv_stock" icon_color="255,0,255" icon_blink="false">
+			<stack_type value="replace"/>
+			<duration value="10.1"/>
+			<effect_group name="start and end">
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="$medicBuffRegen" operation="set" value="4"/>
+				<triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" target="self" cvar="$medicBuffRegen" operation="set" value="2"/>
+			</effect_group>
+		</buff>
+		<buff name="buffMedicAdrenaline" name_key="buffMedicAdrenalineName" description_key="buffMedicAdrenalineLongDesc" icon="icon_tp_adrenaline" icon_color="255,0,255" icon_blink="true">
+			<stack_type value="replace"/>
+			<duration value="8.1"/>
+			<effect_group name="running">
+				<passive_effect name="Mobility" operation="perc_add" value=".20"/>
+			</effect_group>
+		</buff>
+		<buff name="buffMedicFocus" name_key="buffMedicFocusName" description_key="buffMedicFocusLongDesc" icon="icon_tp_focus" icon_color="255,0,255" icon_blink="true">
+			<stack_type value="replace"/>
+			<duration value="8.1"/>
+			<effect_group name="damage">
+				<passive_effect name="DamageModifier" operation="perc_add" value=".20"/>
+			</effect_group>
+		</buff>
+		<buff name="buffMedicEliteHealing" name_key="buffMedicEliteHealingName" description_key="buffMedicEliteHealingLongDesc" icon="icon_tp_symbiotic" icon_color="255,0,255" icon_blink="true">
+			<stack_type value="replace"/>
+			<duration value="5.1"/>
+			<effect_group name="healing">
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="$medicHealSpeed" operation="set" value="2"/>
+				<triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" target="self" cvar="$medicHealSpeed" operation="set" value="1"/>
+			</effect_group>
+		</buff>
+		<buff name="buffZedTimeCooldown" name_key="buffZedTimeCooldownName" description_key="buffZedTimeCooldownLongDesc" icon="icon_tp_symbiotic" icon_color="255,0,0" icon_blink="true">
+			<stack_type value="ignore"/>
+			<duration value="0"/>
+			<update_rate value="1"/>
+			<display_value value="$buffZedTimeCooldownTimer"/>
+			<display_value_format value="time"/>
+			<effect_group name="shockwave">
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="$buffZedTimeCooldownTimer" operation="set" value="15"/>
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$buffZedTimeCooldownTimer" operation="add" value="-1"/>
+				<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffZedTimeCooldown">
+					<requirement name="CVarCompare" cvar="$buffZedTimeCooldownTimer" operation="LTE" value="0"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" target="self" cvar="$buffZedTimeCooldownTimer" operation="set" value="0"/>
+			</effect_group>
+		</buff>
+		<buff name="buffZedTime" hidden="true">
+			<stack_type value="ignore"/>
+			<duration value="6"/>
+			<effect_group name="shocked">
+				<passive_effect name="WalkSpeed" operation="perc_add" value="-.9"/>
+				<passive_effect name="RunSpeed" operation="perc_add" value="-.9"/>
+				<passive_effect name="CrouchSpeed" operation="perc_add" value="-.9"/>
+				<passive_effect name="JumpStrength" operation="perc_add" value="-.9"/>
+			</effect_group>
+		</buff>
+	</append>
+</configs>

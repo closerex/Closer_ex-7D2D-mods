@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B573C58C-9391-4651-9A80-BFAFDD6754CB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MedicPerk</RootNamespace>
+    <AssemblyName>MedicPerk</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>.\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>portable</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>.\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\..\7DaysToDie_Data\Managed\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\7DaysToDie_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="CustomParticleLoader">
+      <HintPath>..\0CustomParticleLoader\CustomParticleLoader.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="LogLibrary">
+      <HintPath>..\..\7DaysToDie_Data\Managed\LogLibrary.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Scripts\MedicGrenadeParticleData.cs" />
+    <Compile Include="Scripts\MinEventActionAddBuffToTargetAndSelf.cs" />
+    <Compile Include="Scripts\MinEventActionModifyCVarWithSelfRef.cs" />
+    <Compile Include="Scripts\MinEventActionDecreaseProgressionLevelAndRefundSP.cs" />
+    <Compile Include="Harmony\Patches.cs" />
+    <Compile Include="Harmony\Init.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Config\buffs.xml" />
+    <Content Include="Config\items.xml" />
+    <Content Include="Config\item_modifiers.xml" />
+    <Content Include="Config\Localization.txt" />
+    <Content Include="Config\loot.xml" />
+    <Content Include="Config\progression.xml" />
+    <Content Include="Config\recipes.xml" />
+    <Content Include="Config\sounds.xml" />
+    <Content Include="Config\traders.xml" />
+    <Content Include="ModInfo.xml" />
+    <Content Include="UIAtlases\ItemIconAtlas\medic_pistol.png" />
+    <Content Include="UIAtlases\UIAtlas\icon_medic_survivor.png" />
+    <Content Include="UIAtlases\UIAtlas\icon_medic_teamplayer.png" />
+    <Content Include="UIAtlases\UIAtlas\icon_perkmedic.png" />
+    <Content Include="UIAtlases\UIAtlas\icon_sv_medic.png" />
+    <Content Include="UIAtlases\UIAtlas\icon_sv_rot.png" />
+    <Content Include="UIAtlases\UIAtlas\icon_sv_stock.png" />
+    <Content Include="UIAtlases\UIAtlas\icon_sv_vampire.png" />
+    <Content Include="UIAtlases\UIAtlas\icon_sv_zedtime.png" />
+    <Content Include="UIAtlases\UIAtlas\icon_tp_adrenaline.png" />
+    <Content Include="UIAtlases\UIAtlas\icon_tp_focus.png" />
+    <Content Include="UIAtlases\UIAtlas\icon_tp_lifetras.png" />
+    <Content Include="UIAtlases\UIAtlas\icon_tp_skin.png" />
+    <Content Include="UIAtlases\UIAtlas\icon_tp_symbiotic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
+    <None Include="Resources\Pistol.unity3d" />
+    <None Include="Resources\Pistol_Sounds.unity3d" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
