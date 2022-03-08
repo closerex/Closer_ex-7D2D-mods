@@ -1,0 +1,79 @@
+Key,File,Type,UsedInMainMenu,NoTranslate,english,Context / Alternate Text,schinese
+perkMedic,progression,Attribute,,,The Medic,,战地医师
+perkMedicBasicName,progression,Attribute,,,The Medic,,战地医师
+perkMedicBasicDesc,progression,Attribute,,,Keep your friends alive or keep yourself away from their bodies.,,不让你的朋友变成尸体，或者远离他们的尸体。
+reqPhysicianLevel04,progression,Attribute,,,Physician Level 4,,医师等级 4
+perkMedicBasicLv1Desc,progression,Attribute,,,Medic lv1,,战地医师 等级1
+perkMedicBasicLv2Desc,progression,Attribute,,,Medic lv2,,战地医师 等级2
+perkMedicBasicLv3Desc,progression,Attribute,,,Medic lv3,,战地医师 等级3
+perkMedicBasicLv4Desc,progression,Attribute,,,Medic lv4,,战地医师 等级4
+perkMedicBasicLv5Desc,progression,Attribute,,,Medic lv5,,战地医师 等级5
+perkMedicBasicLv6Desc,progression,Attribute,,,Medic lv6,,战地医师 等级6
+perkMedicBasicLv1LongDesc,progression,Attribute,,,"Heal your teammates with medic guns, or poison zombie with them. Heal 24 and consume 33 per healing dart. Killing zombies with medic weapons has 5% chance of triggering zedtime, increasing by 5% per level.",,使用医疗枪治疗你的队友，或者使丧尸中毒。每次治疗24并消耗33医疗储备。使用医疗枪造成丧尸击杀有5%几率触发丧尸时间，每级提高5%。
+perkMedicBasicLv2LongDesc,progression,Attribute,,,"Heal amount increases to 28, and medic stock regeneration limitation to 115. Healing dart consumption downed to 31.",,治疗量增加至28，医疗储备上限增加至115。医疗子弹消耗降低至31.
+perkMedicBasicLv3LongDesc,progression,Attribute,,,"Heal amount increases to 32, Healing dart consumption downed to 29.",,治疗量增加至32，医疗子弹消耗降低至29.
+perkMedicBasicLv4LongDesc,progression,Attribute,,,"Heal amount increases to 36, and medic stock regeneration limitation to 130. Healing dart consumption downed to 27.",,治疗量增加至36，医疗储备上限增加至130。医疗子弹消耗降低至27.
+perkMedicBasicLv5LongDesc,progression,Attribute,,,"Heal amount increases to 40, Healing dart consumption downed to 25. Unlock medic grenade recipe.",,治疗量增加至40，医疗子弹消耗降低至25。解锁医疗手雷制作。
+perkMedicBasicLv6LongDesc,progression,Attribute,,,"Medic stock regeneration limitation increases to 150. Double healing speed for 5s on dart hits.",,医疗储备上限增加至150。医疗枪命中使友军生命恢复速度翻倍，持续5秒。
+skillTeamplayerName,progression,Skill,,,The Healer,,治疗者
+skillTeamplayerDesc,progression,Skill,,,"What should I put here? It's a medic gun, go heal some allies.",,我应该在这里写什么？这是一把医疗枪，拿它去给队友加血。
+skillSurvivorName,progression,Skill,,,The Survivor,,生存者
+skillSurvivorDesc,progression,Skill,,,"What should I put here? It's a medic gun... Wait a second, is it?",,我应该在这里写什么？这是一把医疗枪……等一下，这是医疗枪？
+reqMedicLevel02,progression,Attribute,,,The Medic Level 2,,战地医师 等级2
+reqMedicLevel03,progression,Attribute,,,The Medic Level 3,,战地医师 等级3
+reqMedicLevel04,progression,Attribute,,,The Medic Level 4,,战地医师 等级4
+reqMedicLevel05,progression,Attribute,,,The Medic Level 5,,战地医师 等级5
+reqMedicLevel06,progression,Attribute,,,The Medic Level 6,,战地医师 等级6
+perkMedicTeamplayer1Name,progression,perk Med,,,Symbiotic Health,,共生生命
+perkMedicTeamplayer1Desc,progression,perk Med,,,"Heal others heal yourself",,给人打针活该加血
+perkMedicTeamplayer1LongDesc,progression,perk Med,,,"Healing teammate with medic guns heals yourself 15 hp.",,使用医疗枪治疗友军同时治疗你自己15生命值。
+perkMedicTeamplayer2Name,progression,perk Med,,,Adrenaline Shot,,肾上腺素针
+perkMedicTeamplayer2Desc,progression,perk Med,,,"DON'T YOU STAB THAT THING ON ME!",,你 不 要 过 来 啊 我 不 想 打 针
+perkMedicTeamplayer2LongDesc,progression,perk Med,,,"Shoot your teammates with healing dart increase their movement speed 20% for 8s",,使用医疗枪命中友军增加他们20%移动速度，持续8秒。
+perkMedicTeamplayer3Name,progression,perk Med,,,Life Transition,,生命转换
+perkMedicTeamplayer3Desc,progression,perk Med,,,"Is this some cult ceremony?",,邪教仪式？
+perkMedicTeamplayer3LongDesc,progression,perk Med,,,"When you heal yourself at max hp, increase medic stock regeneration by 1.",,你在满生命值时治疗自己会使医疗储备回复+1。
+perkMedicTeamplayer4Name,progression,perk Med,,,Focus Injection,,专注射击
+perkMedicTeamplayer4Desc,progression,perk Med,,,"When a demolist is about to explode",,你被强化了，快送
+perkMedicTeamplayer4LongDesc,progression,perk Med,,,"Shooting teammates with healing darts increases the damage they inflict 20% for 8 seconds.",,使用医疗枪命中友军增加20%他们造成的伤害，持续8秒。
+perkMedicTeamplayer5Name,progression,perk Med,,,Shiny Skin,,皮肤保养
+perkMedicTeamplayer5Desc,progression,perk Med,,,"You take care of it or they take apart you",,好好吃饭，不然僵尸就来敲门啦
+perkMedicTeamplayer5LongDesc,progression,perk Med,,,"Shooting teammates with healing darts remove bleeding. All buffs you apply to teammates will apply on yourself too.",,使用医疗枪命中友军会移除流血，治疗擦伤。所有施加在队友身上的buff同样应用于自己。
+perkMedicSurvivor1Name,progression,perk Med,,,Mine Now,,我的了
+perkMedicSurvivor1Desc,progression,perk Med,,,"For to all those who have, more will be given, and they will have an abundance; but from those who have nothing, even what they have will be taken away.",,凡有的，还要加给他，叫他多余；没有的，连他所有的也要夺过来。
+perkMedicSurvivor1LongDesc,progression,perk Med,,,Healing darts hit on zombie heal you.,,医疗子弹击中僵尸会回复你的生命值。
+perkMedicSurvivor2Name,progression,perk Med,,,Rotten Rot,,烂上加烂
+perkMedicSurvivor2Desc,progression,perk Med,,,This might sting a bit.,,这个可能有点疼。
+perkMedicSurvivor2LongDesc,progression,perk Med,,,Medic weapons deals 25% more damage on poisoned targets.,,医疗武器对中毒目标增加25%伤害。
+perkMedicSurvivor3Name,progression,perk Med,,,Survival Instinct,,生存本能
+perkMedicSurvivor3Desc,progression,perk Med,,,"Turns out it's true, blood is thicker than water.",,血浓于水。
+perkMedicSurvivor3LongDesc,progression,perk Med,,,Killing target with medic guns doubles medic stock regeneration for 10s.,,医疗枪击杀目标会让医疗储备回复速度变为双倍，持续10秒。
+perkMedicSurvivor4Name,progression,perk Med,,,"I'm a medic, not doctor",,我是战地医师，不是医生
+perkMedicSurvivor4Desc,progression,perk Med,,,Kills even better than it heals this!,,拿这玩意儿杀僵尸可比奶人爽多了！
+perkMedicSurvivor4LongDesc,progression,perk Med,,,Medic guns entity damage and reload speed increased by 20%. Medic guns degradation reduced by 50%.,,医疗枪伤害和换弹速度提高20%。医疗枪耗损速度降低50%。
+perkMedicSurvivor5Name,progression,perk Med,,,I SAY IT'S ZED TIME,,丧尸时间
+perkMedicSurvivor5Desc,progression,perk Med,,,"Slowmo-hand!Wait, this isn't the k---ing floor?",,丧尸时间啦，还有哪个在快快跑？还是说这里不是杀地板？
+perkMedicSurvivor5LongDesc,progression,perk Med,,,"Healing darts and grenades have 50% chance to cripple target. Dealing headshot with healing darts knocks down target during zedtime, while hitting them consumes no medic stock.",,医疗子弹有50%几率致残敌人。在丧尸时间中使用医疗子弹爆头命中会击倒敌人，且命中敌人时不消耗医疗储备。
+modMedicModule,item_modifiers,mod,,,Medic module,,医疗模组
+gunMedicPistol,items,Gun,,,HMTech-101 Pistol,,HMTech-101医疗手枪
+gunMedicPistolDesc,items,Gun,,,The HMTech-101 Pistol.\n\nFire mode is semi-auto only. Primary mode shoots 9mm rounds. Secondary mode shoots healing darts to heal team members.\n\nRepair with first aid kit.,,HMTech-101医疗手枪。\n\n射击模式仅单发，主要模式发射9mm子弹，次要模式射出医疗子弹治疗队友。\n\n使用医疗包修理。
+gunMedicShotgun301,items,Gun,,,HMTech-301 SG,,HMTech-301霰弹枪
+gunMedicShotgun301Desc,items,Gun,,,The HMTech-301 Shotgun.\n\nFire mode is full-auto only. Primary mode shoots shotgun ammo. Secondary mode shoots healing dart to heal team members.\n\nRepair with first aid kit.,,HMTech-301霰弹枪。\n\n射击模式仅全自动，主要模式发射霰弹枪子弹，次要模式射出医疗子弹治疗队友。\n\n使用医疗包修理。
+gunMedicAssaultRifle401,items,Gun,,,HMTech-401 AR,,HMTech-401突击步枪
+gunMedicAssaultRifle401Desc,items,Gun,,,The HMTech-401 Assault Rifle.\n\nFire mode is full-auto only. Primary mode shoots 7.62mm rounds. Secondary mode shoots healing darts to heal team members.\n\nRepair with first aid kit.,,HMTech-401突击步枪。\n\n射击模式仅全自动，主要模式发射7.62mm子弹，次要模式射出医疗子弹治疗队友。\n\n使用医疗包修理。
+thrownAmmoMedicGrenade,items,Gun,,,Medic Grenade,,医疗手雷
+thrownAmmoMedicGrenadeDesc,items,Gun,,,The Medic Grenade. Emit healing gas on impact, lasting for 15s.,,医疗手雷。撞击时释放医疗气体，持续15秒。
+buffMedicBuffStockName,buffs,Buff,,,Medic Stock,,医疗储备
+buffMedicBuffStockLongDesc,buffs,Buff,,,This is the thing you use to heal your allies.,,用于治疗队友。
+buffMedicHealName,buffs,Buff,,,Medic Healing,,治疗量
+buffMedicHealLongDesc,buffs,Buff,,,You are healed.,,你得到了治疗。
+buffMedicBoostName,buffs,Buff,,,Restock,,快速补给
+buffMedicBoostLongDesc,buffs,Buff,,,Double medic stock regeneration.,,双倍医疗储备回复速度。
+buffMedicAdrenalineName,buffs,Buff,,,Medic Adrenaline,,战地医生的肾上腺素
+buffMedicAdrenalineLongDesc,buffs,Buff,,,Run faster.,,跑得快。
+buffMedicFocusName,buffs,Buff,,,Medic Focus,,骨气！
+buffMedicFocusLongDesc,buffs,Buff,,,Deal more damage.,,造成更多伤害。
+buffMedicEliteHealingName,buffs,Buff,,,Healing boost,,治疗加速
+buffMedicEliteHealingLongDesc,buffs,Buff,,,Heal faster.,,更快的治疗。
+buffZedTimeCooldownName,buffs,Buff,,,Zed Time cooldown,,丧尸时间冷却
+buffZedTimeCooldownLongDesc,buffs,Buff,,,You can't trigger another zedtime now.,,当前无法触发丧尸时间。
