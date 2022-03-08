@@ -23,14 +23,12 @@ public class CustomParticleEffectLoader
             return false;
         //check if asset is loaded
         string path_asset = path + "?" + assetname;
-        //int index_asset = getHashCode(path_asset);
         bool flag = hash_assets.TryGetValue(path_asset, out GameObject obj);
         if(!flag)
         {
             //load asset
             string path_bundle = ModManager.PatchModPathString(path).TrimStart('#');
             Log.Out("Bundle path: " + path_bundle);
-            //int index_bundlepath = getHashCode(path);
             flag = hash_bundles.TryGetValue(path, out AssetBundle bundle);
             if (!flag)
             {
@@ -56,7 +54,6 @@ public class CustomParticleEffectLoader
         }
 
         //pair particle with scripts
-        //int index = getHashCode(fullpath);
         if (hash_effects.Remove(fullpath))
             Log.Out("Particle data already exists:" + fullpath + ", now overwriting");
         component = new CustomParticleComponents(obj, duration_particle, sound_name, duration_audio, CustomScriptList);
@@ -135,7 +132,7 @@ public class CustomParticleEffectLoader
             Log.Out("Original path:" + str_index);
             int hashed_index = getHashCode(str_index);
             _props.Values["Explosion.ParticleIndex"] = hashed_index.ToString();
-            Log.Out("Loaded index:" + _props.Values["Explosion.ParticleIndex"]);
+            Log.Out("Hashed index:" + _props.Values["Explosion.ParticleIndex"]);
             if(!hash_paths.ContainsKey(hashed_index))
                 hash_paths.Add(hashed_index, str_index);
             bool overwrite = false;
@@ -158,13 +155,13 @@ public class CustomParticleEffectLoader
     public static void addInitializedParticle(GameObject obj)
     {
         hash_initialized.Add(obj);
-        Log.Out("Particle initialized:" + obj.name);
+        //Log.Out("Particle initialized:" + obj.name);
     }
 
     public static void removeInitializedParticle(GameObject obj)
     {
         hash_initialized.Remove(obj);
-        Log.Out("Particle removed on destroy:" + obj.name);
+        //Log.Out("Particle removed on destroy:" + obj.name);
     }
 
     public static void destroyAllParticles()
