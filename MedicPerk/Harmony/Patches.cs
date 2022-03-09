@@ -236,7 +236,7 @@ class MedicProc
         if (hitInfo.tag.StartsWith("E_"))
         {
             Entity entity = ItemActionAttack.FindHitEntityNoTagCheck(hitInfo, out string str);
-            if (entity != null && entity.entityId != _attackerEntityId && !entity.CanDamageEntity(_attackerEntityId))
+            if (entity != null && entity.entityId != _attackerEntityId)
             {
                 EntityAlive attacker = _world.GetEntity(_attackerEntityId) as EntityAlive;
                 bool useInventory = false;
