@@ -119,27 +119,13 @@ class ItemActionLauncherProjectilePatch
     {
         var codes = new List<CodeInstruction>(instructions);
 
-        LocalBuilder lbd_rps = generator.DeclareLocal(typeof(int));
-
         for (int i = 0, totali = codes.Count; i < totali; i++)
         {
-            if(codes[i].opcode == OpCodes.Call && codes[i].Calls(mtdinfo_gac))
+            if(codes[i].opcode == OpCodes.Ldc_R4 && codes[i].OperandIs(0.005f))
             {
-                codes.InsertRange(i + 1, new CodeInstruction[]
-                {
-                    new CodeInstruction(OpCodes.Ldloc_S, 6),
-                    CodeInstruction.Call(typeof(ItemActionLauncherProjectilePatch), nameof(ItemActionLauncherProjectilePatch.getProjectileCount), new Type[] { typeof(ItemActionData) }),
-                    new CodeInstruction(OpCodes.Stloc_S, lbd_rps),
-                    new CodeInstruction(OpCodes.Ldloc_S, lbd_rps),
-                    new CodeInstruction(OpCodes.Mul)
-                });
-            }else if(codes[i].opcode == OpCodes.Ldc_R4 && codes[i].OperandIs(0.005f))
-            {
-                codes.InsertRange(i - 1, new CodeInstruction[]
-                {
-                    new CodeInstruction(OpCodes.Ldloc_S, lbd_rps),
-                    new CodeInstruction(OpCodes.Div)
-                });
+                codes.Insert(i + 2, new CodeInstruction(OpCodes.Ldc_R4, 0f));
+                codes.RemoveRange(i - 2, 4);
+                break;
             }
         }
 
