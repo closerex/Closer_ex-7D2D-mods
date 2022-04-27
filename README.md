@@ -3,6 +3,8 @@ This collection contains all my 7 days to die mods with source code included.
 
 For non modders, you can download release version without source code on [Nexus](https://www.nexusmods.com/7daystodie/users/91949543?tab=user+files).
 
+[DownGit](https://minhaskamal.github.io/DownGit/#/home) is recommended for downloading individual folders.
+
 ### Description of each mod:
 
 |Required on|Mod name|Description| 
