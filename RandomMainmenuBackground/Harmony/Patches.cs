@@ -1,0 +1,95 @@
+﻿using HarmonyLib;
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Reflection.Emit;
+using UnityEngine;
+
+[HarmonyPatch]
+class Patches
+{
+    private static MethodInfo mtdinfo_fwgbn = AccessTools.Method(typeof(XUi), nameof(XUi.FindWindowGroupByName), new Type[] { typeof(string) });
+
+    [HarmonyPatch(typeof(XUiFromXml), nameof(XUiFromXml.LoadXui))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_LoadXui_XUiFromXml(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = new List<CodeInstruction>(instructions);
+
+        for (int i = 0, totali = codes.Count; i < totali; i++)
+        {
+            CodeInstruction code = codes[i];
+            if (code.opcode == OpCodes.Callvirt && code.Calls(mtdinfo_fwgbn))
+            {
+                codes.InsertRange(i + 6, new CodeInstruction[]
+                {
+                    new CodeInstruction(OpCodes.Ldloc_S, 7),
+                    CodeInstruction.Call(typeof(RandomBackgroundLoader), nameof(RandomBackgroundLoader.insert), new Type[] { typeof(string) })
+                });
+                break;
+            }
+        }
+
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(XUiC_MainMenu), nameof(XUiC_MainMenu.OnOpen))]
+    [HarmonyPrefix]
+    private static bool Prefix_OnOpen_XUiC_MainMenu(XUiC_MainMenu __instance)
+    {
+        __instance.xui.playerUI.windowManager.Close(RandomBackgroundLoader.Cur_name);
+        __instance.xui.playerUI.windowManager.Close(RandomBackgroundLoader.Cur_logo);
+
+        return true;
+    }
+
+    [HarmonyPatch(typeof(XUiC_MainMenu), nameof(XUiC_MainMenu.OnOpen))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_OnOpen_XUiC_MainMenu(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = new List<CodeInstruction>(instructions);
+
+        for (int i = 0, totali = codes.Count; i < totali; i++)
+        {
+            CodeInstruction code = codes[i];
+            if (code.opcode == OpCodes.Ldstr && code.OperandIs("menuBackground"))
+            {
+                codes.InsertRange(i + 1, new CodeInstruction[]
+                {
+                    CodeInstruction.Call(typeof(RandomBackgroundLoader), nameof(RandomBackgroundLoader.getName)),
+                    CodeInstruction.Call(typeof(string), nameof(string.Concat), new Type[] { typeof(string), typeof(string) })
+                });
+                i += 2;
+                totali += 2;
+            }else if(code.opcode == OpCodes.Ldstr && code.OperandIs("mainMenuLogo"))
+            {
+                codes.InsertRange(i + 1, new CodeInstruction[]
+                {
+                    CodeInstruction.Call(typeof(RandomBackgroundLoader), nameof(RandomBackgroundLoader.getLogo)),
+                    CodeInstruction.Call(typeof(string), nameof(string.Concat), new Type[] { typeof(string), typeof(string) })
+                });
+                i += 2;
+                totali += 2;
+            }
+        }
+
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(XUiC_MainMenu), nameof(XUiC_MainMenu.OnClose))]
+    [HarmonyPostfix]
+    private static void Postfix_OnClose_XUiC_MainMenu(XUiC_MainMenu __instance)
+    {
+        __instance.xui.playerUI.windowManager.Close(RandomBackgroundLoader.Cur_logo);
+    }
+    
+    [HarmonyPatch(typeof(GameManager), "startGameCo")]
+    [HarmonyPrefix]
+    private static bool Prefix_startGameCo_GameManager(GUIWindowManager ___windowManager)
+    {
+        if (!GameManager.IsDedicatedServer)
+            ___windowManager.Close(RandomBackgroundLoader.Cur_name);
+        return true;
+    }
+}

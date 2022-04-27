@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xml>
+	<ModInfo>
+		<Name value="RandomMainmenuBGM" />
+		<Description value="Load main menu background bgm randomly." />
+		<Author value="closer_ex" />
+		<Version value="1.0" />
+	</ModInfo>
+</xml>

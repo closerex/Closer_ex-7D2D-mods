@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xml>
+	<ModInfo>
+		<Name value="CustomParticleLoader" />
+		<Description value="Allow you to use custom particle for explosion effects, with your own monoscripts." />
+		<Author value="closer_ex" />
+		<Version value="1.3.1" />
+	</ModInfo>
+</xml>
