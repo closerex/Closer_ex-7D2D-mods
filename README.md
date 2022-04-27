@@ -1,7 +1,10 @@
 # Closer_ex's 7 days to die mods collection
 This collection contains all my 7 days to die mods with source code included.
-For non modders, you can download release version without source code on [Nexus]https://www.nexusmods.com/7daystodie/users/91949543?tab=user+files .
+
+For non modders, you can download release version without source code on [Nexus](https://www.nexusmods.com/7daystodie/users/91949543?tab=user+files).
+
 ###Description of each mod:
+
 |Required on|Mod name|Description| 
 |:---:|:---:|:---|
 |Server & Client|[CustomMuzzleFlash](https://www.nexusmods.com/7daystodie/mods/2063) |A simple patch allowing modders to add custom muzzle flash particle in vanilla manner.|
