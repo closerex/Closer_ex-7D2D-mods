@@ -104,8 +104,8 @@ class ExplosionEffectPatch
         */
         if (components != null)
         {
-            __result = CustomParticleEffectLoader.InitializeParticle(components, _center - Origin.position, _rotation);
             ApplyExplosionForce.Explode(_center, (float)_blastPower, _blastRadius);
+            __result = CustomParticleEffectLoader.InitializeParticle(components, _center - Origin.position, _rotation);
             //CustomParticleEffectLoader.LastInitializedComponent = null;
         }
         else

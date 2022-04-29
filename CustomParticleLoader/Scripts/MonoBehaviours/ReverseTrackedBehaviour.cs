@@ -16,6 +16,16 @@ public class ReverseTrackedBehaviour<T> : TrackedBehaviourBase
             hash_instances.Add(key, new Dictionary<uint, MonoBehaviour>());
         hash_instances[key].Add(explId, this);
     }
+    protected override void removeRef()
+    {
+        var dict = hash_instances[key];
+        if (dict != null)
+        {
+            dict.Remove(explId);
+            if (dict.Count <= 0)
+                hash_instances.Remove(key);
+        }
+    }
 
     public static bool TryGetValue(uint id, object key, out MonoBehaviour controller)
     {
@@ -23,15 +33,6 @@ public class ReverseTrackedBehaviour<T> : TrackedBehaviourBase
         if (hash_instances.TryGetValue(key, out var dict))
             return dict.TryGetValue(id, out controller);
         return false;
-    }
-
-    protected override void OnDestroy()
-    {
-        base.OnDestroy();
-        var dict = hash_instances[key];
-        dict.Remove(explId);
-        if (dict.Count <= 0)
-            hash_instances.Remove(key);
     }
 }
 

@@ -35,7 +35,7 @@ public class SubExplosionController : MonoBehaviour
             {
                 bool sync = false;
                 bool explode = false;
-                bool ballistic = false;
+                //bool ballistic = false;
                 string str_trans = arr_trans[i].Trim();
                 Transform trans = null;
                 if(str_trans != null)
@@ -54,10 +54,11 @@ public class SubExplosionController : MonoBehaviour
                             sync = true;
                         }
                     }
+                    /*
                     ballistic = str_trans.EndsWith("$");
                     if (ballistic)
                         str_trans = str_trans.TrimEnd('$');
-
+                    */
                     if (!explode)
                         --j;
                     Log.Out(str_trans + " sync: " + sync + " explode: " + explode);
@@ -94,6 +95,7 @@ public class SubExplosionController : MonoBehaviour
                             initializer.data = component.BoundExplosionData;
                             if (component.BoundItemClass != null)
                                 initializer.value = new ItemValue(component.BoundItemClass.Id);
+                            /*
                             if(!ballistic)
                             {
                                 Vector3i blockPos = component.CurrentExplosionParams._blockPos;
@@ -101,6 +103,7 @@ public class SubExplosionController : MonoBehaviour
                                 ballistic = chunk == null || !chunk.GetAvailable();
                             }
                             initializer.SetBallistic(ballistic);
+                            */
                             
                             //Log.Out("Particle index: " + initializer.data.ParticleIndex.ToString() + " PlayerId: " + initializer.entityid.ToString() + " Item: " + (initializer.value != null ? initializer.value.ItemClass.Name : string.Empty));
                         }

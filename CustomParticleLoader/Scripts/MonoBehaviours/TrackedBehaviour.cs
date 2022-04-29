@@ -17,6 +17,17 @@ public class TrackedBehaviour<T> : TrackedBehaviourBase
         hash_instances[explId].Add(key, this);
     }
 
+    protected override void removeRef()
+    {
+        var dict = hash_instances[explId];
+        if (dict != null)
+        {
+            dict.Remove(key);
+            if (dict.Count <= 0)
+                hash_instances.Remove(explId);
+        }
+    }
+
     public static bool TryGetValue(uint id, object key, out MonoBehaviour controller)
     {
         controller = null;
@@ -24,14 +35,4 @@ public class TrackedBehaviour<T> : TrackedBehaviourBase
             return dict.TryGetValue(key, out controller);
         return false;
     }
-
-    protected override void OnDestroy()
-    {
-        base.OnDestroy();
-        var dict = hash_instances[explId];
-        dict.Remove(key);
-        if (dict.Count <= 0)
-            hash_instances.Remove(explId);
-    }
-
 }

@@ -68,8 +68,13 @@ public class TrackedBehaviourBase : MonoBehaviour
         }
         if (handleClientInfo)
             CustomParticleEffectLoader.HandleClientInfo -= OnHandleClientInfo;
+        if (track)
+            removeRef();
     }
     protected virtual void addRef()
+    {
+    }
+    protected virtual void removeRef()
     {
     }
     protected virtual void OnClientConnected(PooledBinaryWriter _bw)

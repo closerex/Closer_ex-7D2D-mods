@@ -59,7 +59,7 @@ public class BackgroundMonoPatch
         type_modmanager = module.Types.First(d => d.Name == "ModManager");
         type_dataloader = module.Types.First(d => d.Name == "DataLoader");
 
-        fld_mod_path = type_modmanager.Fields.First(d => d.Name == "MOD_PATH");
+        fld_mod_path = type_modmanager.Fields.First(d => d.Name == "ModsBasePathLegacy");
         fld_mod_path.IsFamily = false;
         fld_mod_path.IsPrivate = false;
         fld_mod_path.IsPublic = true;
