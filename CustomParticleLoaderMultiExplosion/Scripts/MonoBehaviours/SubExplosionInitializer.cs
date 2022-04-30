@@ -26,6 +26,7 @@ public class SubExplosionInitializer : MonoBehaviour
         if (collider)
         {
             collider.isTrigger = true;
+            collider.gameObject.layer = 14;
             Collider[] others = null;
             if (collider is SphereCollider sphereCollider)
                 others = Physics.OverlapSphere(transform.TransformPoint(sphereCollider.center), sphereCollider.radius);
@@ -70,7 +71,6 @@ public class SubExplosionInitializer : MonoBehaviour
                     if(Physics.ComputePenetration(collider, transform.position, transform.rotation, other, other.transform.position, other.transform.rotation, out Vector3 dir, out float distance));
                         transform.position += dir * distance;
                 }
-            Destroy(collider);
         }
     }
 
