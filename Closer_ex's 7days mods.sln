@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParticleScriptTest", "ParticleScriptTest\ParticleScriptTest.csproj", "{7B1CC7B2-9F2A-4C60-AB92-F62B7582AA79}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParticleScriptTestPatch", "ParticleScriptTest\ParticleScriptTestPatch.csproj", "{7B1CC7B2-9F2A-4C60-AB92-F62B7582AA79}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FullautoLauncher", "FullautoLauncher\FullautoLauncher.csproj", "{F485DD15-9EDF-42C3-A31B-66AE0DFB7356}"
 EndProject

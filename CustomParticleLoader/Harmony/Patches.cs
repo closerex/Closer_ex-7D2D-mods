@@ -123,7 +123,7 @@ class ExplosionEffectPatch
     [HarmonyPostfix]
     private static void PlayerSpawnedInWorld_Postfix(ClientInfo _cInfo, RespawnType _respawnReason)
     {
-        if(_cInfo != null && _cInfo.entityId != -1 && (_respawnReason == RespawnType.EnterMultiplayer || _respawnReason == RespawnType.JoinMultiplayer))
+        if(SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && _cInfo != null && _cInfo.entityId != -1 && (_respawnReason == RespawnType.EnterMultiplayer || _respawnReason == RespawnType.JoinMultiplayer))
             CustomParticleEffectLoader.OnClientConnected(_cInfo);
     }
 }
