@@ -30,7 +30,7 @@ public class SubExplosionController : MonoBehaviour
                                           && closestPlayer.entityId == world.GetPrimaryPlayerId())))
                               || (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && entityAlive is EntityPlayerLocal);
 
-            Log.Out("proc explosion: " + procExplosion + " is client: " + SingletonMonoBehaviour<ConnectionManager>.Instance.IsClient + " primary player id: " + world.GetPrimaryPlayerId());
+            //Log.Out("proc explosion: " + procExplosion + " is client: " + SingletonMonoBehaviour<ConnectionManager>.Instance.IsClient + " primary player id: " + world.GetPrimaryPlayerId());
             for (int i = 0, j = i; i < arr_trans.Length; ++i, ++j)
             {
                 bool sync = false;
@@ -61,7 +61,7 @@ public class SubExplosionController : MonoBehaviour
                     */
                     if (!explode)
                         --j;
-                    Log.Out(str_trans + " sync: " + sync + " explode: " + explode);
+                    //Log.Out(str_trans + " sync: " + sync + " explode: " + explode);
 
                     trans = transform.FindInChildren(str_trans);
                 }
@@ -71,7 +71,7 @@ public class SubExplosionController : MonoBehaviour
                     //Log.Out("Subexplosion initialized!");
                     if (sync)
                     {
-                        Log.Out("Sync particle on transform: " + trans.name);
+                        //Log.Out("Sync particle on transform: " + trans.name);
                         ParticleSyncController controller = trans.gameObject.AddComponent<ParticleSyncController>();
                     }
                     if(procExplosion)
@@ -79,7 +79,7 @@ public class SubExplosionController : MonoBehaviour
                         CustomParticleComponents component = null;
                         if(explode)
                         {
-                            Log.Out("Adding SubExplosionInitializer to transform: " + trans.name);
+                            //Log.Out("Adding SubExplosionInitializer to transform: " + trans.name);
                             int index = list_index[j];
                             if (!CustomParticleEffectLoader.GetCustomParticleComponents(index, out component) || component == null)
                             {
