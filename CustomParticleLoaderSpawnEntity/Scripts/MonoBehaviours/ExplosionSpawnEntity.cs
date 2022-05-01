@@ -231,7 +231,6 @@ public class ExplosionSpawnEntity : MonoBehaviour
             if (!lootEntry2.forceProb)
             {
                 thresProb += probability / totalProb;
-                Log.Out("total prob: " + totalProb + " thres prob: " + thresProb + " cur prob: " + randomFloat);
                 flag = (randomFloat <= thresProb);
             }else
                 flag = (UnityEngine.Random.Range(0f, 1f) <= probability);
