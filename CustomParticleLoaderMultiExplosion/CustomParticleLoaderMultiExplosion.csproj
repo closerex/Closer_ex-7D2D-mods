@@ -80,7 +80,6 @@
     <Compile Include="Harmony\Init.cs" />
     <Compile Include="Harmony\Patches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scripts\NetPackages\NetPackageExplosionParticleSyncParams.cs" />
     <Compile Include="Scripts\MonoBehaviours\ParticleSyncController.cs" />
     <Compile Include="Scripts\MonoBehaviours\SubExplosionController.cs" />
     <Compile Include="Scripts\MonoBehaviours\SubExplosionInitializer.cs" />
