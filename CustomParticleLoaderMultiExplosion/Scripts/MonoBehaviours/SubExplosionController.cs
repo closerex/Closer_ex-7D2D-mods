@@ -35,6 +35,7 @@ public class SubExplosionController : MonoBehaviour
             {
                 bool sync = false;
                 bool explode = false;
+                bool explodeOnDeath = false;
                 //bool ballistic = false;
                 string str_trans = arr_trans[i].Trim();
                 Transform trans = null;
@@ -54,6 +55,10 @@ public class SubExplosionController : MonoBehaviour
                             sync = true;
                         }
                     }
+
+                    explodeOnDeath = str_trans.EndsWith("$");
+                    if (explodeOnDeath)
+                        str_trans = str_trans.Remove(str_trans.Length - 1);
                     /*
                     ballistic = str_trans.EndsWith("$");
                     if (ballistic)
@@ -95,6 +100,8 @@ public class SubExplosionController : MonoBehaviour
                             initializer.data = component.BoundExplosionData;
                             if (component.BoundItemClass != null)
                                 initializer.value = new ItemValue(component.BoundItemClass.Id);
+                            if (explodeOnDeath)
+                                initializer.SetExplodeOnDeath();
                             /*
                             if(!ballistic)
                             {

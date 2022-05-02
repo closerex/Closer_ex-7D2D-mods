@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.ParticleSystemJobs;
 
 public class SubExplosionInitializer : MonoBehaviour
 {
@@ -8,12 +7,13 @@ public class SubExplosionInitializer : MonoBehaviour
     public ItemValue value = null;
     public int clrIdx = 0;
     public EntityAlive entityAlive = null;
-    public bool ballistic = false;
+    private bool explodeOnDeath = false;
     private ParticleSystem ps;
     private List<ParticleCollisionEvent> list_events;
     private World world;
     private Collider collider;
-    private BallisticParticleJob job;
+    //private BallisticParticleJob job;
+    private ParticleSystem.Particle[] particles;
 
     void Awake()
     {
@@ -74,28 +74,15 @@ public class SubExplosionInitializer : MonoBehaviour
         }
     }
 
-    public void SetBallistic(bool flag)
+    public void SetExplodeOnDeath()
     {
-        ballistic = flag;
-        if(ballistic)
-        {
-            job = new BallisticParticleJob(entityAlive ? entityAlive.entityId : -1, value != null ? value.GetItemId() : -1, data.ParticleIndex); ;
-            var collision = ps.collision;
-            collision.enabled = false;
-        }
-        Log.Out("Ballistic: " + ballistic);
+        explodeOnDeath = true;
+        particles = new ParticleSystem.Particle[ps.main.maxParticles];
     }
-    /*
-    void OnTriggerEnter(Collider other)
-    {
-        Physics.ComputePenetration(collider, transform.position, transform.rotation, other, other.transform.position, other.transform.rotation, out Vector3 dir, out float distance);
-        transform.position += dir * distance;
-        Log.Out("Trigger enter: dir" + dir + " distance " + distance);
-    }
-    */
+
     void OnParticleCollision(GameObject other)
     {
-        if (ballistic)
+        if (explodeOnDeath)
             return;
         int numCollisionEvents = ps.GetCollisionEvents(other, list_events);
         //Log.Out("Particle collided! Count: " + numCollisionEvents.ToString());
@@ -113,45 +100,7 @@ public class SubExplosionInitializer : MonoBehaviour
             if (!world.GetBlock(blockpos).isair)
                 blockpos = Voxel.OneVoxelStep(blockpos, vec, -velocity.normalized, out vec, out BlockFace blockFace);
 
-            if (entityAlive != null && value != null)
-            {
-                /*
-                if (otherIsBorT)
-                {
-                    ChunkCluster chunkCluster = world.ChunkClusters[clrIdx];
-                    if (chunkCluster != null)
-                    {
-                        BlockValue blockValue = BlockValue.Air;
-                        blockValue = chunkCluster.GetBlock(blockpos);
-                        if (!blockValue.isair && blockValue.Block != null)
-                        {
-                            if (blockValue.ischild)
-                            {
-                                Vector3i pblockpos = blockValue.Block.multiBlockPos.GetParentPos(blockpos, blockValue);
-                                blockValue = chunkCluster.GetBlock(pblockpos);
-                            }
-                            if (!blockValue.Equals(BlockValue.Air))
-                            {
-                                entityAlive.MinEventContext.ItemValue = value;
-                                entityAlive.MinEventContext.BlockValue = blockValue;
-                                entityAlive.MinEventContext.Tags = blockValue.Block.Tags;
-                                entityAlive.FireEvent(MinEventTypes.onSelfDamagedBlock, false);
-                            }
-                        }
-                    }
-                }
-                */
-                entityAlive.MinEventContext.Position = vec;
-                entityAlive.MinEventContext.ItemValue = value;
-                entityAlive.FireEvent(MinEventTypes.onProjectileImpact, false);
-
-                MinEventParams.CachedEventParam.Self = entityAlive;
-                MinEventParams.CachedEventParam.Position = vec;
-                MinEventParams.CachedEventParam.ItemValue = value;
-                value.ItemClass.FireEvent(MinEventTypes.onProjectileImpact, MinEventParams.CachedEventParam);
-            }
-
-            GameManager.Instance.ExplosionServer(clrIdx, vec, blockpos, Quaternion.identity, data, entityAlive != null ? entityAlive.entityId : -1, 0, false, value);
+            DoExplosionServer(vec, blockpos);
             //Log.Out("Explosion at: " + vec.ToString() + blockpos.ToString());
 
             /*
@@ -174,12 +123,70 @@ public class SubExplosionInitializer : MonoBehaviour
             i++;
         }
     }
-    void OnParticleUpdateJobScheduled()
+
+    void FixedUpdate()
     {
-        if (ballistic)
-            job.Schedule(ps);
+        if (!explodeOnDeath)
+            return;
+
+        int count = ps.GetParticles(particles);
+        for(int i = 0; i < count; ++i)
+        {
+            if(particles[i].remainingLifetime <= Time.fixedDeltaTime)
+            {
+                Vector3 finalPos = particles[i].position + particles[i].totalVelocity * Time.fixedDeltaTime + Origin.position;
+                Vector3i blockPos = World.worldToBlockPos(finalPos);
+                if (!world.GetBlock(blockPos).isair)
+                    blockPos = Voxel.OneVoxelStep(blockPos, finalPos, -particles[i].totalVelocity.normalized, out finalPos, out BlockFace blockFace);
+                DoExplosionServer(finalPos, blockPos);
+                Log.Out("Explode! remaining lifetime: " + particles[i].remainingLifetime);
+            }
+        }
     }
 
+    private void DoExplosionServer(Vector3 worldPos, Vector3i blockPos)
+    {
+        if (entityAlive != null && value != null)
+        {
+            /*
+            if (otherIsBorT)
+            {
+                ChunkCluster chunkCluster = world.ChunkClusters[clrIdx];
+                if (chunkCluster != null)
+                {
+                    BlockValue blockValue = BlockValue.Air;
+                    blockValue = chunkCluster.GetBlock(blockpos);
+                    if (!blockValue.isair && blockValue.Block != null)
+                    {
+                        if (blockValue.ischild)
+                        {
+                            Vector3i pblockpos = blockValue.Block.multiBlockPos.GetParentPos(blockpos, blockValue);
+                            blockValue = chunkCluster.GetBlock(pblockpos);
+                        }
+                        if (!blockValue.Equals(BlockValue.Air))
+                        {
+                            entityAlive.MinEventContext.ItemValue = value;
+                            entityAlive.MinEventContext.BlockValue = blockValue;
+                            entityAlive.MinEventContext.Tags = blockValue.Block.Tags;
+                            entityAlive.FireEvent(MinEventTypes.onSelfDamagedBlock, false);
+                        }
+                    }
+                }
+            }
+            */
+            entityAlive.MinEventContext.Position = worldPos;
+            entityAlive.MinEventContext.ItemValue = value;
+            entityAlive.FireEvent(MinEventTypes.onProjectileImpact, false);
+
+            MinEventParams.CachedEventParam.Self = entityAlive;
+            MinEventParams.CachedEventParam.Position = worldPos;
+            MinEventParams.CachedEventParam.ItemValue = value;
+            value.ItemClass.FireEvent(MinEventTypes.onProjectileImpact, MinEventParams.CachedEventParam);
+        }
+        GameManager.Instance.ExplosionServer(clrIdx, worldPos, blockPos, Quaternion.identity, data, entityAlive != null ? entityAlive.entityId : -1, 0, false, value);
+    }
+
+    /*
     private static bool DoVoxelCast(World world, Ray ray, float distance, float radius, int index, EntityAlive entityAlive, ItemValue itemValue)
     {
         bool hit = Voxel.Raycast(world, ray, distance, 16 | 64, radius);
@@ -246,6 +253,7 @@ public class SubExplosionInitializer : MonoBehaviour
             }
         }
     }
+    */
 }
 
 

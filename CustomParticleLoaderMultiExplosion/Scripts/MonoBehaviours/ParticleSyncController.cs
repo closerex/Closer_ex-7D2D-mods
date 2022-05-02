@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using UnityEngine;
-using UnityEngine.ParticleSystemJobs;
+﻿using UnityEngine;
 
 public class ParticleSyncController : TrackedBehaviourBase
 {
     private ParticleSystem ps;
     private int seed;
-    private int curSeed;
+    private bool loop;
+    private float elapsedTime = 0f;
+    private GameRandom rnd;
 
     protected override void Awake()
     {
@@ -16,13 +14,14 @@ public class ParticleSyncController : TrackedBehaviourBase
         syncOnConnect = CustomParticleEffectLoader.LastInitializedComponent.SyncOnConnect;
         base.Awake();
         seed = Random.Range(0, int.MaxValue);
-        curSeed = seed;
         ps = GetComponent<ParticleSystem>();
+        loop = ps.main.loop;
         ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         ps.useAutoRandomSeed = false;
         ps.randomSeed = (uint)seed;
         if (isServer)
         {
+            rnd = GameRandomManager.Instance.CreateGameRandom(seed);
             ps.Simulate(0, true, true, true);
             ps.Play();
         }
@@ -30,11 +29,18 @@ public class ParticleSyncController : TrackedBehaviourBase
 
     void FixedUpdate()
     {
-        if (curSeed == int.MaxValue)
-            curSeed = 0;
-        else
-            ++curSeed;
-        ps.randomSeed = (uint)curSeed;
+        if (!loop)
+            return;
+
+        elapsedTime += Time.fixedDeltaTime;
+        if(elapsedTime >= ps.main.duration)
+        {
+            ps.Stop();
+            seed = rnd.RandomInt;
+            ps.randomSeed = (uint)seed;
+            ps.Simulate(0, false, true, true);
+            ps.Play();
+        }
     }
 
     protected override void OnExplosionInitServer(PooledBinaryWriter _bw)
@@ -48,6 +54,7 @@ public class ParticleSyncController : TrackedBehaviourBase
         seed = _br.ReadInt32();
         //Log.Out("Seed: " + seed);
         ps.randomSeed = (uint)seed;
+        rnd = GameRandomManager.Instance.CreateGameRandom(seed);
         ps.Simulate(0, true, true, true);
         ps.Play();
     }
@@ -55,21 +62,16 @@ public class ParticleSyncController : TrackedBehaviourBase
     protected override void OnClientConnected(PooledBinaryWriter _bw)
     {
         _bw.Write(seed);
-        _bw.Write(curSeed);
+        _bw.Write(elapsedTime);
     }
 
     protected override void OnConnectedToServer(PooledBinaryReader _br)
     {
         seed = _br.ReadInt32();
-        curSeed = _br.ReadInt32();
-        ps.randomSeed = (uint)curSeed;
-        float delta = 0;
-        if (curSeed < seed)
-            delta = int.MaxValue - seed + curSeed + 1;
-        else
-            delta = curSeed - seed;
-        delta *= Time.fixedDeltaTime;
-        ps.Simulate(delta, true, true, true);
+        elapsedTime = _br.ReadSingle();
+        rnd = GameRandomManager.Instance.CreateGameRandom(seed);
+        ps.randomSeed = (uint)seed;
+        ps.Simulate(elapsedTime, true, true, true);
         ps.Play();
     }
     /*
