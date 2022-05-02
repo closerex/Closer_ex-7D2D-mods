@@ -1,0 +1,41 @@
+<configs>
+	<append xpath="/Sounds">
+		<SoundDataNode name="kaboomstick_fire">
+			<AudioSource name="Sounds/AudioSource_WeaponFire"/>
+			<NetworkAudioSource name="Sounds/AudioSource_WeaponFire_Network"/>
+			<Noise ID="0" noise="52" time="2" muffled_when_crouched="0.8" heat_map_strength="1" heat_map_time="180"/>
+				<AudioClip ClipName="#@modfolder:Resources/Kaboomstick_sound.unity3d?kaboomstick_shoot01"/>
+				<AudioClip ClipName="#@modfolder:Resources/Kaboomstick_sound.unity3d?kaboomstick_shoot02"/>
+				<AudioClip ClipName="#@modfolder:Resources/Kaboomstick_sound.unity3d?kaboomstick_shoot03"/>
+				<AudioClip ClipName="#@modfolder:Resources/Kaboomstick_sound.unity3d?kaboomstick_shoot04"/>
+				<AudioClip ClipName="#@modfolder:Resources/Kaboomstick_sound.unity3d?kaboomstick_shoot05"/>
+				<AudioClip ClipName="#@modfolder:Resources/Kaboomstick_sound.unity3d?kaboomstick_shoot06"/>
+				<AudioClip ClipName="#@modfolder:Resources/Kaboomstick_sound.unity3d?kaboomstick_shoot07"/>
+				<AudioClip ClipName="#@modfolder:Resources/Kaboomstick_sound.unity3d?kaboomstick_shoot08"/>
+			<LocalCrouchVolumeScale value="1"/>
+			<CrouchNoiseScale value="1"/>
+			<NoiseScale value="1"/>
+			<MaxVoices value="20"/>
+			<MaxVoicesPerEntity value="10"/>
+			<MaxRepeatRate value="0.001"/>
+		</SoundDataNode>
+		<SoundDataNode name="kaboomstick_explosion">
+			<AudioSource name="Sounds/AudioSource_Explosion"/>
+			<Noise ID="0" noise="52" time="2" muffled_when_crouched="0.8" heat_map_strength="1" heat_map_time="180"/>
+				<AudioClip ClipName="#@modfolder:Resources/Kaboomstick_sound.unity3d?kaboomstick_shoot01"/>
+				<AudioClip ClipName="#@modfolder:Resources/Kaboomstick_sound.unity3d?kaboomstick_shoot02"/>
+				<AudioClip ClipName="#@modfolder:Resources/Kaboomstick_sound.unity3d?kaboomstick_shoot03"/>
+				<AudioClip ClipName="#@modfolder:Resources/Kaboomstick_sound.unity3d?kaboomstick_shoot04"/>
+				<AudioClip ClipName="#@modfolder:Resources/Kaboomstick_sound.unity3d?kaboomstick_shoot05"/>
+				<AudioClip ClipName="#@modfolder:Resources/Kaboomstick_sound.unity3d?kaboomstick_shoot06"/>
+				<AudioClip ClipName="#@modfolder:Resources/Kaboomstick_sound.unity3d?kaboomstick_shoot07"/>
+				<AudioClip ClipName="#@modfolder:Resources/Kaboomstick_sound.unity3d?kaboomstick_shoot08"/>
+			<LocalCrouchVolumeScale value="1"/>
+			<CrouchNoiseScale value="1"/>
+			<NoiseScale value="1"/>
+			<MaxVoices value="40"/>
+			<MaxVoicesPerEntity value="10"/>
+			<MaxRepeatRate value="0.001"/>
+		</SoundDataNode>
+	</append>
+</configs>

@@ -1,0 +1,167 @@
+<configs>
+	<append xpath="/items">
+		<item name="gunKaboomstick">
+			<property name="CustomIcon" value="UI_WeaponSelect_HRG_Kaboomstick"/>
+			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,launcher,attPerception,dBarrel,perkDemolitionsExpert,canHaveCosmetic,noSilencer"/>
+			<property name="DisplayType" value="rangedShotgunNoMag"/>
+			<property name="HoldType" value="56"/>
+			<property name="Meshfile" value="#@modfolder:Resources/Kaboomstick_prefab.unity3d?kaboomstick_m.prefab"/>
+			<property name="DropMeshfile" value="#@modfolder:Resources/Kaboomstick_prefab.unity3d?kaboomstick_m.prefab"/>
+			<property name="Material" value="MShotgunParts"/> <property name="Weight" value="4"/>
+			<property name="RepairTools" value="resourceRepairKit"/>
+			<property name="DegradationBreaksAfter" value="false"/>
+			<property name="SoundJammed" value="weapon_jam"/>
+			<property name="CrosshairOnAim" value="true"/> <!-- aimTest -->
+			<property name="CrosshairUpAfterShot" value="true"/> <!-- aimTest -->
+			<property name="Sound_Sight_In" value="rifle_sight_in"/>
+			<property name="Sound_Sight_Out" value="rifle_sight_out"/>
+			<property name="Group" value="Ammo/Weapons,Ranged Weapons"/>
+			<property name="RepairExpMultiplier" value="10.8"/>
+			<property name="PickupJournalEntry" value="alternateAmmoTip"/>
+			<property name="EconomicValue" value="500"/>
+			<property name="UnlockedBy" value="perkDemolitionsExpert"/>
+			<property name="ShowQuality" value="true"/>
+
+			<property class="Action0">
+				<property name="Class" value="Launcher"/>
+				<property name="Delay" value=".2"/> <!-- obsolete if rounds per minute exists -->
+				<property name="Magazine_items" value="ammoKaboomstickShellHE,ammoKaboomstickShellFrag"/>
+				<property name="Reload_time" value="2.6"/>
+				<property name="Sound_start" value="kaboomstick_fire"/>
+				<property name="Sound_loop" value="kaboomstick_fire"/>
+				<property name="Sound_repeat" value=""/>
+				<property name="Sound_end" value=""/>
+				<property name="Sound_empty" value="dryfire"/>
+				<property name="AutoReload" value="false"/>
+				<property name="Particles_muzzle_fire" value="rocketLauncherFire"/>
+				<property name="Particles_muzzle_smoke" value="nozzlesmoke_m136"/>
+				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
+			</property>
+			<property class="Action1">
+				<property name="Class" value="Zoom"/>
+				<property name="Zoom_max_out" value="55"/>
+				<property name="Zoom_max_in" value="55"/>
+				<property name="ScopeCameraOffset" value="0,-.005,0"/>
+			</property>
+
+			<effect_group name="gunKaboomstick">
+				<passive_effect name="RoundsPerMinute" operation="base_set" value="1000" tags="perkDemolitionsExpert"/>
+				<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkDemolitionsExpert"/>
+
+				<passive_effect name="MagazineSize" operation="base_set" value="2" tags="perkDemolitionsExpert"/>
+				 <!-- <passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkDemolitionsExpert"/>2.3s -->
+				<passive_effect name="ModSlots" operation="base_set" value="1,1,2,2,3,4" tier="1,2,3,4,5,6"/>
+				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+				<passive_effect name="EntityDamage" operation="perc_add" value="-.15,.15" tags="perkDemolitionsExpert"/> <!-- random EntityDmg -->
+				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDemolitionsExpert"/> <!-- tier bonus -->
+				<passive_effect name="BlockDamage" operation="perc_add" value="-.15,.15" tags="perkDemolitionsExpert"/> <!-- random BlockDmg -->
+				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDemolitionsExpert"/> <!-- tier bonus -->
+
+				<passive_effect name="DegradationMax" operation="perc_add" value="-.2,.2" tags="perkDemolitionsExpert"/> <!-- random DegMax -->
+				<passive_effect name="RoundsPerMinute" operation="perc_add" value="-.05,.05" tags="perkDemolitionsExpert"/> <!-- random APM -->
+				<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkDemolitionsExpert"/> <!-- random WeaponHandling -->
+
+				<passive_effect name="KickDegreesVerticalMin" operation="base_set" value="4.2" tags="perkDemolitionsExpert"/>
+				<passive_effect name="KickDegreesVerticalMax" operation="base_set" value="4.2" tags="perkDemolitionsExpert"/>
+				<passive_effect name="KickDegreesHorizontalMin" operation="base_set" value="-2.5" tags="perkDemolitionsExpert"/>
+				<passive_effect name="KickDegreesHorizontalMax" operation="base_set" value="2.5" tags="perkDemolitionsExpert"/>
+
+				<passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="2" tags="perkDemolitionsExpert"/>
+				<passive_effect name="WeaponHandling" operation="base_set" value="1.7" tags="perkDemolitionsExpert"/>
+
+				<passive_effect name="DegradationMax" operation="base_set" value="150,300" tier="1,6" tags="perkDemolitionsExpert"/>
+				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkDemolitionsExpert"/>
+			</effect_group>
+		</item>
+
+		<item name="ammoKaboomstickShellHE">
+			<property name="CustomIcon" value="UI_HRG_Kaboomstick_Ammo_HE"/>
+			<property name="Tags" value="ammo,perkDemolitionsExpert"/>
+			<property name="DisplayType" value="ammoLauncher"/>
+			<property name="HoldType" value="45"/>
+			<property name="Meshfile" value="#@modfolder:Resources/Kaboomstick_prefab.unity3d?kaboom_bullet.prefab"/>
+			<property name="HandMeshfile" value="#Other/Items?Misc/sackPrefab.prefab"/>
+			<property name="DropMeshfile" value="#Other/Items?Misc/sack_droppedPrefab.prefab"/>
+			<property name="Material" value="Mlead_scrap"/>
+			<property name="Stacknumber" value="50"/> <!-- STK ammo low -->
+			<property name="EconomicValue" value="20"/>
+			<property name="Group" value="Ammo/Weapons,Ammo,Ranged Weapons"/>
+			<property name="UnlockedBy" value="perkDemolitionsExpert"/>
+			<property class="Action1">
+				<property name="Class" value="Projectile"/>
+				<property name="Explosion.ParticleIndex" value="#@modfolder(Kaboomstick):Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$HE"/>
+				<property name="Explosion.Duration" value="1"/>
+				<property name="Explosion.AudioName" value="kaboomstick_explosion"/>
+				<property name="Explosion.RadiusBlocks" value="1"/> <!-- damage radius for blocks -->
+				<property name="Explosion.RadiusEntities" value="2"/> <!-- damage radius for entities -->
+				<property name="Explosion.BlastPower" value="35"/>
+				<property name="Explosion.DamageBonus.water" value="0"/>
+				<property name="Gravity" value="-7"/>
+				<property name="FlyTime" value=".2"/>
+				<property name="LifeTime" value="5"/>
+			</property>
+			<effect_group name="ammoKaboomstickShellHE" tiered="false">
+				<passive_effect name="BlockDamage" operation="base_set" value="220" tags="perkDemolitionsExpert"/>
+				<passive_effect name="EntityDamage" operation="base_set" value="50" tags="perkDemolitionsExpert"/>
+				<passive_effect name="ProjectileVelocity" operation="base_set" value="80" tags="perkDemolitionsExpert"/>
+				<display_value name="dExRadius" value="2.5"/>
+				<passive_effect name="RoundRayCount" operation="base_set" value="8" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadDegreesVertical" operation="base_set" value="7.5" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="7.5" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadMultiplierAiming" operation="perc_add" value="-.10" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadMultiplierCrouching" operation="perc_add" value="-.05" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadMultiplierWalking" operation="perc_add" value=".15" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadMultiplierRunning" operation="perc_add" value=".3" tags="perkDemolitionsExpert"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="earth"/>
+			</effect_group>
+		</item>
+		<item name="ammoKaboomstickShellFrag">
+			<property name="CustomIcon" value="UI_HRG_Kaboomstick_Ammo_Frag"/>
+			<property name="Tags" value="ammo,perkDemolitionsExpert"/>
+			<property name="DisplayType" value="ammoLauncher"/>
+			<property name="HoldType" value="45"/>
+			<property name="Meshfile" value="#@modfolder:Resources/Kaboomstick_prefab.unity3d?kaboom_bullet.prefab"/>
+			<property name="HandMeshfile" value="#Other/Items?Misc/sackPrefab.prefab"/>
+			<property name="DropMeshfile" value="#Other/Items?Misc/sack_droppedPrefab.prefab"/>
+			<property name="Material" value="Mlead_scrap"/>
+			<property name="Stacknumber" value="50"/> <!-- STK ammo low -->
+			<property name="EconomicValue" value="20"/>
+			<property name="Group" value="Ammo/Weapons,Ammo,Ranged Weapons"/>
+			<property name="UnlockedBy" value="perkDemolitionsExpert"/>
+			<property class="Action1">
+				<property name="Class" value="Projectile"/>
+				<property name="Explosion.ParticleIndex" value="#@modfolder(Kaboomstick):Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$Frag"/>
+				<property name="Explosion.Duration" value="1"/>
+				<property name="Explosion.AudioName" value="kaboomstick_explosion"/>
+				<property name="Explosion.RadiusBlocks" value="1"/> <!-- damage radius for blocks -->
+				<property name="Explosion.RadiusEntities" value="4"/> <!-- damage radius for entities -->
+				<property name="Explosion.BlastPower" value="20"/>
+				<property name="Explosion.DamageBonus.water" value="0"/>
+				<property name="Explosion.DamageBonus.stone" value=".01"/>
+				<property name="Explosion.DamageBonus.metal" value=".05"/>
+				<property name="Explosion.DamageBonus.earth" value="0"/>
+				<property name="Explosion.DamageBonus.wood" value=".05"/>
+				<!--property name="Explosion.SpawnLootGroup" value="groupLargeWeaponBag"/>
+				<property name="Explosion.CustomScriptTypes" value="ExplosionSpawnEntity,CustomParticleLoaderSpawnEntity"/-->
+				<property name="Gravity" value="-7"/>
+				<property name="FlyTime" value=".2"/>
+				<property name="LifeTime" value="6"/>
+			</property>
+			<effect_group name="ammoKaboomstickShellFrag" tiered="false">
+				<passive_effect name="BlockDamage" operation="base_set" value="5" tags="perkDemolitionsExpert"/>
+				<passive_effect name="EntityDamage" operation="base_set" value="120" tags="perkDemolitionsExpert"/>
+				<passive_effect name="ProjectileVelocity" operation="base_set" value="80" tags="perkDemolitionsExpert"/>
+				<display_value name="dExRadius" value="2.5"/>
+				<passive_effect name="RoundRayCount" operation="base_set" value="8" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadDegreesVertical" operation="base_set" value="5.5" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="5.5" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadMultiplierAiming" operation="perc_add" value="-.15" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadMultiplierCrouching" operation="perc_add" value="-.08" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadMultiplierWalking" operation="perc_add" value=".15" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadMultiplierRunning" operation="perc_add" value=".3" tags="perkDemolitionsExpert"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="earth"/>
+			</effect_group>
+		</item>
+	</append>
+</configs>
