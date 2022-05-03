@@ -139,7 +139,7 @@ public class SubExplosionInitializer : MonoBehaviour
                 if (!world.GetBlock(blockPos).isair)
                     blockPos = Voxel.OneVoxelStep(blockPos, finalPos, -particles[i].totalVelocity.normalized, out finalPos, out BlockFace blockFace);
                 DoExplosionServer(finalPos, blockPos);
-                Log.Out("Explode! remaining lifetime: " + particles[i].remainingLifetime);
+                //Log.Out("Explode! remaining lifetime: " + particles[i].remainingLifetime);
             }
         }
     }
