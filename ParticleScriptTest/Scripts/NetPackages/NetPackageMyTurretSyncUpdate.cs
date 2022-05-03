@@ -18,6 +18,7 @@ public class NetPackageMyTurretSyncUpdate : NetPackageMyTurretSyncDestroy
 
     public override void read(PooledBinaryReader _reader)
     {
+        base.read(_reader);
         position = StreamUtilsCompressed.ReadHalfVector3(_reader) - Origin.position;
         rotation = StreamUtilsCompressed.ReadHalfQuaternion(_reader);
     }

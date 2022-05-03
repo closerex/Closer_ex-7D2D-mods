@@ -142,8 +142,6 @@
 				<property name="Explosion.DamageBonus.metal" value=".05"/>
 				<property name="Explosion.DamageBonus.earth" value="0"/>
 				<property name="Explosion.DamageBonus.wood" value=".05"/>
-				<!--property name="Explosion.SpawnLootGroup" value="groupLargeWeaponBag"/>
-				<property name="Explosion.CustomScriptTypes" value="ExplosionSpawnEntity,CustomParticleLoaderSpawnEntity"/-->
 				<property name="Gravity" value="-7"/>
 				<property name="FlyTime" value=".2"/>
 				<property name="LifeTime" value="6"/>
