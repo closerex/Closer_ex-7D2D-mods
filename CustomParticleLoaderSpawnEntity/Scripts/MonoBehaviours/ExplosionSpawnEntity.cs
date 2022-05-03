@@ -169,16 +169,16 @@ public class ExplosionSpawnEntity : MonoBehaviour
                                 }
                             }
                         }
-                        int num2 = list.Count - 50;
-                        if (num2 > 0)
+                        int exceed = list.Count - 50;
+                        if (exceed > 0)
                         {
                             list.Sort(new GameManager.EntityItemLifetimeComparer());
-                            int num3 = list.Count - 1;
-                            while (num3 >= 0 && num2 > 0)
+                            int lastIndex = list.Count - 1;
+                            while (lastIndex >= 0 && exceed > 0)
                             {
-                                list[num3].MarkToUnload();
-                                num2--;
-                                num3--;
+                                list[lastIndex].MarkToUnload();
+                                exceed--;
+                                lastIndex--;
                             }
                         }
                     }
