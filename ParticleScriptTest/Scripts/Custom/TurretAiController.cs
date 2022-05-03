@@ -24,6 +24,7 @@ public class TurretAiController : ReverseTrackedBehaviour<TurretAiController>
     private long cKey;
     private int clrIdx;
     private Vector3 lastPos;
+    private Quaternion lastRot;
     protected override void Awake()
     {
         turret = GetComponent<TurretFiring>();
@@ -72,6 +73,7 @@ public class TurretAiController : ReverseTrackedBehaviour<TurretAiController>
             rg.useGravity = chunk.GetAvailable();
         }
         lastPos = transform.position;
+        lastRot = transform.rotation;
 
         sorter = new TurretTargetSorter(joint, projectileSpeed, turret.horizontalRotationSpeed);
         sorter.selfDirection = Quaternion.identity;
@@ -124,13 +126,12 @@ public class TurretAiController : ReverseTrackedBehaviour<TurretAiController>
                     NetSyncDestroy(hasClient);
                     return;
                 }
+                if (delayScan > 0)
+                    delayScan -= Time.fixedDeltaTime;
+
+                if (delayScan <= 0 && !IsTargetValid(out Vector3 direction))
+                    FindTarget(direction);
             }
-
-            if (delayScan > 0)
-                delayScan -= Time.fixedDeltaTime;
-
-            if (delayScan <= 0 && !IsTargetValid(out Vector3 direction))
-                FindTarget(direction);
 
             if (CalcNextAngle() && !turret.IsReloading)
             {
@@ -139,11 +140,12 @@ public class TurretAiController : ReverseTrackedBehaviour<TurretAiController>
                 {
                     SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageMyTurretSyncFireShot>().Setup(explId, entityid, transform.position, transform.rotation, turret.CurrentHorAngle, turret.CurrentVerAngle, turret.ammoCount));
                 }
-            }else if((transform.position - lastPos).sqrMagnitude >= 0.004f)
+            }else if((transform.position - lastPos).sqrMagnitude >= 0.0004f || Quaternion.Angle(transform.rotation, lastRot) > 1f)
             {
                 if(hasClient)
                     SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageMyTurretSyncUpdate>().Setup(explId, entityid, transform.position, transform.rotation));
                 lastPos = transform.position;
+                lastRot = transform.rotation;
             }
         }else
             CalcNextAngle();
