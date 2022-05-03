@@ -33,7 +33,7 @@ public class NetPackageMyTurretSyncUpdate : NetPackageMyTurretSyncDestroy
     public NetPackageMyTurretSyncUpdate Setup(uint explId, int entityId, Vector3 position, Quaternion rotation)
     {
         base.Setup(explId, entityId);
-        this.position = position;
+        this.position = position + Origin.position;
         this.rotation = rotation;
         return this;
     }
