@@ -25,6 +25,7 @@
 				<triggered_effect trigger="onSelfBuffUpdate" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockPistol" slot="1"/>
 				<triggered_effect trigger="onSelfBuffUpdate" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#42D8EE" slot0="1">
 					<requirement name="CVarCompare" cvar="$medicBuffStockPistol" operation="GTE" value="@$medicBuffConsumption"/>
+					<requirement name="CVarCompare" cvar="$medicBuffStockPistolLast" operation="LT" value="@$medicBuffConsumption"/>
 				</triggered_effect>
 			</effect_group>
 			<effect_group name="max hp healing">
@@ -40,6 +41,7 @@
 			<duration value="0"/>
 			<update_rate value="0.45"/>
 			<effect_group name="generate stock">
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockPistolLast" operation="set" value="@$medicBuffStockPistol"/>
 				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockPistol" operation="add" value="@$medicBuffRegen">
 					<requirement name="CVarCompare" cvar="$medicBuffStockPistol" operation="LT" value="@$medicBuffStockLimitation"/>
 				</triggered_effect>
@@ -67,6 +69,7 @@
 				<triggered_effect trigger="onSelfBuffUpdate" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockSG301" slot="1"/>
 				<triggered_effect trigger="onSelfBuffUpdate" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#42D8EE" slot0="1">
 					<requirement name="CVarCompare" cvar="$medicBuffStockSG301" operation="GTE" value="@$medicBuffConsumption"/>
+					<requirement name="CVarCompare" cvar="$medicBuffStockSG301Last" operation="LT" value="@$medicBuffConsumption"/>
 				</triggered_effect>
 			</effect_group>
 			<effect_group name="max hp healing">
@@ -82,6 +85,7 @@
 			<duration value="0"/>
 			<update_rate value="0.35"/>
 			<effect_group name="generate stock">
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockSG301Last" operation="set" value="@$medicBuffStockSG301"/>
 				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockSG301" operation="add" value="@$medicBuffRegen">
 					<requirement name="CVarCompare" cvar="$medicBuffStockSG301" operation="LT" value="@$medicBuffStockLimitation"/>
 				</triggered_effect>
@@ -109,6 +113,7 @@
 				<triggered_effect trigger="onSelfBuffUpdate" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockAR401" slot="1"/>
 				<triggered_effect trigger="onSelfBuffUpdate" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#42D8EE" slot0="1">
 					<requirement name="CVarCompare" cvar="$medicBuffStockAR401" operation="GTE" value="@$medicBuffConsumption"/>
+					<requirement name="CVarCompare" cvar="$medicBuffStockAR401Last" operation="LT" value="@$medicBuffConsumption"/>
 				</triggered_effect>
 			</effect_group>
 			<effect_group name="max hp healing">
@@ -124,6 +129,7 @@
 			<duration value="0"/>
 			<update_rate value="0.30"/>
 			<effect_group name="generate stock">
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockAR401Last" operation="set" value="@$medicBuffStockAR401"/>
 				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockAR401" operation="add" value="@$medicBuffRegen">
 					<requirement name="CVarCompare" cvar="$medicBuffStockAR401" operation="LT" value="@$medicBuffStockLimitation"/>
 				</triggered_effect>
