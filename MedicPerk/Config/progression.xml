@@ -47,8 +47,7 @@
 				<requirement name="!HasBuff" buff="buffZedTimeCooldown"/>
 				<!--requirement name="ItemHasTags" tags="medicgun"/-->
 				<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="@$zedTimeTriggerChanceMedic"/>
-					<triggered_effect trigger="onSelfKilledOther" action="AddBuff" target="self" buff="buffZedTimeCooldown"/>
-					<triggered_effect trigger="onSelfKilledOther" action="AddBuff" target="selfAOE" target_tags="player" buff="buffZedTimeCooldown" range="60"/>
+					<triggered_effect trigger="onSelfKilledOther" action="AddBuffToTargetAndSelf,KFCommonUtilityLib" target="selfAOE" target_tags="player" buff="buffZedTimeCooldown" range="60"/>
 					<triggered_effect trigger="onSelfKilledOther" action="AddBuff" target="selfAOE" target_tags="enemy" buff="buffZedTime" range="60"/>
 			</effect_group>
 		</perk>

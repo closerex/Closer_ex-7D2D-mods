@@ -53,7 +53,7 @@ perkMedicSurvivor4Desc,progression,perk Med,,,Kills even better than it heals th
 perkMedicSurvivor4LongDesc,progression,perk Med,,,Medic guns entity damage and reload speed increased by 20%. Medic guns degradation reduced by 50%.,,医疗枪伤害和换弹速度提高20%。医疗枪耗损速度降低50%。
 perkMedicSurvivor5Name,progression,perk Med,,,I SAY IT'S ZED TIME,,丧尸时间
 perkMedicSurvivor5Desc,progression,perk Med,,,"Slowmo-hand!Wait, this isn't the k---ing floor?",,丧尸时间啦，还有哪个在快快跑？还是说这里不是杀地板？
-perkMedicSurvivor5LongDesc,progression,perk Med,,,"Healing darts and grenades have 50% chance to cripple target. Dealing headshot with healing darts knocks down target during zedtime, while hitting them consumes no medic stock.",,医疗子弹有50%几率致残敌人。在丧尸时间中使用医疗子弹爆头命中会击倒敌人，且命中敌人时不消耗医疗储备。
+perkMedicSurvivor5LongDesc,progression,perk Med,,,"Healing darts and grenades have 50% chance to cripple target. Dealing headshot with healing darts knocks down target during zedtime. Killing zombie during zedtime causes the following 5 shots to consume no stock.",,医疗子弹有50%几率致残敌人。在丧尸时间中使用医疗子弹爆头命中会击倒敌人，且击杀敌人会使得接下来5发子弹不消耗医疗储备。
 modMedicModule,item_modifiers,mod,,,Medic module,,医疗模组
 gunMedicPistol,items,Gun,,,HMTech-101 Pistol,,HMTech-101医疗手枪
 gunMedicPistolDesc,items,Gun,,,The HMTech-101 Pistol.\n\nFire mode is semi-auto only. Primary mode shoots 9mm rounds. Secondary mode shoots healing darts to heal team members.\n\nRepair with first aid kit.,,HMTech-101医疗手枪。\n\n射击模式仅单发，主要模式发射9mm子弹，次要模式射出医疗子弹治疗队友。\n\n使用医疗包修理。
