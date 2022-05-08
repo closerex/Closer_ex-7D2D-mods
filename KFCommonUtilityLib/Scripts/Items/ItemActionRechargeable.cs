@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-class ItemActionRechargeable : ItemActionRanged
+class ItemActionRechargeable : ItemActionHoldOpen
 {
     private string cvarStateSwitch = null;
     private string cvarToConsume = null;
@@ -14,33 +14,15 @@ class ItemActionRechargeable : ItemActionRanged
     private string altSoundLoop = string.Empty;
     private string altSoundEnd = string.Empty;
     private string altSoundEmpty = string.Empty;
-    private string altModeAnimatorBool = "altMode";
-    private string emptyAnimatorBool = "empty";
     private bool altInfiniteAmmo = false;
     private bool originalInfiniteAmmo = false;
+    private bool suppressFlashOnAlt = false;
+    private bool suppressFlashOnOrigin = false;
+    private const string altModeAnimatorBool = "altMode";
 
     public bool isAltMode(EntityAlive holdingEntity)
     {
         return !string.IsNullOrEmpty(cvarStateSwitch) && holdingEntity && holdingEntity.GetCVar(cvarStateSwitch) > 0;
-    }
-
-    public void setAnimatorBool(EntityAlive holdingEntity, string parameter, bool flag)
-    {
-        Transform trans = (holdingEntity.emodel.avatarController as AvatarMultiBodyController)?.HeldItemTransform;
-        if (trans && trans.TryGetComponent<Animator>(out Animator animator))
-        {
-            animator.SetBool(parameter, flag);
-            Log.Out("trying to set param: " + parameter + " flag: " + flag + " result: " + getAnimatorBool(holdingEntity, parameter) + " transform: " + animator.transform.name);
-        }
-    }
-
-    public bool getAnimatorBool(EntityAlive holdingEntity, string parameter)
-    {
-        Transform trans = (holdingEntity.emodel.avatarController as AvatarMultiBodyController)?.HeldItemTransform;
-        if (trans && trans.TryGetComponent<Animator>(out Animator animator))
-            return animator.GetBool(parameter);
-        else
-            return false;
     }
 
     private void setAltSound(bool isAlt, ItemActionData _actionData)
@@ -52,16 +34,15 @@ class ItemActionRechargeable : ItemActionRanged
             rangedData.SoundLoop = altSoundLoop;
             rangedData.SoundEnd = altSoundEnd;
             soundEmpty = altSoundEmpty;
+            rangedData.IsFlashSuppressed = suppressFlashOnAlt;
         }else
         {
             rangedData.SoundStart = originalSoundStart;
             rangedData.SoundLoop = originalSoundLoop;
             rangedData.SoundEnd = originalSoundEnd;
             soundEmpty = originalSoundEmpty;
+            rangedData.IsFlashSuppressed = suppressFlashOnOrigin;
         }
-
-        if (rangedData.SoundStart.Contains("silenced"))
-            rangedData.IsFlashSuppressed = true;
     }
 
     private void setAltSound(ItemActionData _actionData)
@@ -95,6 +76,10 @@ class ItemActionRechargeable : ItemActionRanged
             altSoundEmpty = soundEmpty;
         _props.ParseBool("Alt_InfiniteAmmo", ref altInfiniteAmmo);
         originalInfiniteAmmo = InfiniteAmmo;
+        if (altSoundStart.Contains("silenced"))
+            suppressFlashOnAlt = true;
+        if (originalSoundStart.Contains("silenced"))
+            suppressFlashOnOrigin = true;
     }
     public override void ExecuteAction(ItemActionData _actionData, bool _bReleased)
     {
@@ -113,8 +98,6 @@ class ItemActionRechargeable : ItemActionRanged
             if ((!((int)rangedData.curBurstCount < GetBurstCount(_actionData) || GetBurstCount(_actionData) == -1) || (!InfiniteAmmo && value.Meta <= 0)))
                 goto exec;
 
-            if (!InfiniteAmmo && value.Meta <= 1)
-                setAnimatorBool(holdingEntity, emptyAnimatorBool, true);
             if (isCurAlt)
             {
                 float consumption = holdingEntity.GetCVar(cvarConsumption);
@@ -162,24 +145,11 @@ class ItemActionRechargeable : ItemActionRanged
             return;
 
         EntityAlive holdingEntity = _actionData.invData.holdingEntity;
-        int id = holdingEntity.entityId;
 
         bool isCurAlt = isAltMode(holdingEntity);
         if(isCurAlt != getAnimatorBool(holdingEntity, altModeAnimatorBool))
         {
             setAnimatorBool(holdingEntity, altModeAnimatorBool, isCurAlt);
-        }
-
-        int meta = _actionData.invData.itemValue.Meta;
-        bool isReloading = (_actionData as ItemActionDataRanged).isReloading;
-        if (!isReloading && meta <= 0 && !getAnimatorBool(holdingEntity, emptyAnimatorBool))
-        {
-            Log.Out("trying to update param: " + emptyAnimatorBool + " flag: " + true);
-            setAnimatorBool(holdingEntity, emptyAnimatorBool, true);
-        }else if ((isReloading || meta > 0) && getAnimatorBool(holdingEntity, emptyAnimatorBool))
-        {
-            Log.Out("trying to update param: " + emptyAnimatorBool + " flag: " + false);
-            setAnimatorBool(holdingEntity, emptyAnimatorBool, false);
         }
     }
 }
