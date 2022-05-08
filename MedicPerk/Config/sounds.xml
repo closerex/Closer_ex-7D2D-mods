@@ -1,0 +1,140 @@
+<configs>
+	<append xpath="/Sounds">
+		<SoundDataNode name="medic_pistol_fire">
+			<AudioSource name="Sounds/AudioSource_WeaponFire"/>
+			<NetworkAudioSource name="Sounds/AudioSource_WeaponFire_Network"/>
+			<Noise ID="0" noise="52" time="2" muffled_when_crouched="0.8" heat_map_strength="0.75" heat_map_time="180"/>
+				<AudioClip ClipName="#@modfolder:Resources/Pistol_Sounds.unity3d?medic_pistol_fire01"/>
+				<AudioClip ClipName="#@modfolder:Resources/Pistol_Sounds.unity3d?medic_pistol_fire02"/>
+				<AudioClip ClipName="#@modfolder:Resources/Pistol_Sounds.unity3d?medic_pistol_fire03"/>
+				<AudioClip ClipName="#@modfolder:Resources/Pistol_Sounds.unity3d?medic_pistol_fire04"/>
+				<AudioClip ClipName="#@modfolder:Resources/Pistol_Sounds.unity3d?medic_pistol_fire05"/>
+				<AudioClip ClipName="#@modfolder:Resources/Pistol_Sounds.unity3d?medic_pistol_fire06"/>
+			<LocalCrouchVolumeScale value="1"/>
+			<CrouchNoiseScale value="1"/>
+			<NoiseScale value="1"/>
+			<MaxVoices value="30"/>
+			<MaxVoicesPerEntity value="15"/>
+			<MaxRepeatRate value="0.001"/>
+		</SoundDataNode>
+		<SoundDataNode name="medic_pistol_dart">
+			<AudioSource name="Sounds/AudioSource_WeaponFire"/>
+			<NetworkAudioSource name="Sounds/AudioSource_WeaponFire_Network"/>
+			<Noise ID="0" noise="52" time="2" muffled_when_crouched="0.8" heat_map_strength="0.1" heat_map_time="50"/>
+				<AudioClip ClipName="#@modfolder:Resources/Pistol_Sounds.unity3d?medic_pistol_dart01"/>
+			<LocalCrouchVolumeScale value="1"/>
+			<CrouchNoiseScale value="1"/>
+			<NoiseScale value="1"/>
+			<MaxVoices value="30"/>
+			<MaxVoicesPerEntity value="10"/>
+			<MaxRepeatRate value="0.001"/>
+		</SoundDataNode>
+		<SoundDataNode name="medic_pistol_dryfire">
+			<AudioSource name="Sounds/AudioSource_Reloads"/>
+			<Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5"/>
+				<AudioClip ClipName="#@modfolder:Resources/Pistol_Sounds.unity3d?medic_pistol_dryfire"/>
+			<LocalCrouchVolumeScale value="1"/>
+			<CrouchNoiseScale value="1"/>
+			<NoiseScale value="1"/>
+			<MaxVoices value="30"/>
+			<MaxVoicesPerEntity value="10"/>
+			<MaxRepeatRate value="0.001"/>
+		</SoundDataNode>
+		<SoundDataNode name="medic_module_toggle_on">
+			<AudioSource name="Sounds/AudioSource_UseAction"/>
+				<AudioClip ClipName="#@modfolder:Resources/Pistol_Sounds.unity3d?medic_mode_switch_on"/>
+			<LocalCrouchVolumeScale value="1.0"/>
+			<CrouchNoiseScale value="0.5"/>
+			<NoiseScale value="1"/>
+			<MaxVoices value="5"/>
+			<MaxEntities name="3"/>
+			<MaxRepeatRate value="0.01"/>
+		</SoundDataNode>
+		<SoundDataNode name="medic_module_toggle_off">
+			<AudioSource name="Sounds/AudioSource_UseAction"/>
+				<AudioClip ClipName="#@modfolder:Resources/Pistol_Sounds.unity3d?medic_mode_switch_off"/>
+			<LocalCrouchVolumeScale value="1.0"/>
+			<CrouchNoiseScale value="0.5"/>
+			<NoiseScale value="1"/>
+			<MaxVoices value="5"/>
+			<MaxEntities name="3"/>
+			<MaxRepeatRate value="0.01"/>
+		</SoundDataNode>
+		<SoundDataNode name="medic_shotgun_fire">
+			<AudioSource name="Sounds/AudioSource_WeaponFire"/>
+			<NetworkAudioSource name="Sounds/AudioSource_WeaponFire_Network"/>
+			<Noise ID="0" noise="52" time="2" muffled_when_crouched="0.8" heat_map_strength="1.15" heat_map_time="180"/>
+				<AudioClip ClipName="#@modfolder:Resources/MedicShotgun301_Sound.unity3d?medic_sg301_fire01"/>
+				<AudioClip ClipName="#@modfolder:Resources/MedicShotgun301_Sound.unity3d?medic_sg301_fire02"/>
+				<AudioClip ClipName="#@modfolder:Resources/MedicShotgun301_Sound.unity3d?medic_sg301_fire03"/>
+			<LocalCrouchVolumeScale value="1"/>
+			<CrouchNoiseScale value="1"/>
+			<NoiseScale value="1"/>
+			<MaxVoices value="30"/>
+			<MaxVoicesPerEntity value="10"/>
+			<MaxRepeatRate value="0.001"/>
+		</SoundDataNode>
+		<SoundDataNode name="medic_shotgun_fire_loop">
+			<AudioSource name="Sounds/AudioSource_WeaponFire"/>
+			<NetworkAudioSource name="Sounds/AudioSource_WeaponFire_Network"/>
+			<Noise ID="0" noise="52" time="2" muffled_when_crouched="0.8" heat_map_strength="1.15" heat_map_time="180"/>
+				<AudioClip ClipName="#@modfolder:Resources/MedicShotgun301_Sound.unity3d?medic_sg301_fire01"/>
+				<AudioClip ClipName="#@modfolder:Resources/MedicShotgun301_Sound.unity3d?medic_sg301_fire02"/>
+				<AudioClip ClipName="#@modfolder:Resources/MedicShotgun301_Sound.unity3d?medic_sg301_fire03"/>
+			<LocalCrouchVolumeScale value="1"/>
+			<CrouchNoiseScale value="1"/>
+			<NoiseScale value="1"/>
+			<MaxVoices value="30"/>
+			<MaxVoicesPerEntity value="10"/>
+			<MaxRepeatRate value="0.001"/>
+		</SoundDataNode>
+		<SoundDataNode name="medic_ar401_fire">
+			<AudioSource name="Sounds/AudioSource_WeaponFire"/>
+			<NetworkAudioSource name="Sounds/AudioSource_WeaponFire_Network"/>
+			<Noise ID="0" noise="52" time="2" muffled_when_crouched="0.8" heat_map_strength="0.95" heat_map_time="180"/>
+				<AudioClip ClipName="#@modfolder:Resources/MedicAssaultRifle401_Sound.unity3d?medic_ar401_fire01"/>
+				<AudioClip ClipName="#@modfolder:Resources/MedicAssaultRifle401_Sound.unity3d?medic_ar401_fire02"/>
+				<AudioClip ClipName="#@modfolder:Resources/MedicAssaultRifle401_Sound.unity3d?medic_ar401_fire03"/>
+			<LocalCrouchVolumeScale value="1"/>
+			<CrouchNoiseScale value="1"/>
+			<NoiseScale value="1"/>
+			<MaxVoices value="30"/>
+			<MaxVoicesPerEntity value="10"/>
+			<MaxRepeatRate value="0.001"/>
+		</SoundDataNode>
+		<SoundDataNode name="medic_ar401_loop">
+			<AudioSource name="Sounds/AudioSource_WeaponFire"/>
+			<NetworkAudioSource name="Sounds/AudioSource_WeaponFire_Network"/>
+			<Noise ID="0" noise="52" time="2" muffled_when_crouched="0.8" heat_map_strength="0.95" heat_map_time="180"/>
+				<AudioClip ClipName="#@modfolder:Resources/MedicAssaultRifle401_Sound.unity3d?medic_ar401_loop"/>
+			<LocalCrouchVolumeScale value="1"/>
+			<CrouchNoiseScale value="1"/>
+			<NoiseScale value="1"/>
+			<MaxVoices value="30"/>
+			<MaxVoicesPerEntity value="10"/>
+			<MaxRepeatRate value="0.001"/>
+		</SoundDataNode>
+		<SoundDataNode name="medic_grenade_impact">
+			<AudioSource name="Sounds/AudioSource_Interact"/>
+				<AudioClip ClipName="#@modfolder:Resources/MedicGrenade_Sound.unity3d?medic_grenade_impact"/>
+			<LowestPitch name="0.9"/>
+			<HighestPitch name="1.0"/>
+			<LocalCrouchVolumeScale value="0.25"/>
+			<CrouchNoiseScale value="0.05"/>
+			<NoiseScale value=".1"/>
+			<MaxVoices value="3"/>
+			<MaxRepeatRate value="0.01"/>
+		</SoundDataNode>
+		<SoundDataNode name="medic_grenade_emit">
+			<AudioSource name="Sounds/AudioSource_Interact"/>
+				<AudioClip ClipName="#@modfolder:Resources/MedicGrenade_Sound.unity3d?medic_grenade_emit" Loop="true"/>
+			<LowestPitch name="0.9"/>
+			<HighestPitch name="1.0"/>
+			<LocalCrouchVolumeScale value="0.25"/>
+			<CrouchNoiseScale value="0.05"/>
+			<NoiseScale value=".1"/>
+			<MaxVoices value="3"/>
+			<MaxRepeatRate value="0.01"/>
+		</SoundDataNode>
+	</append>
+</configs>

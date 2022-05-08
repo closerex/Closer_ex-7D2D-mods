@@ -1,0 +1,530 @@
+﻿<configs>
+	<append xpath="/items/item[@name='medicalFirstAidKit']">
+		<property name="RepairTime" value="4"/>
+		<property name="RepairAmount" value="1000"/>
+	</append>
+	<append xpath="/items/item[@name='drinkJarGrandpasForgettingElixir']/effect_group[@name='Drink Tier Trader']">
+		<triggered_effect trigger="onSelfPrimaryActionEnd" action="SetProgressionLevel" progression_name="perkMedic" level="1"/>
+		<triggered_effect trigger="onSelfPrimaryActionEnd" action="AddBuff" buff="buffCheckMedicLv"/>
+	</append>
+	<append xpath="/items">
+		<item name="gunMedicPistol">
+<!--			<property name="CustomIconTint" value="200, 0, 200"/>-->
+			<property name="CustomIcon" value="medic_pistol"/>
+			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,selfLoading,attAgility,noSilencer,sideAttachments,barrelAttachments,9mmGun,perkGunslinger,medicgun,medicpistol"/>
+			<property name="DisplayType" value="rangedGun"/>
+			<property name="HoldType" value="1"/>
+			<property name="Meshfile" value="#@modfolder:Resources/Pistol.unity3d?MedicPistol.prefab"/>
+			<property name="DropMeshfile" value="#@modfolder:Resources/Pistol.unity3d?MedicPistol.prefab"/>
+			<!--<property name="TintColor" value="210,120,60"/>-->
+			<property name="Material" value="MHandGunParts"/>
+			<property name="Weight" value="4"/>
+			<property name="RepairTools" value="medicalFirstAidKit"/>
+			<property name="DegradationBreaksAfter" value="false"/>
+			<property name="SoundJammed" value="weapon_jam"/>
+			<property name="Attachments" value="meleeToolFlashlight02"/>
+			<property name="CrosshairOnAim" value="true"/>
+			<!-- aimTest -->
+			<property name="CrosshairUpAfterShot" value="false"/>
+			<!-- aimTest -->
+			<property name="Sound_Sight_In" value="pistol_sight_in"/>
+			<property name="Sound_Sight_Out" value="pistol_sight_out"/>
+			<property name="LightSource" value="lightSource"/>
+			<!-- Start: Needed for the attachment flashlight -->
+			<property name="ActivateObject" value="Attachments/flashlight/lightSource"/>
+			<property name="AttachmentFlashlight" value="flashlight02"/>
+			<!-- End: Needed for the attachment flashlight -->
+			<property name="Group" value="Ammo/Weapons,Ranged Weapons"/>
+			<property name="RepairExpMultiplier" value="10.8"/>
+			<property name="LightValue" value=".45"/>
+			<property name="EconomicValue" value="600"/>
+			<property name="UnlockedBy" value="perkMedic"/>
+			<!--These are special weapons and need an unlock or NRE crash-->
+			<property name="ShowQuality" value="true"/>
+			
+			<property class="Action0">
+				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
+					<property name="Class" value="Rechargeable,KFCommonUtilityLib"/>
+					<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
+					<property name="Sound_start" value="medic_pistol_fire"/>
+					<property name="Sound_loop" value=""/>
+					<property name="Sound_end" value=""/>
+					<property name="Sound_empty" value="medic_pistol_dryfire"/>
+					<property name="Sound_reload" value="pistol_reload"/>
+					<property name="AutoReload" value="false"/>
+					<property name="Particles_muzzle_fire" value="gunfire_pistol"/>
+					<property name="Particles_muzzle_fire_fpv" value="gunfire_pistol_fpv"/>
+					
+					<property name="Alt_Sound_Start" value="medic_pistol_dart"/>
+					<property name="Alt_Sound_Empty" value="medic_module_toggle_off"/>
+					<property name="Alt_InfiniteAmmo" value="true"/>
+					<property name="Cvar_State_Switch" value="isHealMode"/>
+					<property name="Cvar_To_Consume" value="$medicBuffStockPistol"/>
+					<property name="Cvar_Consumption" value="$medicBuffConsumption"/>
+					<property name="Cvar_No_Consumption_On_Hit" value="$medicBuffConsumptionTemp0"/>
+			</property>
+			
+			<property class="Action1">
+				<property name="Class" value="Zoom"/>
+				<property name="Zoom_max_out" value="55"/>
+				<property name="Zoom_max_in" value="55"/>
+				<property name="ScopeCameraOffset" value="-0.0004,-.0155,-0.015"/>
+			</property>
+			
+			<effect_group name="gunMedicPistol">
+				<triggered_effect trigger="onSelfEquipStart" action="AddBuff" buff="buffMedicBuffStockPistol"/>
+				<triggered_effect trigger="onSelfEquipStop" action="RemoveBuff" buff="buffMedicBuffStockPistol"/>
+				<triggered_effect trigger="onSelfEquipStart" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockPistol" slot="1"/>
+				
+				<passive_effect name="MaxRange" operation="base_set" value="50"/>
+				<passive_effect name="DamageFalloffRange" operation="base_set" value="20"/>
+				<passive_effect name="DamageFalloffRange" operation="perc_add" value="-.2,.2"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="earth"/>
+				<passive_effect name="RoundsPerMinute" operation="base_set" value="260"/>
+				<passive_effect name="BurstRoundCount" operation="base_set" value="1"/>
+				<passive_effect name="MagazineSize" operation="base_set" value="15" tags="perkGunslinger"/>
+				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1"/>
+				<!-- 2s -->
+				<passive_effect name="ModSlots" operation="base_set" value="1,1,2,3,4,5" tier="1,2,3,4,5,6"/>
+				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="200" tags="EconomicValue"/>
+				<passive_effect name="EntityDamage" operation="base_add" value="-1.5" tags="perkBoomstick"/> <!-- damage offset -->
+				<passive_effect name="EntityDamage" operation="perc_add" value="-.45,-.3" tags="perkGunslinger"/>
+				<!-- random EntityDmg -->
+				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.3" tier="2,6" tags="perkGunslinger"/>
+				<!-- tier bonus -->
+				<passive_effect name="BlockDamage" operation="perc_add" value="-.15,.15"/>
+				<!-- random BlockDmg -->
+				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.3" tier="2,6"/>
+				<!-- tier bonus -->
+				<passive_effect name="MagazineSize" operation="perc_add" value="-.122,.122"/>
+				<!-- random MagazineSize -->
+				<passive_effect name="DegradationMax" operation="perc_add" value="-.2,.2"/>
+				<!-- random DegMax -->
+				<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08"/>
+				<!-- random WeaponHandling -->
+				<passive_effect name="SpreadDegreesVertical" operation="base_set" value="1"/>
+				<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="1"/>
+				<passive_effect name="SpreadMultiplierCrouching" operation="base_set" value=".8"/>
+				<passive_effect name="SpreadMultiplierWalking" operation="base_set" value="1.5"/>
+				<passive_effect name="SpreadMultiplierRunning" operation="base_set" value="2.2"/>
+				<passive_effect name="KickDegreesVerticalMin" operation="base_set" value=".2"/>
+				<passive_effect name="KickDegreesVerticalMax" operation="base_set" value=".3"/>
+				<passive_effect name="KickDegreesHorizontalMin" operation="base_set" value="-.1"/>
+				<passive_effect name="KickDegreesHorizontalMax" operation="base_set" value=".1"/>
+				<passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="2.0" tags="9mmGun"/>
+				<passive_effect name="WeaponHandling" operation="base_set" value=".95"/>
+				<passive_effect name="DegradationMax" operation="base_set" value="200,450" tier="1,6"/>
+				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkGunslinger"/>
+			</effect_group>
+			<effect_group name="label text dart">
+				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="1"/>
+					<triggered_effect trigger="onSelfRangedBurstShot" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockPistol" slot="1"/>
+					<triggered_effect trigger="onSelfRangedBurstShot" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A" slot0="1">
+						<requirement name="CVarCompare" cvar="$medicBuffStockPistol" operation="LT" value="@$medicBuffConsumption"/>
+					</triggered_effect>
+			</effect_group>
+			<effect_group name="label text shoot">
+				<requirement name="RoundsInMagazine" operation="GT" value="0"/>
+				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="0"/>
+					<triggered_effect trigger="onSelfRangedBurstShot" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" consume_ammo="true"/>
+					<triggered_effect trigger="onSelfRangedBurstShot" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A">
+						<requirement name="RoundsInMagazine" operation="LTE" value="6"/>
+					</triggered_effect>
+					<triggered_effect trigger="onSelfRangedBurstShot" action="SetWeaponLabelColor,KFCommonUtilityLib" is_text="false" color="#F70D1A" name="_EmissionColor">
+						<requirement name="RoundsInMagazine" operation="LTE" value="6"/>
+					</triggered_effect>
+			</effect_group>
+			<effect_group name="label color restore">
+				<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="GT" value="5"/>
+					<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#42D8EE"/>
+					<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#42D8EE" is_text="false" name="_EmissionColor"/>
+					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#42D8EE"/>
+					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#42D8EE" is_text="false" name="_EmissionColor"/>
+			</effect_group>
+			<effect_group name="label color set">
+				<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="LTE" value="5"/>
+					<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A"/>
+					<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A" is_text="false" name="_EmissionColor"/>
+					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A"/>
+					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A" is_text="false" name="_EmissionColor"/>
+			</effect_group>
+		</item>
+		
+		<item name="gunMedicShotgun301">
+			<property name="CustomIcon" value="medic_sg301"/>
+			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shotgun,shortRange,barrelAttachments,sideAttachments,noScopes,noSilencer,magazine,bottomAttachments,attStrength,medicgun,medicshotgun,perkBoomstick,canHaveCosmetic"/>
+			<property name="DisplayType" value="rangedShotgun"/>
+			<property name="HoldType" value="48"/>
+			<property name="Meshfile" value="#@modfolder:Resources/MedicShotgun301.unity3d?MedicSG301.prefab"/>
+			<property name="DropMeshfile" value="#@modfolder:Resources/MedicShotgun301.unity3d?MedicSG301.prefab"/>
+			<property name="Material" value="MShotgunParts"/>
+			<property name="Weight" value="6"/>
+			<property name="RepairTools" value="medicalFirstAidKit"/>
+			<property name="DegradationBreaksAfter" value="false"/>
+			<property name="SoundJammed" value="weapon_jam"/>
+			<property name="Attachments" value="meleeToolFlashlight02"/>
+			<property name="CrosshairOnAim" value="false"/> <!-- aimTest -->
+			<property name="CrosshairUpAfterShot" value="false"/> <!-- aimTest -->
+			<property name="Sound_Sight_In" value="rifle_sight_in"/>
+			<property name="Sound_Sight_Out" value="rifle_sight_out"/>
+			<property name="LightSource" value="lightSource"/> <!-- Start: Needed for the attachment flashlight -->
+			<property name="ActivateObject" value="Attachments/flashlight/lightSource"/>
+			<property name="AttachmentFlashlight" value="meleeToolFlashlight02"/> <!-- End: Needed for the attachment flashlight -->
+			<property name="Group" value="Ammo/Weapons,Ranged Weapons"/>
+			<property name="RepairExpMultiplier" value="10.8"/>
+			<property name="PickupJournalEntry" value="alternateAmmoTip"/>
+			<property name="LightValue" value=".45"/>
+			<property name="EconomicValue" value="1300"/>
+			<property name="UnlockedBy" value="perkMedic"/>
+			<property name="ShowQuality" value="true"/>
+
+			<property class="Action0">
+				<property name="Class" value="Rechargeable,KFCommonUtilityLib"/>
+				<property name="Delay" value=".8"/> <!-- obsolete if rounds per minute exists -->
+				<property name="Magazine_items" value="ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug"/>
+				<property name="Reload_time" value="2.6"/>
+				<property name="Sound_start" value="medic_shotgun_fire"/>
+				<property name="Sound_loop" value="medic_shotgun_fire_loop"/>
+				<property name="Sound_repeat" value=""/>
+				<property name="Sound_end" value=""/>
+				<property name="Sound_empty" value="medic_pistol_dryfire"/>
+				<property name="AutoReload" value="false"/>
+				<property name="Particles_muzzle_fire" value="gunfire_autoshotgun"/>
+				<property name="Particles_muzzle_fire_fpv" value="gunfire_autoshotgun_fpv"/>
+				<property name="ScopeOffset" value="-.00062,.088,.065"/>
+				<property name="SideOffset" value="0,0,0"/>
+				<property name="BarrelOffset" value="0,0,0"/>
+				
+				<property name="Alt_Sound_Start" value="medic_pistol_dart"/>
+				<property name="Alt_Sound_Empty" value="medic_module_toggle_off"/>
+				<property name="Alt_InfiniteAmmo" value="true"/>
+				<property name="Cvar_State_Switch" value="isHealMode"/>
+				<property name="Cvar_To_Consume" value="$medicBuffStockSG301"/>
+				<property name="Cvar_Consumption" value="$medicBuffConsumption"/>
+				<property name="Cvar_No_Consumption_On_Hit" value="$medicBuffConsumptionTemp0"/>
+				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
+			</property>
+			<property class="Action1">
+				<property name="Class" value="Zoom"/>
+				<property name="Zoom_max_out" value="55"/>
+				<property name="Zoom_max_in" value="55"/>
+				<property name="ScopeCameraOffset" value="-0.0001,-0.01570,0.35"/>
+			</property>
+
+			<effect_group name="gunMedicShotgun301">
+				<triggered_effect trigger="onSelfEquipStart" action="AddBuff" buff="buffMedicBuffStockShotgun"/>
+				<triggered_effect trigger="onSelfEquipStop" action="RemoveBuff" buff="buffMedicBuffStockShotgun"/>
+				<triggered_effect trigger="onSelfEquipStart" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockSG301" slot="1"/>
+				
+				<passive_effect name="RoundsPerMinute" operation="base_set" value="200" tags="perkBoomstick"/>
+				<passive_effect name="BurstRoundCount" operation="base_set" value="999" tags="perkBoomstick"/>
+
+				<passive_effect name="MagazineSize" operation="base_set" value="10" tags="perkBoomstick"/>
+				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkBoomstick"/>
+				<passive_effect name="ModSlots" operation="base_set" value="1,1,2,2,3,4" tier="1,2,3,4,5,6"/>
+				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+				<passive_effect name="EntityDamage" operation="base_add" value="-0.9" tags="perkBoomstick"/> <!-- damage offset -->
+				<passive_effect name="EntityDamage" operation="perc_add" value="-.45,-.25" tags="perkBoomstick,perkMedic"/> <!-- random EntityDmg -->
+				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkBoomstick"/> <!-- tier bonus -->
+				<passive_effect name="BlockDamage" operation="perc_add" value="-.15,.15" tags="perkBoomstick"/> <!-- random BlockDmg -->
+				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkBoomstick"/> <!-- tier bonus -->
+
+				<passive_effect name="DegradationMax" operation="perc_add" value="-.2,.2" tags="perkBoomstick"/> <!-- random DegMax -->
+				<passive_effect name="RoundsPerMinute" operation="perc_add" value="-.05,.05" tags="perkBoomstick"/> <!-- random APM -->
+				<passive_effect name="WeaponHandling" operation="perc_add" value="-.085,.085" tags="perkBoomstick"/> <!-- random WeaponHandling -->
+
+				<passive_effect name="KickDegreesVerticalMin" operation="base_set" value="4.0" tags="perkBoomstick"/>
+				<passive_effect name="KickDegreesVerticalMax" operation="base_set" value="4.0" tags="perkBoomstick"/>
+				<passive_effect name="KickDegreesHorizontalMin" operation="base_set" value="-2.2" tags="perkBoomstick"/>
+				<passive_effect name="KickDegreesHorizontalMax" operation="base_set" value="2.2" tags="perkBoomstick"/>
+
+				<passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="1.8" tags="perkBoomstick"/>
+				<passive_effect name="WeaponHandling" operation="base_set" value="1.8" tags="perkBoomstick"/>
+
+				<passive_effect name="DegradationMax" operation="base_set" value="250,500" tier="1,6" tags="perkBoomstick"/>
+				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkBoomstick"/>
+				<display_value name="dStatStunEffect" value="4"/>
+			</effect_group>
+			<effect_group name="label text dart">
+				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="1"/>
+					<triggered_effect trigger="onSelfRangedBurstShot" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockSG301" slot="1"/>
+					<triggered_effect trigger="onSelfRangedBurstShot" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A" slot0="1">
+						<requirement name="CVarCompare" cvar="$medicBuffStockSG301" operation="LT" value="@$medicBuffConsumption"/>
+					</triggered_effect>
+			</effect_group>
+			<effect_group name="label text shoot">
+				<requirement name="RoundsInMagazine" operation="GT" value="0"/>
+				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="0"/>
+					<triggered_effect trigger="onSelfRangedBurstShot" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" consume_ammo="true"/>
+					<triggered_effect trigger="onSelfRangedBurstShot" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A">
+						<requirement name="RoundsInMagazine" operation="LTE" value="4"/>
+					</triggered_effect>
+					<triggered_effect trigger="onSelfRangedBurstShot" action="SetWeaponLabelColor,KFCommonUtilityLib" is_text="false" color="#F70D1A" name="_EmissionColor" slot1="2">
+						<requirement name="RoundsInMagazine" operation="LTE" value="4"/>
+					</triggered_effect>
+			</effect_group>
+			<effect_group name="label color restore">
+				<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="GT" value="3"/>
+					<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#42D8EE"/>
+					<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#42D8EE" is_text="false" name="_EmissionColor" slot1="2"/>
+					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#42D8EE"/>
+					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#42D8EE" is_text="false" name="_EmissionColor" slot1="2"/>
+			</effect_group>
+			<effect_group name="label color set">
+				<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="LTE" value="3"/>
+					<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A"/>
+					<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A" is_text="false" name="_EmissionColor" slot1="2"/>
+					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A"/>
+					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A" is_text="false" name="_EmissionColor" slot1="2"/>
+			</effect_group>
+		</item>
+		
+		<item name="gunMedicAssaultRifle401">
+			<property name="CustomIcon" value="medic_ar401"/>
+			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,barrelAttachments,sideAttachments,stock,magazine,attFortitude,perkMachineGunner,perkBookAutoWeapons,medicgun,medicar401"/>
+			<property name="DisplayType" value="rangedGun"/>
+			<property name="HoldType" value="48"/>
+			<property name="Meshfile" value="#@modfolder:Resources/MedicAssaultRifle401.unity3d?MedicAR401.prefab"/>
+			<property name="DropMeshfile" value="#@modfolder:Resources/MedicAssaultRifle401.unity3d?MedicAR401.prefab"/>
+			<property name="Material" value="MMachineGunParts"/> <property name="Weight" value="4"/>
+
+			<property name="CrosshairOnAim" value="false"/> <!-- aimTest -->
+			<property name="CrosshairUpAfterShot" value="false"/> <!-- aimTest -->
+
+			<property name="RepairTools" value="medicalFirstAidKit"/>
+			<property name="DegradationBreaksAfter" value="false"/>
+
+			<property name="SoundJammed" value="weapon_jam"/>
+			<property name="Sound_Sight_In" value="rifle_sight_in"/>
+			<property name="Sound_Sight_Out" value="rifle_sight_out"/>
+
+			<property name="RepairExpMultiplier" value="10.8"/>
+			<property name="EconomicValue" value="500"/>
+			<property name="UnlockedBy" value="perkMedic"/>
+			<property name="ShowQuality" value="true"/>
+			<property name="Group" value="Ammo/Weapons,Ranged Weapons"/>
+
+			<property class="Action0">
+				<property name="Class" value="Rechargeable,KFCommonUtilityLib"/>
+				<property name="Delay" value=".150"/> <!-- obsolete if rounds per minute exists -->
+				<property name="Magazine_items" value="ammo762mmBulletBall,ammo762mmBulletHP,ammo762mmBulletAP"/>
+				<property name="Sound_start" value="medic_ar401_fire"/>
+				<property name="Sound_loop" value="medic_ar401_fire"/>
+				<property name="Sound_empty" value="medic_pistol_dryfire"/>
+				<property name="Sound_reload" value="ak47_reload"/>
+				<property name="Sound_end" value=""/>
+				<property name="AutoReload" value="false"/>
+				<property name="Particles_muzzle_fire" value="gunfire_AK47"/>
+				<property name="Particles_muzzle_fire_fpv" value="gunfire_AK47_fpv"/>
+				
+				<property name="Alt_Sound_Start" value="medic_pistol_dart"/>
+				<property name="Alt_Sound_Empty" value="medic_module_toggle_off"/>
+				<property name="Alt_InfiniteAmmo" value="true"/>
+				<property name="Cvar_State_Switch" value="isHealMode"/>
+				<property name="Cvar_To_Consume" value="$medicBuffStockAR401"/>
+				<property name="Cvar_Consumption" value="$medicBuffConsumption"/>
+				<property name="Cvar_No_Consumption_On_Hit" value="$medicBuffConsumptionTemp0"/>
+				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
+			</property>
+			<property class="Action1">
+				<property name="Class" value="Zoom"/>
+				<property name="Zoom_max_out" value="55"/>
+				<property name="Zoom_max_in" value="55"/>
+				<property name="ScopeCameraOffset" value="-0.0001,-0.01570,0.35"/>
+			</property>
+
+			<effect_group name="gunMedicAssaultRifle401">
+				<triggered_effect trigger="onSelfEquipStart" action="AddBuff" buff="buffMedicBuffStockAR401"/>
+				<triggered_effect trigger="onSelfEquipStop" action="RemoveBuff" buff="buffMedicBuffStockAR401"/>
+				<triggered_effect trigger="onSelfEquipStart" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockAR401" slot="1"/>
+				
+				<passive_effect name="MaxRange" operation="base_set" value="80" tags="perkMachineGunner"/>
+				<passive_effect name="DamageFalloffRange" operation="base_set" value="40" tags="perkMachineGunner"/>
+				<passive_effect name="DamageFalloffRange" operation="perc_add" value="-.2,.2" tags="perkMachineGunner"/> <!-- random effective rng -->
+				<passive_effect name="EntityDamage" operation="base_add" value="-11" tags="perkMachineGunner"/> <!-- damage offset -->
+				<passive_effect name="BlockDamage" operation="base_add" value="-3" tags="perkMachineGunner"/> <!-- damage offset -->
+
+				<passive_effect name="EntityDamage" operation="perc_add" value="-.45,-.25" tags="perkMachineGunner"/> <!-- random EntityDmg -->
+				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkMachineGunner"/> <!-- tier bonus -->
+				<passive_effect name="BlockDamage" operation="perc_add" value="-.15,.15" tags="perkMachineGunner"/> <!-- random BlockDmg -->
+				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkMachineGunner"/> <!-- tier bonus -->
+
+				<passive_effect name="DegradationMax" operation="perc_add" value="-.2,.2" tags="perkMachineGunner"/> <!-- random DegMax -->
+				<passive_effect name="RoundsPerMinute" operation="perc_add" value="-.05,.05" tags="perkMachineGunner"/> <!-- random APM -->
+				<passive_effect name="MagazineSize" operation="perc_add" value="-.122,.122"/> <!-- random MagazineSize -->
+				<passive_effect name="WeaponHandling" operation="perc_add" value="0,.08" tags="perkMachineGunner"/> <!-- random WeaponHandling -->
+
+				<passive_effect name="RoundsPerMinute" operation="base_set" value="480" tags="perkMachineGunner"/>
+				<passive_effect name="BurstRoundCount" operation="base_set" value="1000" tags="perkMachineGunner"/>
+				<passive_effect name="MagazineSize" operation="base_set" value="40" tags="perkMachineGunner"/>
+				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkMachineGunner"/> <!-- 2.85s -->
+
+				<passive_effect name="SpreadDegreesVertical" operation="base_set" value="2.0" tags="perkMachineGunner"/>
+				<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="2.0" tags="perkMachineGunner"/>
+				<passive_effect name="SpreadMultiplierAiming" operation="base_set" value=".22" tags="perkMachineGunner"/>
+				<passive_effect name="SpreadMultiplierCrouching" operation="base_set" value=".8" tags="perkMachineGunner"/>
+				<passive_effect name="SpreadMultiplierWalking" operation="base_set" value="1.5" tags="perkMachineGunner"/>
+				<passive_effect name="SpreadMultiplierRunning" operation="base_set" value="2.0" tags="perkMachineGunner"/>
+
+				<passive_effect name="KickDegreesVerticalMin" operation="base_set" value="-.2" tags="perkMachineGunner"/>
+				<passive_effect name="KickDegreesVerticalMax" operation="base_set" value="0.6" tags="perkMachineGunner"/>
+				<passive_effect name="KickDegreesHorizontalMin" operation="base_set" value="-.5" tags="perkMachineGunner"/>
+				<passive_effect name="KickDegreesHorizontalMax" operation="base_set" value=".5" tags="perkMachineGunner"/>
+
+				<passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="1.9" tags="perkMachineGunner"/>
+				<passive_effect name="WeaponHandling" operation="base_set" value="1" tags="perkMachineGunner"/> <!-- ak47 -->
+
+				<passive_effect name="DegradationMax" operation="base_set" value="300,600" tier="1,6" tags="perkMachineGunner,perkBookAutoWeapons"/>
+				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkMachineGunner,perkBookAutoWeapons"/>
+
+				<passive_effect name="ModSlots" operation="base_set" value="1,1,2,3,4,5" tier="1,2,3,4,5,6"/>
+				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+			</effect_group>
+			<effect_group name="label text dart">
+				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="1"/>
+					<triggered_effect trigger="onSelfRangedBurstShot" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockAR401" slot="1"/>
+					<triggered_effect trigger="onSelfRangedBurstShot" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A" slot0="1">
+						<requirement name="CVarCompare" cvar="$medicBuffStockAR401" operation="LT" value="@$medicBuffConsumption"/>
+					</triggered_effect>
+			</effect_group>
+			<effect_group name="label text shoot">
+				<requirement name="RoundsInMagazine" operation="GT" value="0"/>
+				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="0"/>
+					<triggered_effect trigger="onSelfRangedBurstShot" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" consume_ammo="true"/>
+					<triggered_effect trigger="onSelfRangedBurstShot" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A">
+						<requirement name="RoundsInMagazine" operation="LTE" value="11"/>
+					</triggered_effect>
+					<triggered_effect trigger="onSelfRangedBurstShot" action="SetWeaponLabelColor,KFCommonUtilityLib" is_text="false" color="#F70D1A" name="_EmissionColor" slot1="2">
+						<requirement name="RoundsInMagazine" operation="LTE" value="11"/>
+					</triggered_effect>
+			</effect_group>
+			<effect_group name="label color restore">
+				<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="GT" value="10"/>
+					<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#42D8EE"/>
+					<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#42D8EE" is_text="false" name="_EmissionColor" slot1="2"/>
+					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#42D8EE"/>
+					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#42D8EE" is_text="false" name="_EmissionColor" slot1="2"/>
+			</effect_group>
+			<effect_group name="label color set">
+				<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="LTE" value="10"/>
+					<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A"/>
+					<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A" is_text="false" name="_EmissionColor" slot1="2"/>
+					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A"/>
+					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A" is_text="false" name="_EmissionColor" slot1="2"/>
+			</effect_group>
+		</item>
+		
+		<item name="thrownAmmoMedicGrenade">
+			<property name="CustomIcon" value="medic_grenade"/>
+			<property name="Tags" value="ammo,weapon,medicgrenade"/>
+			<property name="ItemTypeIcon" value="explosion"/>
+			<property name="DisplayType" value="ammoGrenade"/>
+			<property name="Class" value="ItemClassTimeBomb"/>
+			<property name="HoldType" value="57"/>
+			<property name="Meshfile" value="#@modfolder:Resources/MedicGrenade.unity3d?MedicGrenade.prefab"/>
+			<property name="DropMeshfile" value="#@modfolder:Resources/MedicGrenade.unity3d?MedicGrenade.prefab"/>
+			<property name="HandMeshfile" value="#@modfolder:Resources/MedicGrenade.unity3d?MedicGrenade.prefab"/>
+			<property name="DropScale" value="3"/>
+			<property name="Material" value="Mmetal"/>
+			<property name="ThrowableDecoy" value="true"/>
+			<property name="Weight" value="0"/>
+			<property name="Stacknumber" value="5"/>
+			<property name="Explosion.ParticleIndex" value="#@modfolder:Resources/MedicGrenadeEffect.unity3d?MedicSmoke$MedicGrenade"/>
+			<property name="Explosion.Duration" value="15"/>
+			<property name="Explosion.AudioName" value="medic_grenade_emit"/>
+			<property name="Explosion.AudioDuration" value="15"/>
+			<property name="Explosion.RadiusBlocks" value="0"/>
+			<property name="Explosion.RadiusEntities" value="0"/>
+			<property name="Explosion.BlastPower" value="1"/>
+			<property name="Explosion.DamageBonus.stone" value="0"/>
+			<property name="Explosion.DamageBonus.metal" value="0"/>
+			<property name="Explosion.DamageBonus.earth" value="0"/>
+			<property name="Explosion.DamageBonus.water" value="0"/>
+			<property name="Explosion.DamageBonus.wood" value="0"/>
+			<property name="Explosion.Buff" value="buffMedicGrenadeHeal"/>
+			<property name="Explosion.CustomScriptTypes" value="ExplosionAreaBuffTick,KFCommonUtilityLib"/>
+			<property name="Explosion.Overwrite" value="true"/>
+			<property name="FuseTime" value="20000"/>
+			<property name="ExplodeOnHit" value="true"/>
+			<property name="FusePrimeOnActivate" value="true"/>
+			<property name="StickPercent" value=".5"/>
+			<property name="EconomicValue" value="41"/>
+			<property name="Group" value="Ammo/Weapons,Ammo"/>
+			<property class="Action0">
+				<property name="Class" value="ThrowAway"/>
+				<property name="Delay" value="1.0"/> <!-- obsolete if rounds per minute exists -->
+				<property name="Throw_strength_default" value="20"/>
+				<property name="Throw_strength_max" value="50"/>
+				<property name="Max_strain_time" value="1.25"/>
+				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
+			</property>
+			<property class="Action1">
+				<!-- UseAction -->
+				<property name="Class" value="Activate"/>
+				<property name="Delay" value="1"/>
+				<property name="Sound_start" value="medic_grenade_impact"/>
+			</property>
+			
+			<effect_group tiered="false">
+				<passive_effect name="EntityDamage" operation="base_set" value="0"/>
+				<passive_effect name="BlockDamage" operation="base_set" value="1"/>
+				<display_value name="dExRadius" value="5"/>
+				<display_value name="dDuration" value="15"/>
+			</effect_group>
+			<effect_group tiered="false">
+				<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer1" operation="Equals" value="1"/>
+				<requirement name="IsAlive" target="other"/>
+				<requirement name="EntityTagCompare" target="other" tags="player"/>
+					<triggered_effect trigger="onSelfAttackedOther" action="ModifyCVar" target="self" cvar="medicHealAmount" operation="add" value="15"/>
+					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="self" buff="buffMedicHeal"/>
+			</effect_group>
+			<effect_group tiered="false">
+				<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer2" operation="Equals" value="1"/>
+				<requirement name="IsAlive" target="other"/>
+					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" target_tags="player,npc" buff="buffMedicAdrenaline">
+						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer5" operation="Equals" value="0"/>
+					</triggered_effect>
+					<triggered_effect trigger="onSelfAttackedOther" action="AddBuffToTargetAndSelf,KFCommonUtilityLib" target="other" target_tags="player,npc" buff="buffMedicAdrenaline">
+						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer5" operation="Equals" value="1"/>
+					</triggered_effect>
+			</effect_group>
+			<effect_group tiered="false">
+				<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer4" operation="Equals" value="1"/>
+				<requirement name="IsAlive" target="other"/>
+					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" target_tags="player,npc" buff="buffMedicFocus">
+						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer5" operation="Equals" value="0"/>
+					</triggered_effect>
+					<triggered_effect trigger="onSelfAttackedOther" action="AddBuffToTargetAndSelf,KFCommonUtilityLib" target="other" target_tags="player,npc" buff="buffMedicFocus">
+						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer5" operation="Equals" value="1"/>
+					</triggered_effect>
+			</effect_group>
+			<effect_group tiered="false">
+				<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer5" operation="Equals" value="1"/>
+				<requirement name="IsAlive" target="other"/>
+					<triggered_effect trigger="onSelfAttackedOther" action="RemoveBuff" target="other" target_tags="npc,ally" buff="buffInjuryBleeding"/>
+					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" target_tags="npc,ally" buff="buffInjuryAbrasionTreated">
+						<requirement name="HasBuff" target="other" buff="buffInjuryAbrasion"/>
+					</triggered_effect>
+			</effect_group>
+			<effect_group tiered="false">
+				<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="6"/>
+				<requirement name="IsAlive" target="other"/>
+					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" target_tags="player,npc" buff="buffMedicEliteHealing">
+						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer5" operation="Equals" value="0"/>
+					</triggered_effect>
+					<triggered_effect trigger="onSelfAttackedOther" action="AddBuffToTargetAndSelf,KFCommonUtilityLib" target="other" target_tags="player,npc" buff="buffMedicEliteHealing">
+						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer5" operation="Equals" value="1"/>
+					</triggered_effect>
+			</effect_group>
+			<effect_group tiered="false">
+				<requirement name="ProgressionLevel" progression_name="perkMedicSurvivor5" operation="Equals" value="1"/>
+				<requirement name="IsAlive" target="other"/>
+				<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="50"/>
+					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" target_tags="enemy" buff="buffInjuryCrippled01"/>
+			</effect_group>
+		</item>
+	</append>
+</configs>

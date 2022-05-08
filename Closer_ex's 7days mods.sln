@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32002.261
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedicPerk", "MedicPerk\MedicPerk.csproj", "{B573C58C-9391-4651-9A80-BFAFDD6754CB}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0A80133E-B107-4043-8938-C294B61996A1}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -26,16 +24,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomParticleLoaderMultiEx
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomParticleLoaderSpawnEntity", "CustomParticleLoaderSpawnEntity\CustomParticleLoaderSpawnEntity.csproj", "{A32EC5A2-CB20-4A84-B98D-DCE23EC328AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KFCommonUtilityLib", "KFCommonUtilityLib\KFCommonUtilityLib.csproj", "{1A3E0DEF-D290-4D3E-BC2D-1B66AB174F47}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B573C58C-9391-4651-9A80-BFAFDD6754CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B573C58C-9391-4651-9A80-BFAFDD6754CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B573C58C-9391-4651-9A80-BFAFDD6754CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B573C58C-9391-4651-9A80-BFAFDD6754CB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7B1CC7B2-9F2A-4C60-AB92-F62B7582AA79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7B1CC7B2-9F2A-4C60-AB92-F62B7582AA79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B1CC7B2-9F2A-4C60-AB92-F62B7582AA79}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -68,6 +64,10 @@ Global
 		{A32EC5A2-CB20-4A84-B98D-DCE23EC328AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A32EC5A2-CB20-4A84-B98D-DCE23EC328AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A32EC5A2-CB20-4A84-B98D-DCE23EC328AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A3E0DEF-D290-4D3E-BC2D-1B66AB174F47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A3E0DEF-D290-4D3E-BC2D-1B66AB174F47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A3E0DEF-D290-4D3E-BC2D-1B66AB174F47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A3E0DEF-D290-4D3E-BC2D-1B66AB174F47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,104 @@
+﻿using UnityEngine;
+
+class NetPackageSyncWeaponLabelColor : NetPackage
+{
+    public NetPackageSyncWeaponLabelColor Setup(int entityId, bool isText, Color color, int index0, int index1, int nameId)
+    {
+        this.entityId = entityId;
+        this.isText = isText;
+        this.color = color;
+        this.index0 = index0;
+        if(!isText)
+        {
+            this.index1 = index1;
+            this.nameId = nameId;
+        }
+        return this;
+    }
+
+    public override int GetLength()
+    {
+        return isText ? 20 : 28;
+    }
+
+    public override void ProcessPackage(World _world, GameManager _callbacks)
+    {
+        if (_world == null)
+            return;
+
+        netSyncSetWeaponLabelColor(_world.GetEntity(entityId) as EntityAlive, isText, index0, color, index1, nameId, true);
+    }
+
+    public static void netSyncSetWeaponLabelColor(EntityAlive holdingEntity, bool isText, int slot0, Color color, int slot1, int nameId, bool fromNet = false)
+    {
+        if (!holdingEntity || (holdingEntity.isEntityRemote && !fromNet))
+        {
+            if (holdingEntity)
+                Log.Out("netsync failed! isEntityRemote: " + holdingEntity.isEntityRemote + " fromNet: " + fromNet);
+            return;
+        }
+
+        if(setWeaponLabelColor(holdingEntity, isText, slot0, color, slot1, nameId))
+        {
+            if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && SingletonMonoBehaviour<ConnectionManager>.Instance.ClientCount() > 0)
+            {
+                int allButAttachedToEntityId = holdingEntity.entityId;
+                if (holdingEntity && holdingEntity.AttachedMainEntity)
+                    allButAttachedToEntityId = holdingEntity.AttachedMainEntity.entityId;
+                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageSyncWeaponLabelColor>().Setup(holdingEntity.entityId, isText, color, slot0, slot1, nameId), false, -1, allButAttachedToEntityId);
+            }
+            else if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsClient && !fromNet)
+                SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageSyncWeaponLabelColor>().Setup(holdingEntity.entityId, isText, color, slot0, slot1, nameId));
+        }
+    }
+
+    private static bool setWeaponLabelColor(EntityAlive holdingEntity, bool isText, int slot0, Color color, int slot1, int nameId)
+    {
+        if (GameManager.IsDedicatedServer)
+            return true;
+        WeaponLabelController controller = (holdingEntity.emodel.avatarController as AvatarMultiBodyController)?.HeldItemTransform?.GetComponent<WeaponLabelController>();
+        if (controller)
+        {
+            if (isText)
+                return controller.setLabelColor(slot0, color);
+            else
+                return controller.setMaterialColor(slot0, slot1, nameId, color);
+        }
+        return false;
+    }
+
+    public override void read(PooledBinaryReader _reader)
+    {
+        entityId = _reader.ReadInt32();
+        isText = _reader.ReadBoolean();
+        color = StreamUtils.ReadColor(_reader);
+        index0 = _reader.ReadChar();
+        if(!isText)
+        {
+            index1 = _reader.ReadChar();
+            nameId = _reader.ReadInt32();
+        }
+    }
+
+    public override void write(PooledBinaryWriter _writer)
+    {
+        base.write(_writer);
+        _writer.Write(entityId);
+        _writer.Write(isText);
+        StreamUtils.Write(_writer, color);
+        _writer.Write((char)index0);
+        if (!isText)
+        {
+            _writer.Write((char)index1);
+            _writer.Write(nameId);
+        }
+    }
+
+    private int entityId;
+    private bool isText;
+    private Color color;
+    private int index0;
+    private int index1;
+    private int nameId;
+}
+
