@@ -1,0 +1,1 @@
+Drag KFUtilAttached folder into your unity project and attach the script inside to the root transform of your weapon. Then create 3D Text objects and drag them onto the script. You can also drag mesh renderers onto the script to change its color of certain properties in xml.

@@ -5,7 +5,7 @@ class ItemActionRechargeable : ItemActionRanged
     private string cvarStateSwitch = null;
     private string cvarToConsume = null;
     private string cvarConsumption = null;
-    private string cvarNoConsumptionOnHit = null;
+    private string cvarNoConsumptionTemp = null;
     private string originalSoundStart = string.Empty;
     private string originalSoundLoop = string.Empty;
     private string originalSoundEnd = string.Empty;
@@ -76,7 +76,7 @@ class ItemActionRechargeable : ItemActionRanged
         _props.ParseString("Cvar_State_Switch", ref cvarStateSwitch);
         _props.ParseString("Cvar_To_Consume", ref cvarToConsume);
         _props.ParseString("Cvar_Consumption", ref cvarConsumption);
-        _props.ParseString("Cvar_No_Consumption_On_Hit", ref cvarNoConsumptionOnHit);
+        _props.ParseString("Cvar_No_Consumption_Burst_Count", ref cvarNoConsumptionTemp);
         _props.ParseString("Sound_start", ref originalSoundStart);
         _props.ParseString("Sound_loop", ref originalSoundLoop);
         _props.ParseString("Sound_end", ref originalSoundEnd);
@@ -118,13 +118,13 @@ class ItemActionRechargeable : ItemActionRanged
             if (isCurAlt)
             {
                 float consumption = holdingEntity.GetCVar(cvarConsumption);
-                if (!string.IsNullOrEmpty(cvarNoConsumptionOnHit))
+                if (!string.IsNullOrEmpty(cvarNoConsumptionTemp))
                 {
-                    float isConsumption0 = holdingEntity.GetCVar(cvarNoConsumptionOnHit);
+                    float isConsumption0 = holdingEntity.GetCVar(cvarNoConsumptionTemp);
                     if(isConsumption0 > 0)
                     {
                         consumption = 0;
-                        holdingEntity.SetCVar(cvarNoConsumptionOnHit, --isConsumption0);
+                        holdingEntity.SetCVar(cvarNoConsumptionTemp, --isConsumption0);
                     }
                 }
 

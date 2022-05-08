@@ -61,7 +61,7 @@
 					<property name="Cvar_State_Switch" value="isHealMode"/>
 					<property name="Cvar_To_Consume" value="$medicBuffStockPistol"/>
 					<property name="Cvar_Consumption" value="$medicBuffConsumption"/>
-					<property name="Cvar_No_Consumption_On_Hit" value="$medicBuffConsumptionTemp0"/>
+					<property name="Cvar_No_Consumption_Burst_Count" value="$medicBuffConsumptionTemp0"/>
 			</property>
 			
 			<property class="Action1">
@@ -202,7 +202,7 @@
 				<property name="Cvar_State_Switch" value="isHealMode"/>
 				<property name="Cvar_To_Consume" value="$medicBuffStockSG301"/>
 				<property name="Cvar_Consumption" value="$medicBuffConsumption"/>
-				<property name="Cvar_No_Consumption_On_Hit" value="$medicBuffConsumptionTemp0"/>
+				<property name="Cvar_No_Consumption_Burst_Count" value="$medicBuffConsumptionTemp0"/>
 				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
 			</property>
 			<property class="Action1">
@@ -325,7 +325,7 @@
 				<property name="Cvar_State_Switch" value="isHealMode"/>
 				<property name="Cvar_To_Consume" value="$medicBuffStockAR401"/>
 				<property name="Cvar_Consumption" value="$medicBuffConsumption"/>
-				<property name="Cvar_No_Consumption_On_Hit" value="$medicBuffConsumptionTemp0"/>
+				<property name="Cvar_No_Consumption_Burst_Count" value="$medicBuffConsumptionTemp0"/>
 				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
 			</property>
 			<property class="Action1">
