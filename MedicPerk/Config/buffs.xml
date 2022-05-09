@@ -16,9 +16,9 @@
 			<effect_group name="generate stock">
 				<triggered_effect trigger="onSelfBuffStart" action="AddBuff" buff="buffMedicBuffStockPistolBg"/>
 				<!--triggered_effect trigger="onSelfBuffRemove" action="AddBuff" buff="buffMedicBuffStockPistolBg"/-->
-				<!--triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffMedicBuffStockPistol">
+				<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffMedicBuffStockPistol">
 					<requirement name="!HoldingItemHasTags" tags="medicpistol"/>
-				</triggered_effect-->
+				</triggered_effect>
 				<!--triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockPistol" operation="add" value="@$medicBuffRegen">
 					<requirement name="CVarCompare" cvar="$medicBuffStockPistol" operation="LT" value="@$medicBuffStockLimitation"/>
 				</triggered_effect>
@@ -32,6 +32,7 @@
 					<requirement name="CVarCompare" cvar="$medicBuffStockPistol" operation="GTE" value="@$medicBuffConsumption"/>
 					<requirement name="CVarCompare" cvar="$medicBuffStockPistolLast" operation="LT" value="@$medicBuffConsumption"/>
 				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockPistolLast" operation="set" value="@$medicBuffStockPistol"/>
 			</effect_group>
 			<effect_group name="max hp healing">
 				<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer3" operation="GTE" value="1"/>
@@ -46,7 +47,6 @@
 			<duration value="0"/>
 			<update_rate value="0.45"/>
 			<effect_group name="generate stock">
-				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockPistolLast" operation="set" value="@$medicBuffStockPistol"/>
 				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockPistol" operation="add" value="@$medicBuffRegen">
 					<requirement name="CVarCompare" cvar="$medicBuffStockPistol" operation="LT" value="@$medicBuffStockLimitation"/>
 				</triggered_effect>
@@ -62,9 +62,9 @@
 			<effect_group name="generate stock">
 				<triggered_effect trigger="onSelfBuffStart" action="AddBuff" buff="buffMedicBuffStockShotgunBg"/>
 				<!--triggered_effect trigger="onSelfBuffRemove" action="AddBuff" buff="buffMedicBuffStockShotgunBg"/-->
-				<!--triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffMedicBuffStockShotgun">
+				<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffMedicBuffStockShotgun">
 					<requirement name="!HoldingItemHasTags" tags="medicshotgun"/>
-				</triggered_effect-->
+				</triggered_effect>
 				<!--triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockSG301" operation="add" value="@$medicBuffRegen">
 					<requirement name="CVarCompare" cvar="$medicBuffStockSG301" operation="LT" value="@$medicBuffStockLimitation"/>
 				</triggered_effect>
@@ -78,6 +78,7 @@
 					<requirement name="CVarCompare" cvar="$medicBuffStockSG301" operation="GTE" value="@$medicBuffConsumption"/>
 					<requirement name="CVarCompare" cvar="$medicBuffStockSG301Last" operation="LT" value="@$medicBuffConsumption"/>
 				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockSG301Last" operation="set" value="@$medicBuffStockSG301"/>
 			</effect_group>
 			<effect_group name="max hp healing">
 				<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer3" operation="GTE" value="1"/>
@@ -92,7 +93,6 @@
 			<duration value="0"/>
 			<update_rate value="0.35"/>
 			<effect_group name="generate stock">
-				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockSG301Last" operation="set" value="@$medicBuffStockSG301"/>
 				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockSG301" operation="add" value="@$medicBuffRegen">
 					<requirement name="CVarCompare" cvar="$medicBuffStockSG301" operation="LT" value="@$medicBuffStockLimitation"/>
 				</triggered_effect>
@@ -108,9 +108,9 @@
 			<effect_group name="generate stock">
 				<triggered_effect trigger="onSelfBuffStart" action="AddBuff" buff="buffMedicBuffStockAR401Bg"/>
 				<!--triggered_effect trigger="onSelfBuffRemove" action="AddBuff" buff="buffMedicBuffStockAR401Bg"/-->
-				<!--triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffMedicBuffStockAR401">
+				<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffMedicBuffStockAR401">
 					<requirement name="!HoldingItemHasTags" tags="medicar401"/>
-				</triggered_effect-->
+				</triggered_effect>
 				<!--triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockAR401" operation="add" value="@$medicBuffRegen">
 					<requirement name="CVarCompare" cvar="$medicBuffStockAR401" operation="LT" value="@$medicBuffStockLimitation"/>
 				</triggered_effect>
@@ -124,6 +124,7 @@
 					<requirement name="CVarCompare" cvar="$medicBuffStockAR401" operation="GTE" value="@$medicBuffConsumption"/>
 					<requirement name="CVarCompare" cvar="$medicBuffStockAR401Last" operation="LT" value="@$medicBuffConsumption"/>
 				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockAR401Last" operation="set" value="@$medicBuffStockAR401"/>
 			</effect_group>
 			<effect_group name="max hp healing">
 				<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer3" operation="GTE" value="1"/>
@@ -138,7 +139,6 @@
 			<duration value="0"/>
 			<update_rate value="0.30"/>
 			<effect_group name="generate stock">
-				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockAR401Last" operation="set" value="@$medicBuffStockAR401"/>
 				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockAR401" operation="add" value="@$medicBuffRegen">
 					<requirement name="CVarCompare" cvar="$medicBuffStockAR401" operation="LT" value="@$medicBuffStockLimitation"/>
 				</triggered_effect>

@@ -5,7 +5,7 @@ class ItemActionHoldOpen : ItemActionRanged
 {
     private const string emptyAnimatorBool = "empty";
     private EntityAlive lastHoldingEntity = null;
-    private List<EntityAlive> list_dirty = new List<EntityAlive>();
+    private HashSet<EntityAlive> hashset_dirty = new HashSet<EntityAlive>();
 
     public Animator getAnimator(EntityAlive holdingEntity)
     {
@@ -66,8 +66,8 @@ class ItemActionHoldOpen : ItemActionRanged
 
     protected virtual void OnStartHolding()
     {
-        if(lastHoldingEntity.inventory.holdingItemItemValue.Meta <= 0 && !list_dirty.Contains(lastHoldingEntity))
-            list_dirty.Add(lastHoldingEntity);
+        if(lastHoldingEntity.inventory.holdingItemItemValue.Meta <= 0)
+            hashset_dirty.Add(lastHoldingEntity);
         Log.Out("Entity " + lastHoldingEntity.entityId + " start holding " + lastHoldingEntity.inventory.holdingItemItemValue.ItemClass.Name + " meta: " + lastHoldingEntity.inventory.holdingItemItemValue.Meta);
         lastHoldingEntity.inventory.OnToolbeltItemsChangedInternal -= OnStartHolding;
         lastHoldingEntity = null;
@@ -88,12 +88,12 @@ class ItemActionHoldOpen : ItemActionRanged
     {
         base.OnHoldingUpdate(_actionData);
 
-        if (GameManager.IsDedicatedServer || list_dirty.Count <= 0)
+        if (GameManager.IsDedicatedServer || hashset_dirty.Count <= 0)
             return;
 
-        foreach (EntityAlive holdingEntity in list_dirty)
+        foreach (EntityAlive holdingEntity in hashset_dirty)
             setAnimatorBool(holdingEntity, emptyAnimatorBool, true);
-        list_dirty.Clear();
+        hashset_dirty.Clear();
         /*
         EntityAlive holdingEntity = _actionData.invData.holdingEntity;
         if (hash_dirty.Count <= 0 || !hash_dirty.ContainsKey(holdingEntity))
