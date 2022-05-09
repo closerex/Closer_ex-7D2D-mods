@@ -5,6 +5,9 @@
 		<triggered_effect trigger="onSelfEnteredGame" action="ModifyCVar" cvar="$medicHealSpeed" operation="set" value="1"/>
 		<triggered_effect trigger="onSelfEnteredGame" action="AddBuff" buff="buffCheckMedicLv"/>
 	</append>
+	<append xpath="/buffs/buff[@name='buffZedTimeCooldown']/effect_group[@name='zedtime']">
+		<triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" target="self" cvar="$medicBuffConsumptionTemp0" operation="set" value="0"/>
+	</append>
 	<append xpath="/buffs">
 		<buff name="buffMedicBuffStockPistol" hidden="true">
 			<stack_type value="ignore"/>
@@ -22,7 +25,9 @@
 				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockPistol" operation="set" value="@$medicBuffStockLimitation">
 					<requirement name="CVarCompare" cvar="$medicBuffStockPistol" operation="GT" value="@$medicBuffStockLimitation"/>
 				</triggered_effect-->
-				<triggered_effect trigger="onSelfBuffUpdate" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockPistol" slot="1"/>
+				<triggered_effect trigger="onSelfBuffUpdate" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockPistol" slot="1">
+					<requirement name="CVarCompare" cvar="$medicBuffStockPistol" operation="NE" value="@$medicBuffStockPistolLast"/>
+				</triggered_effect>
 				<triggered_effect trigger="onSelfBuffUpdate" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#42D8EE" slot0="1">
 					<requirement name="CVarCompare" cvar="$medicBuffStockPistol" operation="GTE" value="@$medicBuffConsumption"/>
 					<requirement name="CVarCompare" cvar="$medicBuffStockPistolLast" operation="LT" value="@$medicBuffConsumption"/>
@@ -66,7 +71,9 @@
 				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockSG301" operation="set" value="@$medicBuffStockLimitation">
 					<requirement name="CVarCompare" cvar="$medicBuffStockSG301" operation="GT" value="@$medicBuffStockLimitation"/>
 				</triggered_effect-->
-				<triggered_effect trigger="onSelfBuffUpdate" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockSG301" slot="1"/>
+				<triggered_effect trigger="onSelfBuffUpdate" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockSG301" slot="1">
+					<requirement name="CVarCompare" cvar="$medicBuffStockSG301" operation="NE" value="@$medicBuffStockSG301Last"/>
+				</triggered_effect>
 				<triggered_effect trigger="onSelfBuffUpdate" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#42D8EE" slot0="1">
 					<requirement name="CVarCompare" cvar="$medicBuffStockSG301" operation="GTE" value="@$medicBuffConsumption"/>
 					<requirement name="CVarCompare" cvar="$medicBuffStockSG301Last" operation="LT" value="@$medicBuffConsumption"/>
@@ -110,7 +117,9 @@
 				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$medicBuffStockAR401" operation="set" value="@$medicBuffStockLimitation">
 					<requirement name="CVarCompare" cvar="$medicBuffStockAR401" operation="GT" value="@$medicBuffStockLimitation"/>
 				</triggered_effect-->
-				<triggered_effect trigger="onSelfBuffUpdate" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockAR401" slot="1"/>
+				<triggered_effect trigger="onSelfBuffUpdate" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockAR401" slot="1">
+					<requirement name="CVarCompare" cvar="$medicBuffStockAR401" operation="NE" value="@$medicBuffStockAR401Last"/>
+				</triggered_effect>
 				<triggered_effect trigger="onSelfBuffUpdate" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#42D8EE" slot0="1">
 					<requirement name="CVarCompare" cvar="$medicBuffStockAR401" operation="GTE" value="@$medicBuffConsumption"/>
 					<requirement name="CVarCompare" cvar="$medicBuffStockAR401Last" operation="LT" value="@$medicBuffConsumption"/>
@@ -326,32 +335,6 @@
 			<effect_group name="healing">
 				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="$medicHealSpeed" operation="set" value="2"/>
 				<triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" target="self" cvar="$medicHealSpeed" operation="set" value="1"/>
-			</effect_group>
-		</buff>
-		<buff name="buffZedTimeCooldown" name_key="buffZedTimeCooldownName" description_key="buffZedTimeCooldownLongDesc" icon="icon_tp_symbiotic" icon_color="255,0,0" icon_blink="true">
-			<stack_type value="ignore"/>
-			<duration value="0"/>
-			<update_rate value="1"/>
-			<display_value value="$buffZedTimeCooldownTimer"/>
-			<display_value_format value="time"/>
-			<effect_group name="shockwave">
-				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="$buffZedTimeCooldownTimer" operation="set" value="15"/>
-				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$buffZedTimeCooldownTimer" operation="add" value="-1"/>
-				<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffZedTimeCooldown">
-					<requirement name="CVarCompare" cvar="$buffZedTimeCooldownTimer" operation="LTE" value="0"/>
-				</triggered_effect>
-				<triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" target="self" cvar="$buffZedTimeCooldownTimer" operation="set" value="0"/>
-				<triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" target="self" cvar="$medicBuffConsumptionTemp0" operation="set" value="0"/>
-			</effect_group>
-		</buff>
-		<buff name="buffZedTime" hidden="true">
-			<stack_type value="ignore"/>
-			<duration value="6"/>
-			<effect_group name="shocked">
-				<passive_effect name="WalkSpeed" operation="perc_add" value="-.9"/>
-				<passive_effect name="RunSpeed" operation="perc_add" value="-.9"/>
-				<passive_effect name="CrouchSpeed" operation="perc_add" value="-.9"/>
-				<passive_effect name="JumpStrength" operation="perc_add" value="-.9"/>
 			</effect_group>
 		</buff>
 	</append>

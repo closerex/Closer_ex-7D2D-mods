@@ -13,12 +13,6 @@
 				<triggered_effect trigger="onSelfItemActivate" action="PlaySound" sound="medic_module_toggle_on"/>
 				<triggered_effect trigger="onSelfItemDeactivate" action="ModifyCVar" target="self" cvar="isHealMode" operation="set" value="0"/>
 				<triggered_effect trigger="onSelfItemDeactivate" action="PlaySound" sound="medic_module_toggle_off"/>
-				<triggered_effect trigger="onSelfEquipStart" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="0"/>
-				<triggered_effect trigger="onReloadStop" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="0"/>
-				<triggered_effect trigger="onSelfRangedBurstShot" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" consume_ammo="true" slot="0">
-					<requirement name="RoundsInMagazine" operation="GT" value="0"/>
-					<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="0"/>
-				</triggered_effect>
 			</effect_group>
 			<effect_group name="healing mod effects">
 				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="1"/>

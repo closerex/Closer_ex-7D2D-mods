@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configs>
+	<append xpath="/buffs">
+		<buff name="buffZedTimeCooldown" name_key="buffZedTimeCooldownName" description_key="buffZedTimeCooldownLongDesc" icon="icon_tp_symbiotic" icon_color="255,0,0" icon_blink="true">
+			<stack_type value="ignore"/>
+			<duration value="0"/>
+			<update_rate value="1"/>
+			<display_value value="$buffZedTimeCooldownTimer"/>
+			<display_value_format value="time"/>
+			<effect_group name="zedtime">
+				<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" target="self" cvar="$buffZedTimeCooldownTimer" operation="set" value="15"/>
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" target="self" cvar="$buffZedTimeCooldownTimer" operation="add" value="-1"/>
+				<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffZedTimeCooldown">
+					<requirement name="CVarCompare" cvar="$buffZedTimeCooldownTimer" operation="LTE" value="0"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" target="self" cvar="$buffZedTimeCooldownTimer" operation="set" value="0"/>
+			</effect_group>
+		</buff>
+		<buff name="buffZedTime" hidden="true">
+			<stack_type value="ignore"/>
+			<duration value="6"/>
+			<effect_group name="zed">
+				<passive_effect name="WalkSpeed" operation="perc_add" value="-.9"/>
+				<passive_effect name="RunSpeed" operation="perc_add" value="-.9"/>
+				<passive_effect name="CrouchSpeed" operation="perc_add" value="-.9"/>
+				<passive_effect name="JumpStrength" operation="perc_add" value="-.9"/>
+			</effect_group>
+		</buff>
+	</append>
+</configs>

@@ -141,7 +141,7 @@ class ItemActionRechargeable : ItemActionHoldOpen
     {
         base.OnHoldingUpdate(_actionData);
 
-        if (GameManager.IsDedicatedServer)
+        if (GameManager.IsDedicatedServer || !(_actionData is ItemActionDataRanged))
             return;
 
         EntityAlive holdingEntity = _actionData.invData.holdingEntity;

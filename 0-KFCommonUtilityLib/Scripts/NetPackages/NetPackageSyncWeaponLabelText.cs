@@ -39,8 +39,10 @@
     {
         if (!holdingEntity || (holdingEntity.isEntityRemote && !fromNet))
         {
-            if(holdingEntity)
+            if (holdingEntity)
                 Log.Out("netsync failed! isEntityRemote: " + holdingEntity.isEntityRemote + " fromNet: " + fromNet);
+            else
+                Log.Out("Entity not found!");
             return;
         }
 
@@ -50,8 +52,9 @@
             if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && SingletonMonoBehaviour<ConnectionManager>.Instance.ClientCount() > 0)
             {
                 int allButAttachedToEntityId = holdingEntity.entityId;
-                if (holdingEntity && holdingEntity.AttachedMainEntity)
+                if (holdingEntity.AttachedMainEntity)
                     allButAttachedToEntityId = holdingEntity.AttachedMainEntity.entityId;
+                Log.Out("all but attached to entity id: " + allButAttachedToEntityId);
                 SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageSyncWeaponLabelText>().Setup(holdingEntity.entityId, slot, data), false, -1, allButAttachedToEntityId);
             }
             else if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsClient && !fromNet)
@@ -63,10 +66,20 @@
     {
         if (GameManager.IsDedicatedServer)
             return true;
-        WeaponLabelController controller = (holdingEntity.emodel.avatarController as AvatarMultiBodyController)?.HeldItemTransform?.GetComponent<WeaponLabelController>();
+        Log.Out("setting weapon label on " + holdingEntity.entityId + " slot: " + slot + " data: " + data);
+
+        WeaponLabelController controller = null;
+        if (holdingEntity.emodel.avatarController is AvatarMultiBodyController multiBody && multiBody.HeldItemTransform != null)
+            controller = multiBody.HeldItemTransform.GetComponent<WeaponLabelController>();
+        else if (holdingEntity.emodel.avatarController is LegacyAvatarController legacy && legacy.HeldItemTransform)
+            controller = legacy.HeldItemTransform.GetComponent<WeaponLabelController>();
+
         if (controller)
-            return controller.setLabelText(slot, data);
-        return false;
+            controller.setLabelText(slot, data);
+        else
+            return false;
+
+        return true;
     }
 
     private int entityId;

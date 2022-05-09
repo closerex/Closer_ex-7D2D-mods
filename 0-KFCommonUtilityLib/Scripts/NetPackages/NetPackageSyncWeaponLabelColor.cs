@@ -56,13 +56,20 @@ class NetPackageSyncWeaponLabelColor : NetPackage
     {
         if (GameManager.IsDedicatedServer)
             return true;
-        WeaponLabelController controller = (holdingEntity.emodel.avatarController as AvatarMultiBodyController)?.HeldItemTransform?.GetComponent<WeaponLabelController>();
+
+        WeaponLabelController controller = null;
+        if (holdingEntity.emodel.avatarController is AvatarMultiBodyController multiBody && multiBody.HeldItemTransform != null)
+            controller = multiBody.HeldItemTransform.GetComponent<WeaponLabelController>();
+        else if (holdingEntity.emodel.avatarController is LegacyAvatarController legacy && legacy.HeldItemTransform != null)
+            controller = legacy.HeldItemTransform.GetComponent<WeaponLabelController>();
+
         if (controller)
         {
             if (isText)
-                return controller.setLabelColor(slot0, color);
+                controller.setLabelColor(slot0, color);
             else
-                return controller.setMaterialColor(slot0, slot1, nameId, color);
+                controller.setMaterialColor(slot0, slot1, nameId, color);
+            return true;
         }
         return false;
     }

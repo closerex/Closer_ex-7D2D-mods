@@ -24,7 +24,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomParticleLoaderMultiEx
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomParticleLoaderSpawnEntity", "CustomParticleLoaderSpawnEntity\CustomParticleLoaderSpawnEntity.csproj", "{A32EC5A2-CB20-4A84-B98D-DCE23EC328AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KFCommonUtilityLib", "KFCommonUtilityLib\KFCommonUtilityLib.csproj", "{1A3E0DEF-D290-4D3E-BC2D-1B66AB174F47}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KFCommonUtilityLib", "0-KFCommonUtilityLib\KFCommonUtilityLib.csproj", "{1A3E0DEF-D290-4D3E-BC2D-1B66AB174F47}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
