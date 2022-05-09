@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-class ItemActionRechargeable : ItemActionAltMode
+﻿class ItemActionRechargeable : ItemActionAltMode
 {
     protected bool altInfiniteAmmo = false;
     protected bool originalInfiniteAmmo = false;
