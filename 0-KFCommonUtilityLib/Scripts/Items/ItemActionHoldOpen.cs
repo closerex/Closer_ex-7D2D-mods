@@ -25,7 +25,7 @@ class ItemActionHoldOpen : ItemActionRanged
         if (animator)
         {
             animator.SetBool(parameter, flag);
-            Log.Out("trying to set param: " + parameter + " flag: " + flag + " result: " + getAnimatorBool(holdingEntity, parameter) + " transform: " + animator.transform.name);
+            //Log.Out("trying to set param: " + parameter + " flag: " + flag + " result: " + getAnimatorBool(holdingEntity, parameter) + " transform: " + animator.transform.name);
         }
     }
 
@@ -68,7 +68,7 @@ class ItemActionHoldOpen : ItemActionRanged
     {
         if(lastHoldingEntity.inventory.holdingItemItemValue.Meta <= 0)
             hashset_dirty.Add(lastHoldingEntity);
-        Log.Out("Entity " + lastHoldingEntity.entityId + " start holding " + lastHoldingEntity.inventory.holdingItemItemValue.ItemClass.Name + " meta: " + lastHoldingEntity.inventory.holdingItemItemValue.Meta);
+        //Log.Out("Entity " + lastHoldingEntity.entityId + " start holding " + lastHoldingEntity.inventory.holdingItemItemValue.ItemClass.Name + " meta: " + lastHoldingEntity.inventory.holdingItemItemValue.Meta);
         lastHoldingEntity.inventory.OnToolbeltItemsChangedInternal -= OnStartHolding;
         lastHoldingEntity = null;
     }

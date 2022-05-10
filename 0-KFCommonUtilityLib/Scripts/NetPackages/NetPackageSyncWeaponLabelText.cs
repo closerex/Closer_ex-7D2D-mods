@@ -48,13 +48,12 @@
 
         if(setWeaponLabelText(holdingEntity, slot, data))
         {
-            Log.Out("trying to set weapon label on " + (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer ? "server" : "client") + " slot: " + slot + " text: " + data + " entity: " + holdingEntity.entityId);
+            //Log.Out("trying to set weapon label on " + (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer ? "server" : "client") + " slot: " + slot + " text: " + data + " entity: " + holdingEntity.entityId + " from net: " + fromNet);
             if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && SingletonMonoBehaviour<ConnectionManager>.Instance.ClientCount() > 0)
             {
                 int allButAttachedToEntityId = holdingEntity.entityId;
                 if (holdingEntity.AttachedMainEntity)
                     allButAttachedToEntityId = holdingEntity.AttachedMainEntity.entityId;
-                Log.Out("all but attached to entity id: " + allButAttachedToEntityId);
                 SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageSyncWeaponLabelText>().Setup(holdingEntity.entityId, slot, data), false, -1, allButAttachedToEntityId);
             }
             else if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsClient && !fromNet)
@@ -62,11 +61,10 @@
         }
     }
 
-    private static bool setWeaponLabelText(EntityAlive holdingEntity, int slot, string data)
+    public static bool setWeaponLabelText(EntityAlive holdingEntity, int slot, string data)
     {
         if (GameManager.IsDedicatedServer)
             return true;
-        Log.Out("setting weapon label on " + holdingEntity.entityId + " slot: " + slot + " data: " + data);
 
         WeaponLabelController controller = null;
         if (holdingEntity.emodel.avatarController is AvatarMultiBodyController multiBody && multiBody.HeldItemTransform != null)

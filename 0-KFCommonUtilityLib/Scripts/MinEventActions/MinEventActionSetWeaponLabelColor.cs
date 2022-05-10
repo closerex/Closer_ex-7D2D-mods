@@ -1,7 +1,7 @@
 ﻿using System.Xml;
 using UnityEngine;
 
-class MinEventActionSetWeaponLabelColor : MinEventActionBase
+class MinEventActionSetWeaponLabelColor : MinEventActionRemoteHoldingBase
 {
     private bool isText = true;
     private int slot0 = 0;
@@ -40,14 +40,12 @@ class MinEventActionSetWeaponLabelColor : MinEventActionBase
         }
         return flag;
     }
-
-    public override bool CanExecute(MinEventTypes _eventType, MinEventParams _params)
-    {
-        return !_params.Self.isEntityRemote && base.CanExecute(_eventType, _params);
-    }
     public override void Execute(MinEventParams _params)
     {
-        NetPackageSyncWeaponLabelColor.netSyncSetWeaponLabelColor(_params.Self, isText, slot0, color, slot1, nameId);
+        if (isRemoteHolding)
+            NetPackageSyncWeaponLabelColor.setWeaponLabelColor(_params.Self, isText, slot0, color, slot1, nameId);
+        else if(!_params.Self.isEntityRemote)
+            NetPackageSyncWeaponLabelColor.netSyncSetWeaponLabelColor(_params.Self, isText, slot0, color, slot1, nameId);
     }
 }
 

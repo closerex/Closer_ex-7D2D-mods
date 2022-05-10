@@ -1,6 +1,6 @@
 ﻿using System.Xml;
 
-class MinEventActionSetStringOnWeaponLabel : MinEventActionBase
+class MinEventActionSetStringOnWeaponLabel : MinEventActionRemoteHoldingBase
 {
     private int slot = 0;
     private string text;
@@ -34,14 +34,12 @@ class MinEventActionSetStringOnWeaponLabel : MinEventActionBase
         return flag;
     }
 
-    public override bool CanExecute(MinEventTypes _eventType, MinEventParams _params)
-    {
-        return !_params.Self.isEntityRemote && base.CanExecute(_eventType, _params);
-    }
-
     public override void Execute(MinEventParams _params)
     {
-        NetPackageSyncWeaponLabelText.netSyncSetWeaponLabelText(_params.Self, slot, isCvar ? _params.Self.GetCVar(text).ToString() : text);
+        if (isRemoteHolding)
+            NetPackageSyncWeaponLabelText.setWeaponLabelText(_params.Self, slot, isCvar ? _params.Self.GetCVar(text).ToString() : text);
+        else if(!_params.Self.isEntityRemote)
+            NetPackageSyncWeaponLabelText.netSyncSetWeaponLabelText(_params.Self, slot, isCvar ? _params.Self.GetCVar(text).ToString() : text);
     }
 }
 

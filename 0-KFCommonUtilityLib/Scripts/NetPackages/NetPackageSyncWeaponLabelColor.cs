@@ -35,11 +35,14 @@ class NetPackageSyncWeaponLabelColor : NetPackage
         {
             if (holdingEntity)
                 Log.Out("netsync failed! isEntityRemote: " + holdingEntity.isEntityRemote + " fromNet: " + fromNet);
+            else
+                Log.Out("Entity not found!");
             return;
         }
 
         if(setWeaponLabelColor(holdingEntity, isText, slot0, color, slot1, nameId))
         {
+            //Log.Out("trying to set weapon label on " + (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer ? "server" : "client") + " color: " + color.ToString() + " entity: " + holdingEntity.entityId + " from net: " + fromNet);
             if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && SingletonMonoBehaviour<ConnectionManager>.Instance.ClientCount() > 0)
             {
                 int allButAttachedToEntityId = holdingEntity.entityId;
@@ -52,7 +55,7 @@ class NetPackageSyncWeaponLabelColor : NetPackage
         }
     }
 
-    private static bool setWeaponLabelColor(EntityAlive holdingEntity, bool isText, int slot0, Color color, int slot1, int nameId)
+    public static bool setWeaponLabelColor(EntityAlive holdingEntity, bool isText, int slot0, Color color, int slot1, int nameId)
     {
         if (GameManager.IsDedicatedServer)
             return true;

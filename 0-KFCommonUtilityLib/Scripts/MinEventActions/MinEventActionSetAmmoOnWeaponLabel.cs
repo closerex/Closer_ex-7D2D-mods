@@ -1,6 +1,6 @@
 ﻿using System.Xml;
 
-class MinEventActionSetAmmoOnWeaponLabel : MinEventActionBase
+class MinEventActionSetAmmoOnWeaponLabel : MinEventActionRemoteHoldingBase
 {
     private int slot = 0;
     private bool consume_ammo = false;
@@ -33,14 +33,17 @@ class MinEventActionSetAmmoOnWeaponLabel : MinEventActionBase
     {
         //somehow when onSelfEquipStart is fired, holding item value is not successfully updated in MinEventParams
         useHoldingItemValue = _eventType == MinEventTypes.onSelfEquipStart;
-        return !_params.Self.isEntityRemote && base.CanExecute(_eventType, _params);
+        return base.CanExecute(_eventType, _params);
     }
 
     public override void Execute(MinEventParams _params)
     {
         int meta = useHoldingItemValue ? _params.Self.inventory.holdingItemItemValue.Meta : _params.ItemValue.Meta;
         int num = consume_ammo ? meta - 1 : meta;
-        NetPackageSyncWeaponLabelText.netSyncSetWeaponLabelText(_params.Self, slot, num.ToString());
+        if (isRemoteHolding)
+            NetPackageSyncWeaponLabelText.setWeaponLabelText(_params.Self, slot, num.ToString());
+        else if(!_params.Self.isEntityRemote)
+            NetPackageSyncWeaponLabelText.netSyncSetWeaponLabelText(_params.Self, slot, num.ToString());
     }
 }
 
