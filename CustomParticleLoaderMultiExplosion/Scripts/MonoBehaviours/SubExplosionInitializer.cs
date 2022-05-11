@@ -8,6 +8,7 @@ public class SubExplosionInitializer : MonoBehaviour
     public int clrIdx = 0;
     public EntityAlive entityAlive = null;
     private bool explodeOnDeath = false;
+    private bool explodeOnCollision = true;
     private ParticleSystem ps;
     private List<ParticleCollisionEvent> list_events;
     private World world;
@@ -23,15 +24,16 @@ public class SubExplosionInitializer : MonoBehaviour
         collision.collidesWith = Physics.AllLayers;
     }
 
-    public void SetExplodeOnDeath()
+    public void SetExplodeOnDeath(bool both)
     {
         explodeOnDeath = true;
+        explodeOnCollision = both;
         particles = new ParticleSystem.Particle[ps.main.maxParticles];
     }
 
     void OnParticleCollision(GameObject other)
     {
-        if (explodeOnDeath)
+        if (!explodeOnCollision)
             return;
         int numCollisionEvents = ps.GetCollisionEvents(other, list_events);
         //Log.Out("Particle collided! Count: " + numCollisionEvents.ToString());
