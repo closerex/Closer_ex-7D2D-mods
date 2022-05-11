@@ -39,7 +39,7 @@ public class NetSyncHelper : MonoBehaviour
         if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && CustomParticleEffectLoader.LastInitializedComponent.SyncOnConnect)
         {
             explParams = CustomParticleEffectLoader.LastInitializedComponent.CurrentExplosionParams;
-            explValue = CustomParticleEffectLoader.LastInitializedComponent.CurrentItemValue.Clone();
+            explValue = CustomParticleEffectLoader.LastInitializedComponent.CurrentItemValue?.Clone();
             CustomParticleEffectLoader.ClientConnected += OnClientConnected;
         }
     }
