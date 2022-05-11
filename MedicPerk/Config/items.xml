@@ -76,6 +76,7 @@
 				<triggered_effect trigger="onSelfEquipStart" action="AddBuff" buff="buffMedicBuffStockPistol"/>
 				<triggered_effect trigger="onSelfEquipStart" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockPistol" slot="1"/>
 				<triggered_effect trigger="onSelfEquipStart" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="0"/>
+				<triggered_effect trigger="onSelfEquipStop" action="ModifyCVar" target="self" cvar="isHealMode" operation="set" value="0"/>
 				<triggered_effect trigger="onReloadStop" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="0"/>
 				
 				<passive_effect name="MaxRange" operation="base_set" value="50"/>
@@ -219,6 +220,7 @@
 				<triggered_effect trigger="onSelfEquipStart" action="AddBuff" buff="buffMedicBuffStockShotgun"/>
 				<triggered_effect trigger="onSelfEquipStart" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockSG301" slot="1"/>
 				<triggered_effect trigger="onSelfEquipStart" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="0"/>
+				<triggered_effect trigger="onSelfEquipStop" action="ModifyCVar" target="self" cvar="isHealMode" operation="set" value="0"/>
 				<triggered_effect trigger="onReloadStop" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="0"/>
 				
 				<passive_effect name="RoundsPerMinute" operation="base_set" value="200" tags="perkBoomstick"/>
@@ -344,6 +346,7 @@
 				<triggered_effect trigger="onSelfEquipStart" action="AddBuff" buff="buffMedicBuffStockAR401"/>
 				<triggered_effect trigger="onSelfEquipStart" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockAR401" slot="1"/>
 				<triggered_effect trigger="onSelfEquipStart" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="0"/>
+				<triggered_effect trigger="onSelfEquipStop" action="ModifyCVar" target="self" cvar="isHealMode" operation="set" value="0"/>
 				<triggered_effect trigger="onReloadStop" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="0"/>
 				
 				<passive_effect name="MaxRange" operation="base_set" value="80" tags="perkMachineGunner"/>

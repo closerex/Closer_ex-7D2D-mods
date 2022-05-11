@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-class InitialCollisionHandler : TrackedBehaviourBase
+class InitialCollisionHandler : MonoBehaviour
 {
     Collider collider;
-    protected override void Awake()
+    void Awake()
     {
         collider = GetComponent<Collider>();
         if (!collider)
@@ -19,10 +19,8 @@ class InitialCollisionHandler : TrackedBehaviourBase
             gameObject.layer = 14;
         }
 
-        if (isServer)
+        if (!GameManager.IsDedicatedServer)
             DoCollision();
-        syncOnInit = true;
-        base.Awake();
     }
 
     public void DoCollision()
@@ -66,22 +64,17 @@ class InitialCollisionHandler : TrackedBehaviourBase
             others = Physics.OverlapCapsule(transform.TransformPoint(new Vector3(x1, y1, z1)), transform.TransformPoint(new Vector3(x2, y2, z2)), capsuleCollider.radius);
         }
         if (others != null && others.Length > 0)
+        {
+            Vector3 final = Vector3.zero;
             foreach (Collider other in others)
             {
-                if (Physics.ComputePenetration(collider, transform.position, transform.rotation, other, other.transform.position, other.transform.rotation, out Vector3 dir, out float distance)) ;
-                transform.position += dir * distance;
+                bool res = Physics.ComputePenetration(collider, transform.position, transform.rotation, other, other.transform.position, other.transform.rotation, out Vector3 dir, out float distance);
+                if (res)
+                    final += dir * distance;
             }
-        
-    }
-
-    protected override void OnExplosionInitServer(PooledBinaryWriter _bw)
-    {
-        StreamUtils.Write(_bw, transform.position + Origin.position);
-    }
-
-    protected override void OnExplosionInitClient(PooledBinaryReader _br)
-    {
-        transform.position = StreamUtils.ReadVector3(_br) - Origin.position;
+            transform.position += final;
+            Log.Out("final: " + final);
+        }
     }
 }
 

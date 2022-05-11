@@ -28,13 +28,11 @@
 			</effect_group>
 			<effect_group>
 				<triggered_effect trigger="onPerkLevelChanged" action="AddBuff" buff="buffCheckMedicLv"/>
-				<!-- <passive_effect name="CraftingTier" operation="base_set" level="1,2,3,4,5,6" value="1,2,3,4,5,6" tags="medicgun"/> -->
 				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="5,6" value="1" tags="medicgrenade"/>
 			</effect_group>
 			<effect_group>
 				<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="6"/>
 				<requirement name="IsAlive" target="other"/>
-				<!--requirement name="ItemHasTags" tags="medicgun"/-->
 				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="1"/>
 					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" target_tags="player,npc" buff="buffMedicEliteHealing">
 						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer5" operation="Equals" value="0"/>
@@ -45,7 +43,7 @@
 			</effect_group>
 			<effect_group>
 				<requirement name="!HasBuff" buff="buffZedTimeCooldown"/>
-				<!--requirement name="ItemHasTags" tags="medicgun"/-->
+				<requirement name="ItemHasTags" tags="medicgun"/>
 				<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="@$zedTimeTriggerChanceMedic"/>
 					<triggered_effect trigger="onSelfKilledOther" action="AddBuffToTargetAndSelf,KFCommonUtilityLib" target="selfAOE" target_tags="player" buff="buffZedTimeCooldown" range="60"/>
 					<triggered_effect trigger="onSelfKilledOther" action="AddBuff" target="selfAOE" target_tags="enemy" buff="buffZedTime" range="60"/>
@@ -78,7 +76,6 @@
 			<effect_group>
 				<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer2" operation="Equals" value="1"/>
 				<requirement name="IsAlive" target="other"/>
-				<!--requirement name="ItemHasTags" tags="medicgun"/-->
 				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="1"/>
 					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" target_tags="player,npc" buff="buffMedicAdrenaline">
 						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer5" operation="Equals" value="0"/>
@@ -120,7 +117,6 @@
 			<effect_group>
 				<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer4" operation="Equals" value="1"/>
 				<requirement name="IsAlive" target="other"/>
-				<!--requirement name="ItemHasTags" tags="medicgun"/-->
 				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="1"/>
 					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" target_tags="player,npc" buff="buffMedicFocus">
 						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer5" operation="Equals" value="0"/>
@@ -147,7 +143,6 @@
 			<effect_group>
 				<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer5" operation="Equals" value="1"/>
 				<requirement name="IsAlive" target="other"/>
-				<!--requirement name="ItemHasTags" tags="medicgun"/-->
 				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="1"/>
 					<triggered_effect trigger="onSelfAttackedOther" action="RemoveBuff" target="other" target_tags="npc,ally" buff="buffInjuryBleeding"/>
 					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" target_tags="npc,ally" buff="buffInjuryAbrasionTreated">
@@ -193,7 +188,7 @@
 			<effect_group name="damage">
 				<requirement name="CVarCompare" target="other" cvar="medicPoisonStack" operation="GT" value="0"/>
 				<requirement name="ProgressionLevel" progression_name="perkMedicSurvivor2" operation="Equals" value="1"/>
-				<!--requirement name="ItemHasTags" tags="medicgun"/-->
+				<requirement name="ItemHasTags" tags="medicgun"/>
 					<passive_effect name="DamageModifier" operation="perc_add" value=".25"/>
 			</effect_group>
 		</perk>
@@ -213,7 +208,7 @@
 			</effect_group>
 			<effect_group>
 				<requirement name="ProgressionLevel" progression_name="perkMedicSurvivor3" operation="GTE" value="1"/>
-				<!--requirement name="ItemHasTags" tags="medicgun"/-->
+				<requirement name="ItemHasTags" tags="medicgun"/>
 					<triggered_effect trigger="onSelfKilledOther" action="AddBuff" target="self" buff="buffMedicBoost"/>
 			</effect_group>
 		</perk>
@@ -225,8 +220,8 @@
 			</level_requirements>
 			<effect_group>
 				<requirement name="ProgressionLevel" progression_name="perkMedicSurvivor4" operation="GTE" value="1"/>
-				<!--requirement name="ItemHasTags" tags="medicgun"/-->
-					<passive_effect name="DegradationPerUse" operation="perc_set" value=".5" tags="medicgun">
+				<requirement name="ItemHasTags" tags="medicgun"/>
+					<passive_effect name="DegradationPerUse" operation="perc_set" value=".5">
 						<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="1"/>
 					</passive_effect>
 					<passive_effect name="ReloadSpeedMultiplier" operation="perc_add" value=".2"/>
@@ -253,7 +248,6 @@
 			<effect_group>
 				<requirement name="ProgressionLevel" progression_name="perkMedicSurvivor5" operation="Equals" value="1"/>
 				<requirement name="IsAlive" target="other"/>
-				<!--requirement name="ItemHasTags" tags="medicgun"/-->
 				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="1"/>
 					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" target_tags="enemy" buff="buffInjuryCrippled01">
 						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="50"/>
@@ -263,8 +257,11 @@
 						<requirement name="!HasBuff" target="other" buff="buffInjuryKnockdown01Cooldown"/>
 						<requirement name="HasBuff" target="other" buff="buffZedTime"/>
 					</triggered_effect>
+			</effect_group>
+			<effect_group>
 					<triggered_effect trigger="onSelfKilledOther" action="ModifyCVar" target="self" cvar="$medicBuffConsumptionTemp0" operation="set" value="5">
 						<requirement name="HasBuff" target="other" buff="buffZedTime"/>
+						<requirement name="ItemHasTags" tags="medicgun"/>
 					</triggered_effect>
 			</effect_group>
 			<effect_group>
