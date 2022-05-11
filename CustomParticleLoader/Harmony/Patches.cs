@@ -164,3 +164,15 @@ class ExplosionParsePatch
         return true;
     }
 }
+
+[HarmonyPatch(typeof(EntityAlive), nameof(EntityAlive.OnEntityDeath))]
+class EntityExplosionPatch
+{
+    private static void Postfix(EntityAlive __instance)
+    {
+        if (__instance.isEntityRemote || __instance is EntityCar || EntityClass.list[__instance.entityClass].explosionData.ParticleIndex <= 0)
+            return;
+
+        GameManager.Instance.ExplosionServer(0, __instance.GetPosition(), World.worldToBlockPos(__instance.GetPosition()), Quaternion.identity, EntityClass.list[__instance.entityClass].explosionData, __instance.entityId, 0f, false, null);
+    }
+}
