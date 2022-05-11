@@ -17,7 +17,7 @@
 			<MaxVoicesPerEntity value="15"/>
 			<MaxRepeatRate value="0.001"/>
 		</SoundDataNode>
-		<SoundDataNode name="medic_pistol_dart">
+		<SoundDataNode name="medic_pistol_dart_silenced">
 			<AudioSource name="Sounds/AudioSource_WeaponFire"/>
 			<NetworkAudioSource name="Sounds/AudioSource_WeaponFire_Network"/>
 			<Noise ID="0" noise="52" time="2" muffled_when_crouched="0.8" heat_map_strength="0.1" heat_map_time="50"/>

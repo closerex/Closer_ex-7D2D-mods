@@ -79,6 +79,7 @@ public class SubExplosionController : MonoBehaviour
                         //Log.Out("Sync particle on transform: " + trans.name);
                         ParticleSyncController controller = trans.gameObject.AddComponent<ParticleSyncController>();
                     }
+                    trans.gameObject.AddComponent<InitialCollisionHandler>();
                     if(procExplosion)
                     {
                         CustomParticleComponents component = null;

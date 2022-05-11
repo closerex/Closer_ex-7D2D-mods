@@ -1,71 +1,69 @@
 ﻿class ItemActionRechargeable : ItemActionAltMode
 {
-    protected bool altInfiniteAmmo = false;
-    protected bool originalInfiniteAmmo = false;
-    protected string cvarToConsume = null;
-    protected string cvarConsumption = null;
-    protected string cvarNoConsumptionTemp = null;
+    protected string[] cvarToConsume = null;
+    protected string[] cvarConsumption = null;
+    protected string[] cvarNoConsumptionTemp = null;
 
     public override void ReadFrom(DynamicProperties _props)
     {
         base.ReadFrom(_props);
 
-        _props.ParseBool("Alt_InfiniteAmmo", ref altInfiniteAmmo);
-        originalInfiniteAmmo = InfiniteAmmo;
-        _props.ParseString("Cvar_To_Consume", ref cvarToConsume);
-        _props.ParseString("Cvar_Consumption", ref cvarConsumption);
-        _props.ParseString("Cvar_No_Consumption_Burst_Count", ref cvarNoConsumptionTemp);
+        string _altString = string.Empty;
+        _props.ParseString("Cvar_To_Consume", ref _altString);
+        cvarToConsume = _altString.Split(',');
+        _altString = string.Empty;
+        _props.ParseString("Cvar_Consumption", ref _altString);
+        cvarConsumption = _altString.Split(',');
+        if (cvarToConsume.Length != cvarConsumption.Length)
+            Log.Error("cvar to consume count does not match cvar consumption count!");
+        _altString = string.Empty;
+        _props.ParseString("Cvar_No_Consumption_Burst_Count", ref _altString);
+        cvarNoConsumptionTemp = _altString.Split(',');
     }
 
     public override void ExecuteAction(ItemActionData _actionData, bool _bReleased)
     {
-        ItemActionRanged.ItemActionDataRanged rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
-        EntityAlive holdingEntity = rangedData.invData.holdingEntity;
-        ItemValue value = rangedData.invData.itemValue;
+        ItemActionDataAltMode _data = _actionData as ItemActionDataAltMode;
+        EntityAlive holdingEntity = _data.invData.holdingEntity;
+        ItemValue value = _data.invData.itemValue;
         if (!_bReleased)
         {
-            bool isCurAlt = isAltMode(holdingEntity);
-
-            if (isCurAlt && altInfiniteAmmo)
-                InfiniteAmmo = true;
-            else
-                InfiniteAmmo = originalInfiniteAmmo;
-
-            if ((!((int)rangedData.curBurstCount < GetBurstCount(_actionData) || GetBurstCount(_actionData) == -1) || (!InfiniteAmmo && value.Meta <= 0)))
-                goto exec;
-
-            if (isCurAlt)
+            if ((!((int)_data.curBurstCount < GetBurstCount(_actionData) || GetBurstCount(_actionData) == -1) || (!InfiniteAmmo && value.Meta <= 0)))
             {
-                float consumption = holdingEntity.GetCVar(cvarConsumption);
-                if (!string.IsNullOrEmpty(cvarNoConsumptionTemp))
+                base.ExecuteAction(_actionData, _bReleased);
+                return;
+            }
+
+            int curAltIndex = _data.modeIndex;
+            if (curAltIndex >= 0 && cvarConsumption.Length > curAltIndex && !string.IsNullOrEmpty(cvarConsumption[curAltIndex]))
+            {
+                float consumption = holdingEntity.GetCVar(cvarConsumption[curAltIndex]);
+                if (cvarNoConsumptionTemp.Length > curAltIndex && !string.IsNullOrEmpty(cvarNoConsumptionTemp[curAltIndex]))
                 {
-                    float isConsumption0 = holdingEntity.GetCVar(cvarNoConsumptionTemp);
+                    float isConsumption0 = holdingEntity.GetCVar(cvarNoConsumptionTemp[curAltIndex]);
                     if(isConsumption0 > 0)
                     {
                         consumption = 0;
-                        holdingEntity.SetCVar(cvarNoConsumptionTemp, --isConsumption0);
+                        holdingEntity.SetCVar(cvarNoConsumptionTemp[curAltIndex], --isConsumption0);
                     }
                 }
 
-                float stock = holdingEntity.GetCVar(cvarToConsume);
+                float stock = holdingEntity.GetCVar(cvarToConsume[curAltIndex]);
                 if (stock < consumption)
                 {
-                    holdingEntity.PlayOneShot(altSoundEmpty);
+                    holdingEntity.PlayOneShot(altSoundEmpty.Length >= curAltIndex ? altSoundEmpty[curAltIndex] : originalSoundEmpty);
                     return;
                 }
 
                 if (holdingEntity.inventory.holdingItemItemValue.PercentUsesLeft > 0f)
                 {
                     float left = stock - consumption;
-                    holdingEntity.SetCVar(cvarToConsume, left);
+                    holdingEntity.SetCVar(cvarToConsume[curAltIndex], left);
                 }
                 base.ExecuteAction(_actionData, _bReleased);
                 return;
             }
         }
-        else
-            InfiniteAmmo = originalInfiniteAmmo;
-        exec:
         base.ExecuteAction(_actionData, _bReleased);
     }
 }

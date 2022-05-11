@@ -14,8 +14,8 @@
 			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,selfLoading,attAgility,noSilencer,sideAttachments,barrelAttachments,9mmGun,perkGunslinger,medicgun,medicpistol"/>
 			<property name="DisplayType" value="rangedGun"/>
 			<property name="HoldType" value="1"/>
-			<property name="Meshfile" value="#@modfolder:Resources/Pistol.unity3d?MedicPistol.prefab"/>
-			<property name="DropMeshfile" value="#@modfolder:Resources/Pistol.unity3d?MedicPistol.prefab"/>
+			<property name="Meshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?MedicPistol.prefab"/>
+			<property name="DropMeshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?MedicPistol.prefab"/>
 			<!--<property name="TintColor" value="210,120,60"/>-->
 			<property name="Material" value="MHandGunParts"/>
 			<property name="Weight" value="4"/>
@@ -55,7 +55,7 @@
 					<property name="Particles_muzzle_fire" value="gunfire_pistol"/>
 					<property name="Particles_muzzle_fire_fpv" value="gunfire_pistol_fpv"/>
 					
-					<property name="Alt_Sound_Start" value="medic_pistol_dart"/>
+					<property name="Alt_Sound_Start" value="medic_pistol_dart_silenced"/>
 					<property name="Alt_Sound_Empty" value="medic_module_toggle_off"/>
 					<property name="Alt_InfiniteAmmo" value="true"/>
 					<property name="Cvar_State_Switch" value="isHealMode"/>
@@ -158,8 +158,8 @@
 			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shotgun,shortRange,barrelAttachments,sideAttachments,noScopes,noSilencer,magazine,bottomAttachments,attStrength,medicgun,medicshotgun,perkBoomstick,canHaveCosmetic"/>
 			<property name="DisplayType" value="rangedShotgun"/>
 			<property name="HoldType" value="48"/>
-			<property name="Meshfile" value="#@modfolder:Resources/MedicShotgun301.unity3d?MedicSG301.prefab"/>
-			<property name="DropMeshfile" value="#@modfolder:Resources/MedicShotgun301.unity3d?MedicSG301.prefab"/>
+			<property name="Meshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?MedicSG301.prefab"/>
+			<property name="DropMeshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?MedicSG301.prefab"/>
 			<property name="Material" value="MShotgunParts"/>
 			<property name="Weight" value="6"/>
 			<property name="RepairTools" value="medicalFirstAidKit"/>
@@ -198,7 +198,7 @@
 				<property name="SideOffset" value="0,0,0"/>
 				<property name="BarrelOffset" value="0,0,0"/>
 				
-				<property name="Alt_Sound_Start" value="medic_pistol_dart"/>
+				<property name="Alt_Sound_Start" value="medic_pistol_dart_silenced"/>
 				<property name="Alt_Sound_Empty" value="medic_module_toggle_off"/>
 				<property name="Alt_InfiniteAmmo" value="true"/>
 				<property name="Cvar_State_Switch" value="isHealMode"/>
@@ -290,8 +290,8 @@
 			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,barrelAttachments,sideAttachments,stock,magazine,attFortitude,perkMachineGunner,perkBookAutoWeapons,medicgun,medicar401"/>
 			<property name="DisplayType" value="rangedGun"/>
 			<property name="HoldType" value="48"/>
-			<property name="Meshfile" value="#@modfolder:Resources/MedicAssaultRifle401.unity3d?MedicAR401.prefab"/>
-			<property name="DropMeshfile" value="#@modfolder:Resources/MedicAssaultRifle401.unity3d?MedicAR401.prefab"/>
+			<property name="Meshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?MedicAR401.prefab"/>
+			<property name="DropMeshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?MedicAR401.prefab"/>
 			<property name="Material" value="MMachineGunParts"/> <property name="Weight" value="4"/>
 
 			<property name="CrosshairOnAim" value="false"/> <!-- aimTest -->
@@ -323,7 +323,7 @@
 				<property name="Particles_muzzle_fire" value="gunfire_AK47"/>
 				<property name="Particles_muzzle_fire_fpv" value="gunfire_AK47_fpv"/>
 				
-				<property name="Alt_Sound_Start" value="medic_pistol_dart"/>
+				<property name="Alt_Sound_Start" value="medic_pistol_dart_silenced"/>
 				<property name="Alt_Sound_Empty" value="medic_module_toggle_off"/>
 				<property name="Alt_InfiniteAmmo" value="true"/>
 				<property name="Cvar_State_Switch" value="isHealMode"/>

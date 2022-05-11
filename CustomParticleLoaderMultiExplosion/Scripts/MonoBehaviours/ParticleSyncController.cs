@@ -29,10 +29,10 @@ public class ParticleSyncController : TrackedBehaviourBase
 
     void FixedUpdate()
     {
+        elapsedTime += Time.fixedDeltaTime;
         if (!loop)
             return;
 
-        elapsedTime += Time.fixedDeltaTime;
         if(elapsedTime >= ps.main.duration)
         {
             ps.Stop();
