@@ -68,12 +68,10 @@ class InitialCollisionHandler : MonoBehaviour
             Vector3 final = Vector3.zero;
             foreach (Collider other in others)
             {
-                bool res = Physics.ComputePenetration(collider, transform.position, transform.rotation, other, other.transform.position, other.transform.rotation, out Vector3 dir, out float distance);
-                if (res)
+                if (Physics.ComputePenetration(collider, transform.position, transform.rotation, other, other.transform.position, other.transform.rotation, out Vector3 dir, out float distance))
                     final += dir * distance;
             }
             transform.position += final;
-            Log.Out("final: " + final);
         }
     }
 }
