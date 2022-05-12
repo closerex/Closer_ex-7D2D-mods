@@ -184,12 +184,6 @@ class ExplosionAttackPatch
     {
         var codes = new List<CodeInstruction>(instructions);
 
-        /*
-        Type damageRecord = typeof(Explosion).GetNestedType("DamageRecord", BindingFlags.NonPublic);
-        Type entityDict = typeof(Dictionary<int, int>);
-        entityDict = entityDict.GetGenericTypeDefinition();
-        entityDict.MakeGenericType(new Type[] { typeof(int), damageRecord });
-        */
         FieldInfo fld_hit_entities = typeof(Explosion).GetField("hitEntities", BindingFlags.NonPublic | BindingFlags.Static);
         Type entityDict = fld_hit_entities.FieldType;
 
@@ -207,21 +201,6 @@ class ExplosionAttackPatch
             {
                 codes[i].opcode = OpCodes.Ldloc_S;
                 codes[i].operand = lbd_entity_dict;
-            }
-        }
-
-        for(int i = 0; i < codes.Count; ++i)
-        {
-            if(codes[i].opcode == OpCodes.Ldloc_S && codes[i].OperandIs(25))
-            {
-                var operand = codes[i + 3].operand;
-                codes.InsertRange(i + 4, new CodeInstruction[]
-                {
-                    new CodeInstruction(OpCodes.Ldloc_S, 25),
-                    CodeInstruction.Call(typeof(Entity), nameof(Entity.IsDead)),
-                    new CodeInstruction(OpCodes.Brtrue, operand)
-                });
-                break;
             }
         }
 
