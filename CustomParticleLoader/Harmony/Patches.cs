@@ -135,7 +135,10 @@ class ExplosionParsePatch
     private static bool Init_ItemClass_Prefix(ItemClass __instance)
     {
         if(CustomParticleEffectLoader.parseParticleData(ref __instance.Properties))
+        {
             CustomParticleEffectLoader.LastInitializedComponent.BoundItemClass = __instance;
+            CustomParticleEffectLoader.PopLastInitComponent();
+        }
         return true;
     }
 
@@ -144,7 +147,10 @@ class ExplosionParsePatch
     private static bool ReadFrom_ItemAction_Prefix(ItemAction __instance, ref DynamicProperties _props)
     {
         if(CustomParticleEffectLoader.parseParticleData(ref _props))
+        {
             CustomParticleEffectLoader.LastInitializedComponent.BoundItemClass = __instance.item;
+            CustomParticleEffectLoader.PopLastInitComponent();
+        }
         return true;
     }
 
@@ -152,7 +158,8 @@ class ExplosionParsePatch
     [HarmonyPrefix]
     private static bool Init_Block_Prefix(Block __instance)
     {
-        CustomParticleEffectLoader.parseParticleData(ref __instance.Properties);
+        if(CustomParticleEffectLoader.parseParticleData(ref __instance.Properties))
+            CustomParticleEffectLoader.PopLastInitComponent();
         return true;
     }
 
@@ -160,7 +167,8 @@ class ExplosionParsePatch
     [HarmonyPrefix]
     private static bool Init_EntityClass_Prefix(EntityClass __instance)
     {
-        CustomParticleEffectLoader.parseParticleData(ref __instance.Properties);
+        if (CustomParticleEffectLoader.parseParticleData(ref __instance.Properties))
+            CustomParticleEffectLoader.PopLastInitComponent();
         return true;
     }
 }

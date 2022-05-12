@@ -210,7 +210,6 @@ public static class CustomParticleEffectLoader
                 {
                     LastInitializedComponent.SyncOnConnect = sync;
                 }
-                last_init_components.Clear();
                 return flag;
             }
         }
