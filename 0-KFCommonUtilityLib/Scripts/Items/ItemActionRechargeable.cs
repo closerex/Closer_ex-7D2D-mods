@@ -28,13 +28,17 @@
         ItemValue value = _data.invData.itemValue;
         if (!_bReleased)
         {
+            int curAltIndex = _data.modeIndex;
+            if (curAltIndex >= 0)
+                InfiniteAmmo = altInfiniteAmmo.Length > curAltIndex ? altInfiniteAmmo[curAltIndex] : false;
+            else
+                InfiniteAmmo = originalInfiniteAmmo;
             if ((!((int)_data.curBurstCount < GetBurstCount(_actionData) || GetBurstCount(_actionData) == -1) || (!InfiniteAmmo && value.Meta <= 0)))
             {
                 base.ExecuteAction(_actionData, _bReleased);
                 return;
             }
 
-            int curAltIndex = _data.modeIndex;
             if (curAltIndex >= 0 && cvarConsumption.Length > curAltIndex && !string.IsNullOrEmpty(cvarConsumption[curAltIndex]))
             {
                 float consumption = holdingEntity.GetCVar(cvarConsumption[curAltIndex]);

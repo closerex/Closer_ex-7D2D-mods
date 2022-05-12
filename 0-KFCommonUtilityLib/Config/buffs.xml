@@ -16,7 +16,7 @@
 				<triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" target="self" cvar="$buffZedTimeCooldownTimer" operation="set" value="0"/>
 			</effect_group>
 		</buff>
-		<buff name="buffZedTime" hidden="true">
+		<buff name="buffZedTime" hidden="true" remove_on_death="false">
 			<stack_type value="ignore"/>
 			<duration value="6"/>
 			<effect_group name="zed">
