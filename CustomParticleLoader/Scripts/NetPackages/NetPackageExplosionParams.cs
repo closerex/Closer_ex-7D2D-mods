@@ -108,7 +108,7 @@ public class NetPackageExplosionParams : NetPackage
 				component.CurrentExplosionParams = new ExplosionParams(clrIdx, worldPos, blockPos, rotation, explosionData, entityId, explosionId);
 				if (itemValueExplosive != null)
 					component.CurrentItemValue = itemValueExplosive.Clone();
-				CustomParticleEffectLoader.LastInitializedComponent = component;
+				CustomParticleEffectLoader.PushLastInitComponent(component);
 			}
         }
 		GameObject result = _world.GetGameManager().ExplosionClient(clrIdx, worldPos, rotation, explosionData.ParticleIndex, explosionData.BlastPower, (float)explosionData.EntityRadius, explosionChanges);
@@ -121,7 +121,7 @@ public class NetPackageExplosionParams : NetPackage
 				helper.OnExplosionClientInit(_br);
 			}
         }
-		CustomParticleEffectLoader.LastInitializedComponent = null;
+		CustomParticleEffectLoader.PopLastInitComponent();
 	}
 
 	public override NetPackageDirection PackageDirection

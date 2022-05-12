@@ -47,11 +47,11 @@ public class NetPackageExplosionSyncOnConnect : NetPackage
 				component.CurrentExplosionParams = explParams;
 				if(explValue != null)
 					component.CurrentItemValue = explValue.Clone();
-				CustomParticleEffectLoader.LastInitializedComponent = component;
+				CustomParticleEffectLoader.PushLastInitComponent(component);
 				GameObject obj = CustomParticleEffectLoader.InitializeParticle(component, explParams._worldPos - Origin.position, explParams._rotation);
 				obj.GetComponent<NetSyncHelper>().OnConnectedToServer(_br);
 			}
-			CustomParticleEffectLoader.LastInitializedComponent = null;
+			CustomParticleEffectLoader.PopLastInitComponent();
 		}
 	}
 

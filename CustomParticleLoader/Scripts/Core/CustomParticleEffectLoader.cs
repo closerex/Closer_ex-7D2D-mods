@@ -9,10 +9,14 @@ public static class CustomParticleEffectLoader
     private static Dictionary<string, CustomParticleComponents> hash_components = new Dictionary<string, CustomParticleComponents>();
     private static Dictionary<string, GameObject> hash_assets = new Dictionary<string, GameObject>();
     private static HashSet<GameObject> hash_initialized = new HashSet<GameObject>();
+    private static Stack<CustomParticleComponents> last_init_components = new Stack<CustomParticleComponents>();
     public static event Action<PooledBinaryWriter> ClientConnected;
     public static event Action<ClientInfo> HandleClientInfo;
 
-    public static CustomParticleComponents LastInitializedComponent { get; set; } = null;
+    public static CustomParticleComponents LastInitializedComponent
+    {
+        get => last_init_components.Count > 0 ? last_init_components.Peek() : null;
+    }
     public static uint NextExplosionIndex { get; set; } = 0;
 
     public static void OnClientConnected(ClientInfo client)
@@ -35,24 +39,24 @@ public static class CustomParticleEffectLoader
         }
     }
 
-    public static GameObject InitializeParticle(CustomParticleComponents components, Vector3 position, Quaternion rotation)
+    public static GameObject InitializeParticle(CustomParticleComponents component, Vector3 position, Quaternion rotation)
     {
-        GameObject __result = UnityEngine.Object.Instantiate<GameObject>(components.Particle, position, rotation);
+        GameObject __result = UnityEngine.Object.Instantiate<GameObject>(component.Particle, position, rotation);
         __result.AddComponent<NetSyncHelper>();
-        if (components.TemporaryObjectType != null)
-            __result.AddComponent(components.TemporaryObjectType);
-        if (components.ExplosionDamageAreaType != null)
-            __result.AddComponent(components.ExplosionDamageAreaType);
-        if (components.AudioPlayerType != null)
+        if (component.TemporaryObjectType != null)
+            __result.AddComponent(component.TemporaryObjectType);
+        if (component.ExplosionDamageAreaType != null)
+            __result.AddComponent(component.ExplosionDamageAreaType);
+        if (component.AudioPlayerType != null)
         {
-            AudioPlayer audio_script = __result.AddComponent(components.AudioPlayerType) as AudioPlayer;
-            if (components.SoundName != null)
-                audio_script.soundName = components.SoundName;
-            if (components.AudioDuration >= 0)
-                audio_script.duration = components.AudioDuration;
+            AudioPlayer audio_script = __result.AddComponent(component.AudioPlayerType) as AudioPlayer;
+            if (component.SoundName != null)
+                audio_script.soundName = component.SoundName;
+            if (component.AudioDuration >= 0)
+                audio_script.duration = component.AudioDuration;
         }
-        if (components.List_CustomTypes.Count > 0)
-            foreach (Type customtype in components.List_CustomTypes)
+        if (component.List_CustomTypes.Count > 0)
+            foreach (Type customtype in component.List_CustomTypes)
                 if (customtype != null)
                     __result.AddComponent(customtype);
         AutoRemove remove_script = __result.AddComponent<AutoRemove>();
@@ -60,10 +64,20 @@ public static class CustomParticleEffectLoader
         return __result;
     }
 
+    public static void PushLastInitComponent(CustomParticleComponents component)
+    {
+        last_init_components.Push(component);
+    }
+
+    public static void PopLastInitComponent()
+    {
+        if (last_init_components.Count > 0)
+            last_init_components.Pop();
+    }
+
     private static bool LoadParticleEffect(string fullpath, ExplosionData data, string sound_name = null, float duration_audio = -1, List<Type> CustomScriptList = null)
     {
         CustomParticleComponents component = null;
-        LastInitializedComponent = null;
         fullpath = fullpath.Trim();
         if (!parsePathString(fullpath, out string path, out string assetname))
             return false;
@@ -94,7 +108,7 @@ public static class CustomParticleEffectLoader
             Log.Out("Particle data already exists:" + fullpath + ", now overwriting");
         component = new CustomParticleComponents(obj, sound_name, duration_audio, data, CustomScriptList);
         hash_components.Add(fullpath, component);
-        LastInitializedComponent = component;
+        PushLastInitComponent(component);
         return true;
     }
 
@@ -196,6 +210,7 @@ public static class CustomParticleEffectLoader
                 {
                     LastInitializedComponent.SyncOnConnect = sync;
                 }
+                last_init_components.Clear();
                 return flag;
             }
         }
@@ -232,7 +247,7 @@ public static class CustomParticleEffectLoader
         hash_components.Clear();
         Log.Out("Loaded particle data cleared on disconnect.");
         */
-        LastInitializedComponent = null;
+        last_init_components.Clear();
     }
 
     public static bool GetCustomParticleComponents(int index, out CustomParticleComponents component)

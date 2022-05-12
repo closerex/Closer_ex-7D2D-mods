@@ -34,7 +34,7 @@ class ExplosionEffectPatch
                 //Log.Out("params:" + _clrIdx + _blockPos + _playerId + _rotation + _worldPos + _explosionData.ParticleIndex);
                 //Log.Out("params:" + components.CurrentExplosionParams._clrIdx + components.CurrentExplosionParams._blockPos + components.CurrentExplosionParams._playerId + components.CurrentExplosionParams._rotation + components.CurrentExplosionParams._worldPos + components.CurrentExplosionParams._explosionData.ParticleIndex);
                 components.CurrentItemValue = _itemValueExplosive;
-                CustomParticleEffectLoader.LastInitializedComponent = components;
+                CustomParticleEffectLoader.PushLastInitComponent(components);
                 __state = true;
             }
             else
@@ -82,7 +82,7 @@ class ExplosionEffectPatch
     {
         if (!__state)
             return;
-        CustomParticleEffectLoader.LastInitializedComponent = null;
+        CustomParticleEffectLoader.PopLastInitComponent();
     }
 
     [HarmonyPatch(nameof(GameManager.ExplosionClient))]
