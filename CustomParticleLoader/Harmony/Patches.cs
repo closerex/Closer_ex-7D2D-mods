@@ -170,9 +170,61 @@ class EntityExplosionPatch
 {
     private static void Postfix(EntityAlive __instance)
     {
-        if (__instance.isEntityRemote || __instance is EntityCar || EntityClass.list[__instance.entityClass].explosionData.ParticleIndex <= 0)
+        if (__instance.isEntityRemote || __instance is EntityCar || __instance is EntityZombieCop || EntityClass.list[__instance.entityClass].explosionData.ParticleIndex <= 0)
             return;
 
         GameManager.Instance.ExplosionServer(0, __instance.GetPosition(), World.worldToBlockPos(__instance.GetPosition()), Quaternion.identity, EntityClass.list[__instance.entityClass].explosionData, __instance.entityId, 0f, false, null);
+    }
+}
+
+[HarmonyPatch(typeof(Explosion), nameof(Explosion.AttackEntites))]
+class ExplosionAttackPatch
+{
+    private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+    {
+        var codes = new List<CodeInstruction>(instructions);
+
+        /*
+        Type damageRecord = typeof(Explosion).GetNestedType("DamageRecord", BindingFlags.NonPublic);
+        Type entityDict = typeof(Dictionary<int, int>);
+        entityDict = entityDict.GetGenericTypeDefinition();
+        entityDict.MakeGenericType(new Type[] { typeof(int), damageRecord });
+        */
+        FieldInfo fld_hit_entities = typeof(Explosion).GetField("hitEntities", BindingFlags.NonPublic | BindingFlags.Static);
+        Type entityDict = fld_hit_entities.FieldType;
+
+        LocalBuilder lbd_entity_dict = generator.DeclareLocal(entityDict);
+
+        codes.InsertRange(0, new CodeInstruction[]
+        {
+            new CodeInstruction(OpCodes.Newobj, entityDict.GetConstructor(new Type[]{ })),
+            new CodeInstruction(OpCodes.Stloc_S, lbd_entity_dict)
+        });
+
+        for(int i = 0; i < codes.Count; ++i)
+        {
+            if (codes[i].opcode == OpCodes.Ldsfld && codes[i].LoadsField(fld_hit_entities))
+            {
+                codes[i].opcode = OpCodes.Ldloc_S;
+                codes[i].operand = lbd_entity_dict;
+            }
+        }
+
+        for(int i = 0; i < codes.Count; ++i)
+        {
+            if(codes[i].opcode == OpCodes.Ldloc_S && codes[i].OperandIs(25))
+            {
+                var operand = codes[i + 3].operand;
+                codes.InsertRange(i + 4, new CodeInstruction[]
+                {
+                    new CodeInstruction(OpCodes.Ldloc_S, 25),
+                    CodeInstruction.Call(typeof(Entity), nameof(Entity.IsDead)),
+                    new CodeInstruction(OpCodes.Brtrue, operand)
+                });
+                break;
+            }
+        }
+
+        return codes;
     }
 }

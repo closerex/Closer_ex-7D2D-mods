@@ -50,7 +50,8 @@
 					<property name="Sound_loop" value=""/>
 					<property name="Sound_end" value=""/>
 					<property name="Sound_empty" value="medic_pistol_dryfire"/>
-					<property name="Sound_reload" value="pistol_reload"/>
+					<property name="Sound_reload" value=""/>
+					<!--property name="Sound_reload" value="pistol_reload"/-->
 					<property name="AutoReload" value="false"/>
 					<property name="Particles_muzzle_fire" value="gunfire_pistol"/>
 					<property name="Particles_muzzle_fire_fpv" value="gunfire_pistol_fpv"/>
