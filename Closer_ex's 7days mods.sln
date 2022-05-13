@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomParticleLoaderSpawnEn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KFCommonUtilityLib", "0-KFCommonUtilityLib\KFCommonUtilityLib.csproj", "{1A3E0DEF-D290-4D3E-BC2D-1B66AB174F47}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehicleWeapon", "VehicleWeapon\VehicleWeapon.csproj", "{1C8B7EDE-9F45-4043-84B4-0544D0C0A633}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +70,10 @@ Global
 		{1A3E0DEF-D290-4D3E-BC2D-1B66AB174F47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A3E0DEF-D290-4D3E-BC2D-1B66AB174F47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A3E0DEF-D290-4D3E-BC2D-1B66AB174F47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C8B7EDE-9F45-4043-84B4-0544D0C0A633}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C8B7EDE-9F45-4043-84B4-0544D0C0A633}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C8B7EDE-9F45-4043-84B4-0544D0C0A633}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C8B7EDE-9F45-4043-84B4-0544D0C0A633}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -228,7 +228,6 @@ public class TurretAiController : ReverseTrackedBehaviour<TurretAiController>
         float nextVerRotation;
         if (hasTarget)
         {
-            Vector3 radius = Vector3.ProjectOnPlane(joint.position - verRotTrans.position, transform.up);
             Vector3 aimAt = Quaternion.LookRotation(direction).eulerAngles;
             aimAt.x = -Angle(target.GetPosition() - Origin.position - Vector3.up * 0.5f);
             aimAt = (Quaternion.Inverse(transform.rotation) * Quaternion.Euler(aimAt)).eulerAngles;

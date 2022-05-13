@@ -15,6 +15,12 @@ public class ExplosionSpawnEntity : MonoBehaviour
         }
 
         CustomParticleComponents component = CustomParticleEffectLoader.LastInitializedComponent;
+        if(component.TryGetCustomProperty(CustomParticleLoaderSpawnEntityPatches.str_spawn_entity_spawn_chance, out object chance) && (float)chance < UnityEngine.Random.Range(0f, 1f))
+        {
+            enabled = false;
+            return;
+        }
+
         EntityCreationData data = new EntityCreationData();
         int entityId = component.CurrentExplosionParams._playerId;
         Entity initiator = GameManager.Instance.World.GetEntity(entityId);

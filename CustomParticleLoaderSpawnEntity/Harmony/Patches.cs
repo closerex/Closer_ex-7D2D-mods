@@ -11,6 +11,7 @@ public class CustomParticleLoaderSpawnEntityPatches
     public static readonly string str_spawn_entity_item = "Explosion.SpawnEntityItem";
     public static readonly string str_spawn_entity_loot_group = "Explosion.SpawnLootGroup";
     public static readonly string str_spawn_entity_lifetime = "Explosion.SpawnEntityLifetime";
+    public static readonly string str_spawn_entity_spawn_chance = "Explosion.SpawnChance";
 
     [HarmonyPatch(typeof(CustomParticleEffectLoader), nameof(CustomParticleEffectLoader.parseParticleData))]
     [HarmonyPostfix]
@@ -24,6 +25,11 @@ public class CustomParticleLoaderSpawnEntityPatches
         _props.ParseFloat(str_spawn_entity_lifetime, ref lifetime);
         if (lifetime < float.MaxValue)
             cur_component.AddCustomProperty(str_spawn_entity_lifetime, lifetime);
+
+        float chance = 1f;
+        _props.ParseFloat(str_spawn_entity_spawn_chance, ref chance);
+        if (chance < 1f)
+            cur_component.AddCustomProperty(str_spawn_entity_spawn_chance, chance);
 
         string entity = null;
         _props.ParseString(str_spawn_entity_group, ref entity);
