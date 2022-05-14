@@ -1,0 +1,27 @@
+<configs>
+	<append xpath="/items">
+		<item name="guppyParticleCarPlaceable">
+			<property name="Tags" value="vehicle,vengine,vfuel,vlight,vseat"/>
+			<property name="Group" value="Science"/>
+			<property name="DescriptionKey" value="vehicleVMFastbackPlaceableDesc"/>
+			<property name="HoldType" value="7"/>
+			<property name="CustomIcon" value="vehicleGuppyFastback_1"/>
+			<property name="HoldingItemHidden" value="true"/>
+			<property name="Meshfile" value="#@modfolder:Resources/gupParticleCar.unity3d?guppyParticleCar"/>
+			<property name="DropMeshfile" value="Items/Misc/sack_droppedPrefab"/>
+			<property name="Material" value="Mmetal"/>
+			<property name="EconomicValue" value="6000"/>
+			<property name="SellableToTrader" value="false"/>
+			<property name="Stacknumber" value="1"/>
+			<property class="Action1">
+				<property name="Class" value="SpawnVehicle"/>
+				<property name="Vehicle" value="guppyParticleCar"/>
+			</property>
+			<effect_group name="vehicleVMFastbackPlaceable" tiered="false">
+				<passive_effect name="ModSlots" operation="base_set" value="5"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+				<passive_effect name="DegradationMax" operation="base_set" value="1200"/>
+			</effect_group>
+		</item>
+	</append>
+</configs>

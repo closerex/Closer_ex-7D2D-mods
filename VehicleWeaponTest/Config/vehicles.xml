@@ -1,0 +1,257 @@
+<configs>
+	<append xpath="/vehicles">
+		<vehicle name="guppyParticleCar">
+			<property name="cameraDistance" value="5.5, 7"/>
+			<property name="cameraTurnRate" value=".2, .35"/>
+			<property name="motorTorqueMinQ" value="5000"/>
+			<property name="motorTorqueMaxQ" value="5000"/>
+			<property name="brakeTorque" value="5000"/>
+			<property name="upAngleMax" value="70"/>
+			<property name="upForce" value="1"/>
+			<property name="steerRate" value="130"/>
+			<property name="steerCenteringRate" value="90"/>
+			<property name="tiltAngleMax" value="80"/>
+			<property name="tiltThreshold" value="3"/>
+			<property name="tiltDampening" value=".22"/>
+			<property name="tiltDampenThreshold" value="8"/>
+			<property name="tiltUpForce" value="0"/>
+			<property name="unstickForce" value="1"/>
+			<property name="velocityMax" value="9, 14"/>
+			<property name="waterDrag_y_velScale_velMaxScale" value="1.8, .9, .1"/>
+			<property name="wheelPtlScale" value="1"/>
+
+			<!-- hornSound is now used for firing sound. this does not affect vehicles without hornWeapon /-->
+			<property name="hornSound" value="m136_fire"/>
+
+			<!-- vehicle part class must be hornWeapon /-->
+			<property class="hornWeapon">
+				<!-- class should be HornWeapon or its subclasses /-->
+				<property name="class" value="HornWeapon,VehicleWeapon"/>
+				<!-- how many rounds to emit in one cycle; /-->
+				<!-- default: 1 /-->
+				<property name="burstCount" value="2"/>
+				<!-- interval between each cycle; if set to 0, all cycles will be emitted at once /-->
+				<!-- default: 0 /-->
+				<property name="burstInterval" value="0.15"/>
+				<!-- how many cycles on one horn trigger /-->
+				<!-- default: 1 /-->
+				<property name="burstRepeat" value="3"/>
+				<!-- interval between two horn triggers /-->
+				<!-- default: 1f /-->
+				<property name="hornInterval" value="2"/>
+				<!-- the explosion particle; explosion data and effect groups are taken from its bound item class /-->
+				<property name="particleIndex" value="#@modfolder(CustomParticleScriptTest):Resources/GuppyTest.unity3d?AirBurstExplosion$thrownGrenadeAirBurst"/>
+				<!-- should the particle trigger explosion on collision? /-->
+				<!-- default: true /-->
+				<property name="explodeOnCollision" value="true"/>
+				<!-- should the particle trigger explosion on death? /-->
+				<!-- default: false /-->
+				<property name="explodeOnDeath" value="false"/>
+				<!-- sound to play when trying to horn without sufficient ammo in bag /-->
+				<property name="emptySound" value="dryfire"/>
+				<!-- sound to play when trying to horn while horn interval is active /-->
+				<property name="notReadySound" value="medic_module_toggle_off"/>
+				<!-- sound to play after a horn process, simulating reloading /-->
+				<property name="reloadSound" value="shotgun_reload"/>
+				<!-- the horn weapon transform /-->
+				<property name="transform" value="HornWeapon/WeaponRoot"/>
+				<!-- the transform to rotate on y axis /-->
+				<property name="horRotationTransform" value="HornWeapon/WeaponRoot/Turret"/>
+				<!-- the transform to rotate on x axis /-->
+				<property name="verRotationTransform" value="HornWeapon/WeaponRoot/Turret/MortarG_Barrel02"/>
+				<!-- the transform with the particle system /-->
+				<property name="particle_transform" value="HornWeapon/WeaponRoot/Turret/MortarG_Barrel02/ShootPoint"/>
+				<!-- max euler angle for verticle rotation transform /-->
+				<!-- default: 45f /-->
+				<property name="verticleMaxRotation" value="30"/>
+				<!-- min euler angle for verticle rotation transform /-->
+				<!-- default: 0f /-->
+				<property name="verticleMinRotation" value="0"/>
+				<!-- max euler angle for horizontal rotation transform /-->
+				<!-- default: 180f /-->
+				<property name="horizontalMaxRotation" value="120"/>
+				<!-- min euler angle for horizontal rotation transform /-->
+				<!-- default: -180f /-->
+				<property name="horizontalMinRotation" value="-120"/>
+				<!-- the constant speed of the particle /-->
+				<!-- default: same as particle systems property if particle system start speed is constant; otherwise 30f /-->
+				<property name="projectileSpeed" value="30"/>
+				<!-- the constant gravity modifier of the particle /-->
+				<!-- default: same as particle systems property if particle system gravity modifier is constant; otherwise 1f /-->
+				<property name="gravity" value="1"/>
+				<!-- local scale of the preview shape for explosion entity radius /-->
+				<!-- default: entity radius of explosion data /-->
+				<property name="previewScaleEntity" value="4"/>
+				<!-- local scale of the preview shape for explosion block radius /-->
+				<!-- default: block radius of explosion data /-->
+				<property name="previewScaleBlock" value="2"/>
+				<!-- color of the preview shape for explosion entity radius /-->
+				<!-- default: transparent; when set to transparent, entity radius preview is not created /-->
+				<property name="previewColorEntity" value="#F70D1A30"/>
+				<!-- color of the preview shape for explosion block radius /-->
+				<!-- default: transparent; when set to transparent, block radius preview is not created /-->
+				<property name="previewColorBlock" value="#42D8EE30"/>
+				<!-- primitive shape of entity radius preview /-->
+				<!-- default: Sphere /-->
+				<property name="previewTypeEntity" value="Sphere"/>
+				<!-- primitive shape of block radius preview /-->
+				<!-- default: Sphere /-->
+				<property name="previewTypeBlock" value="Cube"/>
+				<!-- name of the item serving as ammo; ammo must be placed in driver's bag, and is consumed by burstRepeat; /-->
+				<!-- default: empty; when ammo name is empty, horn will not consume ammo /-->
+				<property name="ammo" value="ammoRocketFrag"/>
+			</property>
+
+			<property class="battery">
+				<property name="class" value="Battery"/>
+				<property name="slot_type" value="battery"/>
+				<property name="mesh" value="battery"/>
+				<property name="transform" value="battery"/>
+			</property>
+
+			<property class="chassis">
+				<property name="class" value="Chassis"/>
+				<property name="display_name" value="chassis"/>
+				<property name="slot_type" value="chassis"/>
+				<property name="mesh" value="chassis"/>
+				<property name="transform" value="Origin"/>
+				<property name="paint" value="car_mesh"/>
+			</property>
+
+			<property class="engine">
+				<property name="class" value="Engine"/>
+				<property name="slot_type" value="engine"/>
+				<property name="mesh" value="engine_small"/>
+				<property name="transform" value="engine_small"/>
+				<property name="particle_transform" value="engine_small/MinibikeParticles/p_engine_fire"/>
+				<property name="fuelKmPerL" value=".1"/>
+				<property name="foodDrain" value=".002,.00811"/><!-- driving/turbo, truck -->
+				<property name="gear1" value="
+									500,2500, -1400,800,0, 700,2200,900,
+									Vehicles/Suv/suv_accel1,
+									Vehicles/Suv/suv_decel1,
+									0, .7, 1, .1, -9, .12, .1, Vehicles/Suv/suv_idle_lp,
+									-.4, -.02, .7, .7, -.2, 9, .2, Vehicles/Suv/suv_max_speed_lp
+									"/>
+				<property name="gear2" value="
+									500,2500, -2000,1000,2000, 600,2200,800,
+									Vehicles/Suv/suv_accel2,
+									Vehicles/Suv/suv_decel1,
+									-.25, -.05, .2, .4, -1, 1, .1, Vehicles/Suv/suv_max_speed_lp
+									"/>
+				<property name="gear3" value="
+									500,2500, -2000,1000,2000, 500,2200,1000,
+									Vehicles/Suv/suv_accel3,
+									Vehicles/Suv/suv_decel2,
+									-.28, -.07, .3, .6, -1, 1, .1, Vehicles/Suv/suv_max_speed_lp
+									"/>
+				<property name="gear4" value="
+									500,2500, -2000,1000,2000, 500,9999,9999,
+									,
+									Vehicles/Suv/suv_decel2,
+									-.31, -.08, .6, .9, -1, 1, .1, Vehicles/Suv/suv_max_speed_lp
+									"/>
+				<property name="sound_start" value="Vehicles/Suv/suv_startup"/>
+				<property name="sound_shut_off" value="Vehicles/Suv/suv_shutoff"/>
+				<property name="sound_no_fuel_shut_off" value="Vehicles/Motorbike/motorbike_empty"/>
+			</property>
+
+			<property class="fuelTank">
+				<property name="class" value="FuelTank"/>
+				<property name="capacity" value="400"/>
+			</property>
+
+			<property class="handlebars">
+				<property name="class" value="Steering"/>
+				<property name="slot_type" value="handlebars"/>
+				<property name="transform" value="Origin/steering_joint"/>
+				<property name="steerMaxAngle" value="60"/>
+				<property name="IKHandLPosition" value="-.154, .1256, .0265"/>
+				<property name="IKHandLRotation" value="37.55, -13.433, 49.88"/>
+				<property name="IKHandRPosition" value=".154, .1256, .0265"/>
+				<property name="IKHandRRotation" value="37.55, 13.433, -49.88"/>
+			</property>
+
+			<property class="seat0">
+				<property name="position" value="-.4, -.15, .06"/>
+				<property name="rotation" value="-25, 0, 0"/>
+				<property name="exit" value="-1.6,0,0 ~ 1.6,0,-1 ~ -.4,0,-2.8 ~ -.4,0,2.6 ~ -.4,2.1,0"/>
+			</property>
+
+			<property class="seat1">
+				<property name="class" value="Seat"/>
+				<property name="position" value=".4, 0, .1"/>
+				<property name="rotation" value="-27, -.15, 0"/>
+				<property name="exit" value="1.6,0,0 ~ -1.6,0,-1 ~ .4,0,-2.8 ~ .4,0,2.6 ~ .4,2.1,0"/>
+				<property name="IKHandLPosition" value="-.27, .87, .14"/>
+				<property name="IKHandLRotation" value="41, -30, 18"/>
+				<property name="IKHandRPosition" value=".27, .87, .14"/>
+				<property name="IKHandRRotation" value="41, 30, -18"/>
+			</property>
+
+			<property class="seat2">
+				<property name="class" value="Seat"/>
+				<property name="position" value="-.43, .75, -2.15"/>
+				<property name="rotation" value="-33, 185, 0"/>
+				<property name="exit" value="-.8,0,-2.8 ~ -1.6,0,-2 ~ 1.6,0,-2 ~ -.5,0,-2.8 ~ -.5,0,2.6 ~ -.4,2.1,-1"/>
+				<property name="mod" value="1"/>
+				<property name="IKHandLPosition" value="-.27, .87, .14"/>
+				<property name="IKHandLRotation" value="41, -30, 18"/>
+				<property name="IKHandRPosition" value=".27, .87, .14"/>
+				<property name="IKHandRRotation" value="41, 30, -18"/>
+			</property>
+
+			<property class="seat3">
+				<property name="class" value="Seat"/>
+				<property name="position" value=".43, .75, -2.15"/>
+				<property name="rotation" value="-33, 175, 0"/>
+				<property name="exit" value=".8,0,-2.8 ~ -1.6,0,-2 ~ 1.6,0,-2 ~ -.5,0,-2.8 ~ -.5,0,2.6 ~ -.4,2.1,-1"/>
+				<property name="mod" value="1"/>
+				<property name="IKHandLPosition" value="-.27, .87, .14"/>
+				<property name="IKHandLRotation" value="41, -30, 18"/>
+				<property name="IKHandRPosition" value=".27, .87, .14"/>
+				<property name="IKHandRRotation" value="41, 30, -18"/>
+			</property>
+
+			<property class="wheel0">
+				<property name="steerTransform" value="Origin/frontLeftWheelStear_joint"/>
+				<property name="tireTransform" value="Origin/frontLeftWheelStear_joint/frontLeftWheel_joint"/>
+				<property name="tireSuspensionPercent" value="1"/>
+				<property name="torqueScale_motor_brake" value="1, .8"/>
+			</property>
+
+			<property class="wheel1">
+				<property name="steerTransform" value="Origin/frontRightWheelStear_joint"/>
+				<property name="tireTransform" value="Origin/frontRightWheelStear_joint/frontRightWheel_joint"/>
+				<property name="tireSuspensionPercent" value="1"/>
+				<property name="torqueScale_motor_brake" value="1, .8"/>
+			</property>
+
+			<property class="wheel2">
+				<property name="tireTransform" value="Origin/backLeftWheelJoint"/>
+				<property name="tireSuspensionPercent" value="1"/>
+				<property name="torqueScale_motor_brake" value="1, 1"/>
+			</property>
+
+			<property class="wheel3">
+				<property name="tireTransform" value="Origin/backRightWheelJoint"/>
+				<property name="tireSuspensionPercent" value="1"/>
+				<property name="torqueScale_motor_brake" value="1, 1"/>
+			</property>
+
+			<property class="headlight">
+				<property name="class" value="Headlight"/>
+				<property name="transform" value="Origin/headlight"/>
+				<property name="bright" value=".75"/>
+			</property>
+
+			<property class="storage">
+				<property name="class" value="Storage"/>
+				<property name="display_name" value="basket"/>
+				<property name="slot_type" value="basket"/>
+				<property name="mesh" value="basket"/>
+				<property name="transform" value="basket"/>
+			</property>
+		</vehicle>
+	</append>
+</configs>

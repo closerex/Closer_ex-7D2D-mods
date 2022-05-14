@@ -37,6 +37,8 @@ public class AutoRemove : TrackedBehaviourBase
     protected override void OnConnectedToServer(PooledBinaryReader _br)
     {
         lifetime = _br.ReadSingle();
+        if (lifetime > 0)
+            Destroy(gameObject, lifetime);
     }
 }
 

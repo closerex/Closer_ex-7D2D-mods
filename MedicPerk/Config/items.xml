@@ -23,7 +23,7 @@
 			<property name="DegradationBreaksAfter" value="false"/>
 			<property name="SoundJammed" value="weapon_jam"/>
 			<property name="Attachments" value="meleeToolFlashlight02"/>
-			<property name="CrosshairOnAim" value="true"/>
+			<property name="CrosshairOnAim" value="false"/>
 			<!-- aimTest -->
 			<property name="CrosshairUpAfterShot" value="false"/>
 			<!-- aimTest -->
@@ -69,7 +69,7 @@
 				<property name="Class" value="Zoom"/>
 				<property name="Zoom_max_out" value="55"/>
 				<property name="Zoom_max_in" value="55"/>
-				<property name="ScopeCameraOffset" value="-0.0004,-.0155,-0.035"/>
+				<property name="ScopeCameraOffset" value="-0.0004,-.0155,-0.04"/>
 			</property>
 			
 			<effect_group name="gunMedicPistol">
