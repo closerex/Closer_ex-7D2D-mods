@@ -59,6 +59,9 @@
 				<property name="horRotationTransform" value="HornWeapon/WeaponRoot/Turret"/>
 				<!-- the transform to rotate on x axis /-->
 				<property name="verRotationTransform" value="HornWeapon/WeaponRoot/Turret/MortarG_Barrel02"/>
+				<!-- the transform which the Ray checking for hit position origins from. /-->
+				<!-- default: horn weapon transform; when using default value, the origin position will move up by 2 units /-->
+				<!--property name="hitRaycastTransform" value="HornWeapon/WeaponRoot"/-->
 				<!-- the transform with the particle system /-->
 				<property name="particle_transform" value="HornWeapon/WeaponRoot/Turret/MortarG_Barrel02/ShootPoint"/>
 				<!-- max euler angle for verticle rotation transform /-->

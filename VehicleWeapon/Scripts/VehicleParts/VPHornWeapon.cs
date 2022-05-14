@@ -19,6 +19,8 @@ public class VPHornWeapon : VehiclePart
     protected Transform transform = null;
     protected Transform horRotTrans = null;
     protected Transform verRotTrans = null;
+    protected Transform hitRayTrans = null;
+    protected bool hasRaycastTransform = false;
     protected ParticleSystem hornSystem = null;
     protected SubExplosionInitializer initializer = null;
     protected EntityPlayerLocal player = null;
@@ -99,6 +101,11 @@ public class VPHornWeapon : VehiclePart
         transform = GetTransform();
         horRotTrans = GetTransform("horRotationTransform");
         verRotTrans = GetTransform("verRotationTransform");
+        hitRayTrans = GetTransform("hitRaycastTransform");
+        if (!hitRayTrans)
+            hitRayTrans = transform;
+        else
+            hasRaycastTransform = true;
         Transform hornTrans = GetParticleTransform();
         if(hornTrans)
         {
@@ -232,7 +239,7 @@ public class VPHornWeapon : VehiclePart
         player.bag.DecItem(ammoValue, count);
     }
 
-    public void DoHornClient(int count, uint seed)
+    public virtual void DoHornClient(int count, uint seed)
     {
         if(hornSystem)
         {
@@ -360,7 +367,7 @@ public class VPHornWeapon : VehiclePart
     protected virtual bool DoRaycast(out RaycastHit hitInfo)
     {
         Ray lookRay = player.playerCamera.ScreenPointToRay(Input.mousePosition);
-        lookRay.origin = transform.position + Vector3.up * 2;
+        lookRay.origin = hasRaycastTransform ? hitRayTrans.position : transform.position + Vector3.up * 2;
         return Physics.Raycast(lookRay, out hitInfo);
     }
 
