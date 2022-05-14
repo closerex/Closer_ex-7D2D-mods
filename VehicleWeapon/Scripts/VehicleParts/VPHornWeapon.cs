@@ -367,7 +367,7 @@ public class VPHornWeapon : VehiclePart
     protected virtual bool DoRaycast(out RaycastHit hitInfo)
     {
         Ray lookRay = player.playerCamera.ScreenPointToRay(Input.mousePosition);
-        lookRay.origin = hasRaycastTransform ? hitRayTrans.position : transform.position + Vector3.up * 2;
+        lookRay.origin = hasRaycastTransform ? hitRayTrans.position : hitRayTrans.position + Vector3.up * 2;
         return Physics.Raycast(lookRay, out hitInfo);
     }
 
