@@ -56,10 +56,6 @@ public class VPHornWeapon : VehiclePart
     public override void InitPrefabConnections()
     {
         base.InitPrefabConnections();
-        rotator = vehicle.FindPart("hornWeaponRotator") as VPHornWeaponRotator;
-        if (rotator == null)
-            return;
-
         Transform hornTrans = GetParticleTransform();
         if (hornTrans)
         {
@@ -70,6 +66,8 @@ public class VPHornWeapon : VehiclePart
                 emission.enabled = false;
             }
         }
+
+        rotator = vehicle.FindPart("hornWeaponRotator") as VPHornWeaponRotator;
     }
 
     public override void Update(float _dt)
