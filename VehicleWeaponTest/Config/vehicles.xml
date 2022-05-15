@@ -25,7 +25,7 @@
 
 			<!-- vehicle part class must be hornWeapon /-->
 			<property class="hornWeapon">
-				<!-- class should be HornWeapon or its subclasses /-->
+				<!-- class must be HornWeapon or its subclasses /-->
 				<property name="class" value="HornWeapon,VehicleWeapon"/>
 				<!-- how many rounds to emit in one cycle; /-->
 				<!-- default: 1 /-->
@@ -56,17 +56,26 @@
 				<property name="notReadySound" value="medic_module_toggle_off"/>
 				<!-- sound to play after a horn process, simulating reloading /-->
 				<property name="reloadSound" value="shotgun_reload"/>
+				<!-- the transform with the particle system /-->
+				<property name="particle_transform" value="HornWeapon/WeaponRoot/Turret/MortarG_Barrel02/ShootPoint"/>
+			</property>
+			
+			<!-- vehicle part class must be hornWeaponRotator; does not need to be placed after hornWeapon /-->
+			<!-- this part controls the rotation of the hornWeapon, by default calculating the parabola of the particle according to mouse position and auto adjusting rotation of rotating transforms /-->
+			<property class="hornWeaponRotator">
+				<!-- class must be HornWeapon or its subclasses /-->
+				<property name="class" value="HornWeaponRotator,VehicleWeapon"/>
 				<!-- the horn weapon transform /-->
 				<property name="transform" value="HornWeapon/WeaponRoot"/>
 				<!-- the transform to rotate on y axis /-->
 				<property name="horRotationTransform" value="HornWeapon/WeaponRoot/Turret"/>
 				<!-- the transform to rotate on x axis /-->
 				<property name="verRotationTransform" value="HornWeapon/WeaponRoot/Turret/MortarG_Barrel02"/>
+				
 				<!-- the transform which the Ray checking for hit position origins from. /-->
 				<!-- default: horn weapon transform; when using default value, the origin position will move up by 2 units /-->
 				<!--property name="hitRaycastTransform" value="HornWeapon/WeaponRoot"/-->
-				<!-- the transform with the particle system /-->
-				<property name="particle_transform" value="HornWeapon/WeaponRoot/Turret/MortarG_Barrel02/ShootPoint"/>
+				
 				<!-- max euler angle for verticle rotation transform /-->
 				<!-- default: 45f /-->
 				<property name="verticleMaxRotation" value="30"/>

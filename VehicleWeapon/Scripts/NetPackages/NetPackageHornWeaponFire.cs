@@ -20,7 +20,8 @@ public class NetPackageHornWeaponFire : NetPackageHornWeaponUpdate
             {
                 SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageHornWeaponFire>().Setup(entityId, horEuler, verEuler, count, seed));
             }
-            horn.NetSyncUpdate(horEuler, verEuler);
+            if(horn.Rotator != null)
+                horn.Rotator.NetSyncUpdate(horEuler, verEuler);
             horn.DoHornClient(count, seed);
         }
     }

@@ -87,6 +87,7 @@
     <Compile Include="Scripts\NetPackages\NetPackageHornWeaponFire.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageHornWeaponUpdate.cs" />
     <Compile Include="Scripts\VehicleParts\VPHornWeapon.cs" />
+    <Compile Include="Scripts\VehicleParts\VPHornWeaponRotator.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -23,10 +23,10 @@ public class NetPackageHornWeaponUpdate : NetPackage
         EntityVehicle entity = _world.GetEntity(entityId) as EntityVehicle;
         if(entity)
         {
-            var horn = entity.GetVehicle().FindPart("hornWeapon") as VPHornWeapon;
+            var rotator = entity.GetVehicle().FindPart("hornWeaponRotator") as VPHornWeaponRotator;
             if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer)
                 SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageHornWeaponUpdate>().Setup(entityId, horEuler, verEuler), false, -1, entity.AttachedMainEntity.entityId);
-            horn.NetSyncUpdate(horEuler, verEuler);
+            rotator.NetSyncUpdate(horEuler, verEuler);
         }
     }
 
