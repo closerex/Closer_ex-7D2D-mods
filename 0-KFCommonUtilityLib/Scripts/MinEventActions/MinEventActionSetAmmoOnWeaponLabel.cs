@@ -17,9 +17,6 @@ class MinEventActionSetAmmoOnWeaponLabel : MinEventActionRemoteHoldingBase
                 case "slot":
                     slot = int.Parse(_attribute.Value);
                     break;
-                case "consume_ammo":
-                    consume_ammo = bool.Parse(_attribute.Value);
-                    break;
                 default:
                     flag = false;
                     break;
@@ -33,6 +30,7 @@ class MinEventActionSetAmmoOnWeaponLabel : MinEventActionRemoteHoldingBase
     {
         //somehow when onSelfEquipStart is fired, holding item value is not successfully updated in MinEventParams
         useHoldingItemValue = _eventType == MinEventTypes.onSelfEquipStart;
+        consume_ammo = _eventType == MinEventTypes.onSelfRangedBurstShot;
         return base.CanExecute(_eventType, _params);
     }
 

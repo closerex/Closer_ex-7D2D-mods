@@ -39,6 +39,9 @@
 				<!-- interval between two horn triggers /-->
 				<!-- default: 1f /-->
 				<property name="hornInterval" value="2"/>
+				<!-- name of the item serving as ammo; ammo must be placed in driver's bag, and is consumed by burstRepeat; /-->
+				<!-- default: empty; when ammo name is empty, horn will not consume ammo /-->
+				<property name="ammo" value="ammoRocketFrag"/>
 				<!-- the explosion particle; explosion data and effect groups are taken from its bound item class /-->
 				<property name="particleIndex" value="#@modfolder(CustomParticleScriptTest):Resources/GuppyTest.unity3d?AirBurstExplosion$thrownGrenadeAirBurst"/>
 				<!-- should the particle trigger explosion on collision? /-->
@@ -70,12 +73,18 @@
 				<!-- min euler angle for verticle rotation transform /-->
 				<!-- default: 0f /-->
 				<property name="verticleMinRotation" value="0"/>
+				<!-- rotate speed for verticle rotation transform /-->
+				<!-- default: 360f /-->
+				<property name="verticleRotationSpeed" value="10"/>
 				<!-- max euler angle for horizontal rotation transform /-->
 				<!-- default: 180f /-->
-				<property name="horizontalMaxRotation" value="120"/>
+				<property name="horizontalMaxRotation" value="180"/>
 				<!-- min euler angle for horizontal rotation transform /-->
 				<!-- default: -180f /-->
-				<property name="horizontalMinRotation" value="-120"/>
+				<property name="horizontalMinRotation" value="-180"/>
+				<!-- rotate speed for horizontal rotation transform /-->
+				<!-- default: 360f /-->
+				<property name="horizontalRotationSpeed" value="60"/>
 				<!-- the constant speed of the particle /-->
 				<!-- default: same as particle systems property if particle system start speed is constant; otherwise 30f /-->
 				<property name="projectileSpeed" value="30"/>
@@ -83,26 +92,29 @@
 				<!-- default: same as particle systems property if particle system gravity modifier is constant; otherwise 1f /-->
 				<property name="gravity" value="1"/>
 				<!-- local scale of the preview shape for explosion entity radius /-->
-				<!-- default: entity radius of explosion data /-->
+				<!-- default: entity radius of explosion data; when set to 0, entity radius preview is not created /-->
 				<property name="previewScaleEntity" value="4"/>
 				<!-- local scale of the preview shape for explosion block radius /-->
-				<!-- default: block radius of explosion data /-->
+				<!-- default: block radius of explosion data; when set to 0, block radius preview is not created /-->
 				<property name="previewScaleBlock" value="2"/>
-				<!-- color of the preview shape for explosion entity radius /-->
+				<!-- color of the preview shape for explosion entity radius when transforms are on ideal angle /-->
 				<!-- default: transparent; when set to transparent, entity radius preview is not created /-->
-				<property name="previewColorEntity" value="#F70D1A30"/>
-				<!-- color of the preview shape for explosion block radius /-->
+				<property name="previewColorEntityOnTarget" value="#49FF0030"/>
+				<!-- color of the preview shape for explosion entity radius when transforms are still rotating /-->
+				<!-- default: transparent; /-->
+				<property name="previewColorEntityAiming" value="#F70D1A30"/>
+				<!-- color of the preview shape for explosion block radius when transforms are on ideal angle /-->
 				<!-- default: transparent; when set to transparent, block radius preview is not created /-->
-				<property name="previewColorBlock" value="#42D8EE30"/>
+				<property name="previewColorBlockOnTarget" value="#42D8EE30"/>
+				<!-- color of the preview shape for explosion block radius when transforms are still rotating /-->
+				<!-- default: transparent; /-->
+				<property name="previewColorBlockAiming" value="#F70D1A30"/>
 				<!-- primitive shape of entity radius preview /-->
 				<!-- default: Sphere /-->
 				<property name="previewTypeEntity" value="Sphere"/>
 				<!-- primitive shape of block radius preview /-->
 				<!-- default: Sphere /-->
 				<property name="previewTypeBlock" value="Cube"/>
-				<!-- name of the item serving as ammo; ammo must be placed in driver's bag, and is consumed by burstRepeat; /-->
-				<!-- default: empty; when ammo name is empty, horn will not consume ammo /-->
-				<property name="ammo" value="ammoRocketFrag"/>
 			</property>
 
 			<property class="battery">
