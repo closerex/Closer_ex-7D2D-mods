@@ -2,17 +2,19 @@
 
 public class NetPackageHornWeaponUpdate : NetPackage
 {
-    public NetPackageHornWeaponUpdate Setup(int entityId, float horRot, float verRot)
+    public NetPackageHornWeaponUpdate Setup(int entityId, float horRot, float verRot, int seat, int slot)
     {
         this.entityId = entityId;
         this.horEuler = horRot;
         this.verEuler = verRot;
+        this.seat = seat;
+        this.slot = slot;
         return this;
     }
 
     public override int GetLength()
     {
-        return 38;
+        return 40;
     }
 
     public override void ProcessPackage(World _world, GameManager _callbacks)
@@ -23,10 +25,10 @@ public class NetPackageHornWeaponUpdate : NetPackage
         EntityVehicle entity = _world.GetEntity(entityId) as EntityVehicle;
         if(entity)
         {
-            var rotator = entity.GetVehicle().FindPart("hornWeaponRotator") as VPHornWeaponRotator;
+            var manager = entity.GetVehicle().FindPart(VPHornWeaponManager.HornWeaponManagerName) as VPHornWeaponManager;
             if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer)
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageHornWeaponUpdate>().Setup(entityId, horEuler, verEuler), false, -1, entity.AttachedMainEntity.entityId);
-            rotator.NetSyncUpdate(horEuler, verEuler);
+                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageHornWeaponUpdate>().Setup(entityId, horEuler, verEuler, seat, slot), false, -1, entity.AttachedMainEntity.entityId);
+            manager.NetSyncUpdate(seat, slot, horEuler, verEuler);
         }
     }
 
@@ -35,6 +37,8 @@ public class NetPackageHornWeaponUpdate : NetPackage
         entityId = _reader.ReadInt32();
         horEuler = _reader.ReadSingle();
         verEuler = _reader.ReadSingle();
+        seat = _reader.ReadByte();
+        slot = _reader.ReadByte();
     }
 
     public override void write(PooledBinaryWriter _writer)
@@ -43,10 +47,14 @@ public class NetPackageHornWeaponUpdate : NetPackage
         _writer.Write(entityId);
         _writer.Write(horEuler);
         _writer.Write(verEuler);
+        _writer.Write((byte)seat);
+        _writer.Write((byte)slot);
     }
 
     protected int entityId;
     protected float horEuler;
     protected float verEuler;
+    protected int seat;
+    protected int slot;
 }
 

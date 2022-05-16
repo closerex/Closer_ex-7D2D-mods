@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class VPHornWeapon : VehiclePart
@@ -13,6 +14,7 @@ public class VPHornWeapon : VehiclePart
     protected bool explodeOnDeath = false;
     protected string hornEmptySound = string.Empty;
     protected string hornNotReadySound = string.Empty;
+    protected string hornNotOnTargetSound = string.Empty;
     protected string hornReloadSound = string.Empty;
     protected CustomParticleComponents component = null;
     protected ParticleSystem hornSystem = null;
@@ -21,11 +23,23 @@ public class VPHornWeapon : VehiclePart
     protected bool isCoRunning = false;
     protected ItemValue ammoValue = ItemValue.None.Clone();
     protected VPHornWeaponRotator rotator = null;
+    protected int seat = 0;
+    protected int slot = -1;
+    protected HornJuncture timing;
+
+    protected enum HornJuncture
+    {
+        Anytime,
+        OnTarget,
+        FirstShot,
+        FirstShotOnTarget
+    }
 
     public bool HasOperator { get => hasOperator; }
     public ParticleSystem HornSystem { get => hornSystem; }
     public CustomParticleComponents Component { get => component; }
     public VPHornWeaponRotator Rotator { get => rotator; }
+    public int Seat { get => seat; }
     public override void SetProperties(DynamicProperties _properties)
     {
         base.SetProperties(_properties);
@@ -45,10 +59,22 @@ public class VPHornWeapon : VehiclePart
         _properties.ParseString("ammo", ref str);
         if (!string.IsNullOrEmpty(str))
             ammoValue = ItemClass.GetItem(str, false);
+        str = null;
+        _properties.ParseString("hornWhen", ref str);
+        if(!string.IsNullOrEmpty(str))
+            Enum.TryParse<HornJuncture>(str, true, out timing);
 
         _properties.ParseString("emptySound", ref hornEmptySound);
         _properties.ParseString("notReadySound", ref hornNotReadySound);
+        _properties.ParseString("notOnTargetSound", ref hornNotOnTargetSound);
         _properties.ParseString("reloadSound", ref hornReloadSound);
+
+        _properties.ParseInt("seat", ref seat);
+        if(seat < 0)
+        {
+            Log.Error("seat can not be less than 0! setting to 0...");
+            seat = 0;
+        }
 
         player = GameManager.Instance.World.GetPrimaryPlayer();
     }
@@ -66,8 +92,18 @@ public class VPHornWeapon : VehiclePart
                 emission.enabled = false;
             }
         }
+        string rotatorName = null;
+        properties.ParseString("rotator", ref rotatorName);
+        if(!string.IsNullOrEmpty(rotatorName))
+            rotator = vehicle.FindPart(rotatorName) as VPHornWeaponRotator;
 
-        rotator = vehicle.FindPart("hornWeaponRotator") as VPHornWeaponRotator;
+        if (rotator != null)
+            rotator.SetHornWeapon(this);
+    }
+
+    public void SetSlot(int slot)
+    {
+        this.slot = slot;
     }
 
     public override void Update(float _dt)
@@ -79,13 +115,13 @@ public class VPHornWeapon : VehiclePart
 
         if (!hasOperator)
         {
-            if (vehicle.entity.HasDriver && player && vehicle.entity.AttachedMainEntity.entityId == player.entityId)
+            if (player && vehicle.entity.FindAttachSlot(player) == seat)
                 OnPlayerEnter();
             else
                 return;
         }
 
-        if(!vehicle.entity.HasDriver)
+        if(vehicle.entity.FindAttachSlot(player) != seat)
         {
             OnPlayerDetach();
             return;
@@ -120,17 +156,43 @@ public class VPHornWeapon : VehiclePart
             rotator.DestroyPreview();
     }
 
-    public virtual void DoHorn()
+    public virtual bool DoHorn(bool firstShot)
     {
+        switch(timing)
+        {
+            case HornJuncture.Anytime:
+                break;
+            case HornJuncture.OnTarget:
+                if (rotator != null && !rotator.OnTarget)
+                {
+                    vehicle.entity.PlayOneShot(hornNotOnTargetSound);
+                    return false;
+                }
+                break;
+            case HornJuncture.FirstShot:
+                if (!firstShot)
+                    return false;
+                break;
+            case HornJuncture.FirstShotOnTarget:
+                if (!firstShot)
+                    return false;
+                else if (rotator != null && !rotator.OnTarget)
+                {
+                    vehicle.entity.PlayOneShot(hornNotOnTargetSound);
+                    return false;
+                }
+                break;
+        }
+
         if(ammoValue.type > 0 && player.bag.GetItemCount(ammoValue) < burstRepeat)
         {
             vehicle.entity.PlayOneShot(hornEmptySound);
-            return;
+            return false;
         }
         if(hornCooldown > 0)
         {
             vehicle.entity.PlayOneShot(hornNotReadySound);
-            return;
+            return false;
         }
 
         if (burstInterval > 0)
@@ -142,7 +204,7 @@ public class VPHornWeapon : VehiclePart
             vehicle.entity.PlayOneShot(hornReloadSound);
         }
         hornCooldown = hornInterval;
-        return;
+        return true;
     }
 
     protected virtual IEnumerator DoHornCo()
@@ -167,11 +229,11 @@ public class VPHornWeapon : VehiclePart
     {
         uint seed = (uint)UnityEngine.Random.Range(int.MinValue, int.MaxValue);
         if (!SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer)
-            SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageHornWeaponFire>().Setup(vehicle.entity.entityId, rotator != null ? rotator.HorRotTrans.localEulerAngles.y : 0, rotator != null ? rotator.VerRotTrans.localEulerAngles.x : 0, count, seed));
+            SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageHornWeaponFire>().Setup(vehicle.entity.entityId, rotator != null ? rotator.HorRotTrans.localEulerAngles.y : 0, rotator != null ? rotator.VerRotTrans.localEulerAngles.x : 0, seat, slot, count, seed));
         else
         {
             if(SingletonMonoBehaviour<ConnectionManager>.Instance.ClientCount() > 0)
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageHornWeaponFire>().Setup(vehicle.entity.entityId, rotator != null ? rotator.HorRotTrans.localEulerAngles.y : 0, rotator != null ? rotator.VerRotTrans.localEulerAngles.x : 0, count, seed));
+                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageHornWeaponFire>().Setup(vehicle.entity.entityId, rotator != null ? rotator.HorRotTrans.localEulerAngles.y : 0, rotator != null ? rotator.VerRotTrans.localEulerAngles.x : 0, seat, slot, count, seed));
             DoHornClient(count, seed);
         }
         UseHorn();

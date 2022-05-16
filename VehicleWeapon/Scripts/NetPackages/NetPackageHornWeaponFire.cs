@@ -4,7 +4,7 @@ public class NetPackageHornWeaponFire : NetPackageHornWeaponUpdate
 {
     public override int GetLength()
     {
-        return base.GetLength();
+        return base.GetLength() + 5;
     }
 
     public override void ProcessPackage(World _world, GameManager _callbacks)
@@ -13,36 +13,35 @@ public class NetPackageHornWeaponFire : NetPackageHornWeaponUpdate
             return;
 
         EntityVehicle entity = _world.GetEntity(entityId) as EntityVehicle;
-        var horn = entity?.GetVehicle().FindPart("hornWeapon") as VPHornWeapon;
-        if (horn != null)
+        var manager = entity?.GetVehicle().FindPart(VPHornWeaponManager.HornWeaponManagerName) as VPHornWeaponManager;
+        if (manager != null)
         {
             if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer)
             {
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageHornWeaponFire>().Setup(entityId, horEuler, verEuler, count, seed));
+                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageHornWeaponFire>().Setup(entityId, horEuler, verEuler, seat, slot, count, seed));
             }
-            if(horn.Rotator != null)
-                horn.Rotator.NetSyncUpdate(horEuler, verEuler);
-            horn.DoHornClient(count, seed);
+            manager.NetSyncUpdate(seat, slot, horEuler, verEuler);
+            manager.DoHornClient(seat, slot, count, seed);
         }
     }
 
     public override void read(PooledBinaryReader _reader)
     {
         base.read(_reader);
-        count = _reader.ReadChar();
+        count = _reader.ReadByte();
         seed = _reader.ReadUInt32();
     }
 
     public override void write(PooledBinaryWriter _writer)
     {
         base.write(_writer);
-        _writer.Write((char)count);
+        _writer.Write((byte)count);
         _writer.Write(seed);
     }
 
-    public NetPackageHornWeaponFire Setup(int entityId, float horRot, float verRot, int count, uint seed)
+    public NetPackageHornWeaponFire Setup(int entityId, float horRot, float verRot, int seat, int slot, int count, uint seed)
     {
-        base.Setup(entityId, horRot, verRot);
+        base.Setup(entityId, horRot, verRot, seat, slot);
         this.count = count;
         this.seed = seed;
         return this;

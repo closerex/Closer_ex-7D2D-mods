@@ -5,11 +5,11 @@ class VehicleHornPatch
 {
     private static bool Prefix(EntityVehicle __instance)
     {
-        VPHornWeapon horn = __instance.GetVehicle().FindPart("hornWeapon") as VPHornWeapon;
+        VPHornWeaponManager horn = __instance.GetVehicle().FindPart(VPHornWeaponManager.HornWeaponManagerName) as VPHornWeaponManager;
         if (horn != null)
         {
-            if (__instance.HasDriver && __instance.AttachedMainEntity is EntityPlayerLocal)
-                horn.DoHorn();
+            if (!GameManager.IsDedicatedServer)
+                horn.DoHorn(__instance.FindAttachSlot(__instance.world.GetPrimaryPlayer()));
             return false;
         }
         return true;
