@@ -9,7 +9,7 @@ class VehicleHornPatch
         if (horn != null)
         {
             if (!GameManager.IsDedicatedServer)
-                horn.DoHorn(__instance.FindAttachSlot(__instance.world.GetPrimaryPlayer()));
+                horn.DoFire(__instance.FindAttachSlot(__instance.world.GetPrimaryPlayer()), true);
             return false;
         }
         return true;

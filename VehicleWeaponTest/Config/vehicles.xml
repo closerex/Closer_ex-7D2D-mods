@@ -37,6 +37,9 @@
 				<!-- which seat controls this weapon /-->
 				<!-- default: 0 /-->
 				<property name="seat" value="0"/>
+				<!-- priority of this weapon  /-->
+				<!-- default: 0 /-->
+				<property name="slot" value="0"/>
 				<!-- how many rounds to emit in one cycle; /-->
 				<!-- default: 1 /-->
 				<property name="burstCount" value="2"/>
@@ -60,6 +63,9 @@
 				<!-- should the particle trigger explosion on death? /-->
 				<!-- default: false /-->
 				<property name="explodeOnDeath" value="false"/>
+				<!-- allow you to set horn sound for each horn weapon /-->
+				<!-- default: hornSound of the vehicle /-->
+				<property name="hornSound" value="m136_fire"/>
 				<!-- sound to play when trying to horn without sufficient ammo in bag /-->
 				<property name="emptySound" value="dryfire"/>
 				<!-- sound to play when trying to horn while horn interval is active /-->
@@ -119,7 +125,7 @@
 				<!-- default: 360f /-->
 				<property name="horizontalRotationSpeed" value="60"/>
 				<!-- the constant speed of the particle /-->
-				<!-- default: same as particle systems property if particle system start speed is constant; otherwise 30f /-->
+				<!-- default: same as particle systems property if particle system start speed is constant; otherwise 0f /-->
 				<property name="projectileSpeed" value="30"/>
 				<!-- the constant gravity modifier of the particle /-->
 				<!-- default: same as particle systems property if particle system gravity modifier is constant; otherwise 1f /-->
@@ -150,6 +156,46 @@
 				<property name="previewTypeBlock" value="Cube"/>
 			</property>
 
+			<property class="hornWeaponLaser01">
+				<property name="class" value="HornWeapon,VehicleWeapon"/>
+				<property name="seat" value="0"/>
+				<property name="slot" value="2"/>
+				<property name="burstCount" value="1"/>
+				<property name="burstInterval" value="0"/>
+				<property name="burstRepeat" value="1"/>
+				<property name="hornInterval" value="0.5"/>
+				<property name="ammo" value="ammo9mmBulletBall"/>
+				<property name="particleIndex" value="#@modfolder:Resources/plasmaExplosion.unity3d?Plasma_Hit_FX_v1$itemPlasmaSmall"/>
+				<property name="explodeOnCollision" value="true"/>
+				<property name="explodeOnDeath" value="false"/>
+				<property name="hornSound" value="plasma_shoot"/>
+				<property name="emptySound" value="dryfire"/>
+				<property name="notReadySound" value="medic_module_toggle_off"/>
+				<property name="notOnTargetSound" value="ui_denied"/>
+				<property name="particle_transform" value="HornWeapon/LaserTower01/Laser_tower_v1_arm/Laser_tower_v1_laser/Plasma_bullet"/>
+				<property name="hornWhen" value="FirstShot"/>
+			</property>
+			
+			<property class="hornWeaponLaser02">
+				<property name="class" value="HornWeapon,VehicleWeapon"/>
+				<property name="seat" value="0"/>
+				<property name="slot" value="1"/>
+				<property name="burstCount" value="1"/>
+				<property name="burstInterval" value="0"/>
+				<property name="burstRepeat" value="1"/>
+				<property name="hornInterval" value="0.5"/>
+				<property name="ammo" value="ammo9mmBulletBall"/>
+				<property name="particleIndex" value="#@modfolder:Resources/plasmaExplosion.unity3d?Plasma_Hit_FX_v1$itemPlasmaSmall"/>
+				<property name="explodeOnCollision" value="true"/>
+				<property name="explodeOnDeath" value="false"/>
+				<property name="hornSound" value="plasma_shoot"/>
+				<property name="emptySound" value="dryfire"/>
+				<property name="notReadySound" value="medic_module_toggle_off"/>
+				<property name="notOnTargetSound" value="ui_denied"/>
+				<property name="particle_transform" value="HornWeapon/LaserTower02/Laser_tower_v1_arm/Laser_tower_v1_laser/Plasma_bullet"/>
+				<property name="hornWhen" value="FirstShot"/>
+			</property>
+			
 			<property class="battery">
 				<property name="class" value="Battery"/>
 				<property name="slot_type" value="battery"/>

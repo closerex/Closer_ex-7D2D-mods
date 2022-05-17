@@ -23,5 +23,19 @@
 				<passive_effect name="DegradationMax" operation="base_set" value="1200"/>
 			</effect_group>
 		</item>
+		<item name="itemPlasmaSmall">
+			<property name="Material" value="Mstone"/>
+			<property name="Canhold" value="false"/>
+			<property name="Explosion.ParticleIndex" value="#@modfolder:Resources/plasmaExplosion.unity3d?Plasma_Hit_FX_v1$itemPlasmaSmall"/>
+			<property name="Explosion.RadiusBlocks" value="1"/>
+			<property name="Explosion.RadiusEntities" value="1.5"/>
+			<property name="Explosion.Duration" value="1"/>
+			<property name="Explosion.AudioName" value="plasma_explosion"/>
+			<property name="Explosion.BlastPower" value="20"/>
+			<effect_group tiered="false">
+				<passive_effect name="BlockDamage" operation="base_set" value="5" tags="perkDemolitionsExpert"/>
+				<passive_effect name="EntityDamage" operation="base_set" value="50" tags="perkDemolitionsExpert"/>
+			</effect_group>
+		</item>
 	</append>
 </configs>

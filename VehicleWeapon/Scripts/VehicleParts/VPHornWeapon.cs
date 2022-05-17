@@ -2,44 +2,26 @@
 using System.Collections;
 using UnityEngine;
 
-public class VPHornWeapon : VehiclePart
+public class VPHornWeapon : VPWeaponBase
 {
     protected int burstCount = 1;
     protected int burstRepeat = 1;
     protected float burstInterval = 0f;
     protected float hornInterval = 1f;
     protected float hornCooldown = 0f;
-    protected bool hasOperator = false;
     protected bool explodeOnCollision = true;
     protected bool explodeOnDeath = false;
     protected string hornEmptySound = string.Empty;
-    protected string hornNotReadySound = string.Empty;
-    protected string hornNotOnTargetSound = string.Empty;
     protected string hornReloadSound = string.Empty;
+    protected string hornFireSound = string.Empty;
     protected CustomParticleComponents component = null;
     protected ParticleSystem hornSystem = null;
     protected SubExplosionInitializer initializer = null;
-    protected EntityPlayerLocal player = null;
     protected bool isCoRunning = false;
     protected ItemValue ammoValue = ItemValue.None.Clone();
-    protected VPHornWeaponRotator rotator = null;
-    protected int seat = 0;
-    protected int slot = -1;
-    protected HornJuncture timing;
 
-    protected enum HornJuncture
-    {
-        Anytime,
-        OnTarget,
-        FirstShot,
-        FirstShotOnTarget
-    }
-
-    public bool HasOperator { get => hasOperator; }
     public ParticleSystem HornSystem { get => hornSystem; }
     public CustomParticleComponents Component { get => component; }
-    public VPHornWeaponRotator Rotator { get => rotator; }
-    public int Seat { get => seat; }
     public override void SetProperties(DynamicProperties _properties)
     {
         base.SetProperties(_properties);
@@ -59,29 +41,15 @@ public class VPHornWeapon : VehiclePart
         _properties.ParseString("ammo", ref str);
         if (!string.IsNullOrEmpty(str))
             ammoValue = ItemClass.GetItem(str, false);
-        str = null;
-        _properties.ParseString("hornWhen", ref str);
-        if(!string.IsNullOrEmpty(str))
-            Enum.TryParse<HornJuncture>(str, true, out timing);
 
         _properties.ParseString("emptySound", ref hornEmptySound);
-        _properties.ParseString("notReadySound", ref hornNotReadySound);
-        _properties.ParseString("notOnTargetSound", ref hornNotOnTargetSound);
         _properties.ParseString("reloadSound", ref hornReloadSound);
-
-        _properties.ParseInt("seat", ref seat);
-        if(seat < 0)
-        {
-            Log.Error("seat can not be less than 0! setting to 0...");
-            seat = 0;
-        }
-
-        player = GameManager.Instance.World.GetPrimaryPlayer();
+        hornFireSound = vehicle.GetHornSoundName();
+        _properties.ParseString("hornSound", ref hornFireSound);
     }
 
     public override void InitPrefabConnections()
     {
-        base.InitPrefabConnections();
         Transform hornTrans = GetParticleTransform();
         if (hornTrans)
         {
@@ -92,119 +60,68 @@ public class VPHornWeapon : VehiclePart
                 emission.enabled = false;
             }
         }
-        string rotatorName = null;
-        properties.ParseString("rotator", ref rotatorName);
-        if(!string.IsNullOrEmpty(rotatorName))
-            rotator = vehicle.FindPart(rotatorName) as VPHornWeaponRotator;
-
-        if (rotator != null)
-            rotator.SetHornWeapon(this);
+        base.InitPrefabConnections();
     }
 
-    public void SetSlot(int slot)
-    {
-        this.slot = slot;
-    }
 
     public override void Update(float _dt)
     {
-        base.Update(_dt);
-
         if (!isCoRunning && hornCooldown > 0)
             hornCooldown -= _dt;
 
-        if (!hasOperator)
-        {
-            if (player && vehicle.entity.FindAttachSlot(player) == seat)
-                OnPlayerEnter();
-            else
-                return;
-        }
-
-        if(vehicle.entity.FindAttachSlot(player) != seat)
-        {
-            OnPlayerDetach();
-            return;
-        }
+        base.Update(_dt);
     }
 
-    protected virtual void OnPlayerEnter()
+    protected override void OnPlayerEnter()
     {
-        hasOperator = true;
+        base.OnPlayerEnter();
         initializer = hornSystem.gameObject.AddComponent<SubExplosionInitializer>();
         initializer.data = component.BoundExplosionData;
-        initializer.entityAlive = vehicle.entity.AttachedMainEntity as EntityAlive;
+        initializer.entityAlive = player;
         if (component.BoundItemClass != null)
             initializer.value = new ItemValue(component.BoundItemClass.Id);
         if (explodeOnDeath)
             initializer.SetExplodeOnDeath(explodeOnCollision);
-
-        if (rotator != null)
-            rotator.CreatePreview();
     }
 
-    protected virtual void OnPlayerDetach()
+    protected override void OnPlayerDetach()
     {
-        hasOperator = false;
+        base.OnPlayerDetach();
         if (initializer)
         {
             GameObject.Destroy(initializer);
             initializer = null;
         }
-
-        if (rotator != null)
-            rotator.DestroyPreview();
     }
 
-    public virtual bool DoHorn(bool firstShot)
+    public override bool DoFire(bool firstShot)
     {
-        switch(timing)
+        if (base.DoFire(firstShot))
         {
-            case HornJuncture.Anytime:
-                break;
-            case HornJuncture.OnTarget:
-                if (rotator != null && !rotator.OnTarget)
-                {
-                    vehicle.entity.PlayOneShot(hornNotOnTargetSound);
-                    return false;
-                }
-                break;
-            case HornJuncture.FirstShot:
-                if (!firstShot)
-                    return false;
-                break;
-            case HornJuncture.FirstShotOnTarget:
-                if (!firstShot)
-                    return false;
-                else if (rotator != null && !rotator.OnTarget)
-                {
-                    vehicle.entity.PlayOneShot(hornNotOnTargetSound);
-                    return false;
-                }
-                break;
-        }
+            if(ammoValue.type > 0 && player.bag.GetItemCount(ammoValue) < burstRepeat)
+            {
+                vehicle.entity.PlayOneShot(hornEmptySound);
+                return false;
+            }
+            if(hornCooldown > 0)
+            {
+                vehicle.entity.PlayOneShot(notReadySound);
+                return false;
+            }
 
-        if(ammoValue.type > 0 && player.bag.GetItemCount(ammoValue) < burstRepeat)
-        {
-            vehicle.entity.PlayOneShot(hornEmptySound);
-            return false;
-        }
-        if(hornCooldown > 0)
-        {
-            vehicle.entity.PlayOneShot(hornNotReadySound);
-            return false;
-        }
+            if (burstInterval > 0)
+                ThreadManager.StartCoroutine(DoHornCo());
+            else
+            {
+                for(int i = 0; i < burstRepeat; ++i)
+                    DoHornServer(burstCount);
+                vehicle.entity.PlayOneShot(hornReloadSound);
+            }
+            hornCooldown = hornInterval;
 
-        if (burstInterval > 0)
-            ThreadManager.StartCoroutine(DoHornCo());
-        else
-        {
-            for(int i = 0; i < burstRepeat; ++i)
-                DoHornServer(burstCount);
-            vehicle.entity.PlayOneShot(hornReloadSound);
+            return true;
         }
-        hornCooldown = hornInterval;
-        return true;
+        return false;
     }
 
     protected virtual IEnumerator DoHornCo()
@@ -259,10 +176,6 @@ public class VPHornWeapon : VehiclePart
 
     protected virtual void UseHorn()
     {
-        string hornSoundName = this.vehicle.GetHornSoundName();
-        if (hornSoundName.Length > 0)
-        {
-            vehicle.entity.PlayOneShot(hornSoundName, false);
-        }
+        vehicle.entity.PlayOneShot(hornFireSound, false);
     }
 }

@@ -1,0 +1,32 @@
+<configs>
+	<append xpath="/Sounds">
+		<SoundDataNode name="plasma_shoot">
+			<AudioSource name="Sounds/AudioSource_WeaponFire"/>
+			<NetworkAudioSource name="Sounds/AudioSource_WeaponFire_Network"/>
+			<Noise ID="0" noise="52" time="2" muffled_when_crouched="0.8" heat_map_strength="0.75" heat_map_time="180"/>
+				<AudioClip ClipName="#@modfolder:Resources/laserSounds.unity3d?Small_Oneshot_Laser_v1"/>
+				<AudioClip ClipName="#@modfolder:Resources/laserSounds.unity3d?Small_Oneshot_Laser_v2"/>
+				<AudioClip ClipName="#@modfolder:Resources/laserSounds.unity3d?Small_Oneshot_Laser_v3"/>
+				<AudioClip ClipName="#@modfolder:Resources/laserSounds.unity3d?Small_Oneshot_Laser_v4"/>
+				<AudioClip ClipName="#@modfolder:Resources/laserSounds.unity3d?Small_Oneshot_Laser_v5"/>
+				<AudioClip ClipName="#@modfolder:Resources/laserSounds.unity3d?Small_Oneshot_Laser_v6"/>
+			<LocalCrouchVolumeScale value="1"/>
+			<CrouchNoiseScale value="1"/>
+			<NoiseScale value="1"/>
+			<MaxVoices value="30"/>
+			<MaxVoicesPerEntity value="15"/>
+			<MaxRepeatRate value="0.001"/>
+		</SoundDataNode>
+		<SoundDataNode name="plasma_explosion">
+			<AudioSource name="Sounds/AudioSource_Explosion"/>
+			<Noise ID="0" noise="52" time="2" muffled_when_crouched="0.8" heat_map_strength="1" heat_map_time="180"/>
+				<AudioClip ClipName="#@modfolder:Resources/laserSounds.unity3d?Medium_Laser_v1"/>
+			<LocalCrouchVolumeScale value="1"/>
+			<CrouchNoiseScale value="1"/>
+			<NoiseScale value="1"/>
+			<MaxVoices value="40"/>
+			<MaxVoicesPerEntity value="10"/>
+			<MaxRepeatRate value="0.001"/>
+		</SoundDataNode>
+	</append>
+</configs>

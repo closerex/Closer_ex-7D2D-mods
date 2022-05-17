@@ -1,63 +1,25 @@
 ﻿using System;
 using UnityEngine;
 
-public class VPHornWeaponRotator : VehiclePart
+public class VPHornWeaponRotator : VPWeaponRotatorBase
 {
-    protected Transform transform = null;
-    protected Transform horRotTrans = null;
-    protected Transform verRotTrans = null;
-    protected Transform hitRayTrans = null;
-    protected bool hasRaycastTransform = false;
     protected float gravity = 1f;
-    protected float projectileSpeed = 30f;
-    protected float verticleMaxRotation = 45f;
-    protected float verticleMinRotation = 0f;
-    protected float verticleRotSpeed = 360f;
-    protected float horizontalMaxRotation = 180f;
-    protected float horizontalMinRotation = -180f;
-    protected float horizontalRotSpeed = 360f;
-    protected float lastHorRot = 0f;
-    protected float lastVerRot = 0f;
+    protected float projectileSpeed = 0f;
     protected Transform explPreviewTransEntity = null;
     protected Transform explPreviewTransBlock = null;
     protected Color previewColorEntityOnTarget;
     protected Color previewColorEntityAiming;
-    protected float previewScaleEntity;
+    protected float previewScaleEntity = 0;
     protected PrimitiveType previewTypeEntity = PrimitiveType.Sphere;
     protected Color previewColorBlockOnTarget;
     protected Color previewColorBlockAiming;
-    protected float previewScaleBlock;
+    protected float previewScaleBlock = 0;
     protected PrimitiveType previewTypeBlock = PrimitiveType.Sphere;
-    protected bool lastOnTarget = false;
-    protected bool fullCircleRotation = false;
     protected static readonly int colorId = Shader.PropertyToID("_Color");
-    protected EntityPlayerLocal player = null;
-    protected VPHornWeapon horn = null;
-    protected int seat = 0;
-    protected int slot = -1;
-
-    public Transform HorRotTrans { get => horRotTrans; }
-    public Transform VerRotTrans { get => verRotTrans; }
-    public int Seat { get => seat; }
-    public bool OnTarget { get => lastOnTarget; }
 
     public override void SetProperties(DynamicProperties _properties)
     {
         base.SetProperties(_properties);
-
-        _properties.ParseFloat("verticleMaxRotation", ref verticleMaxRotation);
-        verticleMaxRotation = AngleToInferior(verticleMaxRotation);
-        _properties.ParseFloat("verticleMinRotation", ref verticleMinRotation);
-        verticleMinRotation = AngleToInferior(verticleMinRotation);
-        _properties.ParseFloat("verticleRotationSpeed", ref verticleRotSpeed);
-        verticleRotSpeed = Mathf.Abs(verticleRotSpeed);
-        _properties.ParseFloat("horizontalMaxRotation", ref horizontalMaxRotation);
-        horizontalMaxRotation = AngleToInferior(horizontalMaxRotation);
-        _properties.ParseFloat("horizontalMinRotation", ref horizontalMinRotation);
-        horizontalMinRotation = AngleToInferior(horizontalMinRotation);
-        _properties.ParseFloat("horizontalRotationSpeed", ref horizontalRotSpeed);
-        horizontalRotSpeed = Mathf.Abs(horizontalRotSpeed);
-        fullCircleRotation = horizontalMaxRotation == 180f && horizontalMinRotation == -180f;
 
         previewColorEntityOnTarget = Color.clear;
         previewColorEntityAiming = Color.clear;
@@ -87,76 +49,33 @@ public class VPHornWeaponRotator : VehiclePart
         _properties.ParseString("previewTypeBlock", ref str);
         if (!string.IsNullOrEmpty(str) && !Enum.TryParse<PrimitiveType>(str, out previewTypeBlock))
             previewTypeBlock = PrimitiveType.Sphere;
+    }
+
+    public override void SetWeapon(VPWeaponBase weapon)
+    {
+        base.SetWeapon(weapon);
+        if(weapon is VPHornWeapon hornWeapon)
+        {
+            var component = hornWeapon.Component;
+            previewScaleEntity = component.BoundExplosionData.EntityRadius;
+            previewScaleBlock = component.BoundExplosionData.BlockRadius;
+
+            var main = hornWeapon.HornSystem.main;
+            if (main.startSpeed.mode == ParticleSystemCurveMode.Constant)
+                projectileSpeed = main.startSpeed.constant;
+            if (main.gravityModifier.mode == ParticleSystemCurveMode.Constant)
+                gravity = main.gravityModifier.constant;
+        }
 
         properties.ParseFloat("projectileSpeed", ref projectileSpeed);
         properties.ParseFloat("gravity", ref gravity);
         gravity *= Physics.gravity.y;
-
-        _properties.ParseInt("seat", ref seat);
-        if (seat < 0)
-        {
-            Log.Error("seat can not be less than 0! setting to 0...");
-            seat = 0;
-        }
-
-        player = GameManager.Instance.World.GetPrimaryPlayer();
-    }
-    public override void InitPrefabConnections()
-    {
-        base.InitPrefabConnections();
-
-        transform = GetTransform();
-        horRotTrans = GetTransform("horRotationTransform");
-        verRotTrans = GetTransform("verRotationTransform");
-        hitRayTrans = GetTransform("hitRaycastTransform");
-        if (!hitRayTrans)
-            hitRayTrans = transform;
-        else
-            hasRaycastTransform = true;
-    }
-
-    public void SetSlot(int slot)
-    {
-        this.slot = slot;
-    }
-
-    public virtual void SetHornWeapon(VPHornWeapon weapon)
-    {
-        horn = weapon;
-
-        var component = horn.Component;
-        previewScaleEntity = component.BoundExplosionData.EntityRadius;
-        previewScaleBlock = component.BoundExplosionData.BlockRadius;
         properties.ParseFloat("previewScaleEntity", ref previewScaleEntity);
         properties.ParseFloat("previewScaleBlock", ref previewScaleBlock);
     }
 
-    public override void Update(float _dt)
-    {
-        base.Update(_dt);
 
-        if (horn == null || !horn.HasOperator)
-            return;
-        CalcCurRotation(_dt);
-
-        if (Mathf.Abs(lastHorRot - horRotTrans.localEulerAngles.y) > 1f || Mathf.Abs(lastVerRot - verRotTrans.localEulerAngles.x) > 1f)
-        {
-            if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && SingletonMonoBehaviour<ConnectionManager>.Instance.ClientCount() > 0)
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageHornWeaponUpdate>().Setup(vehicle.entity.entityId, horRotTrans.localEulerAngles.y, verRotTrans.localEulerAngles.x, seat, slot), false, -1, player.entityId);
-            else if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsClient)
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageHornWeaponUpdate>().Setup(vehicle.entity.entityId, horRotTrans.localEulerAngles.y, verRotTrans.localEulerAngles.x, seat, slot));
-            lastHorRot = horRotTrans.localEulerAngles.y;
-            lastVerRot = verRotTrans.localEulerAngles.x;
-        }
-    }
-
-    public void NetSyncUpdate(float horRot, float verRot)
-    {
-        horRotTrans.localEulerAngles = new Vector3(horRotTrans.localEulerAngles.x, horRot, horRotTrans.localEulerAngles.z);
-        verRotTrans.localEulerAngles = new Vector3(verRot, verRotTrans.localEulerAngles.y, verRotTrans.localEulerAngles.z);
-    }
-
-    protected virtual void CalcCurRotation(float _dt)
+    protected override void CalcCurRotation(float _dt)
     {
         float curHorAngle = AngleToInferior(horRotTrans.localEulerAngles.y);
         float curVerAngle = AngleToInferior(verRotTrans.localEulerAngles.x);
@@ -200,7 +119,7 @@ public class VPHornWeaponRotator : VehiclePart
     {
         hitPos = hitInfo.point;
         Vector3 aimAt = Quaternion.LookRotation(hitPos - horRotTrans.position).eulerAngles;
-        aimAt.x = -AngleToLimited(Angle(hitPos), verticleMinRotation, verticleMaxRotation);
+        aimAt.x = -AngleToLimited(Angle(hitPos, (weapon as VPHornWeapon).HornSystem.transform.position), verticleMinRotation, verticleMaxRotation);
         aimAt = (Quaternion.Inverse(transform.rotation) * Quaternion.Euler(aimAt)).eulerAngles;
         aimAt.x = AngleToInferior(aimAt.x);
         aimAt.y = AngleToInferior(aimAt.y);
@@ -209,62 +128,7 @@ public class VPHornWeaponRotator : VehiclePart
         targetVerAngle = aimAt.x;
     }
 
-    protected virtual void HorRotateTowards(float targetHorAngle, float _dt)
-    {
-        //targetHorAngle = AngleToLimited(targetHorAngle, horizontalMinRotation, horizontalMaxRotation);
-        float maxRotPerUpdate = horizontalRotSpeed * _dt;
-        float curHorAngle = AngleToInferior(horRotTrans.localEulerAngles.y);
-        float nextHorAngle;
-        if (!fullCircleRotation)
-            nextHorAngle = targetHorAngle > curHorAngle ? Mathf.Min(curHorAngle + maxRotPerUpdate, targetHorAngle) : Mathf.Max(curHorAngle - maxRotPerUpdate, targetHorAngle);
-        else
-        {
-            if (targetHorAngle > 0 && curHorAngle < 0)
-            {
-                if (targetHorAngle - curHorAngle > 180)
-                {
-                    nextHorAngle = AngleToInferior(curHorAngle - maxRotPerUpdate);
-                    if (nextHorAngle > 0 == targetHorAngle > 0)
-                        nextHorAngle = Mathf.Max(nextHorAngle, targetHorAngle);
-                }
-                else
-                {
-                    nextHorAngle = AngleToInferior(curHorAngle + maxRotPerUpdate);
-                    if (nextHorAngle > 0 == targetHorAngle > 0)
-                        nextHorAngle = Mathf.Min(nextHorAngle, targetHorAngle);
-                }
-            }
-            else if (targetHorAngle < 0 && curHorAngle > 0)
-            {
-                if (curHorAngle - targetHorAngle > 180)
-                {
-                    nextHorAngle = AngleToInferior(curHorAngle + maxRotPerUpdate);
-                    if (nextHorAngle > 0 == targetHorAngle > 0)
-                        nextHorAngle = Mathf.Min(nextHorAngle, targetHorAngle);
-                }
-                else
-                {
-                    nextHorAngle = AngleToInferior(curHorAngle - maxRotPerUpdate);
-                    if (nextHorAngle > 0 == targetHorAngle > 0)
-                        nextHorAngle = Mathf.Max(nextHorAngle, targetHorAngle);
-                }
-            }
-            else
-                nextHorAngle = targetHorAngle > curHorAngle ? Mathf.Min(curHorAngle + maxRotPerUpdate, targetHorAngle) : Mathf.Max(curHorAngle - maxRotPerUpdate, targetHorAngle);
-        }
-        horRotTrans.localEulerAngles = new Vector3(horRotTrans.localEulerAngles.x, nextHorAngle, horRotTrans.localEulerAngles.z);
-    }
-
-    protected virtual void VerRotateTowards(float targetVerAngle, float _dt)
-    {
-        //targetVerAngle = AngleToLimited(targetVerAngle, verticleMinRotation, verticleMaxRotation);
-        float maxRotPerUpdate = verticleRotSpeed * _dt;
-        float curVerAngle = AngleToInferior(verRotTrans.localEulerAngles.x);
-        float nextVerAngle = targetVerAngle > curVerAngle ? Mathf.Min(curVerAngle + maxRotPerUpdate, targetVerAngle) : Mathf.Max(curVerAngle - maxRotPerUpdate, targetVerAngle);
-        verRotTrans.localEulerAngles = new Vector3(nextVerAngle, verRotTrans.localEulerAngles.y, verRotTrans.localEulerAngles.z);
-    }
-
-    public virtual void CreatePreview()
+    public override void CreatePreview()
     {
         if (previewScaleEntity > 0 && previewColorEntityOnTarget.a > 0)
         {
@@ -294,7 +158,7 @@ public class VPHornWeaponRotator : VehiclePart
         }
     }
 
-    public virtual void DestroyPreview()
+    public override void DestroyPreview()
     {
         if (explPreviewTransEntity != null)
         {
@@ -324,43 +188,19 @@ public class VPHornWeaponRotator : VehiclePart
             explPreviewTransBlock.GetComponent<Renderer>().material.SetColor(colorId, onTarget ? previewColorBlockOnTarget : previewColorBlockAiming);
     }
 
-    protected bool FuzzyEqualAngle(float angle1, float angle2, float fuzzy)
+    protected float Angle(Vector3 target, Vector3 origin)
     {
-        return Mathf.Abs(angle1 - angle2) <= fuzzy;
-    }
-
-    protected float Angle(Vector3 target)
-    {
-        float distX = Vector2.Distance(new Vector2(target.x, target.z), new Vector2(horn.HornSystem.transform.position.x, transform.position.z));
-        float distY = target.y - horn.HornSystem.transform.position.y;
-        if(projectileSpeed <= 0)
-        {
-            Log.Out("invalid projectile speed: " + projectileSpeed);
+        if (projectileSpeed <= 0)
             return 0;
-        }
+        float distX = Vector2.Distance(new Vector2(target.x, target.z), new Vector2(origin.x, origin.z));
         float posBase = (gravity * Mathf.Pow(distX, 2.0f)) / (2.0f * Mathf.Pow(projectileSpeed, 2.0f));
-        if(posBase == 0f)
-        {
-            Log.Out("dividing by zero!");
+        if (posBase == 0f)
             return 0;
-        }
+        float distY = target.y - origin.y;
         float posX = distX / posBase;
         float posY = (Mathf.Pow(posX, 2.0f) / 4.0f) - ((posBase - distY) / posBase);
         float angleX = posY >= 0.0f ? Mathf.Rad2Deg * Mathf.Atan(-posX / 2.0f - Mathf.Pow(posY, 0.5f)) : 45f;
         return angleX;
-    }
-
-    protected float AngleToInferior(float angle)
-    {
-        angle %= 360;
-        angle = angle > 180 ? angle - 360 : angle;
-        return angle;
-    }
-
-    protected float AngleToLimited(float angle, float min, float max)
-    {
-        float res = Mathf.Min(max, Mathf.Max(min, angle));
-        return res;
     }
 }
 

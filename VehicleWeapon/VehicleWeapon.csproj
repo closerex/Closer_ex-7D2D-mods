@@ -89,6 +89,8 @@
     <Compile Include="Scripts\VehicleParts\VPHornWeapon.cs" />
     <Compile Include="Scripts\VehicleParts\VPHornWeaponManager.cs" />
     <Compile Include="Scripts\VehicleParts\VPHornWeaponRotator.cs" />
+    <Compile Include="Scripts\VehicleParts\VPWeaponBase.cs" />
+    <Compile Include="Scripts\VehicleParts\VPWeaponRotatorBase.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
