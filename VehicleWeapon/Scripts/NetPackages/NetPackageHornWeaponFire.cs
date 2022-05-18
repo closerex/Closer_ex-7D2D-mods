@@ -13,7 +13,7 @@ public class NetPackageHornWeaponFire : NetPackageHornWeaponUpdate
             return;
 
         EntityVehicle entity = _world.GetEntity(entityId) as EntityVehicle;
-        var manager = entity?.GetVehicle().FindPart(VPHornWeaponManager.HornWeaponManagerName) as VPHornWeaponManager;
+        var manager = entity?.GetVehicle().FindPart(VPWeaponManager.HornWeaponManagerName) as VPWeaponManager;
         if (manager != null)
         {
             if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer)

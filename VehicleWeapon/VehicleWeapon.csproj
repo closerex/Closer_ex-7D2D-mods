@@ -47,6 +47,10 @@
       <HintPath>..\CustomParticleLoaderMultiExplosion\CustomParticleLoaderMultiExplosion.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="InControl">
+      <HintPath>..\..\7DaysToDie_Data\Managed\InControl.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="LogLibrary">
       <HintPath>..\..\7DaysToDie_Data\Managed\LogLibrary.dll</HintPath>
       <Private>False</Private>
@@ -87,7 +91,7 @@
     <Compile Include="Scripts\NetPackages\NetPackageHornWeaponFire.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageHornWeaponUpdate.cs" />
     <Compile Include="Scripts\VehicleParts\VPHornWeapon.cs" />
-    <Compile Include="Scripts\VehicleParts\VPHornWeaponManager.cs" />
+    <Compile Include="Scripts\VehicleParts\VPWeaponManager.cs" />
     <Compile Include="Scripts\VehicleParts\VPHornWeaponRotator.cs" />
     <Compile Include="Scripts\VehicleParts\VPWeaponBase.cs" />
     <Compile Include="Scripts\VehicleParts\VPWeaponRotatorBase.cs" />

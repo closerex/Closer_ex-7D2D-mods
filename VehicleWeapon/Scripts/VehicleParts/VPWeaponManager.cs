@@ -1,10 +1,22 @@
 ﻿using System.Collections.Generic;
 
-internal class VPHornWeaponManager : VehiclePart
+public class VPWeaponManager : VehiclePart
 {
     private List<VPWeaponBase>[] list_weapons;
     private List<VPWeaponRotatorBase>[] list_rotators;
-    public static readonly string HornWeaponManagerName = "hornWeaponManager";
+    public static readonly string HornWeaponManagerName = "vehicleWeaponManager";
+
+    public static int GetHornWeapon(EntityVehicle entity, EntityPlayerLocal player)
+    {
+        int seat = entity.FindAttachSlot(player);
+        return entity.GetVehicle().FindPart(HornWeaponManagerName) is VPWeaponManager manager && manager.list_weapons[seat] != null ? seat : -1;
+    }
+
+    public static void TryUseHorn(EntityVehicle entity, int seat, bool isRelease)
+    {
+        VPWeaponManager manager = entity.GetVehicle().FindPart(VPWeaponManager.HornWeaponManagerName) as VPWeaponManager;
+        manager.DoFire(seat, true, isRelease);
+    }
 
     public override void InitPrefabConnections()
     {
@@ -41,6 +53,9 @@ internal class VPHornWeaponManager : VehiclePart
                 int i = 0;
                 foreach (var weapon in weapons)
                     weapon.Slot = i++;
+
+                foreach (var weapon in weapons)
+                    weapon.SetupWeaponConnections(weapons);
             }
         }
     }
@@ -51,7 +66,7 @@ internal class VPHornWeaponManager : VehiclePart
             list_rotators[seat][slot]?.NetSyncUpdate(horRot, verRot);
     }
 
-    public void DoFire(int seat, bool isHorn)
+    public void DoFire(int seat, bool isHorn, bool isRelease)
     {
         if(seat < 0 || seat >= list_weapons.Length || list_weapons[seat] == null)
             return;
@@ -61,8 +76,11 @@ internal class VPHornWeaponManager : VehiclePart
         {
             foreach(var weapon in list_weapons[seat])
             {
-                if(weapon is VPHornWeapon && weapon.DoFire(firstShot))
+                if(weapon is VPHornWeapon && weapon.DoFire(firstShot, isRelease))
+                {
                     firstShot = false;
+                    weapon.Fired();
+                }
             }
         }
     }

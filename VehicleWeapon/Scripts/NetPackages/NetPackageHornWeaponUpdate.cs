@@ -25,7 +25,7 @@ public class NetPackageHornWeaponUpdate : NetPackage
         EntityVehicle entity = _world.GetEntity(entityId) as EntityVehicle;
         if(entity)
         {
-            var manager = entity.GetVehicle().FindPart(VPHornWeaponManager.HornWeaponManagerName) as VPHornWeaponManager;
+            var manager = entity.GetVehicle().FindPart(VPWeaponManager.HornWeaponManagerName) as VPWeaponManager;
             if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer)
                 SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageHornWeaponUpdate>().Setup(entityId, horEuler, verEuler, seat, slot), false, -1, entity.AttachedMainEntity.entityId);
             manager.NetSyncUpdate(seat, slot, horEuler, verEuler);

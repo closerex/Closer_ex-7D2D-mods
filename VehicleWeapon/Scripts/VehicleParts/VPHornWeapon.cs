@@ -9,6 +9,8 @@ public class VPHornWeapon : VPWeaponBase
     protected float burstInterval = 0f;
     protected float hornInterval = 1f;
     protected float hornCooldown = 0f;
+    protected float hornDelay = 0f;
+    protected bool fullauto = false;
     protected bool explodeOnCollision = true;
     protected bool explodeOnDeath = false;
     protected string hornEmptySound = string.Empty;
@@ -29,6 +31,8 @@ public class VPHornWeapon : VPWeaponBase
         _properties.ParseFloat("burstInterval", ref burstInterval);
         _properties.ParseInt("burstRepeat", ref burstRepeat);
         _properties.ParseFloat("hornInterval", ref hornInterval);
+        _properties.ParseFloat("hornDelay", ref hornDelay);
+        _properties.ParseBool("fullauto", ref fullauto);
         hornCooldown = 0;
 
         string str = null;
@@ -94,52 +98,80 @@ public class VPHornWeapon : VPWeaponBase
         }
     }
 
-    public override bool DoFire(bool firstShot)
+    public override bool DoFire(bool firstShot, bool isRelease)
     {
-        if (base.DoFire(firstShot))
+        if (isRelease)
+        {
+            pressed = false;
+            return false;
+        }
+        else if (pressed && !fullauto)
+            return false;
+
+        if (base.DoFire(firstShot, isRelease))
         {
             if(ammoValue.type > 0 && player.bag.GetItemCount(ammoValue) < burstRepeat)
             {
-                vehicle.entity.PlayOneShot(hornEmptySound);
+                if(!pressed)
+                    vehicle.entity.PlayOneShot(hornEmptySound);
+                pressed = true;
                 return false;
             }
-            if(hornCooldown > 0)
+            if(isCoRunning || hornCooldown > 0)
             {
-                vehicle.entity.PlayOneShot(notReadySound);
+                if(!pressed)
+                    vehicle.entity.PlayOneShot(notReadySound);
+                pressed = true;
                 return false;
             }
 
-            if (burstInterval > 0)
+            pressed = true;
+            if (burstInterval > 0 || hornDelay > 0)
                 ThreadManager.StartCoroutine(DoHornCo());
             else
-            {
-                for(int i = 0; i < burstRepeat; ++i)
-                    DoHornServer(burstCount);
-                vehicle.entity.PlayOneShot(hornReloadSound);
-            }
-            hornCooldown = hornInterval;
+                DoHornNow();
 
             return true;
         }
         return false;
     }
 
+    public override void Fired()
+    {
+        base.Fired();
+        hornCooldown = hornInterval;
+    }
+
     protected virtual IEnumerator DoHornCo()
     {
         isCoRunning = true;
-        int curBurstCount = 0;
-        while(curBurstCount < burstRepeat)
+        if(hornDelay > 0)
+            yield return new WaitForSeconds(hornDelay);
+        if (burstInterval > 0)
         {
-            if (!hasOperator)
-                break;
-            DoHornServer(burstCount);
-            ++curBurstCount;
-            yield return new WaitForSeconds(burstInterval);
+            int curBurstCount = 0;
+            while (curBurstCount < burstRepeat)
+            {
+                if (!hasOperator)
+                    break;
+                DoHornServer(burstCount);
+                ++curBurstCount;
+                yield return new WaitForSeconds(burstInterval);
+            }
+            vehicle.entity.PlayOneShot(hornReloadSound);
         }
-        yield return null;
-        vehicle.entity.PlayOneShot(hornReloadSound);
+        else
+            DoHornNow();
+
         isCoRunning = false;
         yield break;
+    }
+
+    protected virtual void DoHornNow()
+    {
+        for (int i = 0; i < burstRepeat; ++i)
+            DoHornServer(burstCount);
+        vehicle.entity.PlayOneShot(hornReloadSound);
     }
 
     protected virtual void DoHornServer(int count)

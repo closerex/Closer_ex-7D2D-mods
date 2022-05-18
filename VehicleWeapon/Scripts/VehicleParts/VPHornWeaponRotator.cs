@@ -130,6 +130,7 @@ public class VPHornWeaponRotator : VPWeaponRotatorBase
 
     public override void CreatePreview()
     {
+        DestroyPreview();
         if (previewScaleEntity > 0 && previewColorEntityOnTarget.a > 0)
         {
             explPreviewTransEntity = GameObject.CreatePrimitive(previewTypeEntity).transform;

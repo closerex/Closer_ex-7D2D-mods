@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class VPWeaponBase : VehiclePart
@@ -10,19 +11,25 @@ public class VPWeaponBase : VehiclePart
     protected VPWeaponRotatorBase rotator = null;
     protected int seat = 0;
     protected int slot = int.MaxValue;
-    protected HornJuncture timing;
+    protected FiringJuncture timing;
+    protected bool pressed = false;
+    protected VPWeaponBase cycleNext = null;
+    protected float cycleInterval = 0f;
+    protected float cycleCooldown = 0f;
 
-    protected enum HornJuncture
+    protected enum FiringJuncture
     {
         Anytime,
         OnTarget,
         FirstShot,
-        FirstShotOnTarget
+        FirstShotOnTarget,
+        Cycle
     }
     public bool HasOperator { get => hasOperator; }
     public VPWeaponRotatorBase Rotator { get => rotator; }
     public int Seat { get => seat; }
     public int Slot { get => slot; set => slot = value; }
+    public bool IsCurCycle { get; set; } = false;
 
     public override void SetProperties(DynamicProperties _properties)
     {
@@ -30,9 +37,9 @@ public class VPWeaponBase : VehiclePart
         _properties.ParseString("notReadySound", ref notReadySound);
         _properties.ParseString("notOnTargetSound", ref notOnTargetSound);
         string str = null;
-        _properties.ParseString("hornWhen", ref str);
+        _properties.ParseString("fireWhen", ref str);
         if (!string.IsNullOrEmpty(str))
-            Enum.TryParse<HornJuncture>(str, true, out timing);
+            Enum.TryParse<FiringJuncture>(str, true, out timing);
 
         _properties.ParseInt("seat", ref seat);
         if (seat < 0)
@@ -58,13 +65,41 @@ public class VPWeaponBase : VehiclePart
             rotator.SetWeapon(this);
     }
 
+    public virtual void SetupWeaponConnections(in List<VPWeaponBase> weapons)
+    {
+        if (timing != FiringJuncture.Cycle)
+            return;
+
+        int nextIndex = -1;
+        properties.ParseInt("cycleNextSlot", ref nextIndex);
+        if(nextIndex < 0 || nextIndex >= weapons.Count)
+        {
+            Log.Error("cycle index out of range!");
+            return;
+        }
+        cycleNext = weapons[nextIndex];
+        properties.ParseFloat("cycleInterval", ref cycleInterval);
+        if (nextIndex < slot)
+            cycleNext.IsCurCycle = true;
+        Log.Out("cycle next: " + nextIndex + " is cur: " + IsCurCycle);
+    }
+
+    public virtual void SetCurCycle()
+    {
+        IsCurCycle = true;
+        cycleCooldown = cycleInterval;
+    }
+
     public override void Update(float _dt)
     {
         base.Update(_dt);
 
+        if (IsCurCycle && cycleCooldown > 0)
+            cycleCooldown -= _dt;
+
         if (!hasOperator)
         {
-            if (player && vehicle.entity.FindAttachSlot(player) == seat)
+            if (player && player.AttachedToEntity == vehicle.entity && vehicle.entity.FindAttachSlot(player) == seat)
                 OnPlayerEnter();
             else
                 return;
@@ -88,29 +123,30 @@ public class VPWeaponBase : VehiclePart
     protected virtual void OnPlayerDetach()
     {
         hasOperator = false;
+        pressed = false;
 
         if (rotator != null)
             rotator.DestroyPreview();
     }
 
-    public virtual bool DoFire(bool firstShot)
+    public virtual bool DoFire(bool firstShot, bool isRelease)
     {
         switch (timing)
         {
-            case HornJuncture.Anytime:
+            case FiringJuncture.Anytime:
                 break;
-            case HornJuncture.OnTarget:
+            case FiringJuncture.OnTarget:
                 if (rotator != null && !rotator.OnTarget)
                 {
                     vehicle.entity.PlayOneShot(notOnTargetSound);
                     return false;
                 }
                 break;
-            case HornJuncture.FirstShot:
+            case FiringJuncture.FirstShot:
                 if (!firstShot)
                     return false;
                 break;
-            case HornJuncture.FirstShotOnTarget:
+            case FiringJuncture.FirstShotOnTarget:
                 if (!firstShot)
                     return false;
                 else if (rotator != null && !rotator.OnTarget)
@@ -119,8 +155,21 @@ public class VPWeaponBase : VehiclePart
                     return false;
                 }
                 break;
+            case FiringJuncture.Cycle:
+                if (cycleNext == null || !IsCurCycle || cycleCooldown > 0)
+                    return false;
+                break;
         }
         return true;
+    }
+
+    public virtual void Fired()
+    {
+        if (timing == FiringJuncture.Cycle)
+        {
+            IsCurCycle = false;
+            cycleNext.SetCurCycle();
+        }
     }
 }
 
