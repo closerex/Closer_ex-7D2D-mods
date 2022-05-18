@@ -62,6 +62,7 @@ public class VPHornWeapon : VPWeaponBase
             {
                 var emission = hornSystem.emission;
                 emission.enabled = false;
+                hornSystem.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             }
         }
         base.InitPrefabConnections();
