@@ -26,6 +26,11 @@ public class VPWeaponRotatorBase : VehiclePart
     public int Seat { get => seat; }
     public bool OnTarget { get => lastOnTarget; }
 
+    ~VPWeaponRotatorBase()
+    {
+        DestroyPreview();
+    }
+
     public override void SetProperties(DynamicProperties _properties)
     {
         base.SetProperties(_properties);
