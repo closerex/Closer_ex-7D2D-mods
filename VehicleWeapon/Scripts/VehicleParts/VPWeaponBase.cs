@@ -168,11 +168,13 @@ public class VPWeaponBase : VehiclePart
 
     public virtual void HandleUserInput(PlayerActionsLocal input)
     {
+        /*
         if (input.InventorySlotWasPressed == slot)
         {
             Log.Out("toggle activate weapon: " + slot);
             ToggleActivated();
         }
+        */
     }
 
     public virtual bool DoFire(bool firstShot, bool isRelease)
