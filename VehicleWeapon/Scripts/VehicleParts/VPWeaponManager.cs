@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using InControl;
 
 public class VPWeaponManager : VehiclePart
 {
@@ -6,16 +7,59 @@ public class VPWeaponManager : VehiclePart
     private List<VPWeaponRotatorBase>[] list_rotators;
     public static readonly string HornWeaponManagerName = "vehicleWeaponManager";
 
-    public static int GetHornWeapon(EntityVehicle entity, EntityPlayerLocal player)
-    {
-        int seat = entity.FindAttachSlot(player);
-        return entity.GetVehicle().FindPart(HornWeaponManagerName) is VPWeaponManager manager && manager.list_weapons[seat] != null ? seat : -1;
-    }
-
-    public static void TryUseHorn(EntityVehicle entity, int seat, bool isRelease)
+    public static void HandleUserInput(PlayerActionsLocal input, EntityVehicle entity, EntityPlayerLocal player)
     {
         VPWeaponManager manager = entity.GetVehicle().FindPart(VPWeaponManager.HornWeaponManagerName) as VPWeaponManager;
-        manager.DoFire(seat, true, isRelease);
+        if (manager != null)
+        {
+            int seat = manager.GetHornWeapon(entity, player);
+            manager.CheckFireState(input, seat);
+            manager.HandleWeaponUserInput(input, seat);
+        }
+    }
+
+    protected virtual void HandleWeaponUserInput(PlayerActionsLocal input, int seat)
+    {
+        if (seat >= 0 && list_weapons[seat] != null)
+            foreach (VPWeaponBase weapon in list_weapons[seat])
+                weapon.HandleUserInput(input);
+    }
+
+    protected virtual void CheckFireState(PlayerActionsLocal input, int seat)
+    {
+        CheckHornState(input.VehicleActions.HonkHorn, seat);
+    }
+
+    protected virtual void CheckHornState(PlayerAction hornstate, int seat)
+    {
+        if (hornstate.IsPressed || hornstate.WasReleased)
+        {
+            if (seat >= 0)
+                TryUseHorn(seat, hornstate.WasReleased);
+            else if (seat < 0 && hornstate.WasPressed)
+                vehicle.entity.UseHorn();
+        }
+    }
+
+    public int GetHornWeapon(EntityVehicle entity, EntityPlayerLocal player)
+    {
+        int seat = entity.FindAttachSlot(player);
+        return list_weapons[seat] != null ? seat : -1;
+    }
+
+    public void TryUseHorn(int seat, bool isRelease)
+    {
+        DoFire(seat, true, isRelease);
+    }
+
+    public void Cleanup()
+    {
+        foreach(var weapons in list_weapons)
+        {
+            if(weapons != null)
+                foreach(var weapon in weapons)
+                    weapon.OnExitGame();
+        }
     }
 
     public override void InitPrefabConnections()

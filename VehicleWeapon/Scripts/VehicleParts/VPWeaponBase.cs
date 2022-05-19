@@ -8,6 +8,8 @@ public class VPWeaponBase : VehiclePart
     protected EntityPlayerLocal player = null;
     protected string notReadySound = string.Empty;
     protected string notOnTargetSound = string.Empty;
+    protected string activationSound = string.Empty;
+    protected string deactivationSound = string.Empty;
     protected VPWeaponRotatorBase rotator = null;
     protected int seat = 0;
     protected int slot = int.MaxValue;
@@ -16,6 +18,7 @@ public class VPWeaponBase : VehiclePart
     protected VPWeaponBase cycleNext = null;
     protected float cycleInterval = 0f;
     protected float cycleCooldown = 0f;
+    protected bool activated = true;
 
     protected enum FiringJuncture
     {
@@ -26,6 +29,7 @@ public class VPWeaponBase : VehiclePart
         Cycle
     }
     public bool HasOperator { get => hasOperator; }
+    public bool Activated { get => activated; }
     public VPWeaponRotatorBase Rotator { get => rotator; }
     public int Seat { get => seat; }
     public int Slot { get => slot; set => slot = value; }
@@ -36,6 +40,8 @@ public class VPWeaponBase : VehiclePart
         base.SetProperties(_properties);
         _properties.ParseString("notReadySound", ref notReadySound);
         _properties.ParseString("notOnTargetSound", ref notOnTargetSound);
+        _properties.ParseString("activationSound", ref activationSound);
+        _properties.ParseString("deactivationSound", ref deactivationSound);
         string str = null;
         _properties.ParseString("fireWhen", ref str);
         if (!string.IsNullOrEmpty(str))
@@ -116,8 +122,8 @@ public class VPWeaponBase : VehiclePart
     {
         hasOperator = true;
 
-        if (rotator != null)
-            rotator.CreatePreview();
+        if (activated)
+            OnActivated();
     }
 
     protected virtual void OnPlayerDetach()
@@ -125,12 +131,55 @@ public class VPWeaponBase : VehiclePart
         hasOperator = false;
         pressed = false;
 
+        OnDeactivated();
+    }
+
+    protected virtual void OnActivated()
+    {
+        if (rotator != null)
+            rotator.CreatePreview();
+    }
+
+    protected virtual void OnDeactivated()
+    {
         if (rotator != null)
             rotator.DestroyPreview();
     }
 
+    protected void ToggleActivated()
+    {
+        activated = !activated;
+        if (activated)
+        {
+            OnActivated();
+            vehicle.entity.PlayOneShot(activationSound);
+        }
+        else
+        {
+            OnDeactivated();
+            vehicle.entity.PlayOneShot(deactivationSound);
+        }
+    }
+
+    public virtual void OnExitGame()
+    {
+        OnDeactivated();
+    }
+
+    public virtual void HandleUserInput(PlayerActionsLocal input)
+    {
+        if (input.InventorySlotWasPressed == slot)
+        {
+            Log.Out("toggle activate weapon: " + slot);
+            ToggleActivated();
+        }
+    }
+
     public virtual bool DoFire(bool firstShot, bool isRelease)
     {
+        if (!activated)
+            return false;
+
         switch (timing)
         {
             case FiringJuncture.Anytime:
@@ -138,7 +187,9 @@ public class VPWeaponBase : VehiclePart
             case FiringJuncture.OnTarget:
                 if (rotator != null && !rotator.OnTarget)
                 {
-                    vehicle.entity.PlayOneShot(notOnTargetSound);
+                    if(!pressed)
+                        vehicle.entity.PlayOneShot(notOnTargetSound);
+                    pressed = true;
                     return false;
                 }
                 break;
@@ -151,7 +202,9 @@ public class VPWeaponBase : VehiclePart
                     return false;
                 else if (rotator != null && !rotator.OnTarget)
                 {
-                    vehicle.entity.PlayOneShot(notOnTargetSound);
+                    if (!pressed)
+                        vehicle.entity.PlayOneShot(notOnTargetSound);
+                    pressed = true;
                     return false;
                 }
                 break;

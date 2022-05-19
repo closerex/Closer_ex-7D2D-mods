@@ -1,40 +1,10 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
 using System.Reflection.Emit;
-using InControl;
-
-/*
-[HarmonyPatch(typeof(EntityVehicle), nameof(EntityVehicle.UseHorn))]
-class VehicleHornPatch
-{
-    private static bool Prefix(EntityVehicle __instance)
-    {
-        VPWeaponManager horn = __instance.GetVehicle().FindPart(VPWeaponManager.HornWeaponManagerName) as VPWeaponManager;
-        if (horn != null)
-        {
-            if (!GameManager.IsDedicatedServer)
-                horn.DoFire(__instance.FindAttachSlot(__instance.world.GetPrimaryPlayer()), true);
-            return false;
-        }
-        return true;
-    }
-}
-*/
 
 [HarmonyPatch(typeof(PlayerMoveController), "Update")]
 public class VehicleControlPatch
 {
-    public static void CheckHornState(PlayerAction action, EntityVehicle entity, EntityPlayerLocal player)
-    {
-        if (action.IsPressed || action.WasReleased)
-        {
-            int seat = VPWeaponManager.GetHornWeapon(entity, player);
-            if (seat >= 0)
-                VPWeaponManager.TryUseHorn(entity, seat, action.WasReleased);
-            else if (seat < 0 && action.WasPressed)
-                entity.UseHorn();
-        }
-    }
 
     private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
@@ -45,13 +15,13 @@ public class VehicleControlPatch
         {
             if (codes[i].Calls(mtd_usehorn))
             {
-                codes.RemoveRange(i - 3, 4);
-                codes.InsertRange(i - 3, new CodeInstruction[]
+                codes.RemoveRange(i - 5, 6);
+                codes.InsertRange(i - 5, new CodeInstruction[]
                 {
                     new CodeInstruction(OpCodes.Ldloc, 95),
                     new CodeInstruction(OpCodes.Ldarg_0),
                     CodeInstruction.LoadField(typeof(PlayerMoveController), "entityPlayerLocal"),
-                    CodeInstruction.Call(typeof(VehicleControlPatch), nameof(VehicleControlPatch.CheckHornState), new System.Type[] { typeof(InControl.PlayerAction), typeof(EntityVehicle), typeof(EntityPlayerLocal) })
+                    CodeInstruction.Call(typeof(VPWeaponManager), nameof(VPWeaponManager.HandleUserInput))
                 });
                 
                 break;
@@ -59,5 +29,21 @@ public class VehicleControlPatch
         }
 
         return codes;
+    }
+}
+
+[HarmonyPatch(typeof(VehicleManager), nameof(VehicleManager.RemoveAllVehiclesFromMap))]
+public class VehicleCleanupPatch
+{
+    private static bool Prefix(VehicleManager __instance, List<EntityVehicle> ___vehiclesActive)
+    {
+        foreach(var entity in ___vehiclesActive)
+        {
+            var manager = entity.GetVehicle().FindPart(VPWeaponManager.HornWeaponManagerName) as VPWeaponManager;
+            if (manager != null)
+                manager.Cleanup();
+        }
+
+        return true;
     }
 }

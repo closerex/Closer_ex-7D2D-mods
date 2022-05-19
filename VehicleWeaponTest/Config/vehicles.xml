@@ -80,6 +80,10 @@
 				<property name="notOnTargetSound" value="ui_denied"/>
 				<!-- sound to play after a horn process, simulating reloading /-->
 				<property name="reloadSound" value="shotgun_reload"/>
+				<!-- sound to play when this weapon is activated /-->
+				<property name="activationSound" value="flashlight_toggle"/>
+				<!-- sound to play when this weapon is deactivated /-->
+				<property name="deactivationSound" value="flashlight_toggle"/>
 				<!-- the transform with the particle system /-->
 				<property name="particle_transform" value="HornWeapon/WeaponRoot/Turret/MortarG_Barrel02/ShootPoint"/>
 				<!-- name of the hornWeaponRotator that rotates this weapon /-->
@@ -186,6 +190,8 @@
 				<property name="emptySound" value="dryfire"/>
 				<property name="notReadySound" value="medic_module_toggle_off"/>
 				<property name="notOnTargetSound" value="ui_denied"/>
+				<property name="activationSound" value="flashlight_toggle"/>
+				<property name="deactivationSound" value="flashlight_toggle"/>
 				<property name="particle_transform" value="HornWeapon/LaserTower01/Laser_tower_v1_arm/Laser_tower_v1_laser/Plasma_bullet"/>
 				<property name="fireWhen" value="Cycle"/>
 				<property name="cycleNextSlot" value="0"/>
@@ -209,6 +215,8 @@
 				<property name="emptySound" value="dryfire"/>
 				<property name="notReadySound" value="medic_module_toggle_off"/>
 				<property name="notOnTargetSound" value="ui_denied"/>
+				<property name="activationSound" value="flashlight_toggle"/>
+				<property name="deactivationSound" value="flashlight_toggle"/>
 				<property name="particle_transform" value="HornWeapon/LaserTower02/Laser_tower_v1_arm/Laser_tower_v1_laser/Plasma_bullet"/>
 				<property name="fireWhen" value="Cycle"/>
 				<property name="cycleNextSlot" value="1"/>
