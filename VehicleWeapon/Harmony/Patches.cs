@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection.Emit;
 
+/*
 [HarmonyPatch(typeof(PlayerMoveController), "Update")]
 public class VehicleControlPatch
 {
@@ -31,6 +32,7 @@ public class VehicleControlPatch
         return codes;
     }
 }
+*/
 
 [HarmonyPatch(typeof(VehicleManager), nameof(VehicleManager.RemoveAllVehiclesFromMap))]
 public class VehicleCleanupPatch
@@ -39,7 +41,7 @@ public class VehicleCleanupPatch
     {
         foreach(var entity in ___vehiclesActive)
         {
-            var manager = entity.GetVehicle().FindPart(VPWeaponManager.HornWeaponManagerName) as VPWeaponManager;
+            var manager = entity.GetVehicle().FindPart(VPWeaponManager.VehicleWeaponManagerName) as VPWeaponManager;
             if (manager != null)
                 manager.Cleanup();
         }

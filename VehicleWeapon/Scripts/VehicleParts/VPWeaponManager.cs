@@ -3,63 +3,93 @@ using InControl;
 
 public class VPWeaponManager : VehiclePart
 {
-    private List<VPWeaponBase>[] list_weapons;
-    private List<VPWeaponRotatorBase>[] list_rotators;
-    public static readonly string HornWeaponManagerName = "vehicleWeaponManager";
+    private List<VehicleWeaponBase>[] list_weapons;
+    private List<VehicleWeaponRotatorBase>[] list_rotators;
+    public static readonly string VehicleWeaponManagerName = "vehicleWeaponManager";
+    private int localPlayerSeat = -1;
+    protected EntityPlayerLocal player = null;
 
-    public static void HandleUserInput(PlayerActionsLocal input, EntityVehicle entity, EntityPlayerLocal player)
+    public override void SetProperties(DynamicProperties _properties)
     {
-        VPWeaponManager manager = entity.GetVehicle().FindPart(VPWeaponManager.HornWeaponManagerName) as VPWeaponManager;
-        if (manager != null)
+        base.SetProperties(_properties);
+
+        player = GameManager.Instance.World.GetPrimaryPlayer();
+    }
+
+    public override void Update(float _dt)
+    {
+        base.Update(_dt);
+
+        if(localPlayerSeat < 0)
         {
-            int seat = manager.GetHornWeapon(entity, player);
-            manager.CheckFireState(input, seat);
-            manager.HandleWeaponUserInput(input, seat);
+            if (player && player.AttachedToEntity == vehicle.entity)
+                OnPlayerEnter();
+            else
+                return;
+        }
+
+        if (vehicle.entity.FindAttachSlot(player) != localPlayerSeat)
+        {
+            OnPlayerDetach();
+            return;
+        }
+
+        if(!GameManager.Instance.IsPaused() && !Platform.PlatformManager.NativePlatform.Input.PrimaryPlayer.GUIActions.Enabled)
+        {
+            HandleUserInput();
+            if (list_weapons[localPlayerSeat] != null)
+                foreach (var weapon in list_weapons[localPlayerSeat])
+                    weapon.WeaponPartUpdate(_dt);
+
+            if (list_rotators[localPlayerSeat] != null)
+                foreach (var rotator in list_rotators[localPlayerSeat])
+                    rotator.WeaponPartUpdate(_dt);
         }
     }
 
-    protected virtual void HandleWeaponUserInput(PlayerActionsLocal input, int seat)
+    protected virtual void OnPlayerEnter()
     {
-        if (seat >= 0 && list_weapons[seat] != null)
-            foreach (VPWeaponBase weapon in list_weapons[seat])
-                weapon.HandleUserInput(input);
+        PlayerActionsVehicleWeapon.Instance.Enabled = true;
+        localPlayerSeat = vehicle.entity.FindAttachSlot(player);
+        if (list_weapons[localPlayerSeat] != null)
+            foreach (var weapon in list_weapons[localPlayerSeat])
+                weapon.OnPlayerEnter();
     }
 
-    protected virtual void CheckFireState(PlayerActionsLocal input, int seat)
+    protected virtual void OnPlayerDetach()
     {
-        CheckHornState(input.VehicleActions.HonkHorn, seat);
+        PlayerActionsVehicleWeapon.Instance.Enabled = false;
+        if (list_weapons[localPlayerSeat] != null)
+            foreach (var weapon in list_weapons[localPlayerSeat])
+                weapon.OnPlayerDetach();
+        localPlayerSeat = -1;
     }
 
-    protected virtual void CheckHornState(PlayerAction hornstate, int seat)
+    public void HandleUserInput()
     {
-        if (hornstate.IsPressed || hornstate.WasReleased)
-        {
-            if (seat >= 0)
-                TryUseHorn(seat, hornstate.WasReleased);
-            else if (seat < 0 && hornstate.WasPressed)
-                vehicle.entity.UseHorn();
-        }
+        int userData = CheckFireState() ? 0 : 1;
+        HandleWeaponUserInput(userData);
     }
 
-    public int GetHornWeapon(EntityVehicle entity, EntityPlayerLocal player)
+    protected virtual void HandleWeaponUserInput(int userData)
     {
-        int seat = entity.FindAttachSlot(player);
-        return list_weapons[seat] != null ? seat : -1;
+        if (localPlayerSeat >= 0 && list_weapons[localPlayerSeat] != null)
+            foreach (VehicleWeaponBase weapon in list_weapons[localPlayerSeat])
+                weapon.HandleUserInput(userData);
     }
 
-    public void TryUseHorn(int seat, bool isRelease)
+    protected virtual bool CheckFireState()
     {
-        DoFire(seat, true, isRelease);
+        var fireState = PlayerActionsVehicleWeapon.Instance.FireShot;
+        if (fireState.IsPressed || fireState.WasReleased)
+            return DoFireLocal(fireState.WasReleased);
+        return false;
     }
 
-    public void Cleanup()
+    public virtual void Cleanup()
     {
-        foreach(var weapons in list_weapons)
-        {
-            if(weapons != null)
-                foreach(var weapon in weapons)
-                    weapon.OnExitGame();
-        }
+        if (localPlayerSeat >= 0)
+            OnPlayerDetach();
     }
 
     public override void InitPrefabConnections()
@@ -72,19 +102,19 @@ public class VPWeaponManager : VehiclePart
             if(part is VPSeat)
                 seats++;
         }    
-        list_weapons = new List<VPWeaponBase>[seats];
-        list_rotators = new List<VPWeaponRotatorBase>[seats];
+        list_weapons = new List<VehicleWeaponBase>[seats];
+        list_rotators = new List<VehicleWeaponRotatorBase>[seats];
         foreach(var part in parts)
         {
-            if(part is VPWeaponBase weapon)
+            if(part is VehicleWeaponBase weapon)
             {
                 if (list_weapons[weapon.Seat] == null)
-                    list_weapons[weapon.Seat] = new List<VPWeaponBase>();
+                    list_weapons[weapon.Seat] = new List<VehicleWeaponBase>();
                 list_weapons[weapon.Seat].Add(weapon);
-            }else if(part is VPWeaponRotatorBase rotator)
+            }else if(part is VehicleWeaponRotatorBase rotator)
             {
                 if(list_rotators[rotator.Seat] == null)
-                    list_rotators[rotator.Seat] = new List<VPWeaponRotatorBase>();
+                    list_rotators[rotator.Seat] = new List<VehicleWeaponRotatorBase>();
                 list_rotators[rotator.Seat].Add(rotator);
                 rotator.SetSlot(list_rotators[rotator.Seat].Count - 1);
             }
@@ -110,34 +140,26 @@ public class VPWeaponManager : VehiclePart
             list_rotators[seat][slot]?.NetSyncUpdate(horRot, verRot);
     }
 
-    public void DoFire(int seat, bool isHorn, bool isRelease)
+    public bool DoFireLocal(bool isRelease)
     {
-        if(seat < 0 || seat >= list_weapons.Length || list_weapons[seat] == null)
-            return;
+        if(localPlayerSeat < 0 || list_weapons[localPlayerSeat] == null)
+            return false;
 
         bool firstShot = true;
-        if(isHorn)
-        {
-            foreach(var weapon in list_weapons[seat])
-            {
-                if(weapon is VPHornWeapon && weapon.DoFire(firstShot, isRelease))
-                {
-                    firstShot = false;
-                    weapon.Fired();
-                }
-            }
-        }
+        foreach(var weapon in list_weapons[localPlayerSeat])
+            weapon.DoFireLocal(ref firstShot, isRelease);
+        return firstShot;
     }
 
-    public void DoHornClient(int seat, int slot, int count, uint seed)
+    public void DoParticleFireClient(int seat, int slot, int count, uint seed)
     {
         if (list_weapons[seat] != null)
-            (list_weapons[seat][slot] as VPHornWeapon)?.DoHornClient(count, seed);
+            (list_weapons[seat][slot] as VPParticleWeapon)?.DoParticleFireClient(count, seed);
     }
 
-    public class WeaponSlotComparer : IComparer<VPWeaponBase>
+    public class WeaponSlotComparer : IComparer<VehicleWeaponBase>
     {
-        public int Compare(VPWeaponBase weapon1, VPWeaponBase weapon2)
+        public int Compare(VehicleWeaponBase weapon1, VehicleWeaponBase weapon2)
         {
             return weapon1.Slot - weapon2.Slot;
         }

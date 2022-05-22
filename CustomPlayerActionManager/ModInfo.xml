@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xml>
+	<ModInfo>
+		<Name value="Custom Player Action Manager" />
+		<Description value="allow modders to add custom bindable player control actions." />
+		<Author value="closer_ex" />
+		<Version value="1.0" />
+	</ModInfo>
+</xml>

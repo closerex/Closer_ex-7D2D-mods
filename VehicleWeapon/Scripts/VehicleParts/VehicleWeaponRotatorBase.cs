@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-public class VPWeaponRotatorBase : VehiclePart
+public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
 {
     protected Transform transform = null;
     protected Transform horRotTrans = null;
@@ -19,7 +19,7 @@ public class VPWeaponRotatorBase : VehiclePart
     protected EntityPlayerLocal player = null;
     protected int seat = 0;
     protected int slot = -1;
-    protected VPWeaponBase weapon = null;
+    protected VehicleWeaponBase weapon = null;
 
     public Transform HorRotTrans { get => horRotTrans; }
     public Transform VerRotTrans { get => verRotTrans; }
@@ -73,25 +73,23 @@ public class VPWeaponRotatorBase : VehiclePart
         this.slot = slot;
     }
 
-    public virtual void SetWeapon(VPWeaponBase weapon)
+    public virtual void SetWeapon(VehicleWeaponBase weapon)
     {
         this.weapon = weapon;
     }
 
-    public override void Update(float _dt)
+    public override void WeaponPartUpdate(float _dt)
     {
-        base.Update(_dt);
-
-        if (weapon == null || !weapon.HasOperator || !weapon.Activated)
+        if (weapon == null || !weapon.Activated)
             return;
         CalcCurRotation(_dt);
 
         if ((horRotTrans != null && Mathf.Abs(lastHorRot - horRotTrans.localEulerAngles.y) > 1f) || (verRotTrans != null && Mathf.Abs(lastVerRot - verRotTrans.localEulerAngles.x) > 1f))
         {
             if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && SingletonMonoBehaviour<ConnectionManager>.Instance.ClientCount() > 0)
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageHornWeaponUpdate>().Setup(vehicle.entity.entityId, horRotTrans.localEulerAngles.y, verRotTrans.localEulerAngles.x, seat, slot), false, -1, player.entityId);
+                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageParticleWeaponUpdate>().Setup(vehicle.entity.entityId, horRotTrans.localEulerAngles.y, verRotTrans.localEulerAngles.x, seat, slot), false, -1, player.entityId);
             else if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsClient)
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageHornWeaponUpdate>().Setup(vehicle.entity.entityId, horRotTrans.localEulerAngles.y, verRotTrans.localEulerAngles.x, seat, slot));
+                SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageParticleWeaponUpdate>().Setup(vehicle.entity.entityId, horRotTrans.localEulerAngles.y, verRotTrans.localEulerAngles.x, seat, slot));
             lastHorRot = horRotTrans.localEulerAngles.y;
             lastVerRot = verRotTrans.localEulerAngles.x;
         }

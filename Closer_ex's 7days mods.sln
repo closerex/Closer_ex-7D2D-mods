@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32002.261
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32516.85
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0A80133E-B107-4043-8938-C294B61996A1}"
 	ProjectSection(SolutionItems) = preProject
@@ -27,6 +27,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KFCommonUtilityLib", "0-KFCommonUtilityLib\KFCommonUtilityLib.csproj", "{1A3E0DEF-D290-4D3E-BC2D-1B66AB174F47}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehicleWeapon", "VehicleWeapon\VehicleWeapon.csproj", "{1C8B7EDE-9F45-4043-84B4-0544D0C0A633}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomPlayerActionManager", "CustomPlayerActionManager\CustomPlayerActionManager.csproj", "{A32D3424-8454-4B87-9554-AB0734819328}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +76,10 @@ Global
 		{1C8B7EDE-9F45-4043-84B4-0544D0C0A633}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C8B7EDE-9F45-4043-84B4-0544D0C0A633}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C8B7EDE-9F45-4043-84B4-0544D0C0A633}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A32D3424-8454-4B87-9554-AB0734819328}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A32D3424-8454-4B87-9554-AB0734819328}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A32D3424-8454-4B87-9554-AB0734819328}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A32D3424-8454-4B87-9554-AB0734819328}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

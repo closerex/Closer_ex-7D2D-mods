@@ -2,27 +2,27 @@
 using System.Collections;
 using UnityEngine;
 
-public class VPHornWeapon : VPWeaponBase
+public class VPParticleWeapon : VehicleWeaponBase
 {
     protected int burstCount = 1;
     protected int burstRepeat = 1;
     protected float burstInterval = 0f;
-    protected float hornInterval = 1f;
-    protected float hornCooldown = 0f;
-    protected float hornDelay = 0f;
+    protected float reloadTime = 1f;
+    protected float reloadRemain = 0f;
+    protected float burstDelay = 0f;
     protected bool fullauto = false;
     protected bool explodeOnCollision = true;
     protected bool explodeOnDeath = false;
-    protected string hornEmptySound = string.Empty;
-    protected string hornReloadSound = string.Empty;
-    protected string hornFireSound = string.Empty;
+    protected string emptySound = string.Empty;
+    protected string reloadSound = string.Empty;
+    protected string fireSound = string.Empty;
     protected CustomParticleComponents component = null;
-    protected ParticleSystem hornSystem = null;
+    protected ParticleSystem weaponSystem = null;
     protected SubExplosionInitializer initializer = null;
     protected bool isCoRunning = false;
     protected ItemValue ammoValue = ItemValue.None.Clone();
 
-    public ParticleSystem HornSystem { get => hornSystem; }
+    public ParticleSystem WeaponSystem { get => weaponSystem; }
     public CustomParticleComponents Component { get => component; }
     public override void SetProperties(DynamicProperties _properties)
     {
@@ -30,10 +30,10 @@ public class VPHornWeapon : VPWeaponBase
         _properties.ParseInt("burstCount", ref burstCount);
         _properties.ParseFloat("burstInterval", ref burstInterval);
         _properties.ParseInt("burstRepeat", ref burstRepeat);
-        _properties.ParseFloat("hornInterval", ref hornInterval);
-        _properties.ParseFloat("hornDelay", ref hornDelay);
+        _properties.ParseFloat("reloadTime", ref reloadTime);
+        _properties.ParseFloat("burstDelay", ref burstDelay);
         _properties.ParseBool("fullauto", ref fullauto);
-        hornCooldown = 0;
+        reloadRemain = 0;
 
         string str = null;
         _properties.ParseString("particleIndex", ref str);
@@ -46,10 +46,9 @@ public class VPHornWeapon : VPWeaponBase
         if (!string.IsNullOrEmpty(str))
             ammoValue = ItemClass.GetItem(str, false);
 
-        _properties.ParseString("emptySound", ref hornEmptySound);
-        _properties.ParseString("reloadSound", ref hornReloadSound);
-        hornFireSound = vehicle.GetHornSoundName();
-        _properties.ParseString("hornSound", ref hornFireSound);
+        _properties.ParseString("emptySound", ref emptySound);
+        _properties.ParseString("reloadSound", ref reloadSound);
+        _properties.ParseString("fireSound", ref fireSound);
     }
 
     public override void InitPrefabConnections()
@@ -57,12 +56,12 @@ public class VPHornWeapon : VPWeaponBase
         Transform hornTrans = GetParticleTransform();
         if (hornTrans)
         {
-            hornSystem = hornTrans.GetComponent<ParticleSystem>();
-            if (hornSystem)
+            weaponSystem = hornTrans.GetComponent<ParticleSystem>();
+            if (weaponSystem)
             {
-                var emission = hornSystem.emission;
+                var emission = weaponSystem.emission;
                 emission.enabled = false;
-                hornSystem.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                weaponSystem.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             }
         }
         base.InitPrefabConnections();
@@ -71,16 +70,15 @@ public class VPHornWeapon : VPWeaponBase
 
     public override void Update(float _dt)
     {
-        if (!isCoRunning && hornCooldown > 0)
-            hornCooldown -= _dt;
-
         base.Update(_dt);
+        if (!isCoRunning && reloadRemain > 0)
+            reloadRemain -= _dt;
     }
 
-    protected override void OnPlayerEnter()
+    public override void OnPlayerEnter()
     {
         base.OnPlayerEnter();
-        initializer = hornSystem.gameObject.AddComponent<SubExplosionInitializer>();
+        initializer = weaponSystem.gameObject.AddComponent<SubExplosionInitializer>();
         initializer.data = component.BoundExplosionData;
         initializer.entityAlive = player;
         if (component.BoundItemClass != null)
@@ -89,7 +87,7 @@ public class VPHornWeapon : VPWeaponBase
             initializer.SetExplodeOnDeath(explodeOnCollision);
     }
 
-    protected override void OnPlayerDetach()
+    public override void OnPlayerDetach()
     {
         base.OnPlayerDetach();
         if (initializer)
@@ -99,7 +97,7 @@ public class VPHornWeapon : VPWeaponBase
         }
     }
 
-    public override bool DoFire(bool firstShot, bool isRelease)
+    protected override bool DoFire(bool firstShot, bool isRelease, bool fromSlot)
     {
         if (isRelease)
         {
@@ -109,16 +107,16 @@ public class VPHornWeapon : VPWeaponBase
         else if (pressed && !fullauto)
             return false;
 
-        if (base.DoFire(firstShot, isRelease))
+        if (base.DoFire(firstShot, isRelease, fromSlot))
         {
             if(ammoValue.type > 0 && player.bag.GetItemCount(ammoValue) < burstRepeat)
             {
                 if(!pressed)
-                    vehicle.entity.PlayOneShot(hornEmptySound);
+                    vehicle.entity.PlayOneShot(emptySound);
                 pressed = true;
                 return false;
             }
-            if(isCoRunning || hornCooldown > 0)
+            if(isCoRunning || reloadRemain > 0)
             {
                 if(!pressed)
                     vehicle.entity.PlayOneShot(notReadySound);
@@ -127,27 +125,27 @@ public class VPHornWeapon : VPWeaponBase
             }
 
             pressed = true;
-            if (burstInterval > 0 || hornDelay > 0)
-                ThreadManager.StartCoroutine(DoHornCo());
+            if (burstInterval > 0 || burstDelay > 0)
+                ThreadManager.StartCoroutine(DoParticleFireCo());
             else
-                DoHornNow();
+                DoParticleFireNow();
 
             return true;
         }
         return false;
     }
 
-    public override void Fired()
+    protected override void Fired()
     {
         base.Fired();
-        hornCooldown = hornInterval;
+        reloadRemain = reloadTime;
     }
 
-    protected virtual IEnumerator DoHornCo()
+    protected virtual IEnumerator DoParticleFireCo()
     {
         isCoRunning = true;
-        if(hornDelay > 0)
-            yield return new WaitForSeconds(hornDelay);
+        if(burstDelay > 0)
+            yield return new WaitForSeconds(burstDelay);
         if (burstInterval > 0)
         {
             int curBurstCount = 0;
@@ -155,51 +153,51 @@ public class VPHornWeapon : VPWeaponBase
             {
                 if (!hasOperator)
                     break;
-                DoHornServer(burstCount);
+                DoParticleFireServer(burstCount);
                 ++curBurstCount;
                 yield return new WaitForSeconds(burstInterval);
             }
-            vehicle.entity.PlayOneShot(hornReloadSound);
+            vehicle.entity.PlayOneShot(reloadSound);
         }
         else
-            DoHornNow();
+            DoParticleFireNow();
 
         isCoRunning = false;
         yield break;
     }
 
-    protected virtual void DoHornNow()
+    protected virtual void DoParticleFireNow()
     {
         for (int i = 0; i < burstRepeat; ++i)
-            DoHornServer(burstCount);
-        vehicle.entity.PlayOneShot(hornReloadSound);
+            DoParticleFireServer(burstCount);
+        vehicle.entity.PlayOneShot(reloadSound);
     }
 
-    protected virtual void DoHornServer(int count)
+    protected virtual void DoParticleFireServer(int count)
     {
         uint seed = (uint)UnityEngine.Random.Range(int.MinValue, int.MaxValue);
         if (!SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer)
-            SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageHornWeaponFire>().Setup(vehicle.entity.entityId, rotator != null ? rotator.HorRotTrans.localEulerAngles.y : 0, rotator != null ? rotator.VerRotTrans.localEulerAngles.x : 0, seat, slot, count, seed));
+            SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageParticleWeaponFire>().Setup(vehicle.entity.entityId, rotator != null ? rotator.HorRotTrans.localEulerAngles.y : 0, rotator != null ? rotator.VerRotTrans.localEulerAngles.x : 0, seat, slot, count, seed));
         else
         {
             if(SingletonMonoBehaviour<ConnectionManager>.Instance.ClientCount() > 0)
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageHornWeaponFire>().Setup(vehicle.entity.entityId, rotator != null ? rotator.HorRotTrans.localEulerAngles.y : 0, rotator != null ? rotator.VerRotTrans.localEulerAngles.x : 0, seat, slot, count, seed));
-            DoHornClient(count, seed);
+                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageParticleWeaponFire>().Setup(vehicle.entity.entityId, rotator != null ? rotator.HorRotTrans.localEulerAngles.y : 0, rotator != null ? rotator.VerRotTrans.localEulerAngles.x : 0, seat, slot, count, seed));
+            DoParticleFireClient(count, seed);
         }
-        UseHorn();
+        PlayFiringSound();
         if (ammoValue.type > 0)
             ConsumeAmmo(1);
     }
 
-    public virtual void DoHornClient(int count, uint seed)
+    public virtual void DoParticleFireClient(int count, uint seed)
     {
-        if(hornSystem)
+        if(weaponSystem)
         {
             ParticleSystem.EmitParams param = new ParticleSystem.EmitParams();
             param.randomSeed = seed;
-            hornSystem.Emit(param, count);
+            weaponSystem.Emit(param, count);
         }
-        hornCooldown = hornInterval;
+        reloadRemain = reloadTime;
     }
 
     protected virtual void ConsumeAmmo(int count)
@@ -207,8 +205,8 @@ public class VPHornWeapon : VPWeaponBase
         player.bag.DecItem(ammoValue, count);
     }
 
-    protected virtual void UseHorn()
+    protected virtual void PlayFiringSound()
     {
-        vehicle.entity.PlayOneShot(hornFireSound, false);
+        vehicle.entity.PlayOneShot(fireSound, false);
     }
 }

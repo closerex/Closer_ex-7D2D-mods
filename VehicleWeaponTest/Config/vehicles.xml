@@ -20,7 +20,7 @@
 			<property name="waterDrag_y_velScale_velMaxScale" value="1.8, .9, .1"/>
 			<property name="wheelPtlScale" value="1"/>
 
-			<!-- hornSound is now used for firing sound. this does not affect vehicles without hornWeapon /-->
+			<!-- fireSound is now used for firing sound. this does not affect vehicles without hornWeapon /-->
 			<property name="hornSound" value="m136_fire"/>
 
 			<!-- part class name must be vehicleWeaponManager /-->
@@ -31,9 +31,9 @@
 			</property>
 			
 			<!-- part class name can be anything /-->
-			<property class="hornWeapon">
-				<!-- class must be HornWeapon or its subclasses /-->
-				<property name="class" value="HornWeapon,VehicleWeapon"/>
+			<property class="Weapon">
+				<!-- class must be ParticleWeapon or its subclasses /-->
+				<property name="class" value="ParticleWeapon,VehicleWeapon"/>
 				<!-- which seat controls this weapon /-->
 				<!-- default: 0 /-->
 				<property name="seat" value="0"/>
@@ -49,16 +49,16 @@
 				<!-- how many cycles on one horn trigger /-->
 				<!-- default: 1 /-->
 				<property name="burstRepeat" value="3"/>
-				<!-- interval between two horn triggers /-->
+				<!-- interval between two burst cycles /-->
 				<!-- default: 1f /-->
-				<property name="hornInterval" value="2"/>
+				<property name="reloadTime" value="2"/>
 				<!-- delay before this weapon fire shot /-->
 				<!-- default: 0f; delay also put off reload! /-->
-				<property name="hornDelay" value="0"/>
+				<property name="burstDelay" value="0"/>
 				<!-- should this weapon react to holding horn key /-->
 				<!-- default: false /-->
 				<property name="fullauto" value="false"/>
-				<!-- name of the item serving as ammo; ammo must be placed in driver's bag, and is consumed by burstRepeat; /-->
+				<!-- name of the item serving as ammo; ammo must be placed in driver's bag, and the consumed count per shot is burstRepeat; /-->
 				<!-- default: empty; when ammo name is empty, horn will not consume ammo /-->
 				<property name="ammo" value="ammoRocketFrag"/>
 				<!-- the explosion particle; explosion data and effect groups are taken from its bound item class /-->
@@ -69,16 +69,16 @@
 				<!-- should the particle trigger explosion on death? /-->
 				<!-- default: false /-->
 				<property name="explodeOnDeath" value="false"/>
-				<!-- allow you to set horn sound for each horn weapon /-->
-				<!-- default: hornSound of the vehicle /-->
-				<property name="hornSound" value="m136_fire"/>
-				<!-- sound to play when trying to horn without sufficient ammo in bag /-->
+				<!-- sound to play when firing shot /-->
+				<!-- default: fireSound of the vehicle /-->
+				<property name="fireSound" value="m136_fire"/>
+				<!-- sound to play when trying to fire without sufficient ammo in bag /-->
 				<property name="emptySound" value="dryfire"/>
-				<!-- sound to play when trying to horn while horn interval is active /-->
+				<!-- sound to play when trying to fire while horn interval is active /-->
 				<property name="notReadySound" value="medic_module_toggle_off"/>
-				<!-- sound to play when trying to horn while rotator is not aimed and horn juncture is OnTarget /-->
+				<!-- sound to play when trying to fire while rotator is not aimed and fire juncture is OnTarget /-->
 				<property name="notOnTargetSound" value="ui_denied"/>
-				<!-- sound to play after a horn process, simulating reloading /-->
+				<!-- sound to play after a fire process, simulating reloading /-->
 				<property name="reloadSound" value="shotgun_reload"/>
 				<!-- sound to play when this weapon is activated /-->
 				<property name="activationSound" value="flashlight_toggle"/>
@@ -86,16 +86,18 @@
 				<property name="deactivationSound" value="flashlight_toggle"/>
 				<!-- the transform with the particle system /-->
 				<property name="particle_transform" value="HornWeapon/WeaponRoot/Turret/MortarG_Barrel02/ShootPoint"/>
-				<!-- name of the hornWeaponRotator that rotates this weapon /-->
+				<!-- name of the ParticleWeaponRotator that rotates this weapon /-->
 				<!-- default: null; when no rotator is assigned, the weapon is not rotated /-->
-				<property name="rotator" value="hornWeaponRotator"/>
+				<property name="rotator" value="WeaponRotator"/>
 				<!-- additional firing condition /-->
 				<!-- default: Anytime; valid values are: Anytime(whenever horn is triggered),
 														 OnTarget(if rotator exists, only horn when rotator is aimed),
 														 FirstShot(when no weapon on this seat horned prior to this one),
 														 FirstShotOnTarget(combination of OnTarget and FirstShot),
-														 Cycle(firing in a cycle with other weapons)/-->
-				<property name="fireWhen" value="OnTarget"/>
+														 Cycle(firing in a cycle with other weapons)
+														 FromSlotKey(firing only when pressing slot key)
+														 FromSlotKeyOnTarget(combination of OnTarget and FromSlotKey)/-->
+				<property name="fireWhen" value="FromSlotKeyOnTarget"/>
 				<!-- when fireWhen is Cycle, this specify the next weapon that fires after this one /-->
 				<property name="cycleNextSlot" value="0"/>
 				<!-- when fireWhen is Cycle, this specify the delay in seconds when this one becomes the current firing weapon in cycle /-->
@@ -104,10 +106,10 @@
 			</property>
 			
 			<!-- part class name can be anything but must match the "rotator" property name of the weapon; does not need to be placed after hornWeapon /-->
-			<!-- this part controls the rotation of the hornWeapon, by default calculating the parabola of the particle according to mouse position and auto adjusting rotation of rotating transforms /-->
-			<property class="hornWeaponRotator">
-				<!-- class must be HornWeaponRotator or its subclasses /-->
-				<property name="class" value="HornWeaponRotator,VehicleWeapon"/>
+			<!-- this part controls the rotation of the weapon, by default calculating the parabola of the particle according to mouse position and auto adjusting rotation of rotating transforms /-->
+			<property class="WeaponRotator">
+				<!-- class must be ParticleWeaponRotator or its subclasses /-->
+				<property name="class" value="ParticleWeaponRotator,VehicleWeapon"/>
 				<!-- the horn weapon transform /-->
 				<property name="transform" value="HornWeapon/WeaponRoot"/>
 				<!-- the transform to rotate on y axis /-->
@@ -116,7 +118,7 @@
 				<property name="verRotationTransform" value="HornWeapon/WeaponRoot/Turret/MortarG_Barrel02"/>
 				
 				<!-- the transform which the Ray checking for hit position origins from. /-->
-				<!-- default: horn weapon transform; when using default value, the origin position will move up by 2 units /-->
+				<!-- default: weapon transform; when using default value, the origin position will move up by 2 units /-->
 				<!--property name="hitRaycastTransform" value="HornWeapon/WeaponRoot"/-->
 				
 				<!-- must be the same as the weapon seat /-->
@@ -172,21 +174,21 @@
 				<property name="previewTypeBlock" value="Cube"/>
 			</property>
 
-			<property class="hornWeaponLaser01">
-				<property name="class" value="HornWeapon,VehicleWeapon"/>
+			<property class="WeaponLaser01">
+				<property name="class" value="ParticleWeapon,VehicleWeapon"/>
 				<property name="seat" value="0"/>
 				<property name="slot" value="1"/>
 				<property name="burstCount" value="1"/>
 				<property name="burstInterval" value="0"/>
 				<property name="burstRepeat" value="1"/>
-				<property name="hornInterval" value="0.5"/>
+				<property name="reloadTime" value="0.5"/>
 				<property name="fullauto" value="true"/>
-				<property name="hornDelay" value="0"/>
+				<property name="burstDelay" value="0"/>
 				<property name="ammo" value="ammo9mmBulletBall"/>
 				<property name="particleIndex" value="#@modfolder:Resources/plasmaExplosion.unity3d?Plasma_Hit_FX_v1$itemPlasmaSmall"/>
 				<property name="explodeOnCollision" value="true"/>
 				<property name="explodeOnDeath" value="false"/>
-				<property name="hornSound" value="plasma_shoot"/>
+				<property name="fireSound" value="plasma_shoot"/>
 				<property name="emptySound" value="dryfire"/>
 				<property name="notReadySound" value="medic_module_toggle_off"/>
 				<property name="notOnTargetSound" value="ui_denied"/>
@@ -198,20 +200,20 @@
 				<property name="cycleInterval" value="0.25"/>
 			</property>
 			
-			<property class="hornWeaponLaser02">
-				<property name="class" value="HornWeapon,VehicleWeapon"/>
+			<property class="WeaponLaser02">
+				<property name="class" value="ParticleWeapon,VehicleWeapon"/>
 				<property name="seat" value="0"/>
 				<property name="slot" value="0"/>
 				<property name="burstCount" value="1"/>
 				<property name="burstInterval" value="0"/>
 				<property name="burstRepeat" value="1"/>
-				<property name="hornInterval" value="0.5"/>
+				<property name="reloadTime" value="0.5"/>
 				<property name="fullauto" value="true"/>
 				<property name="ammo" value="ammo9mmBulletBall"/>
 				<property name="particleIndex" value="#@modfolder:Resources/plasmaExplosion.unity3d?Plasma_Hit_FX_v1$itemPlasmaSmall"/>
 				<property name="explodeOnCollision" value="true"/>
 				<property name="explodeOnDeath" value="false"/>
-				<property name="hornSound" value="plasma_shoot"/>
+				<property name="fireSound" value="plasma_shoot"/>
 				<property name="emptySound" value="dryfire"/>
 				<property name="notReadySound" value="medic_module_toggle_off"/>
 				<property name="notOnTargetSound" value="ui_denied"/>

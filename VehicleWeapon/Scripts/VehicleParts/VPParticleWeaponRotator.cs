@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class VPHornWeaponRotator : VPWeaponRotatorBase
+public class VPParticleWeaponRotator : VehicleWeaponRotatorBase
 {
     protected float gravity = 1f;
     protected float projectileSpeed = 0f;
@@ -51,16 +51,16 @@ public class VPHornWeaponRotator : VPWeaponRotatorBase
             previewTypeBlock = PrimitiveType.Sphere;
     }
 
-    public override void SetWeapon(VPWeaponBase weapon)
+    public override void SetWeapon(VehicleWeaponBase weapon)
     {
         base.SetWeapon(weapon);
-        if(weapon is VPHornWeapon hornWeapon)
+        if(weapon is VPParticleWeapon hornWeapon)
         {
             var component = hornWeapon.Component;
             previewScaleEntity = component.BoundExplosionData.EntityRadius;
             previewScaleBlock = component.BoundExplosionData.BlockRadius;
 
-            var main = hornWeapon.HornSystem.main;
+            var main = hornWeapon.WeaponSystem.main;
             if (main.startSpeed.mode == ParticleSystemCurveMode.Constant)
                 projectileSpeed = main.startSpeed.constant;
             if (main.gravityModifier.mode == ParticleSystemCurveMode.Constant)
@@ -119,7 +119,7 @@ public class VPHornWeaponRotator : VPWeaponRotatorBase
     {
         hitPos = hitInfo.point;
         Vector3 aimAt = Quaternion.LookRotation(hitPos - horRotTrans.position).eulerAngles;
-        aimAt.x = -AngleToLimited(Angle(hitPos, (weapon as VPHornWeapon).HornSystem.transform.position), verticleMinRotation, verticleMaxRotation);
+        aimAt.x = -AngleToLimited(Angle(hitPos, (weapon as VPParticleWeapon).WeaponSystem.transform.position), verticleMinRotation, verticleMaxRotation);
         aimAt = (Quaternion.Inverse(transform.rotation) * Quaternion.Euler(aimAt)).eulerAngles;
         aimAt.x = AngleToInferior(aimAt.x);
         aimAt.y = AngleToInferior(aimAt.y);
