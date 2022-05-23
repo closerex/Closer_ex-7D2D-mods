@@ -1,0 +1,14 @@
+<configs name="XUi_Menu/windows.xml">
+	<setattribute xpath="/windows/window[@name='optionsControls']/rect[@name='tabs']/rect[@name='controlTemplate']" name="depth">3</setattribute>
+	<remove xpath="/windows/window[@name='optionsControls']/rect[@name='tabs']/rect[@name='tabsContents']/rect[not(@*)]"/>
+	<insertBefore xpath="/windows/window[@name='optionsControls']/rect[@name='tabs']/rect[@name='tabsContents']/rect[@tab_key='xuiOptionsControlsController']">
+		<custom_option_control_page/>
+		<custom_option_control_page/>
+		<custom_option_control_page/>
+		<custom_option_control_page/>
+		<custom_option_control_page/>
+		<custom_option_control_page/>
+		<custom_option_control_page/>
+		<custom_option_control_page/>
+	</insertBefore>
+</configs>
