@@ -26,8 +26,9 @@ public class NetPackageParticleWeaponUpdate : NetPackage
         if(entity)
         {
             var manager = entity.GetVehicle().FindPart(VPWeaponManager.VehicleWeaponManagerName) as VPWeaponManager;
-            if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer)
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageParticleWeaponUpdate>().Setup(entityId, horEuler, verEuler, seat, slot), false, -1, entity.AttachedMainEntity.entityId);
+            var player = entity.GetAttached(seat);
+            if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && player)
+                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageParticleWeaponUpdate>().Setup(entityId, horEuler, verEuler, seat, slot), false, -1, player.entityId);
             manager.NetSyncUpdate(seat, slot, horEuler, verEuler);
         }
     }

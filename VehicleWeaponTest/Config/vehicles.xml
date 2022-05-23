@@ -36,7 +36,7 @@
 				<property name="class" value="ParticleWeapon,VehicleWeapon"/>
 				<!-- which seat controls this weapon /-->
 				<!-- default: 0 /-->
-				<property name="seat" value="0"/>
+				<property name="seat" value="1"/>
 				<!-- priority of this weapon /-->
 				<!-- default: int.MaxValue; this is set to the actual index in the weapon list, which is sorted by this value /-->
 				<property name="slot" value="2"/>
