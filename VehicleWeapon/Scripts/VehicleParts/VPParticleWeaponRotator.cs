@@ -15,6 +15,7 @@ public class VPParticleWeaponRotator : VehicleWeaponRotatorBase
     protected Color previewColorBlockAiming;
     protected float previewScaleBlock = 0;
     protected PrimitiveType previewTypeBlock = PrimitiveType.Sphere;
+    protected Vector3 hitPos;
     protected static readonly int colorId = Shader.PropertyToID("_Color");
 
     public override void SetProperties(DynamicProperties _properties)
@@ -74,37 +75,26 @@ public class VPParticleWeaponRotator : VehicleWeaponRotatorBase
         properties.ParseFloat("previewScaleBlock", ref previewScaleBlock);
     }
 
-
-    protected override void CalcCurRotation(float _dt)
+    public override void NoPauseUpdate(float _dt)
     {
-        float curHorAngle = AngleToInferior(horRotTrans.localEulerAngles.y);
-        float curVerAngle = AngleToInferior(verRotTrans.localEulerAngles.x);
-        float targetHorAngle = horRotTrans.localEulerAngles.y;
-        float targetVerAngle = verRotTrans.localEulerAngles.x;
+        base.NoPauseUpdate(_dt);
 
-        if (DoRaycast(out RaycastHit hitInfo))
-        {
-            DoCalcCurRotation(hitInfo, out Vector3 hitPos, out targetHorAngle, out targetVerAngle);
-            bool updatePreview = false;
-            if (!FuzzyEqualAngle(curHorAngle, targetHorAngle, 0.01f))
-            {
-                HorRotateTowards(targetHorAngle, _dt);
-                updatePreview = true;
-            }
-            if (!FuzzyEqualAngle(curVerAngle, targetVerAngle, 0.01f))
-            {
-                VerRotateTowards(targetVerAngle, _dt);
-                updatePreview = true;
-            }
-            if (updatePreview)
-                UpdatePreviewPos(hitPos);
-        }
-
-        bool onTarget = FuzzyEqualAngle(targetHorAngle, AngleToInferior(horRotTrans.localEulerAngles.y), 1f) && FuzzyEqualAngle(targetVerAngle, AngleToInferior(verRotTrans.localEulerAngles.x), 0.5f);
+        bool onTarget = FuzzyEqualAngle(nextHorRot, AngleToInferior(horRotTrans.localEulerAngles.y), 1f) && FuzzyEqualAngle(nextVerRot, AngleToInferior(verRotTrans.localEulerAngles.x), 0.5f);
         if (onTarget != lastOnTarget)
         {
             SetPreviewColor(onTarget);
             lastOnTarget = onTarget;
+        }
+    }
+
+    protected override void CalcCurRotation(float _dt)
+    {
+        nextHorRot = horRotTrans.localEulerAngles.y;
+        nextVerRot = verRotTrans.localEulerAngles.x;
+
+        if (DoRaycast(out RaycastHit hitInfo))
+        {
+            DoCalcCurRotation(hitInfo, out nextHorRot, out nextVerRot);
         }
     }
 
@@ -115,7 +105,7 @@ public class VPParticleWeaponRotator : VehicleWeaponRotatorBase
         return Physics.Raycast(lookRay, out hitInfo);
     }
 
-    protected virtual void DoCalcCurRotation(RaycastHit hitInfo, out Vector3 hitPos, out float targetHorAngle, out float targetVerAngle)
+    protected virtual void DoCalcCurRotation(RaycastHit hitInfo, out float targetHorAngle, out float targetVerAngle)
     {
         hitPos = hitInfo.point;
         Vector3 aimAt = Quaternion.LookRotation(hitPos - horRotTrans.position).eulerAngles;
@@ -126,6 +116,25 @@ public class VPParticleWeaponRotator : VehicleWeaponRotatorBase
         aimAt.y = AngleToLimited(aimAt.y, horizontalMinRotation, horizontalMaxRotation);
         targetHorAngle = aimAt.y;
         targetVerAngle = aimAt.x;
+    }
+
+    protected override void DoRotateTowards(float _dt)
+    {
+        bool updatePreview = false;
+        float curHorAngle = AngleToInferior(horRotTrans.localEulerAngles.y);
+        float curVerAngle = AngleToInferior(verRotTrans.localEulerAngles.x);
+        if (!FuzzyEqualAngle(curHorAngle, nextHorRot, 0.01f))
+        {
+            HorRotateTowards(_dt);
+            updatePreview = true;
+        }
+        if (!FuzzyEqualAngle(curVerAngle, nextVerRot, 0.01f))
+        {
+            VerRotateTowards(_dt);
+            updatePreview = true;
+        }
+        if (updatePreview)
+            UpdatePreviewPos(hitPos);
     }
 
     public override void CreatePreview()
@@ -173,7 +182,7 @@ public class VPParticleWeaponRotator : VehicleWeaponRotatorBase
         }
     }
 
-    protected virtual void UpdatePreviewPos(Vector3 position)
+    protected override void UpdatePreviewPos(Vector3 position)
     {
         if (explPreviewTransEntity != null)
             explPreviewTransEntity.position = position;

@@ -121,9 +121,6 @@
 				<!-- default: weapon transform; when using default value, the origin position will move up by 2 units /-->
 				<!--property name="hitRaycastTransform" value="HornWeapon/WeaponRoot"/-->
 				
-				<!-- must be the same as the weapon seat /-->
-				<!-- default: 0 /-->
-				<property name="seat" value="0"/>
 				<!-- max euler angle for verticle rotation transform /-->
 				<!-- default: 45f /-->
 				<property name="verticleMaxRotation" value="30"/>

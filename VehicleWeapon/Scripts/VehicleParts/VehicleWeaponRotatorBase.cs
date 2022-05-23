@@ -14,16 +14,15 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     protected float horizontalRotSpeed = 360f;
     protected float lastHorRot = 0f;
     protected float lastVerRot = 0f;
+    protected float nextHorRot = 0f;
+    protected float nextVerRot = 0f;
     protected bool lastOnTarget = false;
     protected bool fullCircleRotation = false;
     protected EntityPlayerLocal player = null;
-    protected int seat = 0;
-    protected int slot = -1;
     protected VehicleWeaponBase weapon = null;
 
     public Transform HorRotTrans { get => horRotTrans; }
     public Transform VerRotTrans { get => verRotTrans; }
-    public int Seat { get => seat; }
     public bool OnTarget { get => lastOnTarget; }
 
     public override void SetProperties(DynamicProperties _properties)
@@ -44,13 +43,6 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
         horizontalRotSpeed = Mathf.Abs(horizontalRotSpeed);
         fullCircleRotation = horizontalMaxRotation == 180f && horizontalMinRotation == -180f;
 
-        _properties.ParseInt("seat", ref seat);
-        if (seat < 0)
-        {
-            Log.Error("seat can not be less than 0! setting to 0...");
-            seat = 0;
-        }
-
         player = GameManager.Instance.World.GetPrimaryPlayer();
     }
 
@@ -68,28 +60,28 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
             hasRaycastTransform = true;
     }
 
-    public void SetSlot(int slot)
-    {
-        this.slot = slot;
-    }
-
     public virtual void SetWeapon(VehicleWeaponBase weapon)
     {
         this.weapon = weapon;
     }
 
-    public override void WeaponPartUpdate(float _dt)
+    public override void NoGUIUpdate(float _dt)
     {
         if (weapon == null || !weapon.Activated)
             return;
         CalcCurRotation(_dt);
+    }
+
+    public override void NoPauseUpdate(float _dt)
+    {
+        DoRotateTowards(_dt);
 
         if ((horRotTrans != null && Mathf.Abs(lastHorRot - horRotTrans.localEulerAngles.y) > 1f) || (verRotTrans != null && Mathf.Abs(lastVerRot - verRotTrans.localEulerAngles.x) > 1f))
         {
             if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && SingletonMonoBehaviour<ConnectionManager>.Instance.ClientCount() > 0)
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageParticleWeaponUpdate>().Setup(vehicle.entity.entityId, horRotTrans.localEulerAngles.y, verRotTrans.localEulerAngles.x, seat, slot), false, -1, player.entityId);
+                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageParticleWeaponUpdate>().Setup(vehicle.entity.entityId, horRotTrans.localEulerAngles.y, verRotTrans.localEulerAngles.x, weapon.Seat, weapon.Slot), false, -1, player.entityId);
             else if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsClient)
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageParticleWeaponUpdate>().Setup(vehicle.entity.entityId, horRotTrans.localEulerAngles.y, verRotTrans.localEulerAngles.x, seat, slot));
+                SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageParticleWeaponUpdate>().Setup(vehicle.entity.entityId, horRotTrans.localEulerAngles.y, verRotTrans.localEulerAngles.x, weapon.Seat, weapon.Slot));
             lastHorRot = horRotTrans.localEulerAngles.y;
             lastVerRot = verRotTrans.localEulerAngles.x;
         }
@@ -107,58 +99,62 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     {
     }
 
-    protected virtual void HorRotateTowards(float targetHorAngle, float _dt)
+    protected virtual void DoRotateTowards(float _dt)
+    {
+    }
+
+    protected virtual void HorRotateTowards(float _dt)
     {
         //targetHorAngle = AngleToLimited(targetHorAngle, horizontalMinRotation, horizontalMaxRotation);
         float maxRotPerUpdate = horizontalRotSpeed * _dt;
         float curHorAngle = AngleToInferior(horRotTrans.localEulerAngles.y);
         float nextHorAngle;
         if (!fullCircleRotation)
-            nextHorAngle = targetHorAngle > curHorAngle ? Mathf.Min(curHorAngle + maxRotPerUpdate, targetHorAngle) : Mathf.Max(curHorAngle - maxRotPerUpdate, targetHorAngle);
+            nextHorAngle = nextHorRot > curHorAngle ? Mathf.Min(curHorAngle + maxRotPerUpdate, nextHorRot) : Mathf.Max(curHorAngle - maxRotPerUpdate, nextHorRot);
         else
         {
-            if (targetHorAngle > 0 && curHorAngle < 0)
+            if (nextHorRot > 0 && curHorAngle < 0)
             {
-                if (targetHorAngle - curHorAngle > 180)
+                if (nextHorRot - curHorAngle > 180)
                 {
                     nextHorAngle = AngleToInferior(curHorAngle - maxRotPerUpdate);
-                    if (nextHorAngle > 0 == targetHorAngle > 0)
-                        nextHorAngle = Mathf.Max(nextHorAngle, targetHorAngle);
+                    if (nextHorAngle > 0 == nextHorRot > 0)
+                        nextHorAngle = Mathf.Max(nextHorAngle, nextHorRot);
                 }
                 else
                 {
                     nextHorAngle = AngleToInferior(curHorAngle + maxRotPerUpdate);
-                    if (nextHorAngle > 0 == targetHorAngle > 0)
-                        nextHorAngle = Mathf.Min(nextHorAngle, targetHorAngle);
+                    if (nextHorAngle > 0 == nextHorRot > 0)
+                        nextHorAngle = Mathf.Min(nextHorAngle, nextHorRot);
                 }
             }
-            else if (targetHorAngle < 0 && curHorAngle > 0)
+            else if (nextHorRot < 0 && curHorAngle > 0)
             {
-                if (curHorAngle - targetHorAngle > 180)
+                if (curHorAngle - nextHorRot > 180)
                 {
                     nextHorAngle = AngleToInferior(curHorAngle + maxRotPerUpdate);
-                    if (nextHorAngle > 0 == targetHorAngle > 0)
-                        nextHorAngle = Mathf.Min(nextHorAngle, targetHorAngle);
+                    if (nextHorAngle > 0 == nextHorRot > 0)
+                        nextHorAngle = Mathf.Min(nextHorAngle, nextHorRot);
                 }
                 else
                 {
                     nextHorAngle = AngleToInferior(curHorAngle - maxRotPerUpdate);
-                    if (nextHorAngle > 0 == targetHorAngle > 0)
-                        nextHorAngle = Mathf.Max(nextHorAngle, targetHorAngle);
+                    if (nextHorAngle > 0 == nextHorRot > 0)
+                        nextHorAngle = Mathf.Max(nextHorAngle, nextHorRot);
                 }
             }
             else
-                nextHorAngle = targetHorAngle > curHorAngle ? Mathf.Min(curHorAngle + maxRotPerUpdate, targetHorAngle) : Mathf.Max(curHorAngle - maxRotPerUpdate, targetHorAngle);
+                nextHorAngle = nextHorRot > curHorAngle ? Mathf.Min(curHorAngle + maxRotPerUpdate, nextHorRot) : Mathf.Max(curHorAngle - maxRotPerUpdate, nextHorRot);
         }
         horRotTrans.localEulerAngles = new Vector3(horRotTrans.localEulerAngles.x, nextHorAngle, horRotTrans.localEulerAngles.z);
     }
 
-    protected virtual void VerRotateTowards(float targetVerAngle, float _dt)
+    protected virtual void VerRotateTowards(float _dt)
     {
         //targetVerAngle = AngleToLimited(targetVerAngle, verticleMinRotation, verticleMaxRotation);
         float maxRotPerUpdate = verticleRotSpeed * _dt;
         float curVerAngle = AngleToInferior(verRotTrans.localEulerAngles.x);
-        float nextVerAngle = targetVerAngle > curVerAngle ? Mathf.Min(curVerAngle + maxRotPerUpdate, targetVerAngle) : Mathf.Max(curVerAngle - maxRotPerUpdate, targetVerAngle);
+        float nextVerAngle = nextVerRot > curVerAngle ? Mathf.Min(curVerAngle + maxRotPerUpdate, nextVerRot) : Mathf.Max(curVerAngle - maxRotPerUpdate, nextVerRot);
         verRotTrans.localEulerAngles = new Vector3(nextVerAngle, verRotTrans.localEulerAngles.y, verRotTrans.localEulerAngles.z);
     }
     public virtual void CreatePreview()
@@ -166,6 +162,10 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     }
 
     public virtual void DestroyPreview()
+    {
+    }
+
+    protected virtual void UpdatePreviewPos(Vector3 position)
     {
     }
 

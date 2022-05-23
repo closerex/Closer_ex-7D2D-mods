@@ -68,9 +68,9 @@ public class VPParticleWeapon : VehicleWeaponBase
     }
 
 
-    public override void Update(float _dt)
+    public override void NoPauseUpdate(float _dt)
     {
-        base.Update(_dt);
+        base.NoPauseUpdate(_dt);
         if (!isCoRunning && reloadRemain > 0)
             reloadRemain -= _dt;
     }

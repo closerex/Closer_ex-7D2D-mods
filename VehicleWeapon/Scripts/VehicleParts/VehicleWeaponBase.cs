@@ -97,11 +97,25 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
         cycleCooldown = cycleInterval;
     }
 
-    public override void Update(float _dt)
+    public override void NoPauseUpdate(float _dt)
     {
-        base.Update(_dt);
         if (IsCurCycle && cycleCooldown > 0)
             cycleCooldown -= _dt;
+
+        if (rotator != null)
+            rotator.NoPauseUpdate(_dt);
+    }
+
+    public override void NoGUIUpdate(float _dt)
+    {
+        if (rotator != null)
+            rotator.NoGUIUpdate(_dt);
+    }
+
+    public virtual void NetSyncUpdate(float horRot, float verRot)
+    {
+        if (rotator != null)
+            rotator.NetSyncUpdate(horRot, verRot);
     }
 
     public virtual void OnPlayerEnter()
