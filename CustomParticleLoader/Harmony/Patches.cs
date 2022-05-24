@@ -119,6 +119,7 @@ class ExplosionEffectPatch
         CustomParticleEffectLoader.destroyAllParticles();
     }
 
+    /*
     [HarmonyPatch(nameof(GameManager.PlayerSpawnedInWorld))]
     [HarmonyPostfix]
     private static void PlayerSpawnedInWorld_Postfix(ClientInfo _cInfo, RespawnType _respawnReason)
@@ -126,7 +127,20 @@ class ExplosionEffectPatch
         if(SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && _cInfo != null && _cInfo.entityId != -1 && (_respawnReason == RespawnType.EnterMultiplayer || _respawnReason == RespawnType.JoinMultiplayer))
             CustomParticleEffectLoader.OnClientConnected(_cInfo);
     }
+    */
 }
+
+[HarmonyPatch(typeof(NetEntityDistribution), nameof(NetEntityDistribution.Add), new Type[] {typeof(Entity)})]
+class ExplosionSyncPatch
+{
+    private static void Postfix(Entity _e)
+    {
+        if(_e is EntityPlayer)
+            CustomParticleEffectLoader.OnClientConnected(SingletonMonoBehaviour<ConnectionManager>.Instance.Clients.ForEntityId(_e.entityId));
+    }
+}
+
+
 [HarmonyPatch]
 class ExplosionParsePatch
 {

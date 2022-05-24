@@ -53,7 +53,7 @@ public class VPWeaponManager : VehiclePart
     public override void Update(float _dt)
     {
         base.Update(_dt);
-
+        /*
         if(localPlayerSeat < 0)
         {
             if (player && player.AttachedToEntity == vehicle.entity)
@@ -67,8 +67,9 @@ public class VPWeaponManager : VehiclePart
             OnPlayerDetach();
             return;
         }
+        */
 
-        if(!GameManager.Instance.IsPaused())
+        if(localPlayerSeat >= 0 && !GameManager.Instance.IsPaused())
         {
             if (list_weapons[localPlayerSeat] != null)
             {
@@ -91,16 +92,17 @@ public class VPWeaponManager : VehiclePart
             list_weapons[seat][slot].NetSyncUpdate(horRot, verRot);
     }
 
-    protected virtual void OnPlayerEnter()
+    internal virtual void OnPlayerEnter(int seat)
     {
         PlayerActionsVehicleWeapon.Instance.Enabled = true;
-        localPlayerSeat = vehicle.entity.FindAttachSlot(player);
+        //localPlayerSeat = vehicle.entity.FindAttachSlot(player);
+        localPlayerSeat = seat;
         if (list_weapons[localPlayerSeat] != null)
             foreach (var weapon in list_weapons[localPlayerSeat])
                 weapon.OnPlayerEnter();
     }
 
-    protected virtual void OnPlayerDetach()
+    internal virtual void OnPlayerDetach()
     {
         PlayerActionsVehicleWeapon.Instance.Enabled = false;
         if (list_weapons[localPlayerSeat] != null)
