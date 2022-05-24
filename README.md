@@ -6,6 +6,8 @@ For non modders, you can download release version without source code on [Nexus]
 
 [DownGit](https://minhaskamal.github.io/DownGit/#/home) is recommended for downloading individual folders.
 
+[Discord](https://discord.com/channels/243577046616375297/945694105923616779) to find me.
+
 ### Description of each mod:
 
 |Required on|Mod name|Description| 
