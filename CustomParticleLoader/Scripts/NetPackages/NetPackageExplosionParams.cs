@@ -102,13 +102,13 @@ public class NetPackageExplosionParams : NetPackage
 		}
 		if(explosionData.ParticleIndex >= WorldStaticData.prefabExplosions.Length)
         {
-			bool flag = CustomParticleEffectLoader.GetCustomParticleComponents(explosionData.ParticleIndex, out CustomParticleComponents component);
+			bool flag = CustomExplosionManager.GetCustomParticleComponents(explosionData.ParticleIndex, out ExplosionComponent component);
 			if(flag && component != null)
 			{
 				component.CurrentExplosionParams = new ExplosionParams(clrIdx, worldPos, blockPos, rotation, explosionData, entityId, explosionId);
 				if (itemValueExplosive != null)
 					component.CurrentItemValue = itemValueExplosive.Clone();
-				CustomParticleEffectLoader.PushLastInitComponent(component);
+				CustomExplosionManager.PushLastInitComponent(component);
 			}
         }
 		GameObject result = _world.GetGameManager().ExplosionClient(clrIdx, worldPos, rotation, explosionData.ParticleIndex, explosionData.BlastPower, (float)explosionData.EntityRadius, explosionChanges);
@@ -121,7 +121,7 @@ public class NetPackageExplosionParams : NetPackage
 				helper.OnExplosionClientInit(_br);
 			}
         }
-		CustomParticleEffectLoader.PopLastInitComponent();
+		CustomExplosionManager.PopLastInitComponent();
 	}
 
 	public override NetPackageDirection PackageDirection

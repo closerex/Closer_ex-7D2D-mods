@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public static class CustomParticleEffectLoader
+public static class CustomExplosionManager
 {
     private static Dictionary<int, string> hash_paths = new Dictionary<int, string>();
-    private static Dictionary<string, CustomParticleComponents> hash_components = new Dictionary<string, CustomParticleComponents>();
+    private static Dictionary<string, ExplosionComponent> hash_components = new Dictionary<string, ExplosionComponent>();
     private static Dictionary<string, GameObject> hash_assets = new Dictionary<string, GameObject>();
     private static HashSet<GameObject> hash_initialized = new HashSet<GameObject>();
-    private static Stack<CustomParticleComponents> last_init_components = new Stack<CustomParticleComponents>();
+    private static List<IExplosionPropertyParser> list_parsers = new List<IExplosionPropertyParser>();
+    private static Stack<ExplosionComponent> last_init_components = new Stack<ExplosionComponent>();
     public static event Action<PooledBinaryWriter> ClientConnected;
     public static event Action<ClientInfo> HandleClientInfo;
 
-    public static CustomParticleComponents LastInitializedComponent
+    public static ExplosionComponent LastInitializedComponent
     {
         get => last_init_components.Count > 0 ? last_init_components.Peek() : null;
     }
@@ -39,7 +40,27 @@ public static class CustomParticleEffectLoader
         }
     }
 
-    public static GameObject InitializeParticle(CustomParticleComponents component, Vector3 position, Quaternion rotation)
+    public static void CreatePropertyParsers()
+    {
+        var assemblies = ModManager.GetLoadedAssemblies();
+        string iname = nameof(IExplosionPropertyParser);
+
+        foreach (var assembly in assemblies)
+        {
+            var types = assembly.GetTypes();
+            foreach (var type in types)
+            {
+                if (type.GetInterface(iname) != null)
+                {
+                    var parser = Activator.CreateInstance(type) as IExplosionPropertyParser;
+                    list_parsers.Add(parser);
+                    Log.Out("Found custom explosion property parser: " + type.Name);
+                }
+            }
+        }
+    }
+
+    public static GameObject InitializeParticle(ExplosionComponent component, Vector3 position, Quaternion rotation)
     {
         GameObject __result = UnityEngine.Object.Instantiate<GameObject>(component.Particle, position, rotation);
         __result.AddComponent<NetSyncHelper>();
@@ -60,11 +81,11 @@ public static class CustomParticleEffectLoader
                 if (customtype != null)
                     __result.AddComponent(customtype);
         AutoRemove remove_script = __result.AddComponent<AutoRemove>();
-        CustomParticleEffectLoader.addInitializedParticle(__result);
+        CustomExplosionManager.addInitializedParticle(__result);
         return __result;
     }
 
-    public static void PushLastInitComponent(CustomParticleComponents component)
+    public static void PushLastInitComponent(ExplosionComponent component)
     {
         last_init_components.Push(component);
     }
@@ -77,7 +98,7 @@ public static class CustomParticleEffectLoader
 
     private static bool LoadParticleEffect(string fullpath, ExplosionData data, string sound_name = null, float duration_audio = -1, List<Type> CustomScriptList = null)
     {
-        CustomParticleComponents component = null;
+        ExplosionComponent component = null;
         fullpath = fullpath.Trim();
         if (!parsePathString(fullpath, out string path, out string assetname))
             return false;
@@ -106,7 +127,7 @@ public static class CustomParticleEffectLoader
         //pair particle with scripts
         if (hash_components.Remove(fullpath))
             Log.Out("Particle data already exists:" + fullpath + ", now overwriting");
-        component = new CustomParticleComponents(obj, sound_name, duration_audio, data, CustomScriptList);
+        component = new ExplosionComponent(obj, sound_name, duration_audio, data, CustomScriptList);
         hash_components.Add(fullpath, component);
         PushLastInitComponent(component);
         return true;
@@ -194,7 +215,7 @@ public static class CustomParticleEffectLoader
                 hash_paths.Add(hashed_index, str_index);
             bool overwrite = false;
             _props.ParseBool("Explosion.Overwrite", ref overwrite);
-            if (overwrite || !GetCustomParticleComponents(hashed_index, out CustomParticleComponents components))
+            if (overwrite || !GetCustomParticleComponents(hashed_index, out ExplosionComponent components))
             {
                 string sound_name = null;
                 _props.ParseString("Explosion.AudioName", ref sound_name);
@@ -209,6 +230,9 @@ public static class CustomParticleEffectLoader
                 if(flag && LastInitializedComponent != null)
                 {
                     LastInitializedComponent.SyncOnConnect = sync;
+                    foreach (var parser in list_parsers)
+                        if (list_customtypes.Contains(parser.MatchScriptType()) && parser.ParseProperty(_props, LastInitializedComponent, out var property))
+                            LastInitializedComponent.AddCustomProperty(parser.Name(), property);
                 }
                 return flag;
             }
@@ -249,7 +273,7 @@ public static class CustomParticleEffectLoader
         last_init_components.Clear();
     }
 
-    public static bool GetCustomParticleComponents(int index, out CustomParticleComponents component)
+    public static bool GetCustomParticleComponents(int index, out ExplosionComponent component)
     {
         component = null;
         if (!hash_paths.TryGetValue(index, out string fullpath) || fullpath == null)

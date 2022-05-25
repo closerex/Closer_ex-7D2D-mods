@@ -43,15 +43,15 @@ public class NetPackageExplosionSyncOnConnect : NetPackage
 					explValue = new ItemValue();
 					explValue.Read(_br);
 				}
-				CustomParticleEffectLoader.GetCustomParticleComponents(explParams._explosionData.ParticleIndex, out CustomParticleComponents component);
+				CustomExplosionManager.GetCustomParticleComponents(explParams._explosionData.ParticleIndex, out ExplosionComponent component);
 				component.CurrentExplosionParams = explParams;
 				if(explValue != null)
 					component.CurrentItemValue = explValue.Clone();
-				CustomParticleEffectLoader.PushLastInitComponent(component);
-				GameObject obj = CustomParticleEffectLoader.InitializeParticle(component, explParams._worldPos - Origin.position, explParams._rotation);
+				CustomExplosionManager.PushLastInitComponent(component);
+				GameObject obj = CustomExplosionManager.InitializeParticle(component, explParams._worldPos - Origin.position, explParams._rotation);
 				obj.GetComponent<NetSyncHelper>().OnConnectedToServer(_br);
 			}
-			CustomParticleEffectLoader.PopLastInitComponent();
+			CustomExplosionManager.PopLastInitComponent();
 		}
 	}
 

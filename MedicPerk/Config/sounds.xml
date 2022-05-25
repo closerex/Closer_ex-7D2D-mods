@@ -127,7 +127,7 @@
 		</SoundDataNode>
 		<SoundDataNode name="medic_grenade_emit">
 			<AudioSource name="Sounds/AudioSource_Interact"/>
-				<AudioClip ClipName="#@modfolder:Resources/MedicGrenade_Sound.unity3d?medic_grenade_emit" Loop="true"/>
+				<AudioClip ClipName="#@modfolder:Resources/MedicGrenade_Sound.unity3d?medic_grenade_emit"/>
 			<LowestPitch name="0.9"/>
 			<HighestPitch name="1.0"/>
 			<LocalCrouchVolumeScale value="0.25"/>

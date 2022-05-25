@@ -10,7 +10,7 @@ class ExplosionEffectPatch
 {
     public static void SendCustomExplosionPackage(int _clrIdx, Vector3 _center, Vector3i _blockpos, Quaternion _rotation, ExplosionData _explosionData, int _playerId, ItemValue _itemValueExplosive, List<BlockChangeInfo> _explosionChanges, GameObject result)
     {
-        uint id = CustomParticleEffectLoader.LastInitializedComponent != null ? CustomParticleEffectLoader.LastInitializedComponent.CurrentExplosionParams._explId : uint.MaxValue;
+        uint id = CustomExplosionManager.LastInitializedComponent != null ? CustomExplosionManager.LastInitializedComponent.CurrentExplosionParams._explId : uint.MaxValue;
         SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageExplosionParams>().Setup(_clrIdx, _center, _blockpos, _rotation, _explosionData, _playerId, id, _itemValueExplosive, _explosionChanges, result), true);
     }
 
@@ -25,16 +25,16 @@ class ExplosionEffectPatch
         if (index >= WorldStaticData.prefabExplosions.Length)
         {
             //Log.Out("Retrieving particle index:" + index.ToString());
-            bool flag = CustomParticleEffectLoader.GetCustomParticleComponents(index, out CustomParticleComponents components);
+            bool flag = CustomExplosionManager.GetCustomParticleComponents(index, out ExplosionComponent components);
             if(flag && components != null)
             {
                 //Log.Out("Retrieved particle index:" + index.ToString());
                 //_explosionData = components.BoundExplosionData;
-                components.CurrentExplosionParams = new ExplosionParams(_clrIdx, _worldPos, _blockPos, _rotation, _explosionData, _playerId, CustomParticleEffectLoader.NextExplosionIndex++);
+                components.CurrentExplosionParams = new ExplosionParams(_clrIdx, _worldPos, _blockPos, _rotation, _explosionData, _playerId, CustomExplosionManager.NextExplosionIndex++);
                 //Log.Out("params:" + _clrIdx + _blockPos + _playerId + _rotation + _worldPos + _explosionData.ParticleIndex);
                 //Log.Out("params:" + components.CurrentExplosionParams._clrIdx + components.CurrentExplosionParams._blockPos + components.CurrentExplosionParams._playerId + components.CurrentExplosionParams._rotation + components.CurrentExplosionParams._worldPos + components.CurrentExplosionParams._explosionData.ParticleIndex);
                 components.CurrentItemValue = _itemValueExplosive;
-                CustomParticleEffectLoader.PushLastInitComponent(components);
+                CustomExplosionManager.PushLastInitComponent(components);
                 __state = true;
             }
             else
@@ -82,7 +82,7 @@ class ExplosionEffectPatch
     {
         if (!__state)
             return;
-        CustomParticleEffectLoader.PopLastInitComponent();
+        CustomExplosionManager.PopLastInitComponent();
     }
 
     [HarmonyPatch(nameof(GameManager.ExplosionClient))]
@@ -92,7 +92,7 @@ class ExplosionEffectPatch
         if (__result != null || __instance.World == null)
             return;
 
-        CustomParticleComponents components = CustomParticleEffectLoader.LastInitializedComponent;
+        ExplosionComponent components = CustomExplosionManager.LastInitializedComponent;
         /*
         if(SingletonMonoBehaviour<ConnectionManager>.Instance.IsClient && _index >= WorldStaticData.prefabExplosions.Length && components == null)
         {
@@ -105,7 +105,7 @@ class ExplosionEffectPatch
         if (components != null)
         {
             ApplyExplosionForce.Explode(_center, (float)_blastPower, _blastRadius);
-            __result = CustomParticleEffectLoader.InitializeParticle(components, _center - Origin.position, _rotation);
+            __result = CustomExplosionManager.InitializeParticle(components, _center - Origin.position, _rotation);
             //CustomParticleEffectLoader.LastInitializedComponent = null;
         }
         else
@@ -116,7 +116,7 @@ class ExplosionEffectPatch
     [HarmonyPostfix]
     private static void Disconnect_Postfix()
     {
-        CustomParticleEffectLoader.destroyAllParticles();
+        CustomExplosionManager.destroyAllParticles();
     }
 
     /*
@@ -136,7 +136,7 @@ class ExplosionSyncPatch
     private static void Postfix(Entity _e)
     {
         if(_e is EntityPlayer)
-            CustomParticleEffectLoader.OnClientConnected(SingletonMonoBehaviour<ConnectionManager>.Instance.Clients.ForEntityId(_e.entityId));
+            CustomExplosionManager.OnClientConnected(SingletonMonoBehaviour<ConnectionManager>.Instance.Clients.ForEntityId(_e.entityId));
     }
 }
 
@@ -148,10 +148,10 @@ class ExplosionParsePatch
     [HarmonyPrefix]
     private static bool Init_ItemClass_Prefix(ItemClass __instance)
     {
-        if(CustomParticleEffectLoader.parseParticleData(ref __instance.Properties))
+        if(CustomExplosionManager.parseParticleData(ref __instance.Properties))
         {
-            CustomParticleEffectLoader.LastInitializedComponent.BoundItemClass = __instance;
-            CustomParticleEffectLoader.PopLastInitComponent();
+            CustomExplosionManager.LastInitializedComponent.BoundItemClass = __instance;
+            CustomExplosionManager.PopLastInitComponent();
         }
         return true;
     }
@@ -160,10 +160,10 @@ class ExplosionParsePatch
     [HarmonyPrefix]
     private static bool ReadFrom_ItemAction_Prefix(ItemAction __instance, ref DynamicProperties _props)
     {
-        if(CustomParticleEffectLoader.parseParticleData(ref _props))
+        if(CustomExplosionManager.parseParticleData(ref _props))
         {
-            CustomParticleEffectLoader.LastInitializedComponent.BoundItemClass = __instance.item;
-            CustomParticleEffectLoader.PopLastInitComponent();
+            CustomExplosionManager.LastInitializedComponent.BoundItemClass = __instance.item;
+            CustomExplosionManager.PopLastInitComponent();
         }
         return true;
     }
@@ -172,8 +172,8 @@ class ExplosionParsePatch
     [HarmonyPrefix]
     private static bool Init_Block_Prefix(Block __instance)
     {
-        if(CustomParticleEffectLoader.parseParticleData(ref __instance.Properties))
-            CustomParticleEffectLoader.PopLastInitComponent();
+        if(CustomExplosionManager.parseParticleData(ref __instance.Properties))
+            CustomExplosionManager.PopLastInitComponent();
         return true;
     }
 
@@ -181,8 +181,8 @@ class ExplosionParsePatch
     [HarmonyPrefix]
     private static bool Init_EntityClass_Prefix(EntityClass __instance)
     {
-        if (CustomParticleEffectLoader.parseParticleData(ref __instance.Properties))
-            CustomParticleEffectLoader.PopLastInitComponent();
+        if (CustomExplosionManager.parseParticleData(ref __instance.Properties))
+            CustomExplosionManager.PopLastInitComponent();
         return true;
     }
 }

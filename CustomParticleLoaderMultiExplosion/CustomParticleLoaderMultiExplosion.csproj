@@ -78,12 +78,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Harmony\Init.cs" />
-    <Compile Include="Harmony\Patches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripts\MonoBehaviours\InitialCollisionHandler.cs" />
     <Compile Include="Scripts\MonoBehaviours\ParticleSyncController.cs" />
     <Compile Include="Scripts\MonoBehaviours\SubExplosionController.cs" />
     <Compile Include="Scripts\MonoBehaviours\SubExplosionInitializer.cs" />
+    <Compile Include="Scripts\Parser\MultiExplosionParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

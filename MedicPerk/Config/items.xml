@@ -129,9 +129,8 @@
 					</triggered_effect>
 			</effect_group>
 			<effect_group name="label text shoot">
-				<requirement name="RoundsInMagazine" operation="GT" value="0"/>
 				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="0"/>
-					<triggered_effect trigger="onSelfRangedBurstShot" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" consume_ammo="true"/>
+					<triggered_effect trigger="onSelfRangedBurstShot" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib"/>
 					<triggered_effect trigger="onSelfRangedBurstShot" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A">
 						<requirement name="RoundsInMagazine" operation="LTE" value="6"/>
 					</triggered_effect>
@@ -262,9 +261,8 @@
 					</triggered_effect>
 			</effect_group>
 			<effect_group name="label text shoot">
-				<requirement name="RoundsInMagazine" operation="GT" value="0"/>
 				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="0"/>
-					<triggered_effect trigger="onSelfRangedBurstShot" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" consume_ammo="true"/>
+					<triggered_effect trigger="onSelfRangedBurstShot" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib"/>
 					<triggered_effect trigger="onSelfRangedBurstShot" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A">
 						<requirement name="RoundsInMagazine" operation="LTE" value="4"/>
 					</triggered_effect>
@@ -401,9 +399,8 @@
 					</triggered_effect>
 			</effect_group>
 			<effect_group name="label text shoot">
-				<requirement name="RoundsInMagazine" operation="GT" value="0"/>
 				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="0"/>
-					<triggered_effect trigger="onSelfRangedBurstShot" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" consume_ammo="true"/>
+					<triggered_effect trigger="onSelfRangedBurstShot" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib"/>
 					<triggered_effect trigger="onSelfRangedBurstShot" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A">
 						<requirement name="RoundsInMagazine" operation="LTE" value="11"/>
 					</triggered_effect>
@@ -442,7 +439,7 @@
 			<property name="ThrowableDecoy" value="true"/>
 			<property name="Weight" value="0"/>
 			<property name="Stacknumber" value="5"/>
-			<property name="Explosion.ParticleIndex" value="#@modfolder:Resources/MedicGrenadeEffect.unity3d?MedicSmoke$MedicGrenade"/>
+			<property name="Explosion.ParticleIndex" value="#@modfolder:Resources/MedicGrenade.unity3d?MedicSmoke$MedicGrenade"/>
 			<property name="Explosion.Duration" value="15"/>
 			<property name="Explosion.AudioName" value="medic_grenade_emit"/>
 			<property name="Explosion.AudioDuration" value="15"/>

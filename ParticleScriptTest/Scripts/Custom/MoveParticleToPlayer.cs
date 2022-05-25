@@ -4,7 +4,7 @@ public class MoveParticleToPlayer : TrackedBehaviourBase
 {
     protected override void Awake()
     {
-        int playerid = CustomParticleEffectLoader.LastInitializedComponent.CurrentExplosionParams._playerId;
+        int playerid = CustomExplosionManager.LastInitializedComponent.CurrentExplosionParams._playerId;
         EntityAlive player = GameManager.Instance.World.GetEntity(playerid) as EntityAlive;
         if (player != null)
         {

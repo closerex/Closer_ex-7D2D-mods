@@ -73,9 +73,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Scripts\Core\IExplosionProperty.cs" />
     <Compile Include="Scripts\MonoBehaviours\AutoRemove.cs" />
-    <Compile Include="Scripts\Core\CustomParticleComponents.cs" />
-    <Compile Include="Scripts\Core\CustomParticleEffectLoader.cs" />
+    <Compile Include="Scripts\Core\ExplosionComponent.cs" />
+    <Compile Include="Scripts\Core\CustomExplosionManager.cs" />
     <Compile Include="Harmony\Init.cs" />
     <Compile Include="Harmony\Patches.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageExplosionParams.cs" />

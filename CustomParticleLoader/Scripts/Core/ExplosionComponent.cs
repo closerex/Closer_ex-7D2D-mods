@@ -73,9 +73,9 @@ public struct ExplosionParams
     public int _playerId;
     public uint _explId;
 }
-public class CustomParticleComponents
+public class ExplosionComponent
 {
-    public CustomParticleComponents(GameObject obj, string sound_name, float duration_audio, ExplosionData data, List<Type> CustomScriptTypes)
+    public ExplosionComponent(GameObject obj, string sound_name, float duration_audio, ExplosionData data, List<Type> CustomScriptTypes)
     {
         this.obj = obj;
         this.list_custom = new List<Type>();
@@ -117,7 +117,7 @@ public class CustomParticleComponents
         return hash_custom_properties.TryGetValue(name, out value);
     }
 
-    public void AddCustomProperty(string name, object value)
+    internal void AddCustomProperty(string name, object value)
     {
         if(hash_custom_properties.Remove(name))
             Log.Out("Custom explosion component property already exists, overwriting: " + name);

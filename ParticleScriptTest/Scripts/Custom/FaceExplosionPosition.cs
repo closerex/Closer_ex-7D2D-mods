@@ -4,7 +4,7 @@ public class FaceExplosionPosition : TrackedBehaviourBase
 {
     protected override void Awake()
     {
-        int playerid = CustomParticleEffectLoader.LastInitializedComponent.CurrentExplosionParams._playerId;
+        int playerid = CustomExplosionManager.LastInitializedComponent.CurrentExplosionParams._playerId;
         EntityAlive player = GameManager.Instance.World.GetEntity(playerid) as EntityAlive;
         if (player != null)
         {
@@ -13,7 +13,7 @@ public class FaceExplosionPosition : TrackedBehaviourBase
             if(isServer)
             {
                 Vector3 position = player.GetPosition();
-                Vector3 dir = CustomParticleEffectLoader.LastInitializedComponent.CurrentExplosionParams._worldPos - position;
+                Vector3 dir = CustomExplosionManager.LastInitializedComponent.CurrentExplosionParams._worldPos - position;
                 dir.y = 0;
                 transform.forward = dir.normalized;
             }

@@ -28,7 +28,7 @@ public class TurretAiController : ReverseTrackedBehaviour<TurretAiController>
     protected override void Awake()
     {
         turret = GetComponent<TurretFiring>();
-        CustomParticleComponents component = CustomParticleEffectLoader.LastInitializedComponent;
+        ExplosionComponent component = CustomExplosionManager.LastInitializedComponent;
         entityid = component.CurrentExplosionParams._playerId;
         clrIdx = component.CurrentExplosionParams._clrIdx;
         Vector3i blockPos = component.CurrentExplosionParams._blockPos;

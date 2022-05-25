@@ -9,17 +9,11 @@ public class ExplosionSpawnEntity : MonoBehaviour
     void Awake()
     {
         if (!SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer)
-        {
-            enabled = false;
             return;
-        }
 
-        CustomParticleComponents component = CustomParticleEffectLoader.LastInitializedComponent;
-        if(component.TryGetCustomProperty(CustomParticleLoaderSpawnEntityPatches.str_spawn_entity_spawn_chance, out object chance) && (float)chance < UnityEngine.Random.Range(0f, 1f))
-        {
-            enabled = false;
+        ExplosionComponent component = CustomExplosionManager.LastInitializedComponent;
+        if (!component.TryGetCustomProperty(SpawnEntityParser.name, out var property) || !(property is SpawnEntityProperty _prop) || _prop.chance < UnityEngine.Random.Range(0f, 1f))
             return;
-        }
 
         EntityCreationData data = new EntityCreationData();
         int entityId = component.CurrentExplosionParams._playerId;
@@ -38,86 +32,77 @@ public class ExplosionSpawnEntity : MonoBehaviour
         Vector3 position = component.CurrentExplosionParams._worldPos;
         Vector3 rotation = transform.forward;
         int classId = 0;
-        if (component.TryGetCustomProperty(CustomParticleLoaderSpawnEntityPatches.str_spawn_entity_lifetime, out object lifetime))
-            data.lifetime = (float)lifetime;
-        else
-            data.lifetime = float.MaxValue;
+        data.lifetime = _prop.lifetime;
 
-        if (component.TryGetCustomProperty(CustomParticleLoaderSpawnEntityPatches.str_spawn_entity_group, out object entityGroup))
-            classId = EntityGroups.GetRandomFromGroup(entityGroup as string, ref classId);
-        else if (component.TryGetCustomProperty(CustomParticleLoaderSpawnEntityPatches.str_spawn_entity_class, out object entityClass))
-            classId = EntityClass.FromString(entityClass as string);
-        else if (component.TryGetCustomProperty(CustomParticleLoaderSpawnEntityPatches.str_spawn_entity_item, out object entityItem))
+        switch(_prop.spawnType)
         {
-            classId = EntityClass.itemClass;
-            string itemName = entityItem as string;
-            string[] itemStat = itemName.Split('$');
-            int spawnCount = 1;
-            if (itemStat.Length == 2)
-            {
-                itemName = itemStat[0];
-                string[] itemCount = itemStat[1].Split(',');
-                if (itemCount.Length == 2)
-                    spawnCount = UnityEngine.Random.Range(int.Parse(itemCount[0]), int.Parse(itemCount[1]) + 1);
-                else
-                    spawnCount = int.Parse(itemCount[0]);
-
-                if (spawnCount < 1)
-                    spawnCount = 1;
-            }
-            ItemClass itemClass = ItemClass.GetItemClass(entityItem as string);
-            if(itemClass == null)
-            {
-                Log.Error("ExplosionSpawnEntity: item class with name " + entityItem as string + "not found!");
-                return;
-            }
-            if (spawnCount > itemClass.Stacknumber.Value)
-                spawnCount = itemClass.Stacknumber.Value;
-            ItemStack stack = new ItemStack(ItemClass.GetItem(entityItem as string), spawnCount);
-            if (stack != null)
-                data.itemStack = stack;
-            else
-                return;
-                //GameManager.Instance.ItemDropServer(stack, position, Vector3.zero, entityId, data.lifetime < float.MaxValue ? data.lifetime : 60f);
-            //return;
-        }else if(component.TryGetCustomProperty(CustomParticleLoaderSpawnEntityPatches.str_spawn_entity_loot_group, out object lootGroup))
-        {
-            if(LootContainer.lootGroups.TryGetValue(lootGroup as string, out var entry))
-            {
-                EntityPlayer player = null;
-                if (initiator)
+            case SpawnEntityProperty.SpawnType.EntityGroup:
+                classId = EntityGroups.GetRandomFromGroup(_prop.spawn, ref classId);
+                break;
+            case SpawnEntityProperty.SpawnType.EntityClass:
+                classId = EntityClass.FromString(_prop.spawn);
+                break;
+            case SpawnEntityProperty.SpawnType.EntityItem:
+                classId = EntityClass.itemClass;
+                string itemName = _prop.spawn as string;
+                string[] itemStat = itemName.Split('$');
+                int spawnCount = 1;
+                if (itemStat.Length == 2)
                 {
-                    if (initiator is EntityPlayer)
-                        player = initiator as EntityPlayer;
+                    itemName = itemStat[0];
+                    string[] itemCount = itemStat[1].Split(',');
+                    if (itemCount.Length == 2)
+                        spawnCount = UnityEngine.Random.Range(int.Parse(itemCount[0]), int.Parse(itemCount[1]) + 1);
                     else
-                        player = GameManager.Instance.World.GetClosestPlayer(initiator, -1, false);
-                } else
-                    player = GameManager.Instance.World.Players.Count > 0 ? GameManager.Instance.World.GetPlayers()[0] : null;
+                        spawnCount = int.Parse(itemCount[0]);
 
-                if(player == null)
+                    if (spawnCount < 1)
+                        spawnCount = 1;
+                }
+                ItemClass itemClass = ItemClass.GetItemClass(itemName);
+                if(itemClass == null)
                 {
-                    Log.Error("ExplosionSpawnEntity: no valid player around, abort spawning loot group!");
+                    Log.Error("ExplosionSpawnEntity: item class with name " + itemName + "not found!");
                     return;
                 }
-                float gameStage = player.GetHighestPartyLootStage(0, 0);
-
-                classId = EntityClass.itemClass;
-                ItemStack stack = SpawnOneLootItemsFromList(entry.items, gameStage, entry.lootQualityTemplate, player);
+                if (spawnCount > itemClass.Stacknumber.Value)
+                    spawnCount = itemClass.Stacknumber.Value;
+                ItemStack stack = new ItemStack(ItemClass.GetItem(itemName), spawnCount);
                 if (stack != null)
                     data.itemStack = stack;
                 else
                     return;
-                    //GameManager.Instance.ItemDropServer(stack, position, Vector3.zero, entityId, data.lifetime < float.MaxValue ? data.lifetime : 60f);
-                //return;
-            }else
-            {
-                Log.Error("ExplosionSpawnEntity: no loot group with name " + lootGroup as string + " found!");
-                return;
-            }
-        }else
-        {
-            Log.Error("ExplosionSpawnEntity: Entity to spawn is not defined!");
-            return;
+                break;
+            case SpawnEntityProperty.SpawnType.LootGroup:
+                if(LootContainer.lootGroups.TryGetValue(_prop.spawn, out var entry))
+                {
+                    EntityPlayer player = null;
+                    if (initiator)
+                    {
+                        if (initiator is EntityPlayer)
+                            player = initiator as EntityPlayer;
+                        else
+                            player = GameManager.Instance.World.GetClosestPlayer(initiator, -1, false);
+                    } else
+                        player = GameManager.Instance.World.Players.Count > 0 ? GameManager.Instance.World.GetPlayers()[0] : null;
+
+                    if(player == null)
+                    {
+                        Log.Error("ExplosionSpawnEntity: no valid player around, abort spawning loot group!");
+                        return;
+                    }
+                    float gameStage = player.GetHighestPartyLootStage(0, 0);
+
+                    classId = EntityClass.itemClass;
+                    data.itemStack = SpawnOneLootItemsFromList(entry.items, gameStage, entry.lootQualityTemplate, player);
+                    if(data.itemStack == null)
+                        return;
+                }else
+                {
+                    Log.Error("ExplosionSpawnEntity: no loot group with name " + _prop.spawn + " found!");
+                    return;
+                }
+                break;
         }
 
         data.entityClass = classId;
@@ -127,9 +112,6 @@ public class ExplosionSpawnEntity : MonoBehaviour
         data.spawnById = -1;
         data.spawnByName = string.Empty;
 
-        //GameManager.Instance.RequestToSpawnEntityServer(data);
-
-        
         entity = EntityFactory.CreateEntity(data);
         if(entity)
         {
@@ -154,7 +136,7 @@ public class ExplosionSpawnEntity : MonoBehaviour
             {
                 //Log.Out("can spawn entity!");
                 Chunk chunk = (Chunk)GameManager.Instance.World.GetChunkSync(World.toChunkXZ((int)entity.position.x), World.toChunkXZ((int)entity.position.z));
-                entity.SetSpawnerSource(EnumSpawnerSource.Unknown, chunk.Key, entityGroup as string);
+                entity.SetSpawnerSource(EnumSpawnerSource.Unknown, chunk.Key, _prop.spawnType == SpawnEntityProperty.SpawnType.EntityGroup ? _prop.spawn : null);
                 GameManager.Instance.World.SpawnEntityInWorld(entity);
                 //Log.Out("entity added to world!");
                 if (entity is EntityItem)

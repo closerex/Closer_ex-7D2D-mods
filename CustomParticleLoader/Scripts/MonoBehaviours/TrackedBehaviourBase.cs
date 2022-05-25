@@ -13,7 +13,7 @@ public class TrackedBehaviourBase : MonoBehaviour
 
     protected virtual void Awake()
     {
-        explId = CustomParticleEffectLoader.LastInitializedComponent.CurrentExplosionParams._explId;
+        explId = CustomExplosionManager.LastInitializedComponent.CurrentExplosionParams._explId;
         if (track)
         {
             if (key == null)
@@ -44,7 +44,7 @@ public class TrackedBehaviourBase : MonoBehaviour
         }else
             Log.Error("NetSyncHelper not initialized: explId: " + explId);
         if (handleClientInfo)
-            CustomParticleEffectLoader.HandleClientInfo += OnHandleClientInfo;
+            CustomExplosionManager.HandleClientInfo += OnHandleClientInfo;
     }
 
     protected virtual void OnDestroy()
@@ -67,7 +67,7 @@ public class TrackedBehaviourBase : MonoBehaviour
             }
         }
         if (handleClientInfo)
-            CustomParticleEffectLoader.HandleClientInfo -= OnHandleClientInfo;
+            CustomExplosionManager.HandleClientInfo -= OnHandleClientInfo;
         if (track)
             removeRef();
     }

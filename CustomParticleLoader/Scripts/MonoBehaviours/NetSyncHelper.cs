@@ -35,12 +35,12 @@ public class NetSyncHelper : MonoBehaviour
 
     void Awake()
     {
-        hash_helpers.Add((explId = CustomParticleEffectLoader.LastInitializedComponent.CurrentExplosionParams._explId), this);
-        if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && CustomParticleEffectLoader.LastInitializedComponent.SyncOnConnect)
+        hash_helpers.Add((explId = CustomExplosionManager.LastInitializedComponent.CurrentExplosionParams._explId), this);
+        if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && CustomExplosionManager.LastInitializedComponent.SyncOnConnect)
         {
-            explParams = CustomParticleEffectLoader.LastInitializedComponent.CurrentExplosionParams;
-            explValue = CustomParticleEffectLoader.LastInitializedComponent.CurrentItemValue?.Clone();
-            CustomParticleEffectLoader.ClientConnected += OnClientConnected;
+            explParams = CustomExplosionManager.LastInitializedComponent.CurrentExplosionParams;
+            explValue = CustomExplosionManager.LastInitializedComponent.CurrentItemValue?.Clone();
+            CustomExplosionManager.ClientConnected += OnClientConnected;
         }
     }
 
@@ -51,7 +51,7 @@ public class NetSyncHelper : MonoBehaviour
 
     void OnDestroy()
     {
-        CustomParticleEffectLoader.ClientConnected -= OnClientConnected;
+        CustomExplosionManager.ClientConnected -= OnClientConnected;
         hash_helpers.Remove(explId);
     }
 

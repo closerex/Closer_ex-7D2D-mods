@@ -6,14 +6,18 @@ public class SubExplosionController : MonoBehaviour
 {
     void Awake()
     {
-        List<int> list_index = null;
-        string[] arr_trans = null;
-        CustomParticleComponents cur_component = CustomParticleEffectLoader.LastInitializedComponent;
+        ExplosionComponent cur_component = CustomExplosionManager.LastInitializedComponent;
+        if (!cur_component.TryGetCustomProperty(MultiExplosionParser.name, out var property) || !(property is MultiExplosionProperty _prop))
+            return;
+        List<int> list_index = _prop.list_sub_explosion_indice;
+        string[] arr_trans = _prop.arr_transforms;
+        /*
         if (cur_component.TryGetCustomProperty(CustomParticleLoaderMultiExplosionPatches.str_sub_explosion, out object com))
             list_index = com as List<int>;
             
         if(cur_component.TryGetCustomProperty(CustomParticleLoaderMultiExplosionPatches.str_sub_explosion_transform, out object str))
             arr_trans = str as string[];
+        */
 
         if(list_index != null && arr_trans != null && list_index.Count <= arr_trans.Length)
         {
@@ -37,7 +41,6 @@ public class SubExplosionController : MonoBehaviour
                 bool explode = false;
                 bool explodeOnDeath = false;
                 bool explodeOnBoth = false;
-                //bool ballistic = false;
                 string str_trans = arr_trans[i].Trim();
                 Transform trans = null;
                 if(str_trans != null)
@@ -69,11 +72,6 @@ public class SubExplosionController : MonoBehaviour
                             str_trans = str_trans.Remove(str_trans.Length - 1);
                         }
                     }
-                    /*
-                    ballistic = str_trans.EndsWith("$");
-                    if (ballistic)
-                        str_trans = str_trans.TrimEnd('$');
-                    */
                     if (!explode)
                         --j;
                     //Log.Out(str_trans + " sync: " + sync + " explode: " + explode);
@@ -92,12 +90,12 @@ public class SubExplosionController : MonoBehaviour
                     trans.gameObject.AddComponent<InitialCollisionHandler>();
                     if(procExplosion)
                     {
-                        CustomParticleComponents component = null;
+                        ExplosionComponent component = null;
                         if(explode)
                         {
                             //Log.Out("Adding SubExplosionInitializer to transform: " + trans.name);
                             int index = list_index[j];
-                            if (!CustomParticleEffectLoader.GetCustomParticleComponents(index, out component) || component == null)
+                            if (!CustomExplosionManager.GetCustomParticleComponents(index, out component) || component == null)
                             {
                                 Log.Error("SubExplosionController: refering to explosion index that does not exist!");
                                 Destroy(gameObject);
@@ -113,17 +111,6 @@ public class SubExplosionController : MonoBehaviour
                                 initializer.value = new ItemValue(component.BoundItemClass.Id);
                             if (explodeOnDeath)
                                 initializer.SetExplodeOnDeath(explodeOnBoth);
-                            /*
-                            if(!ballistic)
-                            {
-                                Vector3i blockPos = component.CurrentExplosionParams._blockPos;
-                                Chunk chunk = GameManager.Instance.World.ChunkClusters[clrIdx].GetChunkSync(World.toChunkXZ(blockPos.x), blockPos.y, World.toChunkXZ(blockPos.z)) as Chunk;
-                                ballistic = chunk == null || !chunk.GetAvailable();
-                            }
-                            initializer.SetBallistic(ballistic);
-                            */
-                            
-                            //Log.Out("Particle index: " + initializer.data.ParticleIndex.ToString() + " PlayerId: " + initializer.entityid.ToString() + " Item: " + (initializer.value != null ? initializer.value.ItemClass.Name : string.Empty));
                         }
                     }
                 }

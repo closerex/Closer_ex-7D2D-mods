@@ -4,7 +4,7 @@ class FaceInitiatorFront : TrackedBehaviourBase
 {
     protected override void Awake()
     {
-        int entityId = CustomParticleEffectLoader.LastInitializedComponent.CurrentExplosionParams._playerId;
+        int entityId = CustomExplosionManager.LastInitializedComponent.CurrentExplosionParams._playerId;
         EntityAlive entityAlive = GameManager.Instance.World.GetEntity(entityId) as EntityAlive;
         if (entityAlive != null)
         {

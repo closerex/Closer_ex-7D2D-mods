@@ -69,10 +69,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Harmony\Patches.cs" />
     <Compile Include="Scripts\MonoBehaviours\ExplosionSpawnEntity.cs" />
     <Compile Include="Harmony\Init.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripts\Parser\SpawnEntityParser.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

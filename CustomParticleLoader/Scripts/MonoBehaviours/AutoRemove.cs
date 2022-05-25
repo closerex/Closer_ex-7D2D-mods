@@ -8,7 +8,7 @@ public class AutoRemove : TrackedBehaviourBase
 
     protected override void Awake()
     {
-        CustomParticleComponents component = CustomParticleEffectLoader.LastInitializedComponent;
+        ExplosionComponent component = CustomExplosionManager.LastInitializedComponent;
         lifetime = component.CurrentExplosionParams._explosionData.Duration;
         if(lifetime > 0)
             syncOnConnect = component.SyncOnConnect;
@@ -26,7 +26,7 @@ public class AutoRemove : TrackedBehaviourBase
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        CustomParticleEffectLoader.removeInitializedParticle(gameObject);
+        CustomExplosionManager.removeInitializedParticle(gameObject);
     }
 
     protected override void OnClientConnected(PooledBinaryWriter _bw)

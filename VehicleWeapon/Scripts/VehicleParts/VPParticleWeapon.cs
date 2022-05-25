@@ -16,14 +16,14 @@ public class VPParticleWeapon : VehicleWeaponBase
     protected string emptySound = string.Empty;
     protected string reloadSound = string.Empty;
     protected string fireSound = string.Empty;
-    protected CustomParticleComponents component = null;
+    protected ExplosionComponent component = null;
     protected ParticleSystem weaponSystem = null;
     protected SubExplosionInitializer initializer = null;
     protected bool isCoRunning = false;
     protected ItemValue ammoValue = ItemValue.None.Clone();
 
     public ParticleSystem WeaponSystem { get => weaponSystem; }
-    public CustomParticleComponents Component { get => component; }
+    public ExplosionComponent Component { get => component; }
     public override void SetProperties(DynamicProperties _properties)
     {
         base.SetProperties(_properties);
@@ -38,7 +38,7 @@ public class VPParticleWeapon : VehicleWeaponBase
         string str = null;
         _properties.ParseString("particleIndex", ref str);
         if (!string.IsNullOrEmpty(str))
-            CustomParticleEffectLoader.GetCustomParticleComponents(PlatformIndependentHash.StringToUInt16(str), out component);
+            CustomExplosionManager.GetCustomParticleComponents(PlatformIndependentHash.StringToUInt16(str), out component);
         _properties.ParseBool("explodeOnCollision", ref explodeOnCollision);
         _properties.ParseBool("explodeOnDeath", ref explodeOnDeath);
         str = null;

@@ -10,14 +10,14 @@ public class CustomParticleLoaderSpawnEntityPatches
     public static readonly string str_spawn_entity_lifetime = "Explosion.SpawnEntityLifetime";
     public static readonly string str_spawn_entity_spawn_chance = "Explosion.SpawnChance";
 
-    [HarmonyPatch(typeof(CustomParticleEffectLoader), nameof(CustomParticleEffectLoader.parseParticleData))]
+    [HarmonyPatch(typeof(CustomExplosionManager), nameof(CustomExplosionManager.parseParticleData))]
     [HarmonyPostfix]
     public static void Postfix_parseParticleData_CustomParticleEffectLoader(ref DynamicProperties _props, bool __result)
     {
         if (!__result)
             return;
 
-        var cur_component = CustomParticleEffectLoader.LastInitializedComponent;
+        var cur_component = CustomExplosionManager.LastInitializedComponent;
         float lifetime = float.MaxValue;
         _props.ParseFloat(str_spawn_entity_lifetime, ref lifetime);
         if (lifetime < float.MaxValue)

@@ -7,26 +7,8 @@ public class CustomParticleLoaderMultiExplosionPatches
 {
     public static readonly string str_sub_explosion = "Explosion.SubExplosion";
     public static readonly string str_sub_explosion_transform = "Explosion.SubExplosionTransform";
-    //public static readonly string str_sub_explosion_force_server = "Explosion.SubExplosionForceServerSide";
 
-    /*
-    public static Transform getSubTransform(Transform root, string indice)
-    {
-        if (indice == null || indice.Length < 1)
-            return root;
-        Transform trans = root;
-        string[] arr_trans = indice.Split(',');
-        for(int i = 0; i < arr_trans.Length; ++i)
-        {
-            if (trans == null)
-                break;
-            trans = trans.gameObject.transform.GetChild(int.Parse(arr_trans[i]));
-        }
-        return trans;
-    }
-    */
-
-    [HarmonyPatch(typeof(CustomParticleEffectLoader), nameof(CustomParticleEffectLoader.parseParticleData))]
+    [HarmonyPatch(typeof(CustomExplosionManager), nameof(CustomExplosionManager.parseParticleData))]
     [HarmonyPostfix]
     public static void Postfix_parseParticleData_CustomParticleEffectLoader(ref DynamicProperties _props, bool __result)
     {
@@ -44,13 +26,13 @@ public class CustomParticleLoaderMultiExplosionPatches
             {
                 if(str.StartsWith("#"))
                 {
-                    int index = CustomParticleEffectLoader.getHashCode(str.Trim());
+                    int index = CustomExplosionManager.getHashCode(str.Trim());
                     if (index >= WorldStaticData.prefabExplosions.Length)
                         list_sub_explosion_indice.Add(index);
                 }
             }
         }
-        var cur_component = CustomParticleEffectLoader.LastInitializedComponent;
+        var cur_component = CustomExplosionManager.LastInitializedComponent;
         if (cur_component != null && list_sub_explosion_indice.Count > 0)
         {
             cur_component.AddCustomProperty(str_sub_explosion, list_sub_explosion_indice);
@@ -64,11 +46,5 @@ public class CustomParticleLoaderMultiExplosionPatches
         arr_transforms = sub_transform.Split(',');
         cur_component.AddCustomProperty(str_sub_explosion_transform, arr_transforms);
         Log.Out("Adding transform: " + string.Join(" ", arr_transforms));
-        /*
-        bool serverside = false;
-        _props.ParseBool(str_sub_explosion_force_server, ref serverside);
-        if (serverside)
-            cur_component.AddCustomProperty(str_sub_explosion_force_server, serverside);
-        */
     }
 }
