@@ -21,11 +21,13 @@ class ExplosionAreaBuffTick : ExplosionDamageArea
 			//cur_params = CustomParticleEffectLoader.LastInitializedComponent.CurrentExplosionParams;
 			//Log.Out("params:" + cur_params._clrIdx + cur_params._blockPos + cur_params._playerId + cur_params._rotation + cur_params._worldPos + cur_params._explosionData.ParticleIndex);
 			//make sure you clone the ItemValue if you need it
-			item_value = CustomParticleEffectLoader.LastInitializedComponent.CurrentItemValue.Clone();
+			item_value = CustomExplosionManager.LastInitializedComponent.CurrentItemValue.Clone();
 			//I'm not sure when Position and StartPosition is needed but filling more fields won't harm
 			player = GameManager.Instance.World.GetEntity(InitiatorEntityId) as EntityPlayer;
-			int repeatTimes = (int)CustomParticleEffectLoader.LastInitializedComponent.CurrentExplosionParams._explosionData.Duration * 2;
-			gameObject.AddComponent<Timer>().start(0.5f, repeatTimes, onTimerTick, null);
+			var component = CustomExplosionManager.LastInitializedComponent;
+			component.TryGetCustomProperty(ExplosionAreaBuffTickParser.name, out var interval);
+			int repeatTimes = (int)(component.CurrentExplosionParams._explosionData.Duration / (float)interval);
+			gameObject.AddComponent<Timer>().start((float)interval, repeatTimes, onTimerTick, null);
         }
 	}
 

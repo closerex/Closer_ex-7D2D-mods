@@ -3,18 +3,8 @@
 class ItemActionAltMode : ItemActionHoldOpen
 {
     protected string cvarStateSwitch = null;
-    protected string originalSoundStart = string.Empty;
-    protected string originalSoundLoop = string.Empty;
-    protected string originalSoundEnd = string.Empty;
-    protected string originalSoundEmpty = string.Empty;
-    protected string[] altSoundStart = null;
-    protected string[] altSoundLoop = null;
-    protected string[] altSoundEnd = null;
-    protected string[] altSoundEmpty = null;
     protected bool[] altInfiniteAmmo = null;
     protected bool originalInfiniteAmmo = false;
-    protected bool[] suppressFlashOnAlt = null;
-    protected bool suppressFlashOnOrigin = false;
     private string altModeAnimatorBool = "altMode";
 
     public int getCurAltIndex(EntityAlive holdingEntity)
@@ -25,23 +15,63 @@ class ItemActionAltMode : ItemActionHoldOpen
     public virtual void setAltSound(ItemActionData _actionData)
     {
         ItemActionDataAltMode _data = _actionData as ItemActionDataAltMode;
+        _data.SetAltSound();
         int altIndex = _data.modeIndex;
         if (altIndex >= 0)
-        {
-            _data.SoundStart = altSoundStart.Length > altIndex ? altSoundStart[altIndex] : string.Empty;
-            _data.SoundLoop = altSoundLoop.Length > altIndex ? altSoundLoop[altIndex] : string.Empty;
-            _data.SoundEnd = altSoundEnd.Length > altIndex ? altSoundEnd[altIndex] : string.Empty;
-            soundEmpty = altSoundEmpty.Length > altIndex ? altSoundEmpty[altIndex] : string.Empty;
-            _data.IsFlashSuppressed = suppressFlashOnAlt.Length > altIndex ? suppressFlashOnAlt[altIndex] : false;
-        }
+            soundEmpty = _data.altSoundEmpty.Length > altIndex ? _data.altSoundEmpty[altIndex] : string.Empty;
         else
+            soundEmpty = _data.originalSoundEmpty;
+    }
+
+    public override void OnModificationsChanged(ItemActionData _data)
+    {
+        base.OnModificationsChanged(_data);
+        var _dataAlt = _data as ItemActionDataAltMode;
+
+        string originalValue = "";
+        Properties.ParseString("Sound_start", ref originalValue);
+        _dataAlt.originalSoundStart = _dataAlt.invData.itemValue.GetPropertyOverride("Sound_start", originalValue);
+        if (_dataAlt.originalSoundStart.Contains("silenced"))
+            _dataAlt.suppressFlashOnOrigin = true;
+
+        originalValue = "";
+        Properties.ParseString("Sound_loop", ref originalValue);
+        _dataAlt.originalSoundLoop = _dataAlt.invData.itemValue.GetPropertyOverride("Sound_loop", originalValue);
+
+        originalValue = "";
+        Properties.ParseString("Sound_end", ref originalValue);
+        _dataAlt.originalSoundEnd = _dataAlt.invData.itemValue.GetPropertyOverride("Sound_end", originalValue);
+
+        originalValue = "";
+        Properties.ParseString("Sound_empty", ref originalValue);
+        _dataAlt.originalSoundEmpty = _dataAlt.invData.itemValue.GetPropertyOverride("Sound_empty", originalValue);
+
+
+        string _altString = string.Empty;
+        Properties.ParseString("Alt_Sound_Start", ref _altString);
+        _altString = _dataAlt.invData.itemValue.GetPropertyOverride("Alt_Sound_Start", _altString);
+        _dataAlt.altSoundStart = _altString.Split(',');
+        _dataAlt.suppressFlashOnAlt = new bool[_dataAlt.altSoundStart.Length];
+        for (int i = 0; i < _dataAlt.suppressFlashOnAlt.Length; ++i)
         {
-            _data.SoundStart = originalSoundStart;
-            _data.SoundLoop = originalSoundLoop;
-            _data.SoundEnd = originalSoundEnd;
-            soundEmpty = originalSoundEmpty;
-            _data.IsFlashSuppressed = suppressFlashOnOrigin;
+            if (_dataAlt.altSoundStart[i].Contains("silenced"))
+                _dataAlt.suppressFlashOnAlt[i] = true;
         }
+
+        _altString = string.Empty;
+        Properties.ParseString("Alt_Sound_Loop", ref _altString);
+        _altString = _dataAlt.invData.itemValue.GetPropertyOverride("Alt_Sound_Loop", _altString);
+        _dataAlt.altSoundLoop = _altString.Split(',');
+
+        _altString = string.Empty;
+        Properties.ParseString("Alt_Sound_End", ref _altString);
+        _altString = _dataAlt.invData.itemValue.GetPropertyOverride("Alt_Sound_End", _altString);
+        _dataAlt.altSoundEnd = _altString.Split(',');
+
+        _altString = string.Empty;
+        Properties.ParseString("Alt_Sound_Empty", ref _altString);
+        _altString = _dataAlt.invData.itemValue.GetPropertyOverride("Alt_Sound_Empty", _altString);
+        _dataAlt.altSoundEmpty = _altString.Split(',');
     }
 
     public override ItemActionData CreateModifierData(ItemInventoryData _invData, int _indexInEntityOfAction)
@@ -54,48 +84,13 @@ class ItemActionAltMode : ItemActionHoldOpen
         base.ReadFrom(_props);
 
         string _altString = string.Empty;
-        /*
-        _props.ParseInt("Mode_Count", ref modeCount);
-        altAmmoName = new string[modeCount][];
-        for(int i = 0; i < modeCount; ++i)
-        {
-            _altString = string.Empty;
-            _props.ParseString("Alt_Magazine_Items", ref _altString);
-            altAmmoName[i] = _altString.Split(',');
-        }
-        */
         _props.ParseString("Cvar_State_Switch", ref cvarStateSwitch);
-        _props.ParseString("Sound_start", ref originalSoundStart);
-        _props.ParseString("Sound_loop", ref originalSoundLoop);
-        _props.ParseString("Sound_end", ref originalSoundEnd);
-        _props.ParseString("Sound_empty", ref originalSoundEmpty);
-        _altString = string.Empty;
-        _props.ParseString("Alt_Sound_Start", ref _altString);
-        altSoundStart = _altString.Split(',');
-        suppressFlashOnAlt = new bool[altSoundStart.Length];
-        for(int i = 0; i < suppressFlashOnAlt.Length; ++i)
-        {
-            if (altSoundStart[i].Contains("silenced"))
-                suppressFlashOnAlt[i] = true;
-        }
-        _altString = string.Empty;
-        _props.ParseString("Alt_Sound_Loop", ref _altString);
-        altSoundLoop = _altString.Split(',');
-        _altString = string.Empty;
-        _props.ParseString("Alt_Sound_End", ref _altString);
-        altSoundEnd = _altString.Split(',');
-        _altString = string.Empty;
-        _props.ParseString("Alt_Sound_Empty", ref _altString);
-        altSoundEmpty = _altString.Split(',');
-        _altString = string.Empty;
         _props.ParseString("Alt_InfiniteAmmo", ref _altString);
         string[] _altInfiniteAmmo = _altString.Split(',');
         altInfiniteAmmo = new bool[_altInfiniteAmmo.Length];
         for (int i = 0; i < altInfiniteAmmo.Length; ++i)
             altInfiniteAmmo[i] = bool.Parse(_altInfiniteAmmo[i]);
         originalInfiniteAmmo = InfiniteAmmo;
-        if (originalSoundStart.Contains("silenced"))
-            suppressFlashOnOrigin = true;
     }
 
     public override void ExecuteAction(ItemActionData _actionData, bool _bReleased)
@@ -121,10 +116,9 @@ class ItemActionAltMode : ItemActionHoldOpen
     {
         base.OnHoldingUpdate(_actionData);
 
-        if (GameManager.IsDedicatedServer || !(_actionData is ItemActionDataAltMode))
+        if (GameManager.IsDedicatedServer || !(_actionData is ItemActionDataAltMode _data))
             return;
 
-        ItemActionDataAltMode _data = _actionData as ItemActionDataAltMode;
         EntityAlive holdingEntity = _data.invData.holdingEntity;
 
         int altIndex = getCurAltIndex(holdingEntity);
@@ -144,7 +138,35 @@ class ItemActionAltMode : ItemActionHoldOpen
         {
         }
 
+        public void SetAltSound()
+        {
+            if (modeIndex >= 0)
+            {
+                SoundStart = altSoundStart.Length > modeIndex ? altSoundStart[modeIndex] : string.Empty;
+                SoundLoop = altSoundLoop.Length > modeIndex ? altSoundLoop[modeIndex] : string.Empty;
+                SoundEnd = altSoundEnd.Length > modeIndex ? altSoundEnd[modeIndex] : string.Empty;
+                IsFlashSuppressed = suppressFlashOnAlt.Length > modeIndex ? suppressFlashOnAlt[modeIndex] : false;
+            }
+            else
+            {
+                SoundStart = originalSoundStart;
+                SoundLoop = originalSoundLoop;
+                SoundEnd = originalSoundEnd;
+                IsFlashSuppressed = suppressFlashOnOrigin;
+            }
+        }
+
         public int modeIndex = -1;
+        public string originalSoundStart = string.Empty;
+        public string originalSoundLoop = string.Empty;
+        public string originalSoundEnd = string.Empty;
+        public string originalSoundEmpty = string.Empty;
+        public string[] altSoundStart = null;
+        public string[] altSoundLoop = null;
+        public string[] altSoundEnd = null;
+        public string[] altSoundEmpty = null;
+        public bool suppressFlashOnOrigin = false;
+        public bool[] suppressFlashOnAlt;
     }
 }
 

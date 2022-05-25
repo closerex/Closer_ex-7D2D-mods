@@ -40,12 +40,12 @@ class ItemActionHoldOpen : ItemActionRanged
 
     protected override int getUserData(ItemActionData _actionData)
     {
-        return _actionData.invData.itemValue.Meta;
+        return _actionData.invData.itemValue.Meta <= 0 ? 1 : 0;
     }
 
     public override void ItemActionEffects(GameManager _gameManager, ItemActionData _actionData, int _firingState, Vector3 _startPos, Vector3 _direction, int _userData = 0)
     {
-        if(_firingState != (int)ItemActionFiringState.Off && _userData <= 0)
+        if(_firingState != (int)ItemActionFiringState.Off && (_userData & 1) > 0)
             setAnimatorBool(_actionData.invData.holdingEntity, emptyAnimatorBool, true);
 
         base.ItemActionEffects(_gameManager, _actionData, _firingState, _startPos, _direction, _userData);

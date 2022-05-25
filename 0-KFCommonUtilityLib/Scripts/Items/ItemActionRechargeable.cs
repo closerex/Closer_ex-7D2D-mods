@@ -55,7 +55,7 @@
                 float stock = holdingEntity.GetCVar(cvarToConsume[curAltIndex]);
                 if (stock < consumption)
                 {
-                    holdingEntity.PlayOneShot(altSoundEmpty.Length >= curAltIndex ? altSoundEmpty[curAltIndex] : originalSoundEmpty);
+                    holdingEntity.PlayOneShot(_data.altSoundEmpty.Length >= curAltIndex ? _data.altSoundEmpty[curAltIndex] : _data.originalSoundEmpty);
                     return;
                 }
 

@@ -94,6 +94,7 @@
     <Compile Include="Scripts\MinEventActions\MinEventActionSetAmmoOnWeaponLabel.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageSyncWeaponLabelColor.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageSyncWeaponLabelText.cs" />
+    <Compile Include="Scripts\Parser\ExplosionAreaBuffTickParser.cs" />
     <Compile Include="Scripts\Requirements\RoundsInHoldingItem.cs" />
   </ItemGroup>
   <ItemGroup>
