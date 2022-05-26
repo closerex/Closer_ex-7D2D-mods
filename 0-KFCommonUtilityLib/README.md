@@ -5,7 +5,7 @@ This Readme will summarize the usage of these utilitties.
 
 ## ItemActions
 There are 3 new actions available currently.
-#### ItemActionHoldOpen
+#### 🔴ItemActionHoldOpen
 This action adds an **empty** state to the weapon, to easily enable guns to go into a hold open state when magazine is depleted. The state is synced on all clients, and retained on switching equipment.
 
 To use this action on your weapon, replace
@@ -22,7 +22,7 @@ with
 
 Note this only works for Ranged weapons, not Launcher weapons.
 
-#### ItemActionAltMode
+#### 🔴ItemActionAltMode
 This action derives from ItemActionHoldOpen, allows you to manage weapon mode with cvar easily. It adds following xml properties:
 
 - `Cvar_State_Switch`: The cvar that controls the mode. When the value is 0, original properties are used; when the value is greater than 0, the alt properties with that value as index is used instead.
@@ -38,7 +38,7 @@ To use this action on your weapon, in addition to ItemActionHoldOpen, replace th
 
 Note that not all properties are required, the missing sounds are defaulted to no sound and infinite ammo is defaulted to false.
 
-#### ItemActionRechargeable
+#### 🔴ItemActionRechargeable
 This action derives from ItemActionAltMode, allows you to consume different cvars according to weapon mode on bursting shots easily. It adds following xml properties:
 
 - `Cvar_To_Consume`: The cvar "stock" to consume on fire shots, separated by comma(,).
@@ -54,17 +54,17 @@ Note that while `Cvar_No_Consumption_Burst_Count` is not required, the other 2 a
 ## MinEventActions
 There are currently 6 trigger actions avaliable .
 
-#### MinEventActionAddBuffToTargetAndSelf
+#### 🔴MinEventActionAddBuffToTargetAndSelf
 A simple addon to AddBuff that adds the same buff to the initiator as the targets.
 
 Syntax is the same as AddBuff, replace `action` value with **AddBuffToTargetAndSelf,KFCommonUtilityLib**.
 
-#### MinEventActionDecreaseProgressionLevelAndRefundSP
+#### 🔴MinEventActionDecreaseProgressionLevelAndRefundSP
 A simple addon to SetProgressionLevel that refunds all skill points spent on those decreased levels.
 
 Syntax is the same as SetProgressionLevel, replace `action` value with **DecreaseProgressionLevelAndRefundSP,KFCommonUtilityLib**. `level` must be less than current progression level.
 
-#### MinEventActionModifyCVarWithSelfRef
+#### 🔴MinEventActionModifyCVarWithSelfRef
 A simple addon to ModifyCVar that takes "@cvar" reference from the initiator instead of each target.
 
 When using ModifyCVar with "@cvar", the actuall value is taken from each target. this action changes the behaviour to take the value from the initiator only.
@@ -82,7 +82,7 @@ Drag **KFUtilAttached** folder into your unity project and attach the script ins
 By "slot", the attribute refers to the index of the objects you dragged onto the script.
 
 **Text and colors are synced on all clients through NetPackages, thus you should avoid setting them frequently.**
-#### MinEventActionSetStringOnWeaponLabel
+#### 🔴MinEventActionSetStringOnWeaponLabel
 This action changes the text of specified 3D Text object. The syntax is as follows:
 
 ```xml
@@ -93,7 +93,7 @@ When `cvar` is presented, the text will be the cvar value; when `text` is presen
 
 `slot` is defaulted to 0.
 
-#### MinEventActionSetAmmoOnWeaponLabel
+#### 🔴MinEventActionSetAmmoOnWeaponLabel
 This action changed the text of specified 3D Text object to the round count in your magazine. The syntax is as follows:
 
 ```xml
@@ -101,7 +101,7 @@ This action changed the text of specified 3D Text object to the round count in y
 ```
 `slot` is defaulted to 0.
 
-#### MinEventActionSetWeaponLabelColor
+#### 🔴MinEventActionSetWeaponLabelColor
 This action changes the color of specified 3D Text object or the material of specified mesh renderer. The syntax is as follows:
 
 ```xml
@@ -111,13 +111,15 @@ This action changes the color of specified 3D Text object or the material of spe
 
 When `is_text` is set to true, only `slot0` is parsed, which represents the index of 3D Text object; when `is_text` is set to false, `slot0` represents the index of mesh renderers you dragged onto the script, and `slot1` represents the index of materials on that renderer, while `name` stands for the color property name of the shader.
 
+`is_text` is defaulted to true, `slot0` and `slot1` are both defaulted to 0.
+
 For more information about property name and color format, refer to [Unity Doc](https://docs.unity3d.com/ScriptReference/Material.SetColor.html).
 
 ------------
 
 ## Requirements
 There is currently only 1 requriement avaliable.
-#### RoundsInHoldingItem
+#### 🔴RoundsInHoldingItem
 This requirement can be used to check rounds in magazine on `onSelfEquipStart`. I add this because vanilla `RoundsInMagazine` does not work properly when you start equipping a gun.
 
 Syntax is the same as `RoundsInMagazine`, replace `name` value with **RoundsInHoldingItem,KFCommonUtilityLib**.
@@ -126,7 +128,7 @@ Syntax is the same as `RoundsInMagazine`, replace `name` value with **RoundsInHo
 There is currently only 1 explosion script avaliable.
 
 If you have no idea what this does, please refer to my custom explosion particle tutorial.
-#### ExplosionAreaBuffTick
+#### 🔴ExplosionAreaBuffTick
 This script requires a trigger collider on the root transform, and add buffs specified in `Explosion.Buff` to all entities inside the collider every `Explosion.TickInterval` seconds. Moreover, it fires `onSelfAttackedOther` event from the item and initiator every tick.
 
 This script takes following custom property:
