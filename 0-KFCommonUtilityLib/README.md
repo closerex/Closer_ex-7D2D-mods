@@ -18,7 +18,7 @@ with
 <property class="Action0">
 	<property name="Class" value="HoldOpen,KFCommonUtilityLib"/>
 ```
-, then add an **empty** param to your animator.
+, then add an **empty** Bool parameter to your animator.
 
 Note this only works for Ranged weapons, not Launcher weapons.
 
@@ -33,6 +33,8 @@ This action derives from ItemActionHoldOpen, allows you to manage weapon mode wi
 - `Alt_InfiniteAmmo`: Whether each alt mode is infinite ammo, separated by comma(,). Valid values are **true** and **false**.
 
 Sound properties should also work on item modifiers.
+
+It also adds Bool parameters to the animator, with the name of `"altMode" + Cvar_State_Switch value`, in which the value starts from 1 instead of 0. So for example you have 2 alt modes, then the parameters should be "altMode1" and "altMode2".
 
 To use this action on your weapon, in addition to ItemActionHoldOpen, replace the class name with **AltMode,KFCommonUtilityLib**, and add your properties accordingly. 
 
