@@ -25,12 +25,12 @@ Note this only works for Ranged weapons, not Launcher weapons.
 #### ItemActionAltMode
 This action derives from ItemActionHoldOpen, allows you to manage weapon mode with cvar easily. It adds following xml properties:
 
-`Cvar_State_Switch`: The cvar that controls the mode. When the value is 0, original properties are used; when the value is greater than 0, the alt properties with that value as index is used instead.
-`Alt_Sound_Start`: The start sounds of each mode, separated by comma(,). Replaces `Sound_start` when in alt mode.
-`Alt_Sound_Empty`: The empty sounds of each mode, separated by comma(,). Replaces `Sound_empty` when in alt mode.
-`Alt_Sound_Loop`: The loop sounds of each mode, separated by comma(,). Replaces `Sound_loop` when in alt mode.
-`Alt_Sound_End`: The end sounds of each mode, separated by comma(,). Replaces `Sound_end` when in alt mode.
-`Alt_InfiniteAmmo`: Whether each alt mode is infinite ammo, separated by comma(,). Valid values are **true** and **false**.
+- `Cvar_State_Switch`: The cvar that controls the mode. When the value is 0, original properties are used; when the value is greater than 0, the alt properties with that value as index is used instead.
+- `Alt_Sound_Start`: The start sounds of each mode, separated by comma(,). Replaces `Sound_start` when in alt mode.
+- `Alt_Sound_Empty`: The empty sounds of each mode, separated by comma(,). Replaces `Sound_empty` when in alt mode.
+- `Alt_Sound_Loop`: The loop sounds of each mode, separated by comma(,). Replaces `Sound_loop` when in alt mode.
+- `Alt_Sound_End`: The end sounds of each mode, separated by comma(,). Replaces `Sound_end` when in alt mode.
+- `Alt_InfiniteAmmo`: Whether each alt mode is infinite ammo, separated by comma(,). Valid values are **true** and **false**.
 
 Sound properties should also work on item modifiers.
 
@@ -41,9 +41,9 @@ Note that not all properties are required, the missing sounds are defaulted to n
 #### ItemActionRechargeable
 This action derives from ItemActionAltMode, allows you to consume different cvars according to weapon mode on bursting shots easily. It adds following xml properties:
 
-`Cvar_To_Consume`: The cvar "stock" to consume on fire shots, separated by comma(,).
-`Cvar_Consumption`: The cvar "consumption" on each shot, separated by comma(,). When the stock value is less than consumption value, the corresponding empty sound of current mode is played.
-`Cvar_No_Consumption_Burst_Count`: The shot count that does not consume the stock, separated by comma(,). This is decreased by 1 on each shot. Only in effect when greater than 0.
+- `Cvar_To_Consume`: The cvar "stock" to consume on fire shots, separated by comma(,).
+- `Cvar_Consumption`: The cvar "consumption" on each shot, separated by comma(,). When the stock value is less than consumption value, the corresponding empty sound of current mode is played.
+- `Cvar_No_Consumption_Burst_Count`: The shot count that does not consume the stock, separated by comma(,). This is decreased by 1 on each shot. Only in effect when greater than 0.
 
 These properties only work when in alt modes.
 
@@ -130,4 +130,4 @@ If you have no idea what this does, please refer to my custom explosion particle
 This script requires a trigger collider on the root transform, and add buffs specified in `Explosion.Buff` to all entities inside the collider every `Explosion.TickInterval` seconds. Moreover, it fires `onSelfAttackedOther` event from the item and initiator every tick.
 
 This script takes following custom property:
-`Explosion.TickInterval`: interval between each tick. Default value is 0.5.
+- `Explosion.TickInterval`: interval between each tick. Default value is 0.5.
