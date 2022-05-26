@@ -11,7 +11,7 @@
 		<item name="gunMedicPistol">
 <!--			<property name="CustomIconTint" value="200, 0, 200"/>-->
 			<property name="CustomIcon" value="medic_pistol"/>
-			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,selfLoading,attAgility,noSilencer,sideAttachments,barrelAttachments,9mmGun,perkGunslinger,medicgun,medicpistol"/>
+			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,selfLoading,attAgility,noScopes,sideAttachments,barrelAttachments,attachmentsIncluded,9mmGun,perkGunslinger,medicgun,medicpistol"/>
 			<property name="DisplayType" value="rangedGun"/>
 			<property name="HoldType" value="1"/>
 			<property name="Meshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?MedicPistol.prefab"/>
@@ -156,7 +156,7 @@
 		
 		<item name="gunMedicShotgun301">
 			<property name="CustomIcon" value="medic_sg301"/>
-			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shotgun,shortRange,barrelAttachments,sideAttachments,noScopes,noSilencer,magazine,bottomAttachments,attStrength,medicgun,medicshotgun,perkBoomstick,canHaveCosmetic"/>
+			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shotgun,shortRange,barrelAttachments,sideAttachments,noScopes,noSilencer,magazine,bottomAttachments,attachmentsIncluded,attStrength,medicgun,medicshotgun,perkBoomstick,canHaveCosmetic"/>
 			<property name="DisplayType" value="rangedShotgun"/>
 			<property name="HoldType" value="48"/>
 			<property name="Meshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?MedicSG301.prefab"/>
@@ -288,7 +288,7 @@
 		
 		<item name="gunMedicAssaultRifle401">
 			<property name="CustomIcon" value="medic_ar401"/>
-			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,barrelAttachments,sideAttachments,stock,magazine,attFortitude,perkMachineGunner,perkBookAutoWeapons,medicgun,medicar401"/>
+			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,barrelAttachments,sideAttachments,noScopes,attachmentsIncluded,stock,magazine,attFortitude,perkMachineGunner,perkBookAutoWeapons,medicgun,medicar401"/>
 			<property name="DisplayType" value="rangedGun"/>
 			<property name="HoldType" value="48"/>
 			<property name="Meshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?MedicAR401.prefab"/>

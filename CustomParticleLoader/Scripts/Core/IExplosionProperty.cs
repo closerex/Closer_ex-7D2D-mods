@@ -1,6 +1,6 @@
 ﻿public interface IExplosionPropertyParser
 {
-    bool ParseProperty(DynamicProperties _props, ExplosionComponent component, out object property);
+    bool ParseProperty(DynamicProperties _props, out object property);
     System.Type MatchScriptType();
     string Name();
 }

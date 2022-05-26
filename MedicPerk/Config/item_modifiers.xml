@@ -2,6 +2,7 @@
 	<append xpath="/item_modifiers">
 		<item_modifier name="modMedicModule" installable_tags="medicgun" modifier_tags="modMedicModule" type="mod">
 			<property name="Extends" value="modGeneralMaster"/>
+			<property name="CustomIcon" value="medic_module"/>
 			<property name="UnlockedBy" value="perkMedic"/>
       <!--item_property_overrides name="*">
         <property name="Sound_start" value=""/>

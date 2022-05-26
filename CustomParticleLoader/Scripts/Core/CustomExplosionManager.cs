@@ -231,7 +231,7 @@ public static class CustomExplosionManager
                 {
                     LastInitializedComponent.SyncOnConnect = sync;
                     foreach (var parser in list_parsers)
-                        if (list_customtypes.Contains(parser.MatchScriptType()) && parser.ParseProperty(_props, LastInitializedComponent, out var property))
+                        if (list_customtypes.Contains(parser.MatchScriptType()) && parser.ParseProperty(_props, out var property))
                             LastInitializedComponent.AddCustomProperty(parser.Name(), property);
                 }
                 return flag;

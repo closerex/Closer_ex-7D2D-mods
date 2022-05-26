@@ -18,7 +18,7 @@ public class ExplosionAreaBuffTickParser : IExplosionPropertyParser
         return name;
     }
 
-    public bool ParseProperty(DynamicProperties _props, ExplosionComponent component, out object property)
+    public bool ParseProperty(DynamicProperties _props, out object property)
     {
         float interval = 0.5f;
         _props.ParseFloat(str_tick_interval, ref interval);
