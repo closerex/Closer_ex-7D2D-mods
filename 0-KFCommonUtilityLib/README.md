@@ -8,9 +8,17 @@ There are 3 new actions available currently.
 #### ItemActionHoldOpen
 This action adds an **empty** state to the weapon, to easily enable guns to go into a hold open state when magazine is depleted. The state is synced on all clients, and retained on switching equipment.
 
-To use this action on your weapon, replace `<property class="Action0">
-		<property name="Class" value="Ranged"/>` with `<property class="Action0">
-		<property name="Class" value="HoldOpen,KFCommonUtilityLib"/>` , then add an **empty** param to your animator.
+To use this action on your weapon, replace
+```xml
+<property class="Action0">
+	<property name="Class" value="Ranged"/>
+```
+with
+```xml
+<property class="Action0">
+	<property name="Class" value="HoldOpen,KFCommonUtilityLib"/>
+```
+, then add an **empty** param to your animator.
 
 Note this only works for Ranged weapons, not Launcher weapons.
 
