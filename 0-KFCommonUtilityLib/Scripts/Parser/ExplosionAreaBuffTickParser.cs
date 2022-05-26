@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 public class ExplosionAreaBuffTickParser : IExplosionPropertyParser
 {
     public static readonly string name = "ExplosionAreaBuffTick";
-    public static readonly string str_tick_interval = "TickInterval";
+    public static readonly string str_tick_interval = "Explosion.TickInterval";
     public Type MatchScriptType()
     {
         return typeof(ExplosionAreaBuffTick);
