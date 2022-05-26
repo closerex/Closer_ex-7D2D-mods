@@ -1,0 +1,1 @@
+This demo requires CustomParticleLoader, CustomParticleLoaderMultiExplosion, CustomParticleLoaderSpawnEntity, FullautoLauncher, ParticleScriptTest, CustomPlayerActionManager and VehicleWeapon, since a lot resources are shared during my test.
