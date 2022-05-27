@@ -20,8 +20,7 @@
 			<property name="waterDrag_y_velScale_velMaxScale" value="1.8, .9, .1"/>
 			<property name="wheelPtlScale" value="1"/>
 
-			<!-- fireSound is now used for firing sound. this does not affect vehicles without hornWeapon /-->
-			<property name="hornSound" value="m136_fire"/>
+			<property name="hornSound" value=""/>
 
 			<!-- part class name must be vehicleWeaponManager /-->
 			<!-- must have this empty part to get all the weapons working! placing it in the first slot is not necessary but grants faster look up. /-->
