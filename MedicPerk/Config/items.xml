@@ -152,6 +152,14 @@
 					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A"/>
 					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A" is_text="false" name="_EmissionColor"/>
 			</effect_group>
+			<effect_group name="label color cvar">
+				<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A" slot0="1">
+					<requirement name="CVarCompare" cvar="$medicBuffStockPistol" operation="LT" value="@$medicBuffConsumption"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#42D8EE" slot0="1">
+					<requirement name="CVarCompare" cvar="$medicBuffStockPistol" operation="GTE" value="@$medicBuffConsumption"/>
+				</triggered_effect>
+			</effect_group>
 		</item>
 		
 		<item name="gunMedicShotgun301">
@@ -283,6 +291,14 @@
 					<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A" is_text="false" name="_EmissionColor" slot1="2"/>
 					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A"/>
 					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A" is_text="false" name="_EmissionColor" slot1="2"/>
+			</effect_group>
+			<effect_group name="label color cvar">
+				<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A" slot0="1">
+					<requirement name="CVarCompare" cvar="$medicBuffStockSG301" operation="LT" value="@$medicBuffConsumption"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#42D8EE" slot0="1">
+					<requirement name="CVarCompare" cvar="$medicBuffStockSG301" operation="GTE" value="@$medicBuffConsumption"/>
+				</triggered_effect>
 			</effect_group>
 		</item>
 		
@@ -421,6 +437,14 @@
 					<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A" is_text="false" name="_EmissionColor" slot1="2"/>
 					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A"/>
 					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A" is_text="false" name="_EmissionColor" slot1="2"/>
+			</effect_group>
+			<effect_group name="label color cvar">
+				<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1A" slot0="1">
+					<requirement name="CVarCompare" cvar="$medicBuffStockAR401" operation="LT" value="@$medicBuffConsumption"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#42D8EE" slot0="1">
+					<requirement name="CVarCompare" cvar="$medicBuffStockAR401" operation="GTE" value="@$medicBuffConsumption"/>
+				</triggered_effect>
 			</effect_group>
 		</item>
 		
