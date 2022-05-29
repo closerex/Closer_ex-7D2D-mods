@@ -51,7 +51,7 @@ public class SubExplosionInitializer : MonoBehaviour
             if (!world.GetBlock(blockpos).isair)
                 blockpos = Voxel.OneVoxelStep(blockpos, vec, -velocity.normalized, out vec, out BlockFace blockFace);
 
-            DoExplosionServer(vec, blockpos);
+            DoExplosionServer(pos, blockpos);
             //Log.Out("Explosion at: " + vec.ToString() + blockpos.ToString());
 
             /*

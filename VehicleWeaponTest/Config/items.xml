@@ -24,6 +24,7 @@
 			</effect_group>
 		</item>
 		<item name="itemPlasmaSmall">
+			<property name="Tags" value="perkDemolitionsExpert"/>
 			<property name="Material" value="Mstone"/>
 			<property name="Canhold" value="false"/>
 			<property name="Explosion.ParticleIndex" value="#@modfolder:Resources/plasmaExplosion.unity3d?Plasma_Hit_FX_v1$itemPlasmaSmall"/>

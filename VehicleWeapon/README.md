@@ -16,6 +16,8 @@ I actually don't make vehicles on my own, so I assume you are better at it than 
 
 Most importantly, **enable Collision module with *Send Collision Messages*** and set **Collision Quality** to high. For additional notes on particle system, refer to the sub explosion part of my custom explosion particle tutorial.
 
+For weapons that need a rotator, make sure your horizontal rotation transform and vertical rotation transform are facing Z axis with zero rotation. Hor rotation happens on y axis, and ver rotation happens on x axis. If somehow it's not working properly, check for rotation on parent transforms of the rotator transforms.
+
 ### Setup your xml
 
 **VehicleWeaponTest** has all properties with comment in vehicles.xml.

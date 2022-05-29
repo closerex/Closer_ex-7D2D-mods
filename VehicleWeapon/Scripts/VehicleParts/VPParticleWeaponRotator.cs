@@ -100,7 +100,21 @@ public class VPParticleWeaponRotator : VehicleWeaponRotatorBase
 
     protected virtual bool DoRaycast(out RaycastHit hitInfo)
     {
-        Ray lookRay = player.playerCamera.ScreenPointToRay(Input.mousePosition);
+        Vector3 dynamicMousePos;
+        
+        if (!GameRenderManager.dynamicIsEnabled)
+            dynamicMousePos = Input.mousePosition;
+        else
+        {
+            float scale;
+            if (dynamicScaleMode == 1)
+                scale = (float)player.renderManager.GetDynamicRenderTexture().width / Screen.width;
+            else
+                scale = dynamicScaleOverride;
+            dynamicMousePos = Input.mousePosition * scale;
+        }
+        
+        Ray lookRay = player.playerCamera.ScreenPointToRay(dynamicMousePos);
         lookRay.origin = hasRaycastTransform ? hitRayTrans.position : hitRayTrans.position + Vector3.up * 2;
         return Physics.Raycast(lookRay, out hitInfo);
     }

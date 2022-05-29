@@ -20,10 +20,19 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     protected bool fullCircleRotation = false;
     protected EntityPlayerLocal player = null;
     protected VehicleWeaponBase weapon = null;
+    protected static int dynamicScaleMode = 0;
+    protected static float dynamicScaleOverride = 1;
 
     public Transform HorRotTrans { get => horRotTrans; }
     public Transform VerRotTrans { get => verRotTrans; }
     public bool OnTarget { get => lastOnTarget; }
+
+    public static void OnVideoSettingChanged()
+    {
+        dynamicScaleMode = GamePrefs.GetInt(EnumGamePrefs.OptionsGfxDynamicMode);
+        if (dynamicScaleMode == 2)
+            dynamicScaleOverride = GamePrefs.GetFloat(EnumGamePrefs.OptionsGfxDynamicScale);
+    }
 
     public override void SetProperties(DynamicProperties _properties)
     {

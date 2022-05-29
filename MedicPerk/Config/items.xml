@@ -73,7 +73,6 @@
 			</property>
 			
 			<effect_group name="gunMedicPistol">
-				<!--triggered_effect trigger="onSelfEquipStop" action="RemoveBuff" buff="buffMedicBuffStockPistol"/-->
 				<triggered_effect trigger="onSelfEquipStart" action="AddBuff" buff="buffMedicBuffStockPistol"/>
 				<triggered_effect trigger="onSelfEquipStart" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockPistol" slot="1"/>
 				<triggered_effect trigger="onSelfEquipStart" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="0"/>
@@ -87,26 +86,20 @@
 				<passive_effect name="RoundsPerMinute" operation="base_set" value="260"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="1"/>
 				<passive_effect name="MagazineSize" operation="base_set" value="15" tags="perkGunslinger"/>
-				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1"/>
 				<!-- 2s -->
+				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1"/>
 				<passive_effect name="ModSlots" operation="base_set" value="1,1,2,3,4,5" tier="1,2,3,4,5,6"/>
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="200" tags="EconomicValue"/>
-				<passive_effect name="EntityDamage" operation="base_add" value="-1.5" tags="perkBoomstick"/> <!-- damage offset -->
+				<passive_effect name="EntityDamage" operation="base_add" value="-2.5" tags="perkGunslinger"/>
 				<passive_effect name="EntityDamage" operation="perc_add" value="-.45,-.3" tags="perkGunslinger"/>
-				<!-- random EntityDmg -->
 				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.3" tier="2,6" tags="perkGunslinger"/>
-				<!-- tier bonus -->
 				<passive_effect name="BlockDamage" operation="perc_add" value="-.15,.15"/>
-				<!-- random BlockDmg -->
+				<passive_effect name="BlockDamage" operation="base_add" value="-1.5" tags="perkGunslinger"/>
 				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.3" tier="2,6"/>
-				<!-- tier bonus -->
 				<passive_effect name="MagazineSize" operation="perc_add" value="-.122,.122"/>
-				<!-- random MagazineSize -->
 				<passive_effect name="DegradationMax" operation="perc_add" value="-.2,.2"/>
-				<!-- random DegMax -->
 				<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08"/>
-				<!-- random WeaponHandling -->
 				<passive_effect name="SpreadDegreesVertical" operation="base_set" value="1"/>
 				<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="1"/>
 				<passive_effect name="SpreadMultiplierCrouching" operation="base_set" value=".8"/>
@@ -224,7 +217,6 @@
 			</property>
 
 			<effect_group name="gunMedicShotgun301">
-				<!--triggered_effect trigger="onSelfEquipStop" action="RemoveBuff" buff="buffMedicBuffStockShotgun"/-->
 				<triggered_effect trigger="onSelfEquipStart" action="AddBuff" buff="buffMedicBuffStockShotgun"/>
 				<triggered_effect trigger="onSelfEquipStart" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockSG301" slot="1"/>
 				<triggered_effect trigger="onSelfEquipStart" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="0"/>
@@ -239,9 +231,10 @@
 				<passive_effect name="ModSlots" operation="base_set" value="1,1,2,2,3,4" tier="1,2,3,4,5,6"/>
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
-				<passive_effect name="EntityDamage" operation="base_add" value="-0.9" tags="perkBoomstick"/> <!-- damage offset -->
+				<passive_effect name="EntityDamage" operation="base_add" value="-2.1" tags="perkBoomstick"/> <!-- damage offset -->
 				<passive_effect name="EntityDamage" operation="perc_add" value="-.45,-.25" tags="perkBoomstick,perkMedic"/> <!-- random EntityDmg -->
 				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkBoomstick"/> <!-- tier bonus -->
+				<passive_effect name="BlockDamage" operation="base_add" value="-1.2" tags="perkBoomstick"/> <!-- damage offset -->
 				<passive_effect name="BlockDamage" operation="perc_add" value="-.15,.15" tags="perkBoomstick"/> <!-- random BlockDmg -->
 				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkBoomstick"/> <!-- tier bonus -->
 
@@ -357,7 +350,6 @@
 			</property>
 
 			<effect_group name="gunMedicAssaultRifle401">
-				<!--triggered_effect trigger="onSelfEquipStop" action="RemoveBuff" buff="buffMedicBuffStockAR401"/-->
 				<triggered_effect trigger="onSelfEquipStart" action="AddBuff" buff="buffMedicBuffStockAR401"/>
 				<triggered_effect trigger="onSelfEquipStart" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockAR401" slot="1"/>
 				<triggered_effect trigger="onSelfEquipStart" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="0"/>
