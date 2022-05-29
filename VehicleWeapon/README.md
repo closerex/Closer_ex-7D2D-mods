@@ -8,6 +8,7 @@ If you have worked with my **CustomParticleLoader** and its subsequent patches, 
 
 To be short, what that multi explosion patch does is handling particle collision events and triggering explosions on collision position. It can also check for particle lifetime in every `FixedUpdate ` to trigger explosions on particle death. The vehicle weapon system available now reuses that script, and add a set of controls on the particle system, which requires **CustomPlayerActionManager**. Thus, the main task here is attaching particle systems that emits projectile style particles to the vehicle, and add proper parts with necessary properties to your vehicle.
 
+Check Vehicle tab in control option window for weapon controls.
 ### Prepare your vehicle
 
 **VehicleWeaponTest** has a unity package inside with the tutorial vehicle it uses. You can tweak its xml to test with each property. Note that it requires **CustomParticleLoaderSpawnEntity**, **ParticleScriptTest** and **Kaboomstick** in addition since I reused their particles.
