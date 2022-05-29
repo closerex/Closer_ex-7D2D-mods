@@ -61,6 +61,13 @@ A simple addon to AddBuff that adds the same buff to the initiator as the target
 
 Syntax is the same as AddBuff, replace `action` value with **AddBuffToTargetAndSelf,KFCommonUtilityLib**.
 
+#### 🔴MinEventActionBroadcastPlaySoundLocal
+A simple addon to PlaySound that ensures broadcast sounds only start broadcasting on the local client.
+
+Does an additional isRemote check on the entity, so that redundant triggers on other clients won't play the sound.
+
+Syntax is the same as PlaySound, replace `action` value with **BroadcastPlaySoundLocal,KFCommonUtilityLib**.
+
 #### 🔴MinEventActionDecreaseProgressionLevelAndRefundSP
 A simple addon to SetProgressionLevel that refunds all skill points spent on those decreased levels.
 
