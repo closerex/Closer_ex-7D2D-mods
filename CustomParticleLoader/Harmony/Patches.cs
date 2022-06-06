@@ -93,20 +93,10 @@ class ExplosionEffectPatch
             return;
 
         ExplosionComponent components = CustomExplosionManager.LastInitializedComponent;
-        /*
-        if(SingletonMonoBehaviour<ConnectionManager>.Instance.IsClient && _index >= WorldStaticData.prefabExplosions.Length && components == null)
-        {
-            bool flag = CustomParticleEffectLoader.GetCustomParticleComponents(_index, out components);
-            CustomParticleEffectLoader.LastInitializedComponent = components;
-            if (!flag || components == null)
-                Log.Warning("Failed to retrieve particle on client! Index:" + _index.ToString());
-        }
-        */
         if (components != null)
         {
             ApplyExplosionForce.Explode(_center, (float)_blastPower, _blastRadius);
             __result = CustomExplosionManager.InitializeParticle(components, _center - Origin.position, _rotation);
-            //CustomParticleEffectLoader.LastInitializedComponent = null;
         }
         else
             Log.Warning("Failed to retrieve particle on client! Index:" + _index.ToString());

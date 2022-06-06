@@ -20,7 +20,7 @@ public static class CustomExplosionManager
     }
     public static uint NextExplosionIndex { get; set; } = 0;
 
-    public static void OnClientConnected(ClientInfo client)
+    internal static void OnClientConnected(ClientInfo client)
     {
         var handler = ClientConnected;
         if (handler != null)
@@ -40,7 +40,7 @@ public static class CustomExplosionManager
         }
     }
 
-    public static void CreatePropertyParsers()
+    internal static void CreatePropertyParsers()
     {
         var assemblies = ModManager.GetLoadedAssemblies();
         string iname = nameof(IExplosionPropertyParser);
@@ -60,7 +60,7 @@ public static class CustomExplosionManager
         }
     }
 
-    public static GameObject InitializeParticle(ExplosionComponent component, Vector3 position, Quaternion rotation)
+    internal static GameObject InitializeParticle(ExplosionComponent component, Vector3 position, Quaternion rotation)
     {
         GameObject __result = UnityEngine.Object.Instantiate<GameObject>(component.Particle, position, rotation);
         __result.AddComponent<NetSyncHelper>();
@@ -85,12 +85,12 @@ public static class CustomExplosionManager
         return __result;
     }
 
-    public static void PushLastInitComponent(ExplosionComponent component)
+    internal static void PushLastInitComponent(ExplosionComponent component)
     {
         last_init_components.Push(component);
     }
 
-    public static void PopLastInitComponent()
+    internal static void PopLastInitComponent()
     {
         if (last_init_components.Count > 0)
             last_init_components.Pop();
@@ -240,19 +240,19 @@ public static class CustomExplosionManager
         return false;
     }
 
-    public static void addInitializedParticle(GameObject obj)
+    internal static void addInitializedParticle(GameObject obj)
     {
         hash_initialized.Add(obj);
         //Log.Out("Particle initialized:" + obj.name);
     }
 
-    public static void removeInitializedParticle(GameObject obj)
+    internal static void removeInitializedParticle(GameObject obj)
     {
         hash_initialized.Remove(obj);
         //Log.Out("Particle removed on destroy:" + obj.name);
     }
 
-    public static void destroyAllParticles()
+    internal static void destroyAllParticles()
     {
         foreach (GameObject obj in hash_initialized)
         {

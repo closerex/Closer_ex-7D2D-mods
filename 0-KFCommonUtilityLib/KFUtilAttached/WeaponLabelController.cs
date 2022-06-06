@@ -5,27 +5,24 @@ public class WeaponLabelController : MonoBehaviour
     public TextMesh[] labels;
     public Renderer[] renderers;
 
-    public bool setLabelText(int index, string data)
+    public void setLabelText(int index, string data)
     {
-        if (string.Equals(labels[index].text, data))
-            return false;
+        if (labels == null || labels.Length <= index)
+            return;
         labels[index].text = data;
-        return true;
     }
 
-    public bool setLabelColor(int index, Color color)
+    public void setLabelColor(int index, Color color)
     {
-        if (labels[index].color.Equals(color))
-            return false;
+        if (labels == null || labels.Length <= index)
+            return;
         labels[index].color = color;
-        return true;
     }
 
-    public bool setMaterialColor(int renderer_index, int material_index, int nameId, Color data)
+    public void setMaterialColor(int renderer_index, int material_index, int nameId, Color data)
     {
-        if (renderers[renderer_index].materials[material_index].GetColor(nameId).Equals(data))
-            return false;
+        if (renderers == null || renderers.Length <= renderer_index || renderers[renderer_index].materials.Length <= material_index)
+            return;
         renderers[renderer_index].materials[material_index].SetColor(nameId, data);
-        return true;
     }
 }
