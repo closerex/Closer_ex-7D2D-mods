@@ -9,9 +9,9 @@ public class ItemActionRampUp : ItemActionRanged
         {
             if (!_rampData.prepareStarted)
             {
-                _rampData.invData.holdingEntity.PlayOneShot(_rampData.prepareSound);
-                _rampData.prepareStartTime = Time.time;
                 _rampData.prepareStarted = true;
+                _rampData.prepareStartTime = Time.time;
+                _rampData.invData.holdingEntity.PlayOneShot(_rampData.prepareSound);
             }
             if (Time.time - _rampData.prepareStartTime < _rampData.prepareTime)
                 return;
@@ -24,7 +24,10 @@ public class ItemActionRampUp : ItemActionRanged
             _rampData.invData.holdingEntity.PlayOneShot(_rampData.rampSound);
         }
         else if (_rampData.bReleased)
+        {
             _rampData.rampStarted = false;
+            _rampData.prepareStarted = false;
+        }
     }
 
     public override void OnHoldingUpdate(ItemActionData _actionData)
@@ -60,23 +63,23 @@ public class ItemActionRampUp : ItemActionRanged
     {
         base.OnModificationsChanged(_data);
         var _rampData = _data as ItemActionDataRampUp;
-        string originalValue = string.Empty;
+        string originalValue = 1.ToString();
         Properties.ParseString("RampMultiplier", ref originalValue);
-        _rampData.maxMultiplier = float.Parse(_rampData.invData.itemValue.GetPropertyOverride("RampMultiplier", originalValue));
+        _rampData.maxMultiplier = Mathf.Max(float.Parse(_rampData.invData.itemValue.GetPropertyOverride("RampMultiplier", originalValue)), 0);
 
-        originalValue = string.Empty;
+        originalValue = 0.ToString();
         Properties.ParseString("RampTime", ref originalValue);
         _rampData.rampTime = float.Parse(_rampData.invData.itemValue.GetPropertyOverride("RampTime", originalValue));
 
-        originalValue = string.Empty;
+        originalValue = 1.ToString();
         Properties.ParseString("MinRampShots", ref originalValue);
-        _rampData.minRampShots = int.Parse(_rampData.invData.itemValue.GetPropertyOverride("MinRampShots", originalValue));
+        _rampData.minRampShots = Mathf.Max(int.Parse(_rampData.invData.itemValue.GetPropertyOverride("MinRampShots", originalValue)), 1);
 
         originalValue = string.Empty;
         Properties.ParseString("RampStartSound", ref _rampData.rampSound);
         _rampData.rampSound = _rampData.invData.itemValue.GetPropertyOverride("RampStartSound", originalValue);
 
-        originalValue = string.Empty;
+        originalValue = 0.ToString();
         Properties.ParseString("PrepareTime", ref originalValue);
         _rampData.prepareTime = float.Parse(_rampData.invData.itemValue.GetPropertyOverride("PrepareTime", originalValue));
 
