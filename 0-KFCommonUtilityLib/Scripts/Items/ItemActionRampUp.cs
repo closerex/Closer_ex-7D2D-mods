@@ -17,7 +17,7 @@ public class ItemActionRampUp : ItemActionRanged
                 return;
         }
         base.ExecuteAction(_actionData, _bReleased);
-        if (_rampData.state == ItemActionFiringState.Loop && _rampData.curBurstCount == _rampData.minRampShots)
+        if (_rampData.state != ItemActionFiringState.Off && _rampData.curBurstCount == _rampData.minRampShots)
         {
             _rampData.rampStarted = true;
             _rampData.rampStartTime = Time.time;
@@ -35,7 +35,11 @@ public class ItemActionRampUp : ItemActionRanged
         base.OnHoldingUpdate(_actionData);
         var _rampData = _actionData as ItemActionDataRampUp;
         if(_rampData.rampStarted)
-            _rampData.Delay *= Mathf.Min((Time.time - _rampData.rampStartTime) / _rampData.rampTime, 1) * _rampData.maxMultiplier;
+        {
+            float rampElapsed = Time.time - _rampData.rampStartTime;
+            if (rampElapsed > 0)
+                _rampData.Delay /= rampElapsed > _rampData.rampTime ? _rampData.maxMultiplier : rampElapsed * (_rampData.maxMultiplier - 1) / _rampData.rampTime + 1;// Mathf.Min((Time.time - _rampData.rampStartTime) * (_rampData.maxMultiplier - 1) / _rampData.rampTime + 1, _rampData.maxMultiplier);
+        }
     }
 
     public override void StopHolding(ItemActionData _data)
