@@ -9,6 +9,7 @@ public class ItemActionRampUp : ItemActionRanged
         {
             if (!_rampData.prepareStarted)
             {
+                _rampData.invData.holdingEntity.StopOneShot(_rampData.prepareSound);
                 _rampData.prepareStarted = true;
                 _rampData.prepareStartTime = Time.time;
                 _rampData.invData.holdingEntity.PlayOneShot(_rampData.prepareSound);
@@ -19,15 +20,13 @@ public class ItemActionRampUp : ItemActionRanged
         base.ExecuteAction(_actionData, _bReleased);
         if (_rampData.state != ItemActionFiringState.Off && _rampData.curBurstCount == _rampData.minRampShots)
         {
+            _rampData.invData.holdingEntity.StopOneShot(_rampData.rampSound);
             _rampData.rampStarted = true;
             _rampData.rampStartTime = Time.time;
             _rampData.invData.holdingEntity.PlayOneShot(_rampData.rampSound);
         }
         else if (_rampData.bReleased)
-        {
-            _rampData.rampStarted = false;
-            _rampData.prepareStarted = false;
-        }
+            ResetRamp(_rampData);
     }
 
     public override void OnHoldingUpdate(ItemActionData _actionData)
@@ -46,16 +45,22 @@ public class ItemActionRampUp : ItemActionRanged
     {
         base.StopHolding(_data);
         var _rampData = _data as ItemActionDataRampUp;
-        _rampData.rampStarted = false;
-        _rampData.prepareStarted = false;
+        ResetRamp(_rampData);
     }
 
     public override void ReloadGun(ItemActionData _actionData)
     {
         base.ReloadGun(_actionData);
         var _rampData = _actionData as ItemActionDataRampUp;
+        ResetRamp(_rampData);
+    }
+
+    private void ResetRamp(ItemActionDataRampUp _rampData)
+    {
         _rampData.rampStarted = false;
         _rampData.prepareStarted = false;
+        _rampData.invData.holdingEntity.StopOneShot(_rampData.prepareSound);
+        _rampData.invData.holdingEntity.StopOneShot(_rampData.rampSound);
     }
 
     public override ItemActionData CreateModifierData(ItemInventoryData _invData, int _indexInEntityOfAction)
@@ -80,7 +85,7 @@ public class ItemActionRampUp : ItemActionRanged
         _rampData.minRampShots = Mathf.Max(int.Parse(_rampData.invData.itemValue.GetPropertyOverride("MinRampShots", originalValue)), 1);
 
         originalValue = string.Empty;
-        Properties.ParseString("RampStartSound", ref _rampData.rampSound);
+        Properties.ParseString("RampStartSound", ref originalValue);
         _rampData.rampSound = _rampData.invData.itemValue.GetPropertyOverride("RampStartSound", originalValue);
 
         originalValue = 0.ToString();
