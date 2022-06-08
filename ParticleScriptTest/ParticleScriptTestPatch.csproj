@@ -40,7 +40,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="CustomParticleLoader">
-      <HintPath>..\CustomParticleLoader\CustomParticleLoader.dll</HintPath>
+      <HintPath>..\0-CustomParticleLoader\CustomParticleLoader.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="LogLibrary">
