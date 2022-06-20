@@ -1,4 +1,4 @@
-﻿class ItemActionRechargeable : ItemActionAltMode
+﻿public class ItemActionRechargeable : ItemActionAltMode
 {
     protected string[] cvarToConsume = null;
     protected string[] cvarConsumption = null;

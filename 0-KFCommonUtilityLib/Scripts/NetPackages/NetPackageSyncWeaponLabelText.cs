@@ -46,7 +46,7 @@
             return;
         }
 
-        if(setWeaponLabelText(holdingEntity, slot, data))
+        if (setWeaponLabelText(holdingEntity, slot, data))
         {
             //Log.Out("trying to set weapon label on " + (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer ? "server" : "client") + " slot: " + slot + " text: " + data + " entity: " + holdingEntity.entityId + " from net: " + fromNet);
             if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && SingletonMonoBehaviour<ConnectionManager>.Instance.ClientCount() > 0)
@@ -54,7 +54,7 @@
                 int allButAttachedToEntityId = holdingEntity.entityId;
                 if (holdingEntity.AttachedMainEntity)
                     allButAttachedToEntityId = holdingEntity.AttachedMainEntity.entityId;
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageSyncWeaponLabelText>().Setup(holdingEntity.entityId, slot, data), false, -1, allButAttachedToEntityId);
+                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageSyncWeaponLabelText>().Setup(holdingEntity.entityId, slot, data), false, -1, allButAttachedToEntityId, allButAttachedToEntityId, 15);
             }
             else if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsClient && !fromNet)
                 SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageSyncWeaponLabelText>().Setup(holdingEntity.entityId, slot, data));
@@ -66,18 +66,13 @@
         if (GameManager.IsDedicatedServer)
             return true;
 
-        WeaponLabelController controller = null;
+        WeaponLabelControllerBase controller = null;
         if (holdingEntity.emodel.avatarController is AvatarMultiBodyController multiBody && multiBody.HeldItemTransform != null)
-            controller = multiBody.HeldItemTransform.GetComponent<WeaponLabelController>();
+            controller = multiBody.HeldItemTransform.GetComponent<WeaponLabelControllerBase>();
         else if (holdingEntity.emodel.avatarController is LegacyAvatarController legacy && legacy.HeldItemTransform)
-            controller = legacy.HeldItemTransform.GetComponent<WeaponLabelController>();
+            controller = legacy.HeldItemTransform.GetComponent<WeaponLabelControllerBase>();
 
-        if (controller)
-            controller.setLabelText(slot, data);
-        else
-            return false;
-
-        return true;
+        return controller && controller.setLabelText(slot, data);
     }
 
     private int entityId;

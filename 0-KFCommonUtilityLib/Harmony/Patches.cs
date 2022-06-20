@@ -1,6 +1,9 @@
 ﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
+using SystemInformation;
+using UnityEngine;
 
 [HarmonyPatch]
 class CommonUtilityPatch
@@ -66,6 +69,7 @@ class CommonUtilityPatch
         }
     }
 
+    //fix reloading issue and onSelfRangedBurstShot timing
     public static void FakeReload(EntityAlive holdingEntity, ItemActionRanged.ItemActionDataRanged _actionData)
     {
         if (!holdingEntity)
@@ -135,6 +139,131 @@ class CommonUtilityPatch
         }
 
         return codes;
+    }
+    //fix recoil animation does not match weapon RPM
+    private static int weaponFireHash = Animator.StringToHash("WeaponFire");
+    private static int aimHash = Animator.StringToHash("IsAiming");
+    private static HashSet<int> hash_shot_state = new HashSet<int>();
+    private static HashSet<int> hash_aimshot_state = new HashSet<int>();
+
+    public static void InitShotStates()
+    {
+        string[] weapons =
+        {
+            "fpvAK47",
+            "fpvMagnum",
+            "fpvRocketLauncher",
+            "fpvSawedOffShotgun",
+            "fpvBlunderbuss",
+            "fpvCrossbow",
+            "fpvPistol",
+            "fpvHuntingRifle",
+            "fpvSMG",
+            "fpvSniperRifle",
+            "M60",
+            "fpvDoubleBarrelShotgun",
+            "fpvJunkTurret",
+            "fpvTacticalAssaultRifle",
+            "fpvDesertEagle",
+            "fpvAutoShotgun",
+            "fpvSharpShooterRifle",
+            "fpvPipeMachineGun",
+            "fpvPipeRifle",
+            "fpvPipeRevolver",
+            "fpvPipeShotgun",
+            "fpvLeverActionRifle",
+        };
+        foreach(string weapon in weapons)
+        {
+            hash_shot_state.Add(Animator.StringToHash(weapon + "Fire"));
+            hash_aimshot_state.Add(Animator.StringToHash(weapon + "AimFire"));
+        }
+    }
+
+    [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.OnFired))]
+    [HarmonyPostfix]
+    private static void Postfix_OnFired_EntityPlayerLocal(EntityPlayerLocal __instance)
+    {
+        if (!__instance.bFirstPersonView)
+            return;
+
+        ItemActionRanged.ItemActionDataRanged _rangedData;
+        if ((_rangedData = __instance.inventory.holdingItemData.actionData[0] as ItemActionRanged.ItemActionDataRanged) == null && (_rangedData = __instance.inventory.holdingItemData.actionData[1] as ItemActionRanged.ItemActionDataRanged) == null)
+            return;
+
+        var anim = (__instance.emodel.avatarController as AvatarLocalPlayerController).FPSArms.Animator;
+        if (anim.IsInTransition(0))
+            return;
+
+        var curState = anim.GetCurrentAnimatorStateInfo(0);
+        if (curState.length > _rangedData.Delay)
+        {
+            bool aimState = anim.GetBool(aimHash);
+            short shotState = 0;
+            if (hash_shot_state.Contains(curState.shortNameHash))
+                shotState = 1;
+            else if(hash_aimshot_state.Contains(curState.shortNameHash))
+                shotState = 2;
+            if (shotState == 0 || (shotState == 1 && aimState) || (shotState == 2 && !aimState))
+            {
+                Log.Out("shot state: " + shotState + " aim state: " + aimState);
+                if(shotState > 0)
+                    anim.ResetTrigger(weaponFireHash);
+                return;
+            }
+
+            //current state, layer 0, offset 0
+            anim.PlayInFixedTime(0, 0, 0);
+            if (_rangedData.invData.itemValue.Meta == 0)
+                __instance.emodel.avatarController.ResetTrigger(weaponFireHash);
+        }
+    }
+
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ItemActionEffects))]
+    [HarmonyPostfix]
+    private static void Postfix_ItemActionEffects_ItemActionRanged(ItemActionData _actionData, int _firingState)
+    {
+        if(_firingState == 0)
+            _actionData.invData.holdingEntity.emodel.avatarController.ResetTrigger(weaponFireHash);
+    }
+
+    [HarmonyPatch(typeof(GameManager), "gmUpdate")]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_gmUpdate_GameManager(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = new List<CodeInstruction>(instructions);
+        var mtd_unload = AccessTools.Method(typeof(Resources), nameof(Resources.UnloadUnusedAssets));
+        var fld_duration = AccessTools.Field(typeof(GameManager), "unloadAssetsDuration");
+
+        for(int i = 0; i < codes.Count; ++i)
+        {
+            if(codes[i].opcode == OpCodes.Call && codes[i].Calls(mtd_unload))
+            {
+                for(int j = i; j >= 0; --j)
+                {
+                    if (codes[j].opcode == OpCodes.Ldfld && codes[j].LoadsField(fld_duration) && codes[j + 1].opcode == OpCodes.Ldc_R4)
+                        codes[j + 1].operand = (float)codes[j + 1].operand / 2;
+                }
+                break;
+            }
+        }
+
+        return codes;
+    }
+
+    internal static void ForceUpdateGC()
+    {
+        if (GameManager.IsDedicatedServer)
+            return;
+        if(GameManager.frameCount % 18000 == 0)
+        {
+            long rss = GetRSS.GetCurrentRSS();
+            if(rss / 1024 / 1024 > 6144)
+            {
+                Log.Out("Memory usage exceeds threshold, now performing garbage collection...");
+                GC.Collect();
+            }
+        }
     }
 }
 

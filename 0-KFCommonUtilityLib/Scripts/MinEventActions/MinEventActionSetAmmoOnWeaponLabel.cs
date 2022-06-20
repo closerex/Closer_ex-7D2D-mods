@@ -3,8 +3,10 @@
 class MinEventActionSetAmmoOnWeaponLabel : MinEventActionRemoteHoldingBase
 {
     private int slot = 0;
-    //private bool consume_ammo = false;
+    private bool maxAmmo = false;
     private bool useHoldingItemValue = false;
+    private string[] wrap;
+    private bool usePattern = false;
     public override bool ParseXmlAttribute(XmlAttribute _attribute)
     {
         bool flag = base.ParseXmlAttribute(_attribute);
@@ -16,6 +18,14 @@ class MinEventActionSetAmmoOnWeaponLabel : MinEventActionRemoteHoldingBase
             {
                 case "slot":
                     slot = int.Parse(_attribute.Value);
+                    break;
+                case "pattern":
+                    string str = _attribute.Value;
+                    wrap = str.Split(new string[] { "[ammo]" }, System.StringSplitOptions.None);
+                    usePattern = true;
+                    break;
+                case "max_ammo":
+                    maxAmmo = bool.Parse(_attribute.Value);
                     break;
                 default:
                     flag = false;
@@ -36,12 +46,19 @@ class MinEventActionSetAmmoOnWeaponLabel : MinEventActionRemoteHoldingBase
 
     public override void Execute(MinEventParams _params)
     {
-        int meta = useHoldingItemValue ? _params.Self.inventory.holdingItemItemValue.Meta : _params.ItemValue.Meta;
+        int meta;
+        var inv = _params.Self.inventory;
+        var value = useHoldingItemValue ? inv.holdingItemItemValue : _params.ItemValue;
+        if (!maxAmmo)
+            meta = value.Meta;
+        else
+            meta = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, value, inv.GetHoldingGun().BulletsPerMagazine, _params.Self, null, default(FastTags), true, true, true, true, 1, true);
+        string str = usePattern ? string.Join(meta.ToString(), wrap) : meta.ToString();
         //int num = consume_ammo ? meta - 1 : meta;
         if (isRemoteHolding)
-            NetPackageSyncWeaponLabelText.setWeaponLabelText(_params.Self, slot, meta.ToString());
+            NetPackageSyncWeaponLabelText.setWeaponLabelText(_params.Self, slot, str);
         else if(!_params.Self.isEntityRemote)
-            NetPackageSyncWeaponLabelText.netSyncSetWeaponLabelText(_params.Self, slot, meta.ToString());
+            NetPackageSyncWeaponLabelText.netSyncSetWeaponLabelText(_params.Self, slot, str);
     }
 }
 

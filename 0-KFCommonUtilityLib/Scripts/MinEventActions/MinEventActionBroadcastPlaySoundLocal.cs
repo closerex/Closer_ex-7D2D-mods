@@ -2,7 +2,7 @@
 {
     public override bool CanExecute(MinEventTypes _eventType, MinEventParams _params)
     {
-        return base.CanExecute(_eventType, _params) && targetType == TargetTypes.self && !_params.Self.isEntityRemote;
+        return targetType == TargetTypes.self && !_params.Self.isEntityRemote && base.CanExecute(_eventType, _params);
     }
 }
 

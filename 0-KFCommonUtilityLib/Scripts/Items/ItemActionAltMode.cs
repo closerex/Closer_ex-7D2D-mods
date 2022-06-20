@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-class ItemActionAltMode : ItemActionHoldOpen
+public class ItemActionAltMode : ItemActionHoldOpen
 {
     protected string cvarStateSwitch = null;
     protected bool[] altInfiniteAmmo = null;

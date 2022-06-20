@@ -48,7 +48,7 @@ class NetPackageSyncWeaponLabelColor : NetPackage
                 int allButAttachedToEntityId = holdingEntity.entityId;
                 if (holdingEntity && holdingEntity.AttachedMainEntity)
                     allButAttachedToEntityId = holdingEntity.AttachedMainEntity.entityId;
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageSyncWeaponLabelColor>().Setup(holdingEntity.entityId, isText, color, slot0, slot1, nameId), false, -1, allButAttachedToEntityId);
+                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageSyncWeaponLabelColor>().Setup(holdingEntity.entityId, isText, color, slot0, slot1, nameId), false, -1, allButAttachedToEntityId, allButAttachedToEntityId, 15);
             }
             else if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsClient && !fromNet)
                 SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageSyncWeaponLabelColor>().Setup(holdingEntity.entityId, isText, color, slot0, slot1, nameId));
@@ -60,21 +60,24 @@ class NetPackageSyncWeaponLabelColor : NetPackage
         if (GameManager.IsDedicatedServer)
             return true;
 
-        WeaponLabelController controller = null;
-        if (holdingEntity.emodel.avatarController is AvatarMultiBodyController multiBody && multiBody.HeldItemTransform != null)
-            controller = multiBody.HeldItemTransform.GetComponent<WeaponLabelController>();
-        else if (holdingEntity.emodel.avatarController is LegacyAvatarController legacy && legacy.HeldItemTransform != null)
-            controller = legacy.HeldItemTransform.GetComponent<WeaponLabelController>();
-
-        if (controller)
+        if (isText)
         {
-            if (isText)
-                controller.setLabelColor(slot0, color);
-            else
-                controller.setMaterialColor(slot0, slot1, nameId, color);
-            return true;
+            WeaponLabelControllerBase controller = null;
+            if (holdingEntity.emodel.avatarController is AvatarMultiBodyController multiBody && multiBody.HeldItemTransform != null)
+                controller = multiBody.HeldItemTransform.GetComponent<WeaponLabelControllerBase>();
+            else if (holdingEntity.emodel.avatarController is LegacyAvatarController legacy && legacy.HeldItemTransform != null)
+                controller = legacy.HeldItemTransform.GetComponent<WeaponLabelControllerBase>();
+            return controller && controller.setLabelColor(slot0, color);
         }
-        return false;
+        else
+        {
+            WeaponColorControllerBase controller = null;
+            if (holdingEntity.emodel.avatarController is AvatarMultiBodyController multiBody && multiBody.HeldItemTransform != null)
+                controller = multiBody.HeldItemTransform.GetComponent<WeaponColorControllerBase>();
+            else if (holdingEntity.emodel.avatarController is LegacyAvatarController legacy && legacy.HeldItemTransform != null)
+                controller = legacy.HeldItemTransform.GetComponent<WeaponColorControllerBase>();
+            return controller && controller.setMaterialColor(slot0, slot1, nameId, color);
+        }
     }
 
     public override void read(PooledBinaryReader _reader)

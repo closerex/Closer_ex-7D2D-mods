@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
+using Audio;
 
-public class ItemActionRampUp : ItemActionRanged
+public class ItemActionRampUp : ItemActionHoldOpen
 {
     public override void ExecuteAction(ItemActionData _actionData, bool _bReleased)
     {
@@ -18,6 +19,7 @@ public class ItemActionRampUp : ItemActionRanged
                 return;
         }
         base.ExecuteAction(_actionData, _bReleased);
+        /*
         if (_rampData.state != ItemActionFiringState.Off && _rampData.curBurstCount == _rampData.minRampShots)
         {
             _rampData.invData.holdingEntity.StopOneShot(_rampData.rampSound);
@@ -27,6 +29,27 @@ public class ItemActionRampUp : ItemActionRanged
         }
         else if (_rampData.bReleased)
             ResetRamp(_rampData);
+        */
+    }
+
+    public override void ItemActionEffects(GameManager _gameManager, ItemActionData _actionData, int _firingState, Vector3 _startPos, Vector3 _direction, int _userData = 0)
+    {
+        base.ItemActionEffects(_gameManager, _actionData, _firingState, _startPos, _direction, _userData);
+        var _rampData = _actionData as ItemActionDataRampUp;
+        if (_firingState != 0 && _userData == _rampData.minRampShots)
+        {
+            Manager.Stop(_rampData.invData.holdingEntity.entityId, _rampData.rampSound);
+            _rampData.rampStarted = true;
+            _rampData.rampStartTime = Time.time;
+            Manager.Play(_rampData.invData.holdingEntity, _rampData.rampSound);
+        }
+        else if (_firingState == 0)
+            ResetRamp(_rampData);
+    }
+
+    protected override int getUserData(ItemActionData _actionData)
+    {
+        return (_actionData as ItemActionDataRanged).curBurstCount;
     }
 
     public override void OnHoldingUpdate(ItemActionData _actionData)
@@ -37,7 +60,7 @@ public class ItemActionRampUp : ItemActionRanged
         {
             float rampElapsed = Time.time - _rampData.rampStartTime;
             if (rampElapsed > 0)
-                _rampData.Delay /= rampElapsed > _rampData.rampTime ? _rampData.maxMultiplier : rampElapsed * (_rampData.maxMultiplier - 1) / _rampData.rampTime + 1;// Mathf.Min((Time.time - _rampData.rampStartTime) * (_rampData.maxMultiplier - 1) / _rampData.rampTime + 1, _rampData.maxMultiplier);
+                _rampData.Delay /= rampElapsed > _rampData.rampTime ? _rampData.maxMultiplier : rampElapsed * (_rampData.maxMultiplier - 1) / _rampData.rampTime + 1;
         }
     }
 

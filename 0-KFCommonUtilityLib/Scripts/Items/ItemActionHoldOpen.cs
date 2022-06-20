@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-class ItemActionHoldOpen : ItemActionRanged
+public class ItemActionHoldOpen : ItemActionRanged
 {
     private const string emptyAnimatorBool = "empty";
     private EntityAlive lastHoldingEntity = null;
@@ -27,15 +27,6 @@ class ItemActionHoldOpen : ItemActionRanged
             animator.SetBool(parameter, flag);
             //Log.Out("trying to set param: " + parameter + " flag: " + flag + " result: " + getAnimatorBool(holdingEntity, parameter) + " transform: " + animator.transform.name);
         }
-    }
-
-    public bool getAnimatorBool(EntityAlive holdingEntity, string parameter)
-    {
-        Animator animator = getAnimator(holdingEntity);
-        if (animator)
-            return animator.GetBool(parameter);
-        else
-            return false;
     }
 
     protected override int getUserData(ItemActionData _actionData)

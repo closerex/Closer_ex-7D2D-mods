@@ -1,15 +1,16 @@
 using UnityEngine;
+using TMPro;
 
-public class WeaponLabelController : WeaponLabelControllerBase
+public class WeaponTextProController : WeaponLabelControllerBase
 {
     [SerializeField]
-    private TextMesh[] labels;
+    private TMP_Text[] labels;
 
     public override bool setLabelText(int index, string data)
     {
         if (labels == null || labels.Length <= index || !labels[index].gameObject.activeSelf)
             return false;
-        labels[index].text = data;
+        labels[index].SetText(data);
         return true;
     }
 
