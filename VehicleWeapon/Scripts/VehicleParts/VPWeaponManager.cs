@@ -18,13 +18,15 @@ public class VPWeaponManager : VehiclePart
     public override void InitPrefabConnections()
     {
         base.InitPrefabConnections();
-        var parts = vehicle.GetParts();
-        int seats = 0;
+        /*
         foreach (var part in parts)
         {
             if (part is VPSeat)
                 seats++;
         }
+        */
+        var parts = vehicle.GetParts();
+        int seats = vehicle.entity.GetAttachMaxCount();
         list_weapons = new List<VehicleWeaponBase>[seats];
         foreach (var part in parts)
         {

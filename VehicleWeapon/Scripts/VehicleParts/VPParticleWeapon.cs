@@ -145,7 +145,7 @@ public class VPParticleWeapon : VehicleWeaponBase
     {
         isCoRunning = true;
         if(burstDelay > 0)
-            yield return new WaitForSeconds(burstDelay);
+            yield return new WaitForSecondsRealtime(burstDelay);
         if (burstInterval > 0)
         {
             int curBurstCount = 0;
@@ -155,7 +155,7 @@ public class VPParticleWeapon : VehicleWeaponBase
                     break;
                 DoParticleFireServer(burstCount);
                 ++curBurstCount;
-                yield return new WaitForSeconds(burstInterval);
+                yield return new WaitForSecondsRealtime(burstInterval);
             }
             vehicle.entity.PlayOneShot(reloadSound);
         }
