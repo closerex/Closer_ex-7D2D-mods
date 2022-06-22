@@ -111,6 +111,8 @@
     <Compile Include="Scripts\NetPackages\NetPackageSyncWeaponLabelText.cs" />
     <Compile Include="Scripts\Parser\ExplosionAreaBuffTickParser.cs" />
     <Compile Include="Scripts\Requirements\ItemInInventory.cs" />
+    <Compile Include="Scripts\Requirements\PercentInHoldingItem.cs" />
+    <Compile Include="Scripts\Requirements\PercentInMagazine.cs" />
     <Compile Include="Scripts\Requirements\RoundsInHoldingItem.cs" />
     <Compile Include="Scripts\Requirements\RoundsInInventory.cs" />
     <Compile Include="Scripts\Utilities\EntityInventoryExtension.cs" />

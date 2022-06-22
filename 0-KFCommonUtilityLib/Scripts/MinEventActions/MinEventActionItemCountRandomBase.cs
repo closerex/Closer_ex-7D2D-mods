@@ -10,7 +10,7 @@ public class MinEventActionItemCountRandomBase : MinEventActionBase
     private string cvarRef;
     private int constant;
 
-    protected int GetCount(MinEventParams _params)
+    protected virtual int GetCount(MinEventParams _params)
     {
         if (useRandom)
             return random[Random.Range(0, random.Length)];
@@ -34,7 +34,7 @@ public class MinEventActionItemCountRandomBase : MinEventActionBase
                 if (str.StartsWith("random"))
                 {
                     useRandom = true;
-                    string[] values = str.Substring(str.IndexOf('(') + 1, str.IndexOf(')') - str.IndexOf('(') + 1).Split(',');
+                    string[] values = str.Substring(str.IndexOf('(') + 1, str.IndexOf(')') - str.IndexOf('(') - 1).Split(',');
                     random = new int[values.Length];
                     for (int i = 0; i < values.Length; i++)
                         random[i] = int.Parse(values[i]);
@@ -42,7 +42,7 @@ public class MinEventActionItemCountRandomBase : MinEventActionBase
                 else if (str.StartsWith("range"))
                 {
                     useRange = true;
-                    range = StringParsers.ParseVector2i(str.Substring(str.IndexOf('(') + 1, str.IndexOf(')') - str.IndexOf('(') + 1));
+                    range = StringParsers.ParseVector2i(str.Substring(str.IndexOf('(') + 1, str.IndexOf(')') - str.IndexOf('(') - 1));
                 }
                 else if (str.StartsWith("@"))
                 {
@@ -50,7 +50,7 @@ public class MinEventActionItemCountRandomBase : MinEventActionBase
                     cvarRef = str.Substring(1);
                 }
                 else
-                    constant = int.Parse(str);
+                    return int.TryParse(str, out constant);
 
                 return true;
             default:

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
+using System.Xml;
 using SystemInformation;
 using UnityEngine;
 
@@ -206,7 +207,6 @@ class CommonUtilityPatch
                 shotState = 2;
             if (shotState == 0 || (shotState == 1 && aimState) || (shotState == 2 && !aimState))
             {
-                Log.Out("shot state: " + shotState + " aim state: " + aimState);
                 if(shotState > 0)
                     anim.ResetTrigger(weaponFireHash);
                 return;
@@ -264,6 +264,51 @@ class CommonUtilityPatch
                 GC.Collect();
             }
         }
+    }
+
+    //altmode workarounds
+    private static void ParseAltRequirements(XmlElement _node, ItemClass item)
+    {
+        for(int i = 0; i < item.Actions.Length; i++)
+        {
+            if (item.Actions[i] is ItemActionAltMode _alt)
+                _alt.ParseAltRequirements(_node, i);
+        }
+    }
+
+    [HarmonyPatch(typeof(ItemClassesFromXml), "parseItem")]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_parseItem_ItemClassesFromXml(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = new List<CodeInstruction>(instructions);
+
+        codes.InsertRange(codes.Count - 1, new CodeInstruction[]
+        {
+            new CodeInstruction(OpCodes.Ldarg_0),
+            new CodeInstruction(OpCodes.Ldloc, 5),
+            CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(CommonUtilityPatch.ParseAltRequirements))
+        });
+
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.ExecuteAction))]
+    [HarmonyPrefix]
+    private static bool Prefix_ExecuteAction_ItemClass(ItemClass __instance, int _actionIdx, ItemInventoryData _data, bool _bReleased)
+    {
+        if (!_bReleased && __instance.Actions[_actionIdx] is ItemActionAltMode _alt)
+            _alt.SetAltRequirement(_data.actionData[_actionIdx]);
+            
+        return true;
+    }
+
+    [HarmonyPatch(typeof(DynamicProperties), nameof(DynamicProperties.Parse))]
+    [HarmonyPrefix]
+    private static bool Prefix_Parse_DynamicProperties(XmlNode _propertyNode)
+    {
+        if (_propertyNode.Name != "property")
+            return false;
+        return true;
     }
 }
 

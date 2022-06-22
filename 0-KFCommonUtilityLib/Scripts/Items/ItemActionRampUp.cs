@@ -6,7 +6,7 @@ public class ItemActionRampUp : ItemActionHoldOpen
     public override void ExecuteAction(ItemActionData _actionData, bool _bReleased)
     {
         var _rampData = _actionData as ItemActionDataRampUp;
-        if (!_bReleased && _actionData.invData.itemValue.Meta > 0 && _actionData.invData.itemValue.PercentUsesLeft > 0)
+        if (!_bReleased && (InfiniteAmmo || _actionData.invData.itemValue.Meta > 0) && _actionData.invData.itemValue.PercentUsesLeft > 0)
         {
             if (!_rampData.prepareStarted)
             {
@@ -14,22 +14,12 @@ public class ItemActionRampUp : ItemActionHoldOpen
                 _rampData.prepareStarted = true;
                 _rampData.prepareStartTime = Time.time;
                 _rampData.invData.holdingEntity.PlayOneShot(_rampData.prepareSound);
+                setAnimatorBool(_rampData.invData.holdingEntity, "prepare", true);
             }
             if (Time.time - _rampData.prepareStartTime < _rampData.prepareTime)
                 return;
         }
         base.ExecuteAction(_actionData, _bReleased);
-        /*
-        if (_rampData.state != ItemActionFiringState.Off && _rampData.curBurstCount == _rampData.minRampShots)
-        {
-            _rampData.invData.holdingEntity.StopOneShot(_rampData.rampSound);
-            _rampData.rampStarted = true;
-            _rampData.rampStartTime = Time.time;
-            _rampData.invData.holdingEntity.PlayOneShot(_rampData.rampSound);
-        }
-        else if (_rampData.bReleased)
-            ResetRamp(_rampData);
-        */
     }
 
     public override void ItemActionEffects(GameManager _gameManager, ItemActionData _actionData, int _firingState, Vector3 _startPos, Vector3 _direction, int _userData = 0)
@@ -84,6 +74,7 @@ public class ItemActionRampUp : ItemActionHoldOpen
         _rampData.prepareStarted = false;
         _rampData.invData.holdingEntity.StopOneShot(_rampData.prepareSound);
         _rampData.invData.holdingEntity.StopOneShot(_rampData.rampSound);
+        setAnimatorBool(_rampData.invData.holdingEntity, "prepare", false);
     }
 
     public override ItemActionData CreateModifierData(ItemInventoryData _invData, int _indexInEntityOfAction)

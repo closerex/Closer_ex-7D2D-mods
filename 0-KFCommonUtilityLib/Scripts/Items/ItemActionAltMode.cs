@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Xml;
+using UnityEngine;
 
 public class ItemActionAltMode : ItemActionHoldOpen
 {
@@ -6,6 +8,7 @@ public class ItemActionAltMode : ItemActionHoldOpen
     protected bool[] altInfiniteAmmo = null;
     protected bool originalInfiniteAmmo = false;
     private string altModeAnimatorBool = "altMode";
+    protected List<IRequirement>[] altRequirements;
 
     public int getCurAltIndex(EntityAlive holdingEntity)
     {
@@ -91,6 +94,44 @@ public class ItemActionAltMode : ItemActionHoldOpen
         for (int i = 0; i < altInfiniteAmmo.Length; ++i)
             altInfiniteAmmo[i] = bool.Parse(_altInfiniteAmmo[i]);
         originalInfiniteAmmo = InfiniteAmmo;
+
+        altRequirements = new List<IRequirement>[_altInfiniteAmmo.Length + 1];
+    }
+
+    public void ParseAltRequirements(XmlElement _node, int _actionIdx)
+    {
+        foreach (object obj in _node.ChildNodes)
+        {
+            XmlNode xmlNode = (XmlNode)obj;
+            if (xmlNode.NodeType == XmlNodeType.Element && xmlNode.Name.Equals("property"))
+            {
+                if ((xmlNode as XmlElement).HasAttribute("class") && (xmlNode as XmlElement).GetAttribute("class").Contains(_actionIdx.ToString()))
+                {
+                    for(int i = 0; i < altRequirements.Length; ++i)
+                    {
+                        var requirements = new List<IRequirement>();
+                        requirements.AddRange(ExecutionRequirements);
+                        foreach(object obj2 in xmlNode.ChildNodes)
+                        {
+                            XmlNode xmlNode2 = (XmlNode)obj2;
+                            if(xmlNode2.NodeType == XmlNodeType.Element && xmlNode2.Name.Equals("requirements" + i))
+                            {
+                                requirements.AddRange(RequirementBase.ParseRequirements(xmlNode2 as XmlElement));
+                                break;
+                            }
+                        }
+                        altRequirements[i] = requirements;
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    public void SetAltRequirement(ItemActionData _actionData)
+    {
+        if (_actionData is ItemActionDataAltMode _data)
+            ExecutionRequirements = altRequirements[_data.modeIndex + 1];
     }
 
     public override void ExecuteAction(ItemActionData _actionData, bool _bReleased)
