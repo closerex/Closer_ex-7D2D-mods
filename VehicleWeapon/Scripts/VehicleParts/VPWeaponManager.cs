@@ -73,10 +73,10 @@ public class VPWeaponManager : VehiclePart
         }
         */
 
-        if(localPlayerSeat >= 0 && !GameManager.Instance.IsPaused())
+        if(localPlayerSeat >= 0)
         {
             player.vp_FPCamera.Position3rdPersonOffset.y = cameraOffsetY;
-            if (list_weapons[localPlayerSeat] != null)
+            if (list_weapons[localPlayerSeat] != null && !GameManager.Instance.IsPaused())
             {
                 bool GUIOpened = Platform.PlatformManager.NativePlatform.Input.PrimaryPlayer.GUIActions.Enabled;
                 if(!GUIOpened)
