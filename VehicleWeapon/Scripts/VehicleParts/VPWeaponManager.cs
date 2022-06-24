@@ -7,11 +7,13 @@ public class VPWeaponManager : VehiclePart
     public static readonly string VehicleWeaponManagerName = "vehicleWeaponManager";
     private int localPlayerSeat = -1;
     protected EntityPlayerLocal player = null;
+    protected float cameraOffsetY = 2f;
 
     public override void SetProperties(DynamicProperties _properties)
     {
         base.SetProperties(_properties);
 
+        _properties.ParseFloat("cameraOffsetY", ref cameraOffsetY);
         player = GameManager.Instance.World.GetPrimaryPlayer();
     }
 
@@ -73,6 +75,7 @@ public class VPWeaponManager : VehiclePart
 
         if(localPlayerSeat >= 0 && !GameManager.Instance.IsPaused())
         {
+            player.vp_FPCamera.Position3rdPersonOffset.y = cameraOffsetY;
             if (list_weapons[localPlayerSeat] != null)
             {
                 bool GUIOpened = Platform.PlatformManager.NativePlatform.Input.PrimaryPlayer.GUIActions.Enabled;

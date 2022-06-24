@@ -122,14 +122,11 @@ public class VPParticleWeaponRotator : VehicleWeaponRotatorBase
     protected virtual void DoCalcCurRotation(RaycastHit hitInfo, out float targetHorAngle, out float targetVerAngle)
     {
         hitPos = hitInfo.point;
-        Vector3 aimAt = Quaternion.LookRotation(hitPos - horRotTrans.position).eulerAngles;
-        aimAt.x = -AngleToLimited(Angle(hitPos, (weapon as VPParticleWeapon).WeaponSystem.transform.position), verticleMinRotation, verticleMaxRotation);
+        Vector3 aimAt = Quaternion.LookRotation(hitPos - (weapon as VPParticleWeapon).WeaponSystem.transform.position).eulerAngles;
+        aimAt.x = -Angle(hitPos, (weapon as VPParticleWeapon).WeaponSystem.transform.position);
         aimAt = (Quaternion.Inverse(transform.rotation) * Quaternion.Euler(aimAt)).eulerAngles;
-        aimAt.x = AngleToInferior(aimAt.x);
-        aimAt.y = AngleToInferior(aimAt.y);
-        aimAt.y = AngleToLimited(aimAt.y, horizontalMinRotation, horizontalMaxRotation);
-        targetHorAngle = aimAt.y;
-        targetVerAngle = aimAt.x;
+        targetHorAngle = AngleToLimited(AngleToInferior(aimAt.y), horizontalMinRotation, horizontalMaxRotation);
+        targetVerAngle = AngleToLimited(AngleToInferior(aimAt.x), -verticleMaxRotation, -verticleMinRotation);
     }
 
     protected override void DoRotateTowards(float _dt)
@@ -160,6 +157,7 @@ public class VPParticleWeaponRotator : VehicleWeaponRotatorBase
             explPreviewTransEntity.localScale *= previewScaleEntity;
             GameObject.Destroy(explPreviewTransEntity.GetComponent<Collider>());
             Material mat = explPreviewTransEntity.GetComponent<Renderer>().material;
+            mat.enableInstancing = true;
             mat.SetColor("_Color", previewColorEntityAiming);
             mat.SetFloat("_Mode", 3);
             mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
@@ -173,6 +171,7 @@ public class VPParticleWeaponRotator : VehicleWeaponRotatorBase
             explPreviewTransBlock.localScale *= previewScaleBlock;
             GameObject.Destroy(explPreviewTransBlock.GetComponent<Collider>());
             Material mat = explPreviewTransBlock.GetComponent<Renderer>().material;
+            mat.enableInstancing = true;
             mat.SetColor("_Color", previewColorBlockAiming);
             mat.SetFloat("_Mode", 3);
             mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
