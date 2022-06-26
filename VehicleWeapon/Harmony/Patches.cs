@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
 using System.Reflection.Emit;
+using UnityEngine;
 
 [HarmonyPatch(typeof(EntityVehicle))]
 class VehicleManagerPatch
@@ -52,5 +53,14 @@ public class VehicleCleanupPatch
         }
 
         return true;
+    }
+}
+
+[HarmonyPatch(typeof(vp_FPCamera), "Update3rdPerson")]
+public class CameraPositionPatch
+{
+    private static void Postfix(vp_FPCamera __instance)
+    {
+        __instance.transform.localPosition += VPWeaponManager.CameraOffset;
     }
 }

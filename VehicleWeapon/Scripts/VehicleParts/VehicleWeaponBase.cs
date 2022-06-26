@@ -48,7 +48,6 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
         _properties.ParseString("fireWhen", ref str);
         if (!string.IsNullOrEmpty(str))
             Enum.TryParse<FiringJuncture>(str, true, out timing);
-
         _properties.ParseInt("seat", ref seat);
         if (seat < 0)
         {
@@ -108,7 +107,7 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
 
     public override void NoGUIUpdate(float _dt)
     {
-        if (rotator != null)
+        if (rotator != null && GameManager.Instance.GameIsFocused)
             rotator.NoGUIUpdate(_dt);
     }
 

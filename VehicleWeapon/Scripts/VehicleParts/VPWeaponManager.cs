@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using InControl;
+using UnityEngine;
 
 public class VPWeaponManager : VehiclePart
 {
@@ -7,13 +8,14 @@ public class VPWeaponManager : VehiclePart
     public static readonly string VehicleWeaponManagerName = "vehicleWeaponManager";
     private int localPlayerSeat = -1;
     protected EntityPlayerLocal player = null;
-    protected float cameraOffsetY = 2f;
+    protected Vector3 cameraOffset = Vector3.up * 2;
+    public static Vector3 CameraOffset { get; private set; } = Vector3.zero;
 
     public override void SetProperties(DynamicProperties _properties)
     {
         base.SetProperties(_properties);
 
-        _properties.ParseFloat("cameraOffsetY", ref cameraOffsetY);
+        _properties.ParseVec("cameraOffset", ref cameraOffset);
         player = GameManager.Instance.World.GetPrimaryPlayer();
     }
 
@@ -75,7 +77,7 @@ public class VPWeaponManager : VehiclePart
 
         if(localPlayerSeat >= 0)
         {
-            player.vp_FPCamera.Position3rdPersonOffset.y = cameraOffsetY;
+            //player.vp_FPCamera.Position3rdPersonOffset.y += cameraOffsetY;
             if (list_weapons[localPlayerSeat] != null && !GameManager.Instance.IsPaused())
             {
                 bool GUIOpened = Platform.PlatformManager.NativePlatform.Input.PrimaryPlayer.GUIActions.Enabled;
@@ -103,8 +105,11 @@ public class VPWeaponManager : VehiclePart
         //localPlayerSeat = vehicle.entity.FindAttachSlot(player);
         localPlayerSeat = seat;
         if (list_weapons[localPlayerSeat] != null)
+        {
             foreach (var weapon in list_weapons[localPlayerSeat])
                 weapon.OnPlayerEnter();
+            CameraOffset = cameraOffset;
+        }
     }
 
     internal virtual void OnPlayerDetach()
@@ -114,6 +119,7 @@ public class VPWeaponManager : VehiclePart
             foreach (var weapon in list_weapons[localPlayerSeat])
                 weapon.OnPlayerDetach();
         localPlayerSeat = -1;
+        CameraOffset = Vector3.zero;
     }
 
     public void HandleUserInput()

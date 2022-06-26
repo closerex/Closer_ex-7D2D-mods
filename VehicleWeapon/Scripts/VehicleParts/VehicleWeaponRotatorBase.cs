@@ -23,8 +23,8 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     protected static int dynamicScaleMode = 0;
     protected static float dynamicScaleOverride = 1;
 
-    public Transform HorRotTrans { get => horRotTrans; }
-    public Transform VerRotTrans { get => verRotTrans; }
+    public virtual Transform HorRotTrans { get => horRotTrans; }
+    public virtual Transform VerRotTrans { get => verRotTrans; }
     public bool OnTarget { get => lastOnTarget; }
 
     public static void OnVideoSettingChanged()
@@ -87,12 +87,19 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
 
         if ((horRotTrans != null && Mathf.Abs(lastHorRot - horRotTrans.localEulerAngles.y) > 1f) || (verRotTrans != null && Mathf.Abs(lastVerRot - verRotTrans.localEulerAngles.x) > 1f))
         {
+            lastHorRot = horRotTrans != null ? horRotTrans.localEulerAngles.y : 0;
+            lastVerRot = verRotTrans != null ? verRotTrans.localEulerAngles.x : 0;
             if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && SingletonMonoBehaviour<ConnectionManager>.Instance.ClientCount() > 0)
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageParticleWeaponUpdate>().Setup(vehicle.entity.entityId, horRotTrans.localEulerAngles.y, verRotTrans.localEulerAngles.x, weapon.Seat, weapon.Slot), false, -1, player.entityId);
+                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageParticleWeaponUpdate>().Setup(vehicle.entity.entityId, lastHorRot, lastVerRot, weapon.Seat, weapon.Slot), false, -1, player.entityId);
             else if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsClient)
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageParticleWeaponUpdate>().Setup(vehicle.entity.entityId, horRotTrans.localEulerAngles.y, verRotTrans.localEulerAngles.x, weapon.Seat, weapon.Slot));
-            lastHorRot = horRotTrans.localEulerAngles.y;
-            lastVerRot = verRotTrans.localEulerAngles.x;
+                SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageParticleWeaponUpdate>().Setup(vehicle.entity.entityId, lastHorRot, lastVerRot, weapon.Seat, weapon.Slot));
+        }
+
+        bool onTarget = (horRotTrans == null || FuzzyEqualAngle(nextHorRot, AngleToInferior(horRotTrans.localEulerAngles.y), 1f)) && (verRotTrans == null || FuzzyEqualAngle(nextVerRot, AngleToInferior(verRotTrans.localEulerAngles.x), 0.5f));
+        if (onTarget != lastOnTarget)
+        {
+            SetPreviewColor(onTarget);
+            lastOnTarget = onTarget;
         }
     }
 
@@ -108,8 +115,38 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     {
     }
 
-    protected virtual void DoRotateTowards(float _dt)
+    protected virtual bool DoRotateTowards(float _dt)
     {
+        bool updatePreview = DoRotateTowardsHor(_dt) | DoRotateTowardsVer(_dt);
+        return updatePreview;
+    }
+
+    protected bool DoRotateTowardsHor(float _dt)
+    {
+        if (horRotTrans == null)
+            return false;
+
+        float curHorAngle = AngleToInferior(horRotTrans.localEulerAngles.y);
+        if (!FuzzyEqualAngle(curHorAngle, nextHorRot, 0.01f))
+        {
+            HorRotateTowards(_dt);
+            return true;
+        }
+        return false;
+    }
+
+    protected bool DoRotateTowardsVer(float _dt)
+    {
+        if (verRotTrans == null)
+            return false;
+
+        float curVerAngle = AngleToInferior(verRotTrans.localEulerAngles.x);
+        if (!FuzzyEqualAngle(curVerAngle, nextVerRot, 0.01f))
+        {
+            VerRotateTowards(_dt);
+            return true;
+        }
+        return false;
     }
 
     protected virtual void HorRotateTowards(float _dt)
@@ -178,6 +215,10 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     {
     }
 
+    protected virtual void SetPreviewColor(bool onTarget)
+    {
+    }
+
     protected bool FuzzyEqualAngle(float angle1, float angle2, float fuzzy)
     {
         return Mathf.Abs(angle1 - angle2) <= fuzzy;
@@ -194,6 +235,25 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     {
         float res = Mathf.Min(max, Mathf.Max(min, angle));
         return res;
+    }
+
+    protected Vector3 GetDynamicMousePosition()
+    {
+        Vector3 dynamicMousePos;
+
+        if (!GameRenderManager.dynamicIsEnabled)
+            dynamicMousePos = Input.mousePosition;
+        else
+        {
+            float scale;
+            if (dynamicScaleMode == 1)
+                scale = (float)player.renderManager.GetDynamicRenderTexture().width / Screen.width;
+            else
+                scale = dynamicScaleOverride;
+            dynamicMousePos = Input.mousePosition * scale;
+        }
+
+        return dynamicMousePos;
     }
 }
 

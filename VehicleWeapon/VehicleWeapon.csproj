@@ -100,8 +100,15 @@
     <Compile Include="Scripts\Input\PlayerActionVehicleWeaponData.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageParticleWeaponFire.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageParticleWeaponUpdate.cs" />
+    <Compile Include="Scripts\VehicleParts\VehicleWeaponDirectionalRotatorBase.cs" />
+    <Compile Include="Scripts\VehicleParts\VehicleWeaponHitposPreviewRotatorBase.cs" />
     <Compile Include="Scripts\VehicleParts\VehicleWeaponPartBase.cs" />
+    <Compile Include="Scripts\VehicleParts\VehicleWeaponProjectileRotatorBase.cs" />
+    <Compile Include="Scripts\VehicleParts\VPDirectionalWeaponRotator.cs" />
+    <Compile Include="Scripts\VehicleParts\VPDummyWeapon.cs" />
+    <Compile Include="Scripts\VehicleParts\VPHorizontalWeaponRotator.cs" />
     <Compile Include="Scripts\VehicleParts\VPParticleWeapon.cs" />
+    <Compile Include="Scripts\VehicleParts\VPVerticalWeaponRotator.cs" />
     <Compile Include="Scripts\VehicleParts\VPWeaponManager.cs" />
     <Compile Include="Scripts\VehicleParts\VPParticleWeaponRotator.cs" />
     <Compile Include="Scripts\VehicleParts\VehicleWeaponBase.cs" />

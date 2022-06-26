@@ -24,6 +24,7 @@ public class VPParticleWeapon : VehicleWeaponBase
 
     public ParticleSystem WeaponSystem { get => weaponSystem; }
     public ExplosionComponent Component { get => component; }
+
     public override void SetProperties(DynamicProperties _properties)
     {
         base.SetProperties(_properties);
@@ -177,11 +178,11 @@ public class VPParticleWeapon : VehicleWeaponBase
     {
         uint seed = (uint)UnityEngine.Random.Range(int.MinValue, int.MaxValue);
         if (!SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer)
-            SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageParticleWeaponFire>().Setup(vehicle.entity.entityId, rotator != null ? rotator.HorRotTrans.localEulerAngles.y : 0, rotator != null ? rotator.VerRotTrans.localEulerAngles.x : 0, seat, slot, count, seed));
+            SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageParticleWeaponFire>().Setup(vehicle.entity.entityId, (rotator != null && rotator.HorRotTrans != null) ? rotator.HorRotTrans.localEulerAngles.y : 0, (rotator != null && rotator.VerRotTrans != null) ? rotator.VerRotTrans.localEulerAngles.x : 0, seat, slot, count, seed));
         else
         {
             if(SingletonMonoBehaviour<ConnectionManager>.Instance.ClientCount() > 0)
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageParticleWeaponFire>().Setup(vehicle.entity.entityId, rotator != null ? rotator.HorRotTrans.localEulerAngles.y : 0, rotator != null ? rotator.VerRotTrans.localEulerAngles.x : 0, seat, slot, count, seed));
+                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageParticleWeaponFire>().Setup(vehicle.entity.entityId, (rotator != null && rotator.HorRotTrans != null) ? rotator.HorRotTrans.localEulerAngles.y : 0, (rotator != null && rotator.VerRotTrans != null) ? rotator.VerRotTrans.localEulerAngles.x : 0, seat, slot, count, seed));
             DoParticleFireClient(count, seed);
         }
         PlayFiringSound();
