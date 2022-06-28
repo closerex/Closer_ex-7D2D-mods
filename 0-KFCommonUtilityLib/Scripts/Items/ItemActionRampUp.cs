@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Audio;
+using System;
 
 public class ItemActionRampUp : ItemActionHoldOpen
 {
@@ -9,13 +10,8 @@ public class ItemActionRampUp : ItemActionHoldOpen
         if (!_bReleased && (InfiniteAmmo || _actionData.invData.itemValue.Meta > 0) && _actionData.invData.itemValue.PercentUsesLeft > 0)
         {
             if (!_rampData.prepareStarted)
-            {
-                _rampData.invData.holdingEntity.StopOneShot(_rampData.prepareSound);
-                _rampData.prepareStarted = true;
-                _rampData.prepareStartTime = Time.time;
-                _rampData.invData.holdingEntity.PlayOneShot(_rampData.prepareSound);
-                setAnimatorBool(_rampData.invData.holdingEntity, "prepare", true);
-            }
+                _rampData.invData.gameManager.ItemActionEffectsServer(_rampData.invData.holdingEntity.entityId, _rampData.invData.slotIdx, _rampData.indexInEntityOfAction, 0, Vector3.zero, Vector3.zero, 4);
+            
             if (Time.time - _rampData.prepareStartTime < _rampData.prepareTime)
                 return;
         }
@@ -26,7 +22,7 @@ public class ItemActionRampUp : ItemActionHoldOpen
     {
         base.ItemActionEffects(_gameManager, _actionData, _firingState, _startPos, _direction, _userData);
         var _rampData = _actionData as ItemActionDataRampUp;
-        if (_firingState != 0 && _userData == _rampData.minRampShots)
+        if (_firingState != 0 && (_userData & 2) > 0)
         {
             Manager.Stop(_rampData.invData.holdingEntity.entityId, _rampData.rampSound);
             _rampData.rampStarted = true;
@@ -34,12 +30,23 @@ public class ItemActionRampUp : ItemActionHoldOpen
             Manager.Play(_rampData.invData.holdingEntity, _rampData.rampSound);
         }
         else if (_firingState == 0)
-            ResetRamp(_rampData);
+        {
+            if((_userData & 4) > 0)
+            {
+                _rampData.invData.holdingEntity.StopOneShot(_rampData.prepareSound);
+                _rampData.prepareStarted = true;
+                _rampData.prepareStartTime = Time.time;
+                _rampData.invData.holdingEntity.PlayOneShot(_rampData.prepareSound);
+                setAnimatorBool(_rampData.invData.holdingEntity, "prepare", true);
+            }else
+                ResetRamp(_rampData);
+        }
     }
 
     protected override int getUserData(ItemActionData _actionData)
     {
-        return (_actionData as ItemActionDataRanged).curBurstCount;
+        var _rampData = _actionData as ItemActionDataRampUp;
+        return base.getUserData(_actionData) | (Convert.ToInt32(_rampData.curBurstCount == _rampData.minRampShots) << 1);
     }
 
     public override void OnHoldingUpdate(ItemActionData _actionData)

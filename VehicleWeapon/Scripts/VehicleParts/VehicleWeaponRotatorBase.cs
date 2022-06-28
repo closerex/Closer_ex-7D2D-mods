@@ -5,6 +5,7 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     protected Transform horRotTrans = null;
     protected Transform verRotTrans = null;
     protected Transform hitRayTrans = null;
+    protected Transform indicatorTrans;
     protected bool hasRaycastTransform = false;
     protected float verticleMaxRotation = 45f;
     protected float verticleMinRotation = 0f;
@@ -63,6 +64,7 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
         horRotTrans = GetTransform("horRotationTransform");
         verRotTrans = GetTransform("verRotationTransform");
         hitRayTrans = GetTransform("hitRaycastTransform");
+        indicatorTrans = GetTransform("indicatorTransform");
         if (!hitRayTrans)
             hitRayTrans = transform;
         else
@@ -205,10 +207,14 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     }
     public virtual void CreatePreview()
     {
+        if (indicatorTrans != null)
+            indicatorTrans.gameObject.SetActive(true);
     }
 
     public virtual void DestroyPreview()
     {
+        if (indicatorTrans != null)
+            indicatorTrans.gameObject.SetActive(false);
     }
 
     protected virtual void UpdatePreviewPos(Vector3 position)

@@ -142,6 +142,8 @@ public abstract class VehicleWeaponHitposPreviewRotatorBase : VehicleWeaponProje
             explPreviewTransEntity.position = position;
         if (explPreviewTransBlock != null)
             explPreviewTransBlock.position = position;
+        if (indicatorTrans != null)
+            indicatorTrans.position = position;
     }
 
     protected override void SetPreviewColor(bool onTarget)

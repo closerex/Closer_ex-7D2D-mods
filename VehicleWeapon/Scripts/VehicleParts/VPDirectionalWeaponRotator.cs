@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class VPDirectionalWeaponRotator : VehicleWeaponDirectionalRotatorBase
+public class VPDirectionalWeaponRotator : VehicleWeaponRotatorBase
 {
     protected override void CalcCurRotation(float _dt)
     {

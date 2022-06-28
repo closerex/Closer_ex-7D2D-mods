@@ -100,7 +100,6 @@
     <Compile Include="Scripts\Input\PlayerActionVehicleWeaponData.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageParticleWeaponFire.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageParticleWeaponUpdate.cs" />
-    <Compile Include="Scripts\VehicleParts\VehicleWeaponDirectionalRotatorBase.cs" />
     <Compile Include="Scripts\VehicleParts\VehicleWeaponHitposPreviewRotatorBase.cs" />
     <Compile Include="Scripts\VehicleParts\VehicleWeaponPartBase.cs" />
     <Compile Include="Scripts\VehicleParts\VehicleWeaponProjectileRotatorBase.cs" />

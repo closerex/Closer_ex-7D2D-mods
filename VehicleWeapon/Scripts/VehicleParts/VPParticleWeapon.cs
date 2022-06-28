@@ -108,7 +108,7 @@ public class VPParticleWeapon : VehicleWeaponBase
         else if (pressed && !fullauto)
             return false;
 
-        if (base.DoFire(firstShot, isRelease, fromSlot))
+        if (weaponSystem.gameObject.activeInHierarchy && base.DoFire(firstShot, isRelease, fromSlot))
         {
             if(ammoValue.type > 0 && player.bag.GetItemCount(ammoValue) < burstRepeat)
             {

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class VPVerticalWeaponRotator : VehicleWeaponDirectionalRotatorBase
+public class VPVerticalWeaponRotator : VehicleWeaponRotatorBase
 {
     protected VehicleWeaponRotatorBase horRotator;
     public override Transform HorRotTrans => horRotator?.HorRotTrans;
