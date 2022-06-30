@@ -4,9 +4,7 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     protected Transform transform = null;
     protected Transform horRotTrans = null;
     protected Transform verRotTrans = null;
-    protected Transform hitRayTrans = null;
     protected Transform indicatorTrans;
-    protected bool hasRaycastTransform = false;
     protected float verticleMaxRotation = 45f;
     protected float verticleMinRotation = 0f;
     protected float verticleRotSpeed = 360f;
@@ -83,12 +81,7 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
         transform = GetTransform();
         horRotTrans = GetTransform("horRotationTransform");
         verRotTrans = GetTransform("verRotationTransform");
-        hitRayTrans = GetTransform("hitRaycastTransform");
         indicatorTrans = GetTransform("indicatorTransform");
-        if (!hitRayTrans)
-            hitRayTrans = transform;
-        else
-            hasRaycastTransform = true;
     }
 
     public virtual void SetWeapon(VehicleWeaponBase weapon)

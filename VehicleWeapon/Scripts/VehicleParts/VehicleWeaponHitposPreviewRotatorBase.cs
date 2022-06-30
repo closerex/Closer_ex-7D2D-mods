@@ -3,6 +3,8 @@ using UnityEngine;
 
 public abstract class VehicleWeaponHitposPreviewRotatorBase : VehicleWeaponProjectileRotatorBase
 {
+    protected Transform hitRayTrans = null;
+    protected bool hasRaycastTransform = false;
     protected Transform explPreviewTransEntity = null;
     protected Transform explPreviewTransBlock = null;
     protected Color previewColorEntityOnTarget;
@@ -88,6 +90,17 @@ public abstract class VehicleWeaponHitposPreviewRotatorBase : VehicleWeaponProje
 
         previewScaleEntity = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "previewScaleEntity", previewScaleEntity.ToString()));
         previewScaleBlock = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "previewScaleBlock", previewScaleBlock.ToString()));
+    }
+
+    public override void InitPrefabConnections()
+    {
+        base.InitPrefabConnections();
+
+        hitRayTrans = GetTransform("hitRaycastTransform");
+        if (!hitRayTrans)
+            hitRayTrans = transform;
+        else
+            hasRaycastTransform = true;
     }
 
     public override void SetWeapon(VehicleWeaponBase weapon)
