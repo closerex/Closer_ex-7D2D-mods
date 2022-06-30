@@ -22,13 +22,6 @@ public class VPWeaponManager : VehiclePart
     public override void InitPrefabConnections()
     {
         base.InitPrefabConnections();
-        /*
-        foreach (var part in parts)
-        {
-            if (part is VPSeat)
-                seats++;
-        }
-        */
         var parts = vehicle.GetParts();
         int seats = vehicle.entity.GetAttachMaxCount();
         list_weapons = new List<VehicleWeaponBase>[seats];
@@ -51,41 +44,58 @@ public class VPWeaponManager : VehiclePart
                     weapon.Slot = i++;
 
                 foreach (var weapon in weapons)
+                {
+                    weapon.ApplyModEffect(vehicle.GetUpdatedItemValue());
                     weapon.SetupWeaponConnections(weapons);
+                }
             }
         }
+    }
+
+    public virtual void ApplyModEffect(ItemValue vehicleValue)
+    {
+        ParseModProperties(vehicleValue);
+
+        foreach (var weapons in list_weapons)
+        {
+            if (weapons != null)
+            {
+                foreach (var weapon in weapons)
+                    weapon.ApplyModEffect(vehicleValue);
+            }
+        }
+
+        if(localPlayerSeat >= 0)
+        {
+            int curSeat = localPlayerSeat;
+            OnPlayerDetach();
+            OnPlayerEnter(curSeat);
+        }
+    }
+
+    protected virtual void ParseModProperties(ItemValue vehicleValue)
+    {
+        cameraOffset = StringParsers.ParseVector3(vehicleValue.GetVehicleWeaponPropertyOverride(vehicle.GetName() + "_" + tag, "cameraOffset", cameraOffset.ToString()));
     }
 
     public override void Update(float _dt)
     {
         base.Update(_dt);
-        /*
-        if(localPlayerSeat < 0)
-        {
-            if (player && player.AttachedToEntity == vehicle.entity)
-                OnPlayerEnter();
-            else
-                return;
-        }
-
-        if (vehicle.entity.FindAttachSlot(player) != localPlayerSeat)
-        {
-            OnPlayerDetach();
-            return;
-        }
-        */
 
         if(localPlayerSeat >= 0)
         {
-            //player.vp_FPCamera.Position3rdPersonOffset.y += cameraOffsetY;
             if (list_weapons[localPlayerSeat] != null && !GameManager.Instance.IsPaused())
             {
                 bool GUIOpened = Platform.PlatformManager.NativePlatform.Input.PrimaryPlayer.GUIActions.Enabled;
-                if(!GUIOpened)
-                    foreach (var weapon in list_weapons[localPlayerSeat])
-                        weapon.NoGUIUpdate(_dt);
                 foreach (var weapon in list_weapons[localPlayerSeat])
+                {
+                    if (!weapon.Enabled || !weapon.Activated)
+                        continue;
+
+                    if(!GUIOpened)
+                        weapon.NoGUIUpdate(_dt);
                     weapon.NoPauseUpdate(_dt);
+                }
 
                 if(!GUIOpened)
                     HandleUserInput();
@@ -102,7 +112,6 @@ public class VPWeaponManager : VehiclePart
     internal virtual void OnPlayerEnter(int seat)
     {
         PlayerActionsVehicleWeapon.Instance.Enabled = true;
-        //localPlayerSeat = vehicle.entity.FindAttachSlot(player);
         localPlayerSeat = seat;
         if (list_weapons[localPlayerSeat] != null)
         {
@@ -131,7 +140,8 @@ public class VPWeaponManager : VehiclePart
     protected virtual void HandleWeaponUserInput(int userData)
     {
         foreach (VehicleWeaponBase weapon in list_weapons[localPlayerSeat])
-            weapon.HandleUserInput(userData);
+            if (weapon.Enabled)
+                weapon.HandleUserInput(userData);
     }
 
     protected virtual bool CheckFireState()

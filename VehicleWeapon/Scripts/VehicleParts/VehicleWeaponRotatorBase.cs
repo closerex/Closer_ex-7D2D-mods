@@ -56,6 +56,26 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
         player = GameManager.Instance.World.GetPrimaryPlayer();
     }
 
+    public override void ApplyModEffect(ItemValue vehicleValue)
+    {
+        string name = GetModName();
+        verticleMaxRotation = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "verticleMaxRotation", verticleMaxRotation.ToString()));
+        verticleMinRotation = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "verticleMinRotation", verticleMinRotation.ToString()));
+        verticleRotSpeed = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "verticleRotSpeed", verticleRotSpeed.ToString()));
+        horizontalMaxRotation = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "horizontalMaxRotation", horizontalMaxRotation.ToString()));
+        horizontalMinRotation = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "horizontalMinRotation", horizontalMinRotation.ToString()));
+        horizontalRotSpeed = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "horizontalRotSpeed", horizontalRotSpeed.ToString()));
+        fullCircleRotation = horizontalMaxRotation == 180f && horizontalMinRotation == -180f;
+
+        indicatorTrans?.gameObject.SetActive(false);
+        string str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "indicatorTransform", GetProperty("indicatorTransform"));
+        if (!string.IsNullOrEmpty(str))
+        {
+            Transform mesh = vehicle.GetMeshTransform();
+            indicatorTrans = mesh.Find(str);
+        }
+    }
+
     public override void InitPrefabConnections()
     {
         base.InitPrefabConnections();
@@ -78,8 +98,6 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
 
     public override void NoGUIUpdate(float _dt)
     {
-        if (weapon == null || !weapon.Activated)
-            return;
         CalcCurRotation(_dt);
     }
 

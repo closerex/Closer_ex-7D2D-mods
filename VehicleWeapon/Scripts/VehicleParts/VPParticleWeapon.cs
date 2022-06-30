@@ -52,6 +52,26 @@ public class VPParticleWeapon : VehicleWeaponBase
         _properties.ParseString("fireSound", ref fireSound);
     }
 
+    public override void ApplyModEffect(ItemValue vehicleValue)
+    {
+        string name = GetModName();
+        base.ApplyModEffect(vehicleValue);
+        burstCount = int.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "burstCount", burstCount.ToString()));
+        burstInterval = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "burstInterval", burstInterval.ToString()));
+        burstRepeat = int.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "burstRepeat", burstRepeat.ToString()));
+        reloadTime = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "reloadTime", reloadTime.ToString()));
+        burstDelay = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "burstDelay", burstDelay.ToString()));
+        fullauto = bool.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "fullauto", fullauto.ToString()));
+        CustomExplosionManager.GetCustomParticleComponents(PlatformIndependentHash.StringToUInt16(vehicleValue.GetVehicleWeaponPropertyOverride(name, "particleIndex", properties.GetString("particleIndex"))), out component);
+
+        explodeOnCollision = bool.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "explodeOnCollision", explodeOnCollision.ToString()));
+        explodeOnDeath = bool.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "explodeOnDeath", explodeOnDeath.ToString()));
+        ammoValue = ItemClass.GetItem(vehicleValue.GetVehicleWeaponPropertyOverride(name, "ammo", ammoValue.ItemClass.Name));
+        emptySound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "emptySound", emptySound);
+        reloadSound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "reloadSound", reloadSound);
+        fireSound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "fireSound", fireSound);
+    }
+
     public override void InitPrefabConnections()
     {
         Transform hornTrans = GetParticleTransform();
@@ -67,7 +87,6 @@ public class VPParticleWeapon : VehicleWeaponBase
         }
         base.InitPrefabConnections();
     }
-
 
     public override void NoPauseUpdate(float _dt)
     {

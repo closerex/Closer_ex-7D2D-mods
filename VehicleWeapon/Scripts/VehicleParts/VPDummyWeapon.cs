@@ -24,6 +24,14 @@ public class VPDummyWeapon : VehicleWeaponBase
         }
     }
 
+    public override void ApplyModEffect(ItemValue vehicleValue)
+    {
+        base.ApplyModEffect(vehicleValue);
+        if (list_parts != null)
+            foreach (var part in list_parts)
+                part.ApplyModEffect(vehicleValue);
+    }
+
     public override void NoGUIUpdate(float _dt)
     {
         base.NoGUIUpdate(_dt);

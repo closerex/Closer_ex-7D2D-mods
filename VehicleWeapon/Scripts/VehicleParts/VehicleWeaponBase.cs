@@ -19,6 +19,8 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
     protected float cycleInterval = 0f;
     protected float cycleCooldown = 0f;
     protected bool activated = true;
+    protected bool enabled = true;
+    protected Transform enableTrans = null;
 
     protected enum FiringJuncture
     {
@@ -32,6 +34,7 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
     }
     public bool HasOperator { get => hasOperator; }
     public bool Activated { get => activated; }
+    public bool Enabled { get => enabled; }
     public VehicleWeaponRotatorBase Rotator { get => rotator; }
     public int Seat { get => seat; }
     public int Slot { get => slot; set => slot = value; }
@@ -56,7 +59,34 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
         }
         _properties.ParseInt("slot", ref slot);
 
+        _properties.ParseBool("enabled", ref enabled);
+        str = null;
+        _properties.ParseString("enableTransform", ref str);
+        if (!string.IsNullOrEmpty(str))
+            enableTrans = GetTransform(str);
+
+        if (enableTrans)
+            enableTrans.gameObject.SetActive(enabled);
+
         player = GameManager.Instance.World.GetPrimaryPlayer();
+    }
+
+    public override void ApplyModEffect(ItemValue vehicleValue)
+    {
+        string name = GetModName();
+        enabled = bool.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "enabled", enabled.ToString()));
+        if (enableTrans)
+            enableTrans.gameObject.SetActive(enabled);
+
+        activationSound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "activationSound", activationSound);
+        deactivationSound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "deactivationSound", deactivationSound);
+        notOnTargetSound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "notOnTargetSound", notOnTargetSound);
+        notReadySound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "notReadySound", notReadySound);
+        Enum.TryParse<FiringJuncture>(vehicleValue.GetVehicleWeaponPropertyOverride(name, "fireWhen", timing.ToStringCached()), out timing);
+        cycleInterval = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "cycleInterval", cycleInterval.ToString()));
+
+        if (rotator != null)
+            rotator.ApplyModEffect(vehicleValue);
     }
 
     public override void InitPrefabConnections()
@@ -189,7 +219,7 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
 
     protected virtual bool DoFire(bool firstShot, bool isRelease, bool fromSlot)
     {
-        if (!activated)
+        if (!activated || !enabled)
             return false;
 
         switch (timing)

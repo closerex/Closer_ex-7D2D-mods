@@ -64,3 +64,23 @@ public class CameraPositionPatch
         __instance.transform.localPosition += VPWeaponManager.CameraOffset;
     }
 }
+
+[HarmonyPatch(typeof(Vehicle))]
+public class VehicleModPatch
+{
+    [HarmonyPatch(nameof(Vehicle.SetItemValue))]
+    [HarmonyPostfix]
+    private static void Postfix_SetItemValue(Vehicle __instance, ItemValue ___itemValue)
+    {
+        if (__instance.FindPart(VPWeaponManager.VehicleWeaponManagerName) is VPWeaponManager manager)
+            manager.ApplyModEffect(___itemValue);
+    }
+
+    [HarmonyPatch(nameof(Vehicle.SetItemValueMods))]
+    [HarmonyPostfix]
+    private static void Postfix_SetItemValueMods(Vehicle __instance, ItemValue ___itemValue)
+    {
+        if (__instance.FindPart(VPWeaponManager.VehicleWeaponManagerName) is VPWeaponManager manager)
+            manager.ApplyModEffect(___itemValue);
+    }
+}

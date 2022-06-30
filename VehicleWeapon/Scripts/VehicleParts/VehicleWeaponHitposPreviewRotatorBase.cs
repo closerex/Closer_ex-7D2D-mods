@@ -50,6 +50,46 @@ public abstract class VehicleWeaponHitposPreviewRotatorBase : VehicleWeaponProje
             previewTypeBlock = PrimitiveType.Sphere;
     }
 
+    public override void ApplyModEffect(ItemValue vehicleValue)
+    {
+        base.ApplyModEffect(vehicleValue);
+        string name = GetModName();
+        string str = null;
+        properties.ParseString("previewColorEntityOnTarget", ref str);
+        str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "previewColorEntityOnTarget", str);
+        if (!string.IsNullOrEmpty(str))
+            ColorUtility.TryParseHtmlString(str, out previewColorEntityOnTarget);
+        str = null;
+        properties.ParseString("previewColorEntityAiming", ref str);
+        str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "previewColorEntityAiming", str);
+        if (!string.IsNullOrEmpty(str))
+            ColorUtility.TryParseHtmlString(str, out previewColorEntityAiming);
+        str = null;
+        properties.ParseString("previewColorBlockOnTarget", ref str);
+        str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "previewColorBlockOnTarget", str);
+        if (!string.IsNullOrEmpty(str))
+            ColorUtility.TryParseHtmlString(str, out previewColorBlockOnTarget);
+        str = null;
+        properties.ParseString("previewColorBlockAiming", ref str);
+        str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "previewColorBlockAiming", str);
+        if (!string.IsNullOrEmpty(str))
+            ColorUtility.TryParseHtmlString(str, out previewColorBlockAiming);
+
+        str = null;
+        properties.ParseString("previewTypeEntity", ref str);
+        str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "previewTypeEntity", str);
+        if (!string.IsNullOrEmpty(str) && !Enum.TryParse<PrimitiveType>(str, out previewTypeEntity))
+            previewTypeEntity = PrimitiveType.Sphere;
+        str = null;
+        properties.ParseString("previewTypeBlock", ref str);
+        str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "previewTypeBlock", str);
+        if (!string.IsNullOrEmpty(str) && !Enum.TryParse<PrimitiveType>(str, out previewTypeBlock))
+            previewTypeBlock = PrimitiveType.Sphere;
+
+        previewScaleEntity = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "previewScaleEntity", previewScaleEntity.ToString()));
+        previewScaleBlock = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "previewScaleBlock", previewScaleBlock.ToString()));
+    }
+
     public override void SetWeapon(VehicleWeaponBase weapon)
     {
         base.SetWeapon(weapon);
