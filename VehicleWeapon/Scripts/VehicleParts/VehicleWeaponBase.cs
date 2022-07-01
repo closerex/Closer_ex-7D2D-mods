@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml;
 using UnityEngine;
 
 public class VehicleWeaponBase : VehicleWeaponPartBase
@@ -61,45 +62,63 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
         player = GameManager.Instance.World.GetPrimaryPlayer();
     }
 
-    protected override void InitModProperties()
-    {
-        properties.ParseString("notReadySound", ref notReadySound);
-        properties.ParseString("notOnTargetSound", ref notOnTargetSound);
-        properties.ParseString("activationSound", ref activationSound);
-        properties.ParseString("deactivationSound", ref deactivationSound);
-
-        string str = null;
-        properties.ParseString("fireWhen", ref str);
-        timing = FiringJuncture.Anytime;
-        if (!string.IsNullOrEmpty(str))
-            Enum.TryParse<FiringJuncture>(str, true, out timing);
-
-        enabled = true;
-        properties.ParseBool("enabled", ref enabled);
-        if (enableTrans)
-            enableTrans.gameObject.SetActive(enabled);
-
-        cycleInterval = 0;
-        properties.ParseFloat("cycleInterval", ref cycleInterval);
-    }
-
     public override void ApplyModEffect(ItemValue vehicleValue)
     {
         base.ApplyModEffect(vehicleValue);
         string name = GetModName();
+        enabled = true;
+        properties.ParseBool("enabled", ref enabled);
         enabled = bool.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "enabled", enabled.ToString()));
         if (enableTrans)
             enableTrans.gameObject.SetActive(enabled);
 
+        properties.ParseString("activationSound", ref activationSound);
         activationSound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "activationSound", activationSound);
+        properties.ParseString("deactivationSound", ref deactivationSound);
         deactivationSound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "deactivationSound", deactivationSound);
+        properties.ParseString("notOnTargetSound", ref notOnTargetSound);
         notOnTargetSound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "notOnTargetSound", notOnTargetSound);
+        properties.ParseString("notReadySound", ref notReadySound);
         notReadySound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "notReadySound", notReadySound);
-        Enum.TryParse<FiringJuncture>(vehicleValue.GetVehicleWeaponPropertyOverride(name, "fireWhen", timing.ToStringCached()), out timing);
+
+        string str = null;
+        properties.ParseString("fireWhen", ref str);
+        str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "fireWhen", str);
+        timing = FiringJuncture.Anytime;
+        if (!string.IsNullOrEmpty(str))
+            Enum.TryParse<FiringJuncture>(str, true, out timing);
+
+        cycleInterval = 0;
+        properties.ParseFloat("cycleInterval", ref cycleInterval);
         cycleInterval = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "cycleInterval", cycleInterval.ToString()));
 
+        ParseEffectGroups(vehicleValue, this, name);
         if (rotator != null)
             rotator.ApplyModEffect(vehicleValue);
+    }
+
+    protected static void ParseEffectGroups(ItemValue vehicleValue, VehicleWeaponBase weapon, string modName)
+    {
+        weapon.effects.EffectGroups.Clear();
+        ParseEffectGroup(vehicleValue.ItemClass.Effects, weapon, modName);
+
+        foreach (var mod in vehicleValue.Modifications)
+            ParseEffectGroup(mod.ItemClass.Effects, weapon, modName);
+
+        foreach (var cos in vehicleValue.CosmeticMods)
+            ParseEffectGroup(cos.ItemClass.Effects, weapon, modName);
+    }
+
+    protected static void ParseEffectGroup(MinEffectController effects, VehicleWeaponBase weapon, string modName)
+    {
+        int i = 0;
+        foreach (var effectNodes in effects.EffectGroupXml)
+        {
+            XmlElement element = effectNodes as XmlElement;
+            if (element.HasAttribute("vehicle_weapon") && element.GetAttribute("vehicle_weapon") == modName)
+                weapon.effects.EffectGroups.Add(effects.EffectGroups[i]);
+            i++;
+        }
     }
 
     public override void InitPrefabConnections()
@@ -287,6 +306,9 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
             IsCurCycle = false;
             cycleNext.SetCurCycle();
         }
+        player.MinEventContext.ItemValue = ItemValue.None.Clone();
+        player.FireEvent(MinEventTypes.onSelfRangedBurstShot, false);
+        effects.FireEvent(MinEventTypes.onSelfRangedBurstShot, player.MinEventContext);
     }
 }
 

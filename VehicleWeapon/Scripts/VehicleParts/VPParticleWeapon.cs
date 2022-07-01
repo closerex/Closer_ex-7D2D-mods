@@ -25,61 +25,53 @@ public class VPParticleWeapon : VehicleWeaponBase
     public ParticleSystem WeaponSystem { get => weaponSystem; }
     public ExplosionComponent Component { get => component; }
 
-    protected override void InitModProperties()
-    {
-        base.InitModProperties();
-
-        burstCount = 1;
-        properties.ParseInt("burstCount", ref burstCount);
-        burstRepeat = 1;
-        properties.ParseInt("burstRepeat", ref burstRepeat);
-        burstInterval = 0f;
-        properties.ParseFloat("burstInterval", ref burstInterval);
-        reloadTime = 1f;
-        properties.ParseFloat("reloadTime", ref reloadTime);
-        burstDelay = 0f;
-        properties.ParseFloat("burstDelay", ref burstDelay);
-        fullauto = false;
-        properties.ParseBool("fullauto", ref fullauto);
-
-        string str = null;
-        properties.ParseString("particleIndex", ref str);
-        if (!string.IsNullOrEmpty(str))
-            CustomExplosionManager.GetCustomParticleComponents(PlatformIndependentHash.StringToUInt16(str), out component);
-        explodeOnCollision = true;
-        properties.ParseBool("explodeOnCollision", ref explodeOnCollision);
-        explodeOnDeath = false;
-        properties.ParseBool("explodeOnDeath", ref explodeOnDeath);
-
-        str = null;
-        properties.ParseString("ammo", ref str);
-        if (!string.IsNullOrEmpty(str))
-            ammoValue = ItemClass.GetItem(str, false);
-
-        properties.ParseString("emptySound", ref emptySound);
-        properties.ParseString("reloadSound", ref reloadSound);
-        properties.ParseString("fireSound", ref fireSound);
-        reloadRemain = 0;
-    }
-
     public override void ApplyModEffect(ItemValue vehicleValue)
     {
         string name = GetModName();
         base.ApplyModEffect(vehicleValue);
+        burstCount = 1;
+        properties.ParseInt("burstCount", ref burstCount);
         burstCount = int.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "burstCount", burstCount.ToString()));
+        burstInterval = 0f;
+        properties.ParseFloat("burstInterval", ref burstInterval);
         burstInterval = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "burstInterval", burstInterval.ToString()));
+        burstRepeat = 1;
+        properties.ParseInt("burstRepeat", ref burstRepeat);
         burstRepeat = int.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "burstRepeat", burstRepeat.ToString()));
+        reloadTime = 1f;
+        properties.ParseFloat("reloadTime", ref reloadTime);
         reloadTime = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "reloadTime", reloadTime.ToString()));
+        burstDelay = 0f;
+        properties.ParseFloat("burstDelay", ref burstDelay);
         burstDelay = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "burstDelay", burstDelay.ToString()));
+        fullauto = false;
+        properties.ParseBool("fullauto", ref fullauto);
         fullauto = bool.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "fullauto", fullauto.ToString()));
+
         CustomExplosionManager.GetCustomParticleComponents(PlatformIndependentHash.StringToUInt16(vehicleValue.GetVehicleWeaponPropertyOverride(name, "particleIndex", properties.GetString("particleIndex"))), out component);
 
+        explodeOnCollision = true;
+        properties.ParseBool("explodeOnCollision", ref explodeOnCollision);
         explodeOnCollision = bool.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "explodeOnCollision", explodeOnCollision.ToString()));
+        explodeOnDeath = false;
+        properties.ParseBool("explodeOnDeath", ref explodeOnDeath);
         explodeOnDeath = bool.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "explodeOnDeath", explodeOnDeath.ToString()));
-        ammoValue = ItemClass.GetItem(vehicleValue.GetVehicleWeaponPropertyOverride(name, "ammo", ammoValue.ItemClass.Name));
+
+        string str = null;
+        ammoValue = ItemValue.None.Clone();
+        properties.ParseString("ammo", ref str);
+        str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "ammo", ammoValue.ItemClass.Name);
+        if (!string.IsNullOrEmpty(str))
+            ammoValue = ItemClass.GetItem(str, false);
+
+        properties.ParseString("emptySound", ref emptySound);
         emptySound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "emptySound", emptySound);
+        properties.ParseString("reloadSound", ref reloadSound);
         reloadSound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "reloadSound", reloadSound);
+        properties.ParseString("fireSound", ref fireSound);
         fireSound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "fireSound", fireSound);
+
+        reloadRemain = reloadTime;
     }
 
     public override void InitPrefabConnections()

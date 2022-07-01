@@ -8,14 +8,13 @@ public class VPWeaponManager : VehiclePart
     public static readonly string VehicleWeaponManagerName = "vehicleWeaponManager";
     private int localPlayerSeat = -1;
     protected EntityPlayerLocal player = null;
-    protected Vector3 cameraOffset = Vector3.up * 2;
+    protected Vector3 cameraOffset;
     public static Vector3 CameraOffset { get; private set; } = Vector3.zero;
 
     public override void SetProperties(DynamicProperties _properties)
     {
         base.SetProperties(_properties);
 
-        _properties.ParseVec("cameraOffset", ref cameraOffset);
         player = GameManager.Instance.World.GetPrimaryPlayer();
     }
 
@@ -71,7 +70,8 @@ public class VPWeaponManager : VehiclePart
 
     protected virtual void ParseModProperties(ItemValue vehicleValue)
     {
-        SetProperties(properties);
+        cameraOffset = Vector3.up * 2;
+        properties.ParseVec("cameraOffset", ref cameraOffset);
         cameraOffset = StringParsers.ParseVector3(vehicleValue.GetVehicleWeaponPropertyOverride(vehicle.GetName() + "_" + tag, "cameraOffset", cameraOffset.ToString()));
     }
 
