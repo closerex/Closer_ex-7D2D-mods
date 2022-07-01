@@ -67,7 +67,7 @@ public abstract class VehicleWeaponHitposPreviewRotatorBase : VehicleWeaponProje
         previewScaleEntity = 0;
         properties.ParseFloat("previewScaleEntity", ref previewScaleEntity);
         previewScaleEntity = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "previewScaleEntity", previewScaleEntity.ToString()));
-        previewTypeBlock = 0;
+        previewScaleBlock = 0;
         properties.ParseFloat("previewScaleBlock", ref previewScaleBlock);
         previewScaleBlock = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "previewScaleBlock", previewScaleBlock.ToString()));
     }

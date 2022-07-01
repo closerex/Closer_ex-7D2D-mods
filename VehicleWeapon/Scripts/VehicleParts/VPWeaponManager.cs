@@ -56,7 +56,7 @@ public class VPWeaponManager : VehiclePart
                 foreach (var weapon in weapons)
                     weapon.ApplyModEffect(vehicleValue);
 
-                SortWeapons(weapons);
+                //SortWeapons(weapons);
             }
         }
 
@@ -184,12 +184,14 @@ public class VPWeaponManager : VehiclePart
     {
         public int Compare(VehicleWeaponBase weapon1, VehicleWeaponBase weapon2)
         {
+            /*
             if (weapon1.Enabled && !weapon2.Enabled)
                 return -1;
             else if (!weapon1.Enabled && weapon2.Enabled)
                 return 1;
             else if (!weapon1.Enabled && !weapon2.Enabled)
                 return 0;
+            */
             return weapon1.Slot - weapon2.Slot;
         }
     }
