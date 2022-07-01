@@ -97,11 +97,6 @@
 														 FromSlotKey(firing only when pressing slot key)
 														 FromSlotKeyOnTarget(combination of OnTarget and FromSlotKey)/-->
 				<property name="fireWhen" value="FromSlotKeyOnTarget"/>
-				<!-- when fireWhen is Cycle, this specify the next weapon that fires after this one /-->
-				<property name="cycleNextSlot" value="0"/>
-				<!-- when fireWhen is Cycle, this specify the delay in seconds when this one becomes the current firing weapon in cycle /-->
-				<!-- default: 0f /-->
-				<property name="cycleInterval" value="0"/>
 			</property>
 			
 			<!-- part class name can be anything but must match the "rotator" property name of the weapon; does not need to be placed after hornWeapon /-->
@@ -171,13 +166,18 @@
 			</property>
 
 			<property class="WeaponLaserCycle">
+				<!-- CycleFireWeapon manages its child weapons, firing them in a cycle. -->
 				<property name="class" value="CycleFireWeapon,VehicleWeapon"/>
 				<property name="seat" value="0"/>
 				<property name="slot" value="0"/>
+				<!-- interval between switching current weapon. -->
+				<!-- default: 0 -->
 				<property name="cycleInterval" value="0.25"/>
+				
+				<!-- child weapons. you should only put weapons here, and keep their rotators(if any) outside. -->
 				<property class="WeaponLaser01">
 					<property name="class" value="ParticleWeapon,VehicleWeapon"/>
-					<property name="seat" value="0"/>
+					<!-- child weapons are still sorted by slot property, but seat property no longer has any effect -->
 					<property name="slot" value="1"/>
 					<property name="burstCount" value="1"/>
 					<property name="burstInterval" value="0"/>
@@ -200,7 +200,6 @@
 				
 				<property class="WeaponLaser02">
 					<property name="class" value="ParticleWeapon,VehicleWeapon"/>
-					<property name="seat" value="0"/>
 					<property name="slot" value="0"/>
 					<property name="burstCount" value="1"/>
 					<property name="burstInterval" value="0"/>

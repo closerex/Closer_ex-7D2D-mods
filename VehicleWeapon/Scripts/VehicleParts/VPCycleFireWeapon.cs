@@ -94,7 +94,8 @@ public class VPCycleFireWeapon : VehicleWeaponBase
     public override void NoPauseUpdate(float _dt)
     {
         base.NoPauseUpdate(_dt);
-        cycleCooldown -= _dt;
+        if(cycleCooldown > 0)
+            cycleCooldown -= _dt;
         foreach (var weapon in cycleArray)
             weapon.NoPauseUpdate(_dt);
     }
