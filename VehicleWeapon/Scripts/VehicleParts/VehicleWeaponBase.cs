@@ -22,7 +22,12 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
     protected bool activated = true;
     protected bool enabled;
     protected Transform enableTrans = null;
-    protected MinEffectController effects = new MinEffectController();
+    protected MinEffectController effects = new MinEffectController()
+    {
+        ParentType = MinEffectController.SourceParentType.None,
+        EffectGroups = new List<MinEffectGroup>(),
+        PassivesIndex = new HashSet<PassiveEffects>(EffectManager.PassiveEffectsComparer)
+    };
 
     protected enum FiringJuncture
     {
@@ -100,13 +105,20 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
     protected static void ParseEffectGroups(ItemValue vehicleValue, VehicleWeaponBase weapon, string modName)
     {
         weapon.effects.EffectGroups.Clear();
-        ParseEffectGroup(vehicleValue.ItemClass.Effects, weapon, modName);
+        weapon.effects.PassivesIndex.Clear();
+        weapon.effects.ParentPointer = vehicleValue.GetItemId();
+        if(vehicleValue.ItemClass != null)
+            ParseEffectGroup(vehicleValue.ItemClass.Effects, weapon, modName);
 
-        foreach (var mod in vehicleValue.Modifications)
-            ParseEffectGroup(mod.ItemClass.Effects, weapon, modName);
+        if(vehicleValue.Modifications != null && vehicleValue.Modifications.Length > 0)
+            foreach (var mod in vehicleValue.Modifications)
+                if (mod != null && mod.ItemClass is ItemClassModifier)
+                    ParseEffectGroup(mod.ItemClass.Effects, weapon, modName);
 
-        foreach (var cos in vehicleValue.CosmeticMods)
-            ParseEffectGroup(cos.ItemClass.Effects, weapon, modName);
+        if (vehicleValue.CosmeticMods != null && vehicleValue.CosmeticMods.Length > 0)
+            foreach (var cos in vehicleValue.CosmeticMods)
+                if (cos != null && cos.ItemClass is ItemClassModifier)
+                    ParseEffectGroup(cos.ItemClass.Effects, weapon, modName);
     }
 
     protected static void ParseEffectGroup(MinEffectController effects, VehicleWeaponBase weapon, string modName)
@@ -116,7 +128,10 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
         {
             XmlElement element = effectNodes as XmlElement;
             if (element.HasAttribute("vehicle_weapon") && element.GetAttribute("vehicle_weapon") == modName)
+            {
                 weapon.effects.EffectGroups.Add(effects.EffectGroups[i]);
+                weapon.effects.PassivesIndex.UnionWith(effects.EffectGroups[i].PassivesIndex);
+            }
             i++;
         }
     }

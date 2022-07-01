@@ -51,15 +51,18 @@ public abstract class VehicleWeaponHitposPreviewRotatorBase : VehicleWeaponProje
             ColorUtility.TryParseHtmlString(str, out previewColorBlockAiming);
 
         str = null;
+        previewTypeEntity = PrimitiveType.Sphere;
         properties.ParseString("previewTypeEntity", ref str);
         str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "previewTypeEntity", str);
-        if (!string.IsNullOrEmpty(str) && !Enum.TryParse<PrimitiveType>(str, out previewTypeEntity))
-            previewTypeEntity = PrimitiveType.Sphere;
+        if (!string.IsNullOrEmpty(str))
+            Enum.TryParse<PrimitiveType>(str, out previewTypeEntity);
+
         str = null;
+        previewTypeBlock = PrimitiveType.Sphere;
         properties.ParseString("previewTypeBlock", ref str);
         str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "previewTypeBlock", str);
-        if (!string.IsNullOrEmpty(str) && !Enum.TryParse<PrimitiveType>(str, out previewTypeBlock))
-            previewTypeBlock = PrimitiveType.Sphere;
+        if (!string.IsNullOrEmpty(str))
+            Enum.TryParse<PrimitiveType>(str, out previewTypeBlock);
 
         previewScaleEntity = 0;
         properties.ParseFloat("previewScaleEntity", ref previewScaleEntity);

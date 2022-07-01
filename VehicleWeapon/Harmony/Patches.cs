@@ -73,7 +73,7 @@ public class VehicleModPatch
     private static void Postfix_SetItemValue(Vehicle __instance, ItemValue ___itemValue)
     {
         if (__instance.FindPart(VPWeaponManager.VehicleWeaponManagerName) is VPWeaponManager manager)
-            manager.ApplyModEffect(___itemValue);
+            manager.ApplyModEffect(___itemValue.Clone());
     }
 
     [HarmonyPatch(nameof(Vehicle.SetItemValueMods))]
@@ -81,6 +81,6 @@ public class VehicleModPatch
     private static void Postfix_SetItemValueMods(Vehicle __instance, ItemValue ___itemValue)
     {
         if (__instance.FindPart(VPWeaponManager.VehicleWeaponManagerName) is VPWeaponManager manager)
-            manager.ApplyModEffect(___itemValue);
+            manager.ApplyModEffect(___itemValue.Clone());
     }
 }

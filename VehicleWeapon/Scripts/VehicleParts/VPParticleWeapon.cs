@@ -60,7 +60,7 @@ public class VPParticleWeapon : VehicleWeaponBase
         string str = null;
         ammoValue = ItemValue.None.Clone();
         properties.ParseString("ammo", ref str);
-        str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "ammo", ammoValue.ItemClass.Name);
+        str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "ammo", str);
         if (!string.IsNullOrEmpty(str))
             ammoValue = ItemClass.GetItem(str, false);
 
