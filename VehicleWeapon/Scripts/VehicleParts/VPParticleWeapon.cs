@@ -25,31 +25,41 @@ public class VPParticleWeapon : VehicleWeaponBase
     public ParticleSystem WeaponSystem { get => weaponSystem; }
     public ExplosionComponent Component { get => component; }
 
-    public override void SetProperties(DynamicProperties _properties)
+    protected override void InitModProperties()
     {
-        base.SetProperties(_properties);
-        _properties.ParseInt("burstCount", ref burstCount);
-        _properties.ParseFloat("burstInterval", ref burstInterval);
-        _properties.ParseInt("burstRepeat", ref burstRepeat);
-        _properties.ParseFloat("reloadTime", ref reloadTime);
-        _properties.ParseFloat("burstDelay", ref burstDelay);
-        _properties.ParseBool("fullauto", ref fullauto);
-        reloadRemain = 0;
+        base.InitModProperties();
+
+        burstCount = 1;
+        properties.ParseInt("burstCount", ref burstCount);
+        burstRepeat = 1;
+        properties.ParseInt("burstRepeat", ref burstRepeat);
+        burstInterval = 0f;
+        properties.ParseFloat("burstInterval", ref burstInterval);
+        reloadTime = 1f;
+        properties.ParseFloat("reloadTime", ref reloadTime);
+        burstDelay = 0f;
+        properties.ParseFloat("burstDelay", ref burstDelay);
+        fullauto = false;
+        properties.ParseBool("fullauto", ref fullauto);
 
         string str = null;
-        _properties.ParseString("particleIndex", ref str);
+        properties.ParseString("particleIndex", ref str);
         if (!string.IsNullOrEmpty(str))
             CustomExplosionManager.GetCustomParticleComponents(PlatformIndependentHash.StringToUInt16(str), out component);
-        _properties.ParseBool("explodeOnCollision", ref explodeOnCollision);
-        _properties.ParseBool("explodeOnDeath", ref explodeOnDeath);
+        explodeOnCollision = true;
+        properties.ParseBool("explodeOnCollision", ref explodeOnCollision);
+        explodeOnDeath = false;
+        properties.ParseBool("explodeOnDeath", ref explodeOnDeath);
+
         str = null;
-        _properties.ParseString("ammo", ref str);
+        properties.ParseString("ammo", ref str);
         if (!string.IsNullOrEmpty(str))
             ammoValue = ItemClass.GetItem(str, false);
 
-        _properties.ParseString("emptySound", ref emptySound);
-        _properties.ParseString("reloadSound", ref reloadSound);
-        _properties.ParseString("fireSound", ref fireSound);
+        properties.ParseString("emptySound", ref emptySound);
+        properties.ParseString("reloadSound", ref reloadSound);
+        properties.ParseString("fireSound", ref fireSound);
+        reloadRemain = 0;
     }
 
     public override void ApplyModEffect(ItemValue vehicleValue)

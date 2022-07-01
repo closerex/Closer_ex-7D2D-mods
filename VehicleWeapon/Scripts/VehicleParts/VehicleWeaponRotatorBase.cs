@@ -5,12 +5,12 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     protected Transform horRotTrans = null;
     protected Transform verRotTrans = null;
     protected Transform indicatorTrans;
-    protected float verticleMaxRotation = 45f;
-    protected float verticleMinRotation = 0f;
-    protected float verticleRotSpeed = 360f;
-    protected float horizontalMaxRotation = 180f;
-    protected float horizontalMinRotation = -180f;
-    protected float horizontalRotSpeed = 360f;
+    protected float verticleMaxRotation;
+    protected float verticleMinRotation;
+    protected float verticleRotSpeed;
+    protected float horizontalMaxRotation;
+    protected float horizontalMinRotation;
+    protected float horizontalRotSpeed;
     protected float lastHorRot = 0f;
     protected float lastVerRot = 0f;
     protected float nextHorRot = 0f;
@@ -37,21 +37,38 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     {
         base.SetProperties(_properties);
 
-        _properties.ParseFloat("verticleMaxRotation", ref verticleMaxRotation);
+        player = GameManager.Instance.World.GetPrimaryPlayer();
+    }
+
+    protected override void InitModProperties()
+    {
+        verticleMaxRotation = 45f;
+        properties.ParseFloat("verticleMaxRotation", ref verticleMaxRotation);
         verticleMaxRotation = AngleToInferior(verticleMaxRotation);
-        _properties.ParseFloat("verticleMinRotation", ref verticleMinRotation);
+
+        verticleMinRotation = 0f;
+        properties.ParseFloat("verticleMinRotation", ref verticleMinRotation);
         verticleMinRotation = AngleToInferior(verticleMinRotation);
-        _properties.ParseFloat("verticleRotationSpeed", ref verticleRotSpeed);
+
+        verticleRotSpeed = 360f;
+        properties.ParseFloat("verticleRotationSpeed", ref verticleRotSpeed);
         verticleRotSpeed = Mathf.Abs(verticleRotSpeed);
-        _properties.ParseFloat("horizontalMaxRotation", ref horizontalMaxRotation);
+
+        horizontalMaxRotation = 180f;
+        properties.ParseFloat("horizontalMaxRotation", ref horizontalMaxRotation);
         horizontalMaxRotation = AngleToInferior(horizontalMaxRotation);
-        _properties.ParseFloat("horizontalMinRotation", ref horizontalMinRotation);
+
+        horizontalMinRotation = -180f;
+        properties.ParseFloat("horizontalMinRotation", ref horizontalMinRotation);
         horizontalMinRotation = AngleToInferior(horizontalMinRotation);
-        _properties.ParseFloat("horizontalRotationSpeed", ref horizontalRotSpeed);
+
+        horizontalRotSpeed = 360f;
+        properties.ParseFloat("horizontalRotationSpeed", ref horizontalRotSpeed);
         horizontalRotSpeed = Mathf.Abs(horizontalRotSpeed);
+
         fullCircleRotation = horizontalMaxRotation == 180f && horizontalMinRotation == -180f;
 
-        player = GameManager.Instance.World.GetPrimaryPlayer();
+        indicatorTrans = GetTransform("indicatorTransform");
     }
 
     public override void ApplyModEffect(ItemValue vehicleValue)
@@ -82,7 +99,6 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
         transform = GetTransform();
         horRotTrans = GetTransform("horRotationTransform");
         verRotTrans = GetTransform("verRotationTransform");
-        indicatorTrans = GetTransform("indicatorTransform");
     }
 
     public virtual void SetWeapon(VehicleWeaponBase weapon)

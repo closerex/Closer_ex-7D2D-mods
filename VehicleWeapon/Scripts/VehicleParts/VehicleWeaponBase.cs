@@ -6,21 +6,22 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
 {
     protected bool hasOperator = false;
     protected EntityPlayerLocal player = null;
-    protected string notReadySound = string.Empty;
-    protected string notOnTargetSound = string.Empty;
-    protected string activationSound = string.Empty;
-    protected string deactivationSound = string.Empty;
+    protected string notReadySound;
+    protected string notOnTargetSound;
+    protected string activationSound;
+    protected string deactivationSound;
     protected VehicleWeaponRotatorBase rotator = null;
     protected int seat = 0;
     protected int slot = int.MaxValue;
     protected FiringJuncture timing;
     protected bool pressed = false;
     protected VehicleWeaponBase cycleNext = null;
-    protected float cycleInterval = 0f;
+    protected float cycleInterval;
     protected float cycleCooldown = 0f;
     protected bool activated = true;
-    protected bool enabled = true;
+    protected bool enabled;
     protected Transform enableTrans = null;
+    protected MinEffectController effects = new MinEffectController();
 
     protected enum FiringJuncture
     {
@@ -43,14 +44,7 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
     public override void SetProperties(DynamicProperties _properties)
     {
         base.SetProperties(_properties);
-        _properties.ParseString("notReadySound", ref notReadySound);
-        _properties.ParseString("notOnTargetSound", ref notOnTargetSound);
-        _properties.ParseString("activationSound", ref activationSound);
-        _properties.ParseString("deactivationSound", ref deactivationSound);
         string str = null;
-        _properties.ParseString("fireWhen", ref str);
-        if (!string.IsNullOrEmpty(str))
-            Enum.TryParse<FiringJuncture>(str, true, out timing);
         _properties.ParseInt("seat", ref seat);
         if (seat < 0)
         {
@@ -59,18 +53,34 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
         }
         _properties.ParseInt("slot", ref slot);
 
-        _properties.ParseBool("enabled", ref enabled);
         str = null;
         _properties.ParseString("enableTransform", ref str);
         if (!string.IsNullOrEmpty(str))
             enableTrans = GetTransform(str);
 
+        player = GameManager.Instance.World.GetPrimaryPlayer();
+    }
+
+    protected override void InitModProperties()
+    {
+        properties.ParseString("notReadySound", ref notReadySound);
+        properties.ParseString("notOnTargetSound", ref notOnTargetSound);
+        properties.ParseString("activationSound", ref activationSound);
+        properties.ParseString("deactivationSound", ref deactivationSound);
+
+        string str = null;
+        properties.ParseString("fireWhen", ref str);
+        timing = FiringJuncture.Anytime;
+        if (!string.IsNullOrEmpty(str))
+            Enum.TryParse<FiringJuncture>(str, true, out timing);
+
+        enabled = true;
+        properties.ParseBool("enabled", ref enabled);
         if (enableTrans)
             enableTrans.gameObject.SetActive(enabled);
 
+        cycleInterval = 0;
         properties.ParseFloat("cycleInterval", ref cycleInterval);
-
-        player = GameManager.Instance.World.GetPrimaryPlayer();
     }
 
     public override void ApplyModEffect(ItemValue vehicleValue)

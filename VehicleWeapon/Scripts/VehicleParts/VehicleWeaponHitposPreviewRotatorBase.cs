@@ -18,36 +18,36 @@ public abstract class VehicleWeaponHitposPreviewRotatorBase : VehicleWeaponProje
     protected Vector3 hitPos;
     protected static readonly int colorId = Shader.PropertyToID("_Color");
 
-    public override void SetProperties(DynamicProperties _properties)
+    protected override void InitModProperties()
     {
-        base.SetProperties(_properties);
+        base.InitModProperties();
 
         previewColorEntityOnTarget = Color.clear;
         previewColorEntityAiming = Color.clear;
         previewColorBlockOnTarget = Color.clear;
         previewColorBlockAiming = Color.clear;
         string str = null;
-        _properties.ParseString("previewColorEntityOnTarget", ref str);
+        properties.ParseString("previewColorEntityOnTarget", ref str);
         if (!string.IsNullOrEmpty(str))
             ColorUtility.TryParseHtmlString(str, out previewColorEntityOnTarget);
         str = null;
-        _properties.ParseString("previewColorEntityAiming", ref str);
+        properties.ParseString("previewColorEntityAiming", ref str);
         if (!string.IsNullOrEmpty(str))
             ColorUtility.TryParseHtmlString(str, out previewColorEntityAiming);
         str = null;
-        _properties.ParseString("previewColorBlockOnTarget", ref str);
+        properties.ParseString("previewColorBlockOnTarget", ref str);
         if (!string.IsNullOrEmpty(str))
             ColorUtility.TryParseHtmlString(str, out previewColorBlockOnTarget);
         str = null;
-        _properties.ParseString("previewColorBlockAiming", ref str);
+        properties.ParseString("previewColorBlockAiming", ref str);
         if (!string.IsNullOrEmpty(str))
             ColorUtility.TryParseHtmlString(str, out previewColorBlockAiming);
         str = null;
-        _properties.ParseString("previewTypeEntity", ref str);
+        properties.ParseString("previewTypeEntity", ref str);
         if (!string.IsNullOrEmpty(str) && !Enum.TryParse<PrimitiveType>(str, out previewTypeEntity))
             previewTypeEntity = PrimitiveType.Sphere;
         str = null;
-        _properties.ParseString("previewTypeBlock", ref str);
+        properties.ParseString("previewTypeBlock", ref str);
         if (!string.IsNullOrEmpty(str) && !Enum.TryParse<PrimitiveType>(str, out previewTypeBlock))
             previewTypeBlock = PrimitiveType.Sphere;
     }
