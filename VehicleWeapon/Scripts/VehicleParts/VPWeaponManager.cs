@@ -38,10 +38,11 @@ public class VPWeaponManager : VehiclePart
             if (weapons != null)
             {
                 SortWeapons(weapons);
-
-                foreach (var weapon in weapons)
-                    weapon.SetupWeaponConnections(weapons);
+            
+                foreach(var weapon in weapons)
+                    weapon.InitWeaponConnections(weapons);
             }
+
         }
     }
 
@@ -100,10 +101,10 @@ public class VPWeaponManager : VehiclePart
         }
     }
 
-    public void NetSyncUpdate(int seat, int slot, float horRot, float verRot)
+    public void NetSyncUpdate(int seat, int slot, float horRot, float verRot, Stack<int> userData)
     {
         if (list_weapons[seat] != null)
-            list_weapons[seat][slot].NetSyncUpdate(horRot, verRot);
+            list_weapons[seat][slot].NetSyncUpdate(horRot, verRot, userData);
     }
 
     internal virtual void OnPlayerEnter(int seat)

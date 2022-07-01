@@ -104,6 +104,7 @@
     <Compile Include="Scripts\VehicleParts\VehicleWeaponHitposPreviewRotatorBase.cs" />
     <Compile Include="Scripts\VehicleParts\VehicleWeaponPartBase.cs" />
     <Compile Include="Scripts\VehicleParts\VehicleWeaponProjectileRotatorBase.cs" />
+    <Compile Include="Scripts\VehicleParts\VPCycleFireWeapon.cs" />
     <Compile Include="Scripts\VehicleParts\VPDirectionalWeaponRotator.cs" />
     <Compile Include="Scripts\VehicleParts\VPDummyWeapon.cs" />
     <Compile Include="Scripts\VehicleParts\VPHorizontalWeaponRotator.cs" />

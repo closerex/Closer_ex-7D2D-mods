@@ -111,10 +111,7 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
         {
             lastHorRot = horRotTrans != null ? horRotTrans.localEulerAngles.y : 0;
             lastVerRot = verRotTrans != null ? verRotTrans.localEulerAngles.x : 0;
-            if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && SingletonMonoBehaviour<ConnectionManager>.Instance.ClientCount() > 0)
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageParticleWeaponUpdate>().Setup(vehicle.entity.entityId, lastHorRot, lastVerRot, weapon.Seat, weapon.Slot), false, -1, player.entityId);
-            else if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsClient)
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageParticleWeaponUpdate>().Setup(vehicle.entity.entityId, lastHorRot, lastVerRot, weapon.Seat, weapon.Slot));
+            NetSyncSendPacket();
         }
 
         bool onTarget = (horRotTrans == null || FuzzyEqualAngle(nextHorRot, AngleToInferior(horRotTrans.localEulerAngles.y), 1f)) && (verRotTrans == null || FuzzyEqualAngle(nextVerRot, AngleToInferior(verRotTrans.localEulerAngles.x), 0.5f));
@@ -123,6 +120,14 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
             SetPreviewColor(onTarget);
             lastOnTarget = onTarget;
         }
+    }
+
+    public void NetSyncSendPacket()
+    {
+        if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && SingletonMonoBehaviour<ConnectionManager>.Instance.ClientCount() > 0)
+            SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageWeaponRotatorUpdate>().Setup(vehicle.entity.entityId, lastHorRot, lastVerRot, weapon.Seat, weapon.Slot, weapon.UserData), false, -1, player.entityId);
+        else if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsClient)
+            SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageWeaponRotatorUpdate>().Setup(vehicle.entity.entityId, lastHorRot, lastVerRot, weapon.Seat, weapon.Slot, weapon.UserData));
     }
 
     public void NetSyncUpdate(float horRot, float verRot)

@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
-public class NetPackageParticleWeaponFire : NetPackageParticleWeaponUpdate
+public class NetPackageParticleWeaponFire : NetPackageWeaponRotatorUpdate
 {
     public override int GetLength()
     {
@@ -18,9 +19,9 @@ public class NetPackageParticleWeaponFire : NetPackageParticleWeaponUpdate
         {
             if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer)
             {
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageParticleWeaponFire>().Setup(entityId, horEuler, verEuler, seat, slot, count, seed));
+                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageParticleWeaponFire>().Setup(entityId, horEuler, verEuler, seat, slot, userDataRead, count, seed));
             }
-            manager.NetSyncUpdate(seat, slot, horEuler, verEuler);
+            manager.NetSyncUpdate(seat, slot, horEuler, verEuler, userDataRead);
             manager.DoParticleFireClient(seat, slot, count, seed);
         }
     }
@@ -39,9 +40,9 @@ public class NetPackageParticleWeaponFire : NetPackageParticleWeaponUpdate
         _writer.Write(seed);
     }
 
-    public NetPackageParticleWeaponFire Setup(int entityId, float horRot, float verRot, int seat, int slot, int count, uint seed)
+    public NetPackageParticleWeaponFire Setup(int entityId, float horRot, float verRot, int seat, int slot, IEnumerable<int> userData, int count, uint seed)
     {
-        base.Setup(entityId, horRot, verRot, seat, slot);
+        base.Setup(entityId, horRot, verRot, seat, slot, userData);
         this.count = count;
         this.seed = seed;
         return this;

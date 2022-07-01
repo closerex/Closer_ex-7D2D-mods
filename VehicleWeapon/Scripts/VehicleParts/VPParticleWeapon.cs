@@ -119,7 +119,7 @@ public class VPParticleWeapon : VehicleWeaponBase
         }
     }
 
-    protected override bool DoFire(bool firstShot, bool isRelease, bool fromSlot)
+    protected internal override bool CanFire(bool firstShot, bool isRelease, bool fromSlot)
     {
         if (isRelease)
         {
@@ -129,7 +129,7 @@ public class VPParticleWeapon : VehicleWeaponBase
         else if (pressed && !fullauto)
             return false;
 
-        if (weaponSystem.gameObject.activeInHierarchy && base.DoFire(firstShot, isRelease, fromSlot))
+        if (weaponSystem.gameObject.activeInHierarchy && base.CanFire(firstShot, isRelease, fromSlot))
         {
             if(ammoValue.type > 0 && player.bag.GetItemCount(ammoValue) < burstRepeat)
             {
@@ -147,17 +147,21 @@ public class VPParticleWeapon : VehicleWeaponBase
             }
 
             pressed = true;
-            if (burstInterval > 0 || burstDelay > 0)
-                ThreadManager.StartCoroutine(DoParticleFireCo());
-            else
-                DoParticleFireNow();
-
             return true;
         }
         return false;
     }
 
-    protected override void Fired()
+    protected internal override void DoFire()
+    {
+        base.DoFire();
+        if (burstInterval > 0 || burstDelay > 0)
+            ThreadManager.StartCoroutine(DoParticleFireCo());
+        else
+            DoParticleFireNow();
+    }
+
+    protected internal override void Fired()
     {
         base.Fired();
         reloadRemain = reloadTime;
@@ -199,11 +203,11 @@ public class VPParticleWeapon : VehicleWeaponBase
     {
         uint seed = (uint)UnityEngine.Random.Range(int.MinValue, int.MaxValue);
         if (!SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer)
-            SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageParticleWeaponFire>().Setup(vehicle.entity.entityId, (rotator != null && rotator.HorRotTrans != null) ? rotator.HorRotTrans.localEulerAngles.y : 0, (rotator != null && rotator.VerRotTrans != null) ? rotator.VerRotTrans.localEulerAngles.x : 0, seat, slot, count, seed));
+            SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageParticleWeaponFire>().Setup(vehicle.entity.entityId, (rotator != null && rotator.HorRotTrans != null) ? rotator.HorRotTrans.localEulerAngles.y : 0, (rotator != null && rotator.VerRotTrans != null) ? rotator.VerRotTrans.localEulerAngles.x : 0, seat, slot, UserData, count, seed));
         else
         {
             if(SingletonMonoBehaviour<ConnectionManager>.Instance.ClientCount() > 0)
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageParticleWeaponFire>().Setup(vehicle.entity.entityId, (rotator != null && rotator.HorRotTrans != null) ? rotator.HorRotTrans.localEulerAngles.y : 0, (rotator != null && rotator.VerRotTrans != null) ? rotator.VerRotTrans.localEulerAngles.x : 0, seat, slot, count, seed));
+                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageParticleWeaponFire>().Setup(vehicle.entity.entityId, (rotator != null && rotator.HorRotTrans != null) ? rotator.HorRotTrans.localEulerAngles.y : 0, (rotator != null && rotator.VerRotTrans != null) ? rotator.VerRotTrans.localEulerAngles.x : 0, seat, slot, UserData, count, seed));
             DoParticleFireClient(count, seed);
         }
         PlayFiringSound();

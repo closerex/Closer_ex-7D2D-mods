@@ -16,9 +16,6 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
     protected int slot = int.MaxValue;
     protected FiringJuncture timing;
     protected bool pressed = false;
-    protected VehicleWeaponBase cycleNext = null;
-    protected float cycleInterval;
-    protected float cycleCooldown = 0f;
     protected bool activated = true;
     protected bool enabled;
     protected Transform enableTrans = null;
@@ -35,7 +32,6 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
         OnTarget,
         FirstShot,
         FirstShotOnTarget,
-        Cycle,
         FromSlotKey,
         FromSlotKeyOnTarget
     }
@@ -43,9 +39,9 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
     public bool Activated { get => activated; }
     public bool Enabled { get => enabled; }
     public VehicleWeaponRotatorBase Rotator { get => rotator; }
-    public int Seat { get => seat; }
+    public int Seat { get => seat; protected internal set => seat = value; }
     public int Slot { get => slot; set => slot = value; }
-    public bool IsCurCycle { get; set; } = false;
+    public List<int> UserData { get; } = new List<int>();
 
     public override void SetProperties(DynamicProperties _properties)
     {
@@ -92,10 +88,6 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
         timing = FiringJuncture.Anytime;
         if (!string.IsNullOrEmpty(str))
             Enum.TryParse<FiringJuncture>(str, true, out timing);
-
-        cycleInterval = 0;
-        properties.ParseFloat("cycleInterval", ref cycleInterval);
-        cycleInterval = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "cycleInterval", cycleInterval.ToString()));
 
         ParseEffectGroups(vehicleValue, this, name);
         if (rotator != null)
@@ -149,34 +141,12 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
             rotator.SetWeapon(this);
     }
 
-    public virtual void SetupWeaponConnections(in List<VehicleWeaponBase> weapons)
+    public virtual void InitWeaponConnections(IEnumerable<VehicleWeaponBase> weapons)
     {
-        if (timing != FiringJuncture.Cycle)
-            return;
-
-        int nextIndex = -1;
-        properties.ParseInt("cycleNextSlot", ref nextIndex);
-        if(nextIndex < 0 || nextIndex >= weapons.Count)
-        {
-            Log.Error("cycle index out of range!");
-            return;
-        }
-        cycleNext = weapons[nextIndex];
-        if (nextIndex < slot)
-            cycleNext.IsCurCycle = true;
-    }
-
-    public virtual void SetCurCycle()
-    {
-        IsCurCycle = true;
-        cycleCooldown = cycleInterval;
     }
 
     public override void NoPauseUpdate(float _dt)
     {
-        if (IsCurCycle && cycleCooldown > 0)
-            cycleCooldown -= _dt;
-
         if (rotator != null)
             rotator.NoPauseUpdate(_dt);
     }
@@ -187,7 +157,7 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
             rotator.NoGUIUpdate(_dt);
     }
 
-    public virtual void NetSyncUpdate(float horRot, float verRot)
+    public virtual void NetSyncUpdate(float horRot, float verRot, Stack<int> userData)
     {
         if (rotator != null)
             rotator.NetSyncUpdate(horRot, verRot);
@@ -209,13 +179,13 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
         OnDeactivated();
     }
 
-    protected virtual void OnActivated()
+    protected internal virtual void OnActivated()
     {
         if (rotator != null)
             rotator.CreatePreview();
     }
 
-    protected virtual void OnDeactivated()
+    protected internal virtual void OnDeactivated()
     {
         if (rotator != null)
             rotator.DestroyPreview();
@@ -256,14 +226,15 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
 
     public void DoFireLocal(ref bool firstShot, bool isRelease, bool fromSlot = false)
     {
-        if(DoFire(firstShot, isRelease, fromSlot))
+        if(CanFire(firstShot, isRelease, fromSlot))
         {
             firstShot = false;
+            DoFire();
             Fired();
         }
     }
 
-    protected virtual bool DoFire(bool firstShot, bool isRelease, bool fromSlot)
+    protected internal virtual bool CanFire(bool firstShot, bool isRelease, bool fromSlot)
     {
         if (!activated || !enabled)
             return false;
@@ -291,10 +262,6 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
                 else if (rotator != null && !rotator.OnTarget)
                     goto notOnTarget;
                 break;
-            case FiringJuncture.Cycle:
-                if (cycleNext == null || !IsCurCycle || cycleCooldown > 0)
-                    return false;
-                break;
             case FiringJuncture.FromSlotKey:
                 if (!fromSlot)
                     return false;
@@ -314,13 +281,12 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
         return false;
     }
 
-    protected virtual void Fired()
+    protected internal virtual void DoFire()
     {
-        if (timing == FiringJuncture.Cycle)
-        {
-            IsCurCycle = false;
-            cycleNext.SetCurCycle();
-        }
+    }
+
+    protected internal virtual void Fired()
+    {
         player.MinEventContext.ItemValue = ItemValue.None.Clone();
         player.FireEvent(MinEventTypes.onSelfRangedBurstShot, false);
         effects.FireEvent(MinEventTypes.onSelfRangedBurstShot, player.MinEventContext);

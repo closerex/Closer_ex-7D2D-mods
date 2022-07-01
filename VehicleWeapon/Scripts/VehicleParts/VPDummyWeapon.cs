@@ -52,16 +52,12 @@ public class VPDummyWeapon : VehicleWeaponBase
         }
     }
 
-    public override void SetupWeaponConnections(in List<VehicleWeaponBase> weapons)
-    {
-    }
-
-    protected override bool DoFire(bool firstShot, bool isRelease, bool fromSlot)
+    protected internal override bool CanFire(bool firstShot, bool isRelease, bool fromSlot)
     {
         return false;
     }
 
-    protected override void Fired()
+    protected internal override void Fired()
     {
 
     }

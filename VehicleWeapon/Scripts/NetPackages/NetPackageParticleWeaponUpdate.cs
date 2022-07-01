@@ -1,20 +1,22 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
-public class NetPackageParticleWeaponUpdate : NetPackage
+public class NetPackageWeaponRotatorUpdate : NetPackage
 {
-    public NetPackageParticleWeaponUpdate Setup(int entityId, float horRot, float verRot, int seat, int slot)
+    public NetPackageWeaponRotatorUpdate Setup(int entityId, float horRot, float verRot, int seat, int slot, IEnumerable<int> userData)
     {
         this.entityId = entityId;
         this.horEuler = horRot;
         this.verEuler = verRot;
         this.seat = seat;
         this.slot = slot;
+        this.userDataWrite = new List<int>(userData);
         return this;
     }
 
     public override int GetLength()
     {
-        return 40;
+        return 60;
     }
 
     public override void ProcessPackage(World _world, GameManager _callbacks)
@@ -28,8 +30,8 @@ public class NetPackageParticleWeaponUpdate : NetPackage
             var manager = entity.GetVehicle().FindPart(VPWeaponManager.VehicleWeaponManagerName) as VPWeaponManager;
             var player = entity.GetAttached(seat);
             if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && player)
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageParticleWeaponUpdate>().Setup(entityId, horEuler, verEuler, seat, slot), false, -1, player.entityId);
-            manager.NetSyncUpdate(seat, slot, horEuler, verEuler);
+                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageWeaponRotatorUpdate>().Setup(entityId, horEuler, verEuler, seat, slot, userDataRead), false, -1, player.entityId);
+            manager.NetSyncUpdate(seat, slot, horEuler, verEuler, userDataRead);
         }
     }
 
@@ -40,6 +42,10 @@ public class NetPackageParticleWeaponUpdate : NetPackage
         verEuler = _reader.ReadSingle();
         seat = _reader.ReadByte();
         slot = _reader.ReadByte();
+        int userDataCount = _reader.ReadByte();
+        userDataRead = new Stack<int>(userDataCount);
+        for(int i = 0; i < userDataCount; i++)
+            userDataRead.Push(_reader.ReadInt32());
     }
 
     public override void write(PooledBinaryWriter _writer)
@@ -50,6 +56,9 @@ public class NetPackageParticleWeaponUpdate : NetPackage
         _writer.Write(verEuler);
         _writer.Write((byte)seat);
         _writer.Write((byte)slot);
+        _writer.Write(userDataWrite.Count);
+        for (int i = userDataWrite.Count - 1; i >= 0; --i)
+            _writer.Write(userDataWrite[i]);
     }
 
     protected int entityId;
@@ -57,5 +66,7 @@ public class NetPackageParticleWeaponUpdate : NetPackage
     protected float verEuler;
     protected int seat;
     protected int slot;
+    protected Stack<int> userDataRead;
+    protected List<int> userDataWrite;
 }
 

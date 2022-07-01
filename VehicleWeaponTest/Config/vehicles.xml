@@ -38,7 +38,7 @@
 				<property name="seat" value="0"/>
 				<!-- priority of this weapon /-->
 				<!-- default: int.MaxValue; this is set to the actual index in the weapon list, which is sorted by this value /-->
-				<property name="slot" value="2"/>
+				<property name="slot" value="1"/>
 				<!-- how many rounds to emit in one cycle; /-->
 				<!-- default: 1 /-->
 				<property name="burstCount" value="2"/>
@@ -170,55 +170,55 @@
 				<property name="previewTypeBlock" value="Cube"/>
 			</property>
 
-			<property class="WeaponLaser01">
-				<property name="class" value="ParticleWeapon,VehicleWeapon"/>
-				<property name="seat" value="0"/>
-				<property name="slot" value="1"/>
-				<property name="burstCount" value="1"/>
-				<property name="burstInterval" value="0"/>
-				<property name="burstRepeat" value="1"/>
-				<property name="reloadTime" value="0.5"/>
-				<property name="fullauto" value="true"/>
-				<property name="burstDelay" value="0"/>
-				<property name="ammo" value="ammo9mmBulletBall"/>
-				<property name="particleIndex" value="#@modfolder:Resources/plasmaExplosion.unity3d?Plasma_Hit_FX_v1$itemPlasmaSmall"/>
-				<property name="explodeOnCollision" value="true"/>
-				<property name="explodeOnDeath" value="false"/>
-				<property name="fireSound" value="plasma_shoot"/>
-				<property name="emptySound" value="dryfire"/>
-				<property name="notReadySound" value="medic_module_toggle_off"/>
-				<property name="notOnTargetSound" value="ui_denied"/>
-				<property name="activationSound" value="flashlight_toggle"/>
-				<property name="deactivationSound" value="flashlight_toggle"/>
-				<property name="particle_transform" value="HornWeapon/LaserTower01/Laser_tower_v1_arm/Laser_tower_v1_laser/Plasma_bullet"/>
-				<property name="fireWhen" value="Cycle"/>
-				<property name="cycleNextSlot" value="0"/>
-				<property name="cycleInterval" value="0.25"/>
-			</property>
-			
-			<property class="WeaponLaser02">
-				<property name="class" value="ParticleWeapon,VehicleWeapon"/>
+			<property class="WeaponLaserCycle">
+				<property name="class" value="CycleFireWeapon,VehicleWeapon"/>
 				<property name="seat" value="0"/>
 				<property name="slot" value="0"/>
-				<property name="burstCount" value="1"/>
-				<property name="burstInterval" value="0"/>
-				<property name="burstRepeat" value="1"/>
-				<property name="reloadTime" value="0.5"/>
-				<property name="fullauto" value="true"/>
-				<property name="ammo" value="ammo9mmBulletBall"/>
-				<property name="particleIndex" value="#@modfolder:Resources/plasmaExplosion.unity3d?Plasma_Hit_FX_v1$itemPlasmaSmall"/>
-				<property name="explodeOnCollision" value="true"/>
-				<property name="explodeOnDeath" value="false"/>
-				<property name="fireSound" value="plasma_shoot"/>
-				<property name="emptySound" value="dryfire"/>
-				<property name="notReadySound" value="medic_module_toggle_off"/>
-				<property name="notOnTargetSound" value="ui_denied"/>
-				<property name="activationSound" value="flashlight_toggle"/>
-				<property name="deactivationSound" value="flashlight_toggle"/>
-				<property name="particle_transform" value="HornWeapon/LaserTower02/Laser_tower_v1_arm/Laser_tower_v1_laser/Plasma_bullet"/>
-				<property name="fireWhen" value="Cycle"/>
-				<property name="cycleNextSlot" value="1"/>
 				<property name="cycleInterval" value="0.25"/>
+				<property class="WeaponLaser01">
+					<property name="class" value="ParticleWeapon,VehicleWeapon"/>
+					<property name="seat" value="0"/>
+					<property name="slot" value="1"/>
+					<property name="burstCount" value="1"/>
+					<property name="burstInterval" value="0"/>
+					<property name="burstRepeat" value="1"/>
+					<property name="reloadTime" value="0.5"/>
+					<property name="fullauto" value="true"/>
+					<property name="burstDelay" value="0"/>
+					<property name="ammo" value="ammo9mmBulletBall"/>
+					<property name="particleIndex" value="#@modfolder:Resources/plasmaExplosion.unity3d?Plasma_Hit_FX_v1$itemPlasmaSmall"/>
+					<property name="explodeOnCollision" value="true"/>
+					<property name="explodeOnDeath" value="false"/>
+					<property name="fireSound" value="plasma_shoot"/>
+					<property name="emptySound" value="dryfire"/>
+					<property name="notReadySound" value="medic_module_toggle_off"/>
+					<property name="notOnTargetSound" value="ui_denied"/>
+					<property name="activationSound" value="flashlight_toggle"/>
+					<property name="deactivationSound" value="flashlight_toggle"/>
+					<property name="particle_transform" value="HornWeapon/LaserTower01/Laser_tower_v1_arm/Laser_tower_v1_laser/Plasma_bullet"/>
+				</property>
+				
+				<property class="WeaponLaser02">
+					<property name="class" value="ParticleWeapon,VehicleWeapon"/>
+					<property name="seat" value="0"/>
+					<property name="slot" value="0"/>
+					<property name="burstCount" value="1"/>
+					<property name="burstInterval" value="0"/>
+					<property name="burstRepeat" value="1"/>
+					<property name="reloadTime" value="0.5"/>
+					<property name="fullauto" value="true"/>
+					<property name="ammo" value="ammo9mmBulletBall"/>
+					<property name="particleIndex" value="#@modfolder:Resources/plasmaExplosion.unity3d?Plasma_Hit_FX_v1$itemPlasmaSmall"/>
+					<property name="explodeOnCollision" value="true"/>
+					<property name="explodeOnDeath" value="false"/>
+					<property name="fireSound" value="plasma_shoot"/>
+					<property name="emptySound" value="dryfire"/>
+					<property name="notReadySound" value="medic_module_toggle_off"/>
+					<property name="notOnTargetSound" value="ui_denied"/>
+					<property name="activationSound" value="flashlight_toggle"/>
+					<property name="deactivationSound" value="flashlight_toggle"/>
+					<property name="particle_transform" value="HornWeapon/LaserTower02/Laser_tower_v1_arm/Laser_tower_v1_laser/Plasma_bullet"/>
+				</property>
 			</property>
 			
 			<property class="battery">
