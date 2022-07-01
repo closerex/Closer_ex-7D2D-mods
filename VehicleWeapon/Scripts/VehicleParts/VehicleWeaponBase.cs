@@ -68,6 +68,8 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
         if (enableTrans)
             enableTrans.gameObject.SetActive(enabled);
 
+        properties.ParseFloat("cycleInterval", ref cycleInterval);
+
         player = GameManager.Instance.World.GetPrimaryPlayer();
     }
 
@@ -116,7 +118,6 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
             return;
         }
         cycleNext = weapons[nextIndex];
-        properties.ParseFloat("cycleInterval", ref cycleInterval);
         if (nextIndex < slot)
             cycleNext.IsCurCycle = true;
     }
