@@ -73,6 +73,7 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
 
     public override void ApplyModEffect(ItemValue vehicleValue)
     {
+        base.ApplyModEffect(vehicleValue);
         string name = GetModName();
         enabled = bool.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "enabled", enabled.ToString()));
         if (enableTrans)

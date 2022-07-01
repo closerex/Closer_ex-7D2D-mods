@@ -56,6 +56,7 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
 
     public override void ApplyModEffect(ItemValue vehicleValue)
     {
+        base.ApplyModEffect(vehicleValue);
         string name = GetModName();
         verticleMaxRotation = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "verticleMaxRotation", verticleMaxRotation.ToString()));
         verticleMinRotation = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "verticleMinRotation", verticleMinRotation.ToString()));

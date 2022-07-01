@@ -108,6 +108,7 @@
     <Compile Include="Scripts\VehicleParts\VPDummyWeapon.cs" />
     <Compile Include="Scripts\VehicleParts\VPHorizontalWeaponRotator.cs" />
     <Compile Include="Scripts\VehicleParts\VPParticleWeapon.cs" />
+    <Compile Include="Scripts\VehicleParts\VPRaycastWeapon.cs" />
     <Compile Include="Scripts\VehicleParts\VPVerticalWeaponRotator.cs" />
     <Compile Include="Scripts\VehicleParts\VPWeaponManager.cs" />
     <Compile Include="Scripts\VehicleParts\VPParticleWeaponRotator.cs" />

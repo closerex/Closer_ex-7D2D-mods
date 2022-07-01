@@ -75,6 +75,7 @@ public class VPWeaponManager : VehiclePart
 
     protected virtual void ParseModProperties(ItemValue vehicleValue)
     {
+        SetProperties(properties);
         cameraOffset = StringParsers.ParseVector3(vehicleValue.GetVehicleWeaponPropertyOverride(vehicle.GetName() + "_" + tag, "cameraOffset", cameraOffset.ToString()));
     }
 
