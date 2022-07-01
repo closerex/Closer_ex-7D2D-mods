@@ -8,6 +8,13 @@ public class VPCycleFireWeapon : VehicleWeaponBase
     protected float cycleCooldown = 0f;
     protected int curCycleIndex = 0;
 
+    public override void AddUserData(int data)
+    {
+        foreach(var weapon in cycleArray)
+            weapon.AddUserData(data);
+        base.AddUserData(data);
+    }
+
     public override void SetProperties(DynamicProperties _properties)
     {
         base.SetProperties(_properties);
@@ -70,9 +77,8 @@ public class VPCycleFireWeapon : VehicleWeaponBase
         {
             weapon.Seat = seat;
             weapon.Slot = slot;
-            weapon.UserData.Add(i++);
+            weapon.AddUserData(i++);
         }
-        UserData.Add(0);
 
         foreach (var weapon in cycleArray)
             weapon.InitWeaponConnections(cycleArray);
@@ -144,9 +150,11 @@ public class VPCycleFireWeapon : VehicleWeaponBase
 
     public override void NetSyncUpdate(float horRot, float verRot, Stack<int> userData)
     {
-        int data = userData.Pop();
-        if (data > 0)
+        if (userData != null && userData.Count > 0)
+        {
+            int data = userData.Pop();
             cycleArray[data - 1].NetSyncUpdate(horRot, verRot, userData);
+        }
         else
             base.NetSyncUpdate(horRot, verRot, userData);
     }

@@ -10,13 +10,14 @@ public class NetPackageWeaponRotatorUpdate : NetPackage
         this.verEuler = verRot;
         this.seat = seat;
         this.slot = slot;
-        this.userDataWrite = new List<int>(userData);
+        if(userData != null)
+            this.userDataWrite = new List<int>(userData);
         return this;
     }
 
     public override int GetLength()
     {
-        return 60;
+        return 41 + userDataWrite.Count * 4;
     }
 
     public override void ProcessPackage(World _world, GameManager _callbacks)
@@ -43,9 +44,12 @@ public class NetPackageWeaponRotatorUpdate : NetPackage
         seat = _reader.ReadByte();
         slot = _reader.ReadByte();
         int userDataCount = _reader.ReadByte();
-        userDataRead = new Stack<int>(userDataCount);
-        for(int i = 0; i < userDataCount; i++)
-            userDataRead.Push(_reader.ReadInt32());
+        if(userDataCount > 0)
+        {
+            userDataRead = new Stack<int>(userDataCount);
+            for(int i = 0; i < userDataCount; i++)
+                userDataRead.Push(_reader.ReadInt32());
+        }
     }
 
     public override void write(PooledBinaryWriter _writer)
@@ -56,9 +60,14 @@ public class NetPackageWeaponRotatorUpdate : NetPackage
         _writer.Write(verEuler);
         _writer.Write((byte)seat);
         _writer.Write((byte)slot);
-        _writer.Write(userDataWrite.Count);
-        for (int i = userDataWrite.Count - 1; i >= 0; --i)
-            _writer.Write(userDataWrite[i]);
+        if (userDataWrite == null || userDataWrite.Count <= 0)
+            _writer.Write((byte)0);
+        else
+        {
+            _writer.Write((byte)userDataWrite.Count);
+            for (int i = userDataWrite.Count - 1; i >= 0; --i)
+                _writer.Write(userDataWrite[i]);
+        }
     }
 
     protected int entityId;

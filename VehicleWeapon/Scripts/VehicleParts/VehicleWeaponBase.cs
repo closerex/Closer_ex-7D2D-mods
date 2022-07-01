@@ -43,6 +43,11 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
     public int Slot { get => slot; set => slot = value; }
     public List<int> UserData { get; } = new List<int>();
 
+    public virtual void AddUserData(int data)
+    {
+        UserData.Add(data);
+    }
+
     public override void SetProperties(DynamicProperties _properties)
     {
         base.SetProperties(_properties);

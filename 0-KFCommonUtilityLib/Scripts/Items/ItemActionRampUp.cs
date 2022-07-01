@@ -38,7 +38,9 @@ public class ItemActionRampUp : ItemActionHoldOpen
                 _rampData.prepareStartTime = Time.time;
                 _rampData.invData.holdingEntity.PlayOneShot(_rampData.prepareSound);
                 setAnimatorBool(_rampData.invData.holdingEntity, "prepare", true);
-            }else
+                setAnimatorFloat(_rampData.invData.holdingEntity, "prepareSpeed", _rampData.prepareSpeed);
+            }
+            else
                 ResetRamp(_rampData);
         }
     }
@@ -112,6 +114,7 @@ public class ItemActionRampUp : ItemActionHoldOpen
         originalValue = 0.ToString();
         Properties.ParseString("PrepareTime", ref originalValue);
         _rampData.prepareTime = float.Parse(_rampData.invData.itemValue.GetPropertyOverride("PrepareTime", originalValue));
+        _rampData.prepareSpeed = float.Parse(originalValue) / _rampData.prepareTime;
 
         originalValue = string.Empty;
         Properties.ParseString("PrepareSound", ref originalValue);
@@ -127,6 +130,7 @@ public class ItemActionRampUp : ItemActionHoldOpen
         public float maxMultiplier = 1f;
         public float rampTime = 0f;
         public float prepareTime = 0f;
+        public float prepareSpeed = 1f;
         public string rampSound = string.Empty;
         public string prepareSound = string.Empty;
         public int minRampShots = 1;

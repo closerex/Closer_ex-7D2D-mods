@@ -93,7 +93,6 @@
 														 OnTarget(if rotator exists, only horn when rotator is aimed),
 														 FirstShot(when no weapon on this seat horned prior to this one),
 														 FirstShotOnTarget(combination of OnTarget and FirstShot),
-														 Cycle(firing in a cycle with other weapons)
 														 FromSlotKey(firing only when pressing slot key)
 														 FromSlotKeyOnTarget(combination of OnTarget and FromSlotKey)/-->
 				<property name="fireWhen" value="FromSlotKeyOnTarget"/>

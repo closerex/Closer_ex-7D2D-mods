@@ -29,6 +29,16 @@ public class ItemActionHoldOpen : ItemActionRanged
         }
     }
 
+    public void setAnimatorFloat(EntityAlive holdingEntity, string parameter, float value)
+    {
+        Animator animator = getAnimator(holdingEntity);
+        if (animator)
+        {
+            animator.SetFloat(parameter, value);
+            //Log.Out("trying to set param: " + parameter + " flag: " + flag + " result: " + getAnimatorBool(holdingEntity, parameter) + " transform: " + animator.transform.name);
+        }
+    }
+
     protected override int getUserData(ItemActionData _actionData)
     {
         return _actionData.invData.itemValue.Meta <= 0 ? 1 : 0;
