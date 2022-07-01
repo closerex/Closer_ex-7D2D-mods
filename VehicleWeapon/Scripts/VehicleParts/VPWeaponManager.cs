@@ -38,16 +38,10 @@ public class VPWeaponManager : VehiclePart
         {
             if (weapons != null)
             {
-                weapons.Sort(new WeaponSlotComparer());
-                int i = 0;
-                foreach (var weapon in weapons)
-                    weapon.Slot = i++;
+                SortWeapons(weapons);
 
                 foreach (var weapon in weapons)
-                {
-                    weapon.ApplyModEffect(vehicle.GetUpdatedItemValue());
                     weapon.SetupWeaponConnections(weapons);
-                }
             }
         }
     }
@@ -62,6 +56,8 @@ public class VPWeaponManager : VehiclePart
             {
                 foreach (var weapon in weapons)
                     weapon.ApplyModEffect(vehicleValue);
+
+                SortWeapons(weapons);
             }
         }
 
@@ -176,10 +172,24 @@ public class VPWeaponManager : VehiclePart
             (list_weapons[seat][slot] as VPParticleWeapon)?.DoParticleFireClient(count, seed);
     }
 
+    protected void SortWeapons(List<VehicleWeaponBase> weapons)
+    {
+        weapons.Sort(new WeaponSlotComparer());
+        int i = 0;
+        foreach (var weapon in weapons)
+            weapon.Slot = i++;
+    }
+
     public class WeaponSlotComparer : IComparer<VehicleWeaponBase>
     {
         public int Compare(VehicleWeaponBase weapon1, VehicleWeaponBase weapon2)
         {
+            if (weapon1.Enabled && !weapon2.Enabled)
+                return -1;
+            else if (!weapon1.Enabled && weapon2.Enabled)
+                return 1;
+            else if (!weapon1.Enabled && !weapon2.Enabled)
+                return 0;
             return weapon1.Slot - weapon2.Slot;
         }
     }
