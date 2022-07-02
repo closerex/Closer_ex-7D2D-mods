@@ -3,7 +3,7 @@
 public class VPHorizontalWeaponRotator : VehicleWeaponRotatorBase
 {
     protected VehicleWeaponRotatorBase verRotator;
-    public override Transform VerRotTrans => verRotator?.HorRotTrans;
+    public override Transform VerRotTrans => verRotator?.VerRotTrans;
     public override void InitPrefabConnections()
     {
         base.InitPrefabConnections();

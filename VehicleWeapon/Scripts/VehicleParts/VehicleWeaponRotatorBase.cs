@@ -132,10 +132,10 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
 
     public void NetSyncUpdate(float horRot, float verRot)
     {
-        if(horRotTrans != null)
-            horRotTrans.localEulerAngles = new Vector3(horRotTrans.localEulerAngles.x, horRot, horRotTrans.localEulerAngles.z);
-        if(verRotTrans != null)
-            verRotTrans.localEulerAngles = new Vector3(verRot, verRotTrans.localEulerAngles.y, verRotTrans.localEulerAngles.z);
+        if(HorRotTrans != null)
+            HorRotTrans.localEulerAngles = new Vector3(HorRotTrans.localEulerAngles.x, horRot, HorRotTrans.localEulerAngles.z);
+        if(VerRotTrans != null)
+            VerRotTrans.localEulerAngles = new Vector3(verRot, VerRotTrans.localEulerAngles.y, VerRotTrans.localEulerAngles.z);
     }
 
     protected virtual void CalcCurRotation(float _dt)
