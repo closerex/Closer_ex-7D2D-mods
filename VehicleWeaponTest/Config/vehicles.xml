@@ -169,6 +169,8 @@
 				<property name="class" value="CycleFireWeapon,VehicleWeapon"/>
 				<property name="seat" value="0"/>
 				<property name="slot" value="0"/>
+				<property name="activationSound" value="flashlight_toggle"/>
+				<property name="deactivationSound" value="flashlight_toggle"/>
 				<!-- interval between switching current weapon. -->
 				<!-- default: 0 -->
 				<property name="cycleInterval" value="0.25"/>
@@ -192,8 +194,6 @@
 					<property name="emptySound" value="dryfire"/>
 					<property name="notReadySound" value="medic_module_toggle_off"/>
 					<property name="notOnTargetSound" value="ui_denied"/>
-					<property name="activationSound" value="flashlight_toggle"/>
-					<property name="deactivationSound" value="flashlight_toggle"/>
 					<property name="particle_transform" value="HornWeapon/LaserTower01/Laser_tower_v1_arm/Laser_tower_v1_laser/Plasma_bullet"/>
 				</property>
 				
@@ -213,8 +213,6 @@
 					<property name="emptySound" value="dryfire"/>
 					<property name="notReadySound" value="medic_module_toggle_off"/>
 					<property name="notOnTargetSound" value="ui_denied"/>
-					<property name="activationSound" value="flashlight_toggle"/>
-					<property name="deactivationSound" value="flashlight_toggle"/>
 					<property name="particle_transform" value="HornWeapon/LaserTower02/Laser_tower_v1_arm/Laser_tower_v1_laser/Plasma_bullet"/>
 				</property>
 				
@@ -239,8 +237,6 @@
 						<property name="emptySound" value="dryfire"/>
 						<property name="notReadySound" value="medic_module_toggle_off"/>
 						<property name="notOnTargetSound" value="ui_denied"/>
-						<property name="activationSound" value="flashlight_toggle"/>
-						<property name="deactivationSound" value="flashlight_toggle"/>
 						<property name="particle_transform" value="HornWeapon/Cannon/Basement/Turret/LeftBarrel/ShootPoint"/>
 						<property name="rotator" value="CannonLeftBarrelVerRotator"/>
 					</property>
@@ -261,8 +257,6 @@
 						<property name="emptySound" value="dryfire"/>
 						<property name="notReadySound" value="medic_module_toggle_off"/>
 						<property name="notOnTargetSound" value="ui_denied"/>
-						<property name="activationSound" value="flashlight_toggle"/>
-						<property name="deactivationSound" value="flashlight_toggle"/>
 						<property name="particle_transform" value="HornWeapon/Cannon/Basement/Turret/RightBarrel/ShootPoint"/>
 						<property name="rotator" value="CannonRightBarrelVerRotator"/>
 					</property>
@@ -282,6 +276,7 @@
 				<property name="class" value="VerticalWeaponRotator,VehicleWeapon"/>
 				<property name="transform" value="HornWeapon/Cannon/Basement"/>
 				<property name="verRotationTransform" value="HornWeapon/Cannon/Basement/Turret/LeftBarrel"/>
+				<property name="indicatorTransform" value="HornWeapon/Cannon/Basement/Turret/LeftBarrel/Trajectory"/>
 				<property name="verticleMaxRotation" value="45"/>
 				<property name="verticleMinRotation" value="-15"/>
 				<property name="verticleRotationSpeed" value="10"/>
@@ -292,6 +287,7 @@
 				<property name="class" value="VerticalWeaponRotator,VehicleWeapon"/>
 				<property name="transform" value="HornWeapon/Cannon/Basement"/>
 				<property name="verRotationTransform" value="HornWeapon/Cannon/Basement/Turret/RightBarrel"/>
+				<property name="indicatorTransform" value="HornWeapon/Cannon/Basement/Turret/RightBarrel/Trajectory"/>
 				<property name="verticleMaxRotation" value="45"/>
 				<property name="verticleMinRotation" value="-15"/>
 				<property name="verticleRotationSpeed" value="10"/>

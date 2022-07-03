@@ -232,7 +232,7 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
             rotator.NoGUIUpdate(_dt);
     }
 
-    protected virtual void NetSyncUpdate(bool forced = false)
+    protected void NetSyncUpdate(bool forced = false)
     {
         if(forced || ShouldNetSyncUpdate())
         {
@@ -261,7 +261,7 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
 
     public override void NetSyncRead(PooledBinaryReader _br)
     {
-        if (rotator != null)
+        if (rotator != null && _br != null)
             rotator.NetSyncRead(_br);
     }
 

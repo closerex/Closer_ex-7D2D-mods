@@ -101,6 +101,7 @@
     <Compile Include="Scripts\NetPackages\NetPackageVehicleWeaponFire.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageVehicleWeaponUpdate.cs" />
     <Compile Include="Scripts\Utilities\ItemValueExtension.cs" />
+    <Compile Include="Scripts\Utilities\VehicleExtension.cs" />
     <Compile Include="Scripts\VehicleParts\VehicleWeaponHitposPreviewRotatorBase.cs" />
     <Compile Include="Scripts\VehicleParts\VehicleWeaponPartBase.cs" />
     <Compile Include="Scripts\VehicleParts\VehicleWeaponProjectileRotatorBase.cs" />

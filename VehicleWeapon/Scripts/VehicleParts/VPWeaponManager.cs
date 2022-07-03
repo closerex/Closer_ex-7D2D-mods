@@ -9,7 +9,7 @@ public class VPWeaponManager : VehiclePart
     public static readonly string VehicleWeaponManagerName = "vehicleWeaponManager";
     private int localPlayerSeat = -1;
     protected EntityPlayerLocal player = null;
-    protected Vector3 cameraOffset;
+    protected Vector3[] cameraOffsets;
     public static Vector3 CameraOffset { get; private set; } = Vector3.zero;
 
     public override void SetProperties(DynamicProperties _properties)
@@ -23,8 +23,9 @@ public class VPWeaponManager : VehiclePart
     {
         base.InitPrefabConnections();
         var parts = vehicle.GetParts();
-        int seats = vehicle.entity.GetAttachMaxCount();
+        int seats = vehicle.GetTotalSeats();
         list_weapons = new List<VehicleWeaponBase>[seats];
+        cameraOffsets = new Vector3[seats];
         foreach (var part in parts)
         {
             if (part is VehicleWeaponBase weapon)
@@ -72,9 +73,13 @@ public class VPWeaponManager : VehiclePart
 
     protected virtual void ParseModProperties(ItemValue vehicleValue)
     {
-        cameraOffset = Vector3.up * 2;
-        properties.ParseVec("cameraOffset", ref cameraOffset);
-        cameraOffset = StringParsers.ParseVector3(vehicleValue.GetVehicleWeaponPropertyOverride(vehicle.GetName() + "_" + tag, "cameraOffset", cameraOffset.ToString()));
+        for (int i = 0; i < cameraOffsets.Length; i++)
+        {
+            Vector3 cameraOffset = Vector3.up * 2;
+            string str = "cameraOffset" + i;
+            properties.ParseVec(str, ref cameraOffset);
+            cameraOffsets[i] = StringParsers.ParseVector3(vehicleValue.GetVehicleWeaponPropertyOverride(vehicle.GetName() + "_" + tag, str, cameraOffset.ToString()));
+        }
     }
 
     public override void Update(float _dt)
@@ -106,7 +111,7 @@ public class VPWeaponManager : VehiclePart
     {
         if (list_weapons[seat] != null)
         {
-            if (updateData != null)
+            if (updateData != null && updateData.Length > 0)
             {
                 using (PooledBinaryReader _br = MemoryPools.poolBinaryReader.AllocSync(true))
                 {
@@ -122,7 +127,7 @@ public class VPWeaponManager : VehiclePart
         }
     }
 
-    internal virtual void OnPlayerEnter(int seat)
+    public virtual void OnPlayerEnter(int seat)
     {
         PlayerActionsVehicleWeapon.Instance.Enabled = true;
         localPlayerSeat = seat;
@@ -130,11 +135,11 @@ public class VPWeaponManager : VehiclePart
         {
             foreach (var weapon in list_weapons[localPlayerSeat])
                 weapon.OnPlayerEnter();
-            CameraOffset = cameraOffset;
+            CameraOffset = cameraOffsets[localPlayerSeat];
         }
     }
 
-    internal virtual void OnPlayerDetach()
+    public virtual void OnPlayerDetach()
     {
         PlayerActionsVehicleWeapon.Instance.Enabled = false;
         if (list_weapons[localPlayerSeat] != null)
@@ -144,20 +149,26 @@ public class VPWeaponManager : VehiclePart
         CameraOffset = Vector3.zero;
     }
 
-    public void HandleUserInput()
+    protected void HandleUserInput()
     {
         int userData = CheckFireState() ? 0 : 1;
         HandleWeaponUserInput(userData);
+        HandleCustomInput(userData);
     }
 
-    protected virtual void HandleWeaponUserInput(int userData)
+    protected void HandleWeaponUserInput(int userData)
     {
         foreach (VehicleWeaponBase weapon in list_weapons[localPlayerSeat])
             if (weapon.Enabled)
                 weapon.HandleUserInput(userData);
     }
 
-    protected virtual bool CheckFireState()
+    protected virtual void HandleCustomInput(int userData)
+    {
+
+    }
+
+    protected bool CheckFireState()
     {
         var fireState = PlayerActionsVehicleWeapon.Instance.FireShot;
         if (fireState.IsPressed || fireState.WasReleased)
@@ -186,7 +197,7 @@ public class VPWeaponManager : VehiclePart
     {
         if (list_weapons[seat] != null)
         {
-            if(data != null)
+            if(data != null && data.Length > 0)
             {
                 using (PooledBinaryReader _br = MemoryPools.poolBinaryReader.AllocSync(true))
                 {
@@ -211,14 +222,6 @@ public class VPWeaponManager : VehiclePart
     {
         public int Compare(VehicleWeaponBase weapon1, VehicleWeaponBase weapon2)
         {
-            /*
-            if (weapon1.Enabled && !weapon2.Enabled)
-                return -1;
-            else if (!weapon1.Enabled && weapon2.Enabled)
-                return 1;
-            else if (!weapon1.Enabled && !weapon2.Enabled)
-                return 0;
-            */
             return weapon1.Slot - weapon2.Slot;
         }
     }
