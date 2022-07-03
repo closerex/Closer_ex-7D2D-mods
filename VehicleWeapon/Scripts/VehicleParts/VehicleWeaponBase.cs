@@ -1,10 +1,22 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Xml;
 using UnityEngine;
 
 public class VehicleWeaponBase : VehicleWeaponPartBase
 {
+    protected int burstCount;
+    protected int burstRepeat;
+    protected float burstInterval;
+    protected float burstDelay;
+    protected float repeatInterval;
+    protected string emptySound;
+    protected string fireSound;
+    protected bool fullauto;
+    protected ItemValue ammoValue;
+
     protected bool hasOperator = false;
     protected EntityPlayerLocal player = null;
     protected string notReadySound;
@@ -26,6 +38,36 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
         PassivesIndex = new HashSet<PassiveEffects>(EffectManager.PassiveEffectsComparer)
     };
 
+    VPWeaponManager manager;
+    public bool IsCoRunning { get; private set; } = false;
+
+    public event Action<PooledBinaryWriter, VehicleWeaponBase> DynamicUpdateDataCreation
+    {
+        add => list_update_data_callbacks.Add(value);
+        remove => list_update_data_callbacks.Remove(value);
+    }
+
+    public event Action<PooledBinaryWriter, VehicleWeaponBase> DynamicFireDataCreation
+    {
+        add => list_fire_data_callbacks.Add(value);
+        remove => list_fire_data_callbacks.Remove(value);
+    }
+
+    protected internal List<Action<PooledBinaryWriter, VehicleWeaponBase>> list_update_data_callbacks = new List<Action<PooledBinaryWriter, VehicleWeaponBase>>();
+    protected internal List<Action<PooledBinaryWriter, VehicleWeaponBase>> list_fire_data_callbacks = new List<Action<PooledBinaryWriter, VehicleWeaponBase>>();
+
+    protected internal void InvokeUpdateCallbacks(PooledBinaryWriter _bw)
+    {
+        foreach (var handler in list_update_data_callbacks)
+            handler(_bw, this);
+    }
+
+    protected internal void InvokeFireCallbacks(PooledBinaryWriter _bw)
+    {
+        foreach (var handler in list_fire_data_callbacks)
+            handler(_bw, this);
+    }
+
     protected enum FiringJuncture
     {
         Anytime,
@@ -41,12 +83,6 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
     public VehicleWeaponRotatorBase Rotator { get => rotator; }
     public int Seat { get => seat; protected internal set => seat = value; }
     public int Slot { get => slot; set => slot = value; }
-    public List<int> UserData { get; } = new List<int>();
-
-    public virtual void AddUserData(int data)
-    {
-        UserData.Add(data);
-    }
 
     public override void SetProperties(DynamicProperties _properties)
     {
@@ -94,6 +130,37 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
         if (!string.IsNullOrEmpty(str))
             Enum.TryParse<FiringJuncture>(str, true, out timing);
 
+        burstCount = 1;
+        properties.ParseInt("burstCount", ref burstCount);
+        burstCount = int.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "burstCount", burstCount.ToString()));
+        burstInterval = 0f;
+        properties.ParseFloat("burstInterval", ref burstInterval);
+        burstInterval = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "burstInterval", burstInterval.ToString()));
+        burstRepeat = 1;
+        properties.ParseInt("burstRepeat", ref burstRepeat);
+        burstRepeat = int.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "burstRepeat", burstRepeat.ToString()));
+        burstDelay = 0f;
+        properties.ParseFloat("burstDelay", ref burstDelay);
+        burstDelay = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "burstDelay", burstDelay.ToString()));
+        repeatInterval = 0f;
+        properties.ParseFloat("repeatInterval", ref repeatInterval);
+        repeatInterval = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "repeatInterval", repeatInterval.ToString()));
+        fullauto = false;
+        properties.ParseBool("fullauto", ref fullauto);
+        fullauto = bool.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "fullauto", fullauto.ToString()));
+
+        str = null;
+        ammoValue = ItemValue.None.Clone();
+        properties.ParseString("ammo", ref str);
+        str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "ammo", str);
+        if (!string.IsNullOrEmpty(str))
+            ammoValue = ItemClass.GetItem(str, false);
+        properties.ParseString("emptySound", ref emptySound);
+        emptySound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "emptySound", emptySound);
+        properties.ParseString("fireSound", ref fireSound);
+        fireSound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "fireSound", fireSound);
+
+
         ParseEffectGroups(vehicleValue, this, name);
         if (rotator != null)
             rotator.ApplyModEffect(vehicleValue);
@@ -136,6 +203,7 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
     public override void InitPrefabConnections()
     {
         base.InitPrefabConnections();
+        manager = vehicle.FindPart(VPWeaponManager.VehicleWeaponManagerName) as VPWeaponManager;
 
         string rotatorName = null;
         properties.ParseString("rotator", ref rotatorName);
@@ -154,6 +222,8 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
     {
         if (rotator != null)
             rotator.NoPauseUpdate(_dt);
+
+        NetSyncUpdate();
     }
 
     public override void NoGUIUpdate(float _dt)
@@ -162,10 +232,43 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
             rotator.NoGUIUpdate(_dt);
     }
 
-    public virtual void NetSyncUpdate(float horRot, float verRot, Stack<int> userData)
+    protected virtual void NetSyncUpdate(bool forced = false)
+    {
+        if(forced || ShouldNetSyncUpdate())
+        {
+            using(PooledExpandableMemoryStream ms = MemoryPools.poolMemoryStream.AllocSync(true))
+            {
+                using(PooledBinaryWriter _bw = MemoryPools.poolBinaryWriter.AllocSync(true))
+                {
+                    _bw.SetBaseStream(ms);
+                    InvokeUpdateCallbacks(_bw);
+                    NetSyncWrite(_bw);
+                    byte[] updateData = ms.ToArray();
+                    if (ConnectionManager.Instance.IsServer && ConnectionManager.Instance.ClientCount() > 0)
+                        ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageVehicleWeaponUpdate>().Setup(vehicle.entity.entityId, seat, slot, updateData), false, -1, player.entityId, vehicle.entity.entityId, 75);
+                    else if (ConnectionManager.Instance.IsClient)
+                        ConnectionManager.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageVehicleWeaponUpdate>().Setup(vehicle.entity.entityId, seat, slot, updateData));
+                }
+            }
+
+        }
+    }
+
+    public override bool ShouldNetSyncUpdate()
+    {
+        return rotator != null && rotator.ShouldNetSyncUpdate() && ((ConnectionManager.Instance.IsServer && ConnectionManager.Instance.ClientCount() > 0 ) || ConnectionManager.Instance.IsClient);
+    }
+
+    public override void NetSyncRead(PooledBinaryReader _br)
     {
         if (rotator != null)
-            rotator.NetSyncUpdate(horRot, verRot);
+            rotator.NetSyncRead(_br);
+    }
+
+    public override void NetSyncWrite(PooledBinaryWriter _bw)
+    {
+        if(rotator != null)
+            rotator.NetSyncWrite(_bw);
     }
 
     public virtual void OnPlayerEnter()
@@ -235,7 +338,6 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
         {
             firstShot = false;
             DoFire();
-            Fired();
         }
     }
 
@@ -288,12 +390,110 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
 
     protected internal virtual void DoFire()
     {
+        if (burstInterval > 0 || burstDelay > 0)
+            ThreadManager.StartCoroutine(DoFireCo());
+        else
+        {
+            DoFireNow();
+            OnFireFinished();
+        }
+    }
+
+    protected virtual IEnumerator DoFireCo()
+    {
+        IsCoRunning = true;
+        if (burstDelay > 0)
+            yield return new WaitForSecondsRealtime(burstDelay);
+        if (burstInterval > 0)
+        {
+            int curBurstCount = 0;
+            while (curBurstCount < burstRepeat)
+            {
+                if (!hasOperator)
+                    break;
+                DoFireServer(burstCount);
+                ++curBurstCount;
+                yield return new WaitForSecondsRealtime(burstInterval);
+            }
+            if (repeatInterval > 0)
+                yield return new WaitForSecondsRealtime(repeatInterval);
+        }
+        else
+            DoFireNow();
+
+        IsCoRunning = false;
+        OnFireFinished();
+        yield break;
+    }
+
+    protected virtual void DoFireNow()
+    {
+        for (int i = 0; i < burstRepeat; ++i)
+            DoFireServer(burstCount);
+    }
+
+    protected virtual void OnFireFinished()
+    {
+    }
+
+    protected void DoFireServer(int count)
+    {
+        byte[] updateData = null;
+        byte[] fireData = null;
+        using(PooledBinaryWriter _bw = MemoryPools.poolBinaryWriter.AllocSync(true))
+        {
+            using(PooledExpandableMemoryStream ms = MemoryPools.poolMemoryStream.AllocSync(true))
+            {
+                _bw.SetBaseStream(ms);
+                InvokeUpdateCallbacks(_bw);
+                NetSyncWrite(_bw);
+                updateData = ms.ToArray();
+            }
+
+            using(PooledExpandableMemoryStream ms = MemoryPools.poolMemoryStream.AllocSync(true))
+            {
+                _bw.SetBaseStream(ms);
+                _bw.Seek(0, SeekOrigin.Begin);
+                InvokeFireCallbacks(_bw);
+                NetFireWrite(_bw);
+                fireData = ms.ToArray();
+            }
+        }
+
+        if (!ConnectionManager.Instance.IsServer)
+            ConnectionManager.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageVehicleWeaponFire>().Setup(vehicle.entity.entityId, seat, slot, updateData, count, fireData));
+        else
+        {
+            if (ConnectionManager.Instance.ClientCount() > 0)
+                ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageVehicleWeaponFire>().Setup(vehicle.entity.entityId, seat, slot, updateData, count, fireData));
+            manager.DoFireClient(seat, slot, count, fireData);
+        }
+        if (ammoValue.type > 0)
+            ConsumeAmmo(1);
+    }
+
+    protected virtual void NetFireWrite(PooledBinaryWriter _bw)
+    {
+    }
+
+    public virtual void DoFireClient(int count, PooledBinaryReader _br)
+    {
+        if (hasOperator)
+            Fired();
+
+        Audio.Manager.Play(vehicle.entity, fireSound);
+    }
+
+    protected virtual void ConsumeAmmo(int count)
+    {
+        player.bag.DecItem(ammoValue, count);
     }
 
     protected internal virtual void Fired()
     {
         player.MinEventContext.ItemValue = ItemValue.None.Clone();
         player.FireEvent(MinEventTypes.onSelfRangedBurstShot, false);
+        player.MinEventContext.ItemValue = vehicle.GetUpdatedItemValue();
         effects.FireEvent(MinEventTypes.onSelfRangedBurstShot, player.MinEventContext);
     }
 }

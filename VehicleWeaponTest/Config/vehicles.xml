@@ -35,7 +35,7 @@
 				<property name="class" value="ParticleWeapon,VehicleWeapon"/>
 				<!-- which seat controls this weapon /-->
 				<!-- default: 0 /-->
-				<property name="seat" value="0"/>
+				<property name="seat" value="1"/>
 				<!-- priority of this weapon /-->
 				<!-- default: int.MaxValue; this is set to the actual index in the weapon list, which is sorted by this value /-->
 				<property name="slot" value="1"/>
@@ -217,6 +217,85 @@
 					<property name="deactivationSound" value="flashlight_toggle"/>
 					<property name="particle_transform" value="HornWeapon/LaserTower02/Laser_tower_v1_arm/Laser_tower_v1_laser/Plasma_bullet"/>
 				</property>
+				
+				<property class="WeaponCannonDoubleBarrel">
+					<property name="class" value="CycleFireWeapon,VehicleWeapon"/>
+					<property name="slot" value="2"/>
+					<property name="rotator" value="CannonBasementHorRotator"/>
+					
+					<property class="WeaponCannonLeft">
+						<property name="class" value="ParticleWeapon,VehicleWeapon"/>
+						<property name="slot" value="0"/>
+						<property name="burstCount" value="1"/>
+						<property name="burstInterval" value="0"/>
+						<property name="burstRepeat" value="1"/>
+						<property name="reloadTime" value="0.5"/>
+						<property name="fullauto" value="true"/>
+						<property name="ammo" value="ammo9mmBulletBall"/>
+						<property name="particleIndex" value="#@modfolder(CustomParticleScriptTest):Resources/GuppyTest.unity3d?AirBurstExplosion$thrownGrenadeAirBurst"/>
+						<property name="explodeOnCollision" value="true"/>
+						<property name="explodeOnDeath" value="false"/>
+						<property name="fireSound" value="m136_fire"/>
+						<property name="emptySound" value="dryfire"/>
+						<property name="notReadySound" value="medic_module_toggle_off"/>
+						<property name="notOnTargetSound" value="ui_denied"/>
+						<property name="activationSound" value="flashlight_toggle"/>
+						<property name="deactivationSound" value="flashlight_toggle"/>
+						<property name="particle_transform" value="HornWeapon/Cannon/Basement/Turret/LeftBarrel/ShootPoint"/>
+						<property name="rotator" value="CannonLeftBarrelVerRotator"/>
+					</property>
+					
+					<property class="WeaponCannonRight">
+						<property name="class" value="ParticleWeapon,VehicleWeapon"/>
+						<property name="slot" value="0"/>
+						<property name="burstCount" value="1"/>
+						<property name="burstInterval" value="0"/>
+						<property name="burstRepeat" value="1"/>
+						<property name="reloadTime" value="0.5"/>
+						<property name="fullauto" value="true"/>
+						<property name="ammo" value="ammo9mmBulletBall"/>
+						<property name="particleIndex" value="#@modfolder(CustomParticleScriptTest):Resources/GuppyTest.unity3d?AirBurstExplosion$thrownGrenadeAirBurst"/>
+						<property name="explodeOnCollision" value="true"/>
+						<property name="explodeOnDeath" value="false"/>
+						<property name="fireSound" value="m136_fire"/>
+						<property name="emptySound" value="dryfire"/>
+						<property name="notReadySound" value="medic_module_toggle_off"/>
+						<property name="notOnTargetSound" value="ui_denied"/>
+						<property name="activationSound" value="flashlight_toggle"/>
+						<property name="deactivationSound" value="flashlight_toggle"/>
+						<property name="particle_transform" value="HornWeapon/Cannon/Basement/Turret/RightBarrel/ShootPoint"/>
+						<property name="rotator" value="CannonRightBarrelVerRotator"/>
+					</property>
+				</property>
+			</property>
+			
+			<property class="CannonBasementHorRotator">
+				<property name="class" value="HorizontalWeaponRotator,VehicleWeapon"/>
+				<property name="horizontalMaxRotation" value="100"/>
+				<property name="horizontalMinRotation" value="-100"/>
+				<property name="horizontalRotationSpeed" value="50"/>
+				<property name="transform" value="HornWeapon/Cannon/Basement"/>
+				<property name="horRotationTransform" value="HornWeapon/Cannon/Basement/Turret"/>
+			</property>
+			
+			<property class="CannonLeftBarrelVerRotator">
+				<property name="class" value="VerticalWeaponRotator,VehicleWeapon"/>
+				<property name="transform" value="HornWeapon/Cannon/Basement"/>
+				<property name="verRotationTransform" value="HornWeapon/Cannon/Basement/Turret/LeftBarrel"/>
+				<property name="verticleMaxRotation" value="45"/>
+				<property name="verticleMinRotation" value="-15"/>
+				<property name="verticleRotationSpeed" value="10"/>
+				<property name="horizontalRotator" value="CannonBasementHorRotator"/>
+			</property>
+			
+			<property class="CannonRightBarrelVerRotator">
+				<property name="class" value="VerticalWeaponRotator,VehicleWeapon"/>
+				<property name="transform" value="HornWeapon/Cannon/Basement"/>
+				<property name="verRotationTransform" value="HornWeapon/Cannon/Basement/Turret/RightBarrel"/>
+				<property name="verticleMaxRotation" value="45"/>
+				<property name="verticleMinRotation" value="-15"/>
+				<property name="verticleRotationSpeed" value="10"/>
+				<property name="horizontalRotator" value="CannonBasementHorRotator"/>
 			</property>
 			
 			<property class="battery">

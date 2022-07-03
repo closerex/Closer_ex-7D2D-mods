@@ -98,8 +98,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripts\Input\PlayerActionsVehicleWeapon.cs" />
     <Compile Include="Scripts\Input\PlayerActionVehicleWeaponData.cs" />
-    <Compile Include="Scripts\NetPackages\NetPackageParticleWeaponFire.cs" />
-    <Compile Include="Scripts\NetPackages\NetPackageParticleWeaponUpdate.cs" />
+    <Compile Include="Scripts\NetPackages\NetPackageVehicleWeaponFire.cs" />
+    <Compile Include="Scripts\NetPackages\NetPackageVehicleWeaponUpdate.cs" />
     <Compile Include="Scripts\Utilities\ItemValueExtension.cs" />
     <Compile Include="Scripts\VehicleParts\VehicleWeaponHitposPreviewRotatorBase.cs" />
     <Compile Include="Scripts\VehicleParts\VehicleWeaponPartBase.cs" />

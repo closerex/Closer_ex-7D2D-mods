@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using InControl;
 using UnityEngine;
 
@@ -101,10 +102,24 @@ public class VPWeaponManager : VehiclePart
         }
     }
 
-    public void NetSyncUpdate(int seat, int slot, float horRot, float verRot, Stack<int> userData)
+    public void NetSyncUpdate(int seat, int slot, byte[] updateData)
     {
         if (list_weapons[seat] != null)
-            list_weapons[seat][slot].NetSyncUpdate(horRot, verRot, userData);
+        {
+            if (updateData != null)
+            {
+                using (PooledBinaryReader _br = MemoryPools.poolBinaryReader.AllocSync(true))
+                {
+                    using (MemoryStream ms = new MemoryStream(updateData))
+                    {
+                        _br.SetBaseStream(ms);
+                        list_weapons[seat][slot].NetSyncRead(_br);
+                    }
+                }
+            }
+            else
+                list_weapons[seat][slot].NetSyncRead(null);
+        }
     }
 
     internal virtual void OnPlayerEnter(int seat)
@@ -167,10 +182,21 @@ public class VPWeaponManager : VehiclePart
         return firstShot;
     }
 
-    public void DoParticleFireClient(int seat, int slot, int count, uint seed)
+    public void DoFireClient(int seat, int slot, int count, byte[] data)
     {
         if (list_weapons[seat] != null)
-            (list_weapons[seat][slot] as VPParticleWeapon)?.DoParticleFireClient(count, seed);
+        {
+            if(data != null)
+            {
+                using (PooledBinaryReader _br = MemoryPools.poolBinaryReader.AllocSync(true))
+                {
+                    _br.SetBaseStream(new MemoryStream(data));
+                    list_weapons[seat][slot].DoFireClient(count, _br);
+                }
+            }else
+                list_weapons[seat][slot].DoFireClient(count, null);
+        }
+
     }
 
     protected void SortWeapons(List<VehicleWeaponBase> weapons)

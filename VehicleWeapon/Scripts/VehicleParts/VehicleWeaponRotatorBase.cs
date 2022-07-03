@@ -16,6 +16,7 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     protected float nextHorRot = 0f;
     protected float nextVerRot = 0f;
     protected bool lastOnTarget = false;
+    protected bool shouldUpdate = false;
     protected bool fullCircleRotation = false;
     protected EntityPlayerLocal player = null;
     protected VehicleWeaponBase weapon = null;
@@ -107,14 +108,9 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     {
         DoRotateTowards(_dt);
 
-        if ((horRotTrans != null && Mathf.Abs(lastHorRot - horRotTrans.localEulerAngles.y) > 1f) || (verRotTrans != null && Mathf.Abs(lastVerRot - verRotTrans.localEulerAngles.x) > 1f))
-        {
-            lastHorRot = horRotTrans != null ? horRotTrans.localEulerAngles.y : 0;
-            lastVerRot = verRotTrans != null ? verRotTrans.localEulerAngles.x : 0;
-            NetSyncSendPacket();
-        }
+        shouldUpdate = (horRotTrans != null && Mathf.Abs(lastHorRot - horRotTrans.localEulerAngles.y) > 1f) || (verRotTrans != null && Mathf.Abs(lastVerRot - verRotTrans.localEulerAngles.x) > 1f);
 
-        bool onTarget = (horRotTrans == null || FuzzyEqualAngle(nextHorRot, AngleToInferior(horRotTrans.localEulerAngles.y), 1f)) && (verRotTrans == null || FuzzyEqualAngle(nextVerRot, AngleToInferior(verRotTrans.localEulerAngles.x), 0.5f));
+        bool onTarget = (HorRotTrans == null || FuzzyEqualAngle(nextHorRot, AngleToInferior(HorRotTrans.localEulerAngles.y), 1f)) && (VerRotTrans == null || FuzzyEqualAngle(nextVerRot, AngleToInferior(VerRotTrans.localEulerAngles.x), 0.5f));
         if (onTarget != lastOnTarget)
         {
             SetPreviewColor(onTarget);
@@ -122,20 +118,37 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
         }
     }
 
-    public void NetSyncSendPacket()
+    public override bool ShouldNetSyncUpdate()
     {
-        if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && SingletonMonoBehaviour<ConnectionManager>.Instance.ClientCount() > 0)
-            SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageWeaponRotatorUpdate>().Setup(vehicle.entity.entityId, lastHorRot, lastVerRot, weapon.Seat, weapon.Slot, weapon.UserData), false, -1, player.entityId);
-        else if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsClient)
-            SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageWeaponRotatorUpdate>().Setup(vehicle.entity.entityId, lastHorRot, lastVerRot, weapon.Seat, weapon.Slot, weapon.UserData));
+        return shouldUpdate;
     }
 
-    public void NetSyncUpdate(float horRot, float verRot)
+    public override void NetSyncWrite(PooledBinaryWriter _bw)
     {
-        if(HorRotTrans != null)
-            HorRotTrans.localEulerAngles = new Vector3(HorRotTrans.localEulerAngles.x, horRot, HorRotTrans.localEulerAngles.z);
+        if (HorRotTrans != null)
+        {
+            lastHorRot = HorRotTrans.localEulerAngles.y;
+            _bw.Write(lastHorRot);
+        }
+        else
+            lastHorRot = 0;
+
+        if (VerRotTrans != null)
+        {
+            lastVerRot = VerRotTrans.localEulerAngles.x;
+            _bw.Write(lastVerRot);
+        }
+        else
+            lastVerRot = 0;
+    }
+
+    public override void NetSyncRead(PooledBinaryReader _br)
+    {
+        if (HorRotTrans != null)
+            HorRotTrans.localEulerAngles = new Vector3(HorRotTrans.localEulerAngles.x, _br.ReadSingle(), HorRotTrans.localEulerAngles.z);
+
         if(VerRotTrans != null)
-            VerRotTrans.localEulerAngles = new Vector3(verRot, VerRotTrans.localEulerAngles.y, VerRotTrans.localEulerAngles.z);
+            VerRotTrans.localEulerAngles = new Vector3(_br.ReadSingle(), VerRotTrans.localEulerAngles.y, VerRotTrans.localEulerAngles.z);
     }
 
     protected virtual void CalcCurRotation(float _dt)

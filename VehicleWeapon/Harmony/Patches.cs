@@ -68,6 +68,14 @@ public class CameraPositionPatch
 [HarmonyPatch(typeof(Vehicle))]
 public class VehicleModPatch
 {
+    [HarmonyPatch(nameof(Vehicle.CreateParts))]
+    [HarmonyPostfix]
+    private static void Postfix_CreateParts(Vehicle __instance, ItemValue ___itemValue)
+    {
+        if (__instance.FindPart(VPWeaponManager.VehicleWeaponManagerName) is VPWeaponManager manager)
+            manager.ApplyModEffect(___itemValue.Clone());
+    }
+
     [HarmonyPatch(nameof(Vehicle.SetItemValue))]
     [HarmonyPostfix]
     private static void Postfix_SetItemValue(Vehicle __instance, ItemValue ___itemValue)

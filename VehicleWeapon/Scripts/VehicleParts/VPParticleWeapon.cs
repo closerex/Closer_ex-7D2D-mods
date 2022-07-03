@@ -4,50 +4,25 @@ using UnityEngine;
 
 public class VPParticleWeapon : VehicleWeaponBase
 {
-    protected int burstCount = 1;
-    protected int burstRepeat = 1;
-    protected float burstInterval = 0f;
     protected float reloadTime = 1f;
     protected float reloadRemain = 0f;
-    protected float burstDelay = 0f;
-    protected bool fullauto = false;
     protected bool explodeOnCollision = true;
     protected bool explodeOnDeath = false;
-    protected string emptySound = string.Empty;
     protected string reloadSound = string.Empty;
-    protected string fireSound = string.Empty;
     protected ExplosionComponent component = null;
     protected ParticleSystem weaponSystem = null;
     protected SubExplosionInitializer initializer = null;
-    protected bool isCoRunning = false;
-    protected ItemValue ammoValue = ItemValue.None.Clone();
 
     public ParticleSystem WeaponSystem { get => weaponSystem; }
     public ExplosionComponent Component { get => component; }
 
     public override void ApplyModEffect(ItemValue vehicleValue)
     {
-        string name = GetModName();
         base.ApplyModEffect(vehicleValue);
-        burstCount = 1;
-        properties.ParseInt("burstCount", ref burstCount);
-        burstCount = int.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "burstCount", burstCount.ToString()));
-        burstInterval = 0f;
-        properties.ParseFloat("burstInterval", ref burstInterval);
-        burstInterval = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "burstInterval", burstInterval.ToString()));
-        burstRepeat = 1;
-        properties.ParseInt("burstRepeat", ref burstRepeat);
-        burstRepeat = int.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "burstRepeat", burstRepeat.ToString()));
+        string name = GetModName();
         reloadTime = 1f;
         properties.ParseFloat("reloadTime", ref reloadTime);
         reloadTime = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "reloadTime", reloadTime.ToString()));
-        burstDelay = 0f;
-        properties.ParseFloat("burstDelay", ref burstDelay);
-        burstDelay = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "burstDelay", burstDelay.ToString()));
-        fullauto = false;
-        properties.ParseBool("fullauto", ref fullauto);
-        fullauto = bool.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "fullauto", fullauto.ToString()));
-
         CustomExplosionManager.GetCustomParticleComponents(PlatformIndependentHash.StringToUInt16(vehicleValue.GetVehicleWeaponPropertyOverride(name, "particleIndex", properties.GetString("particleIndex"))), out component);
 
         explodeOnCollision = true;
@@ -57,19 +32,8 @@ public class VPParticleWeapon : VehicleWeaponBase
         properties.ParseBool("explodeOnDeath", ref explodeOnDeath);
         explodeOnDeath = bool.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "explodeOnDeath", explodeOnDeath.ToString()));
 
-        string str = null;
-        ammoValue = ItemValue.None.Clone();
-        properties.ParseString("ammo", ref str);
-        str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "ammo", str);
-        if (!string.IsNullOrEmpty(str))
-            ammoValue = ItemClass.GetItem(str, false);
-
-        properties.ParseString("emptySound", ref emptySound);
-        emptySound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "emptySound", emptySound);
         properties.ParseString("reloadSound", ref reloadSound);
         reloadSound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "reloadSound", reloadSound);
-        properties.ParseString("fireSound", ref fireSound);
-        fireSound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "fireSound", fireSound);
 
         reloadRemain = reloadTime;
     }
@@ -93,7 +57,7 @@ public class VPParticleWeapon : VehicleWeaponBase
     public override void NoPauseUpdate(float _dt)
     {
         base.NoPauseUpdate(_dt);
-        if (!isCoRunning && reloadRemain > 0)
+        if (!IsCoRunning && reloadRemain > 0)
             reloadRemain -= _dt;
     }
 
@@ -138,7 +102,7 @@ public class VPParticleWeapon : VehicleWeaponBase
                 pressed = true;
                 return false;
             }
-            if(isCoRunning || reloadRemain > 0)
+            if(IsCoRunning || reloadRemain > 0)
             {
                 if(!pressed)
                     vehicle.entity.PlayOneShot(notReadySound);
@@ -152,71 +116,28 @@ public class VPParticleWeapon : VehicleWeaponBase
         return false;
     }
 
-    protected internal override void DoFire()
-    {
-        base.DoFire();
-        if (burstInterval > 0 || burstDelay > 0)
-            ThreadManager.StartCoroutine(DoParticleFireCo());
-        else
-            DoParticleFireNow();
-    }
-
     protected internal override void Fired()
     {
         base.Fired();
+        component.BoundItemClass.FireEvent(MinEventTypes.onSelfRangedBurstShot, player.MinEventContext);
         reloadRemain = reloadTime;
     }
 
-    protected virtual IEnumerator DoParticleFireCo()
+    protected override void OnFireFinished()
     {
-        isCoRunning = true;
-        if(burstDelay > 0)
-            yield return new WaitForSecondsRealtime(burstDelay);
-        if (burstInterval > 0)
-        {
-            int curBurstCount = 0;
-            while (curBurstCount < burstRepeat)
-            {
-                if (!hasOperator)
-                    break;
-                DoParticleFireServer(burstCount);
-                ++curBurstCount;
-                yield return new WaitForSecondsRealtime(burstInterval);
-            }
-            vehicle.entity.PlayOneShot(reloadSound);
-        }
-        else
-            DoParticleFireNow();
-
-        isCoRunning = false;
-        yield break;
-    }
-
-    protected virtual void DoParticleFireNow()
-    {
-        for (int i = 0; i < burstRepeat; ++i)
-            DoParticleFireServer(burstCount);
         vehicle.entity.PlayOneShot(reloadSound);
     }
 
-    protected virtual void DoParticleFireServer(int count)
+    protected override void NetFireWrite(PooledBinaryWriter _bw)
     {
-        uint seed = (uint)UnityEngine.Random.Range(int.MinValue, int.MaxValue);
-        if (!SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer)
-            SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageParticleWeaponFire>().Setup(vehicle.entity.entityId, (rotator != null && rotator.HorRotTrans != null) ? rotator.HorRotTrans.localEulerAngles.y : 0, (rotator != null && rotator.VerRotTrans != null) ? rotator.VerRotTrans.localEulerAngles.x : 0, seat, slot, UserData, count, seed));
-        else
-        {
-            if(SingletonMonoBehaviour<ConnectionManager>.Instance.ClientCount() > 0)
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageParticleWeaponFire>().Setup(vehicle.entity.entityId, (rotator != null && rotator.HorRotTrans != null) ? rotator.HorRotTrans.localEulerAngles.y : 0, (rotator != null && rotator.VerRotTrans != null) ? rotator.VerRotTrans.localEulerAngles.x : 0, seat, slot, UserData, count, seed));
-            DoParticleFireClient(count, seed);
-        }
-        PlayFiringSound();
-        if (ammoValue.type > 0)
-            ConsumeAmmo(1);
+        base.NetFireWrite(_bw);
+        _bw.Write((uint)UnityEngine.Random.Range(int.MinValue, int.MaxValue));
     }
 
-    public virtual void DoParticleFireClient(int count, uint seed)
+    public override void DoFireClient(int count, PooledBinaryReader _br)
     {
+        base.DoFireClient(count, _br);
+        uint seed = _br.ReadUInt32();
         if(weaponSystem)
         {
             ParticleSystem.EmitParams param = new ParticleSystem.EmitParams();
@@ -224,15 +145,5 @@ public class VPParticleWeapon : VehicleWeaponBase
             weaponSystem.Emit(param, count);
         }
         reloadRemain = reloadTime;
-    }
-
-    protected virtual void ConsumeAmmo(int count)
-    {
-        player.bag.DecItem(ammoValue, count);
-    }
-
-    protected virtual void PlayFiringSound()
-    {
-        vehicle.entity.PlayOneShot(fireSound, false);
     }
 }
