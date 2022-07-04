@@ -112,10 +112,26 @@ public class VPCycleFireWeapon : VehicleWeaponBase
         base.NetSyncWrite(_bw);
     }
 
-    protected override void NetFireWrite(PooledBinaryWriter _bw)
+    public override void NetSyncRead(PooledBinaryReader _br)
     {
-        _bw.Write((byte)0);
-        base.NetFireWrite(_bw);
+        if (_br == null)
+            return;
+
+        int slot = _br.ReadByte();
+        if (slot > 0)
+            cycleArray[slot - 1].NetSyncRead(_br);
+        else
+            base.NetSyncRead(_br);
+    }
+
+    public override void NetFireRead(PooledBinaryReader _br)
+    {
+        if (_br == null)
+            return;
+
+        int slot = _br.ReadByte();
+        if (slot > 0)
+            cycleArray[slot - 1].NetFireRead(_br);
     }
 
     protected internal override bool CanFire(bool firstShot, bool isRelease, bool fromSlot)
@@ -207,28 +223,6 @@ public class VPCycleFireWeapon : VehicleWeaponBase
         base.OnDeactivated();
         foreach (var weapon in cycleArray)
             weapon.OnDeactivated();
-    }
-
-    public override void NetSyncRead(PooledBinaryReader _br)
-    {
-        if (_br == null)
-            return;
-
-        int slot = _br.ReadByte();
-        if (slot > 0)
-            cycleArray[slot - 1].NetSyncRead(_br);
-        else
-            base.NetSyncRead(_br);
-    }
-
-    public override void DoFireClient(int count, PooledBinaryReader _br)
-    {
-        if (_br == null)
-            return;
-
-        int slot = _br.ReadByte();
-        if (slot > 0)
-            cycleArray[slot - 1].DoFireClient(count, _br);
     }
 }
 

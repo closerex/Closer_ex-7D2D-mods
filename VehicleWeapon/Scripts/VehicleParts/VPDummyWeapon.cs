@@ -57,7 +57,7 @@ public class VPDummyWeapon : VehicleWeaponBase
         return false;
     }
 
-    protected internal override void Fired()
+    protected internal override void OnBurstShot()
     {
 
     }

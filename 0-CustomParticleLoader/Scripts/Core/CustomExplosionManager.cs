@@ -136,8 +136,6 @@ public static class CustomExplosionManager
     //this should get a unique index for each particle
     public static int getHashCode(string str)
     {
-        //byte[] encoded = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(str));
-        //int value = (int)(BitConverter.ToUInt32(encoded, 0) % Int16.MaxValue);
         int value = (int)(PlatformIndependentHash.StringToUInt16(str));
 
         while (hash_paths.TryGetValue(value, out string path))

@@ -12,6 +12,7 @@ public class VPParticleWeapon : VehicleWeaponBase
     protected ExplosionComponent component = null;
     protected ParticleSystem weaponSystem = null;
     protected SubExplosionInitializer initializer = null;
+    ParticleSystem.EmitParams param = new ParticleSystem.EmitParams();
 
     public ParticleSystem WeaponSystem { get => weaponSystem; }
     public ExplosionComponent Component { get => component; }
@@ -116,33 +117,32 @@ public class VPParticleWeapon : VehicleWeaponBase
         return false;
     }
 
-    protected internal override void Fired()
+    protected internal override void OnBurstShot()
     {
-        base.Fired();
+        base.OnBurstShot();
         component.BoundItemClass.FireEvent(MinEventTypes.onSelfRangedBurstShot, player.MinEventContext);
         reloadRemain = reloadTime;
     }
 
-    protected override void OnFireFinished()
+    protected override void OnFireEnd()
     {
         vehicle.entity.PlayOneShot(reloadSound);
     }
 
-    protected override void NetFireWrite(PooledBinaryWriter _bw)
+    public override void NetFireWrite(PooledBinaryWriter _bw)
     {
         base.NetFireWrite(_bw);
         _bw.Write((uint)UnityEngine.Random.Range(int.MinValue, int.MaxValue));
     }
 
-    public override void DoFireClient(int count, PooledBinaryReader _br)
+    public override void NetFireRead(PooledBinaryReader _br)
     {
-        base.DoFireClient(count, _br);
+        base.NetFireRead(_br);
         uint seed = _br.ReadUInt32();
         if(weaponSystem)
         {
-            ParticleSystem.EmitParams param = new ParticleSystem.EmitParams();
             param.randomSeed = seed;
-            weaponSystem.Emit(param, count);
+            weaponSystem.Emit(param, burstCount);
         }
         reloadRemain = reloadTime;
     }
