@@ -5,6 +5,9 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     protected Transform horRotTrans = null;
     protected Transform verRotTrans = null;
     protected Transform indicatorTrans;
+    protected Color indicatorColorOnTarget;
+    protected Color indicatorColorAiming;
+    protected int indicatorColorProperty;
     protected float verticleMaxRotation;
     protected float verticleMinRotation;
     protected float verticleRotSpeed;
@@ -20,78 +23,87 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     protected bool fullCircleRotation = false;
     protected EntityPlayerLocal player = null;
     protected VehicleWeaponBase weapon = null;
-    protected static int dynamicScaleMode = 0;
-    protected static float dynamicScaleOverride = 1;
+
+    protected Ray inputRay;
+    protected bool varyingIndicatorColor = false;
 
     public virtual Transform HorRotTrans { get => horRotTrans; }
     public virtual Transform VerRotTrans { get => verRotTrans; }
+    public Transform IndicatorTrans { get => indicatorTrans; }
     public bool OnTarget { get => lastOnTarget; }
-
-    public static void OnVideoSettingChanged()
-    {
-        dynamicScaleMode = GamePrefs.GetInt(EnumGamePrefs.OptionsGfxDynamicMode);
-        if (dynamicScaleMode == 2)
-            dynamicScaleOverride = GamePrefs.GetFloat(EnumGamePrefs.OptionsGfxDynamicScale);
-    }
 
     public override void SetProperties(DynamicProperties _properties)
     {
         base.SetProperties(_properties);
 
+        transform = GetTransform();
+        horRotTrans = GetTransform("horRotationTransform");
+        verRotTrans = GetTransform("verRotationTransform");
         player = GameManager.Instance.World.GetPrimaryPlayer();
     }
 
     public override void ApplyModEffect(ItemValue vehicleValue)
     {
         base.ApplyModEffect(vehicleValue);
-        string name = GetModName();
         verticleMaxRotation = 45f;
         properties.ParseFloat("verticleMaxRotation", ref verticleMaxRotation);
-        verticleMaxRotation = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "verticleMaxRotation", verticleMaxRotation.ToString()));
+        verticleMaxRotation = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "verticleMaxRotation", verticleMaxRotation.ToString()));
         verticleMaxRotation = AngleToInferior(verticleMaxRotation);
 
         verticleMinRotation = 0f;
         properties.ParseFloat("verticleMinRotation", ref verticleMinRotation);
-        verticleMinRotation = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "verticleMinRotation", verticleMinRotation.ToString()));
+        verticleMinRotation = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "verticleMinRotation", verticleMinRotation.ToString()));
         verticleMinRotation = AngleToInferior(verticleMinRotation);
 
         verticleRotSpeed = 360f;
         properties.ParseFloat("verticleRotationSpeed", ref verticleRotSpeed);
-        verticleRotSpeed = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "verticleRotSpeed", verticleRotSpeed.ToString()));
+        verticleRotSpeed = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "verticleRotSpeed", verticleRotSpeed.ToString()));
         verticleRotSpeed = Mathf.Abs(verticleRotSpeed);
 
         horizontalMaxRotation = 180f;
         properties.ParseFloat("horizontalMaxRotation", ref horizontalMaxRotation);
-        horizontalMaxRotation = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "horizontalMaxRotation", horizontalMaxRotation.ToString()));
+        horizontalMaxRotation = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "horizontalMaxRotation", horizontalMaxRotation.ToString()));
         horizontalMaxRotation = AngleToInferior(horizontalMaxRotation);
 
         horizontalMinRotation = -180f;
         properties.ParseFloat("horizontalMinRotation", ref horizontalMinRotation);
-        horizontalMinRotation = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "horizontalMinRotation", horizontalMinRotation.ToString()));
+        horizontalMinRotation = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "horizontalMinRotation", horizontalMinRotation.ToString()));
         horizontalMinRotation = AngleToInferior(horizontalMinRotation);
 
         horizontalRotSpeed = 360f;
         properties.ParseFloat("horizontalRotationSpeed", ref horizontalRotSpeed);
-        horizontalRotSpeed = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "horizontalRotSpeed", horizontalRotSpeed.ToString()));
+        horizontalRotSpeed = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "horizontalRotSpeed", horizontalRotSpeed.ToString()));
         horizontalRotSpeed = Mathf.Abs(horizontalRotSpeed);
         fullCircleRotation = horizontalMaxRotation == 180f && horizontalMinRotation == -180f;
 
         indicatorTrans?.gameObject.SetActive(false);
-        string str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "indicatorTransform", GetProperty("indicatorTransform"));
+        string str = vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "indicatorTransform", GetProperty("indicatorTransform"));
         if (!string.IsNullOrEmpty(str))
         {
             Transform mesh = vehicle.GetMeshTransform();
             indicatorTrans = mesh.Find(str);
         }
-    }
 
-    public override void InitPrefabConnections()
-    {
-        base.InitPrefabConnections();
+        str = null;
+        indicatorColorOnTarget = Color.clear;
+        properties.ParseString("indicatorColorOnTarget", ref str);
+        str = vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "indicatorColorOnTarget", str);
+        if (!string.IsNullOrEmpty(str))
+            ColorUtility.TryParseHtmlString(str, out indicatorColorOnTarget);
 
-        transform = GetTransform();
-        horRotTrans = GetTransform("horRotationTransform");
-        verRotTrans = GetTransform("verRotationTransform");
+        str = null;
+        indicatorColorAiming = Color.clear;
+        properties.ParseString("indicatorColorAiming", ref str);
+        str = vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "indicatorColorAiming", str);
+        if (!string.IsNullOrEmpty(str))
+            ColorUtility.TryParseHtmlString(str, out indicatorColorAiming);
+
+        str = null;
+        properties.ParseString("indicatorColorProperty", ref str);
+        str = vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "indicatorColorProperty", str);
+        indicatorColorProperty = Shader.PropertyToID(str);
+
+        varyingIndicatorColor = indicatorColorOnTarget != Color.clear && indicatorColorAiming != Color.clear;
     }
 
     public virtual void SetWeapon(VehicleWeaponBase weapon)
@@ -99,8 +111,14 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
         this.weapon = weapon;
     }
 
+    protected virtual void SetInputRay()
+    {
+        inputRay = weapon.LookRay;
+    }
+
     public override void NoGUIUpdate(float _dt)
     {
+        SetInputRay();
         CalcCurRotation(_dt);
     }
 
@@ -110,7 +128,7 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
 
         shouldUpdate = (horRotTrans != null && Mathf.Abs(lastHorRot - horRotTrans.localEulerAngles.y) > 1f) || (verRotTrans != null && Mathf.Abs(lastVerRot - verRotTrans.localEulerAngles.x) > 1f);
 
-        bool onTarget = (HorRotTrans == null || FuzzyEqualAngle(nextHorRot, AngleToInferior(HorRotTrans.localEulerAngles.y), 1f)) && (VerRotTrans == null || FuzzyEqualAngle(nextVerRot, AngleToInferior(VerRotTrans.localEulerAngles.x), 0.5f));
+        bool onTarget = IsOnTarget();
         if (onTarget != lastOnTarget)
         {
             SetPreviewColor(onTarget);
@@ -121,6 +139,11 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     public override bool ShouldNetSyncUpdate()
     {
         return shouldUpdate;
+    }
+
+    protected internal virtual bool IsOnTarget()
+    {
+        return (horRotTrans == null || FuzzyEqualAngle(nextHorRot, AngleToInferior(horRotTrans.localEulerAngles.y), 1f)) && (verRotTrans == null || FuzzyEqualAngle(nextVerRot, AngleToInferior(verRotTrans.localEulerAngles.x), 0.5f));
     }
 
     public override void NetSyncWrite(PooledBinaryWriter _bw)
@@ -147,7 +170,7 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
         if (HorRotTrans != null)
             HorRotTrans.localEulerAngles = new Vector3(HorRotTrans.localEulerAngles.x, _br.ReadSingle(), HorRotTrans.localEulerAngles.z);
 
-        if(VerRotTrans != null)
+        if (VerRotTrans != null)
             VerRotTrans.localEulerAngles = new Vector3(_br.ReadSingle(), VerRotTrans.localEulerAngles.y, VerRotTrans.localEulerAngles.z);
     }
 
@@ -245,8 +268,12 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     }
     public virtual void CreatePreview()
     {
+        DestroyPreview();
         if (indicatorTrans != null)
+        {
             indicatorTrans.gameObject.SetActive(true);
+            IndicatorTrans.GetComponent<Renderer>().material.SetColor(indicatorColorProperty, indicatorColorAiming);
+        }
     }
 
     public virtual void DestroyPreview()
@@ -261,6 +288,8 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
 
     protected virtual void SetPreviewColor(bool onTarget)
     {
+        if (varyingIndicatorColor && indicatorTrans != null)
+            indicatorTrans.GetComponent<Renderer>().material.SetColor(indicatorColorProperty, onTarget ? indicatorColorOnTarget : indicatorColorAiming);
     }
 
     protected bool FuzzyEqualAngle(float angle1, float angle2, float fuzzy)
@@ -279,25 +308,6 @@ public class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     {
         float res = Mathf.Min(max, Mathf.Max(min, angle));
         return res;
-    }
-
-    protected Vector3 GetDynamicMousePosition()
-    {
-        Vector3 dynamicMousePos;
-
-        if (!GameRenderManager.dynamicIsEnabled)
-            dynamicMousePos = Input.mousePosition;
-        else
-        {
-            float scale;
-            if (dynamicScaleMode == 1)
-                scale = (float)player.renderManager.GetDynamicRenderTexture().width / Screen.width;
-            else
-                scale = dynamicScaleOverride;
-            dynamicMousePos = Input.mousePosition * scale;
-        }
-
-        return dynamicMousePos;
     }
 }
 

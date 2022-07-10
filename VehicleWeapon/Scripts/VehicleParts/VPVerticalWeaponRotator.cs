@@ -15,8 +15,13 @@ public class VPVerticalWeaponRotator : VehicleWeaponRotatorBase
     }
     protected override void CalcCurRotation(float _dt)
     {
-        Vector3 dir = player.playerCamera.ScreenPointToRay(GetDynamicMousePosition()).direction;
+        Vector3 dir = inputRay.direction;
         Vector3 lookRot = (Quaternion.Inverse(transform.rotation) * Quaternion.LookRotation(dir)).eulerAngles;
         nextVerRot = AngleToLimited(AngleToInferior(lookRot.x), -verticleMaxRotation, -verticleMinRotation);
+    }
+
+    protected internal override bool IsOnTarget()
+    {
+        return (verRotTrans == null || FuzzyEqualAngle(nextVerRot, AngleToInferior(verRotTrans.localEulerAngles.x), 0.5f)) && (horRotator == null || horRotator.IsOnTarget());
     }
 }

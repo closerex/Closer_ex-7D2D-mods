@@ -35,7 +35,7 @@
 				<property name="class" value="ParticleWeapon,VehicleWeapon"/>
 				<!-- which seat controls this weapon /-->
 				<!-- default: 0 /-->
-				<property name="seat" value="1"/>
+				<property name="seat" value="0"/>
 				<!-- priority of this weapon /-->
 				<!-- default: int.MaxValue; this is set to the actual index in the weapon list, which is sorted by this value /-->
 				<property name="slot" value="1"/>
@@ -95,7 +95,7 @@
 														 FirstShotOnTarget(combination of OnTarget and FirstShot),
 														 FromSlotKey(firing only when pressing slot key)
 														 FromSlotKeyOnTarget(combination of OnTarget and FromSlotKey)/-->
-				<property name="fireWhen" value="FromSlotKeyOnTarget"/>
+				<property name="fireWhen" value="FromSlotKey,OnTarget"/>
 			</property>
 			
 			<!-- part class name can be anything but must match the "rotator" property name of the weapon; does not need to be placed after hornWeapon /-->
@@ -169,6 +169,7 @@
 				<property name="class" value="CycleFireWeapon,VehicleWeapon"/>
 				<property name="seat" value="0"/>
 				<property name="slot" value="0"/>
+				<property name="fullauto" value="true"/>
 				<property name="activationSound" value="flashlight_toggle"/>
 				<property name="deactivationSound" value="flashlight_toggle"/>
 				<!-- interval between switching current weapon. -->
@@ -184,7 +185,6 @@
 					<property name="burstInterval" value="0"/>
 					<property name="burstRepeat" value="1"/>
 					<property name="reloadTime" value="0.5"/>
-					<property name="fullauto" value="true"/>
 					<property name="burstDelay" value="0"/>
 					<property name="ammo" value="ammo9mmBulletBall"/>
 					<property name="particleIndex" value="#@modfolder:Resources/plasmaExplosion.unity3d?Plasma_Hit_FX_v1$itemPlasmaSmall"/>
@@ -204,7 +204,6 @@
 					<property name="burstInterval" value="0"/>
 					<property name="burstRepeat" value="1"/>
 					<property name="reloadTime" value="0.5"/>
-					<property name="fullauto" value="true"/>
 					<property name="ammo" value="ammo9mmBulletBall"/>
 					<property name="particleIndex" value="#@modfolder:Resources/plasmaExplosion.unity3d?Plasma_Hit_FX_v1$itemPlasmaSmall"/>
 					<property name="explodeOnCollision" value="true"/>
@@ -219,6 +218,7 @@
 				<property class="WeaponCannonDoubleBarrel">
 					<property name="class" value="CycleFireWeapon,VehicleWeapon"/>
 					<property name="slot" value="2"/>
+					<property name="cycleInterval" value="0"/>
 					<property name="rotator" value="CannonBasementHorRotator"/>
 					
 					<property class="WeaponCannonLeft">
@@ -228,7 +228,6 @@
 						<property name="burstInterval" value="0"/>
 						<property name="burstRepeat" value="1"/>
 						<property name="reloadTime" value="0.5"/>
-						<property name="fullauto" value="true"/>
 						<property name="ammo" value="ammo9mmBulletBall"/>
 						<property name="particleIndex" value="#@modfolder(CustomParticleScriptTest):Resources/GuppyTest.unity3d?AirBurstExplosion$thrownGrenadeAirBurst"/>
 						<property name="explodeOnCollision" value="true"/>
@@ -239,6 +238,7 @@
 						<property name="notOnTargetSound" value="ui_denied"/>
 						<property name="particle_transform" value="HornWeapon/Cannon/Basement/Turret/LeftBarrel/ShootPoint"/>
 						<property name="rotator" value="CannonLeftBarrelVerRotator"/>
+						<property name="fireWhen" value="OnTarget"/>
 					</property>
 					
 					<property class="WeaponCannonRight">
@@ -248,7 +248,6 @@
 						<property name="burstInterval" value="0"/>
 						<property name="burstRepeat" value="1"/>
 						<property name="reloadTime" value="0.5"/>
-						<property name="fullauto" value="true"/>
 						<property name="ammo" value="ammo9mmBulletBall"/>
 						<property name="particleIndex" value="#@modfolder(CustomParticleScriptTest):Resources/GuppyTest.unity3d?AirBurstExplosion$thrownGrenadeAirBurst"/>
 						<property name="explodeOnCollision" value="true"/>
@@ -259,6 +258,7 @@
 						<property name="notOnTargetSound" value="ui_denied"/>
 						<property name="particle_transform" value="HornWeapon/Cannon/Basement/Turret/RightBarrel/ShootPoint"/>
 						<property name="rotator" value="CannonRightBarrelVerRotator"/>
+						<property name="fireWhen" value="OnTarget"/>
 					</property>
 				</property>
 			</property>
@@ -444,6 +444,196 @@
 				<property name="mesh" value="basket"/>
 				<property name="transform" value="basket"/>
 			</property>
+		</vehicle>
+		
+		<vehicle name="crosscountryChariot">
+			<property name="cameraDistance" value="8.5, 8.5"/>
+			<property name="cameraTurnRate" value=".2, .35"/>
+			<property name="motorTorqueMinQ" value="5000"/>
+			<property name="motorTorqueMaxQ" value="5000"/>
+			<property name="brakeTorque" value="5000"/>
+			<property name="upAngleMax" value="70"/>
+			<property name="upForce" value="1"/>
+			<property name="steerRate" value="130"/>
+			<property name="steerCenteringRate" value="90"/>
+			<property name="tiltAngleMax" value="80"/>
+			<property name="tiltThreshold" value="3"/>
+			<property name="tiltDampening" value=".22"/>
+			<property name="tiltDampenThreshold" value="8"/>
+			<property name="tiltUpForce" value="0"/>
+			<property name="unstickForce" value="5"/>
+			<property name="velocityMax" value="12, 15"/>
+			<property name="waterDrag_y_velScale_velMaxScale" value="1.8, .9, .1"/>
+			<property name="wheelPtlScale" value="1"/>
+
+			<property name="hornSound" value="vehicle/minibike/minibike_horn"/>
+			
+			<property class="vehicleWeaponManager">
+				<property name="class" value="WeaponManager,VehicleWeapon"/>
+			</property>
+				
+			<property class="WeaponTurret">
+				<property name="class" value="RaycastWeapon,VehicleWeapon"/>
+				<property name="seat" value="0"/>
+				<property name="slot" value="0"/>
+				<property name="burstCount" value="1"/>
+				<property name="burstInterval" value="0"/>
+				<property name="burstRepeat" value="1"/>
+				<property name="raycastTransform" value="RaycastWeapon/WeaponRoot/Basement/Bracket/centurion_weapon/ShootPoint"/>
+				<property name="muzzleTransform" value="RaycastWeapon/WeaponRoot/Basement/Bracket/centurion_weapon/Muzzle"/>
+				<property name="muzzleFlash" value="gunfire_m60"/>
+				<property name="muzzleSmoke" value="gunfire_smoke"/>
+				<property name="itemName" value="vehicleWeaponCrosscountryChariotMG"/>
+				<property name="ammo" value="ammo762mmBulletBall"/>
+				<property name="fullauto" value="true"/>
+				<property name="buffs" value="buffBurningFlamingArrow"/>
+				<property name="fireSound" value="m60_fire"/>
+				<property name="endSound" value="m60_fire_end"/>
+				<property name="emptySound" value="dryfire"/>
+				<property name="notReadySound" value="ui_denied"/>
+				<property name="notOnTargetSound" value="ui_denied"/>
+				<property name="rotator" value="turretWeaponRotator"/>
+				<property name="fireWhen" value="OnTarget"/>
+			</property>
+			
+			<property class="turretWeaponRotator">
+				<property name="class" value="DirectionalWeaponRotator,VehicleWeapon"/>
+				<property name="transform" value="RaycastWeapon/WeaponRoot"/>
+				<property name="verRotationTransform" value="RaycastWeapon/WeaponRoot/Basement/Bracket"/>
+				<property name="indicatorTransform" value="RaycastWeapon/WeaponRoot/Basement/Bracket/centurion_weapon/LineIndicator"/>
+				<property name="verticleMaxRotation" value="75"/>
+				<property name="verticleMinRotation" value="-15"/>
+				<property name="verticleRotationSpeed" value="180"/>
+				<property name="horRotationTransform" value="RaycastWeapon/WeaponRoot/Basement"/>
+				<property name="horizontalMaxRotation" value="180"/>
+				<property name="horizontalMinRotation" value="-180"/>
+				<property name="horizontalRotationSpeed" value="120"/>
+				<property name="indicatorColorOnTarget" value="#52DE97FF"/>
+				<property name="indicatorColorAiming" value="#F70D1AB0"/>
+				<property name="indicatorColorProperty" value="_TintColor"/>
+			</property>
+			
+			<property class="battery">
+				<property name="class" value="Battery"/>
+				<property name="slot_type" value="battery"/>
+				<property name="mesh" value="battery"/>
+				<property name="transform" value="battery"/>
+			</property>
+
+			<property class="chassis">
+				<property name="class" value="Chassis"/>
+				<property name="display_name" value="chassis"/>
+				<property name="slot_type" value="chassis"/>
+				<property name="mesh" value="chassis"/>
+				<property name="transform" value="Origin"/>
+				<property name="paint" value="car_mesh"/>
+			</property>
+
+			<property class="engine">
+				<property name="class" value="Engine"/>
+				<property name="slot_type" value="engine"/>
+				<property name="mesh" value="engine_small"/>
+				<property name="transform" value="engine_small"/>
+				<property name="particle_transform" value="engine_small/MinibikeParticles/p_engine_fire"/>
+				<property name="fuelKmPerL" value=".1"/>
+				<property name="foodDrain" value=".002,.00811"/><!-- driving/turbo, truck -->
+				<property name="gear1" value="
+									500,2500, -1400,800,0, 700,2200,900,
+									Vehicles/Suv/suv_accel1,
+									Vehicles/Suv/suv_decel1,
+									0, .7, 1, .1, -9, .12, .1, Vehicles/Suv/suv_idle_lp,
+									-.4, -.02, .7, .7, -.2, 9, .2, Vehicles/Suv/suv_max_speed_lp
+									"/>
+				<property name="gear2" value="
+									500,2500, -2000,1000,2000, 600,2200,800,
+									Vehicles/Suv/suv_accel2,
+									Vehicles/Suv/suv_decel1,
+									-.25, -.05, .2, .4, -1, 1, .1, Vehicles/Suv/suv_max_speed_lp
+									"/>
+				<property name="gear3" value="
+									500,2500, -2000,1000,2000, 500,2200,1000,
+									Vehicles/Suv/suv_accel3,
+									Vehicles/Suv/suv_decel2,
+									-.28, -.07, .3, .6, -1, 1, .1, Vehicles/Suv/suv_max_speed_lp
+									"/>
+				<property name="gear4" value="
+									500,2500, -2000,1000,2000, 500,9999,9999,
+									,
+									Vehicles/Suv/suv_decel2,
+									-.31, -.08, .6, .9, -1, 1, .1, Vehicles/Suv/suv_max_speed_lp
+									"/>
+				<property name="sound_start" value="Vehicles/Suv/suv_startup"/>
+				<property name="sound_shut_off" value="Vehicles/Suv/suv_shutoff"/>
+				<property name="sound_no_fuel_shut_off" value="Vehicles/Motorbike/motorbike_empty"/>
+			</property>
+
+			<property class="fuelTank">
+				<property name="class" value="FuelTank"/>
+				<property name="capacity" value="400"/>
+			</property>
+
+			<property class="handlebars">
+				<property name="class" value="Steering"/>
+				<property name="slot_type" value="handlebars"/>
+				<property name="transform" value="Origin/steering_joint"/>
+				<property name="steerMaxAngle" value="60"/>
+				<property name="IKHandLPosition" value="-.8, 1, .5"/>
+				<property name="IKHandLRotation" value="37.55, -13.433, 49.88"/>
+				<property name="IKHandRPosition" value=".8, 1, .5"/>
+				<property name="IKHandRRotation" value="37.55, 13.433, -49.88"/>
+			</property>
+
+			<property class="seat0">
+				<property name="class" value="Seat"/>
+				<property name="position" value="-.4, -.2, 0.3"/>
+				<property name="rotation" value="-25, 0, 0"/>
+				<property name="exit" value="-1.6,0,0 ~ 1.6,0,-1 ~ -.4,0,-2.8 ~ -.4,0,2.6 ~ -.4,2.1,0"/>
+				<property name="IKFootLPosition" value="-.11, .43, .38"/>
+				<property name="IKFootLRotation" value="-22.5, 0, 0"/>
+				<property name="IKFootRPosition" value=".11, .43, .38"/>
+				<property name="IKFootRRotation" value="-22.5, 0, 0"/>
+			</property>
+
+			<property class="wheel0">
+				<property name="steerTransform" value="Origin/frontLeftWheelStear_joint"/>
+				<property name="tireTransform" value="Origin/frontLeftWheelStear_joint/frontLeftWheel_joint"/>
+				<property name="tireSuspensionPercent" value="1"/>
+				<property name="torqueScale_motor_brake" value="1, .8"/>
+			</property>
+
+			<property class="wheel1">
+				<property name="steerTransform" value="Origin/frontRightWheelStear_joint"/>
+				<property name="tireTransform" value="Origin/frontRightWheelStear_joint/frontRightWheel_joint"/>
+				<property name="tireSuspensionPercent" value="1"/>
+				<property name="torqueScale_motor_brake" value="1, .8"/>
+			</property>
+
+			<property class="wheel2">
+				<property name="tireTransform" value="Origin/backLeftWheelJoint"/>
+				<property name="tireSuspensionPercent" value="1"/>
+				<property name="torqueScale_motor_brake" value="1, 1"/>
+			</property>
+
+			<property class="wheel3">
+				<property name="tireTransform" value="Origin/backRightWheelJoint"/>
+				<property name="tireSuspensionPercent" value="1"/>
+				<property name="torqueScale_motor_brake" value="1, 1"/>
+			</property>
+
+			<property class="headlight">
+				<property name="class" value="Headlight"/>
+				<property name="transform" value="Origin/headlight"/>
+				<property name="bright" value=".75"/>
+			</property>
+
+			<property class="storage">
+				<property name="class" value="Storage"/>
+				<property name="display_name" value="basket"/>
+				<property name="slot_type" value="basket"/>
+				<property name="mesh" value="basket"/>
+				<property name="transform" value="basket"/>
+			</property>
+
 		</vehicle>
 	</append>
 </configs>

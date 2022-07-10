@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Xml;
 using UnityEngine;
 
@@ -11,9 +9,12 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
     protected int burstRepeat;
     protected float burstInterval;
     protected float burstDelay;
-    protected float repeatInterval;
+    protected float repeatInterval = 0f;
+    protected float repeatCooldown = 0f;
     protected string emptySound;
     protected string fireSound;
+    protected string loopSound;
+    protected string endSound;
     protected bool fullauto;
     protected ItemValue ammoValue;
 
@@ -39,8 +40,10 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
     };
 
     protected VPWeaponManager manager;
-    private bool coFireQueuedThisFrame = false;
-    public bool IsCoRunning { get; private set; } = false;
+    protected float denySoundCooldown = 0f;
+    protected FiringState curFiringState = FiringState.Stop;
+    public virtual bool IsBurstPending{ get => false; }
+    protected FiringState NextFiringState { get => fullauto ? curFiringState == FiringState.Stop ? FiringState.LoopStart : FiringState.Loop : FiringState.Start; }
 
     public event Action<PooledBinaryWriter, VehicleWeaponBase> DynamicUpdateDataCreation
     {
@@ -57,6 +60,8 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
     protected internal List<Action<PooledBinaryWriter, VehicleWeaponBase>> list_update_data_callbacks = new List<Action<PooledBinaryWriter, VehicleWeaponBase>>();
     protected internal List<Action<PooledBinaryWriter, VehicleWeaponBase>> list_fire_data_callbacks = new List<Action<PooledBinaryWriter, VehicleWeaponBase>>();
 
+    protected static FastTags VehicleWeaponTag = FastTags.Parse("vehicleWeapon");
+
     public void InvokeUpdateCallbacks(PooledBinaryWriter _bw)
     {
         foreach (var handler in list_update_data_callbacks)
@@ -71,12 +76,18 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
 
     protected enum FiringJuncture
     {
-        Anytime,
-        OnTarget,
-        FirstShot,
-        FirstShotOnTarget,
-        FromSlotKey,
-        FromSlotKeyOnTarget
+        Anytime = 0,
+        FirstShot = 1,
+        FromSlotKey = 2,
+        OnTarget = 4
+    }
+
+    public enum FiringState
+    {
+        Start,
+        LoopStart,
+        Loop,
+        Stop
     }
     public bool HasOperator { get => hasOperator; }
     public bool Activated { get => activated; }
@@ -84,6 +95,40 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
     public VehicleWeaponRotatorBase Rotator { get => rotator; }
     public int Seat { get => seat; protected internal set => seat = value; }
     public int Slot { get => slot; set => slot = value; }
+
+    private Ray lookRay;
+    public Ray LookRay { get => lookRay; private set => lookRay = value; }
+    protected virtual Ray CreateLookRay()
+    {
+        return player.playerCamera.ScreenPointToRay(GetDynamicMousePosition());
+    }
+
+    protected static int dynamicScaleMode = 0;
+    protected static float dynamicScaleOverride = 1;
+    public static void OnVideoSettingChanged()
+    {
+        dynamicScaleMode = GamePrefs.GetInt(EnumGamePrefs.OptionsGfxDynamicMode);
+        if (dynamicScaleMode == 2)
+            dynamicScaleOverride = GamePrefs.GetFloat(EnumGamePrefs.OptionsGfxDynamicScale);
+    }
+    protected Vector3 GetDynamicMousePosition()
+    {
+        Vector3 dynamicMousePos;
+
+        if (!GameRenderManager.dynamicIsEnabled)
+            dynamicMousePos = Input.mousePosition;
+        else
+        {
+            float scale;
+            if (dynamicScaleMode == 1)
+                scale = (float)player.renderManager.GetDynamicRenderTexture().width / Screen.width;
+            else
+                scale = dynamicScaleOverride;
+            dynamicMousePos = Input.mousePosition * scale;
+        }
+
+        return dynamicMousePos;
+    }
 
     public override void SetProperties(DynamicProperties _properties)
     {
@@ -108,94 +153,115 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
     public override void ApplyModEffect(ItemValue vehicleValue)
     {
         base.ApplyModEffect(vehicleValue);
-        string name = GetModName();
         enabled = true;
         properties.ParseBool("enabled", ref enabled);
-        enabled = bool.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "enabled", enabled.ToString()));
+        enabled = bool.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "enabled", enabled.ToString()));
         if (enableTrans)
             enableTrans.gameObject.SetActive(enabled);
 
+        activationSound = String.Empty;
         properties.ParseString("activationSound", ref activationSound);
-        activationSound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "activationSound", activationSound);
+        activationSound = vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "activationSound", activationSound);
+        deactivationSound = String.Empty;
         properties.ParseString("deactivationSound", ref deactivationSound);
-        deactivationSound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "deactivationSound", deactivationSound);
+        deactivationSound = vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "deactivationSound", deactivationSound);
+        notOnTargetSound = String.Empty;
         properties.ParseString("notOnTargetSound", ref notOnTargetSound);
-        notOnTargetSound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "notOnTargetSound", notOnTargetSound);
+        notOnTargetSound = vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "notOnTargetSound", notOnTargetSound);
+        notReadySound = String.Empty;
         properties.ParseString("notReadySound", ref notReadySound);
-        notReadySound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "notReadySound", notReadySound);
+        notReadySound = vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "notReadySound", notReadySound);
 
         string str = null;
         properties.ParseString("fireWhen", ref str);
-        str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "fireWhen", str);
+        str = vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "fireWhen", str);
         timing = FiringJuncture.Anytime;
-        if (!string.IsNullOrEmpty(str))
-            Enum.TryParse<FiringJuncture>(str, true, out timing);
+        if(!string.IsNullOrEmpty(str))
+        {
+            string[] arr = str.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach(string s in arr)
+            {
+                Enum.TryParse<FiringJuncture>(s.Trim(), out var res);
+                timing |= res;
+            }
+        }
 
         burstCount = 1;
         properties.ParseInt("burstCount", ref burstCount);
-        burstCount = int.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "burstCount", burstCount.ToString()));
+        burstCount = int.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "burstCount", burstCount.ToString()));
         burstInterval = 0f;
         properties.ParseFloat("burstInterval", ref burstInterval);
-        burstInterval = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "burstInterval", burstInterval.ToString()));
+        burstInterval = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "burstInterval", burstInterval.ToString()));
         burstRepeat = 1;
         properties.ParseInt("burstRepeat", ref burstRepeat);
-        burstRepeat = int.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "burstRepeat", burstRepeat.ToString()));
+        burstRepeat = int.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "burstRepeat", burstRepeat.ToString()));
         burstDelay = 0f;
         properties.ParseFloat("burstDelay", ref burstDelay);
-        burstDelay = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "burstDelay", burstDelay.ToString()));
-        repeatInterval = 0f;
-        properties.ParseFloat("repeatInterval", ref repeatInterval);
-        repeatInterval = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "repeatInterval", repeatInterval.ToString()));
+        burstDelay = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "burstDelay", burstDelay.ToString()));
         fullauto = false;
         properties.ParseBool("fullauto", ref fullauto);
-        fullauto = bool.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "fullauto", fullauto.ToString()));
+        fullauto = bool.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "fullauto", fullauto.ToString()));
 
         str = null;
         ammoValue = ItemValue.None.Clone();
         properties.ParseString("ammo", ref str);
-        str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "ammo", str);
+        str = vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "ammo", str);
         if (!string.IsNullOrEmpty(str))
             ammoValue = ItemClass.GetItem(str, false);
+
+        emptySound = String.Empty;
         properties.ParseString("emptySound", ref emptySound);
-        emptySound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "emptySound", emptySound);
+        emptySound = vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "emptySound", emptySound);
+        fireSound = String.Empty;
         properties.ParseString("fireSound", ref fireSound);
-        fireSound = vehicleValue.GetVehicleWeaponPropertyOverride(name, "fireSound", fireSound);
+        fireSound = vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "fireSound", fireSound);
+        loopSound = String.Empty;
+        properties.ParseString("loopSound", ref loopSound);
+        loopSound = vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "loopSound", loopSound);
+        properties.ParseString("endSound", ref endSound);
+        endSound = vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "endSound", endSound);
 
-
-        ParseEffectGroups(vehicleValue, this, name);
+        ParseEffectGroups(vehicleValue, this);
         if (rotator != null)
             rotator.ApplyModEffect(vehicleValue);
     }
 
-    protected static void ParseEffectGroups(ItemValue vehicleValue, VehicleWeaponBase weapon, string modName)
+    protected static void ParseEffectGroups(ItemValue vehicleValue, VehicleWeaponBase weapon)
     {
         weapon.effects.EffectGroups.Clear();
         weapon.effects.PassivesIndex.Clear();
+        weapon.effects.EffectGroupXml.Clear();
         weapon.effects.ParentPointer = vehicleValue.GetItemId();
-        if(vehicleValue.ItemClass != null)
-            ParseEffectGroup(vehicleValue.ItemClass.Effects, weapon, modName);
 
         if(vehicleValue.Modifications != null && vehicleValue.Modifications.Length > 0)
             foreach (var mod in vehicleValue.Modifications)
                 if (mod != null && mod.ItemClass is ItemClassModifier)
-                    ParseEffectGroup(mod.ItemClass.Effects, weapon, modName);
+                    ParseEffectGroup(mod.ItemClass.Effects, weapon);
 
         if (vehicleValue.CosmeticMods != null && vehicleValue.CosmeticMods.Length > 0)
             foreach (var cos in vehicleValue.CosmeticMods)
                 if (cos != null && cos.ItemClass is ItemClassModifier)
-                    ParseEffectGroup(cos.ItemClass.Effects, weapon, modName);
+                    ParseEffectGroup(cos.ItemClass.Effects, weapon);
+
+        foreach (var effect in weapon.effects.EffectGroups)
+            foreach (var passive in effect.PassiveEffects)
+                Log.Out(passive.Type.ToString() + " " + passive.Modifier.ToString() + " " + passive.Tags);
     }
 
-    protected static void ParseEffectGroup(MinEffectController effects, VehicleWeaponBase weapon, string modName)
+    protected static void ParseEffectGroup(MinEffectController effects, VehicleWeaponBase weapon)
     {
         int i = 0;
-        foreach (var effectNodes in effects.EffectGroupXml)
+        if (effects == null || effects.EffectGroupXml == null)
+            return;
+        foreach (var effectNode in effects.EffectGroupXml)
         {
-            XmlElement element = effectNodes as XmlElement;
-            if (element.HasAttribute("vehicle_weapon") && element.GetAttribute("vehicle_weapon") == modName)
+            XmlElement element = effectNode as XmlElement;
+            if (element != null && element.HasAttribute("vehicle_weapon") && element.GetAttribute("vehicle_weapon") == weapon.ModName)
             {
                 weapon.effects.EffectGroups.Add(effects.EffectGroups[i]);
+                weapon.effects.EffectGroupXml.Add(effectNode);
                 weapon.effects.PassivesIndex.UnionWith(effects.EffectGroups[i].PassivesIndex);
+                Log.Out("Adding effect group to " + weapon.ModName);
             }
             i++;
         }
@@ -224,22 +290,22 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
         if (rotator != null)
             rotator.NoPauseUpdate(_dt);
 
-        NetSyncUpdate();
+        if (!IsBurstPending && repeatCooldown > 0)
+            repeatCooldown -= _dt;
 
-        if(coFireQueuedThisFrame)
-        {
-            coFireQueuedThisFrame = false;
-            if (burstInterval > 0)
-                NetSyncFire();
-            else
-                DoFireNow();
-        }
+        if (denySoundCooldown > 0)
+            denySoundCooldown -= _dt;
+
+        NetSyncUpdate();
     }
 
     public override void NoGUIUpdate(float _dt)
     {
         if (rotator != null && GameManager.Instance.GameIsFocused)
+        {
+            LookRay = CreateLookRay();
             rotator.NoGUIUpdate(_dt);
+        }
     }
 
     protected void NetSyncUpdate(bool forced = false)
@@ -269,14 +335,13 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
     {
         hasOperator = true;
 
-        if (activated)
+        if (activated && enabled)
             OnActivated();
     }
 
     public virtual void OnPlayerDetach()
     {
         hasOperator = false;
-        pressed = false;
 
         OnDeactivated();
     }
@@ -289,6 +354,8 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
 
     protected internal virtual void OnDeactivated()
     {
+        pressed = false;
+        StopFire();
         if (rotator != null)
             rotator.DestroyPreview();
     }
@@ -320,137 +387,124 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
             }
             else
             {
-                bool firstShot = (userData & 1) > 0;
-                DoFireLocal(ref firstShot, vw_input.ActivateActions[slot].WasReleased, true);
+                if(activated)
+                {
+                    userData |= (int)FiringJuncture.FromSlotKey;
+                    DoFireLocal(ref userData, vw_input.ActivateActions[slot].WasReleased);
+                }
             }
         }
     }
 
-    public void DoFireLocal(ref bool firstShot, bool isRelease, bool fromSlot = false)
+    public void DoFireLocal(ref int flags, bool isRelease)
     {
-        if(CanFire(firstShot, isRelease, fromSlot))
+        bool flag = CanFire(flags, isRelease, out bool forceStop);
+        pressed = !isRelease;
+        if (flag)
         {
-            firstShot = false;
+            flags |= (int)FiringJuncture.FirstShot;
             DoFire();
         }
+        else if (forceStop)
+            StopFire();
     }
 
-    protected internal virtual bool CanFire(bool firstShot, bool isRelease, bool fromSlot)
+    protected internal virtual bool CanFire(int flags, bool isRelease, out bool forceStop)
     {
-        if (!activated || !enabled)
+        forceStop = isRelease;
+        if (isRelease)
+            return false;
+        
+        if (pressed && (!fullauto || curFiringState == FiringState.Stop))
+        {
+            forceStop = true;
+            return false;
+        }
+
+        if (repeatCooldown > 0)
             return false;
 
-        switch (timing)
+        if (IsBurstPending)
         {
-            case FiringJuncture.Anytime:
-                break;
-            case FiringJuncture.OnTarget:
-                if (rotator != null && !rotator.OnTarget)
-                {
-                    if(!pressed)
-                        vehicle.entity.PlayOneShot(notOnTargetSound);
-                    pressed = true;
-                    return false;
-                }
-                break;
-            case FiringJuncture.FirstShot:
-                if (!firstShot)
-                    return false;
-                break;
-            case FiringJuncture.FirstShotOnTarget:
-                if (!firstShot)
-                    return false;
-                else if (rotator != null && !rotator.OnTarget)
-                    goto notOnTarget;
-                break;
-            case FiringJuncture.FromSlotKey:
-                if (!fromSlot)
-                    return false;
-                break;
-            case FiringJuncture.FromSlotKeyOnTarget:
-                if (!fromSlot)
-                    return false;
-                else if (rotator != null && !rotator.OnTarget)
-                    goto notOnTarget;
-                break;
+            if(!fullauto)
+            {
+                TryPlayDenySoundLocal(notReadySound);
+                forceStop = true;
+            }
+            return false;
+        }
+
+        if (ammoValue.type > 0 && player.bag.GetItemCount(ammoValue) < burstRepeat)
+        {
+            TryPlayDenySoundLocal(emptySound);
+            forceStop = true;
+            return false;
+        }
+
+        if (timing == FiringJuncture.Anytime)
+            return true;
+
+        if ((timing & FiringJuncture.FirstShot) > 0 && (flags & (int)FiringJuncture.FirstShot) > 0)
+            return false;
+
+        if ((timing & FiringJuncture.FromSlotKey) > 0 && (flags & (int)FiringJuncture.FromSlotKey) == 0)
+            return false;
+
+        if ((timing & FiringJuncture.OnTarget) > 0 && rotator != null && !rotator.OnTarget)
+        {
+            TryPlayDenySoundLocal(notOnTargetSound);
+            return false;
         }
         return true;
-    notOnTarget:
-        if (!pressed)
-            vehicle.entity.PlayOneShot(notOnTargetSound);
-        pressed = true;
-        return false;
+    }
+
+    protected virtual void StopFire()
+    {
+        if (curFiringState != FiringState.Stop)
+            NetSyncFire(FiringState.Stop);
     }
 
     protected internal virtual void DoFire()
     {
-        if (burstInterval > 0 || burstDelay > 0)
-            ThreadManager.StartCoroutine(DoFireCo());
-        else
-        {
-            DoFireNow();
-            OnFireEnd();
-        }
     }
 
-    protected virtual IEnumerator DoFireCo()
-    {
-        IsCoRunning = true;
-        if (burstDelay > 0)
-            yield return new WaitForSecondsRealtime(burstDelay);
-        if (burstInterval > 0)
-        {
-            int curBurstCount = 0;
-            while (curBurstCount < burstRepeat)
-            {
-                if (!hasOperator)
-                    break;
-                if (GameManager.Instance.IsPaused())
-                    yield return new WaitUntil(() => { return !GameManager.Instance.IsPaused(); });
-                coFireQueuedThisFrame = true;
-                yield return null;
-                ++curBurstCount;
-                yield return new WaitForSecondsRealtime(burstInterval);
-            }
-            if (repeatInterval > 0)
-                yield return new WaitForSecondsRealtime(repeatInterval);
-        }
-        else
-            coFireQueuedThisFrame = true;
-
-        IsCoRunning = false;
-        OnFireEnd();
-        yield break;
-    }
-
-    protected virtual void DoFireNow()
+    protected void DoFireNow()
     {
         for (int i = 0; i < burstRepeat; ++i)
-            NetSyncFire();
+            NetSyncFire(NextFiringState);
+        OnFireEnd();
     }
 
     protected virtual void OnFireEnd()
     {
+        repeatCooldown = repeatInterval;
     }
 
-    protected void NetSyncFire()
+    protected void NetSyncFire(FiringState state)
     {
-        manager.NetSyncFireAdd(this);
-
-        if (ammoValue.type > 0)
-            ConsumeAmmo(1);
+        manager.NetSyncFireAdd(this, state);
+        curFiringState = state;
+        //Log.Out(tag + " " + state.ToStringCached());
+        if (state != FiringState.Stop)
+        {
+            //curRepeatCount++;
+            if (ammoValue.type > 0)
+                ConsumeAmmo(1);
+        }
+        //else
+            //curRepeatCount = 0;
     }
 
-    public virtual void NetFireWrite(PooledBinaryWriter _bw)
+    public virtual void NetFireWrite(PooledBinaryWriter _bw, FiringState state)
     {
     }
 
-    public virtual void NetFireRead(PooledBinaryReader _br)
+    public virtual void NetFireRead(PooledBinaryReader _br, FiringState state)
     {
-        if (hasOperator)
+        if (hasOperator && state != FiringState.Stop)
             OnBurstShot();
 
-        Audio.Manager.Play(vehicle.entity, fireSound);
+        FiringStateReaction(state);
     }
 
     protected virtual void ConsumeAmmo(int count)
@@ -458,12 +512,86 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
         player.bag.DecItem(ammoValue, count);
     }
 
+    protected virtual void FiringStateReaction(FiringState state)
+    {
+        switch(state)
+        {
+            case FiringState.Start:
+                OnStart();
+                break;
+            case FiringState.LoopStart:
+                OnLoopStart();
+                break;
+            case FiringState.Loop:
+                OnLoop();
+                break;
+            case FiringState.Stop:
+                OnStop();
+                break;
+        }
+    }
+
+    protected virtual void OnStart()
+    {
+        Audio.Manager.Play(vehicle.entity, fireSound);
+
+        if (ConnectionManager.Instance.IsServer)
+            GameManager.Instance.World.aiDirector.OnSoundPlayedAtPosition(vehicle.entity.GetAttached(seat) != null ? vehicle.entity.GetAttached(seat).entityId : -1, vehicle.entity.position - Origin.position, fireSound, 1f);
+    }
+
+    protected virtual void OnLoopStart()
+    {
+        Audio.Manager.Play(vehicle.entity, fireSound);
+        if (!string.IsNullOrEmpty(loopSound))
+        {
+            Audio.Manager.Stop(vehicle.entity.entityId, loopSound);
+            Audio.Manager.Play(vehicle.entity, loopSound);
+        }
+
+        if (ConnectionManager.Instance.IsServer)
+        {
+            GameManager.Instance.World.aiDirector.OnSoundPlayedAtPosition(vehicle.entity.GetAttached(seat) != null ? vehicle.entity.GetAttached(seat).entityId : -1, vehicle.entity.position - Origin.position, fireSound, 1f);
+            if (!string.IsNullOrEmpty(loopSound))
+                GameManager.Instance.World.aiDirector.OnSoundPlayedAtPosition(vehicle.entity.GetAttached(seat) != null ? vehicle.entity.GetAttached(seat).entityId : -1, vehicle.entity.position - Origin.position, loopSound, 1f);
+        }
+    }
+
+    protected virtual void OnLoop()
+    {
+        if (string.IsNullOrEmpty(loopSound))
+            Audio.Manager.Play(vehicle.entity, fireSound);
+        if (ConnectionManager.Instance.IsServer && string.IsNullOrEmpty(loopSound))
+            GameManager.Instance.World.aiDirector.OnSoundPlayedAtPosition(vehicle.entity.GetAttached(seat) != null ? vehicle.entity.GetAttached(seat).entityId : -1, vehicle.entity.position - Origin.position, fireSound, 1f);
+    }
+
+    protected virtual void OnStop()
+    {
+        if (!string.IsNullOrEmpty(loopSound))
+            Audio.Manager.Stop(vehicle.entity.entityId, loopSound);
+        if(!string.IsNullOrEmpty(endSound))
+        {
+            Audio.Manager.Stop(vehicle.entity.entityId, endSound);
+            Audio.Manager.Play(vehicle.entity, endSound);
+        }
+    }
+
     protected internal virtual void OnBurstShot()
     {
-        player.MinEventContext.ItemValue = ItemValue.None.Clone();
-        player.FireEvent(MinEventTypes.onSelfRangedBurstShot, false);
-        player.MinEventContext.ItemValue = vehicle.GetUpdatedItemValue();
-        effects.FireEvent(MinEventTypes.onSelfRangedBurstShot, player.MinEventContext);
+    }
+
+    protected virtual void FireEvent(MinEventTypes e)
+    {
+        player.FireEvent(e, false);
+        effects.FireEvent(e, (vehicle.entity.GetAttached(seat) as EntityAlive).MinEventContext);
+    }
+
+    protected void TryPlayDenySoundLocal(string sound)
+    {
+        if(denySoundCooldown <= 0)
+        {
+            Audio.Manager.Play(vehicle.entity, sound);
+            denySoundCooldown = 1f;
+        }
     }
 }
 

@@ -15,61 +15,64 @@ public abstract class VehicleWeaponHitposPreviewRotatorBase : VehicleWeaponProje
     protected Color previewColorBlockAiming;
     protected float previewScaleBlock = 0;
     protected PrimitiveType previewTypeBlock = PrimitiveType.Sphere;
+    protected float indicatorOffsetY = 0;
     protected Vector3 hitPos;
     protected static readonly int colorId = Shader.PropertyToID("_Color");
 
     public override void ApplyModEffect(ItemValue vehicleValue)
     {
         base.ApplyModEffect(vehicleValue);
-        string name = GetModName();
         string str = null;
         previewColorEntityOnTarget = Color.clear;
         properties.ParseString("previewColorEntityOnTarget", ref str);
-        str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "previewColorEntityOnTarget", str);
+        str = vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "previewColorEntityOnTarget", str);
         if (!string.IsNullOrEmpty(str))
             ColorUtility.TryParseHtmlString(str, out previewColorEntityOnTarget);
 
         str = null;
         previewColorEntityAiming = Color.clear;
         properties.ParseString("previewColorEntityAiming", ref str);
-        str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "previewColorEntityAiming", str);
+        str = vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "previewColorEntityAiming", str);
         if (!string.IsNullOrEmpty(str))
             ColorUtility.TryParseHtmlString(str, out previewColorEntityAiming);
 
         str = null;
         previewColorBlockOnTarget = Color.clear;
         properties.ParseString("previewColorBlockOnTarget", ref str);
-        str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "previewColorBlockOnTarget", str);
+        str = vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "previewColorBlockOnTarget", str);
         if (!string.IsNullOrEmpty(str))
             ColorUtility.TryParseHtmlString(str, out previewColorBlockOnTarget);
 
         str = null;
         previewColorBlockAiming = Color.clear;
         properties.ParseString("previewColorBlockAiming", ref str);
-        str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "previewColorBlockAiming", str);
+        str = vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "previewColorBlockAiming", str);
         if (!string.IsNullOrEmpty(str))
             ColorUtility.TryParseHtmlString(str, out previewColorBlockAiming);
 
         str = null;
         previewTypeEntity = PrimitiveType.Sphere;
         properties.ParseString("previewTypeEntity", ref str);
-        str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "previewTypeEntity", str);
+        str = vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "previewTypeEntity", str);
         if (!string.IsNullOrEmpty(str))
             Enum.TryParse<PrimitiveType>(str, out previewTypeEntity);
 
         str = null;
         previewTypeBlock = PrimitiveType.Sphere;
         properties.ParseString("previewTypeBlock", ref str);
-        str = vehicleValue.GetVehicleWeaponPropertyOverride(name, "previewTypeBlock", str);
+        str = vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "previewTypeBlock", str);
         if (!string.IsNullOrEmpty(str))
             Enum.TryParse<PrimitiveType>(str, out previewTypeBlock);
 
+        indicatorOffsetY = 0;
+        properties.ParseFloat("indicatorOffsetY", ref indicatorOffsetY);
+        indicatorOffsetY = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "indicatorOffsetY", indicatorOffsetY.ToString()));
         previewScaleEntity = 0;
         properties.ParseFloat("previewScaleEntity", ref previewScaleEntity);
-        previewScaleEntity = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "previewScaleEntity", previewScaleEntity.ToString()));
+        previewScaleEntity = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "previewScaleEntity", previewScaleEntity.ToString()));
         previewScaleBlock = 0;
         properties.ParseFloat("previewScaleBlock", ref previewScaleBlock);
-        previewScaleBlock = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "previewScaleBlock", previewScaleBlock.ToString()));
+        previewScaleBlock = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "previewScaleBlock", previewScaleBlock.ToString()));
     }
 
     public override void InitPrefabConnections()
@@ -83,9 +86,10 @@ public abstract class VehicleWeaponHitposPreviewRotatorBase : VehicleWeaponProje
             hasRaycastTransform = true;
     }
 
-    public override void SetWeapon(VehicleWeaponBase weapon)
+    protected override void SetInputRay()
     {
-        base.SetWeapon(weapon);
+        base.SetInputRay();
+        inputRay.origin = hasRaycastTransform ? hitRayTrans.position : hitRayTrans.position + Vector3.up * 2;
     }
 
     protected override void CalcCurRotation(float _dt)
@@ -102,9 +106,7 @@ public abstract class VehicleWeaponHitposPreviewRotatorBase : VehicleWeaponProje
 
     protected virtual bool DoRaycast(out RaycastHit hitInfo)
     {
-        Ray lookRay = player.playerCamera.ScreenPointToRay(GetDynamicMousePosition());
-        lookRay.origin = hasRaycastTransform ? hitRayTrans.position : hitRayTrans.position + Vector3.up * 2;
-        return Physics.Raycast(lookRay, out hitInfo);
+        return Physics.Raycast(inputRay, out hitInfo);
     }
 
     protected abstract void DoCalcCurRotation(out float targetHorAngle, out float targetVerAngle);
@@ -121,7 +123,7 @@ public abstract class VehicleWeaponHitposPreviewRotatorBase : VehicleWeaponProje
 
     public override void CreatePreview()
     {
-        DestroyPreview();
+        base.CreatePreview();
         if (previewScaleEntity > 0 && previewColorEntityOnTarget.a > 0)
         {
             explPreviewTransEntity = GameObject.CreatePrimitive(previewTypeEntity).transform;
@@ -154,6 +156,7 @@ public abstract class VehicleWeaponHitposPreviewRotatorBase : VehicleWeaponProje
 
     public override void DestroyPreview()
     {
+        base.DestroyPreview();
         if (explPreviewTransEntity != null)
         {
             GameObject.Destroy(explPreviewTransEntity.gameObject);
@@ -173,11 +176,12 @@ public abstract class VehicleWeaponHitposPreviewRotatorBase : VehicleWeaponProje
         if (explPreviewTransBlock != null)
             explPreviewTransBlock.position = position;
         if (indicatorTrans != null)
-            indicatorTrans.position = position;
+            indicatorTrans.position = position + Vector3.up * indicatorOffsetY;
     }
 
     protected override void SetPreviewColor(bool onTarget)
     {
+        base.SetPreviewColor(onTarget);
         if (explPreviewTransEntity != null)
             explPreviewTransEntity.GetComponent<Renderer>().material.SetColor(colorId, onTarget ? previewColorEntityOnTarget : previewColorEntityAiming);
         if (explPreviewTransBlock != null)

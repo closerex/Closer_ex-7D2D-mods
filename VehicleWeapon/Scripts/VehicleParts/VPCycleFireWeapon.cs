@@ -4,7 +4,6 @@ using System.Collections.Generic;
 public class VPCycleFireWeapon : VehicleWeaponBase
 {
     protected VehicleWeaponBase[] cycleArray;
-    protected Dictionary<string, int> cycleMap = new Dictionary<string, int>();
     protected float cycleInterval;
     protected float cycleCooldown = 0f;
     protected int curCycleIndex = 0;
@@ -47,18 +46,15 @@ public class VPCycleFireWeapon : VehicleWeaponBase
 
         list.Sort(new VPWeaponManager.WeaponSlotComparer());
         cycleArray = list.ToArray();
-        for (int i = 0; i < cycleArray.Length; i++)
-            cycleMap.Add(cycleArray[i].tag, i + 1);
     }
 
     public override void ApplyModEffect(ItemValue vehicleValue)
     {
         base.ApplyModEffect(vehicleValue);
-        string name = GetModName();
 
         cycleInterval = 0;
         properties.ParseFloat("cycleInterval", ref cycleInterval);
-        cycleInterval = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(name, "cycleInterval", cycleInterval.ToString()));
+        cycleInterval = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "cycleInterval", cycleInterval.ToString()));
 
         foreach (var weapon in cycleArray)
             weapon.ApplyModEffect(vehicleValue);
@@ -76,24 +72,21 @@ public class VPCycleFireWeapon : VehicleWeaponBase
     public override void InitWeaponConnections(IEnumerable<VehicleWeaponBase> weapons)
     {
         base.InitWeaponConnections(weapons);
-        foreach (var weapon in cycleArray)
+        for(int i = 0; i < cycleArray.Length; i++)
         {
+            var weapon = cycleArray[i];
+            int j = i + 1;
             weapon.Seat = seat;
             weapon.Slot = slot;
+            Action<PooledBinaryWriter, VehicleWeaponBase> handler = (PooledBinaryWriter _bw, VehicleWeaponBase target) => _bw.Write((byte)j);
             weapon.DynamicUpdateDataCreation += RecursiveWriteUpdateData;
-            weapon.DynamicUpdateDataCreation += WriteCycleIndex;
+            weapon.DynamicUpdateDataCreation += handler;
             weapon.DynamicFireDataCreation += RecursiveWriteFireData;
-            weapon.DynamicFireDataCreation += WriteCycleIndex;
+            weapon.DynamicFireDataCreation += handler;
         }
 
         foreach (var weapon in cycleArray)
             weapon.InitWeaponConnections(cycleArray);
-    }
-
-    private void WriteCycleIndex(PooledBinaryWriter _bw, VehicleWeaponBase target)
-    {
-        cycleMap.TryGetValue(target.tag, out int index);
-        _bw.Write((byte)index);
     }
 
     private void RecursiveWriteUpdateData(PooledBinaryWriter _bw, VehicleWeaponBase target)
@@ -124,54 +117,90 @@ public class VPCycleFireWeapon : VehicleWeaponBase
             base.NetSyncRead(_br);
     }
 
-    public override void NetFireRead(PooledBinaryReader _br)
+    public override void NetFireRead(PooledBinaryReader _br, VehicleWeaponBase.FiringState state)
     {
         if (_br == null)
             return;
 
         int slot = _br.ReadByte();
         if (slot > 0)
-            cycleArray[slot - 1].NetFireRead(_br);
+            cycleArray[slot - 1].NetFireRead(_br, state);
     }
 
-    protected internal override bool CanFire(bool firstShot, bool isRelease, bool fromSlot)
+    protected internal override bool CanFire(int flags, bool isRelease, out bool forceStop)
     {
-        if(base.CanFire(firstShot, isRelease, fromSlot))
-        {
-            bool flag = true;
-            if (cycleInterval > 0)
-                flag = cycleCooldown <= 0 && !cycleArray[LastCycleIndex].IsCoRunning && cycleArray[curCycleIndex].CanFire(firstShot, isRelease, fromSlot);
-            else
-            {
-                int i = 0;
-                canFireList.Clear();
-                foreach (var weapon in cycleArray)
-                {
-                    if (weapon.CanFire(firstShot, isRelease, fromSlot))
-                        canFireList.Add(i);
-                    i++;
-                }
-                flag = canFireList.Count > 0;
-            }
+        bool flag = true;
+        forceStop = isRelease;
 
-            return flag;
+        if (pressed && !fullauto)
+        {
+            forceStop = true;
+            return false;
         }
 
-        return false;
+        StopFireAll(false);
+        if (isRelease)
+            flag = false;
+        else if (cycleInterval > 0)
+        {
+            flag = cycleCooldown <= 0 && !cycleArray[LastCycleIndex].IsBurstPending && cycleArray[curCycleIndex].CanFire(flags, isRelease, out _);
+            canFireList.Add(curCycleIndex);
+        }else
+        {
+            int i = 0;
+            foreach (var weapon in cycleArray)
+            {
+                if (weapon.CanFire(flags, isRelease, out _))
+                    canFireList.Add(i);
+                i++;
+            }
+            flag = canFireList.Count > 0;
+            if (!flag)
+                for (i = 0; i < cycleArray.Length; i++)
+                    canFireList.Add(i);
+        }
+
+        if(!flag)
+            StopFireAll(false);
+
+        pressed = !isRelease;
+
+        return flag;
     }
 
     protected internal override void DoFire()
     {
         NetSyncUpdate(true);
+
+        foreach(int index in canFireList)
+            cycleArray[index].DoFire();
+
         if(cycleInterval > 0)
         {
-            cycleArray[curCycleIndex].DoFire();
             cycleCooldown = cycleInterval;
             curCycleIndex = curCycleIndex == cycleArray.Length - 1 ? 0 : curCycleIndex + 1;
         }
+    }
+
+    protected override void StopFire()
+    {
+        StopFireAll(true);
+    }
+
+    protected void StopFireAll(bool all = false)
+    {
+        int temp = 0;
+        if (all)
+            foreach (var weapon in cycleArray)
+                weapon.DoFireLocal(ref temp, true);
         else
-            foreach(int index in canFireList)
-                cycleArray[index].DoFire();
+            foreach (var index in canFireList)
+            {
+                cycleArray[index].DoFireLocal(ref temp, true);
+                //Log.Out("cycle release index: " + index + " weapon: " + cycleArray[index].tag);
+            }
+
+        canFireList.Clear();
     }
 
     public override void NoPauseUpdate(float _dt)
@@ -221,6 +250,8 @@ public class VPCycleFireWeapon : VehicleWeaponBase
     protected internal override void OnDeactivated()
     {
         base.OnDeactivated();
+        curCycleIndex = 0;
+        StopFireAll(true);
         foreach (var weapon in cycleArray)
             weapon.OnDeactivated();
     }

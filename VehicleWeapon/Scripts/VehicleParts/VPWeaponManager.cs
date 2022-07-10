@@ -117,9 +117,9 @@ public class VPWeaponManager : VehiclePart
             netSyncHelper.AddToUpdate(weapon);
     }
 
-    public virtual void NetSyncFireAdd(VehicleWeaponBase weapon, bool async = false)
+    public virtual void NetSyncFireAdd(VehicleWeaponBase weapon, VehicleWeaponBase.FiringState state)
     {
-        netSyncHelper.AddToFire(weapon);
+        netSyncHelper.AddToFire(weapon, state);
     }
 
     public void NetSyncUpdate(int seat, PooledBinaryReader _br)
@@ -139,11 +139,12 @@ public class VPWeaponManager : VehiclePart
     {
         if (list_weapons[seat] != null)
         {
-            int count = _br.ReadByte();
+            int count = _br.ReadUInt16();
             for (int i = 0; i < count; i++)
             {
                 int slot = _br.ReadByte();
-                list_weapons[seat][slot].NetFireRead(_br);
+                VehicleWeaponBase.FiringState state = (VehicleWeaponBase.FiringState)_br.ReadByte();
+                list_weapons[seat][slot].NetFireRead(_br, state);
             }
         }
     }
@@ -173,7 +174,7 @@ public class VPWeaponManager : VehiclePart
 
     protected void HandleUserInput()
     {
-        int userData = CheckFireState() ? 0 : 1;
+        int userData = CheckFireState();
         HandleWeaponUserInput(userData);
         HandleCustomInput(userData);
     }
@@ -190,12 +191,12 @@ public class VPWeaponManager : VehiclePart
 
     }
 
-    protected bool CheckFireState()
+    protected int CheckFireState()
     {
         var fireState = PlayerActionsVehicleWeapon.Instance.FireShot;
         if (fireState.IsPressed || fireState.WasReleased)
             return DoFireLocal(fireState.WasReleased);
-        return false;
+        return 0;
     }
 
     public virtual void Cleanup()
@@ -204,15 +205,16 @@ public class VPWeaponManager : VehiclePart
             OnPlayerDetach();
     }
 
-    public bool DoFireLocal(bool isRelease)
+    public int DoFireLocal(bool isRelease)
     {
         if(localPlayerSeat < 0 || list_weapons[localPlayerSeat] == null)
-            return false;
+            return 0;
 
-        bool firstShot = true;
+        int flags = 0;
         foreach(var weapon in list_weapons[localPlayerSeat])
-            weapon.DoFireLocal(ref firstShot, isRelease);
-        return firstShot;
+            if(weapon.Enabled && weapon.Activated)
+                weapon.DoFireLocal(ref flags, isRelease);
+        return flags;
     }
 
     protected void SortWeapons(List<VehicleWeaponBase> weapons)
@@ -234,7 +236,7 @@ public class VPWeaponManager : VehiclePart
     protected class NetSyncHelper
     {
         private List<VehicleWeaponBase> list_update = new List<VehicleWeaponBase>();
-        private List<VehicleWeaponBase> list_fire = new List<VehicleWeaponBase>();
+        private List<KeyValuePair<VehicleWeaponBase, VehicleWeaponBase.FiringState>> list_fire = new List<KeyValuePair<VehicleWeaponBase, VehicleWeaponBase.FiringState>>();
         private VPWeaponManager manager;
 
         public NetSyncHelper(VPWeaponManager manager)
@@ -249,11 +251,11 @@ public class VPWeaponManager : VehiclePart
             list_update.Add(weapon);
         }
 
-        public void AddToFire(VehicleWeaponBase weapon)
+        public void AddToFire(VehicleWeaponBase weapon, VehicleWeaponBase.FiringState state)
         {
-            list_fire.Add(weapon);
+            list_fire.Add(new KeyValuePair<VehicleWeaponBase, VehicleWeaponBase.FiringState>(weapon, state));
 
-            if(ShouldNetSync)
+            if(ShouldNetSync && state != VehicleWeaponBase.FiringState.Stop)
                 AddToUpdate(weapon);
         }
 
@@ -290,12 +292,15 @@ public class VPWeaponManager : VehiclePart
 
                         if(list_fire.Count > 0)
                         {
-                            _bw.Write((byte)list_fire.Count);
-                            foreach(var weapon in list_fire)
+                            _bw.Seek(0, SeekOrigin.Begin);
+                            _bw.Write((ushort)list_fire.Count);
+                            foreach(var pair in list_fire)
                             {
+                                var weapon = pair.Key;
                                 _bw.Write((byte)weapon.Slot);
+                                _bw.Write((byte)pair.Value);
                                 weapon.InvokeFireCallbacks(_bw);
-                                weapon.NetFireWrite(_bw);
+                                weapon.NetFireWrite(_bw, pair.Value);
                             }
                             fireData = ms.ToArray();
 
@@ -312,7 +317,7 @@ public class VPWeaponManager : VehiclePart
                 if(ShouldNetSync)
                 {
                     if (ConnectionManager.Instance.IsServer && ConnectionManager.Instance.ClientCount() > 0)
-                        ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageVehicleWeaponManagerDataSync>().Setup(vehicleId, seat, updateData, fireData), false, -1, playerId, vehicleId, 75);
+                        ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageVehicleWeaponManagerDataSync>().Setup(vehicleId, seat, updateData, fireData), false, -1, playerId, playerId, 75);
                     else if (ConnectionManager.Instance.IsClient)
                         ConnectionManager.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageVehicleWeaponManagerDataSync>().Setup(vehicleId, seat, updateData, fireData));
                 }

@@ -52,14 +52,10 @@ public class VPDummyWeapon : VehicleWeaponBase
         }
     }
 
-    protected internal override bool CanFire(bool firstShot, bool isRelease, bool fromSlot)
+    protected internal override bool CanFire(int flags, bool isRelease, out bool forceStop)
     {
+        forceStop = false;
         return false;
-    }
-
-    protected internal override void OnBurstShot()
-    {
-
     }
 }
 

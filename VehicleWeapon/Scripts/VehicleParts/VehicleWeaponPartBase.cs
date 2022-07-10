@@ -6,7 +6,11 @@
     public virtual void NetSyncWrite(PooledBinaryWriter _bw) { }
     public virtual void NetSyncRead(PooledBinaryReader _br) { }
     public virtual void ApplyModEffect(ItemValue vehicleValue) { }
-
-    protected string GetModName() { return vehicle.GetName() + "_" + tag; }
+    public override void SetProperties(DynamicProperties _properties)
+    {
+        base.SetProperties(_properties);
+        ModName = vehicle.GetName() + "_" + tag;
+    }
+    public string ModName { get; private set; }
 }
 
