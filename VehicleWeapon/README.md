@@ -55,7 +55,7 @@ The class property is `<property name="class" value="WeaponManager,VehicleWeapon
 ##### 🔻Moddable properties:
 `cameraOffset[seat] `: A Vector3 that changes the camera position of player on `[seat] `. The actual property name will be cameraOffset0 and so on.
 
-**Default:** 0,2,0 so that player camera is moved up by 2 units for better aiming view.
+- **Default:** 0,2,0 so that player camera is moved up by 2 units for better aiming view.
 
 ### 🔴VehicleWeapon
 As stated above, there are different type of weapons. They share some common properties, and have some exclusive properties.
@@ -66,7 +66,7 @@ These are properties shared by all weapon types.
 ##### 🔻Fixed properties:
 `seat `: The seat this weapon is attached to. Only player on this seat can operate the weapon.
 
-**Default:** 0 (byte)
+- **Default:** 0 (byte)
 
 `slot `: The sort key of this weapon. Properties in xml are read into a disordered dictionary so the part does not appear in the order you put them in xml. This property is used to sort all the weapons on this seat.
 
@@ -74,71 +74,71 @@ Note that the value assigned in xml is not always the real value in game: they a
 
 The sorted slot value defines the shortcut to operate this weapon individually: toggle activation state or firing from this weapon alone.
 
-**Default:** int.MaxValue. The order will be random if all weapons are set to the same value, but for a single weapon with default value, it's always sorted to the end of the list.
+- **Default:** int.MaxValue. The order will be random if all weapons are set to the same value, but for a single weapon with default value, it's always sorted to the end of the list.
 
 `enableTransform `: Works in pair with `enabled ` property, controls the visual transform to hide/show on weapon enable state change. Can be used to "install" a weapon on the vehicle.
 
-**Default:** empty string. Does not affect anything when not set.
+- **Default:** empty string. Does not affect anything when not set.
 
 `rotator `: The part name of the bound rotator.
 
-**Default:** none. When rotator is not set, the weapon won't rotate.
+- **Default:** none. When rotator is not set, the weapon won't rotate.
 #####  🔻Moddable properties:
 `enabled `: This controls the enable state of the vehicle.
 
-**Default:** true
+- **Default:** true
 
 `activationSound `: The sound to play when you activate the weapon.
 
-**Default:** empty string
+- **Default:** empty string
 
 `deactivationSound `: The sound to play when you deactivate the weapon.
 
-**Default:** empty string
+- **Default:** empty string
 
 `notReadySound `: The sound to play when the weapon is not ready, ie trying to fire a non-fullauto weapon when current burst cycle is not finished.
 
-**Default:** empty string
+- **Default:** empty string
 
 `fireWhen `: The enumeration controlling the timing when this weapon can be fired. Possible values are `Anytime `, `FromSlotKey ` and `OnTarget `. Combine multiple values by comma(,).
 
-**Default:** Anytime
+- **Default:** Anytime
 
 `notOnTargetSound `: The sound to play when player is trying to fire the weapon when the rotator is not pointing target direction.
 
-**Default:** none
+- **Default:** none
 
 `burstCount `: Consider this as the pellet count of a shotgun shell.
 
-**Default:** 1 (int)
+- **Default:** 1 (int)
 
 `burstRepeat `: The shots to fire on a single fire command. Each shot consumes 1 ammo. Combining with `burstInterval ` to produce a "burst mode" weapon.
 
-**Default:** 1 (int)
+- **Default:** 1 (int)
 
 `burstInterval `: The interval between `burstRepeat` in seconds. When set to 0, all `burstRepeat ` is fired in the same frame.
 
-**Default:** 0 (float)
+- **Default:** 0 (float)
 
 `fullauto `: If this weapon is fullauto. A fullauto weapon will always try to fire when you hold fire key or slot key. Fullauto burst mode is also possible.
 
-**Default:** false
+- **Default:** false
 
 `ammo `: The item to consume on each `burstRepeat `. When not set or the specified item is not found, the weapon does not consume ammo.
 
-**Default:** empty string
+- **Default:** empty string
 
 `emptySound `: The sound to play when trying to fire without enough ammo in player bag.
 
-**Default:** empty string
+- **Default:** empty string
 
 `fireSound `: The sound to play on each `burstRepeat `.
 
-**Default:** empty string
+- **Default:** empty string
 
 `endSound `: The sound to play when releasing trigger.
 
-**Default:** empty string
+- **Default:** empty string
 
 There is a hidden `repeatInterval ` field, which is handled differently by particle weapons and raycast weapons. It will be discussed in following sections.
 
@@ -151,21 +151,21 @@ The class property is `<property name="class" value="ParticleWeapon,VehicleWeapo
 #####  🔻Moddable properties:
 `reloadTime `: The said `repeatInterval` field. When all `burstRepeat ` finishes, a "reload" is triggered for particle weapons.
 
-**Default:** 1 (float)
+- **Default:** 1 (float)
 
 `reloadSound `: The sound to play when reload is triggered.
 
-**Default:** empty string
+- **Default:** empty string
 
 `particleIndex `: The custom particle index of the explosion particle. The particle is bound with an item, and passive effects and triggers are taken from that item.
 
 `explodeOnCollision `: Should explosion be triggered on particle collision?
 
-**Default:** true
+- **Default:** true
 
 `explodeOnDeath `: Should explosion be triggered on particle lifetime depletion?
 
-**Default:** false
+- **Default:** false
 
 #### 🟥RaycastWeapon
 The class property is `<property name="class" value="RaycastWeapon,VehicleWeapon"/> `.
@@ -175,11 +175,11 @@ The class property is `<property name="class" value="RaycastWeapon,VehicleWeapon
 
 `muzzleTransform `: The transform where the muzzle flash and smoke particle is attached to.
 
-**Default:** empty string
+- **Default:** empty string
 
 `AADebug `: Show the aim assist cylinder. Refer to `AASize ` property.
 
-**Default:** false
+- **Default:** false
 
 ##### Moddable properties:
 `itemName `: The bound item of this weapon. The reason for taking a bound item is to calculate passive effects and fire trigger events from the item.
@@ -188,23 +188,23 @@ Bound item can be affected by player entity class, progression , buffs and modif
 
 `damageType `: The damage type of dealt shots. Refer to vanilla buffs.xml for all damage types.
 
-**Default:** Piercing, which is the default bullet damage type.
+- **Default:** Piercing, which is the default bullet damage type.
 
 `material `: The bullet material. This determines the particle to spawn on raycast hits.
 
-**Default:** bullet
+- **Default:** bullet
 
 `AASize `: The aim assist cylinder radius. The weapon is locked on the targeted enemy in range, until player camera moves away from it. Turn `AADebug ` on to get a visible cylinder.
 
-**Default:** 0.75 (float)
+- **Default:** 0.75 (float)
 
 `muzzleFlash `: The muzzle flash to spawn on each `burstRepeat `. Both vanilla particle name and custom bundle path is accepted.
 
-**Default:** empty string
+- **Default:** empty string
 
 `muzzleSmoke `: The muzzle smoke to spawn on each `burstRepeat `. Both vanilla particle name and custom bundle path is accepted.
 
-**Default:** empty string
+- **Default:** empty string
 
 For custom muzzle particles, quote from my [Custom Muzzle Flash mod](https://www.nexusmods.com/7daystodie/mods/2063 "Custom Muzzle Flash mod") (the mod is not required):
 
@@ -216,7 +216,7 @@ Game spawns your particle, attach it to muzzle, then force emitting 10 particles
 Note to modify this property with modifications, you need to use `buffAppend` and `buffRemove` to add or remove buffs from the weapon buff list. Adding existing buffs or removing nonexistent buffs does nothing and won't cause exception.
 `BuffProcChance ` is defaulted to 1 and calculated by passive effects.
 
-**Default:** empty string
+- **Default:** empty string
 
 `repeatInterval ` of raycast weapon is affected by both `burstInterval ` property and `RoundsPerMinute ` passive effect.
 
@@ -244,7 +244,7 @@ The class property is `<property name="class" value="CycleFireWeapon,VehicleWeap
 `cycleInterval `: The interval in seconds when cycling through weapons. 
 When set to 0, all weapons currently ready to fire are fired in the same frame, otherwise they are cycled with a delay.
 
-**Default:** 0 (float)
+- **Default:** 0 (float)
 
 ### 🔴VehicleWeaponRotator
 Rotators can be categorized into 2 types: ballistic and directional. They both take a Ray as user input, but react differently.
@@ -262,53 +262,53 @@ These are properties shared by all kinds of rotators.
 
 `horRotationTransform `: The horizontal rotation transform. Rotations on Y axis is applied to this transform.
 
-**Default:** null
+- **Default:** null
 
 `verRotationTransform `: The vertical rotation transform. Rotation on X axis is applied to this transform.
 
-**Default:** null
+- **Default:** null
 
 #####  🔻Moddable properties:
 `verticleMaxRotation `: The maximum rotation of vertical transform. Positive value for upwards, negative for downwards.
 
-**Default:** 45 (float)
+- **Default:** 45 (float)
 
 `verticleMinRotation `: The minimum rotation of vertical transform. Positive value for upwards, negative for downwards.
 
-**Default:** 0 (float)
+- **Default:** 0 (float)
 
 The property name is an acient typo but there are already some vehicle mods in use so I'll let it be until A21 break this mod.
 
 `verticleRotationSpeed `: Degrees the vertical transform can rotate per second.
 
-**Default:** 360 (float)
+- **Default:** 360 (float)
 
 `horizontalMaxRotation `: The maximum rotation of horizontal transform. Positive value for clockwise, negative for counterclockwise.
 
-**Default:** 180 (float)
+- **Default:** 180 (float)
 
 `horizontalMinRotation `: The minimum rotation of horizontal transform. Positive value for clockwise, negative for counterclockwise.
 
-**Default:** -180 (float)
+- **Default:** -180 (float)
 
 `horizontalRotationSpeed `: Degrees the horizontal transform can rotate per second.
 
-**Default:** 360 (float)
+- **Default:** 360 (float)
 
 `indicatorTransform `: The transform that plays as an indicator of current aiming. Behaviour depends on rotator type: 
 
 - Ballistic rotators move the transform to the hit position;
 - Directional rotators simply enable the transform.
 
-**Default:** null
+- **Default:** null
 
 `indicatorColorOnTarget `: The indicator color override when rotator is on target.
 
-**Default:** clear
+- **Default:** clear
 
 `indicatorColorAiming `: The indicator color override when rotator is not on target.
 
-**Default:** clear
+- **Default:** clear
 
 Color string is parsed by [ColorUtility](https://docs.unity3d.com/ScriptReference/ColorUtility.TryParseHtmlString.html "ColorUtility") .
 
@@ -333,42 +333,42 @@ The purpose is to avoid hitting vehicle collider with the input ray, so you get 
 #####  🔻Moddable properties:
 `indicatorOffsetY `: When moving the indicator to the target position, move it up by this amount. Useful when projector is used as the indicator.
 
-**Default:** 0 (float)
+- **Default:** 0 (float)
 
 `previewTypeEntity `: Create a primitive object at target position as a simple indicator. This should reflect the entity damage radius.
 
-**Default:** Sphere
+- **Default:** Sphere
 
 `previewTypeBlock `: Create a primitive object at target position as a simple indicator.
 This should reflect the block damage radius.
 
-**Default:** Sphere
+- **Default:** Sphere
 
 For supported primitive types, refer to [Unity document](https://docs.unity3d.com/Manual/PrimitiveObjects.html "Unity document") .
 
 `previewColorEntityOnTarget `: The color of entity preview object when rotator is on target.
 
-**Default:** clear
+- **Default:** clear
 
 `previewColorEntityAiming `: The color of entity preview object when rotator is aiming.
 
-**Default:** clear
+- **Default:** clear
 
 `previewColorBlockOnTarget `: The color of block preview object when rotator is on target.
 
-**Default:** clear
+- **Default:** clear
 
 `previewColorBlockAiming `: The color of block preview object when rotator is aiming.
 
-**Default:** clear
+- **Default:** clear
 
 `previewScaleEntity `: The scale of entity preview.
 
-**Default:** 0 (float)
+- **Default:** 0 (float)
 
 `previewScaleBlock `: The scale of block preview.
 
-**Default:** 0 (float)
+- **Default:** 0 (float)
 
 This simple preview is created for the purpose of auto generated indicator. When alpha value of OnTarget color or preview scale equals 0, the preview is not created. Does not take place of the indicator transform.
 
