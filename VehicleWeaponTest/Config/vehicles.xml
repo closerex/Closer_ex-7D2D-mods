@@ -29,138 +29,54 @@
 				<property name="class" value="WeaponManager,VehicleWeapon"/>
 			</property>
 			
-			<!-- part class name can be anything /-->
 			<property class="Weapon">
-				<!-- class must be ParticleWeapon or its subclasses /-->
 				<property name="class" value="ParticleWeapon,VehicleWeapon"/>
-				<!-- which seat controls this weapon /-->
-				<!-- default: 0 /-->
 				<property name="seat" value="0"/>
-				<!-- priority of this weapon /-->
-				<!-- default: int.MaxValue; this is set to the actual index in the weapon list, which is sorted by this value /-->
 				<property name="slot" value="1"/>
-				<!-- how many rounds to emit in one cycle; /-->
-				<!-- default: 1 /-->
 				<property name="burstCount" value="2"/>
-				<!-- interval between each cycle; if set to 0, all cycles will be emitted at once /-->
-				<!-- default: 0f /-->
 				<property name="burstInterval" value="0.15"/>
-				<!-- how many cycles on one horn trigger /-->
-				<!-- default: 1 /-->
 				<property name="burstRepeat" value="3"/>
-				<!-- interval between two burst cycles /-->
-				<!-- default: 1f /-->
 				<property name="reloadTime" value="2"/>
-				<!-- delay before this weapon fire shot /-->
-				<!-- default: 0f; delay also put off reload! /-->
 				<property name="burstDelay" value="0"/>
-				<!-- should this weapon react to holding horn key /-->
-				<!-- default: false /-->
 				<property name="fullauto" value="false"/>
-				<!-- name of the item serving as ammo; ammo must be placed in driver's bag, and the consumed count per shot is burstRepeat; /-->
-				<!-- default: empty; when ammo name is empty, horn will not consume ammo /-->
 				<property name="ammo" value="ammoRocketFrag"/>
-				<!-- the explosion particle; explosion data and effect groups are taken from its bound item class /-->
 				<property name="particleIndex" value="#@modfolder(CustomParticleScriptTest):Resources/GuppyTest.unity3d?AirBurstExplosion$thrownGrenadeAirBurst"/>
-				<!-- should the particle trigger explosion on collision? /-->
-				<!-- default: true /-->
 				<property name="explodeOnCollision" value="true"/>
-				<!-- should the particle trigger explosion on death? /-->
-				<!-- default: false /-->
 				<property name="explodeOnDeath" value="false"/>
-				<!-- sound to play when firing shot /-->
-				<!-- default: fireSound of the vehicle /-->
 				<property name="fireSound" value="m136_fire"/>
-				<!-- sound to play when trying to fire without sufficient ammo in bag /-->
 				<property name="emptySound" value="dryfire"/>
-				<!-- sound to play when trying to fire while horn interval is active /-->
 				<property name="notReadySound" value="medic_module_toggle_off"/>
-				<!-- sound to play when trying to fire while rotator is not aimed and fire juncture is OnTarget /-->
 				<property name="notOnTargetSound" value="ui_denied"/>
-				<!-- sound to play after a fire process, simulating reloading /-->
 				<property name="reloadSound" value="shotgun_reload"/>
-				<!-- sound to play when this weapon is activated /-->
 				<property name="activationSound" value="flashlight_toggle"/>
-				<!-- sound to play when this weapon is deactivated /-->
 				<property name="deactivationSound" value="flashlight_toggle"/>
-				<!-- the transform with the particle system /-->
 				<property name="particle_transform" value="HornWeapon/WeaponRoot/Turret/MortarG_Barrel02/ShootPoint"/>
-				<!-- name of the ParticleWeaponRotator that rotates this weapon /-->
-				<!-- default: null; when no rotator is assigned, the weapon is not rotated /-->
 				<property name="rotator" value="WeaponRotator"/>
-				<!-- additional firing condition /-->
-				<!-- default: Anytime; valid values are: Anytime(whenever horn is triggered),
-														 OnTarget(if rotator exists, only horn when rotator is aimed),
-														 FirstShot(when no weapon on this seat horned prior to this one),
-														 FirstShotOnTarget(combination of OnTarget and FirstShot),
-														 FromSlotKey(firing only when pressing slot key)
-														 FromSlotKeyOnTarget(combination of OnTarget and FromSlotKey)/-->
 				<property name="fireWhen" value="FromSlotKey,OnTarget"/>
 			</property>
 			
-			<!-- part class name can be anything but must match the "rotator" property name of the weapon; does not need to be placed after hornWeapon /-->
-			<!-- this part controls the rotation of the weapon, by default calculating the parabola of the particle according to mouse position and auto adjusting rotation of rotating transforms /-->
 			<property class="WeaponRotator">
-				<!-- class must be ParticleWeaponRotator or its subclasses /-->
 				<property name="class" value="ParticleWeaponRotator,VehicleWeapon"/>
-				<!-- the horn weapon transform /-->
 				<property name="transform" value="HornWeapon/WeaponRoot"/>
-				<!-- the transform to rotate on y axis /-->
 				<property name="horRotationTransform" value="HornWeapon/WeaponRoot/Turret"/>
-				<!-- the transform to rotate on x axis /-->
 				<property name="verRotationTransform" value="HornWeapon/WeaponRoot/Turret/MortarG_Barrel02"/>
-				
-				<!-- the transform which the Ray checking for hit position origins from. /-->
-				<!-- default: weapon transform; when using default value, the origin position will move up by 2 units /-->
 				<!--property name="hitRaycastTransform" value="HornWeapon/WeaponRoot"/-->
 				
-				<!-- max euler angle for verticle rotation transform /-->
-				<!-- default: 45f /-->
 				<property name="verticleMaxRotation" value="30"/>
-				<!-- min euler angle for verticle rotation transform /-->
-				<!-- default: 0f /-->
 				<property name="verticleMinRotation" value="0"/>
-				<!-- rotate speed for verticle rotation transform /-->
-				<!-- default: 360f /-->
 				<property name="verticleRotationSpeed" value="10"/>
-				<!-- max euler angle for horizontal rotation transform /-->
-				<!-- default: 180f /-->
 				<property name="horizontalMaxRotation" value="180"/>
-				<!-- min euler angle for horizontal rotation transform /-->
-				<!-- default: -180f /-->
 				<property name="horizontalMinRotation" value="-180"/>
-				<!-- rotate speed for horizontal rotation transform /-->
-				<!-- default: 360f /-->
 				<property name="horizontalRotationSpeed" value="60"/>
-				<!-- the constant speed of the particle /-->
-				<!-- default: same as particle systems property if particle system start speed is constant; otherwise 0f /-->
 				<property name="projectileSpeed" value="30"/>
-				<!-- the constant gravity modifier of the particle /-->
-				<!-- default: same as particle systems property if particle system gravity modifier is constant; otherwise 1f /-->
 				<property name="gravity" value="1"/>
-				<!-- local scale of the preview shape for explosion entity radius /-->
-				<!-- default: entity radius of explosion data; when set to 0, entity radius preview is not created /-->
 				<property name="previewScaleEntity" value="4"/>
-				<!-- local scale of the preview shape for explosion block radius /-->
-				<!-- default: block radius of explosion data; when set to 0, block radius preview is not created /-->
 				<property name="previewScaleBlock" value="2"/>
-				<!-- color of the preview shape for explosion entity radius when transforms are on ideal angle /-->
-				<!-- default: transparent; when set to transparent, entity radius preview is not created /-->
 				<property name="previewColorEntityOnTarget" value="#49FF0030"/>
-				<!-- color of the preview shape for explosion entity radius when transforms are still rotating /-->
-				<!-- default: transparent; /-->
 				<property name="previewColorEntityAiming" value="#F70D1A30"/>
-				<!-- color of the preview shape for explosion block radius when transforms are on ideal angle /-->
-				<!-- default: transparent; when set to transparent, block radius preview is not created /-->
 				<property name="previewColorBlockOnTarget" value="#42D8EE30"/>
-				<!-- color of the preview shape for explosion block radius when transforms are still rotating /-->
-				<!-- default: transparent; /-->
 				<property name="previewColorBlockAiming" value="#F70D1A30"/>
-				<!-- primitive shape of entity radius preview /-->
-				<!-- default: Sphere /-->
 				<property name="previewTypeEntity" value="Sphere"/>
-				<!-- primitive shape of block radius preview /-->
-				<!-- default: Sphere /-->
 				<property name="previewTypeBlock" value="Cube"/>
 			</property>
 
