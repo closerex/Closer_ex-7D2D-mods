@@ -14,7 +14,7 @@ public class NetPackageVehicleWeaponManagerDataSync : NetPackage
 
     public override int GetLength()
     {
-        return 10 + updateData.Length + fireData.Length;
+        return 10 + (updateData != null ? updateData.Length : 0) + (fireData != null ? fireData.Length : 0);
     }
 
     public override void ProcessPackage(World _world, GameManager _callbacks)
