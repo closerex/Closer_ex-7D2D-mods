@@ -1,4 +1,4 @@
-﻿public class PercentInMagazine : RoundsInMagazine
+﻿public class PercentInMagazine : RoundsInMagazineBase
 {
 	public override bool IsValid(MinEventParams _params)
 	{
@@ -8,7 +8,7 @@
 		if (_params.ItemValue.IsEmpty() || !(_params.ItemValue.ItemClass.Actions[0] is ItemActionRanged _ranged))
 			return false;
 
-		return RequirementBase.compareValues((float)_params.ItemValue.Meta / _ranged.GetMaxAmmoCount(_params.ItemActionData), operation, value) ^ invert;
+		return RequirementBase.compareValues((float)(roundsBeforeShot ? _params.ItemValue.Meta + 1 : _params.ItemValue.Meta) / _ranged.GetMaxAmmoCount(_params.ItemActionData), operation, value) ^ invert;
 	}
 }
 

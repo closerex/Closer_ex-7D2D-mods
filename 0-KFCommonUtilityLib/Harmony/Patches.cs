@@ -25,6 +25,19 @@ class CommonUtilityPatch
     static bool need_postfix = true;
 
     [HarmonyPatch(typeof(ItemActionAttack), nameof(ItemActionAttack.Hit))]
+    [HarmonyPrefix]
+    private static bool Prefix_Hit_ItemActionAttack(ItemActionAttack.AttackHitInfo _attackDetails)
+    {
+        if(_attackDetails != null)
+        {
+            _attackDetails.hitPosition = Vector3i.zero;
+            _attackDetails.bKilled = false;
+        }
+
+        return true;
+    }
+
+    [HarmonyPatch(typeof(ItemActionAttack), nameof(ItemActionAttack.Hit))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_Hit_ItemActionAttack(IEnumerable<CodeInstruction> instructions)
     {
@@ -115,28 +128,20 @@ class CommonUtilityPatch
         var mtd_get_model_layer = AccessTools.Method(typeof(EntityAlive), nameof(EntityAlive.GetModelLayer));
         var mtd_get_perc_left = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.PercentUsesLeft));
 
-        int take = -1, insert = -1, label = -1;
+        int take = -1, insert = -1;
         for (int i = 0; i < codes.Count; ++i)
         {
-            if(codes[i].opcode == OpCodes.Callvirt)
-            {
-                if (codes[i].Calls(mtd_fire_event))
-                {
-                    take = i - 25;
-                    label = i + 1;
-                }
-                else if (codes[i].Calls(mtd_get_model_layer))
-                    insert = i + 2;
-                
-            }
+            if(codes[i].opcode == OpCodes.Ldc_I4_S && codes[i].OperandIs((int)MinEventTypes.onSelfRangedBurstShotStart) && codes[i + 2].Calls(mtd_fire_event))
+                take = i - 3;
+            else if (codes[i].Calls(mtd_get_model_layer))
+                insert = i + 2;
         }
 
         if(take < insert)
         {
-            codes[take].MoveLabelsTo(codes[label]);
-            var list = codes.GetRange(take, 26);
+            var list = codes.GetRange(take, 6);
             codes.InsertRange(insert, list);
-            codes.RemoveRange(take, 26);
+            codes.RemoveRange(take, 6);
         }
 
         return codes;

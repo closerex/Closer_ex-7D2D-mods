@@ -30,6 +30,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomPlayerActionManager",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomParticleLoader", "0-CustomParticleLoader\CustomParticleLoader.csproj", "{12A59F51-6655-49D7-BE95-F3E86A173979}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomPerk", "RandomPerk\RandomPerk.csproj", "{F195BF00-A88E-4DCF-B792-6B8DD1284B01}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZZRandomPerkUIPatch", "ZZRandomPerkUIPatch\ZZRandomPerkUIPatch.csproj", "{EA4F2E51-B964-4902-98BB-5D790511764C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FireManager", "FireManager\FireManager.csproj", "{863BABF0-F364-43AC-BB44-07D190AA911E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -80,6 +86,18 @@ Global
 		{12A59F51-6655-49D7-BE95-F3E86A173979}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12A59F51-6655-49D7-BE95-F3E86A173979}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12A59F51-6655-49D7-BE95-F3E86A173979}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F195BF00-A88E-4DCF-B792-6B8DD1284B01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F195BF00-A88E-4DCF-B792-6B8DD1284B01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F195BF00-A88E-4DCF-B792-6B8DD1284B01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F195BF00-A88E-4DCF-B792-6B8DD1284B01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA4F2E51-B964-4902-98BB-5D790511764C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA4F2E51-B964-4902-98BB-5D790511764C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA4F2E51-B964-4902-98BB-5D790511764C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA4F2E51-B964-4902-98BB-5D790511764C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{863BABF0-F364-43AC-BB44-07D190AA911E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{863BABF0-F364-43AC-BB44-07D190AA911E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{863BABF0-F364-43AC-BB44-07D190AA911E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{863BABF0-F364-43AC-BB44-07D190AA911E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

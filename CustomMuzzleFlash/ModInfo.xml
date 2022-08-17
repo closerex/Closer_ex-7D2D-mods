@@ -5,6 +5,6 @@
 		<Name value="CustomMuzzleFlash" />
 		<Description value="Register custom muzzle flash and smoke properties." />
 		<Author value="closer_ex" />
-		<Version value="1.0" />
+		<Version value="1.0.1" />
 	</ModInfo>
 </xml>

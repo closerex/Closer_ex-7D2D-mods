@@ -238,6 +238,7 @@ public class VPWeaponManager : VehiclePart
         private List<VehicleWeaponBase> list_update = new List<VehicleWeaponBase>();
         private List<KeyValuePair<VehicleWeaponBase, VehicleWeaponBase.FiringState>> list_fire = new List<KeyValuePair<VehicleWeaponBase, VehicleWeaponBase.FiringState>>();
         private VPWeaponManager manager;
+        private byte updateCounter = 0;
 
         public NetSyncHelper(VPWeaponManager manager)
         {
@@ -254,6 +255,7 @@ public class VPWeaponManager : VehiclePart
         public void AddToFire(VehicleWeaponBase weapon, VehicleWeaponBase.FiringState state)
         {
             list_fire.Add(new KeyValuePair<VehicleWeaponBase, VehicleWeaponBase.FiringState>(weapon, state));
+            updateCounter = 3;
 
             if(ShouldNetSync && state != VehicleWeaponBase.FiringState.Stop)
                 AddToUpdate(weapon);
@@ -267,6 +269,13 @@ public class VPWeaponManager : VehiclePart
 
         public void DoNetSync(int vehicleId, int playerId, int seat)
         {
+            if(updateCounter < 3 && list_fire.Count == 0)
+            {
+                updateCounter++;
+                return;
+            }
+            updateCounter = 0;
+
             if(list_fire.Count > 0 || (ShouldNetSync && list_update.Count > 0))
             {
                 byte[] updateData = null;

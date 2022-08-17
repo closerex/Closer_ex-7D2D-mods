@@ -115,6 +115,7 @@
     <Compile Include="Scripts\Requirements\PercentInMagazine.cs" />
     <Compile Include="Scripts\Requirements\RoundsInHoldingItem.cs" />
     <Compile Include="Scripts\Requirements\RoundsInInventory.cs" />
+    <Compile Include="Scripts\Requirements\RoundsInMagazineBase.cs" />
     <Compile Include="Scripts\Utilities\EntityInventoryExtension.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,5 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
-using System.Reflection.Emit;
-using UnityEngine;
 
 [HarmonyPatch(typeof(EntityVehicle))]
 class VehicleManagerPatch
