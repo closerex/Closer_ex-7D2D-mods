@@ -153,7 +153,7 @@ public class VPParticleWeapon : VehicleWeaponBase
     {
         base.OnBurstShot();
         player.MinEventContext.ItemValue = initializer.value;
-        component.BoundItemClass.FireEvent(MinEventTypes.onSelfRangedBurstShot, player.MinEventContext);
+        component.BoundItemClass.FireEvent(MinEventTypes.onSelfRangedBurstShotStart, player.MinEventContext);
     }
 
     protected override void OnFireEnd()

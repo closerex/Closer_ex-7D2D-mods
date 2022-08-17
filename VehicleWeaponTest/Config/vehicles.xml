@@ -38,7 +38,7 @@
 				<property name="burstRepeat" value="3"/>
 				<property name="reloadTime" value="2"/>
 				<property name="burstDelay" value="0"/>
-				<property name="fullauto" value="false"/>
+				<property name="fullauto" value="true"/>
 				<property name="ammo" value="ammoRocketFrag"/>
 				<property name="particleIndex" value="#@modfolder(CustomParticleScriptTest):Resources/GuppyTest.unity3d?AirBurstExplosion$thrownGrenadeAirBurst"/>
 				<property name="explodeOnCollision" value="true"/>

@@ -253,7 +253,7 @@ public class VPRaycastWeapon : VehicleWeaponBase
     {
         base.OnBurstShot();
         player.MinEventContext.ItemValue = boundItemValue;
-        FireEvent(MinEventTypes.onSelfRangedBurstShot);
+        FireEvent(MinEventTypes.onSelfRangedBurstShotStart);
         for (int i = 0; i < burstCount; i++)
             FireShots(i);
         spreadMultiplier *= GetValue(PassiveEffects.IncrementalSpreadMultiplier, 1);
