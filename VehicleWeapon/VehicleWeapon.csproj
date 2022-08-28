@@ -99,6 +99,7 @@
     <Compile Include="Scripts\Input\PlayerActionsVehicleWeapon.cs" />
     <Compile Include="Scripts\Input\PlayerActionVehicleWeaponData.cs" />
     <Compile Include="Scripts\MonoBehaviours\AimAssistHelper.cs" />
+    <Compile Include="Scripts\NetPackages\NetPackageVehicleSwitchSeat.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageVehicleWeaponManagerDataSync.cs" />
     <Compile Include="Scripts\Utilities\ItemValueExtension.cs" />
     <Compile Include="Scripts\Utilities\VehicleExtension.cs" />

@@ -11,5 +11,18 @@
         }
         return seats;
     }
+
+    public static void TrySwitchSeatServer(this GameManager self, World _world, int entityId, int vehicleId, int seat)
+    {
+        if (!ConnectionManager.Instance.IsServer)
+            return;
+        Entity entity = _world.GetEntity(entityId);
+        EntityVehicle vehicle = _world.GetEntity(vehicleId) as EntityVehicle;
+        if (entity != null && vehicle != null && vehicle.GetAttached(seat) == null)
+        {
+            entity.SendDetach();
+            entity.StartAttachToEntity(vehicle, seat);
+        }
+    }
 }
 

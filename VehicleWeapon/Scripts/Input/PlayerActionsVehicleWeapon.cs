@@ -16,6 +16,7 @@ public class PlayerActionsVehicleWeapon : CustomPlayerActionVersionBase
     public readonly List<PlayerAction> ActivateActions = new List<PlayerAction>();
     public PlayerAction HoldToggleActivated;
     public PlayerAction FireShot;
+    public PlayerAction HoldSwitchSeat;
     //public PlayerAction Test1;
 
     public int ActivateSlotIsPressed
@@ -97,6 +98,9 @@ public class PlayerActionsVehicleWeapon : CustomPlayerActionVersionBase
         HoldToggleActivated.UserData = new PlayerActionData.ActionUserData("inpActVehicleWeaponHoldToggleActivatedName", null, PlayerActionVehicleWeaponData.GroupVehicleWeapon, PlayerActionData.EAppliesToInputType.Both, true);
         FireShot = CreatePlayerAction("FireShot");
         FireShot.UserData = new PlayerActionData.ActionUserData("inpActVehicleWeaponFireShotName", null, PlayerActionVehicleWeaponData.GroupVehicleWeapon, PlayerActionData.EAppliesToInputType.Both, true);
+        HoldSwitchSeat = CreatePlayerAction("HoldSwitchSeat");
+        HoldSwitchSeat.UserData = new PlayerActionData.ActionUserData("inpActVehicleHoldSwitchSeat", null, PlayerActionVehicleWeaponData.GroupVehicleWeapon, PlayerActionData.EAppliesToInputType.KbdMouseOnly, true);
+
         //Test1 = CreatePlayerAction("Test1");
         //Test1.UserData = new PlayerActionData.ActionUserData("inpActTest1", null, PlayerActionVehicleWeaponData.GroupVehicleWeapon, PlayerActionData.EAppliesToInputType.KbdMouseOnly, true);
     }
@@ -124,6 +128,7 @@ public class PlayerActionsVehicleWeapon : CustomPlayerActionVersionBase
         ActivateSlot10.AddDefaultBinding(new Key[] { Key.Key0 });
         HoldToggleActivated.AddDefaultBinding(new Key[] { Key.LeftControl });
         FireShot.AddDefaultBinding(new Key[] { Key.G });
+        HoldSwitchSeat.AddDefaultBinding(new Key[] { Key.LeftAlt });
         //Test1.AddDefaultBinding(new Key[] { Key.LeftAlt });
     }
 

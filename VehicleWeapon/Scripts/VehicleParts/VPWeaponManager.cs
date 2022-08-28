@@ -151,6 +151,9 @@ public class VPWeaponManager : VehiclePart
 
     public virtual void OnPlayerEnter(int seat)
     {
+        Log.Out("player enter seat: " + seat);
+        if (localPlayerSeat == seat)
+            return;
         PlayerActionsVehicleWeapon.Instance.Enabled = true;
         localPlayerSeat = seat;
         if (list_weapons[localPlayerSeat] != null)
@@ -163,6 +166,7 @@ public class VPWeaponManager : VehiclePart
 
     public virtual void OnPlayerDetach()
     {
+        Log.Out("player detach from seat: " + localPlayerSeat);
         PlayerActionsVehicleWeapon.Instance.Enabled = false;
         if (list_weapons[localPlayerSeat] != null)
             foreach (var weapon in list_weapons[localPlayerSeat])
@@ -181,6 +185,9 @@ public class VPWeaponManager : VehiclePart
 
     protected void HandleWeaponUserInput(int userData)
     {
+        if (PlayerActionsVehicleWeapon.Instance.HoldSwitchSeat.IsPressed)
+            return;
+
         foreach (VehicleWeaponBase weapon in list_weapons[localPlayerSeat])
             if (weapon.Enabled)
                 weapon.HandleUserInput(userData);
