@@ -99,7 +99,7 @@ public class PlayerActionsVehicleWeapon : CustomPlayerActionVersionBase
         FireShot = CreatePlayerAction("FireShot");
         FireShot.UserData = new PlayerActionData.ActionUserData("inpActVehicleWeaponFireShotName", null, PlayerActionVehicleWeaponData.GroupVehicleWeapon, PlayerActionData.EAppliesToInputType.Both, true);
         HoldSwitchSeat = CreatePlayerAction("HoldSwitchSeat");
-        HoldSwitchSeat.UserData = new PlayerActionData.ActionUserData("inpActVehicleHoldSwitchSeat", null, PlayerActionVehicleWeaponData.GroupVehicleWeapon, PlayerActionData.EAppliesToInputType.KbdMouseOnly, true);
+        HoldSwitchSeat.UserData = new PlayerActionData.ActionUserData("inpActVehicleHoldSwitchSeatName", null, PlayerActionVehicleWeaponData.GroupVehicleWeapon, PlayerActionData.EAppliesToInputType.KbdMouseOnly, true);
 
         //Test1 = CreatePlayerAction("Test1");
         //Test1.UserData = new PlayerActionData.ActionUserData("inpActTest1", null, PlayerActionVehicleWeaponData.GroupVehicleWeapon, PlayerActionData.EAppliesToInputType.KbdMouseOnly, true);

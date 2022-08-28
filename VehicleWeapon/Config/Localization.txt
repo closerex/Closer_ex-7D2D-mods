@@ -15,3 +15,5 @@ inpActVehicleWeaponHoldToggleActivatedName,UI,Controls Dialog,x,Activate Slot,�
 inpActVehicleWeaponHoldToggleActivatedDesc,UI,Controls Dialog,x,Hold this key and press Slot key to toggle activation of weapon,按住此按键并按槽位键以切换对应武器的激活状态
 inpActVehicleWeaponFireShotName,UI,Controls Dialog,x,Fire Weapon,开火
 inpActVehicleWeaponFireShotDesc,UI,Controls Dialog,x,Press or hold to fire all weapons,按住开火键来使所有武器开火
+inpActVehicleHoldSwitchSeatName,UI,Controls Dialog,x,Switch Seat,切换座位
+inpActVehicleHoldSwitchSeatDesc,UI,Controls Dialog,x,Hold this key and press Slot key to switch to the corresponding seat,按住此按键并按槽位键以切换至对应的座位
