@@ -228,7 +228,7 @@ class CommonUtilityPatch
     [HarmonyPostfix]
     private static void Postfix_ItemActionEffects_ItemActionRanged(ItemActionData _actionData, int _firingState)
     {
-        if(_firingState == 0 && !(_actionData.invData.itemValue.ItemClass.Actions[0] is ItemActionCatapult))
+        if(_firingState == 0 && _actionData.invData.holdingEntity is EntityPlayerLocal && !(_actionData.invData.itemValue.ItemClass.Actions[0] is ItemActionCatapult))
             _actionData.invData.holdingEntity?.emodel.avatarController.ResetTrigger(weaponFireHash);
     }
 
