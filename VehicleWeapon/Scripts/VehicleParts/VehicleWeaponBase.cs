@@ -377,12 +377,12 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
 
     public virtual void HandleUserInput(int userData)
     {
-        var vw_input = PlayerActionsVehicleWeapon.Instance;
-        if (slot < vw_input.ActivateActions.Count && (vw_input.ActivateActions[slot].IsPressed || vw_input.ActivateActions[slot].WasReleased))
+        var vextra = PlayerActionsVehicleExtra.Instance;
+        if (slot < vextra.ActivateActions.Count && (vextra.ActivateActions[slot].IsPressed || vextra.ActivateActions[slot].WasReleased))
         {
-            if (vw_input.HoldToggleActivated.IsPressed)
+            if (PlayerActionsVehicleWeapon.Instance.HoldToggleActivated.IsPressed)
             {
-                if(vw_input.ActivateActions[slot].WasPressed)
+                if(vextra.ActivateActions[slot].WasPressed)
                     ToggleActivated();
             }
             else
@@ -390,7 +390,7 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
                 if(activated)
                 {
                     userData |= (int)FiringJuncture.FromSlotKey;
-                    DoFireLocal(ref userData, vw_input.ActivateActions[slot].WasReleased);
+                    DoFireLocal(ref userData, vextra.ActivateActions[slot].WasReleased);
                 }
             }
         }

@@ -96,6 +96,7 @@
     <Compile Include="Harmony\Init.cs" />
     <Compile Include="Harmony\Patches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripts\Input\PlayerActionsVehicleSwitchSeat.cs" />
     <Compile Include="Scripts\Input\PlayerActionsVehicleWeapon.cs" />
     <Compile Include="Scripts\Input\PlayerActionVehicleWeaponData.cs" />
     <Compile Include="Scripts\MonoBehaviours\AimAssistHelper.cs" />

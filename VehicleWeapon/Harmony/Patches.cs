@@ -26,6 +26,8 @@ namespace VehicleWeaponPatches
         {
             if(__result >= 0 && _entity is EntityPlayerLocal)
             {
+                PlayerActionsVehicleExtra.Instance.Enabled = true;
+                Log.Out(PlayerActionsVehicleExtra.Instance.Enabled.ToString());
                 var manager = __instance.GetVehicle().FindPart(VPWeaponManager.VehicleWeaponManagerName) as VPWeaponManager;
                 if (manager != null)
                     manager.OnPlayerEnter(__result);
@@ -38,6 +40,8 @@ namespace VehicleWeaponPatches
         {
             if (_entity is EntityPlayerLocal)
             {
+                PlayerActionsVehicleExtra.Instance.Enabled = false;
+                Log.Out(PlayerActionsVehicleExtra.Instance.Enabled.ToString());
                 var manager = __instance.GetVehicle().FindPart(VPWeaponManager.VehicleWeaponManagerName) as VPWeaponManager;
                 if (manager != null)
                     manager.OnPlayerDetach();
@@ -136,15 +140,37 @@ namespace VehicleWeaponPatches
 
         private static void CheckForSwitchingSeat(EntityPlayerLocal player)
         {
-            int seat = PlayerActionsVehicleWeapon.Instance.ActivateSlotWasPressed;
-            if(PlayerActionsVehicleWeapon.Instance.HoldSwitchSeat.IsPressed && seat >= 0 && seat < player.AttachedToEntity.GetAttachMaxCount() && seat != player.AttachedToEntity.FindAttachSlot(player))
+            int seat = PlayerActionsVehicleExtra.Instance.ActivateSlotWasPressed;
+            if(PlayerActionsVehicleExtra.Instance.HoldSwitchSeat.IsPressed && seat >= 0)
+                Log.Out($"trying to switch seat to {PlayerActionsVehicleExtra.Instance.ActivateSlotWasPressed}");
+
+            if(PlayerActionsVehicleExtra.Instance.HoldSwitchSeat.IsPressed && seat >= 0 && seat < player.AttachedToEntity.GetAttachMaxCount() && seat != player.AttachedToEntity.FindAttachSlot(player))
             {
                 if (ConnectionManager.Instance.IsServer)
                     GameManager.Instance.TrySwitchSeatServer(GameManager.Instance.World, player.entityId, player.AttachedToEntity.entityId, seat);
                 else
                     ConnectionManager.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageVehicleSwitchSeat>().Setup(player.entityId, player.AttachedToEntity.entityId, seat));
-                Log.Out($"trying to switch seat to {PlayerActionsVehicleWeapon.Instance.ActivateSlotWasPressed}");
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(EModelBase), nameof(EModelBase.RemoveIKController))]
+    public class IKPatch
+    {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var mtd_destroy = AccessTools.Method(typeof(UnityEngine.Object), nameof(UnityEngine.Object.Destroy), new Type[] {typeof(UnityEngine.Object) });
+            var codes = instructions.ToList();
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].Calls(mtd_destroy))
+                {
+                    codes.RemoveAt(i);
+                    codes.Insert(i, CodeInstruction.Call(typeof(UnityEngine.Object), nameof(UnityEngine.Object.DestroyImmediate), new Type[] {typeof(UnityEngine.Object)}));
+                    break;
+                }
+            }
+            return codes;
         }
     }
 }
