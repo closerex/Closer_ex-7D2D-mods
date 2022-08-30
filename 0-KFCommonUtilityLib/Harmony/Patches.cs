@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection.Emit;
 using System.Xml;
 using SystemInformation;
@@ -342,6 +343,27 @@ class CommonUtilityPatch
                     CodeInstruction.Call(typeof(EntityAlive), nameof(EntityAlive.GetPosition)),
                     CodeInstruction.StoreField(typeof(MinEventParams), nameof(MinEventParams.StartPosition))
                 });
+                break;
+            }
+        }
+
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.OnHoldingUpdate))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_OnHoldingUpdate_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
+    {
+        var mtd_release = AccessTools.Method(typeof(ItemActionRanged), "triggerReleased");
+        var codes = instructions.ToList();
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_release))
+            {
+                codes[i + 1].labels.Clear();
+                codes[i + 1].MoveLabelsFrom(codes[i - 17]);
+                codes.RemoveRange(i - 17, 18);
                 break;
             }
         }

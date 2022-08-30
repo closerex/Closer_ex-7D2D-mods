@@ -9,6 +9,7 @@ public class ItemActionRampUp : ItemActionHoldOpen
         var _rampData = _actionData as ItemActionDataRampUp;
         if (!_bReleased && (InfiniteAmmo || _actionData.invData.itemValue.Meta > 0) && _actionData.invData.itemValue.PercentUsesLeft > 0)
         {
+            _rampData.bReleased = false;
             if (!_rampData.prepareStarted)
                 _rampData.invData.gameManager.ItemActionEffectsServer(_rampData.invData.holdingEntity.entityId, _rampData.invData.slotIdx, _rampData.indexInEntityOfAction, 0, Vector3.zero, Vector3.zero, 4);
             
@@ -22,16 +23,19 @@ public class ItemActionRampUp : ItemActionHoldOpen
     {
         base.ItemActionEffects(_gameManager, _actionData, _firingState, _startPos, _direction, _userData);
         var _rampData = _actionData as ItemActionDataRampUp;
-        if (_firingState != 0 && (_userData & 2) > 0)
+        if (_firingState != 0)
         {
-            Manager.Stop(_rampData.invData.holdingEntity.entityId, _rampData.rampSound);
-            _rampData.rampStarted = true;
-            _rampData.rampStartTime = Time.time;
-            Manager.Play(_rampData.invData.holdingEntity, _rampData.rampSound);
+            if((_userData & 2) > 0)
+            {
+                Manager.Stop(_rampData.invData.holdingEntity.entityId, _rampData.rampSound);
+                _rampData.rampStarted = true;
+                _rampData.rampStartTime = Time.time;
+                Manager.Play(_rampData.invData.holdingEntity, _rampData.rampSound);
+            }
         }
-        else if (_firingState == 0)
+        else if((_userData & 4) > 0)
         {
-            if((_userData & 4) > 0)
+            if(!_rampData.prepareStarted)
             {
                 _rampData.invData.holdingEntity.StopOneShot(_rampData.prepareSound);
                 _rampData.prepareStarted = true;
@@ -40,22 +44,33 @@ public class ItemActionRampUp : ItemActionHoldOpen
                 setAnimatorBool(_rampData.invData.holdingEntity, "prepare", true);
                 setAnimatorFloat(_rampData.invData.holdingEntity, "prepareSpeed", _rampData.prepareSpeed);
             }
-            else
-                ResetRamp(_rampData);
         }
+        else
+            ResetRamp(_rampData);
     }
 
     protected override int getUserData(ItemActionData _actionData)
     {
         var _rampData = _actionData as ItemActionDataRampUp;
-        return base.getUserData(_actionData) | (Convert.ToInt32(_rampData.curBurstCount == _rampData.minRampShots) << 1);
+        return base.getUserData(_actionData) | (Convert.ToInt32(_rampData.curBurstCount == _rampData.minRampShots) << 1) | (Convert.ToInt32(_rampData.zoomPrepare && _rampData.invData.holdingEntity.AimingGun) << 2);
     }
 
     public override void OnHoldingUpdate(ItemActionData _actionData)
     {
         base.OnHoldingUpdate(_actionData);
         var _rampData = _actionData as ItemActionDataRampUp;
-        if(_rampData.rampStarted)
+        bool aiming = _rampData.invData.holdingEntity.AimingGun;
+        if (!_rampData.prepareStarted && _rampData.zoomPrepare && aiming)
+        {
+            _rampData.invData.gameManager.ItemActionEffectsServer(_rampData.invData.holdingEntity.entityId, _rampData.invData.slotIdx, _rampData.indexInEntityOfAction, 0, Vector3.zero, Vector3.zero, 4);
+            //Log.Out("Aim charge!");
+        }
+        else if (_rampData.prepareStarted && _rampData.bReleased && (!_rampData.zoomPrepare || !aiming))
+        {
+            _rampData.invData.gameManager.ItemActionEffectsServer(_rampData.invData.holdingEntity.entityId, _rampData.invData.slotIdx, _rampData.indexInEntityOfAction, 0, Vector3.zero, Vector3.zero, 0);
+            //Log.Out("Stop charge!");
+        }
+        else if (_rampData.rampStarted)
         {
             float rampElapsed = Time.time - _rampData.rampStartTime;
             if (rampElapsed > 0)
@@ -79,11 +94,13 @@ public class ItemActionRampUp : ItemActionHoldOpen
 
     private void ResetRamp(ItemActionDataRampUp _rampData)
     {
+        _rampData.bReleased = true;
         _rampData.rampStarted = false;
         _rampData.prepareStarted = false;
         _rampData.invData.holdingEntity.StopOneShot(_rampData.prepareSound);
         _rampData.invData.holdingEntity.StopOneShot(_rampData.rampSound);
         setAnimatorBool(_rampData.invData.holdingEntity, "prepare", false);
+        //Log.Out("Reset Ramp!");
     }
 
     public override ItemActionData CreateModifierData(ItemInventoryData _invData, int _indexInEntityOfAction)
@@ -119,6 +136,10 @@ public class ItemActionRampUp : ItemActionHoldOpen
         originalValue = string.Empty;
         Properties.ParseString("PrepareSound", ref originalValue);
         _rampData.prepareSound = _rampData.invData.itemValue.GetPropertyOverride("PrepareSound", originalValue);
+
+        originalValue = false.ToString();
+        Properties.ParseString("PrepareOnAim", ref originalValue);
+        _rampData.zoomPrepare = bool.Parse(_rampData.invData.itemValue.GetPropertyOverride("PrepareOnAim", originalValue));
     }
 
     public class ItemActionDataRampUp : ItemActionDataRanged
@@ -139,6 +160,7 @@ public class ItemActionRampUp : ItemActionHoldOpen
         public bool rampStarted = false;
         public float prepareStartTime = 0f;
         public bool prepareStarted = false;
+        public bool zoomPrepare = false;
     }
 }
 
