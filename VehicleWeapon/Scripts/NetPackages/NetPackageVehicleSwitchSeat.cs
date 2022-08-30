@@ -22,8 +22,8 @@ public class NetPackageVehicleSwitchSeat : NetPackage
 
     public override void read(PooledBinaryReader _reader)
     {
-        entityId = _reader.Read();
-        vehicleId = _reader.Read();
+        entityId = _reader.ReadInt32();
+        vehicleId = _reader.ReadInt32();
         seat = _reader.ReadByte();
     }
 
