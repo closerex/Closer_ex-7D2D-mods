@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class VehicleWeaponProjectileRotatorBase : VehicleWeaponRotatorBase
+public abstract class VehicleWeaponProjectileRotatorBase : VehicleWeaponRotatorBase
 {
     protected float gravity = 1f;
     protected float projectileSpeed = 0f;

@@ -40,6 +40,22 @@
 				<passive_effect name="DegradationMax" operation="base_set" value="20000"/>
 			</effect_group>
 		</item>
+		
+		<item name="vehicleMountedMGTestPlaceable">
+			<property name="Extends" value="vehicleMinibikePlaceable"/>
+			<property name="DescriptionKey" value="mountedMGTestPlaceableDesc"/>
+			<property name="Tags" value="vehicle,vengine,vfuel,vlight,vseat,vweapon,vraycastweapon,canHaveCosmetic"/>
+			<property name="Meshfile" value="#@modfolder:Resources/mountedMGTest.unity3d?unclechariot.prefab"/>
+			<property name="EconomicValue" value="30000"/>
+			<property class="Action1">
+				<property name="Vehicle" value="vehicleMountedMGTest"/>
+			</property>
+			<effect_group name="crosscountryChariotPlaceable" tiered="false">
+				<passive_effect name="ModSlots" operation="base_set" value="5"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+				<passive_effect name="DegradationMax" operation="base_set" value="20000"/>
+			</effect_group>
+		</item>
 
 		<item name="itemPlasmaSmall">
 			<property name="Tags" value="perkDemolitionsExpert"/>

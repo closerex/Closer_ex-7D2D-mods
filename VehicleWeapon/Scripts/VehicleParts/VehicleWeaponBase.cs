@@ -334,6 +334,9 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
     public virtual void OnPlayerEnter()
     {
         hasOperator = true;
+        if (rotator != null)
+            rotator.ForceUpdate(0);
+        NetSyncUpdate(true);
 
         if (activated && enabled)
             OnActivated();

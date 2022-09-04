@@ -20,19 +20,19 @@ namespace VehicleWeaponPatches
                 manager.Cleanup();
         }
 
-        [HarmonyPatch(nameof(EntityVehicle.AttachEntityToSelf))]
-        [HarmonyPostfix]
-        private static void Postfix_AttachEntityToSelf(Entity _entity, int __result, EntityVehicle __instance)
-        {
-            if(__result >= 0 && _entity is EntityPlayerLocal)
-            {
-                PlayerActionsVehicleExtra.Instance.Enabled = true;
-                Log.Out(PlayerActionsVehicleExtra.Instance.Enabled.ToString());
-                var manager = __instance.GetVehicle().FindPart(VPWeaponManager.VehicleWeaponManagerName) as VPWeaponManager;
-                if (manager != null)
-                    manager.OnPlayerEnter(__result);
-            }
-        }
+        //[HarmonyPatch(nameof(EntityVehicle.AttachEntityToSelf))]
+        //[HarmonyPostfix]
+        //private static void Postfix_AttachEntityToSelf(Entity _entity, int __result, EntityVehicle __instance)
+        //{
+        //    if(__result >= 0 && _entity is EntityPlayerLocal)
+        //    {
+        //        PlayerActionsVehicleExtra.Instance.Enabled = true;
+        //        Log.Out(PlayerActionsVehicleExtra.Instance.Enabled.ToString());
+        //        var manager = __instance.GetVehicle().FindPart(VPWeaponManager.VehicleWeaponManagerName) as VPWeaponManager;
+        //        if (manager != null)
+        //            manager.OnPlayerEnter(__result);
+        //    }
+        //}
 
         [HarmonyPatch("DetachEntity")]
         [HarmonyPostfix]
@@ -41,10 +41,29 @@ namespace VehicleWeaponPatches
             if (_entity is EntityPlayerLocal)
             {
                 PlayerActionsVehicleExtra.Instance.Enabled = false;
-                Log.Out(PlayerActionsVehicleExtra.Instance.Enabled.ToString());
                 var manager = __instance.GetVehicle().FindPart(VPWeaponManager.VehicleWeaponManagerName) as VPWeaponManager;
                 if (manager != null)
                     manager.OnPlayerDetach();
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(EntityPlayerLocal))]
+    public class EntityPlayerLocalPatches
+    {
+        [HarmonyPatch(nameof(EntityPlayerLocal.AttachToEntity))]
+        [HarmonyPostfix]
+        private static void Postfix_AttachToEntity(EntityPlayerLocal __instance, int __result)
+        {
+            if (__result < 0)
+                return;
+
+            if(__instance.AttachedToEntity is EntityVehicle entity)
+            {
+                PlayerActionsVehicleExtra.Instance.Enabled = true;
+                var manager = entity.GetVehicle().FindPart(VPWeaponManager.VehicleWeaponManagerName) as VPWeaponManager;
+                if (manager != null)
+                    manager.OnPlayerEnter(__result);
             }
         }
     }
@@ -99,6 +118,25 @@ namespace VehicleWeaponPatches
         {
             if (__instance.FindPart(VPWeaponManager.VehicleWeaponManagerName) is VPWeaponManager manager)
                 manager.ApplyModEffect(___itemValue.Clone());
+        }
+
+        [HarmonyPatch(nameof(Vehicle.GetIKTargets))]
+        [HarmonyPostfix]
+        private static void Postfix_GetIKTargets(int slot, ref List<IKController.Target> __result, Vehicle __instance)
+        {
+            if (slot == 0)
+                return;
+
+            foreach (var part in __instance.GetParts())
+            {
+                if (part is VehicleWeaponRotatorBase rotator && rotator.ikTargets != null)
+                {
+                    if (__result == null)
+                        __result = new List<IKController.Target>();
+                    __result.AddRange(rotator.ikTargets);
+                    Log.Out("adding ik from rotator!");
+                }
+            }
         }
     }
 
@@ -173,4 +211,13 @@ namespace VehicleWeaponPatches
             return codes;
         }
     }
+
+    //[HarmonyPatch(typeof(IKController), nameof(IKController.OnAnimatorIK))]
+    //public class IKDebugPatch
+    //{
+    //    private static void Postfix()
+    //    {
+    //        Log.Out("IK!");
+    //    }
+    //}
 }

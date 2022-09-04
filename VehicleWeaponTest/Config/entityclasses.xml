@@ -39,6 +39,27 @@
 			<property name="RotateToGround" value="true"/>
 			<property name="Faction" value="none"/>
 			<property name="MapIcon" value="Fastback_UI"/>
+			<property name="NavObject" value="4x4" />
+		</entity_class>
+		<entity_class name="vehicleMountedMGTest">
+			<property name="Tags" value="vehicle,Fastback"/>
+			<property name="Class" value="EntityVJeep"/>
+			<property name="Parent" value="Cars"/>
+			<property name="Prefab" value="#@modfolder:Resources/mountedMGTest.unity3d?unclechariot.prefab"/>
+			<property name="ModelType" value="Standard"/>
+			<property name="SurfaceCategory" value="metal"/>
+			<property name="IgnoreTrigger" value="true"/>
+			<property name="LootListAlive" value="vehicle4x4Truck"/>
+			<property name="IsEnemyEntity" value="false"/>
+			<property name="Explosion.ParticleIndex" value="6"/>
+			<property name="Explosion.RadiusBlocks" value="5"/>
+			<property name="Explosion.RadiusEntities" value="5"/>
+			<property name="Explosion.BlockDamage" value="100"/>
+			<property name="Explosion.EntityDamage" value="100"/>
+			<property name="RotateToGround" value="true"/>
+			<property name="Faction" value="none"/>
+			<property name="MapIcon" value="Fastback_UI"/>
+			<property name="NavObject" value="4x4" />
 		</entity_class>
 	</append>
 </configs>

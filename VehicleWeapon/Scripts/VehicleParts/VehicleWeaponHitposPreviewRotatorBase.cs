@@ -111,9 +111,9 @@ public abstract class VehicleWeaponHitposPreviewRotatorBase : VehicleWeaponProje
 
     protected abstract void DoCalcCurRotation(out float targetHorAngle, out float targetVerAngle);
 
-    protected override bool DoRotateTowards(float _dt)
+    protected override bool DoRotateTowards(float _dt, bool forced = false)
     {
-        if (base.DoRotateTowards(_dt))
+        if (base.DoRotateTowards(_dt, forced))
         {
             UpdatePreviewPos(hitPos);
             return true;
