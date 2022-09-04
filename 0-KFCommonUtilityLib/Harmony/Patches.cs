@@ -370,5 +370,31 @@ class CommonUtilityPatch
 
         return codes;
     }
+
+    [HarmonyPatch(typeof(ItemActionRanged), "triggerReleased")]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_triggerReleased_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
+    {
+        var mtd_effect = AccessTools.Method(typeof(IGameManager), nameof(IGameManager.ItemActionEffectsServer));
+        var mtd_data = AccessTools.Method(typeof(ItemActionRanged), "getUserData");
+        var codes = instructions.ToList();
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_effect))
+            {
+                codes.InsertRange(i, new CodeInstruction[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Ldarg_1),
+                    new CodeInstruction(OpCodes.Callvirt, mtd_data)
+                });
+                codes.RemoveAt(i - 1);
+                break;
+            }
+        }
+
+        return codes;
+    }
 }
 

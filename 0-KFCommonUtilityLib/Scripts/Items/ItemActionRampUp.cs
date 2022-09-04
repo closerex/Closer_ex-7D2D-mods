@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Audio;
 using System;
+using static XUiC_DropDown;
 
 public class ItemActionRampUp : ItemActionHoldOpen
 {
@@ -23,30 +24,37 @@ public class ItemActionRampUp : ItemActionHoldOpen
     {
         base.ItemActionEffects(_gameManager, _actionData, _firingState, _startPos, _direction, _userData);
         var _rampData = _actionData as ItemActionDataRampUp;
+        var entity = _rampData.invData.holdingEntity;
         if (_firingState != 0)
         {
             if((_userData & 2) > 0)
             {
-                Manager.Stop(_rampData.invData.holdingEntity.entityId, _rampData.rampSound);
+                Manager.Stop(entity.entityId, _rampData.rampSound);
                 _rampData.rampStarted = true;
                 _rampData.rampStartTime = Time.time;
-                Manager.Play(_rampData.invData.holdingEntity, _rampData.rampSound);
+                Manager.Play(entity, _rampData.rampSound);
             }
         }
         else if((_userData & 4) > 0)
         {
+            //Log.Out("released, try aim charge!" + _userData);
+            ResetRamp(_rampData);
             if(!_rampData.prepareStarted)
             {
-                _rampData.invData.holdingEntity.StopOneShot(_rampData.prepareSound);
+                //Log.Out("released and aim charge!");
+                Manager.Stop(entity.entityId, _rampData.prepareSound);
                 _rampData.prepareStarted = true;
                 _rampData.prepareStartTime = Time.time;
-                _rampData.invData.holdingEntity.PlayOneShot(_rampData.prepareSound);
+                Manager.Play(entity, _rampData.prepareSound);
                 setAnimatorBool(_rampData.invData.holdingEntity, "prepare", true);
                 setAnimatorFloat(_rampData.invData.holdingEntity, "prepareSpeed", _rampData.prepareSpeed);
             }
         }
         else
-            ResetRamp(_rampData);
+        {
+            //Log.Out("released, reset all!" + _userData + entity.AimingGun);
+            ResetAll(_rampData);
+        }
     }
 
     protected override int getUserData(ItemActionData _actionData)
@@ -59,6 +67,9 @@ public class ItemActionRampUp : ItemActionHoldOpen
     {
         base.OnHoldingUpdate(_actionData);
         var _rampData = _actionData as ItemActionDataRampUp;
+        if (_rampData.invData.holdingEntity.isEntityRemote)
+            return;
+
         bool aiming = _rampData.invData.holdingEntity.AimingGun;
         if (!_rampData.prepareStarted && _rampData.zoomPrepare && aiming)
         {
@@ -92,14 +103,25 @@ public class ItemActionRampUp : ItemActionHoldOpen
         ResetRamp(_rampData);
     }
 
+    private void ResetAll(ItemActionDataRampUp _rampData)
+    {
+        ResetPrepare(_rampData);
+        ResetRamp(_rampData);
+        //Log.Out("Reset all!");
+    }
+
+    private void ResetPrepare(ItemActionDataRampUp _rampData)
+    {
+        _rampData.prepareStarted = false;
+        Manager.Stop(_rampData.invData.holdingEntity.entityId, _rampData.prepareSound);
+        setAnimatorBool(_rampData.invData.holdingEntity, "prepare", false);
+        //Log.Out("Reset Prepare!");
+    }
+
     private void ResetRamp(ItemActionDataRampUp _rampData)
     {
-        _rampData.bReleased = true;
         _rampData.rampStarted = false;
-        _rampData.prepareStarted = false;
-        _rampData.invData.holdingEntity.StopOneShot(_rampData.prepareSound);
-        _rampData.invData.holdingEntity.StopOneShot(_rampData.rampSound);
-        setAnimatorBool(_rampData.invData.holdingEntity, "prepare", false);
+        Manager.Stop(_rampData.invData.holdingEntity.entityId, _rampData.rampSound);
         //Log.Out("Reset Ramp!");
     }
 
