@@ -71,7 +71,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Harmony\Class1.cs" />
+    <Compile Include="Harmony\Patches.cs" />
     <Compile Include="Harmony\Init.cs" />
     <Compile Include="Scripts\NetConnectionSimple.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
