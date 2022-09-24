@@ -1,0 +1,5 @@
+Key,File,Type,english,schinese
+gunDevotionLMG,items,Gun,Devotion LMG,专注轻机枪
+gunDevotionLMGDesc,items,Gun,"The Devotion LMG, or Devotion, is a light machine gun that utilizes Energy Ammo.\n\n It has a unique RPM acceleration mechanic: the longer the Devotion is fired continuously, the faster its fire rate will become, up to a cap. The Turbocharger Hop-Up allows the Devotion to reach its faster fire rate more quickly.",专注轻机枪使用能量弹药。\n\n拥有独特的RPM加速机制：连续开火的时间越长，射击速率就越快，直至上限。即用配件涡轮增压器可以缩短充能至最大射击速率的时间。
+modTurboCharger,item_modifiers,mod,Turbocharger,涡轮增压器
+modTurboChargerDesc,item_modifiers,mod,"The Turbocharger hop-up removes the need for the weapons to charge up; either it removes the delay to fire or it instantly increases a weapon's rate of fire so it reaches the maximum much faster.",涡轮增压器用于补强充能武器；或是移除充能武器的准备时间，又或者是加快武器的充能速度。

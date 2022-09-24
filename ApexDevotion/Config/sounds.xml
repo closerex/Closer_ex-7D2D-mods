@@ -1,0 +1,81 @@
+<configs>
+	<append xpath="/Sounds">
+		<SoundDataNode name="devotion_fire">
+			<AudioSource name="Sounds/AudioSource_WeaponFire"/>
+			<NetworkAudioSource name="Sounds/AudioSource_WeaponFire_Network"/>
+			<Noise ID="0" noise="54" time="2" muffled_when_crouched="0.8" heat_map_strength="0.65" heat_map_time="180"/>
+				<AudioClip ClipName="#@modfolder:Resources/DevotionAudio.unity3d?devotion_fire01"/>
+				<AudioClip ClipName="#@modfolder:Resources/DevotionAudio.unity3d?devotion_fire02"/>
+				<AudioClip ClipName="#@modfolder:Resources/DevotionAudio.unity3d?devotion_fire03"/>
+			<LocalCrouchVolumeScale value="1"/>
+			<CrouchNoiseScale value="1"/>
+			<NoiseScale value="1"/>
+			<MaxVoices value="90"/>
+			<MaxVoicesPerEntity value="30"/>
+			<MaxRepeatRate value="0.001"/>
+		</SoundDataNode>
+		<SoundDataNode name="devotion_s_fire">
+			<AudioSource name="Sounds/AudioSource_WeaponFire"/>
+			<NetworkAudioSource name="Sounds/AudioSource_WeaponFire_Network"/>
+			<Noise ID="0" noise="47" time="2" muffled_when_crouched="0.8" heat_map_strength="0.7" heat_map_time="180"/>
+				<AudioClip ClipName="#@modfolder:Resources/DevotionAudio.unity3d?devotion_s_fire01"/>
+				<AudioClip ClipName="#@modfolder:Resources/DevotionAudio.unity3d?devotion_s_fire02"/>
+				<AudioClip ClipName="#@modfolder:Resources/DevotionAudio.unity3d?devotion_s_fire03"/>
+			<LocalCrouchVolumeScale value="1"/>
+			<CrouchNoiseScale value="1"/>
+			<NoiseScale value="1"/>
+			<MaxVoices value="90"/>
+			<MaxVoicesPerEntity value="30"/>
+			<MaxRepeatRate value="0.001"/>
+		</SoundDataNode>
+		<SoundDataNode name="devotion_fire_end">
+			<AudioSource name="Sounds/AudioSource_WeaponFire"/>
+			<NetworkAudioSource name="Sounds/AudioSource_WeaponFire_Network"/>
+			<Noise ID="2" noise="11" time="3" muffled_when_crouched="0.5"/>
+				<AudioClip ClipName="#@modfolder:Resources/DevotionAudio.unity3d?devotion_fire_end"/>
+			<LocalCrouchVolumeScale value="1"/>
+			<CrouchNoiseScale value="1"/>
+			<NoiseScale value="1"/>
+			<MaxVoices value="10"/>
+			<MaxVoicesPerEntity value="1"/>
+			<MaxRepeatRate value="0.01"/>
+		</SoundDataNode>
+		<SoundDataNode name="devotion_empty">
+			<AudioSource name="Sounds/AudioSource_Reloads"/>
+			<Noise ID="0" noise="5" time="4" muffled_when_crouched="0.5"/>
+				<AudioClip ClipName="#@modfolder:Resources/DevotionAudio.unity3d?devotion_empty"/>
+			<LocalCrouchVolumeScale value="0.5"/>
+			<CrouchNoiseScale value="1"/>
+			<NoiseScale value="1"/>
+			<MaxVoices value="10"/>
+			<MaxVoicesPerEntity value="6"/>
+			<MaxRepeatRate value="0.01"/>
+		</SoundDataNode>
+		<SoundDataNode name="devotion_ramp">
+			<AudioSource name="Sounds/AudioSource_WeaponFire"/>
+			<NetworkAudioSource name="Sounds/AudioSource_WeaponFire_Network"/>
+			<Noise ID="0" noise="11" time="2" muffled_when_crouched="0.8" heat_map_strength="0.45" heat_map_time="180"/>
+				<AudioClip ClipName="#@modfolder:Resources/DevotionAudio.unity3d?devotion_ramp01"/>
+				<AudioClip ClipName="#@modfolder:Resources/DevotionAudio.unity3d?devotion_ramp02"/>
+				<AudioClip ClipName="#@modfolder:Resources/DevotionAudio.unity3d?devotion_ramp03"/>
+			<LocalCrouchVolumeScale value="1"/>
+			<CrouchNoiseScale value="1"/>
+			<NoiseScale value="1"/>
+			<MaxVoices value="20"/>
+			<MaxVoicesPerEntity value="3"/>
+			<MaxRepeatRate value="0.01"/>
+		</SoundDataNode>
+		<SoundDataNode name="devotion_ramp_turbo">
+			<AudioSource name="Sounds/AudioSource_WeaponFire"/>
+			<NetworkAudioSource name="Sounds/AudioSource_WeaponFire_Network"/>
+			<Noise ID="0" noise="11" time="2" muffled_when_crouched="0.8" heat_map_strength="0.45" heat_map_time="180"/>
+				<AudioClip ClipName="#@modfolder:Resources/DevotionAudio.unity3d?devotion_ramp_turbo"/>
+			<LocalCrouchVolumeScale value="1"/>
+			<CrouchNoiseScale value="1"/>
+			<NoiseScale value="1"/>
+			<MaxVoices value="20"/>
+			<MaxVoicesPerEntity value="3"/>
+			<MaxRepeatRate value="0.01"/>
+		</SoundDataNode>
+	</append>
+</configs>
