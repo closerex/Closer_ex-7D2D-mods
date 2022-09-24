@@ -135,6 +135,7 @@ namespace NetConnectionSimpleLockfree
                     queue_write_processing = queue_write_append;
                     queue_write_append = temp;
                     queue_write_append.Clear();
+                    Log.Out($"writer: swapping append to processing, count {queue_write_processing.Count}");
                     writeProcessing = true;
                     writerTriggerEvent.Set();
                 }
@@ -147,6 +148,7 @@ namespace NetConnectionSimpleLockfree
                         list_read_packages_processing = list_read_packages_received;
                         list_read_packages_received = temp;
                         list_read_packages_processing.Clear();
+                        Log.Out($"reader: retrieving received packages, count {list_read_packages_received.Count}");
                     }
 
                     if(queue_read_append.Count > 0)
@@ -155,6 +157,7 @@ namespace NetConnectionSimpleLockfree
                         queue_read_processing = queue_read_append;
                         queue_read_append = temp;
                         queue_read_append.Clear();
+                        Log.Out($"reader: swapping append to processing, count {queue_read_processing.Count}");
                         readProcessing = true;
                         readerTriggerEvent.Set();
                     }
@@ -169,7 +172,8 @@ namespace NetConnectionSimpleLockfree
             base.Disconnect();
             readerTriggerEvent.Set();
             writerTriggerEvent.Set();
-            ThreadManager.StopCoroutine(co);
+            if(co != null)
+                ThreadManager.StopCoroutine(co);
         }
 
         public override void AddToSendQueue(NetPackage _package)
