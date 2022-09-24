@@ -82,9 +82,9 @@ class Patches
         __instance.xui.playerUI.windowManager.Close(RandomBackgroundLoader.Cur_logo);
     }
     
-    [HarmonyPatch(typeof(GameManager), "startGameCo")]
+    [HarmonyPatch(typeof(GameManager), "StartGame")]
     [HarmonyPrefix]
-    private static bool Prefix_startGameCo_GameManager(GUIWindowManager ___windowManager)
+    private static bool Prefix_StartGame_GameManager(GUIWindowManager ___windowManager)
     {
         if (!GameManager.IsDedicatedServer)
             ___windowManager.Close(RandomBackgroundLoader.Cur_name);
