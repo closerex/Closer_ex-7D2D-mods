@@ -36,6 +36,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZZRandomPerkUIPatch", "ZZRa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FireManager", "FireManager\FireManager.csproj", "{863BABF0-F364-43AC-BB44-07D190AA911E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AIOptimization", "AIOptimization\AIOptimization.csproj", "{B12C330F-0945-4774-A7F6-D290C02AF662}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetConnectionSimpleLockfree", "NetConnectionSimpleLockfree\NetConnectionSimpleLockfree.csproj", "{2953EDAB-AC10-4292-B90C-8D7BBFA7F56F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -98,6 +102,14 @@ Global
 		{863BABF0-F364-43AC-BB44-07D190AA911E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{863BABF0-F364-43AC-BB44-07D190AA911E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{863BABF0-F364-43AC-BB44-07D190AA911E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B12C330F-0945-4774-A7F6-D290C02AF662}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B12C330F-0945-4774-A7F6-D290C02AF662}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B12C330F-0945-4774-A7F6-D290C02AF662}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B12C330F-0945-4774-A7F6-D290C02AF662}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2953EDAB-AC10-4292-B90C-8D7BBFA7F56F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2953EDAB-AC10-4292-B90C-8D7BBFA7F56F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2953EDAB-AC10-4292-B90C-8D7BBFA7F56F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2953EDAB-AC10-4292-B90C-8D7BBFA7F56F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
