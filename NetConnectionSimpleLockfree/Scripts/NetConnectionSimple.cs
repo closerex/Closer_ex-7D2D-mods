@@ -80,6 +80,8 @@ namespace NetConnectionSimpleLockfree
             {
                 InitStreams(true);
             }
+            writeProcessing = false;
+            readProcessing = false;
             readerThreadInfo = ThreadManager.StartThread("NCS_Reader_" + connectionIdentifier, new ThreadManager.ThreadFunctionDelegate(taskDeserialize), System.Threading.ThreadPriority.Normal, null, null, true);
             writerThreadInfo = ThreadManager.StartThread("NCS_Writer_" + connectionIdentifier, new ThreadManager.ThreadFunctionDelegate(taskSerialize), System.Threading.ThreadPriority.Normal, null, null, true);
             co = ThreadManager.StartCoroutine(CheckRWStateCo());
@@ -129,13 +131,14 @@ namespace NetConnectionSimpleLockfree
         {
             while(!bDisconnected)
             {
+                //Log.Out($"co update state: writer append {queue_write_append.Count}, writer processing {writeProcessing}; reader package append {list_read_packages_received.Count}, reader data append {queue_read_append.Count}, reader processing {readProcessing}");
                 if(!writeProcessing && queue_write_append.Count > 0)
                 {
                     var temp = queue_write_processing;
                     queue_write_processing = queue_write_append;
                     queue_write_append = temp;
                     queue_write_append.Clear();
-                    Log.Out($"writer: swapping append to processing, count {queue_write_processing.Count}");
+                    //Log.Out($"writer: swapping append to processing, count {queue_write_processing.Count}");
                     writeProcessing = true;
                     writerTriggerEvent.Set();
                 }
@@ -148,7 +151,7 @@ namespace NetConnectionSimpleLockfree
                         list_read_packages_processing = list_read_packages_received;
                         list_read_packages_received = temp;
                         list_read_packages_processing.Clear();
-                        Log.Out($"reader: retrieving received packages, count {list_read_packages_received.Count}");
+                        //Log.Out($"reader: retrieving received packages, count {list_read_packages_received.Count}");
                     }
 
                     if(queue_read_append.Count > 0)
@@ -157,7 +160,7 @@ namespace NetConnectionSimpleLockfree
                         queue_read_processing = queue_read_append;
                         queue_read_append = temp;
                         queue_read_append.Clear();
-                        Log.Out($"reader: swapping append to processing, count {queue_read_processing.Count}");
+                        //Log.Out($"reader: swapping append to processing, count {queue_read_processing.Count}");
                         readProcessing = true;
                         readerTriggerEvent.Set();
                     }
@@ -185,6 +188,7 @@ namespace NetConnectionSimpleLockfree
             //    writerListFilling.Add(_package);
             //}
             queue_write_append.Enqueue(_package);
+            //Log.Out($"adding package {_package.GetType().ToString()} to send queue");
         }
 
         public override void FlushSendQueue()
@@ -194,11 +198,12 @@ namespace NetConnectionSimpleLockfree
             //{
             //    writerTriggerEvent.Set();
             //}
-            if(!writeProcessing)
-            {
-                writeProcessing = true;
-                writerTriggerEvent.Set();
-            }
+            //if(!writeProcessing)
+            //{
+            //    Log.Out("flush queue success!");
+            //    writeProcessing = true;
+            //    writerTriggerEvent.Set();
+            //}
         }
 
         public override void AppendToReaderStream(byte[] _data, int _dataSize)
@@ -359,19 +364,20 @@ namespace NetConnectionSimpleLockfree
         private void taskSerialize(ThreadManager.ThreadInfo _threadInfo)
         {
             queue_write_processing.Clear();
-            bool flag = false;
+            bool lastSendFailed = false;
             bool curQueueHandled = true;
             MicroStopwatch microStopwatch = new MicroStopwatch();
             try
             {
                 while (!bDisconnected && !_threadInfo.TerminationRequested())
                 {
-                    if ((!flag || microStopwatch.ElapsedMilliseconds > 500L) && bufsToSend.Count > 0)
+                    if ((!lastSendFailed || microStopwatch.ElapsedMilliseconds > 500L) && bufsToSend.Count > 0)
                     {
                         try
                         {
-                            flag = !SendBuffers();
-                            if (flag)
+                            lastSendFailed = !SendBuffers();
+                            //Log.Out($"send buffer state {lastSendFailed}");
+                            if (lastSendFailed)
                             {
                                 if (isServer)
                                 {
@@ -545,17 +551,17 @@ namespace NetConnectionSimpleLockfree
                         }
 
                         sendStreamUncompressed.Position = 0L;
-                        bool flag3 = allowCompression && sendStreamUncompressed.Length > 500L;
+                        bool compressed = allowCompression && sendStreamUncompressed.Length > 500L;
                         MemoryStream memoryStream = sendStreamUncompressed;
-                        if (Compress(flag3, sendStreamUncompressed, sendZipStream, sendStreamCompressed, writerBuffer, packetCount))
+                        if (Compress(compressed, sendStreamUncompressed, sendZipStream, sendStreamCompressed, writerBuffer, packetCount))
                         {
                             memoryStream = sendStreamCompressed;
                         }
-                        bool flag4 = Encrypt(memoryStream, 0L);
+                        bool encrypted = Encrypt(memoryStream, 0L);
                         stats.RegisterSentData(packetCount, (int)memoryStream.Length);
                         StreamUtils.Write(writerStream, (int)memoryStream.Length);
-                        StreamUtils.Write(writerStream, flag3 ? 1 : 0);
-                        StreamUtils.Write(writerStream, flag4 ? 1 : 0);
+                        StreamUtils.Write(writerStream, Convert.ToByte(compressed));
+                        StreamUtils.Write(writerStream, Convert.ToByte(encrypted));
                         StreamUtils.Write(writerStream, (ushort)packetCount);
                         if (memoryStream.Length > (long)writerStream.Capacity)
                         {
@@ -564,7 +570,7 @@ namespace NetConnectionSimpleLockfree
                             memoryStream.Length,
                             writerStream.Capacity,
                             packetCount,
-                            flag3
+                            compressed
                             }));
                         }
                         StreamUtils.StreamCopy(memoryStream, writerStream, writerBuffer, true);
@@ -578,6 +584,7 @@ namespace NetConnectionSimpleLockfree
                         if (queue_write_processing.Count > 0)
                             continue;
 
+                        //Log.Out($"writer queue handled! data to send size {buffer.Count}");
                         curQueueHandled = true;
                         writerTriggerEvent.Reset();
                         writeProcessing = false;
@@ -605,7 +612,7 @@ namespace NetConnectionSimpleLockfree
             while (bufsToSend.Count > 0)
             {
                 ArrayListMP<byte> arrayListMP = bufsToSend.First.Value;
-                bufsToSend.RemoveFirst();
+                //Log.Out($"sending buffer size {arrayListMP.Count}");
                 if (!bDisconnected)
                 {
                     if (maxPacketSize > 0 && arrayListMP.Count > maxPacketSize)
@@ -623,9 +630,11 @@ namespace NetConnectionSimpleLockfree
                 }
                 if (networkError == NetworkError.NoResources)
                 {
-                    bufsToSend.AddFirst(arrayListMP);
                     return false;
                 }
+
+                bufsToSend.RemoveFirst();
+                //Log.Out($"sending buffer success! left buffer count {bufsToSend.Count}");
             }
             return true;
         }
