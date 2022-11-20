@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml;
 using SystemInformation;
@@ -43,6 +44,21 @@ class CommonUtilityPatch
     private static IEnumerable<CodeInstruction> Transpiler_Hit_ItemActionAttack(IEnumerable<CodeInstruction> instructions)
     {
         var codes = new List<CodeInstruction>(instructions);
+        MethodInfo mtd_can_damage_entity = AccessTools.Method(typeof(Entity), nameof(Entity.CanDamageEntity));
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            var code = codes[i];
+            if(code.Calls(mtd_can_damage_entity))
+            {
+                codes.InsertRange(i + 2, new CodeInstruction[]
+                {
+                    new CodeInstruction(OpCodes.Ldc_I4_1),
+                    CodeInstruction.StoreField(typeof(CommonUtilityPatch), nameof(CommonUtilityPatch.need_postfix))
+                });
+                break;
+            }
+        }
 
         codes.InsertRange(0, new CodeInstruction[]
         {
