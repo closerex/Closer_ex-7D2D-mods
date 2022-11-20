@@ -15,6 +15,7 @@
 			<update_rate value="0.45"/>
 			<effect_group name="generate stock">
 				<triggered_effect trigger="onSelfBuffStart" action="AddBuff" buff="buffMedicBuffStockPistolBg"/>
+				<triggered_effect trigger="onSelfBuffStart" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockPistol" slot="1"/>
 				<!--triggered_effect trigger="onSelfBuffRemove" action="AddBuff" buff="buffMedicBuffStockPistolBg"/-->
 				<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffMedicBuffStockPistol">
 					<requirement name="!HoldingItemHasTags" tags="medicpistol"/>
@@ -61,6 +62,7 @@
 			<update_rate value="0.35"/>
 			<effect_group name="generate stock">
 				<triggered_effect trigger="onSelfBuffStart" action="AddBuff" buff="buffMedicBuffStockShotgunBg"/>
+				<triggered_effect trigger="onSelfBuffStart" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockSG301" slot="1"/>
 				<!--triggered_effect trigger="onSelfBuffRemove" action="AddBuff" buff="buffMedicBuffStockShotgunBg"/-->
 				<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffMedicBuffStockShotgun">
 					<requirement name="!HoldingItemHasTags" tags="medicshotgun"/>
@@ -107,7 +109,7 @@
 			<update_rate value="0.30"/>
 			<effect_group name="generate stock">
 				<triggered_effect trigger="onSelfBuffStart" action="AddBuff" buff="buffMedicBuffStockAR401Bg"/>
-				<!--triggered_effect trigger="onSelfBuffRemove" action="AddBuff" buff="buffMedicBuffStockAR401Bg"/-->
+				<triggered_effect trigger="onSelfBuffStart" action="SetStringOnWeaponLabel,KFCommonUtilityLib" cvar="$medicBuffStockAR401" slot="1"/>
 				<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffMedicBuffStockAR401">
 					<requirement name="!HoldingItemHasTags" tags="medicar401"/>
 				</triggered_effect>
