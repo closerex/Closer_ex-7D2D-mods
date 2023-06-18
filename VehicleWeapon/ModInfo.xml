@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <xml>
-	<ModInfo>
-		<Name value="Vehicle Weapon" />
-		<Description value="HORNS." />
-		<Author value="closer_ex" />
-		<Version value="1.4.5" />
-	</ModInfo>
+	<Name value="VehicleWeapon" />
+	<DisplayName value="Vehicle Weapon" />
+	<Description value="HORNS." />
+	<Author value="closer_ex" />
+	<Version value="1.4.5" />
 </xml>

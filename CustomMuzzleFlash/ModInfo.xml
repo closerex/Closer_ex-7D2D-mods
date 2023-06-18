@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <xml>
-	<ModInfo>
-		<Name value="CustomMuzzleFlash" />
-		<Description value="Register custom muzzle flash and smoke properties." />
-		<Author value="closer_ex" />
-		<Version value="1.0.1" />
-	</ModInfo>
+	<Name value="CustomMuzzleFlash" />
+	<DisplayName value="Custom Muzzle Flash" />
+	<Description value="Register custom muzzle flash and smoke properties." />
+	<Author value="closer_ex" />
+	<Version value="1.0.2" />
 </xml>

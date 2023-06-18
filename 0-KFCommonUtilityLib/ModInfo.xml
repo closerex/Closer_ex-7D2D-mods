@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <xml>
-	<ModInfo>
-		<Name value="CommonUtilityLib" />
-		<Description value="Killing floor 2 style utilities collection." />
-		<Author value="closer_ex" />
-		<Version value="1.0.0" />
-	</ModInfo>
+	<Name value="CommonUtilityLib" />
+	<DisplayName value="Common Utility Library" />
+	<Description value="Killing floor 2 style utilities collection." />
+	<Author value="closer_ex" />
+	<Version value="1.0.0" />
 </xml>

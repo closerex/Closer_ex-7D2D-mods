@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <xml>
-	<ModInfo>
-		<Name value="MedicPerk" />
-		<Description value="Heal your teammates." />
-		<Author value="closer_ex" />
-		<Version value="1.0" />
-	</ModInfo>
+	<Name value="MedicPerk" />
+	<DisplayName value="Medic Perk" />
+	<Description value="Heal your teammates." />
+	<Author value="closer_ex" />
+	<Version value="1.0.0" />
 </xml>
