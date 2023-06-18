@@ -20,8 +20,7 @@ public class NetPackageExplosionParams : NetPackage
         this.explosionChanges.AddRange(explosionChanges);
 		if(particle != null)
         {
-			NetSyncHelper helper = particle.GetComponent<NetSyncHelper>();
-			if(helper != null)
+			if(particle.TryGetComponent<NetSyncHelper>(out var helper))
 			{
 				MemoryStream memoryStream = new MemoryStream();
 				using (PooledBinaryWriter _bw = MemoryPools.poolBinaryWriter.AllocSync(false))

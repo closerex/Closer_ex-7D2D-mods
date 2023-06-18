@@ -312,22 +312,6 @@ class CommonUtilityPatch
         ParseAltRequirements(_node);
     }
 
-    //[HarmonyPatch(typeof(ItemClassesFromXml), "parseItem")]
-    //[HarmonyTranspiler]
-    //private static IEnumerable<CodeInstruction> Transpiler_parseItem_ItemClassesFromXml(IEnumerable<CodeInstruction> instructions)
-    //{
-    //    var codes = new List<CodeInstruction>(instructions);
-
-    //    codes.InsertRange(codes.Count - 1, new CodeInstruction[]
-    //    {
-    //        new CodeInstruction(OpCodes.Ldarg_0),
-    //        new CodeInstruction(OpCodes.Ldloc_S, 4),
-    //        CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(CommonUtilityPatch.ParseAltRequirements))
-    //    });
-
-    //    return codes;
-    //}
-
     [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.ExecuteAction))]
     [HarmonyPrefix]
     private static bool Prefix_ExecuteAction_ItemClass(ItemClass __instance, int _actionIdx, ItemInventoryData _data, bool _bReleased)

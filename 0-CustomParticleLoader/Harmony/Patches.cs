@@ -65,7 +65,7 @@ class ExplosionEffectPatch
                     new CodeInstruction(OpCodes.Ldarg, 7),
                     new CodeInstruction(OpCodes.Ldarg_0),
                     CodeInstruction.LoadField(typeof(GameManager), "tempExplPositions"),
-                    new CodeInstruction(OpCodes.Ldloc_1),
+                    new CodeInstruction(OpCodes.Ldloc_S, 4),
                     CodeInstruction.Call(typeof(ExplosionEffectPatch), nameof(ExplosionEffectPatch.SendCustomExplosionPackage))
                 });
                 codes.RemoveRange(i - 23, 24);
