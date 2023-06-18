@@ -81,8 +81,8 @@
 			<property name="DisplayType" value="ammoLauncher"/>
 			<property name="HoldType" value="45"/>
 			<property name="Meshfile" value="#@modfolder:Resources/Kaboomstick_prefab.unity3d?kaboom_bullet.prefab"/>
-			<property name="HandMeshfile" value="#Other/Items?Misc/sackPrefab.prefab"/>
-			<property name="DropMeshfile" value="#Other/Items?Misc/sack_droppedPrefab.prefab"/>
+			<property name="HandMeshfile" value="@:Other/Items/Misc/sackPrefab.prefab"/>
+			<property name="DropMeshfile" value="@:Other/Items/Misc/sack_droppedPrefab.prefab"/>
 			<property name="Material" value="Mlead_scrap"/>
 			<property name="Stacknumber" value="50"/> <!-- STK ammo low -->
 			<property name="EconomicValue" value="20"/>
@@ -122,8 +122,8 @@
 			<property name="DisplayType" value="ammoLauncher"/>
 			<property name="HoldType" value="45"/>
 			<property name="Meshfile" value="#@modfolder:Resources/Kaboomstick_prefab.unity3d?kaboom_bullet.prefab"/>
-			<property name="HandMeshfile" value="#Other/Items?Misc/sackPrefab.prefab"/>
-			<property name="DropMeshfile" value="#Other/Items?Misc/sack_droppedPrefab.prefab"/>
+			<property name="HandMeshfile" value="@:Other/Items/Misc/sackPrefab.prefab"/>
+			<property name="DropMeshfile" value="@:Other/Items/Misc/sack_droppedPrefab.prefab"/>
 			<property name="Material" value="Mlead_scrap"/>
 			<property name="Stacknumber" value="50"/> <!-- STK ammo low -->
 			<property name="EconomicValue" value="20"/>

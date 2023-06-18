@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Xml;
+using System.Xml.Linq;
 using UnityEngine;
 
 public class ItemActionAltMode : ItemActionHoldOpen
@@ -98,32 +99,27 @@ public class ItemActionAltMode : ItemActionHoldOpen
         altRequirements = new List<IRequirement>[_altInfiniteAmmo.Length + 1];
     }
 
-    public void ParseAltRequirements(XmlElement _node, int _actionIdx)
+    public void ParseAltRequirements(XElement _node, int _actionIdx)
     {
-        foreach (object obj in _node.ChildNodes)
+        foreach (XElement elem in _node.Elements("property"))
         {
-            XmlNode xmlNode = (XmlNode)obj;
-            if (xmlNode.NodeType == XmlNodeType.Element && xmlNode.Name.Equals("property"))
+            if (elem.HasAttribute("class") && elem.GetAttribute("class").Contains(_actionIdx.ToString()))
             {
-                if ((xmlNode as XmlElement).HasAttribute("class") && (xmlNode as XmlElement).GetAttribute("class").Contains(_actionIdx.ToString()))
+                for(int i = 0; i < altRequirements.Length; ++i)
                 {
-                    for(int i = 0; i < altRequirements.Length; ++i)
+                    var requirements = new List<IRequirement>();
+                    requirements.AddRange(ExecutionRequirements);
+                    foreach(XElement childElem in elem.Elements())
                     {
-                        var requirements = new List<IRequirement>();
-                        requirements.AddRange(ExecutionRequirements);
-                        foreach(object obj2 in xmlNode.ChildNodes)
+                        if(childElem.Name.LocalName.Equals("requirements" + i))
                         {
-                            XmlNode xmlNode2 = (XmlNode)obj2;
-                            if(xmlNode2.NodeType == XmlNodeType.Element && xmlNode2.Name.Equals("requirements" + i))
-                            {
-                                requirements.AddRange(RequirementBase.ParseRequirements(xmlNode2 as XmlElement));
-                                break;
-                            }
+                            requirements.AddRange(RequirementBase.ParseRequirements(childElem));
+                            break;
                         }
-                        altRequirements[i] = requirements;
                     }
-                    break;
+                    altRequirements[i] = requirements;
                 }
+                break;
             }
         }
     }

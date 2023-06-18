@@ -1,4 +1,5 @@
 ﻿using System.Xml;
+using System.Xml.Linq;
 using UnityEngine;
 
 public class MinEventActionRangedExplosion : MinEventActionBase
@@ -44,12 +45,12 @@ public class MinEventActionRangedExplosion : MinEventActionBase
         return true;
     }
 
-    public override bool ParseXmlAttribute(XmlAttribute _attribute)
+    public override bool ParseXmlAttribute(XAttribute _attribute)
 	{
 		bool flag = base.ParseXmlAttribute(_attribute);
 		if (!flag)
 		{
-			string name = _attribute.Name;
+			string name = _attribute.Name.LocalName;
 			switch(name)
             {
 				case "particle_index":

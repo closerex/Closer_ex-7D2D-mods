@@ -147,12 +147,12 @@ public class ConsoleCmdCalibrateWeapon : ConsoleCmdAbstract
         return res;
     }
 
-    public override string[] GetCommands()
+    protected override string[] getCommands()
     {
         return new string[] { "calibrate", "calib" };
     }
 
-    public override string GetDescription()
+    protected override string getDescription()
     {
         return "adjust weapon transform rotation, position, scale, scope offset in game and print current value for xml editing purpose.";
     }

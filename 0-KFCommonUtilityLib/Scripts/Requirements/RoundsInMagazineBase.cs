@@ -1,15 +1,16 @@
 ﻿using System.Xml;
+using System.Xml.Linq;
 
 public class RoundsInMagazineBase : RoundsInMagazine
 {
     protected bool roundsBeforeShot = false;
 
-    public override bool ParseXmlAttribute(XmlAttribute _attribute)
+    public override bool ParseXAttribute(XAttribute _attribute)
     {
-        if(base.ParseXmlAttribute(_attribute))
+        if(base.ParseXAttribute(_attribute))
             return true;
 
-        if(_attribute.Name == "rounds_before_shot")
+        if(_attribute.Name.LocalName == "rounds_before_shot")
         {
             roundsBeforeShot = bool.Parse(_attribute.Value);
             return true;

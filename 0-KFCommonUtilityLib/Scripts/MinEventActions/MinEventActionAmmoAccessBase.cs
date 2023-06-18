@@ -1,4 +1,5 @@
 ﻿using System.Xml;
+using System.Xml.Linq;
 
 public class MinEventActionAmmoAccessBase : MinEventActionItemCountRandomBase
 {
@@ -25,12 +26,12 @@ public class MinEventActionAmmoAccessBase : MinEventActionItemCountRandomBase
         return !_params.Self.isEntityRemote && base.CanExecute(_eventType, _params) && _params.ItemValue.ItemClass.Actions[0] is ItemActionRanged;
     }
 
-    public override bool ParseXmlAttribute(XmlAttribute _attribute)
+    public override bool ParseXmlAttribute(XAttribute _attribute)
     {
         if (base.ParseXmlAttribute(_attribute))
             return true;
 
-        if(_attribute.Name == "count" && _attribute.Value.Contains("MagazineSize"))
+        if(_attribute.Name.LocalName == "count" && _attribute.Value.Contains("MagazineSize"))
         {
             useMag = true;
             string str = _attribute.Value;

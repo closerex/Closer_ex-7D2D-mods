@@ -20,9 +20,9 @@ class Patches
             CodeInstruction code = codes[i];
             if (code.opcode == OpCodes.Callvirt && code.Calls(mtdinfo_fwgbn))
             {
-                codes.InsertRange(i + 8, new CodeInstruction[]
+                codes.InsertRange(i + 6, new CodeInstruction[]
                 {
-                    new CodeInstruction(OpCodes.Ldloc_S, 7),
+                    new CodeInstruction(OpCodes.Ldloc_S, 5),
                     CodeInstruction.Call(typeof(RandomBackgroundLoader), nameof(RandomBackgroundLoader.insert), new Type[] { typeof(string) })
                 });
                 break;

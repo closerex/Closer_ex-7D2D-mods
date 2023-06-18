@@ -105,7 +105,7 @@ class ItemActionLauncherProjectilePatch
         {
             if (codes[i].opcode == OpCodes.Isinst && codes[i].OperandIs(typeof(ItemActionLauncher)))
             {
-                codes.RemoveRange(i - 1, 3);
+                codes.RemoveRange(i - 2, 4);
                 break;
             }
         }

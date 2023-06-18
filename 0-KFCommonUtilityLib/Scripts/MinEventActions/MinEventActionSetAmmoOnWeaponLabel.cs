@@ -1,4 +1,5 @@
 ﻿using System.Xml;
+using System.Xml.Linq;
 
 class MinEventActionSetAmmoOnWeaponLabel : MinEventActionRemoteHoldingBase
 {
@@ -7,13 +8,13 @@ class MinEventActionSetAmmoOnWeaponLabel : MinEventActionRemoteHoldingBase
     private bool useHoldingItemValue = false;
     private string[] wrap;
     private bool usePattern = false;
-    public override bool ParseXmlAttribute(XmlAttribute _attribute)
+    public override bool ParseXmlAttribute(XAttribute _attribute)
     {
         bool flag = base.ParseXmlAttribute(_attribute);
         if (!flag)
         {
             flag = true;
-            string name = _attribute.Name;
+            string name = _attribute.Name.LocalName;
             switch (name)
             {
                 case "slot":

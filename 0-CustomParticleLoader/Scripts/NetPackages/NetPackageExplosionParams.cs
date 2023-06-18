@@ -111,7 +111,7 @@ public class NetPackageExplosionParams : NetPackage
 				CustomExplosionManager.PushLastInitComponent(component);
 			}
         }
-		GameObject result = _world.GetGameManager().ExplosionClient(clrIdx, worldPos, rotation, explosionData.ParticleIndex, explosionData.BlastPower, (float)explosionData.EntityRadius, explosionChanges);
+		GameObject result = _world.GetGameManager().ExplosionClient(clrIdx, worldPos, rotation, explosionData.ParticleIndex, explosionData.BlastPower, (float)explosionData.EntityRadius, (float)explosionData.BlockDamage, entityId, explosionChanges);
 		NetSyncHelper helper = result.GetComponent<NetSyncHelper>();
 		if (helper != null && dataToSync != null)
         {

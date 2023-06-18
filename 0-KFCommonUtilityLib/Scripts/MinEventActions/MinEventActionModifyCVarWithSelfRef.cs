@@ -1,4 +1,5 @@
 ﻿using System.Xml;
+using System.Xml.Linq;
 
 class MinEventActionModifyCVarWithSelfRef : MinEventActionModifyCVar
 {
@@ -16,10 +17,10 @@ class MinEventActionModifyCVarWithSelfRef : MinEventActionModifyCVar
     float value;
     OperationTypes operation;
 
-    public override bool ParseXmlAttribute(XmlAttribute _attribute)
+    public override bool ParseXmlAttribute(XAttribute _attribute)
     {
         bool flag = false;
-        string name = _attribute.Name;
+        string name = _attribute.Name.LocalName;
         if (name != null)
         {
             if(name == "value" && _attribute.Value.StartsWith("@"))

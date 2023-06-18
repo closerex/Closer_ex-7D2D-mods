@@ -1,4 +1,5 @@
 ﻿using System.Xml;
+using System.Xml.Linq;
 using UnityEngine;
 
 class MinEventActionSetWeaponLabelColor : MinEventActionRemoteHoldingBase
@@ -9,14 +10,14 @@ class MinEventActionSetWeaponLabelColor : MinEventActionRemoteHoldingBase
     private Color color;
     private int nameId;
 
-    public override bool ParseXmlAttribute(XmlAttribute _attribute)
+    public override bool ParseXmlAttribute(XAttribute _attribute)
     {
         bool flag = base.ParseXmlAttribute(_attribute);
         if(!flag)
         {
             string value = _attribute.Value;
             flag = true;
-            switch(_attribute.Name)
+            switch(_attribute.Name.LocalName)
             {
                 case "is_text":
                     isText = bool.Parse(value);

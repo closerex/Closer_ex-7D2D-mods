@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml;
+using System.Xml.Linq;
 using SystemInformation;
 using UnityEngine;
 
@@ -237,7 +238,7 @@ class CommonUtilityPatch
             //current state, layer 0, offset 0
             anim.PlayInFixedTime(0, 0, 0);
             if (_rangedData.invData.itemValue.Meta == 0)
-                __instance.emodel.avatarController.ResetTrigger(weaponFireHash);
+                __instance.emodel.avatarController.CancelEvent(weaponFireHash);
         }
     }
 
@@ -246,7 +247,7 @@ class CommonUtilityPatch
     private static void Postfix_ItemActionEffects_ItemActionRanged(ItemActionData _actionData, int _firingState)
     {
         if(_firingState == 0 && _actionData.invData.holdingEntity is EntityPlayerLocal && !(_actionData.invData.itemValue.ItemClass.Actions[0] is ItemActionCatapult))
-            _actionData.invData.holdingEntity?.emodel.avatarController.ResetTrigger(weaponFireHash);
+            _actionData.invData.holdingEntity?.emodel.avatarController.CancelEvent(weaponFireHash);
     }
 
     [HarmonyPatch(typeof(GameManager), "gmUpdate")]
@@ -289,8 +290,14 @@ class CommonUtilityPatch
     }
 
     //altmode workarounds
-    private static void ParseAltRequirements(XmlElement _node, ItemClass item)
+    private static void ParseAltRequirements(XElement _node)
     {
+        string itemName = _node.GetAttribute("name");
+        if (string.IsNullOrEmpty(itemName))
+        {
+            return;
+        }
+        ItemClass item = ItemClass.GetItemClass(itemName);
         for(int i = 0; i < item.Actions.Length; i++)
         {
             if (item.Actions[i] is ItemActionAltMode _alt)
@@ -299,20 +306,27 @@ class CommonUtilityPatch
     }
 
     [HarmonyPatch(typeof(ItemClassesFromXml), "parseItem")]
-    [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_parseItem_ItemClassesFromXml(IEnumerable<CodeInstruction> instructions)
+    [HarmonyPostfix]
+    private static void Postfix_parseItem_ItemClassesFromXml(XElement _node)
     {
-        var codes = new List<CodeInstruction>(instructions);
-
-        codes.InsertRange(codes.Count - 1, new CodeInstruction[]
-        {
-            new CodeInstruction(OpCodes.Ldarg_0),
-            new CodeInstruction(OpCodes.Ldloc, 5),
-            CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(CommonUtilityPatch.ParseAltRequirements))
-        });
-
-        return codes;
+        ParseAltRequirements(_node);
     }
+
+    //[HarmonyPatch(typeof(ItemClassesFromXml), "parseItem")]
+    //[HarmonyTranspiler]
+    //private static IEnumerable<CodeInstruction> Transpiler_parseItem_ItemClassesFromXml(IEnumerable<CodeInstruction> instructions)
+    //{
+    //    var codes = new List<CodeInstruction>(instructions);
+
+    //    codes.InsertRange(codes.Count - 1, new CodeInstruction[]
+    //    {
+    //        new CodeInstruction(OpCodes.Ldarg_0),
+    //        new CodeInstruction(OpCodes.Ldloc_S, 4),
+    //        CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(CommonUtilityPatch.ParseAltRequirements))
+    //    });
+
+    //    return codes;
+    //}
 
     [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.ExecuteAction))]
     [HarmonyPrefix]
@@ -326,9 +340,9 @@ class CommonUtilityPatch
 
     [HarmonyPatch(typeof(DynamicProperties), nameof(DynamicProperties.Parse))]
     [HarmonyPrefix]
-    private static bool Prefix_Parse_DynamicProperties(XmlNode _propertyNode)
+    private static bool Prefix_Parse_DynamicProperties(XElement elementProperty)
     {
-        if (_propertyNode.Name != "property")
+        if (elementProperty.Name.LocalName != "property")
             return false;
         return true;
     }
@@ -378,8 +392,8 @@ class CommonUtilityPatch
             if (codes[i].Calls(mtd_release))
             {
                 codes[i + 1].labels.Clear();
-                codes[i + 1].MoveLabelsFrom(codes[i - 17]);
-                codes.RemoveRange(i - 17, 18);
+                codes[i + 1].MoveLabelsFrom(codes[i - 20]);
+                codes.RemoveRange(i - 20, 21);
                 break;
             }
         }

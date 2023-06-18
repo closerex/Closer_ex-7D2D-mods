@@ -1,4 +1,5 @@
 ﻿using System.Xml;
+using System.Xml.Linq;
 using UnityEngine;
 
 public class MinEventActionItemAccessBase : MinEventActionItemCountRandomBase
@@ -6,12 +7,12 @@ public class MinEventActionItemAccessBase : MinEventActionItemCountRandomBase
     protected string itemName;
     protected ItemValue itemValueCache = null;
 
-    public override bool ParseXmlAttribute(XmlAttribute _attribute)
+    public override bool ParseXmlAttribute(XAttribute _attribute)
     {
         if (base.ParseXmlAttribute(_attribute))
             return true;
 
-        switch (_attribute.Name)
+        switch (_attribute.Name.LocalName)
         {
             case "item":
                 itemName = _attribute.Value;

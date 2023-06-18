@@ -16,7 +16,7 @@ class ExplosionEffectPatch
 
     [HarmonyPatch("explode")]
     [HarmonyPrefix]
-    private static bool explode_Prefix(int _clrIdx, Vector3 _worldPos, Vector3i _blockPos, Quaternion _rotation, ExplosionData _explosionData, int _playerId, ItemValue _itemValueExplosive, out bool __state)
+    private static bool explode_Prefix(int _clrIdx, Vector3 _worldPos, Vector3i _blockPos, Quaternion _rotation, ExplosionData _explosionData, int _entityId, ItemValue _itemValueExplosive, out bool __state)
     {
         __state = false;
         int index = _explosionData.ParticleIndex;
@@ -30,7 +30,7 @@ class ExplosionEffectPatch
             {
                 //Log.Out("Retrieved particle index:" + index.ToString());
                 //_explosionData = components.BoundExplosionData;
-                components.CurrentExplosionParams = new ExplosionParams(_clrIdx, _worldPos, _blockPos, _rotation, _explosionData, _playerId, CustomExplosionManager.NextExplosionIndex++);
+                components.CurrentExplosionParams = new ExplosionParams(_clrIdx, _worldPos, _blockPos, _rotation, _explosionData, _entityId, CustomExplosionManager.NextExplosionIndex++);
                 //Log.Out("params:" + _clrIdx + _blockPos + _playerId + _rotation + _worldPos + _explosionData.ParticleIndex);
                 //Log.Out("params:" + components.CurrentExplosionParams._clrIdx + components.CurrentExplosionParams._blockPos + components.CurrentExplosionParams._playerId + components.CurrentExplosionParams._rotation + components.CurrentExplosionParams._worldPos + components.CurrentExplosionParams._explosionData.ParticleIndex);
                 components.CurrentItemValue = _itemValueExplosive;
@@ -68,7 +68,7 @@ class ExplosionEffectPatch
                     new CodeInstruction(OpCodes.Ldloc_1),
                     CodeInstruction.Call(typeof(ExplosionEffectPatch), nameof(ExplosionEffectPatch.SendCustomExplosionPackage))
                 });
-                codes.RemoveRange(i - 20, 21);
+                codes.RemoveRange(i - 23, 24);
                 break;
             }
         }

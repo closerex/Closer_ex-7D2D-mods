@@ -16,7 +16,7 @@
 	<append xpath="/items">
 		<item name="thrownGrenadeDrone">
 			<property name="Extends" value="thrownGrenadeContact"/>
-			<property name="Meshfile" value="#Other/Items?Weapons/Ranged/Grenade/GrenadePrefab.prefab"/>
+			<property name="Meshfile" value="@:Other/Items/Weapons/Ranged/Grenade/GrenadePrefab.prefab"/>
 			<property name="UnlockedBy" value="perkDemolitionsExpert,thrownGrenadeSchematic"/>
 			<property name="DisplayType" value="ammoGrenade"/>
 			<property name="Explosion.ParticleIndex" value="#@modfolder(CustomParticleScriptTest):Resources/Bombardier.unity3d?Drone$thrownGrenadeDrone"/>
@@ -34,7 +34,7 @@
 		</item>
 		<item name="thrownGrenadeTurret">
 			<property name="Extends" value="thrownGrenadeContact" param1="ExplodeOnHit"/>
-			<property name="Meshfile" value="#Other/Items?Weapons/Ranged/Grenade/GrenadePrefab.prefab"/>
+			<property name="Meshfile" value="@:Other/Items/Weapons/Ranged/Grenade/GrenadePrefab.prefab"/>
 			<property name="UnlockedBy" value="perkDemolitionsExpert,thrownGrenadeSchematic"/>
 			<property name="DisplayType" value="ammoGrenade"/>
 			<property name="Explosion.ParticleIndex" value="#@modfolder(CustomParticleScriptTest):Resources/Turret.unity3d?MortarTurret$thrownGrenadeTurret"/>
@@ -53,7 +53,7 @@
 		</item>
 		<item name="thrownGrenadeBlood">
 			<property name="Extends" value="thrownGrenadeContact"/>
-			<property name="Meshfile" value="#Other/Items?Weapons/Ranged/Grenade/GrenadePrefab.prefab"/>
+			<property name="Meshfile" value="@:Other/Items/Weapons/Ranged/Grenade/GrenadePrefab.prefab"/>
 			<property name="UnlockedBy" value="perkDemolitionsExpert,thrownGrenadeSchematic"/>
 			<property name="DisplayType" value="ammoGrenade"/>
 			<property name="Explosion.ParticleIndex" value="#@modfolder(CustomParticleScriptTest):Resources/Blood.unity3d?Blood1$thrownGrenadeBlood"/>
@@ -68,7 +68,7 @@
 		</item>
 		<item name="thrownGrenadeAirBurst">
 			<property name="Extends" value="thrownGrenadeContact"/>
-			<property name="Meshfile" value="#Other/Items?Weapons/Ranged/Grenade/GrenadePrefab.prefab"/>
+			<property name="Meshfile" value="@:Other/Items/Weapons/Ranged/Grenade/GrenadePrefab.prefab"/>
 			<property name="UnlockedBy" value="perkDemolitionsExpert,thrownGrenadeSchematic"/>
 			<property name="DisplayType" value="ammoGrenade"/>
 			<property name="Explosion.ParticleIndex" value="#@modfolder(CustomParticleScriptTest):Resources/GuppyTest.unity3d?AirBurstExplosion$thrownGrenadeAirBurst"/>
@@ -86,7 +86,7 @@
 		</item>
 		<item name="itemExplosionSpawn">
 			<property name="Extends" value="thrownGrenadeContact"/>
-			<property name="Meshfile" value="#Other/Items?Weapons/Ranged/Grenade/GrenadePrefab.prefab"/>
+			<property name="Meshfile" value="@:Other/Items/Weapons/Ranged/Grenade/GrenadePrefab.prefab"/>
 			<property name="UnlockedBy" value="perkDemolitionsExpert,thrownGrenadeSchematic"/>
 			<property name="DisplayType" value="ammoGrenade"/>
 			<property name="Explosion.ParticleIndex" value="#@modfolder(Kaboomstick):Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$itemExplosionSpawn"/>
