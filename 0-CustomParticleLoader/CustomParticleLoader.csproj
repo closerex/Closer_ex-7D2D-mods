@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Scripts\Core\IExplosionProperty.cs" />
+    <Compile Include="Scripts\MinEventActions\MinEventActionRangedExplosion.cs" />
     <Compile Include="Scripts\MonoBehaviours\AutoRemove.cs" />
     <Compile Include="Scripts\Core\ExplosionComponent.cs" />
     <Compile Include="Scripts\Core\CustomExplosionManager.cs" />

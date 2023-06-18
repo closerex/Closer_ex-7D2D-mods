@@ -44,4 +44,9 @@
 		<item group="groupWeapons_MedicT2" loot_prob_template="low"/>
 		<item group="groupWeapons_MedicT3" loot_prob_template="veryLow"/>
 	</append>
+	<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3_Ranged']">
+		<item group="groupWeapons_MedicT0" loot_prob_template="low"/>
+		<item group="groupWeapons_MedicT2" loot_prob_template="med"/>
+		<item group="groupWeapons_MedicT3" loot_prob_template="low"/>
+	</append>
 </configs>

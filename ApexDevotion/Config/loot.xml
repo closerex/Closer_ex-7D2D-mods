@@ -1,0 +1,20 @@
+<configs>
+	<insertAfter xpath="/lootcontainers/lootgroup[@name='empty']">
+		<lootgroup name="groupWeapons_ApexT3" count="1" loot_quality_template="QLTemplateT3">
+			<item name="gunDevotionLMG" count="1"/>
+		</lootgroup>
+	</insertAfter>
+	
+	<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsRangedT2']">
+		<item name="gunDevotionLMG" loot_prob_template="veryLow"/>
+	</append>
+	<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsRangedT3']">
+		<item name="gunDevotionLMG" loot_prob_template="low"/>
+	</append>
+	<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT2_Ranged']">
+		<item group="groupWeapons_ApexT3" loot_prob_template="veryLow"/>
+	</append>
+	<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3_Ranged']">
+		<item group="groupWeapons_ApexT3" loot_prob_template="low"/>
+	</append>
+</configs>

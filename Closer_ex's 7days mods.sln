@@ -8,8 +8,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParticleScriptTestPatch", "ParticleScriptTest\ParticleScriptTestPatch.csproj", "{7B1CC7B2-9F2A-4C60-AB92-F62B7582AA79}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FullautoLauncher", "FullautoLauncher\FullautoLauncher.csproj", "{F485DD15-9EDF-42C3-A31B-66AE0DFB7356}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomMuzzleFlash", "CustomMuzzleFlash\CustomMuzzleFlash.csproj", "{6B763422-D3CD-4136-9C64-E3D34B7A1FA8}"
@@ -34,9 +32,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomPerk", "RandomPerk\Ra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZZRandomPerkUIPatch", "ZZRandomPerkUIPatch\ZZRandomPerkUIPatch.csproj", "{EA4F2E51-B964-4902-98BB-5D790511764C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetConnectionSimpleLockfree", "NetConnectionSimpleLockfree\NetConnectionSimpleLockfree.csproj", "{2953EDAB-AC10-4292-B90C-8D7BBFA7F56F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomPlayerActionManagerSMXPatch", "ZZCustomPlayerActionManagerSMXPatch\CustomPlayerActionManagerSMXPatch.csproj", "{E348C472-910F-4E1A-967B-6E32CAF1F19A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParticleScriptTestPatch", "ParticleScriptTest\ParticleScriptTestPatch.csproj", "{7B1CC7B2-9F2A-4C60-AB92-F62B7582AA79}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,10 +42,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7B1CC7B2-9F2A-4C60-AB92-F62B7582AA79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7B1CC7B2-9F2A-4C60-AB92-F62B7582AA79}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7B1CC7B2-9F2A-4C60-AB92-F62B7582AA79}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7B1CC7B2-9F2A-4C60-AB92-F62B7582AA79}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F485DD15-9EDF-42C3-A31B-66AE0DFB7356}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F485DD15-9EDF-42C3-A31B-66AE0DFB7356}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F485DD15-9EDF-42C3-A31B-66AE0DFB7356}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -96,14 +90,14 @@ Global
 		{EA4F2E51-B964-4902-98BB-5D790511764C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA4F2E51-B964-4902-98BB-5D790511764C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA4F2E51-B964-4902-98BB-5D790511764C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2953EDAB-AC10-4292-B90C-8D7BBFA7F56F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2953EDAB-AC10-4292-B90C-8D7BBFA7F56F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2953EDAB-AC10-4292-B90C-8D7BBFA7F56F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2953EDAB-AC10-4292-B90C-8D7BBFA7F56F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E348C472-910F-4E1A-967B-6E32CAF1F19A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E348C472-910F-4E1A-967B-6E32CAF1F19A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E348C472-910F-4E1A-967B-6E32CAF1F19A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E348C472-910F-4E1A-967B-6E32CAF1F19A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B1CC7B2-9F2A-4C60-AB92-F62B7582AA79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B1CC7B2-9F2A-4C60-AB92-F62B7582AA79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B1CC7B2-9F2A-4C60-AB92-F62B7582AA79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B1CC7B2-9F2A-4C60-AB92-F62B7582AA79}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
