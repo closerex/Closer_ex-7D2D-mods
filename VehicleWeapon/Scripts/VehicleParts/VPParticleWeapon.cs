@@ -43,7 +43,7 @@ public class VPParticleWeapon : VehicleWeaponBase
 
     public override void InitPrefabConnections()
     {
-        Transform hornTrans = GetParticleTransform();
+        Transform hornTrans = GetTransform("particle_transform");
         if (hornTrans)
         {
             weaponSystem = hornTrans.GetComponent<ParticleSystem>();

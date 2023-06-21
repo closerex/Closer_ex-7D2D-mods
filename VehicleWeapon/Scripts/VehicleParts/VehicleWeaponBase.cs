@@ -253,13 +253,12 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
         int i = 0;
         if (effects == null || effects.EffectGroupXml == null)
             return;
-        foreach (var effectNode in effects.EffectGroupXml)
+        foreach (var element in effects.EffectGroupXml)
         {
-            XmlElement element = effectNode as XmlElement;
             if (element != null && element.HasAttribute("vehicle_weapon") && element.GetAttribute("vehicle_weapon") == weapon.ModName)
             {
                 weapon.effects.EffectGroups.Add(effects.EffectGroups[i]);
-                weapon.effects.EffectGroupXml.Add(effectNode);
+                weapon.effects.EffectGroupXml.Add(element);
                 weapon.effects.PassivesIndex.UnionWith(effects.EffectGroups[i].PassivesIndex);
                 Log.Out("Adding effect group to " + weapon.ModName);
             }

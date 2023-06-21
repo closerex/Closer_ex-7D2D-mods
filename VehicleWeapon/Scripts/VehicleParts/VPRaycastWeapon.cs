@@ -87,7 +87,7 @@ public class VPRaycastWeapon : VehicleWeaponBase
             if(!string.IsNullOrEmpty(str))
             {
                 if(!ParticleEffect.IsAvailable(str))
-                    ParticleEffect.RegisterBundleParticleEffect(str);
+                    ParticleEffect.LoadAsset(str);
                 muzzleFlash = new ParticleEffect(str, Vector3.zero, 1f, Color.clear, null, muzzleTrans, false);
             }
 
@@ -98,7 +98,7 @@ public class VPRaycastWeapon : VehicleWeaponBase
             if(!string.IsNullOrEmpty(str))
             {
                 if(!ParticleEffect.IsAvailable(str))
-                    ParticleEffect.RegisterBundleParticleEffect(str);
+                    ParticleEffect.LoadAsset(str);
                 muzzleSmoke = new ParticleEffect(str, Vector3.zero, 1f, Color.clear, null, muzzleTrans, false);
             }
         }
@@ -230,20 +230,20 @@ public class VPRaycastWeapon : VehicleWeaponBase
         {
             if (muzzleFlash != null)
             {
-                Transform flash = GameManager.Instance.SpawnParticleEffectClient(muzzleFlash, vehicle.entity.entityId);
+                Transform flash = ParticleEffect.SpawnParticleEffect(muzzleFlash, vehicle.entity.entityId);
                 if(flash != null && flash.GetComponent<ParticleSystem>() != null)
                 {
                     flash.SetParent(muzzleTrans);
-                    muzzleFlashManager.Add(flash, false);
+                    muzzleFlashManager.Add(flash);
                 }
             }
             if (muzzleSmoke != null)
             {
-                Transform smoke = GameManager.Instance.SpawnParticleEffectClient(muzzleSmoke, vehicle.entity.entityId);
+                Transform smoke = ParticleEffect.SpawnParticleEffect(muzzleSmoke, vehicle.entity.entityId);
                 if(smoke != null && smoke.GetComponent<ParticleSystem>() != null)
                 {
                     smoke.SetParent(muzzleTrans);
-                    muzzleSmokeManager.Add(smoke, false);
+                    muzzleSmokeManager.Add(smoke);
                 }
             }
         }
