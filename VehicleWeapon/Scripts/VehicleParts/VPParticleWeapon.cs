@@ -25,7 +25,8 @@ public class VPParticleWeapon : VehicleWeaponBase
         repeatInterval = 1f;
         properties.ParseFloat("reloadTime", ref repeatInterval);
         repeatInterval = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "reloadTime", repeatInterval.ToString()));
-        CustomExplosionManager.GetCustomParticleComponents(CustomExplosionManager.getHashCode(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "particleIndex", properties.GetString("particleIndex"))), out component);
+        if (!CustomExplosionManager.GetCustomParticleComponents(CustomExplosionManager.getHashCode(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "particleIndex", properties.GetString("particleIndex"))), out component))
+            Log.Error($"explosion particle not found on vehicle weapon {tag}, particle: {properties.GetString("particleIndex")}");
 
         explodeOnCollision = true;
         properties.ParseBool("explodeOnCollision", ref explodeOnCollision);
@@ -54,6 +55,10 @@ public class VPParticleWeapon : VehicleWeaponBase
                 weaponSystem.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             }
         }
+        else
+        {
+            Log.Error($"particle transform not found on vehicle weapon {tag}!");
+        }
         base.InitPrefabConnections();
     }
 
@@ -79,6 +84,8 @@ public class VPParticleWeapon : VehicleWeaponBase
         initializer.entityAlive = player;
         if (component.BoundItemClass != null)
             initializer.value = new ItemValue(component.BoundItemClass.Id);
+        else
+            Log.Error($"explosion particle not bound to an item: {component.BoundExplosionData.ParticleIndex}");
         if (explodeOnDeath)
             initializer.SetExplodeOnDeath(explodeOnCollision);
 
