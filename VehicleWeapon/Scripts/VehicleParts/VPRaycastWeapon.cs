@@ -8,8 +8,8 @@ public class VPRaycastWeapon : VehicleWeaponBase
     protected FastTags tags;
     protected Transform raycastTrans;
     protected Transform muzzleTrans;
-    protected ParticleEffect muzzleFlash;
-    protected ParticleEffect muzzleSmoke;
+    protected string muzzleFlash;
+    protected string muzzleSmoke;
     protected int hitmaskOverride;
     protected EnumDamageTypes damageType;
     protected List<string> buffs = new List<string>();
@@ -28,8 +28,8 @@ public class VPRaycastWeapon : VehicleWeaponBase
     protected Dictionary<string, ItemActionAttack.Bonuses> ToolBonuses = new Dictionary<string, ItemActionAttack.Bonuses>();
     protected Ray shootRay = new Ray();
     protected AimAssistHelper aimAssist;
-    protected ParticleSystemUpdater muzzleFlashManager = new ParticleSystemUpdater();
-    protected ParticleSystemUpdater muzzleSmokeManager = new ParticleSystemUpdater();
+    //protected ParticleSystemUpdater muzzleFlashManager = new ParticleSystemUpdater();
+    //protected ParticleSystemUpdater muzzleSmokeManager = new ParticleSystemUpdater();
     protected List<float> queue_pending_shots = new List<float>();
 
     public override bool IsBurstPending => queue_pending_shots.Count > 0;
@@ -88,7 +88,7 @@ public class VPRaycastWeapon : VehicleWeaponBase
             {
                 if(!ParticleEffect.IsAvailable(str))
                     ParticleEffect.LoadAsset(str);
-                muzzleFlash = new ParticleEffect(str, Vector3.zero, 1f, Color.clear, null, muzzleTrans, false);
+                muzzleFlash = str;//new ParticleEffect(str, Vector3.zero, 1f, Color.clear, null, muzzleTrans, false);
             }
 
             str = null;
@@ -99,7 +99,7 @@ public class VPRaycastWeapon : VehicleWeaponBase
             {
                 if(!ParticleEffect.IsAvailable(str))
                     ParticleEffect.LoadAsset(str);
-                muzzleSmoke = new ParticleEffect(str, Vector3.zero, 1f, Color.clear, null, muzzleTrans, false);
+                muzzleSmoke = str;//new ParticleEffect(str, Vector3.zero, 1f, Color.clear, null, muzzleTrans, false);
             }
         }
 
@@ -137,15 +137,15 @@ public class VPRaycastWeapon : VehicleWeaponBase
         ProcessPendingShots(_dt);
     }
 
-    public override void Update(float _dt)
-    {
-        base.Update(_dt);
-        muzzleFlashManager.Update(Vector3.zero, Quaternion.identity);
-        muzzleSmokeManager.Update(Vector3.zero, Quaternion.identity);
+    //public override void Update(float _dt)
+    //{
+    //    base.Update(_dt);
+    //    //muzzleFlashManager.Update(Vector3.zero, Quaternion.identity);
+    //    //muzzleSmokeManager.Update(Vector3.zero, Quaternion.identity);
 
-        if (!GameManager.Instance.IsPaused() && !hasOperator)
-            ProcessPendingShots(_dt);
-    }
+    //    if (!GameManager.Instance.IsPaused() && !hasOperator)
+    //        ProcessPendingShots(_dt);
+    //}
 
     protected virtual void ProcessPendingShots(float _dt)
     {
@@ -230,20 +230,43 @@ public class VPRaycastWeapon : VehicleWeaponBase
         {
             if (muzzleFlash != null)
             {
-                Transform flash = ParticleEffect.SpawnParticleEffect(muzzleFlash, vehicle.entity.entityId);
-                if(flash != null && flash.GetComponent<ParticleSystem>() != null)
+                Transform flash = ParticleEffect.SpawnParticleEffect(new ParticleEffect(muzzleFlash, Vector3.zero, 1f, Color.clear, null, null, false), vehicle.entity.entityId, true);
+                if(flash != null/* && flash.GetComponent<ParticleSystem>() != null*/)
                 {
-                    flash.SetParent(muzzleTrans);
-                    muzzleFlashManager.Add(flash);
+                    flash.localPosition = Vector3.zero;
+                    flash.SetParent(muzzleTrans, false);
+                    Log.Out($"flash: particle system count:{flash.GetComponentsInChildren<ParticleSystem>().Length}, pos: {flash.transform.localPosition} {flash.transform.position}, parent pos: {muzzleTrans.position}");
+                    foreach (ParticleSystem particleSystem in flash.GetComponentsInChildren<ParticleSystem>())
+                    {
+                        particleSystem.Clear();
+                        particleSystem.Play();
+                    }
+                    var temp = flash.gameObject.AddMissingComponent<TemporaryObject>();
+                    temp.life = 5;
+                    temp.Restart();
+                    //muzzleFlashManager.Add(flash);
+                }
+                else
+                {
+                    Log.Error($"failed to spawn muzzle flash particle: {muzzleFlash}");
                 }
             }
             if (muzzleSmoke != null)
             {
-                Transform smoke = ParticleEffect.SpawnParticleEffect(muzzleSmoke, vehicle.entity.entityId);
-                if(smoke != null && smoke.GetComponent<ParticleSystem>() != null)
+                Transform smoke = ParticleEffect.SpawnParticleEffect(new ParticleEffect(muzzleSmoke, Vector3.zero, 1f, Color.clear, null, null, false), vehicle.entity.entityId, true);
+                if(smoke != null/* && smoke.GetComponent<ParticleSystem>() != null*/)
                 {
-                    smoke.SetParent(muzzleTrans);
-                    muzzleSmokeManager.Add(smoke);
+                    smoke.localPosition = Vector3.zero;
+                    smoke.SetParent(muzzleTrans, false);
+                    foreach (ParticleSystem particleSystem in smoke.GetComponentsInChildren<ParticleSystem>())
+                    {
+                        particleSystem.Clear();
+                        particleSystem.Play();
+                    }
+                    var temp = smoke.gameObject.AddMissingComponent<TemporaryObject>();
+                    temp.life = 5;
+                    temp.Restart();
+                    //muzzleSmokeManager.Add(smoke);
                 }
             }
         }

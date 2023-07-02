@@ -56,22 +56,6 @@
 				<passive_effect name="DegradationMax" operation="base_set" value="20000"/>
 			</effect_group>
 		</item>
-
-		<item name="vehicleSpaceMarineBikePlaceable">
-			<property name="Extends" value="vehicleMinibikePlaceable"/>
-			<property name="DescriptionKey" value="vehicleSpaceMarineBikePlaceableDesc"/>
-			<property name="Tags" value="vehicle,vengine,vfuel,vlight,vseat,vweapon,vraycastweapon,canHaveCosmetic"/>
-			<property name="Meshfile" value="#@modfolder:Resources/SpaceMarineBike.unity3d?SpaceMarineBikePrefab.prefab"/>
-			<property name="EconomicValue" value="30000"/>
-			<property class="Action1">
-				<property name="Vehicle" value="vehicleSpaceMarineBike"/>
-			</property>
-			<effect_group name="crosscountryChariotPlaceable" tiered="false">
-				<passive_effect name="ModSlots" operation="base_set" value="5"/>
-				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
-				<passive_effect name="DegradationMax" operation="base_set" value="20000"/>
-			</effect_group>
-		</item>
 		
 		<item name="itemPlasmaSmall">
 			<property name="Tags" value="perkDemolitionsExpert"/>

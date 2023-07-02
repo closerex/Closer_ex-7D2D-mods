@@ -391,7 +391,6 @@
 				<property name="raycastTransform" value="RaycastWeapon/WeaponRoot/Basement/Bracket/centurion_weapon/ShootPoint"/>
 				<property name="muzzleTransform" value="RaycastWeapon/WeaponRoot/Basement/Bracket/centurion_weapon/Muzzle"/>
 				<property name="muzzleFlash" value="gunfire_m60"/>
-				<property name="muzzleSmoke" value="gunfire_smoke"/>
 				<property name="itemName" value="vehicleWeaponCrosscountryChariotMG"/>
 				<property name="ammo" value="ammo762mmBulletBall"/>
 				<property name="fullauto" value="true"/>
@@ -576,7 +575,6 @@
 				<property name="raycastTransform" value="WeaponRoot/WeaponFrame/MG/ShootPoint"/>
 				<property name="muzzleTransform" value="WeaponRoot/WeaponFrame/MG/Muzzle"/>
 				<property name="muzzleFlash" value="gunfire_m60"/>
-				<property name="muzzleSmoke" value="gunfire_smoke"/>
 				<property name="itemName" value="vehicleWeaponCrosscountryChariotMG"/>
 				<property name="ammo" value="ammo762mmBulletBall"/>
 				<property name="fullauto" value="true"/>
