@@ -1,6 +1,8 @@
 ﻿using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
@@ -219,3 +221,116 @@ class ExplosionAttackPatch
         return codes;
     }
 }
+
+[HarmonyPatch(typeof(ExplosionData))]
+class ExplosionDataPatch
+{
+    [HarmonyPatch(nameof(ExplosionData.Write))]
+    [HarmonyPrefix]
+    private static bool Prefix_ExplosionData_Write(BinaryWriter _bw, ref ExplosionData __instance)
+    {
+        _bw.Write(__instance.ParticleIndex);
+        _bw.Write((short)(__instance.Duration * 10f));
+        _bw.Write((short)(__instance.BlockRadius * 20f));
+        _bw.Write((short)__instance.EntityRadius);
+        _bw.Write((short)__instance.BlastPower);
+        _bw.Write(__instance.BlockDamage);
+        _bw.Write(__instance.EntityDamage);
+        _bw.Write(__instance.BlockTags);
+        _bw.Write(__instance.IgnoreHeatMap);
+        if(__instance.damageMultiplier != null)
+        {
+            _bw.Write(true);
+            __instance.damageMultiplier.Write(_bw);
+        }
+        else
+        {
+            _bw.Write(false);
+        }
+        if (__instance.BuffActions != null)
+        {
+            _bw.Write((byte)__instance.BuffActions.Count);
+            for (int i = 0; i < __instance.BuffActions.Count; i++)
+            {
+                _bw.Write(__instance.BuffActions[i]);
+            }
+        }else
+        {
+            _bw.Write(0);
+        }
+        return false;
+    }
+
+    [HarmonyPatch(nameof(ExplosionData.Read))]
+    [HarmonyPrefix]
+    private static bool Prefix_ExplosionData_Read(BinaryReader _br, ref ExplosionData __instance)
+    {
+        __instance.ParticleIndex = _br.ReadInt32();
+        __instance.Duration = (float)_br.ReadInt16() * 0.1f;
+        __instance.BlockRadius = (float)_br.ReadInt16() * 0.05f;
+        __instance.EntityRadius = (int)_br.ReadInt16();
+        __instance.BlastPower = (int)_br.ReadInt16();
+        __instance.BlockDamage = _br.ReadSingle();
+        __instance.EntityDamage = _br.ReadSingle();
+        __instance.BlockTags = _br.ReadString();
+        __instance.IgnoreHeatMap = _br.ReadBoolean();
+        if (_br.ReadBoolean())
+        {
+            __instance.damageMultiplier = new DamageMultiplier();
+            __instance.damageMultiplier.Read(_br);
+        }
+
+        int num = (int)_br.ReadByte();
+        if (num > 0)
+        {
+            __instance.BuffActions = new List<string>();
+            for (int i = 0; i < num; i++)
+            {
+                __instance.BuffActions.Add(_br.ReadString());
+            }
+        }
+        else
+        {
+            __instance.BuffActions = null;
+        }
+        return false;
+    }
+}
+
+[HarmonyPatch(typeof(ItemHasTags), nameof(ItemHasTags.IsValid))]
+class ItemHasTagsPatch : HarmonyPatch
+{
+    private static bool Prefix(MinEventParams _params, ref bool __result)
+    {
+        if (_params.ItemValue == null)
+        {
+            __result = false;
+            return false;
+        }
+        return true;
+    }
+}
+
+//[HarmonyPatch(typeof(MinEventActionExplode), nameof(MinEventActionExplode.Execute))]
+//class TempPatch
+//{
+//    private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+//    {
+//        var codes = instructions.ToList();
+//        var mtd_explode_server = AccessTools.Method(typeof(GameManager), nameof(GameManager.ExplosionServer));
+//        for (int i = 0; i < codes.Count; i++)
+//        {
+//            if (codes[i].Calls(mtd_explode_server))
+//            {
+//                codes.InsertRange(i + 1, new CodeInstruction[]
+//                {
+//                    new CodeInstruction(OpCodes.Ldloca_S, 2),
+//                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ExplosionData), nameof(ExplosionData.ToByteArray))),
+//                    new CodeInstruction(OpCodes.Pop)
+//                });
+//                break;
+//            }
+//        }
+//        return codes;
+//    }
+//}

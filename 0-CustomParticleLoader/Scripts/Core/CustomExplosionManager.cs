@@ -136,13 +136,13 @@ public static class CustomExplosionManager
     //this should get a unique index for each particle
     public static int getHashCode(string str)
     {
-        int value = (int)(PlatformIndependentHash.StringToUInt16(str));
+        int value = (PlatformIndependentHash.StringToInt32(str));
 
         while (hash_paths.TryGetValue(value, out string path))
         {
             if (path == str)
                 break;
-            if (value > Int16.MaxValue || (value >= 0 && value < WorldStaticData.prefabExplosions.Length))
+            if (value >= 0 && value < WorldStaticData.prefabExplosions.Length)
                 value = WorldStaticData.prefabExplosions.Length;
             else
                 value++;
