@@ -36,7 +36,7 @@ public class NetSyncHelper : MonoBehaviour
     void Awake()
     {
         hash_helpers.Add((explId = CustomExplosionManager.LastInitializedComponent.CurrentExplosionParams._explId), this);
-        if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && CustomExplosionManager.LastInitializedComponent.SyncOnConnect)
+        if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && CustomExplosionManager.LastInitializedComponent.Component.SyncOnConnect)
         {
             explParams = CustomExplosionManager.LastInitializedComponent.CurrentExplosionParams;
             explValue = CustomExplosionManager.LastInitializedComponent.CurrentItemValue?.Clone();

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using UnityEngine;
+using XMLData.Item;
 
 public class NetPackageExplosionSyncOnConnect : NetPackage
 {
@@ -44,10 +45,14 @@ public class NetPackageExplosionSyncOnConnect : NetPackage
 					explValue.Read(_br);
 				}
 				CustomExplosionManager.GetCustomParticleComponents(explParams._explosionData.ParticleIndex, out ExplosionComponent component);
-				component.CurrentExplosionParams = explParams;
-				if(explValue != null)
-					component.CurrentItemValue = explValue.Clone();
-				CustomExplosionManager.PushLastInitComponent(component);
+
+                ExplosionValue value = new ExplosionValue()
+                {
+                    Component = component,
+                    CurrentExplosionParams = explParams,
+                    CurrentItemValue = explValue?.Clone()
+                };
+                CustomExplosionManager.PushLastInitComponent(value);
 				GameObject obj = CustomExplosionManager.InitializeParticle(component, explParams._worldPos - Origin.position, explParams._rotation);
 				obj.GetComponent<NetSyncHelper>().OnConnectedToServer(_br);
 			}

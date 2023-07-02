@@ -95,7 +95,6 @@ public class ExplosionComponent
 
         this.sound_name = sound_name;
         this.duration_audio = duration_audio;
-        this.CurrentExplosionParams = new ExplosionParams();
         this.hash_custom_properties = new Dictionary<string, object>();
         this.data = data;
         if (this.sound_name != null && this.AudioPlayerType == null)
@@ -131,10 +130,14 @@ public class ExplosionComponent
     public List<Type> List_CustomTypes { get => list_custom; }
     public float AudioDuration{ get => duration_audio; }
     public string SoundName { get => sound_name; }
-    public ExplosionParams CurrentExplosionParams { get; set; }
-    public ItemValue CurrentItemValue { get; set; }
     public ExplosionData BoundExplosionData { get => data; }
     public ItemClass BoundItemClass { get; set; }
     public bool SyncOnConnect { get; set; } = false;
 }
 
+public class ExplosionValue
+{
+    public ExplosionComponent Component { get; set; }
+    public ExplosionParams CurrentExplosionParams { get; set; }
+    public ItemValue CurrentItemValue { get; set; }
+}

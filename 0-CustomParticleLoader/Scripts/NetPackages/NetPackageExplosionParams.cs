@@ -104,10 +104,13 @@ public class NetPackageExplosionParams : NetPackage
 			bool flag = CustomExplosionManager.GetCustomParticleComponents(explosionData.ParticleIndex, out ExplosionComponent component);
 			if(flag && component != null)
 			{
-				component.CurrentExplosionParams = new ExplosionParams(clrIdx, worldPos, blockPos, rotation, explosionData, entityId, explosionId);
-				if (itemValueExplosive != null)
-					component.CurrentItemValue = itemValueExplosive.Clone();
-				CustomExplosionManager.PushLastInitComponent(component);
+				ExplosionValue value = new ExplosionValue()
+				{
+					Component = component,
+					CurrentExplosionParams = new ExplosionParams(clrIdx, worldPos, blockPos, rotation, explosionData, entityId, explosionId),
+					CurrentItemValue = itemValueExplosive?.Clone()
+				};
+				CustomExplosionManager.PushLastInitComponent(value);
 			}
         }
 		GameObject result = _world.GetGameManager().ExplosionClient(clrIdx, worldPos, rotation, explosionData.ParticleIndex, explosionData.BlastPower, (float)explosionData.EntityRadius, (float)explosionData.BlockDamage, entityId, explosionChanges);

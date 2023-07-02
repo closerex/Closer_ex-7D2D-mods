@@ -28,10 +28,10 @@ public class TurretAiController : ReverseTrackedBehaviour<TurretAiController>
     protected override void Awake()
     {
         turret = GetComponent<TurretFiring>();
-        ExplosionComponent component = CustomExplosionManager.LastInitializedComponent;
-        entityid = component.CurrentExplosionParams._playerId;
-        clrIdx = component.CurrentExplosionParams._clrIdx;
-        Vector3i blockPos = component.CurrentExplosionParams._blockPos;
+        ExplosionValue value = CustomExplosionManager.LastInitializedComponent;
+        entityid = value.CurrentExplosionParams._playerId;
+        clrIdx = value.CurrentExplosionParams._clrIdx;
+        Vector3i blockPos = value.CurrentExplosionParams._blockPos;
         cKey = WorldChunkCache.MakeChunkKey(World.toChunkXZ(blockPos.x), World.toChunkXZ(blockPos.z), clrIdx);
         GameManager.Instance.World.ChunkClusters[clrIdx].OnChunkVisibleDelegates += OnChunkVisibleChanged;
         chunkPos = new Vector3i(World.toChunkXZ(blockPos.x), 0, World.toChunkXZ(blockPos.z));

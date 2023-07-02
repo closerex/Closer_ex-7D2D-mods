@@ -24,9 +24,9 @@ class ExplosionAreaBuffTick : ExplosionDamageArea
 			item_value = CustomExplosionManager.LastInitializedComponent.CurrentItemValue.Clone();
 			//I'm not sure when Position and StartPosition is needed but filling more fields won't harm
 			player = GameManager.Instance.World.GetEntity(InitiatorEntityId) as EntityPlayer;
-			var component = CustomExplosionManager.LastInitializedComponent;
-			component.TryGetCustomProperty(ExplosionAreaBuffTickParser.name, out var interval);
-			int repeatTimes = (int)(component.CurrentExplosionParams._explosionData.Duration / (float)interval);
+			var value = CustomExplosionManager.LastInitializedComponent;
+			value.Component.TryGetCustomProperty(ExplosionAreaBuffTickParser.name, out var interval);
+			int repeatTimes = (int)(value.CurrentExplosionParams._explosionData.Duration / (float)interval);
 			gameObject.AddComponent<Timer>().start((float)interval, repeatTimes, onTimerTick, null);
         }
 	}

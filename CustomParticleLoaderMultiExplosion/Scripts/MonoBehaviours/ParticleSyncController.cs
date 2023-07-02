@@ -11,7 +11,7 @@ public class ParticleSyncController : TrackedBehaviourBase
     protected override void Awake()
     {
         syncOnInit = true;
-        syncOnConnect = CustomExplosionManager.LastInitializedComponent.SyncOnConnect;
+        syncOnConnect = CustomExplosionManager.LastInitializedComponent.Component.SyncOnConnect;
         base.Awake();
         seed = Random.Range(0, int.MaxValue);
         ps = GetComponent<ParticleSystem>();

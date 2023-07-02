@@ -32,11 +32,15 @@ class ExplosionEffectPatch
             {
                 //Log.Out("Retrieved particle index:" + index.ToString());
                 //_explosionData = components.BoundExplosionData;
-                components.CurrentExplosionParams = new ExplosionParams(_clrIdx, _worldPos, _blockPos, _rotation, _explosionData, _entityId, CustomExplosionManager.NextExplosionIndex++);
+                ExplosionValue value = new ExplosionValue()
+                {
+                    Component = components,
+                    CurrentExplosionParams = new ExplosionParams(_clrIdx, _worldPos, _blockPos, _rotation, _explosionData, _entityId, CustomExplosionManager.NextExplosionIndex++),
+                    CurrentItemValue = _itemValueExplosive
+                };
                 //Log.Out("params:" + _clrIdx + _blockPos + _playerId + _rotation + _worldPos + _explosionData.ParticleIndex);
                 //Log.Out("params:" + components.CurrentExplosionParams._clrIdx + components.CurrentExplosionParams._blockPos + components.CurrentExplosionParams._playerId + components.CurrentExplosionParams._rotation + components.CurrentExplosionParams._worldPos + components.CurrentExplosionParams._explosionData.ParticleIndex);
-                components.CurrentItemValue = _itemValueExplosive;
-                CustomExplosionManager.PushLastInitComponent(components);
+                CustomExplosionManager.PushLastInitComponent(value);
                 __state = true;
             }
             else
@@ -94,11 +98,11 @@ class ExplosionEffectPatch
         if (__result != null || __instance.World == null)
             return;
 
-        ExplosionComponent components = CustomExplosionManager.LastInitializedComponent;
+        ExplosionValue components = CustomExplosionManager.LastInitializedComponent;
         if (components != null)
         {
             ApplyExplosionForce.Explode(_center, (float)_blastPower, _blastRadius);
-            __result = CustomExplosionManager.InitializeParticle(components, _center - Origin.position, _rotation);
+            __result = CustomExplosionManager.InitializeParticle(components.Component, _center - Origin.position, _rotation);
         }
         else
             Log.Warning("Failed to retrieve particle on client! Index:" + _index.ToString());
@@ -140,10 +144,9 @@ class ExplosionParsePatch
     [HarmonyPrefix]
     private static bool Init_ItemClass_Prefix(ItemClass __instance)
     {
-        if(CustomExplosionManager.parseParticleData(ref __instance.Properties))
+        if(CustomExplosionManager.parseParticleData(ref __instance.Properties, out var component))
         {
-            CustomExplosionManager.LastInitializedComponent.BoundItemClass = __instance;
-            CustomExplosionManager.PopLastInitComponent();
+            component.BoundItemClass = __instance;
         }
         return true;
     }
@@ -152,10 +155,9 @@ class ExplosionParsePatch
     [HarmonyPrefix]
     private static bool ReadFrom_ItemAction_Prefix(ItemAction __instance, ref DynamicProperties _props)
     {
-        if(CustomExplosionManager.parseParticleData(ref _props))
+        if(CustomExplosionManager.parseParticleData(ref _props, out var component))
         {
-            CustomExplosionManager.LastInitializedComponent.BoundItemClass = __instance.item;
-            CustomExplosionManager.PopLastInitComponent();
+            component.BoundItemClass = __instance.item;
         }
         return true;
     }
@@ -164,8 +166,7 @@ class ExplosionParsePatch
     [HarmonyPrefix]
     private static bool Init_Block_Prefix(Block __instance)
     {
-        if(CustomExplosionManager.parseParticleData(ref __instance.Properties))
-            CustomExplosionManager.PopLastInitComponent();
+        CustomExplosionManager.parseParticleData(ref __instance.Properties, out _);
         return true;
     }
 
@@ -173,8 +174,7 @@ class ExplosionParsePatch
     [HarmonyPrefix]
     private static bool Init_EntityClass_Prefix(EntityClass __instance)
     {
-        if (CustomExplosionManager.parseParticleData(ref __instance.Properties))
-            CustomExplosionManager.PopLastInitComponent();
+        CustomExplosionManager.parseParticleData(ref __instance.Properties, out _);
         return true;
     }
 }
@@ -229,7 +229,7 @@ class ExplosionDataPatch
     [HarmonyPrefix]
     private static bool Prefix_ExplosionData_Write(BinaryWriter _bw, ref ExplosionData __instance)
     {
-        _bw.Write(__instance.ParticleIndex);
+        _bw.Write((ushort)__instance.ParticleIndex);
         _bw.Write((short)(__instance.Duration * 10f));
         _bw.Write((short)(__instance.BlockRadius * 20f));
         _bw.Write((short)__instance.EntityRadius);
@@ -265,7 +265,7 @@ class ExplosionDataPatch
     [HarmonyPrefix]
     private static bool Prefix_ExplosionData_Read(BinaryReader _br, ref ExplosionData __instance)
     {
-        __instance.ParticleIndex = _br.ReadInt32();
+        __instance.ParticleIndex = _br.ReadUInt16();
         __instance.Duration = (float)_br.ReadInt16() * 0.1f;
         __instance.BlockRadius = (float)_br.ReadInt16() * 0.05f;
         __instance.EntityRadius = (int)_br.ReadInt16();

@@ -11,12 +11,12 @@ public class ExplosionSpawnEntity : MonoBehaviour
         if (!SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer)
             return;
 
-        ExplosionComponent component = CustomExplosionManager.LastInitializedComponent;
-        if (!component.TryGetCustomProperty(SpawnEntityParser.name, out var property) || !(property is SpawnEntityProperty _prop) || _prop.chance < UnityEngine.Random.Range(0f, 1f))
+        ExplosionValue cur_value = CustomExplosionManager.LastInitializedComponent;
+        if (!cur_value.Component.TryGetCustomProperty(SpawnEntityParser.name, out var property) || !(property is SpawnEntityProperty _prop) || _prop.chance < UnityEngine.Random.Range(0f, 1f))
             return;
 
         EntityCreationData data = new EntityCreationData();
-        int entityId = component.CurrentExplosionParams._playerId;
+        int entityId = cur_value.CurrentExplosionParams._playerId;
         Entity initiator = GameManager.Instance.World.GetEntity(entityId);
         if (initiator && !initiator.IsDead())
         {
@@ -29,7 +29,7 @@ public class ExplosionSpawnEntity : MonoBehaviour
             data.belongsPlayerId = -1;
             entityId = -1;
         }
-        Vector3 position = component.CurrentExplosionParams._worldPos;
+        Vector3 position = cur_value.CurrentExplosionParams._worldPos;
         Vector3 rotation = transform.forward;
         int classId = 0;
         data.lifetime = _prop.lifetime;

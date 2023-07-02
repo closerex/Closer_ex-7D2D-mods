@@ -8,10 +8,10 @@ public class AutoRemove : TrackedBehaviourBase
 
     protected override void Awake()
     {
-        ExplosionComponent component = CustomExplosionManager.LastInitializedComponent;
-        lifetime = component.CurrentExplosionParams._explosionData.Duration;
+        ExplosionValue value = CustomExplosionManager.LastInitializedComponent;
+        lifetime = value.CurrentExplosionParams._explosionData.Duration;
         if(lifetime > 0)
-            syncOnConnect = component.SyncOnConnect;
+            syncOnConnect = value.Component.SyncOnConnect;
         base.Awake();
         if (lifetime > 0)
             Destroy(gameObject, lifetime);

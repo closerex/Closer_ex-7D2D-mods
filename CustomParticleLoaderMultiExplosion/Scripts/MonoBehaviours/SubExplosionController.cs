@@ -6,8 +6,8 @@ public class SubExplosionController : MonoBehaviour
 {
     void Awake()
     {
-        ExplosionComponent cur_component = CustomExplosionManager.LastInitializedComponent;
-        if (!cur_component.TryGetCustomProperty(MultiExplosionParser.name, out var property) || !(property is MultiExplosionProperty _prop))
+        ExplosionValue cur_value = CustomExplosionManager.LastInitializedComponent;
+        if (!cur_value.Component.TryGetCustomProperty(MultiExplosionParser.name, out var property) || !(property is MultiExplosionProperty _prop))
             return;
         List<int> list_index = _prop.list_sub_explosion_indice;
         string[] arr_trans = _prop.arr_transforms;
@@ -21,7 +21,7 @@ public class SubExplosionController : MonoBehaviour
 
         if(list_index != null && arr_trans != null && list_index.Count <= arr_trans.Length)
         {
-            EntityAlive entityAlive = GameManager.Instance.World.GetEntity(cur_component.CurrentExplosionParams._playerId) as EntityAlive;
+            EntityAlive entityAlive = GameManager.Instance.World.GetEntity(cur_value.CurrentExplosionParams._playerId) as EntityAlive;
             //if client is initiator, proc sub explosion on client
             //if initiator is not player, proc sub explosion on closest player client
             //if server is hosted, proc sub explosion on server
@@ -30,7 +30,7 @@ public class SubExplosionController : MonoBehaviour
             bool procExplosion = (SingletonMonoBehaviour<ConnectionManager>.Instance.IsClient
                                   && ((entityAlive && entityAlive is EntityPlayer player && player.entityId == world.GetPrimaryPlayerId())
                                       || ((!entityAlive || !(entityAlive is EntityPlayer))
-                                          && (closestPlayer = world.GetClosestPlayer(cur_component.CurrentExplosionParams._worldPos, -1, false)) != null
+                                          && (closestPlayer = world.GetClosestPlayer(cur_value.CurrentExplosionParams._worldPos, -1, false)) != null
                                           && closestPlayer.entityId == world.GetPrimaryPlayerId())))
                               || (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && entityAlive is EntityPlayerLocal);
 
@@ -102,7 +102,7 @@ public class SubExplosionController : MonoBehaviour
                                 return;
                             }
                             SubExplosionInitializer initializer = trans.gameObject.AddComponent<SubExplosionInitializer>();
-                            int clrIdx = cur_component.CurrentExplosionParams._clrIdx;
+                            int clrIdx = cur_value.CurrentExplosionParams._clrIdx;
                             //Log.Out(initializer.name);
                             initializer.entityAlive = entityAlive;
                             initializer.clrIdx = clrIdx;

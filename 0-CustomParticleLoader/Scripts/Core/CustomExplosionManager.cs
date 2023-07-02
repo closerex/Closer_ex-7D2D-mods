@@ -10,11 +10,11 @@ public static class CustomExplosionManager
     private static Dictionary<string, GameObject> hash_assets = new Dictionary<string, GameObject>();
     private static HashSet<GameObject> hash_initialized = new HashSet<GameObject>();
     private static List<IExplosionPropertyParser> list_parsers = new List<IExplosionPropertyParser>();
-    private static Stack<ExplosionComponent> last_init_components = new Stack<ExplosionComponent>();
+    private static Stack<ExplosionValue> last_init_components = new Stack<ExplosionValue>();
     public static event Action<PooledBinaryWriter> ClientConnected;
     public static event Action<ClientInfo> HandleClientInfo;
 
-    public static ExplosionComponent LastInitializedComponent
+    public static ExplosionValue LastInitializedComponent
     {
         get => last_init_components.Count > 0 ? last_init_components.Peek() : null;
     }
@@ -85,7 +85,7 @@ public static class CustomExplosionManager
         return __result;
     }
 
-    internal static void PushLastInitComponent(ExplosionComponent component)
+    internal static void PushLastInitComponent(ExplosionValue component)
     {
         last_init_components.Push(component);
     }
@@ -96,9 +96,9 @@ public static class CustomExplosionManager
             last_init_components.Pop();
     }
 
-    private static bool LoadParticleEffect(string fullpath, ExplosionData data, string sound_name = null, float duration_audio = -1, List<Type> CustomScriptList = null)
+    private static bool LoadParticleEffect(string fullpath, ExplosionData data, out ExplosionComponent component, string sound_name = null, float duration_audio = -1, List<Type> CustomScriptList = null)
     {
-        ExplosionComponent component = null;
+        component = null;
         fullpath = fullpath.Trim();
         if (!parsePathString(fullpath, out string path, out string assetname))
             return false;
@@ -129,20 +129,19 @@ public static class CustomExplosionManager
             Log.Out("Particle data already exists:" + fullpath + ", now overwriting");
         component = new ExplosionComponent(obj, sound_name, duration_audio, data, CustomScriptList);
         hash_components.Add(fullpath, component);
-        PushLastInitComponent(component);
         return true;
     }
 
     //this should get a unique index for each particle
     public static int getHashCode(string str)
     {
-        int value = (PlatformIndependentHash.StringToInt32(str));
+        int value = (PlatformIndependentHash.StringToUInt16(str));
 
         while (hash_paths.TryGetValue(value, out string path))
         {
             if (path == str)
                 break;
-            if (value >= 0 && value < WorldStaticData.prefabExplosions.Length)
+            if (value > Int16.MaxValue || (value >= 0 && value < WorldStaticData.prefabExplosions.Length))
                 value = WorldStaticData.prefabExplosions.Length;
             else
                 value++;
@@ -199,9 +198,10 @@ public static class CustomExplosionManager
         }
     }
 
-    public static bool parseParticleData(ref DynamicProperties _props)
+    public static bool parseParticleData(ref DynamicProperties _props, out ExplosionComponent component)
     {
         string str_index = null;
+        component = null;
         _props.ParseString("Explosion.ParticleIndex", ref str_index);
         if (str_index != null && str_index.StartsWith("#"))
         {
@@ -213,7 +213,7 @@ public static class CustomExplosionManager
                 hash_paths.Add(hashed_index, str_index);
             bool overwrite = false;
             _props.ParseBool("Explosion.Overwrite", ref overwrite);
-            if (overwrite || !GetCustomParticleComponents(hashed_index, out ExplosionComponent components))
+            if (overwrite || !GetCustomParticleComponents(hashed_index, out _))
             {
                 string sound_name = null;
                 _props.ParseString("Explosion.AudioName", ref sound_name);
@@ -224,13 +224,13 @@ public static class CustomExplosionManager
                 bool observe = false;
                 _props.ParseBool("Explosion.IsChunkObserver", ref observe);
                 getTypeListFromString(_props.Values["Explosion.CustomScriptTypes"], out List<Type> list_customtypes);
-                bool flag = LoadParticleEffect(str_index, new ExplosionData(_props), sound_name, duration_audio, list_customtypes);
-                if(flag && LastInitializedComponent != null)
+                bool flag = LoadParticleEffect(str_index, new ExplosionData(_props), out component, sound_name, duration_audio, list_customtypes);
+                if(flag && component != null)
                 {
-                    LastInitializedComponent.SyncOnConnect = sync;
+                    component.SyncOnConnect = sync;
                     foreach (var parser in list_parsers)
                         if (list_customtypes.Contains(parser.MatchScriptType()) && parser.ParseProperty(_props, out var property))
-                            LastInitializedComponent.AddCustomProperty(parser.Name(), property);
+                            component.AddCustomProperty(parser.Name(), property);
                 }
                 return flag;
             }
