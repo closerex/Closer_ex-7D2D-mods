@@ -235,7 +235,7 @@ public class VPRaycastWeapon : VehicleWeaponBase
                 {
                     flash.localPosition = Vector3.zero;
                     flash.SetParent(muzzleTrans, false);
-                    Log.Out($"flash: particle system count:{flash.GetComponentsInChildren<ParticleSystem>().Length}, pos: {flash.transform.localPosition} {flash.transform.position}, parent pos: {muzzleTrans.position}");
+                    //Log.Out($"flash: particle system count:{flash.GetComponentsInChildren<ParticleSystem>().Length}, pos: {flash.transform.localPosition} {flash.transform.position}, parent pos: {muzzleTrans.position}");
                     foreach (ParticleSystem particleSystem in flash.GetComponentsInChildren<ParticleSystem>())
                     {
                         particleSystem.Clear();
@@ -245,10 +245,6 @@ public class VPRaycastWeapon : VehicleWeaponBase
                     temp.life = 5;
                     temp.Restart();
                     //muzzleFlashManager.Add(flash);
-                }
-                else
-                {
-                    Log.Error($"failed to spawn muzzle flash particle: {muzzleFlash}");
                 }
             }
             if (muzzleSmoke != null)
