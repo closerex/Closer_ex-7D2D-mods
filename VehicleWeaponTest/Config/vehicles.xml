@@ -209,13 +209,6 @@
 				<property name="verticleRotationSpeed" value="10"/>
 				<property name="horizontalRotator" value="CannonBasementHorRotator"/>
 			</property>
-			
-			<property class="battery">
-				<property name="class" value="Battery"/>
-				<property name="slot_type" value="battery"/>
-				<property name="mesh" value="battery"/>
-				<property name="transform" value="battery"/>
-			</property>
 
 			<property class="chassis">
 				<property name="class" value="Chassis"/>
@@ -429,13 +422,6 @@
 				<property name="indicatorColorProperty" value="_TintColor"/>
 				<!--property name="syncPlayerRotation" value="true"/-->
 			</property>
-			
-			<property class="battery">
-				<property name="class" value="Battery"/>
-				<property name="slot_type" value="battery"/>
-				<property name="mesh" value="battery"/>
-				<property name="transform" value="battery"/>
-			</property>
 
 			<property class="chassis">
 				<property name="class" value="Chassis"/>
@@ -625,13 +611,6 @@
 				<property name="IKHandLRotation" value="0, 0, 0"/>
 				<property name="IKHandRPosition" value="0, 0, 0"/>
 				<property name="IKHandRRotation" value="0, 0, 0"/>
-			</property>
-			
-			<property class="battery">
-				<property name="class" value="Battery"/>
-				<property name="slot_type" value="battery"/>
-				<property name="mesh" value="battery"/>
-				<property name="transform" value="battery"/>
 			</property>
 
 			<property class="chassis">
