@@ -184,10 +184,12 @@ class EntityExplosionPatch
 {
     private static void Postfix(EntityAlive __instance)
     {
-        if (__instance.isEntityRemote || __instance is EntityCar || __instance is EntityZombieCop || EntityClass.list[__instance.entityClass].explosionData.ParticleIndex <= 0)
+        if (__instance.isEntityRemote || __instance is EntityCar || __instance is EntityZombieCop)
             return;
 
-        GameManager.Instance.ExplosionServer(0, __instance.GetPosition(), World.worldToBlockPos(__instance.GetPosition()), Quaternion.identity, EntityClass.list[__instance.entityClass].explosionData, __instance.entityId, 0f, false, null);
+        ref ExplosionData explosion = ref EntityClass.list[__instance.entityClass].explosionData;
+        if(explosion.ParticleIndex > 0)
+            GameManager.Instance.ExplosionServer(0, __instance.GetPosition(), World.worldToBlockPos(__instance.GetPosition()), Quaternion.identity, explosion, __instance.entityId, 0f, false, null);
     }
 }
 

@@ -11,10 +11,22 @@ public class MinEventActionRangedExplosion : MinEventActionBase
 	private bool _initialized = false;
 	private bool _useCustomParticle = false;
 	private int customParticleIndex;
+	private ItemValue ammoItem;
 
 	public override void Execute(MinEventParams _params)
 	{
-		GameManager.Instance.ExplosionServer(0, _params.Position, World.worldToBlockPos(_params.Position), Quaternion.identity, _useCustomParticle ? _explosionComponent.BoundExplosionData : _explosionData, _params.Self != null ? _params.Self.entityId : -1, Delay, false, _params.ItemValue);
+		bool hasEntity = _params.Self != null;
+		int layer = 0;
+        if (hasEntity)
+        {
+			layer = _params.Self.GetModelLayer();
+			_params.Self.SetModelLayer(24, false);
+        }
+        GameManager.Instance.ExplosionServer(0, _params.Position, World.worldToBlockPos(_params.Position), hasEntity ? _params.Self.qrotation : Quaternion.identity, _useCustomParticle ? _explosionComponent.BoundExplosionData : _explosionData, hasEntity ? _params.Self.entityId : -1, Delay, false, ammoItem ?? _params.ItemValue);
+		if (hasEntity)
+		{
+			_params.Self.SetModelLayer(layer, false);
+		}
 	}
 
     public override bool CanExecute(MinEventTypes _eventType, MinEventParams _params)
@@ -22,15 +34,21 @@ public class MinEventActionRangedExplosion : MinEventActionBase
 		if (!base.CanExecute(_eventType, _params))
 			return false;
 
-		if(!_initialized || (!_useCustomParticle && _params.ItemValue != null && _params.ItemValue.type != itemType))
+		if(!_initialized || !_useCustomParticle)
         {
-			if (!_initialized && _useCustomParticle)
+			if (_useCustomParticle)
 			{
 				if (!CustomExplosionManager.GetCustomParticleComponents(customParticleIndex, out _explosionComponent))
 					return false;
+				if(_explosionComponent.BoundItemClass != null)
+					ammoItem = new ItemValue(_explosionComponent.BoundItemClass.Id, false);
 			}
 			else
 			{
+				if (_params.ItemValue == null)
+					return false;
+				if (_params.ItemValue.type == itemType)
+					return true;
 				ItemClass itemClass = _params.ItemValue.ItemClass;
 				string particleIndex = null;
 				itemClass.Properties.ParseString("Explosion.ParticleIndex", ref particleIndex);
@@ -41,14 +59,21 @@ public class MinEventActionRangedExplosion : MinEventActionBase
 				{
 					_explosionData = new ExplosionData(itemClass.Properties);
 					itemType = itemClass.Id;
+					ammoItem = new ItemValue(itemType, false);
 				}
-				else if(!CustomExplosionManager.GetCustomParticleComponents(CustomExplosionManager.getHashCode(particleIndex), out _explosionComponent))
+				else if (CustomExplosionManager.GetCustomParticleComponents(CustomExplosionManager.getHashCode(particleIndex), out _explosionComponent))
+				{
+					itemType = itemClass.Id;
+					if(_explosionComponent.BoundItemClass != null)
+						ammoItem = new ItemValue(_explosionComponent.BoundItemClass.Id, false);
+				}
+				else
+				{
 					return false;
+				}
 			}
 
 			_initialized = true;
-			if (_explosionComponent != null)
-				_useCustomParticle = true;
         }
 
         return true;
