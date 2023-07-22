@@ -112,7 +112,7 @@ class ExplosionEffectPatch
     [HarmonyPostfix]
     private static void Disconnect_Postfix()
     {
-        CustomExplosionManager.destroyAllParticles();
+        CustomExplosionManager.OnCleanUp();
     }
 
     /*

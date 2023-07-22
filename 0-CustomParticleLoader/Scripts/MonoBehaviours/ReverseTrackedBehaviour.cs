@@ -1,10 +1,14 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class ReverseTrackedBehaviour<T> : TrackedBehaviourBase
+public class ReverseTrackedBehaviour<T> : TrackedBehaviourBase where T : ReverseTrackedBehaviour<T>
 {
-    protected static Dictionary<object, Dictionary<uint, MonoBehaviour>> hash_instances = new Dictionary<object, Dictionary<uint, MonoBehaviour>>();
+    protected static Dictionary<object, Dictionary<uint, T>> hash_instances = new Dictionary<object, Dictionary<uint, T>>();
 
+    static ReverseTrackedBehaviour()
+    {
+        CustomExplosionManager.CleanUp += hash_instances.Clear;
+    }
     protected override void Awake()
     {
         track = true;
@@ -13,8 +17,8 @@ public class ReverseTrackedBehaviour<T> : TrackedBehaviourBase
     protected override void addRef()
     {
         if (!hash_instances.ContainsKey(key))
-            hash_instances.Add(key, new Dictionary<uint, MonoBehaviour>());
-        hash_instances[key].Add(explId, this);
+            hash_instances.Add(key, new Dictionary<uint, T>());
+        hash_instances[key].Add(explId, (T)this);
     }
     protected override void removeRef()
     {
@@ -27,7 +31,7 @@ public class ReverseTrackedBehaviour<T> : TrackedBehaviourBase
         }
     }
 
-    public static bool TryGetValue(uint id, object key, out MonoBehaviour controller)
+    public static bool TryGetValue(uint id, object key, out T controller)
     {
         controller = null;
         if (hash_instances.TryGetValue(key, out var dict))

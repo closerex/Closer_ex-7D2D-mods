@@ -1,9 +1,14 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class TrackedBehaviour<T> : TrackedBehaviourBase
+public class TrackedBehaviour<T> : TrackedBehaviourBase where T : TrackedBehaviour<T>
 {
-    protected static Dictionary<uint, Dictionary<object, MonoBehaviour>> hash_instances = new Dictionary<uint, Dictionary<object, MonoBehaviour>>();
+    protected static Dictionary<uint, Dictionary<object, T>> hash_instances = new Dictionary<uint, Dictionary<object, T>>();
+
+    static TrackedBehaviour()
+    {
+        CustomExplosionManager.CleanUp += hash_instances.Clear;
+    }
 
     protected override void Awake()
     {
@@ -13,8 +18,8 @@ public class TrackedBehaviour<T> : TrackedBehaviourBase
     protected override void addRef()
     {
         if (!hash_instances.ContainsKey(explId))
-            hash_instances.Add(explId, new Dictionary<object, MonoBehaviour>());
-        hash_instances[explId].Add(key, this);
+            hash_instances.Add(explId, new Dictionary<object, T>());
+        hash_instances[explId].Add(key, (T)this);
     }
 
     protected override void removeRef()
@@ -28,7 +33,7 @@ public class TrackedBehaviour<T> : TrackedBehaviourBase
         }
     }
 
-    public static bool TryGetValue(uint id, object key, out MonoBehaviour controller)
+    public static bool TryGetValue(uint id, object key, out T controller)
     {
         controller = null;
         if (hash_instances.TryGetValue(id, out var dict))

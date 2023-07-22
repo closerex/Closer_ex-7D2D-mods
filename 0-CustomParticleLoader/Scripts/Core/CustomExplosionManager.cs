@@ -13,6 +13,8 @@ public static class CustomExplosionManager
     private static Stack<ExplosionValue> last_init_components = new Stack<ExplosionValue>();
     public static event Action<PooledBinaryWriter> ClientConnected;
     public static event Action<ClientInfo> HandleClientInfo;
+    public static event Action CleanUp;
+
 
     public static ExplosionValue LastInitializedComponent
     {
@@ -20,6 +22,13 @@ public static class CustomExplosionManager
     }
     public static uint NextExplosionIndex { get; set; } = 0;
 
+    internal static void OnCleanUp()
+    {
+        Log.Out("Custom Explosion Manager cleanup...");
+        destroyAllParticles();
+        NextExplosionIndex = 0;
+        CleanUp?.Invoke();
+    }
     internal static void OnClientConnected(ClientInfo client)
     {
         var handler = ClientConnected;

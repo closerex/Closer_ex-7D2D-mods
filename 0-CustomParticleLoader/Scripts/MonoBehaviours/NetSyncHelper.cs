@@ -33,6 +33,11 @@ public class NetSyncHelper : MonoBehaviour
     public uint explId;
     private static Dictionary<uint, NetSyncHelper> hash_helpers = new Dictionary<uint, NetSyncHelper>();
 
+    static NetSyncHelper()
+    {
+        CustomExplosionManager.CleanUp += hash_helpers.Clear;
+    }
+
     void Awake()
     {
         hash_helpers.Add((explId = CustomExplosionManager.LastInitializedComponent.CurrentExplosionParams._explId), this);
