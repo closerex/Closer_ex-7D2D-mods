@@ -16,8 +16,8 @@ public class NetPackageMyTurretSyncDestroy : NetPackage
         if (_world == null)
             return;
 
-        if (TurretAiController.TryGetValue(explId, entityId, out var controller) && controller is TurretAiController _controller)
-            _controller.NetSyncDestroy();
+        if (TurretAiController.TryGetValue(explId, entityId, out var controller))
+            controller.NetSyncDestroy();
     }
 
     public override void read(PooledBinaryReader _reader)

@@ -12,8 +12,8 @@ public class NetPackageMyTurretSyncTarget : NetPackageMyTurretSyncUpdate
         if (_world == null)
             return;
 
-        if (TurretAiController.TryGetValue(explId, entityId, out var controller) && controller is TurretAiController _controller)
-            _controller.NetSyncTarget(position, horRot, verRot, target, rotation);
+        if (TurretAiController.TryGetValue(explId, entityId, out var controller))
+            controller.NetSyncTarget(position, horRot, verRot, target, rotation);
     }
 
     public override void read(PooledBinaryReader _reader)
