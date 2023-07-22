@@ -1,8 +1,10 @@
-﻿using HarmonyLib;
+﻿using FullautoLauncher.Scripts.ProjectileManager;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Xml.Linq;
 using UnityEngine;
 
 [HarmonyPatch]
@@ -143,5 +145,54 @@ class ItemActionLauncherProjectilePatch
         }
 
         return codes;
+    }
+
+    [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.instantiateProjectile))]
+    [HarmonyPostfix]
+    private static void Postfix_instantiateProjectile_ItemActionLauncher(Transform __result, ItemActionLauncher __instance)
+    {
+        if (__instance.Properties.Contains("VisibleInMag") && !__instance.Properties.GetBool("VisibleInMag"))
+        {
+            __result.gameObject.SetActive(false);
+        }
+    }
+
+    [HarmonyPatch(typeof(GameManager), "FixedUpdate")]
+    [HarmonyPostfix]
+    private static void Postfix_FixedUpdate_GameManager()
+    {
+        CustomProjectileManager.FixedUpdate();
+    }
+
+    //custom projectile manager workarounds
+    private static void ParseProjectileType(XElement _node)
+    {
+        string itemName = _node.GetAttribute("name");
+        if (string.IsNullOrEmpty(itemName))
+        {
+            return;
+        }
+        ItemClass item = ItemClass.GetItemClass(itemName);
+        for (int i = 0; i < item.Actions.Length; i++)
+        {
+            if (item.Actions[i] is ItemActionProjectile proj && proj.Properties.Contains("CustomProjectileType"))
+            {
+                CustomProjectileManager.InitClass(item, proj.Properties.GetString("CustomProjectileType"));
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(ItemClassesFromXml), "parseItem")]
+    [HarmonyPostfix]
+    private static void Postfix_parseItem_ItemClassesFromXml(XElement _node)
+    {
+        ParseProjectileType(_node);
+    }
+
+    [HarmonyPatch(typeof(GameManager), nameof(GameManager.Disconnect))]
+    [HarmonyPostfix]
+    private static void Postfix_Disconnect_GameManager()
+    {
+        CustomProjectileManager.Cleanup();
     }
 }

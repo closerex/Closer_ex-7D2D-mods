@@ -68,6 +68,15 @@
     <Compile Include="Harmony\Init.cs" />
     <Compile Include="Harmony\Patches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripts\ItemActions\ItemActionBetterLauncher.cs" />
+    <Compile Include="Scripts\ProjectileManager\CustomProjectileManager.cs" />
+    <Compile Include="Scripts\ProjectileManager\ParameterHolderAbs.cs" />
+    <Compile Include="Scripts\ProjectileManager\PHGameObject.cs" />
+    <Compile Include="Scripts\ProjectileManager\PHSimpleMesh.cs" />
+    <Compile Include="Scripts\ProjectileManager\PIGGameObject.cs" />
+    <Compile Include="Scripts\ProjectileManager\ProjectileItemGroupAbs.cs" />
+    <Compile Include="Scripts\ProjectileManager\PIGSimpleMesh.cs" />
+    <Compile Include="Scripts\ProjectileManager\ProjectileParams.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

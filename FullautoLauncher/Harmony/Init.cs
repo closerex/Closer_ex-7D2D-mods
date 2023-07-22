@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using FullautoLauncher.Scripts.ProjectileManager;
+using System.Reflection;
 
 public class FullautoLauncherInit : IModApi
 {
@@ -7,6 +8,8 @@ public class FullautoLauncherInit : IModApi
         Log.Out(" Loading Patch: " + GetType());
         var harmony = new HarmonyLib.Harmony(GetType().ToString());
         harmony.PatchAll(Assembly.GetExecutingAssembly());
+
+        ModEvents.UnityUpdate.RegisterHandler(CustomProjectileManager.Update);
     }
 }
 
