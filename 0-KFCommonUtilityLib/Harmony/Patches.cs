@@ -1,6 +1,8 @@
-﻿using HarmonyLib;
+﻿using Autodesk.Fbx;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -8,6 +10,7 @@ using System.Xml;
 using System.Xml.Linq;
 using SystemInformation;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [HarmonyPatch]
 class CommonUtilityPatch
@@ -410,5 +413,20 @@ class CommonUtilityPatch
 
         return codes;
     }
+
+    //private static bool exported = false;
+    //[HarmonyPatch(typeof(EModelUMA), nameof(EModelUMA.onCharacterUpdated))]
+    //[HarmonyPostfix]
+    //private static void Postfix_test(Entity ___entity)
+    //{
+    //    if (!exported)
+    //    {
+    //        exported = true;
+    //        var objects = new[] { ___entity.RootTransform.gameObject.GetComponentsInChildren<Animator>()[1] };
+    //        Log.Out($"exporting objs: {objects.Length} avatar {objects[0].avatar.name} is human {objects[0].avatar.isHuman}");
+    //        FbxExporter07.OnExport(objects, @"E:\Unity Projects\AnimationPlayground\Assets\ExportedProject\example_skinned_mesh_with_bones.fbx");
+    //        Application.Quit();
+    //    }
+    //}
 }
 

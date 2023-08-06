@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>.\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -43,6 +43,10 @@
       <HintPath>..\..\7DaysToDie_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Autodesk.Fbx">
+      <HintPath>..\..\7DaysToDie_Data\Managed\Autodesk.Fbx.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="CustomParticleLoader">
       <HintPath>..\0-CustomParticleLoader\CustomParticleLoader.dll</HintPath>
       <Private>False</Private>
@@ -64,6 +68,14 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="Unity.Animation.Rigging">
+      <HintPath>..\..\7DaysToDie_Data\Managed\Unity.Animation.Rigging.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.Formats.Fbx.Runtime">
+      <HintPath>..\..\7DaysToDie_Data\Managed\Unity.Formats.Fbx.Runtime.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
@@ -76,6 +88,14 @@
       <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
       <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
       <Private>False</Private>
@@ -85,7 +105,23 @@
     <Compile Include="Harmony\Init.cs" />
     <Compile Include="Harmony\Patches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RigAdaptors\BlendConstraintAdaptor.cs" />
+    <Compile Include="RigAdaptors\ChainIKConstraintAdaptor.cs" />
+    <Compile Include="RigAdaptors\CopyOfExtension.cs" />
+    <Compile Include="RigAdaptors\DampedTransformAdaptor.cs" />
+    <Compile Include="RigAdaptors\MultiAimConstraintAdaptor.cs" />
+    <Compile Include="RigAdaptors\MultiParentConstraintAdaptor.cs" />
+    <Compile Include="RigAdaptors\MultiPositionConstraintAdaptor.cs" />
+    <Compile Include="RigAdaptors\MultiReferentialConstraintAdaptor.cs" />
+    <Compile Include="RigAdaptors\MultiRotationConstraintAdaptor.cs" />
+    <Compile Include="RigAdaptors\OverrideTransformAdaptor.cs" />
+    <Compile Include="RigAdaptors\RigAdaptorAbs.cs" />
+    <Compile Include="RigAdaptors\RigConverter.cs" />
+    <Compile Include="RigAdaptors\TwistChainConstraintAdaptor.cs" />
+    <Compile Include="RigAdaptors\TwistCorrectionAdaptor.cs" />
+    <Compile Include="RigAdaptors\TwoBoneIKConstraintAdaptor.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdCalibrateWeapon.cs" />
+    <Compile Include="Scripts\FbxExporter07.cs" />
     <Compile Include="Scripts\Items\ItemActionAltMode.cs" />
     <Compile Include="Scripts\Items\ItemActionHoldOpen.cs" />
     <Compile Include="Scripts\Items\ItemActionRampUp.cs" />
@@ -120,6 +156,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ModInfo.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="RigAdaptors\RigAdaptors.asmdef" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
