@@ -100,19 +100,18 @@ public class ItemActionBetterLauncher : ItemActionRanged
             Log.Error("null info!");
             return;
         }
+        Vector3 realStartPosition = ItemActionDataBetterLauncher.projectileJoint.position + Origin.position;
         for (int i = 0; i < projCount; i++)
         {
-            var par = group.Fire(entity.entityId, ItemActionDataBetterLauncher.info, _startPos, getDirectionOffset(ItemActionDataBetterLauncher, _direction, i), entity, hitmaskOverride);
+            var par = group.Fire(entity.entityId, ItemActionDataBetterLauncher.info, _startPos, realStartPosition, getDirectionOffset(ItemActionDataBetterLauncher, _direction, i), entity, hitmaskOverride);
         }
     }
 
     protected override void getImageActionEffectsStartPosAndDirection(ItemActionData _actionData, out Vector3 _startPos, out Vector3 _direction)
     {
-        ItemActionBetterLauncher.ItemActionDataBetterLauncher ItemActionDataBetterLauncher = (ItemActionBetterLauncher.ItemActionDataBetterLauncher)_actionData;
-        Ray lookRay = ItemActionDataBetterLauncher.invData.holdingEntity.GetLookRay();
+        Ray lookRay = _actionData.invData.holdingEntity.GetLookRay();
         _startPos = lookRay.origin;
-        _direction = lookRay.direction;
-        _direction = getDirectionOffset(ItemActionDataBetterLauncher, _direction, 0);
+        _direction = lookRay.direction;//getDirectionOffset(ItemActionDataBetterLauncher, lookRay.direction, 0);
     }
 
     public class ItemActionDataBetterLauncher : ItemActionRanged.ItemActionDataRanged
@@ -120,8 +119,10 @@ public class ItemActionBetterLauncher : ItemActionRanged
         public ItemActionDataBetterLauncher(ItemInventoryData _invData, int _indexInEntityOfAction)
             : base(_invData, _indexInEntityOfAction)
         {
+            this.projectileJoint = ((_invData.model != null) ? _invData.model.FindInChilds("ProjectileJoint", false) : null);
         }
 
+        public Transform projectileJoint;
         public ProjectileParams.ItemInfo info;
     }
 

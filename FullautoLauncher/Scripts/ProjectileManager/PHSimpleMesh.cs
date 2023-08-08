@@ -39,7 +39,7 @@ namespace FullautoLauncher.Scripts.ProjectileManager
 
         public override void UpdatePosition()
         {
-            finalMat = Matrix4x4.Translate(par.currentPosition - Origin.position) * Matrix4x4.Rotate(Quaternion.LookRotation(par.moveDir)) * data.TRS;
+            finalMat = Matrix4x4.Translate(par.renderPosition - Origin.position) * Matrix4x4.Rotate(Quaternion.LookRotation(par.moveDir)) * data.TRS;
             Bounds bounds = data.bounds;
             bounds.center = finalMat.MultiplyPoint3x4(bounds.center);
             renderParams.worldBounds = bounds;

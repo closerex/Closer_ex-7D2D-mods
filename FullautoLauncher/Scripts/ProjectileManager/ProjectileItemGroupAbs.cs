@@ -6,7 +6,7 @@ namespace FullautoLauncher.Scripts.ProjectileManager
     public interface IProjectileItemGroup
     {
         void Pool(int count);
-        ProjectileParams Fire(int entityID, ProjectileParams.ItemInfo info, Vector3 _idealStartPosition, Vector3 _flyDirection, Entity _firingEntity, int _hmOverride = 0, float _radius = 0f);
+        ProjectileParams Fire(int entityID, ProjectileParams.ItemInfo info, Vector3 _idealStartPosition, Vector3 _realStartPosition, Vector3 _flyDirection, Entity _firingEntity, int _hmOverride = 0, float _radius = 0f);
         void Update();
         void FixedUpdate();
         void Cleanup();
@@ -45,11 +45,12 @@ namespace FullautoLauncher.Scripts.ProjectileManager
         {
             if (maxPoolCount > queue_pool.Count)
             {
+                par.Params.bOnIdealPosition = false;
                 queue_pool.Enqueue(par);
             }
         }
 
-        public ProjectileParams Fire(int entityID, ProjectileParams.ItemInfo info, Vector3 _idealStartPosition, Vector3 _flyDirection, Entity _firingEntity, int _hmOverride = 0, float _radius = 0f)
+        public ProjectileParams Fire(int entityID, ProjectileParams.ItemInfo info, Vector3 _idealStartPosition, Vector3 _realStartPosition, Vector3 _flyDirection, Entity _firingEntity, int _hmOverride = 0, float _radius = 0f)
         {
             T par = queue_pool.Count == 0 ? Create(new ProjectileParams(NextID)) : queue_pool.Dequeue();
             if(!dict_fired_projectiles.TryGetValue(entityID, out HashSet<T> set))
@@ -58,7 +59,7 @@ namespace FullautoLauncher.Scripts.ProjectileManager
                 dict_fired_projectiles.Add(entityID, set);
             }
             set.Add(par);
-            par.Params.Fire(info, _idealStartPosition, _flyDirection, _firingEntity, _hmOverride, _radius);
+            par.Params.Fire(info, _idealStartPosition, _realStartPosition, _flyDirection, _firingEntity, _hmOverride, _radius);
             par.Fire();
             return par.Params;
         }

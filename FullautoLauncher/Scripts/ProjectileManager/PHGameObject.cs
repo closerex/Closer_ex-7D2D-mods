@@ -23,7 +23,7 @@ namespace FullautoLauncher.Scripts.ProjectileManager
 
         public override void UpdatePosition()
         {
-            Vector3 realPos = par.currentPosition - Origin.position;
+            Vector3 realPos = par.renderPosition - Origin.position;
             Transform.position = realPos;
             Transform.LookAt(realPos + par.moveDir);
         }

@@ -12,14 +12,16 @@ namespace FullautoLauncher.Scripts.ProjectileManager
         public int ProjectileID;
         public ItemInfo info;
         public Vector3 flyDirection;
-        public Vector3 currentPosition;
+        public Vector3 renderPosition;
         public Vector3 velocity;
         public Vector3 previousPosition;
+        public Vector3 currentPosition;
         public Vector3 gravity;
         public Vector3 moveDir;
         public float timeShotStarted;
         public int hmOverride;
         public float radius;
+        public bool bOnIdealPosition = false;
         public CollisionParticleController waterCollisionParticles = new CollisionParticleController();
 
         public ProjectileParams(int projectileID)
@@ -27,12 +29,13 @@ namespace FullautoLauncher.Scripts.ProjectileManager
             ProjectileID = projectileID;
         }
 
-        public void Fire(ItemInfo _info, Vector3 _idealStartPosition, Vector3 _flyDirection, Entity _firingEntity, int _hmOverride = 0, float _radius = 0f)
+        public void Fire(ItemInfo _info, Vector3 _idealStartPosition, Vector3 _realStartPosition, Vector3 _flyDirection, Entity _firingEntity, int _hmOverride = 0, float _radius = 0f)
         {
             info = _info;
             flyDirection = _flyDirection.normalized;
             moveDir = flyDirection;
             previousPosition = currentPosition = _idealStartPosition;
+            renderPosition = _realStartPosition;
             velocity = flyDirection.normalized * EffectManager.GetValue(PassiveEffects.ProjectileVelocity, info.itemValueLauncher, info.itemActionProjectile.Velocity, _firingEntity as EntityAlive, null, default(FastTags), true, true, true, true, 1, true, false);
             hmOverride = _hmOverride;
             radius = _radius;
@@ -48,16 +51,26 @@ namespace FullautoLauncher.Scripts.ProjectileManager
 
         public bool UpdatePosition()
         {
-            float num = Time.time - timeShotStarted;
-            if (num >= info.itemActionProjectile.FlyTime)
+            float flyTime = Time.time - timeShotStarted;
+            if (flyTime >= info.itemActionProjectile.LifeTime)
+            {
+                return true;
+            }
+            if (flyTime >= info.itemActionProjectile.FlyTime)
             {
                 velocity += gravity * Time.fixedDeltaTime;
             }
             moveDir = velocity * Time.fixedDeltaTime;
+            previousPosition = currentPosition;
             currentPosition += moveDir;
-            if (Time.time - timeShotStarted >= info.itemActionProjectile.LifeTime)
+            renderPosition += moveDir;
+            if (!bOnIdealPosition)
             {
-                return true;
+                bOnIdealPosition = flyTime > 0.5f;
+            }
+            if(!bOnIdealPosition)
+            {
+                renderPosition = Vector3.Lerp(renderPosition, currentPosition, flyTime * 2f);
             }
             //Log.Out($"projectile {ProjectileID} position {currentPosition} entity position {info.actionData.invData.holdingEntity.position}");
             return false;
