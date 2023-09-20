@@ -189,9 +189,9 @@ class ItemActionLauncherProjectilePatch
         ParseProjectileType(_node);
     }
 
-    [HarmonyPatch(typeof(GameManager), nameof(GameManager.Disconnect))]
+    [HarmonyPatch(typeof(GameManager), nameof(GameManager.SaveAndCleanupWorld))]
     [HarmonyPostfix]
-    private static void Postfix_Disconnect_GameManager()
+    private static void Postfix_SaveAndCleanupWorld_GameManager()
     {
         CustomProjectileManager.Cleanup();
     }
