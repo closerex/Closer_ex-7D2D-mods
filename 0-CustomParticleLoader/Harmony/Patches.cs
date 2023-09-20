@@ -108,9 +108,9 @@ class ExplosionEffectPatch
             Log.Warning("Failed to retrieve particle on client! Index:" + _index.ToString());
     }
 
-    [HarmonyPatch(nameof(GameManager.Disconnect))]
+    [HarmonyPatch(nameof(GameManager.SaveAndCleanupWorld))]
     [HarmonyPostfix]
-    private static void Disconnect_Postfix()
+    private static void SaveAndCleanupWorld_Postfix()
     {
         CustomExplosionManager.OnCleanUp();
     }
