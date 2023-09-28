@@ -95,7 +95,7 @@ class ExplosionEffectPatch
     [HarmonyPostfix]
     private static void ExplosionClient_Postfix(GameManager __instance, ref GameObject __result, Vector3 _center, Quaternion _rotation, int _index, int _blastPower, float _blastRadius)
     {
-        if (__result != null || __instance.World == null)
+        if (__result != null || __instance.World == null || _index < WorldStaticData.prefabExplosions.Length)
             return;
 
         ExplosionValue components = CustomExplosionManager.LastInitializedComponent;
@@ -312,6 +312,46 @@ class ItemHasTagsPatch : HarmonyPatch
         return true;
     }
 }
+
+//MinEventParams workarounds
+[HarmonyPatch(typeof(ItemActionRanged), "fireShot")]
+class ItemActionRangedFireShotPatch
+{
+    private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = new List<CodeInstruction>(instructions);
+
+        var fld_ranged_tag = AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.RangedTag));
+        var fld_params = AccessTools.Field(typeof(EntityAlive), nameof(EntityAlive.MinEventContext));
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].LoadsField(fld_ranged_tag))
+            {
+                if (!codes[i + 3].LoadsField(fld_params))
+                {
+                    codes.InsertRange(i + 2, new CodeInstruction[]
+                    {
+                            new CodeInstruction(OpCodes.Ldloc_1),
+                            CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.MinEventContext)),
+                            new CodeInstruction(OpCodes.Dup),
+                            new CodeInstruction(OpCodes.Ldloc, 10),
+                            CodeInstruction.LoadField(typeof(WorldRayHitInfo), nameof(WorldRayHitInfo.hit)),
+                            CodeInstruction.LoadField(typeof(HitInfoDetails), nameof(HitInfoDetails.pos)),
+                            CodeInstruction.StoreField(typeof(MinEventParams), nameof(MinEventParams.Position)),
+                            new CodeInstruction(OpCodes.Ldloc_1),
+                            CodeInstruction.Call(typeof(EntityAlive), nameof(EntityAlive.GetPosition)),
+                            CodeInstruction.StoreField(typeof(MinEventParams), nameof(MinEventParams.StartPosition))
+                    });
+                }
+                break;
+            }
+        }
+
+        return codes;
+    }
+}
+
 
 //[HarmonyPatch(typeof(MinEventActionExplode), nameof(MinEventActionExplode.Execute))]
 //class TempPatch
