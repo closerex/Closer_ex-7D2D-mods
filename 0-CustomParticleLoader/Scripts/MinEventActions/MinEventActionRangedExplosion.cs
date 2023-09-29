@@ -16,17 +16,17 @@ public class MinEventActionRangedExplosion : MinEventActionBase
 	public override void Execute(MinEventParams _params)
 	{
 		bool hasEntity = _params.Self != null;
-		int layer = 0;
-        if (hasEntity)
-        {
-			layer = _params.Self.GetModelLayer();
-			_params.Self.SetModelLayer(24, false);
-        }
+		//int layer = 0;
+  //      if (hasEntity)
+  //      {
+		//	layer = _params.Self.GetModelLayer();
+		//	_params.Self.SetModelLayer(24, false);
+  //      }
         GameManager.Instance.ExplosionServer(0, _params.Position, World.worldToBlockPos(_params.Position), hasEntity ? _params.Self.qrotation : Quaternion.identity, _useCustomParticle ? _explosionComponent.BoundExplosionData : _explosionData, hasEntity ? _params.Self.entityId : -1, Delay, false, ammoItem ?? _params.ItemValue);
-		if (hasEntity)
-		{
-			_params.Self.SetModelLayer(layer, false);
-		}
+		//if (hasEntity)
+		//{
+		//	_params.Self.SetModelLayer(layer, false);
+		//}
 	}
 
     public override bool CanExecute(MinEventTypes _eventType, MinEventParams _params)

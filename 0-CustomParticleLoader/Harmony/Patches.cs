@@ -16,11 +16,21 @@ class ExplosionEffectPatch
         SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageExplosionParams>().Setup(_clrIdx, _center, _blockpos, _rotation, _explosionData, _playerId, id, _itemValueExplosive, _explosionChanges, result), true);
     }
 
+    private struct ExplodeState
+    {
+        public bool useCustom;
+        public int playerLayer;
+    }
+
     [HarmonyPatch("explode")]
     [HarmonyPrefix]
-    private static bool explode_Prefix(int _clrIdx, Vector3 _worldPos, Vector3i _blockPos, Quaternion _rotation, ExplosionData _explosionData, int _entityId, ItemValue _itemValueExplosive, out bool __state)
+    private static bool explode_Prefix(GameManager __instance, int _clrIdx, Vector3 _worldPos, Vector3i _blockPos, Quaternion _rotation, ExplosionData _explosionData, int _entityId, ItemValue _itemValueExplosive, out ExplodeState __state)
     {
-        __state = false;
+        __state = new ExplodeState()
+        {
+            useCustom = false,
+            playerLayer = -1,
+        };
         int index = _explosionData.ParticleIndex;
         //Log.Out(_worldPos.ToString() + _blockPos.ToString());
         //Log.Out("Particle index:" + index.ToString());
@@ -41,10 +51,23 @@ class ExplosionEffectPatch
                 //Log.Out("params:" + _clrIdx + _blockPos + _playerId + _rotation + _worldPos + _explosionData.ParticleIndex);
                 //Log.Out("params:" + components.CurrentExplosionParams._clrIdx + components.CurrentExplosionParams._blockPos + components.CurrentExplosionParams._playerId + components.CurrentExplosionParams._rotation + components.CurrentExplosionParams._worldPos + components.CurrentExplosionParams._explosionData.ParticleIndex);
                 CustomExplosionManager.PushLastInitComponent(value);
-                __state = true;
+                __state.useCustom = true;
             }
             else
                 Log.Warning("Failed to retrieve particle on server! Index:" + index.ToString());
+        }
+        EntityPlayerLocal player = __instance.World.GetPrimaryPlayer();
+        if (player != null)
+        {
+            __state.playerLayer = player.GetModelLayer();
+            if (__state.playerLayer != 24)
+            {
+                player.SetModelLayer(24, false);
+            }
+            else
+            {
+                __state.playerLayer = -1;
+            }
         }
         return true;
     }
@@ -84,9 +107,13 @@ class ExplosionEffectPatch
 
     [HarmonyPatch("explode")]
     [HarmonyPostfix]
-    private static void explode_Postfix(bool __state)
+    private static void explode_Postfix(GameManager __instance, ExplodeState __state)
     {
-        if (!__state)
+        if (__state.playerLayer >= 0)
+        {
+            __instance.World.GetPrimaryPlayer().SetModelLayer(__state.playerLayer, false);
+        }
+        if (!__state.useCustom)
             return;
         CustomExplosionManager.PopLastInitComponent();
     }
@@ -95,7 +122,7 @@ class ExplosionEffectPatch
     [HarmonyPostfix]
     private static void ExplosionClient_Postfix(GameManager __instance, ref GameObject __result, Vector3 _center, Quaternion _rotation, int _index, int _blastPower, float _blastRadius)
     {
-        if (__result != null || __instance.World == null || _index < WorldStaticData.prefabExplosions.Length)
+        if (__result != null || __instance.World == null)
             return;
 
         ExplosionValue components = CustomExplosionManager.LastInitializedComponent;
