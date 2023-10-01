@@ -7,6 +7,7 @@ public class VPWeaponManager : VehiclePart
 {
     private List<VehicleWeaponBase>[] list_weapons;
     public static readonly string VehicleWeaponManagerName = "vehicleWeaponManager";
+    public static VPWeaponManager CurrentInstance { get; private set; } = null;
     private int localPlayerSeat = -1;
     protected EntityPlayerLocal player = null;
     protected Vector3[] cameraOffsets;
@@ -111,6 +112,23 @@ public class VPWeaponManager : VehiclePart
         }
     }
 
+    public void GUIUpdate()
+    {
+        if (localPlayerSeat >= 0)
+        {
+            if (list_weapons[localPlayerSeat] != null && !GameManager.Instance.IsPaused())
+            {
+                bool GUIOpened = Platform.PlatformManager.NativePlatform.Input.PrimaryPlayer.GUIActions.Enabled;
+                foreach (var weapon in list_weapons[localPlayerSeat])
+                {
+                    if (!weapon.Enabled || !weapon.Activated || GUIOpened)
+                        continue;
+
+                    weapon.GUIUpdate();
+                }
+            }
+        }
+    }
     public virtual void NetSyncUpdateAdd(VehicleWeaponBase weapon)
     {
         if(ShouldNetSync)
@@ -162,6 +180,7 @@ public class VPWeaponManager : VehiclePart
                 weapon.OnPlayerEnter();
             CameraOffset = cameraOffsets[localPlayerSeat];
         }
+        CurrentInstance = this;
     }
 
     public virtual void OnPlayerDetach()
@@ -174,6 +193,7 @@ public class VPWeaponManager : VehiclePart
         localPlayerSeat = -1;
         CameraOffset = Vector3.zero;
         netSyncHelper.Clear();
+        CurrentInstance = null;
     }
 
     protected void HandleUserInput()

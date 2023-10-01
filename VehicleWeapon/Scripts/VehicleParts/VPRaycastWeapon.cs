@@ -1,6 +1,119 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+
+public enum CrosshairPartType
+{
+    Line,
+    Arc,
+    Circle,
+    Dot
+}
+
+public class VehicleWeaponCrosshair
+{
+    private CrosshairPart[] parts;
+    private const int segments = 36;
+    private const float radSeg = Mathf.PI * 2 / segments;
+    private static readonly Vector2[] radTable;
+    public bool IsReady => parts?.Length > 0;
+
+    static VehicleWeaponCrosshair()
+    {
+        radTable = new Vector2[segments + 1];
+        for (int i = 0; i < radTable.Length; i++)
+        {
+            float rad = radSeg * i;
+            radTable[i] = new Vector2(Mathf.Cos(rad), Mathf.Sin(rad));
+        }
+    }
+
+    public void ParseCrosshair(DynamicProperties props)
+    {
+        List<CrosshairPart> list_parts = new List<CrosshairPart>();
+        foreach (var prop in props.Values.Dict.Dict)
+        {
+            if (Enum.TryParse<CrosshairPartType>(prop.Value.ToString(), out var type))
+            {
+                float[] pars = props.Params1[prop.Key].Split(',').Select(s => float.Parse(s.Trim())).ToArray();
+                if (pars.Length > 0)
+                {
+                    list_parts.Add(new CrosshairPart()
+                    {
+                        Type = type,
+                        pars = pars
+                    });
+                }
+            }
+        }
+        parts = list_parts.ToArray();
+    }
+
+    public void GLDrawCrosshair(Vector3 center, float scale)
+    {
+        if (parts == null)
+        {
+            return;
+        }
+        foreach (var part in parts)
+        {
+            switch(part.Type)
+            {
+                //offsetX, offsetY, angle, length, width
+                case CrosshairPartType.Line:
+                {
+                    Vector3 startPoint = new Vector3(center.x + part.pars[0] * scale, center.y + part.pars[1] * scale, 0);
+                    Vector3 endPoint = startPoint + new Vector3(Mathf.Cos(part.pars[2] * Mathf.Deg2Rad), Mathf.Sin(part.pars[2] * Mathf.Deg2Rad), 0) * part.pars[3];
+                    //GUIUtils.SetupLines(Camera.main, part.pars[4]);
+                    GUIUtils.DrawLine(startPoint, endPoint, Color.white);
+                    break;
+                }
+                //centerOffsetX, centerOffsetY, radius, startAngle, sweepAngle
+                case CrosshairPartType.Arc:
+                {
+                    float centerX = center.x + part.pars[0] * scale, centerY = center.y + part.pars[1] * scale, radius = part.pars[2], startAngle = part.pars[3] * Mathf.Deg2Rad, endAngle = (part.pars[3] + part.pars[4]) * Mathf.Deg2Rad;
+                    int startIndex = Mathf.CeilToInt(startAngle / radSeg), endIndex = Mathf.CeilToInt(endAngle / radSeg);
+                    int sign = Math.Sign(part.pars[4]);
+                    Vector3 startPoint = new Vector3(centerX + Mathf.Cos(startAngle) * radius, centerY + Mathf.Sin(startAngle) * radius, 0);
+                    Vector3 endPoint = new Vector3(centerX + Mathf.Cos(endAngle) * radius, centerY + Mathf.Sin(endAngle) * radius, 0);
+                    Vector3 nextPoint = endPoint;
+                    for (int i = startIndex; sign > 0 ? i < endIndex : i > endIndex ; i += sign)
+                    {
+                        int reali = i;
+                        if (reali < 0)
+                            reali += radTable.Length - 1;
+                        else if(reali >= radTable.Length)
+                            reali -= radTable.Length;
+                        nextPoint = radTable[reali] * radius + new Vector2(centerX, centerY);
+                        GUIUtils.DrawLine(startPoint, nextPoint, Color.white);
+                        startPoint = nextPoint;
+                    }
+                    GUIUtils.DrawLine(nextPoint, endPoint, Color.white);
+                    break;
+                }
+                //centerOffsetX, centerOffsetY, radius
+                case CrosshairPartType.Circle:
+                {
+                    float centerX = center.x + part.pars[0] * scale, centerY = center.y + part.pars[1] * scale, radius = part.pars[2] * scale;
+                    for (int i = 0; i < radTable.Length - 1; i++)
+                    {
+                        GUIUtils.DrawLine(radTable[i] * radius + new Vector2(centerX, centerY), radTable[i + 1] * radius + new Vector2(centerX, centerY), Color.white);
+                    }
+                    break;
+                }
+                case CrosshairPartType.Dot:
+                    break;
+            }
+        }
+    }
+
+    public class CrosshairPart
+    {
+        public CrosshairPartType Type;
+        public float[] pars;
+    }
+}
 
 public class VPRaycastWeapon : VehicleWeaponBase
 {
@@ -8,6 +121,9 @@ public class VPRaycastWeapon : VehicleWeaponBase
     protected FastTags tags;
     protected Transform raycastTrans;
     protected Transform muzzleTrans;
+    protected Collider[] ignoreTrans;
+    protected int originLayer;
+    protected VehicleWeaponCrosshair crosshair = new VehicleWeaponCrosshair();
     protected string muzzleFlash;
     protected string muzzleSmoke;
     protected int hitmaskOverride;
@@ -26,7 +142,6 @@ public class VPRaycastWeapon : VehicleWeaponBase
         WeaponTypeTag = ItemActionAttack.RangedTag
     };
     protected Dictionary<string, ItemActionAttack.Bonuses> ToolBonuses = new Dictionary<string, ItemActionAttack.Bonuses>();
-    protected Ray shootRay = new Ray();
     protected AimAssistHelper aimAssist;
     //protected ParticleSystemUpdater muzzleFlashManager = new ParticleSystemUpdater();
     //protected ParticleSystemUpdater muzzleSmokeManager = new ParticleSystemUpdater();
@@ -44,7 +159,8 @@ public class VPRaycastWeapon : VehicleWeaponBase
         damageMultiplier = new DamageMultiplier(properties, null);
         raycastTrans = GetTransform("raycastTransform");
         muzzleTrans = GetTransform("muzzleTransform");
-
+        ignoreTrans = vehicle.entity.RootTransform.GetComponentsInChildren<Collider>();
+        originLayer = ignoreTrans[0].gameObject.layer;
         aaDebug = false;
         _properties.ParseBool("AADebug", ref aaDebug);
     }
@@ -103,6 +219,35 @@ public class VPRaycastWeapon : VehicleWeaponBase
             }
         }
 
+        if (!GameManager.IsDedicatedServer)
+        {
+            //if (crosshairTrans != null)
+            //{
+            //    crosshairTrans.sizeDelta = new Vector2(crosshairWidth, crosshairHeight);
+            //    crosshairTrans.gameObject.SetActive(false);
+            //}
+            //str = null;
+            //str = vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "crosshairTransform", GetProperty("crosshairTransform"));
+            //if (!string.IsNullOrEmpty(str))
+            //{
+            //    Transform mesh = vehicle.GetMeshTransform();
+            //    crosshairTrans = mesh.Find(str)?.GetComponent<RectTransform>();
+            //}
+
+            //if(crosshairTrans  != null)
+            //{
+            //    Log.Out("found crosshair");
+            //    crosshairTrans.parent.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+            //    crosshairWidth = crosshairTrans.sizeDelta.x;
+            //    crosshairHeight = crosshairTrans.sizeDelta.y;
+            //    crosshairTrans.gameObject.SetActive(false);
+            //}
+            if (properties.Classes.TryGetValue("Crosshair", out var props))
+            {
+                crosshair.ParseCrosshair(props);
+            }
+        }
+
         str = null;
         buffs.Clear();
         HashSet<string> hash_buffs = new HashSet<string>();
@@ -135,6 +280,49 @@ public class VPRaycastWeapon : VehicleWeaponBase
         base.NoPauseUpdate(_dt);
         UpdateAccuracy(_dt);
         ProcessPendingShots(_dt);
+    }
+
+    public override void NoGUIUpdate(float _dt)
+    {
+        base.NoGUIUpdate(_dt);
+    }
+
+    public override void GUIUpdate()
+    {
+        if (!crosshair.IsReady)
+            return;
+        Ray castRay = new Ray(raycastTrans.position, raycastTrans.forward);
+        float range = GetValue(PassiveEffects.MaxRange);
+        Vector3 finalPos;
+        foreach (var ignore in ignoreTrans)
+        {
+            ignore.isTrigger = true;
+        }
+
+        if (Physics.Raycast(castRay, out var info, range, -1, QueryTriggerInteraction.Ignore))
+        {
+            finalPos = castRay.GetPoint(info.distance);
+        }
+        else
+        {
+            finalPos = castRay.GetPoint(range);
+        }
+
+        foreach (var ignore in ignoreTrans)
+        {
+            ignore.isTrigger = false;
+        }
+        EntityPlayerLocal player = GameManager.Instance.World.GetPrimaryPlayer();
+        Vector3 screenPos = player.finalCamera.GetComponent<Camera>().WorldToScreenPoint(finalPos);
+        screenPos.y = Screen.height - screenPos.y;
+        //Log.Out($"final pos {finalPos - Origin.position} screen pos {screenPos}");
+
+        //float ratio = (float)Mathf.RoundToInt((float)Screen.width / player.cameraTransform.GetComponent<Camera>().fieldOfView);
+        //float scaleX = GetValue(PassiveEffects.SpreadDegreesHorizontal, 90f);
+        //scaleX *= 0.5f * spreadMultiplier * ratio;
+        //float scaleY = GetValue(PassiveEffects.SpreadDegreesVertical, 90f);
+        //scaleY *= 0.5f * spreadMultiplier * ratio;
+        crosshair.GLDrawCrosshair(screenPos, spreadMultiplier);
     }
 
     //public override void Update(float _dt)
@@ -265,6 +453,7 @@ public class VPRaycastWeapon : VehicleWeaponBase
                     //muzzleSmokeManager.Add(smoke);
                 }
             }
+            Log.Out($"transform count {muzzleTrans.childCount}");
         }
     }
 
@@ -291,8 +480,7 @@ public class VPRaycastWeapon : VehicleWeaponBase
     protected virtual void FireShots(int _shotIdx)
     {
         float range = GetValue(PassiveEffects.MaxRange);
-        shootRay.origin = raycastTrans.position + Origin.position;
-        shootRay.direction = getDirectionOffset(raycastTrans.forward, _shotIdx);
+        Ray shootRay = new Ray(raycastTrans.position + Origin.position, getDirectionOffset(raycastTrans.forward, _shotIdx));
 
         int EntityPenetration = Mathf.FloorToInt(GetValue(PassiveEffects.EntityPenetrationCount)) + 1;
         int BlockPenetration = Mathf.Max(Mathf.FloorToInt(EffectManager.GetValue(PassiveEffects.BlockPenetrationFactor)), 1);
@@ -410,7 +598,7 @@ public class VPRaycastWeapon : VehicleWeaponBase
         float multiplier = 1f;
         if (vehicle.IsTurbo)
             multiplier = GetValue(PassiveEffects.SpreadMultiplierRunning);
-        else if(vehicle.CurrentVelocity.sqrMagnitude > 1)
+        else if (vehicle.CurrentVelocity.sqrMagnitude > 1)
             multiplier = GetValue(PassiveEffects.SpreadMultiplierWalking);
         else
             multiplier = GetValue(PassiveEffects.SpreadMultiplierIdle);
@@ -506,6 +694,18 @@ public class VPRaycastWeapon : VehicleWeaponBase
     {
         boundItemValue.ItemClass.FireEvent(e, (vehicle.entity.GetAttached(seat) as EntityAlive).MinEventContext);
         base.FireEvent(e);
+    }
+
+    public override void OnPlayerEnter()
+    {
+        base.OnPlayerEnter();
+        //if (crosshairTrans != null)
+        //{
+        //    var canvas = crosshairTrans.parent.GetComponent<Canvas>();
+        //    canvas.worldCamera = Camera.main;
+        //    canvas.planeDistance = Camera.main.nearClipPlane + 1;
+        //    Log.Out($"plane distance{Camera.main.nearClipPlane}x{Camera.main.farClipPlane}");
+        //}
     }
 }
 

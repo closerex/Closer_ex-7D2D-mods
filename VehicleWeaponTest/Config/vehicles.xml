@@ -382,6 +382,17 @@
 			</property>
 				
 			<property class="WeaponTurret">
+				<property class="Crosshair">
+					<property name="Line1" value="Line" param1="10,0,0,25,2"/>
+					<property name="Line2" value="Line" param1="-10,0,180,25,2"/>
+					<property name="Line3" value="Line" param1="0,10,90,25,2"/>
+					<property name="Line4" value="Line" param1="0,-10,270,25,2"/>
+					<property name="Arc1" value="Arc" param1="10,0,25,315,90"/>
+					<property name="Arc2" value="Arc" param1="-10,0,25,225,-90"/>
+					<property name="Arc3" value="Arc" param1="0,10,25,45,90"/>
+					<property name="Arc4" value="Arc" param1="0,-10,25,315,-90"/>
+					<property name="Circle1" value="Circle" param1="0,0,10"/>
+				</property>
 				<property name="class" value="RaycastWeapon,VehicleWeapon"/>
 				<property name="seat" value="0"/>
 				<property name="slot" value="0"/>

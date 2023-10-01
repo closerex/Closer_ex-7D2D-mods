@@ -307,6 +307,11 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
         }
     }
 
+    public virtual void GUIUpdate()
+    {
+
+    }
+
     protected void NetSyncUpdate(bool forced = false)
     {
         if(forced || ShouldNetSyncUpdate())
@@ -350,16 +355,14 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
 
     protected internal virtual void OnActivated()
     {
-        if (rotator != null)
-            rotator.CreatePreview();
+        rotator?.CreatePreview();
     }
 
     protected internal virtual void OnDeactivated()
     {
         pressed = false;
         StopFire();
-        if (rotator != null)
-            rotator.DestroyPreview();
+        rotator?.DestroyPreview();
     }
 
     protected void ToggleActivated()

@@ -211,6 +211,18 @@ namespace VehicleWeaponPatches
             return codes;
         }
     }
+
+    [HarmonyPatch(typeof(NGuiWdwInGameHUD), "OnGUI")]
+    public class GUIPatch
+    {
+        private static void Postfix()
+        {
+            if (VPWeaponManager.CurrentInstance != null)
+            {
+                VPWeaponManager.CurrentInstance.GUIUpdate();
+            }
+        }
+    }
     //[HarmonyPatch(typeof(IKController), nameof(IKController.OnAnimatorIK))]
     //public class IKDebugPatch
     //{
