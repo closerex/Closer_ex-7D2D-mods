@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xml>
+	<Name value="CustomParticleLoaderBuffArea" />
+	<DisplayName value="Custom Particle Loader Buff Area Patch" />
+	<Description value="Custom explosion particle patch." />
+	<Author value="closer_ex" />
+	<Version value="1.0.0" />
+</xml>

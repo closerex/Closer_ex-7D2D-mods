@@ -9,7 +9,7 @@
 	</append>
 	<append xpath="/items">
 		<item name="gunMedicPistol">
-<!--			<property name="CustomIconTint" value="200, 0, 200"/>-->
+			<!--<property name="CustomIconTint" value="200, 0, 200"/>-->
 			<property name="CustomIcon" value="medic_pistol"/>
 			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,selfLoading,attAgility,noScopes,sideAttachments,barrelAttachments,attachmentsIncluded,9mmGun,perkGunslinger,medicgun,medicpistol"/>
 			<property name="DisplayType" value="rangedGun"/>
@@ -468,7 +468,7 @@
 			<property name="Explosion.DamageBonus.water" value="0"/>
 			<property name="Explosion.DamageBonus.wood" value="0"/>
 			<property name="Explosion.Buff" value="buffMedicGrenadeHeal"/>
-			<property name="Explosion.CustomScriptTypes" value="ExplosionAreaBuffTick,KFCommonUtilityLib"/>
+			<property name="Explosion.CustomScriptTypes" value="ExplosionAreaBuffTick,CustomParticleLoaderBuffArea"/>
 			<property name="Explosion.Overwrite" value="true"/>
 			<property name="FuseTime" value="20000"/>
 			<property name="ExplodeOnHit" value="true"/>
