@@ -6,6 +6,7 @@ public class ItemActionHoldOpen : ItemActionRanged
     private const string emptyAnimatorBool = "empty";
     private EntityAlive lastHoldingEntity = null;
     private HashSet<EntityAlive> hashset_dirty = new HashSet<EntityAlive>();
+    private bool reloadReset = false;
 
     public Animator getAnimator(EntityAlive holdingEntity)
     {
@@ -21,22 +22,24 @@ public class ItemActionHoldOpen : ItemActionRanged
 
     public void setAnimatorBool(EntityAlive holdingEntity, string parameter, bool flag)
     {
-        Animator animator = getAnimator(holdingEntity);
-        if (animator)
-        {
-            animator.SetBool(parameter, flag);
-            //Log.Out("trying to set param: " + parameter + " flag: " + flag + " result: " + getAnimatorBool(holdingEntity, parameter) + " transform: " + animator.transform.name);
-        }
+        holdingEntity.emodel.avatarController.UpdateBool(parameter, flag, false);
+        //Animator animator = getAnimator(holdingEntity);
+        //if (animator)
+        //{
+        //    animator.SetBool(parameter, flag);
+        //    //Log.Out("trying to set param: " + parameter + " flag: " + flag + " result: " + getAnimatorBool(holdingEntity, parameter) + " transform: " + animator.transform.name);
+        //}
     }
 
     public void setAnimatorFloat(EntityAlive holdingEntity, string parameter, float value)
     {
-        Animator animator = getAnimator(holdingEntity);
-        if (animator)
-        {
-            animator.SetFloat(parameter, value);
-            //Log.Out("trying to set param: " + parameter + " flag: " + flag + " result: " + getAnimatorBool(holdingEntity, parameter) + " transform: " + animator.transform.name);
-        }
+        holdingEntity.emodel.avatarController.UpdateFloat(parameter, value, false);
+        //Animator animator = getAnimator(holdingEntity);
+        //if (animator)
+        //{
+        //    animator.SetFloat(parameter, value);
+        //    //Log.Out("trying to set param: " + parameter + " flag: " + flag + " result: " + getAnimatorBool(holdingEntity, parameter) + " transform: " + animator.transform.name);
+        //}
     }
 
     protected override int getUserData(ItemActionData _actionData)
@@ -46,20 +49,25 @@ public class ItemActionHoldOpen : ItemActionRanged
 
     public override void ItemActionEffects(GameManager _gameManager, ItemActionData _actionData, int _firingState, Vector3 _startPos, Vector3 _direction, int _userData = 0)
     {
+        base.ItemActionEffects(_gameManager, _actionData, _firingState, _startPos, _direction, _userData);
+
         if(_firingState != (int)ItemActionFiringState.Off && (_userData & 1) > 0)
             setAnimatorBool(_actionData.invData.holdingEntity, emptyAnimatorBool, true);
-
-        base.ItemActionEffects(_gameManager, _actionData, _firingState, _startPos, _direction, _userData);
     }
 
     public override void ReloadGun(ItemActionData _actionData)
     {
-        setAnimatorBool(_actionData.invData.holdingEntity, emptyAnimatorBool, false);
         base.ReloadGun(_actionData);
+    }
+
+    public void BeginReloadGun(ItemActionData _actionData)
+    {
+        reloadReset = true;
     }
 
     public override void StartHolding(ItemActionData _data)
     {
+        reloadReset = false;
         lastHoldingEntity = _data.invData.holdingEntity;
         lastHoldingEntity.inventory.OnToolbeltItemsChangedInternal += OnStartHolding;
         base.StartHolding(_data);
@@ -72,6 +80,13 @@ public class ItemActionHoldOpen : ItemActionRanged
         //Log.Out("Entity " + lastHoldingEntity.entityId + " start holding " + lastHoldingEntity.inventory.holdingItemItemValue.ItemClass.Name + " meta: " + lastHoldingEntity.inventory.holdingItemItemValue.Meta);
         lastHoldingEntity.inventory.OnToolbeltItemsChangedInternal -= OnStartHolding;
         lastHoldingEntity = null;
+    }
+
+    protected override void ConsumeAmmo(ItemActionData _actionData)
+    {
+        base.ConsumeAmmo(_actionData);
+        if (_actionData.invData.itemValue.Meta == 0)
+            _actionData.invData.holdingEntity.FireEvent(CustomEnums.onSelfMagzineDeplete, true);
     }
 
     public override void SwapAmmoType(EntityAlive _entity, int _ammoItemId = -1)
@@ -89,7 +104,16 @@ public class ItemActionHoldOpen : ItemActionRanged
     {
         base.OnHoldingUpdate(_actionData);
 
-        if (GameManager.IsDedicatedServer || hashset_dirty.Count <= 0)
+        if (GameManager.IsDedicatedServer)
+            return;
+
+        if (reloadReset)
+        {
+            setAnimatorBool(GameManager.Instance.World.GetPrimaryPlayer(), emptyAnimatorBool, false);
+            reloadReset = false;
+        }
+
+        if (hashset_dirty.Count <= 0)
             return;
 
         foreach (EntityAlive holdingEntity in hashset_dirty)

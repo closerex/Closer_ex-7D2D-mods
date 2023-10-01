@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using Audio;
 using System;
-using static XUiC_DropDown;
 
 public class ItemActionRampUp : ItemActionHoldOpen
 {

@@ -15,7 +15,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>.\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -23,12 +23,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>portable</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>.\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
@@ -47,13 +51,9 @@
       <HintPath>..\..\7DaysToDie_Data\Managed\Autodesk.Fbx.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CustomParticleLoader">
-      <HintPath>..\0-CustomParticleLoader\CustomParticleLoader.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="KFUtilAttached, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="DOTween, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\KFUtilAttached.dll</HintPath>
+      <HintPath>.\DOTween.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="LogLibrary">
@@ -72,8 +72,20 @@
       <HintPath>..\..\7DaysToDie_Data\Managed\Unity.Animation.Rigging.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Unity.Burst">
+      <HintPath>..\..\7DaysToDie_Data\Managed\Unity.Burst.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Unity.Formats.Fbx.Runtime">
       <HintPath>..\..\7DaysToDie_Data\Managed\Unity.Formats.Fbx.Runtime.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.Mathematics">
+      <HintPath>..\..\7DaysToDie_Data\Managed\Unity.Mathematics.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>..\..\7DaysToDie_Data\Managed\Unity.TextMeshPro.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
@@ -82,6 +94,10 @@
     </Reference>
     <Reference Include="UnityEngine.AnimationModule">
       <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
@@ -96,32 +112,92 @@
       <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule">
+      <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
       <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Harmony\RecoilPatch.cs" />
+    <Compile Include="KFAttached\KFUtilAttached\ApexWeaponHudControllerBase.cs" />
+    <Compile Include="KFAttached\KFUtilAttached\RigActivationBinding.cs" />
+    <Compile Include="KFAttached\LeanTween\Framework\LeanAudio.cs" />
+    <Compile Include="KFAttached\LeanTween\Framework\LeanSmooth.cs" />
+    <Compile Include="KFAttached\LeanTween\Framework\LeanTest.cs" />
+    <Compile Include="KFAttached\LeanTween\Framework\LeanTween.cs" />
+    <Compile Include="KFAttached\LeanTween\Framework\LeanTweenExt.cs" />
+    <Compile Include="KFAttached\LeanTween\Framework\LTDescr.cs" />
+    <Compile Include="KFAttached\LeanTween\Framework\LTDescrOptional.cs" />
+    <Compile Include="KFAttached\LeanTween\Framework\LTSeq.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationAimRecoilReferences.cs" />
+    <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationAimRecoilResetState.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationRandomRecoil.cs" />
+    <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationRandomRecoilState.cs" />
+    <Compile Include="KFAttached\Misc\AttachmentReference.cs" />
+    <Compile Include="KFAttached\KFUtilAttached\ChargeUpController.cs" />
+    <Compile Include="KFAttached\KFUtilAttached\WeaponLabelControllerChargeUp.cs" />
+    <Compile Include="KFAttached\KFUtilAttached\WeaponLabelControllerDevotion.cs" />
+    <Compile Include="Harmony\AnimationRiggingPatches.cs" />
     <Compile Include="Harmony\Init.cs" />
     <Compile Include="Harmony\Patches.cs" />
+    <Compile Include="KFAttached\KFUtilAttached\TransformActivationBinding.cs" />
+    <Compile Include="KFAttached\KFUtilAttached\WeaponColorController.cs" />
+    <Compile Include="KFAttached\KFUtilAttached\WeaponColorControllerBase.cs" />
+    <Compile Include="KFAttached\KFUtilAttached\WeaponLabelController.cs" />
+    <Compile Include="KFAttached\KFUtilAttached\WeaponLabelControllerBase.cs" />
+    <Compile Include="KFAttached\KFUtilAttached\WeaponTextProController.cs" />
+    <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationCustomReloadState.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationReloadEvents.cs" />
+    <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationResetRigWeightState.cs" />
+    <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimatorRandomSwitch.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\RigWeightOverTime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RigAdaptors\BlendConstraintAdaptor.cs" />
-    <Compile Include="RigAdaptors\ChainIKConstraintAdaptor.cs" />
-    <Compile Include="RigAdaptors\CopyOfExtension.cs" />
-    <Compile Include="RigAdaptors\DampedTransformAdaptor.cs" />
-    <Compile Include="RigAdaptors\MultiAimConstraintAdaptor.cs" />
-    <Compile Include="RigAdaptors\MultiParentConstraintAdaptor.cs" />
-    <Compile Include="RigAdaptors\MultiPositionConstraintAdaptor.cs" />
-    <Compile Include="RigAdaptors\MultiReferentialConstraintAdaptor.cs" />
-    <Compile Include="RigAdaptors\MultiRotationConstraintAdaptor.cs" />
-    <Compile Include="RigAdaptors\OverrideTransformAdaptor.cs" />
-    <Compile Include="RigAdaptors\RigAdaptorAbs.cs" />
-    <Compile Include="RigAdaptors\RigConverter.cs" />
-    <Compile Include="RigAdaptors\TwistChainConstraintAdaptor.cs" />
-    <Compile Include="RigAdaptors\TwistCorrectionAdaptor.cs" />
-    <Compile Include="RigAdaptors\TwoBoneIKConstraintAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\Adaptors\BlendConstraintAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\Adaptors\ChainIKConstraintAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\Adaptors\Data\TwistNode.cs" />
+    <Compile Include="KFAttached\RigAdaptors\Adaptors\DampedTransformAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\Adaptors\MultiAimConstraintAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\Adaptors\MultiParentConstraintAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\Adaptors\MultiPositionConstraintAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\Adaptors\MultiReferentialConstraintAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\Adaptors\MultiRotationConstraintAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\Adaptors\OverrideTransformAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\Adaptors\RigAdaptorAbs.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationRandomSound.cs" />
+    <Compile Include="KFAttached\Misc\AudioSourceGroup.cs" />
+    <Compile Include="KFAttached\RigAdaptors\RigConverter.cs" />
+    <Compile Include="KFAttached\RigAdaptors\RigTargets.cs" />
+    <Compile Include="KFAttached\RigAdaptors\Adaptors\TwistChainConstraintAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\Adaptors\TwistCorrectionAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\Adaptors\TwoBoneIKConstraintAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\Utils\KFExtensions.cs" />
+    <Compile Include="Scripts\Singletons\AnimationRiggingManager.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdCalibrateWeapon.cs" />
+    <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPlayerDebugInfo.cs" />
+    <Compile Include="Scripts\ConsoleCmd\ConsoleCmdReloadLog.cs" />
+    <Compile Include="Scripts\Singletons\CustomEffectEnumManager.cs" />
     <Compile Include="Scripts\FbxExporter07.cs" />
+    <Compile Include="Scripts\Global\CustomEnums.cs" />
     <Compile Include="Scripts\Items\ItemActionAltMode.cs" />
     <Compile Include="Scripts\Items\ItemActionHoldOpen.cs" />
     <Compile Include="Scripts\Items\ItemActionRampUp.cs" />
@@ -137,7 +213,6 @@
     <Compile Include="Scripts\MinEventActions\MinEventActionRemoveRoundsFromInventory.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionSetStringOnWeaponLabel.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionSetWeaponLabelColor.cs" />
-    <Compile Include="Scripts\MonoBehaviours\ExplosionAreaBuffTick.cs" />
     <Compile Include="Scripts\Items\ItemActionRechargeable.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionAddBuffToTargetAndSelf.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionDecreaseProgressionLevelAndRefundSP.cs" />
@@ -145,20 +220,81 @@
     <Compile Include="Scripts\MinEventActions\MinEventActionSetAmmoOnWeaponLabel.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageSyncWeaponLabelColor.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageSyncWeaponLabelText.cs" />
-    <Compile Include="Scripts\Parser\ExplosionAreaBuffTickParser.cs" />
     <Compile Include="Scripts\Requirements\ItemInInventory.cs" />
     <Compile Include="Scripts\Requirements\PercentInHoldingItem.cs" />
     <Compile Include="Scripts\Requirements\PercentInMagazine.cs" />
     <Compile Include="Scripts\Requirements\RoundsInHoldingItem.cs" />
     <Compile Include="Scripts\Requirements\RoundsInInventory.cs" />
     <Compile Include="Scripts\Requirements\RoundsInMagazineBase.cs" />
+    <Compile Include="Scripts\Singletons\RecoilManager.cs" />
+    <Compile Include="Scripts\Utilities\SaveTextureToFileUtility.cs" />
     <Compile Include="Scripts\Utilities\EntityInventoryExtension.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="KFAttached\LeanTween\License.txt" />
     <Content Include="ModInfo.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="RigAdaptors\RigAdaptors.asmdef" />
+    <None Include="KFAttached\Animation\MonoBehaviours\AnimationAimRecoilReferences.cs.meta" />
+    <None Include="KFAttached\Animation\MonoBehaviours\AnimationRandomRecoil.cs.meta" />
+    <None Include="KFAttached\Animation\MonoBehaviours\AnimationRandomSound.cs.meta" />
+    <None Include="KFAttached\Animation\MonoBehaviours\AnimationReloadEvents.cs.meta" />
+    <None Include="KFAttached\Animation\MonoBehaviours\RigWeightOverTime.cs.meta" />
+    <None Include="KFAttached\Animation\StateMachineBehaviours\AnimationAimRecoilResetState.cs.meta" />
+    <None Include="KFAttached\Animation\StateMachineBehaviours\AnimationCustomReloadState.cs.meta" />
+    <None Include="KFAttached\Animation\StateMachineBehaviours\AnimationRandomRecoilState.cs.meta" />
+    <None Include="KFAttached\Animation\StateMachineBehaviours\AnimationResetRigWeightState.cs.meta" />
+    <None Include="KFAttached\Animation\StateMachineBehaviours\AnimatorRandomSwitch.cs.meta" />
+    <None Include="KFAttached\KFCommonUtilityLib.asmdef" />
+    <None Include="KFAttached\KFCommonUtilityLib.asmdef.meta" />
+    <None Include="KFAttached\KFUtilAttached\ApexWeaponHudControllerBase.cs.meta" />
+    <None Include="KFAttached\KFUtilAttached\ChargeUpController.cs.meta" />
+    <None Include="KFAttached\KFUtilAttached\RigActivationBinding.cs.meta" />
+    <None Include="KFAttached\KFUtilAttached\TransformActivationBinding.cs.meta" />
+    <None Include="KFAttached\KFUtilAttached\WeaponColorController.cs.meta" />
+    <None Include="KFAttached\KFUtilAttached\WeaponColorControllerBase.cs.meta" />
+    <None Include="KFAttached\KFUtilAttached\WeaponLabelController.cs.meta" />
+    <None Include="KFAttached\KFUtilAttached\WeaponLabelControllerBase.cs.meta" />
+    <None Include="KFAttached\KFUtilAttached\WeaponLabelControllerChargeUp.cs.meta" />
+    <None Include="KFAttached\KFUtilAttached\WeaponLabelControllerDevotion.cs.meta" />
+    <None Include="KFAttached\KFUtilAttached\WeaponTextProController.cs.meta" />
+    <None Include="KFAttached\LeanTween\Framework\LeanAudio.cs.meta" />
+    <None Include="KFAttached\LeanTween\Framework\LeanSmooth.cs.meta" />
+    <None Include="KFAttached\LeanTween\Framework\LeanTest.cs.meta" />
+    <None Include="KFAttached\LeanTween\Framework\LeanTween.cs.meta" />
+    <None Include="KFAttached\LeanTween\Framework\LeanTweenExt.cs.meta" />
+    <None Include="KFAttached\LeanTween\Framework\LTDescr.cs.meta" />
+    <None Include="KFAttached\LeanTween\Framework\LTDescrOptional.cs.meta" />
+    <None Include="KFAttached\LeanTween\Framework\LTSeq.cs.meta" />
+    <None Include="KFAttached\Misc\AttachmentReference.cs.meta" />
+    <None Include="KFAttached\Misc\AudioSourceGroup.cs.meta" />
+    <None Include="KFAttached\RigAdaptors\Adaptors\BlendConstraintAdaptor.cs.meta" />
+    <None Include="KFAttached\RigAdaptors\Adaptors\ChainIKConstraintAdaptor.cs.meta" />
+    <None Include="KFAttached\RigAdaptors\Adaptors\DampedTransformAdaptor.cs.meta" />
+    <None Include="KFAttached\RigAdaptors\Adaptors\Data\TwistNode.cs.meta" />
+    <None Include="KFAttached\RigAdaptors\Adaptors\MultiAimConstraintAdaptor.cs.meta" />
+    <None Include="KFAttached\RigAdaptors\Adaptors\MultiParentConstraintAdaptor.cs.meta" />
+    <None Include="KFAttached\RigAdaptors\Adaptors\MultiPositionConstraintAdaptor.cs.meta" />
+    <None Include="KFAttached\RigAdaptors\Adaptors\MultiReferentialConstraintAdaptor.cs.meta" />
+    <None Include="KFAttached\RigAdaptors\Adaptors\MultiRotationConstraintAdaptor.cs.meta" />
+    <None Include="KFAttached\RigAdaptors\Adaptors\OverrideTransformAdaptor.cs.meta" />
+    <None Include="KFAttached\RigAdaptors\Adaptors\RigAdaptorAbs.cs.meta" />
+    <None Include="KFAttached\RigAdaptors\Adaptors\TwistChainConstraintAdaptor.cs.meta" />
+    <None Include="KFAttached\RigAdaptors\Adaptors\TwistCorrectionAdaptor.cs.meta" />
+    <None Include="KFAttached\RigAdaptors\Adaptors\TwoBoneIKConstraintAdaptor.cs.meta" />
+    <None Include="KFAttached\RigAdaptors\RigConverter.cs.meta" />
+    <None Include="KFAttached\RigAdaptors\RigTargets.cs.meta" />
+    <None Include="KFAttached\RigAdaptors\Utils\KFExtensions.cs.meta" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <AttachedScriptFolder>KFAttached</AttachedScriptFolder>
+    <UnityProjectPath>J:\Unity Projects\AnimationPlayground\Assets\</UnityProjectPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>if exist "$(UnityProjectPath)" (
+    echo Unity project found, copying attached scripts...
+    robocopy "$(ProjectDir)$(AttachedScriptFolder)" "$(UnityProjectPath)$(AttachedScriptFolder)"  /MIR || set errorlevel=0
+)</PostBuildEvent>
+  </PropertyGroup>
 </Project>

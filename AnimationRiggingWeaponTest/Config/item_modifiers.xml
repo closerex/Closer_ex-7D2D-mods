@@ -1,0 +1,13 @@
+<configs>
+	<!-- Reflex -->
+	<append xpath="/item_modifiers/item_modifier[@name='modGunReflexSight']">
+		<item_property_overrides name="gunMGT2L85A2">
+			<property name="ScopeCameraOffset" value="0.0015,0.0041,0"/>
+			<property name="CrosshairOnAim" value="false"/>
+		</item_property_overrides>
+		<item_property_overrides name="gunAK12">
+			<property name="ScopeCameraOffset" value="-8.5e-05,-0.02385,-0.066"/>
+			<property name="CrosshairOnAim" value="false"/>
+		</item_property_overrides>
+	</append>
+</configs>

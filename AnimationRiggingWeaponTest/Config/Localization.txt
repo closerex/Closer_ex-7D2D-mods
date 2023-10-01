@@ -1,0 +1,1 @@
+Key,File,Type,UsedInMainMenu,NoTranslate,english,Context / Alternate Text,schinese

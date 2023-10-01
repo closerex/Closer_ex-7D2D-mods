@@ -1,5 +1,6 @@
 ﻿using Autodesk.Fbx;
 using HarmonyLib;
+using KFCommonUtilityLib.Scripts.Singletons;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -115,6 +116,17 @@ class CommonUtilityPatch
         _actionData.isReloading = false;
         _actionData.isReloadCancelled = false;
         holdingEntity.FireEvent(MinEventTypes.onReloadStop);
+    }
+
+    [HarmonyPatch(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.OnStateEnter))]
+    [HarmonyPostfix]
+    private static void Postfix_OnStateEnter_AnimatorRangedReloadState(ItemActionRanged.ItemActionDataRanged ___actionData, ItemActionRanged ___actionRanged)
+    {
+        //___actionData.invData.holdingEntity.emodel.avatarController.UpdateBool(AvatarController.isAimingHash, false, false);
+        if (___actionRanged is ItemActionHoldOpen actionHoldOpen)
+        {
+            actionHoldOpen.BeginReloadGun(___actionData);
+        }
     }
 
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SwapAmmoType))]
@@ -342,24 +354,28 @@ class CommonUtilityPatch
         var codes = new List<CodeInstruction>(instructions);
 
         var fld_ranged_tag = AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.RangedTag));
+        var fld_params = AccessTools.Field(typeof(EntityAlive), nameof(EntityAlive.MinEventContext));
 
         for (int i = 0; i < codes.Count; i++)
         {
             if (codes[i].LoadsField(fld_ranged_tag))
             {
-                codes.InsertRange(i + 2, new CodeInstruction[]
+                if (!codes[i + 3].LoadsField(fld_params))
                 {
-                    new CodeInstruction(OpCodes.Ldloc_1),
-                    CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.MinEventContext)),
-                    new CodeInstruction(OpCodes.Dup),
-                    new CodeInstruction(OpCodes.Ldloc, 10),
-                    CodeInstruction.LoadField(typeof(WorldRayHitInfo), nameof(WorldRayHitInfo.hit)),
-                    CodeInstruction.LoadField(typeof(HitInfoDetails), nameof(HitInfoDetails.pos)),
-                    CodeInstruction.StoreField(typeof(MinEventParams), nameof(MinEventParams.Position)),
-                    new CodeInstruction(OpCodes.Ldloc_1),
-                    CodeInstruction.Call(typeof(EntityAlive), nameof(EntityAlive.GetPosition)),
-                    CodeInstruction.StoreField(typeof(MinEventParams), nameof(MinEventParams.StartPosition))
-                });
+                    codes.InsertRange(i + 2, new CodeInstruction[]
+                    {
+                        new CodeInstruction(OpCodes.Ldloc_1),
+                        CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.MinEventContext)),
+                        new CodeInstruction(OpCodes.Dup),
+                        new CodeInstruction(OpCodes.Ldloc, 10),
+                        CodeInstruction.LoadField(typeof(WorldRayHitInfo), nameof(WorldRayHitInfo.hit)),
+                        CodeInstruction.LoadField(typeof(HitInfoDetails), nameof(HitInfoDetails.pos)),
+                        CodeInstruction.StoreField(typeof(MinEventParams), nameof(MinEventParams.Position)),
+                        new CodeInstruction(OpCodes.Ldloc_1),
+                        CodeInstruction.Call(typeof(EntityAlive), nameof(EntityAlive.GetPosition)),
+                        CodeInstruction.StoreField(typeof(MinEventParams), nameof(MinEventParams.StartPosition))
+                    });
+                }
                 break;
             }
         }
@@ -407,6 +423,54 @@ class CommonUtilityPatch
                     new CodeInstruction(OpCodes.Callvirt, mtd_data)
                 });
                 codes.RemoveAt(i - 1);
+                break;
+            }
+        }
+
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(GameManager), nameof(GameManager.StartGame))]
+    [HarmonyPrefix]
+    private static bool Prefix_StartGame_GameManager()
+    {
+        CustomEffectEnumManager.InitFinal();
+        return true;
+    }
+
+    [HarmonyPatch(typeof(PassiveEffect), nameof(PassiveEffect.ParsePassiveEffect))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_ParsePassiveEffect_PassiveEffect(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+        MethodInfo mtd_enum_parse = AccessTools.Method(typeof(EnumUtils), nameof(EnumUtils.Parse), new[] { typeof(string), typeof(bool) }, new[] { typeof(PassiveEffects) });
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_enum_parse))
+            {
+                codes.Insert(i + 1, CodeInstruction.Call(typeof(CustomEffectEnumManager), nameof(CustomEffectEnumManager.RegisterOrGetPassive)));
+                codes.RemoveRange(i - 1, 2);
+                break;
+            }
+        }
+
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(MinEventActionBase), nameof(MinEventActionBase.ParseXmlAttribute))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_ParseXmlAttribute(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+        MethodInfo mtd_enum_parse = AccessTools.Method(typeof(EnumUtils), nameof(EnumUtils.Parse), new[] { typeof(string), typeof(bool) }, new[] { typeof(MinEventTypes) });
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_enum_parse))
+            {
+                codes.Insert(i + 1, CodeInstruction.Call(typeof(CustomEffectEnumManager), nameof(CustomEffectEnumManager.RegisterOrGetTrigger)));
+                codes.RemoveRange(i - 1, 2);
                 break;
             }
         }
