@@ -80,7 +80,7 @@
 				<passive_effect name="SpreadMultiplierWalking" operation="base_set" value="1.5" tags="perkMachineGunner"/>
 				<passive_effect name="SpreadMultiplierRunning" operation="base_set" value="2.2" tags="perkMachineGunner"/>
 
-				<passive_effect name="KickDegreesVerticalMin" operation="base_set" value="0.2" tags="perkMachineGunner"/>
+				<passive_effect name="KickDegreesVerticalMin" operation="base_set" value="0.8" tags="perkMachineGunner"/>
 				<passive_effect name="KickDegreesVerticalMax" operation="base_set" value="1.5" tags="perkMachineGunner"/>
 				<passive_effect name="KickDegreesHorizontalMin" operation="base_set" value="-1.2" tags="perkMachineGunner"/>
 				<passive_effect name="KickDegreesHorizontalMax" operation="base_set" value="1.2" tags="perkMachineGunner"/>
