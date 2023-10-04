@@ -4,20 +4,26 @@ using DG.Tweening.Plugins.Options;
 using Unity.Mathematics;
 using UnityEngine;
 
-public class AnimationRandomRecoil : MonoBehaviour
+[AddComponentMenu("KFAttachments/Binding Helpers/Animation Random Recoil")]
+public class AnimationRandomRecoil : AnimationProceduralRecoildAbs
 {
+    [Header("Targets")]
     [SerializeField] private Transform target;
     [SerializeField] private Transform pivot;
+    [Header("Rotation")]
     [SerializeField] private Vector3 minRotation = new Vector3(-5, -2, -2);
     [SerializeField] private Vector3 maxRotation = new Vector3(0, 2, 2);
     [SerializeField] private Vector3 randomRotationMin = new Vector3(-3, -1, -1);
     [SerializeField] private Vector3 randomRotationMax = new Vector3(-1, 1, 1);
+    [Header("Kickback")]
     [SerializeField] private Vector3 minKickback = new Vector3(0, 0, -0.05f);
     [SerializeField] private Vector3 maxKickback = new Vector3(0, 0, 0);
     [SerializeField] private Vector3 randomKickbackMin = new Vector3(0, 0, -0.025f);
     [SerializeField] private Vector3 randomKickbackMax = new Vector3(0, 0, -0.01f);
+    [Header("Recoil")]
     [SerializeField, Range(0, 0.1f)] private float tweenInDuration = 0.04f;
     [SerializeField, Range(0, 5)] private float tweenOutDuration = 1.5f;
+    [Header("Return")]
     [SerializeField, Range(1, 5)] private float elasticAmplitude = 1f;
     [SerializeField, Range(0, 1)] private float elasticPeriod = 0.5f;
 
@@ -36,7 +42,7 @@ public class AnimationRandomRecoil : MonoBehaviour
         }
     }
 
-    public void AddRecoil(Vector3 positionMultiplier, Vector3 rotationMultiplier)
+    public override void AddRecoil(Vector3 positionMultiplier, Vector3 rotationMultiplier)
     {
         targetPosition = math.clamp(targetPosition + Vector3.Scale(KFExtensions.Random(randomKickbackMin, randomKickbackMax), positionMultiplier), minKickback, maxKickback);
         targetRotation = math.clamp(targetRotation + Vector3.Scale(KFExtensions.Random(randomRotationMin, randomRotationMax), rotationMultiplier), minRotation, maxRotation);

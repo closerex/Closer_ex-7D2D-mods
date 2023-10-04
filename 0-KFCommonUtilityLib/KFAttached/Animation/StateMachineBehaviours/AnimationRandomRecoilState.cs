@@ -12,6 +12,6 @@ public class AnimationRandomRecoilState : StateMachineBehaviour
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.GetComponent<AnimationRandomRecoil>()?.AddRecoil(positionMultiplier, rotationMultiplier);
+        animator.GetComponent<AnimationProceduralRecoildAbs>()?.AddRecoil(positionMultiplier, rotationMultiplier);
     }
 }

@@ -74,7 +74,8 @@ class AnimationRiggingPatches
         ItemClass item = ItemClass.GetItemClass(itemName);
         if (item.Properties.GetBool("TakeOverReloadTime"))
         {
-            AnimationRiggingManager.AddReloadTimeTakeOverItem(item.Id);
+            AnimationRiggingManager.AddReloadTimeTakeOverItem(item.Name);
+            //Log.Out($"take over reload time: {item.Name} {item.Id}");
         }
     }
 
@@ -217,7 +218,7 @@ class AnimationRiggingPatches
             float finalMultiplier;
             bool isFPV = entity as EntityPlayerLocal != null && (entity as EntityPlayerLocal).emodel.IsFPV;
             bool takeOverReloadTime = AnimationRiggingManager.IsReloadTimeTakeOverItem(entity.inventory.holdingItem.Id);
-            if (isFPV && takeOverReloadTime)
+            if (isFPV && !takeOverReloadTime)
             {
                 finalMultiplier = reloadSpeed / reloadSpeedRatio;
             }

@@ -31,6 +31,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
         //private static readonly HashSet<int> hash_rig_items = new HashSet<int>();
         private static FpvTransformRef fpvTransformRef;
         private static readonly HashSet<int> hash_items_take_over_reload_time = new HashSet<int>();
+        private static readonly HashSet<string> hash_items_parse_later = new HashSet<string>();
 
         //patched to item xml parsing
         //public static void AddRigItem(int itemId) => hash_rig_items.Add(itemId);
@@ -39,12 +40,23 @@ namespace KFCommonUtilityLib.Scripts.Singletons
         {
             //hash_rig_items.Clear();
             fpvTransformRef = null;
+            hash_items_parse_later.Clear();
             hash_items_take_over_reload_time.Clear();
         }
 
-        public static void AddReloadTimeTakeOverItem(int id)
+        public static void AddReloadTimeTakeOverItem(string name)
         {
-            hash_items_take_over_reload_time.Add(id);
+            hash_items_parse_later.Add(name);
+        }
+
+        public static void ParseItemIDs()
+        {
+            foreach (var name in hash_items_parse_later)
+            {
+                hash_items_take_over_reload_time.Add(ItemClass.GetItemClass(name).Id);
+                //Log.Out($"parse item id: {name} {ItemClass.GetItemClass(name).Id}");
+            }
+            hash_items_parse_later.Clear();
         }
 
         public static bool IsReloadTimeTakeOverItem(int id)

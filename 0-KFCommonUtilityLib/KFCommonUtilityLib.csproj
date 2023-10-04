@@ -35,6 +35,10 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectCapability Include="DynamicDependentFile" />
+    <ProjectCapability Include="DynamicFileNesting" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="0Harmony">
       <HintPath>..\..\7DaysToDie_Data\Managed\0Harmony.dll</HintPath>
       <Private>False</Private>
@@ -138,7 +142,165 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="KFAttached\LeanTween\License.txt" />
+    <None Include="ModInfo.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="KFAttached\Animation\MonoBehaviours\AnimationProceduralRecoildAbs.cs.meta">
+      <DependentUpon>AnimationProceduralRecoildAbs.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\MonoBehaviours\AnimationAimRecoilReferences.cs.meta">
+      <DependentUpon>AnimationAimRecoilReferences.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\MonoBehaviours\AnimationRandomRecoil.cs.meta">
+      <DependentUpon>AnimationRandomRecoil.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\MonoBehaviours\AnimationRandomSound.cs.meta">
+      <DependentUpon>AnimationRandomSound.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\MonoBehaviours\AnimationReloadEvents.cs.meta">
+      <DependentUpon>AnimationReloadEvents.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\MonoBehaviours\RigWeightOverTime.cs.meta">
+      <DependentUpon>RigWeightOverTime.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\StateMachineBehaviours\AnimationAimRecoilResetState.cs.meta">
+      <DependentUpon>AnimationAimRecoilResetState.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\StateMachineBehaviours\AnimationCustomReloadState.cs.meta">
+      <DependentUpon>AnimationCustomReloadState.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\StateMachineBehaviours\AnimationRandomRecoilState.cs.meta">
+      <DependentUpon>AnimationRandomRecoilState.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\StateMachineBehaviours\AnimationResetRigWeightState.cs.meta">
+      <DependentUpon>AnimationResetRigWeightState.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\StateMachineBehaviours\AnimatorRandomSwitch.cs.meta">
+      <DependentUpon>AnimatorRandomSwitch.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\KFCommonUtilityLib.asmdef" />
+    <None Include="KFAttached\KFCommonUtilityLib.asmdef.meta">
+      <DependentUpon>KFCommonUtilityLib.asmdef</DependentUpon>
+    </None>
+    <None Include="KFAttached\KFUtilAttached\ApexWeaponHudControllerBase.cs.meta">
+      <DependentUpon>ApexWeaponHudControllerBase.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\KFUtilAttached\ChargeUpController.cs.meta">
+      <DependentUpon>ChargeUpController.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\KFUtilAttached\RigActivationBinding.cs.meta">
+      <DependentUpon>RigActivationBinding.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\KFUtilAttached\TransformActivationBinding.cs.meta">
+      <DependentUpon>TransformActivationBinding.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\KFUtilAttached\WeaponColorController.cs.meta">
+      <DependentUpon>WeaponColorController.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\KFUtilAttached\WeaponColorControllerBase.cs.meta">
+      <DependentUpon>WeaponColorControllerBase.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\KFUtilAttached\WeaponLabelController.cs.meta">
+      <DependentUpon>WeaponLabelController.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\KFUtilAttached\WeaponLabelControllerBase.cs.meta">
+      <DependentUpon>WeaponLabelControllerBase.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\KFUtilAttached\WeaponLabelControllerChargeUp.cs.meta">
+      <DependentUpon>WeaponLabelControllerChargeUp.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\KFUtilAttached\WeaponLabelControllerDevotion.cs.meta">
+      <DependentUpon>WeaponLabelControllerDevotion.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\KFUtilAttached\WeaponTextProController.cs.meta">
+      <DependentUpon>WeaponTextProController.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\LeanTween\Framework\LeanAudio.cs.meta">
+      <DependentUpon>LeanAudio.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\LeanTween\Framework\LeanSmooth.cs.meta">
+      <DependentUpon>LeanSmooth.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\LeanTween\Framework\LeanTest.cs.meta">
+      <DependentUpon>LeanTest.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\LeanTween\Framework\LeanTween.cs.meta">
+      <DependentUpon>LeanTween.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\LeanTween\Framework\LeanTweenExt.cs.meta">
+      <DependentUpon>LeanTweenExt.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\LeanTween\Framework\LTDescr.cs.meta">
+      <DependentUpon>LTDescr.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\LeanTween\Framework\LTDescrOptional.cs.meta">
+      <DependentUpon>LTDescrOptional.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\LeanTween\Framework\LTSeq.cs.meta">
+      <DependentUpon>LTSeq.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Misc\AttachmentReference.cs.meta">
+      <DependentUpon>AttachmentReference.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Misc\AudioSourceGroup.cs.meta">
+      <DependentUpon>AudioSourceGroup.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\Adaptors\BlendConstraintAdaptor.cs.meta">
+      <DependentUpon>BlendConstraintAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\Adaptors\ChainIKConstraintAdaptor.cs.meta">
+      <DependentUpon>ChainIKConstraintAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\Adaptors\DampedTransformAdaptor.cs.meta">
+      <DependentUpon>DampedTransformAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\Adaptors\Data\TwistNode.cs.meta">
+      <DependentUpon>TwistNode.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\Adaptors\MultiAimConstraintAdaptor.cs.meta">
+      <DependentUpon>MultiAimConstraintAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\Adaptors\MultiParentConstraintAdaptor.cs.meta">
+      <DependentUpon>MultiParentConstraintAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\Adaptors\MultiPositionConstraintAdaptor.cs.meta">
+      <DependentUpon>MultiPositionConstraintAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\Adaptors\MultiReferentialConstraintAdaptor.cs.meta">
+      <DependentUpon>MultiReferentialConstraintAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\Adaptors\MultiRotationConstraintAdaptor.cs.meta">
+      <DependentUpon>MultiRotationConstraintAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\Adaptors\OverrideTransformAdaptor.cs.meta">
+      <DependentUpon>OverrideTransformAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\Adaptors\RigAdaptorAbs.cs.meta">
+      <DependentUpon>RigAdaptorAbs.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\Adaptors\TwistChainConstraintAdaptor.cs.meta">
+      <DependentUpon>TwistChainConstraintAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\Adaptors\TwistCorrectionAdaptor.cs.meta">
+      <DependentUpon>TwistCorrectionAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\Adaptors\TwoBoneIKConstraintAdaptor.cs.meta">
+      <DependentUpon>TwoBoneIKConstraintAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\RigConverter.cs.meta">
+      <DependentUpon>RigConverter.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\RigTargets.cs.meta">
+      <DependentUpon>RigTargets.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\Utils\KFExtensions.cs.meta">
+      <DependentUpon>KFExtensions.cs</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Harmony\RecoilPatch.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationProceduralRecoildAbs.cs" />
     <Compile Include="KFAttached\KFUtilAttached\ApexWeaponHudControllerBase.cs" />
     <Compile Include="KFAttached\KFUtilAttached\RigActivationBinding.cs" />
     <Compile Include="KFAttached\LeanTween\Framework\LeanAudio.cs" />
@@ -230,71 +392,17 @@
     <Compile Include="Scripts\Utilities\SaveTextureToFileUtility.cs" />
     <Compile Include="Scripts\Utilities\EntityInventoryExtension.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="KFAttached\LeanTween\License.txt" />
-    <Content Include="ModInfo.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="KFAttached\Animation\MonoBehaviours\AnimationAimRecoilReferences.cs.meta" />
-    <None Include="KFAttached\Animation\MonoBehaviours\AnimationRandomRecoil.cs.meta" />
-    <None Include="KFAttached\Animation\MonoBehaviours\AnimationRandomSound.cs.meta" />
-    <None Include="KFAttached\Animation\MonoBehaviours\AnimationReloadEvents.cs.meta" />
-    <None Include="KFAttached\Animation\MonoBehaviours\RigWeightOverTime.cs.meta" />
-    <None Include="KFAttached\Animation\StateMachineBehaviours\AnimationAimRecoilResetState.cs.meta" />
-    <None Include="KFAttached\Animation\StateMachineBehaviours\AnimationCustomReloadState.cs.meta" />
-    <None Include="KFAttached\Animation\StateMachineBehaviours\AnimationRandomRecoilState.cs.meta" />
-    <None Include="KFAttached\Animation\StateMachineBehaviours\AnimationResetRigWeightState.cs.meta" />
-    <None Include="KFAttached\Animation\StateMachineBehaviours\AnimatorRandomSwitch.cs.meta" />
-    <None Include="KFAttached\KFCommonUtilityLib.asmdef" />
-    <None Include="KFAttached\KFCommonUtilityLib.asmdef.meta" />
-    <None Include="KFAttached\KFUtilAttached\ApexWeaponHudControllerBase.cs.meta" />
-    <None Include="KFAttached\KFUtilAttached\ChargeUpController.cs.meta" />
-    <None Include="KFAttached\KFUtilAttached\RigActivationBinding.cs.meta" />
-    <None Include="KFAttached\KFUtilAttached\TransformActivationBinding.cs.meta" />
-    <None Include="KFAttached\KFUtilAttached\WeaponColorController.cs.meta" />
-    <None Include="KFAttached\KFUtilAttached\WeaponColorControllerBase.cs.meta" />
-    <None Include="KFAttached\KFUtilAttached\WeaponLabelController.cs.meta" />
-    <None Include="KFAttached\KFUtilAttached\WeaponLabelControllerBase.cs.meta" />
-    <None Include="KFAttached\KFUtilAttached\WeaponLabelControllerChargeUp.cs.meta" />
-    <None Include="KFAttached\KFUtilAttached\WeaponLabelControllerDevotion.cs.meta" />
-    <None Include="KFAttached\KFUtilAttached\WeaponTextProController.cs.meta" />
-    <None Include="KFAttached\LeanTween\Framework\LeanAudio.cs.meta" />
-    <None Include="KFAttached\LeanTween\Framework\LeanSmooth.cs.meta" />
-    <None Include="KFAttached\LeanTween\Framework\LeanTest.cs.meta" />
-    <None Include="KFAttached\LeanTween\Framework\LeanTween.cs.meta" />
-    <None Include="KFAttached\LeanTween\Framework\LeanTweenExt.cs.meta" />
-    <None Include="KFAttached\LeanTween\Framework\LTDescr.cs.meta" />
-    <None Include="KFAttached\LeanTween\Framework\LTDescrOptional.cs.meta" />
-    <None Include="KFAttached\LeanTween\Framework\LTSeq.cs.meta" />
-    <None Include="KFAttached\Misc\AttachmentReference.cs.meta" />
-    <None Include="KFAttached\Misc\AudioSourceGroup.cs.meta" />
-    <None Include="KFAttached\RigAdaptors\Adaptors\BlendConstraintAdaptor.cs.meta" />
-    <None Include="KFAttached\RigAdaptors\Adaptors\ChainIKConstraintAdaptor.cs.meta" />
-    <None Include="KFAttached\RigAdaptors\Adaptors\DampedTransformAdaptor.cs.meta" />
-    <None Include="KFAttached\RigAdaptors\Adaptors\Data\TwistNode.cs.meta" />
-    <None Include="KFAttached\RigAdaptors\Adaptors\MultiAimConstraintAdaptor.cs.meta" />
-    <None Include="KFAttached\RigAdaptors\Adaptors\MultiParentConstraintAdaptor.cs.meta" />
-    <None Include="KFAttached\RigAdaptors\Adaptors\MultiPositionConstraintAdaptor.cs.meta" />
-    <None Include="KFAttached\RigAdaptors\Adaptors\MultiReferentialConstraintAdaptor.cs.meta" />
-    <None Include="KFAttached\RigAdaptors\Adaptors\MultiRotationConstraintAdaptor.cs.meta" />
-    <None Include="KFAttached\RigAdaptors\Adaptors\OverrideTransformAdaptor.cs.meta" />
-    <None Include="KFAttached\RigAdaptors\Adaptors\RigAdaptorAbs.cs.meta" />
-    <None Include="KFAttached\RigAdaptors\Adaptors\TwistChainConstraintAdaptor.cs.meta" />
-    <None Include="KFAttached\RigAdaptors\Adaptors\TwistCorrectionAdaptor.cs.meta" />
-    <None Include="KFAttached\RigAdaptors\Adaptors\TwoBoneIKConstraintAdaptor.cs.meta" />
-    <None Include="KFAttached\RigAdaptors\RigConverter.cs.meta" />
-    <None Include="KFAttached\RigAdaptors\RigTargets.cs.meta" />
-    <None Include="KFAttached\RigAdaptors\Utils\KFExtensions.cs.meta" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <AttachedScriptFolder>KFAttached</AttachedScriptFolder>
     <UnityProjectPath>J:\Unity Projects\AnimationPlayground\Assets\</UnityProjectPath>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>if exist "$(UnityProjectPath)" (
-    echo Unity project found, copying attached scripts...
-    robocopy "$(ProjectDir)$(AttachedScriptFolder)" "$(UnityProjectPath)$(AttachedScriptFolder)"  /MIR || set errorlevel=0
-)</PostBuildEvent>
+    <PostBuildEvent>
+      if exist "$(UnityProjectPath)" (
+      echo Unity project found, copying attached scripts...
+      robocopy "$(ProjectDir)$(AttachedScriptFolder)" "$(UnityProjectPath)$(AttachedScriptFolder)"  /MIR || set errorlevel=0
+      )
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

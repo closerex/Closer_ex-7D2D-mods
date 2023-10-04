@@ -9,5 +9,9 @@
 			<property name="ScopeCameraOffset" value="-8.5e-05,-0.02385,-0.066"/>
 			<property name="CrosshairOnAim" value="false"/>
 		</item_property_overrides>
+		<item_property_overrides name="gunP90">
+			<property name="ScopeCameraOffset" value="-0.0015,0.004,0"/>
+			<property name="CrosshairOnAim" value="false"/>
+		</item_property_overrides>
 	</append>
 </configs>
