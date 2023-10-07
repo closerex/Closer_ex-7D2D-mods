@@ -453,7 +453,6 @@ public class VPRaycastWeapon : VehicleWeaponBase
                     //muzzleSmokeManager.Add(smoke);
                 }
             }
-            Log.Out($"transform count {muzzleTrans.childCount}");
         }
     }
 
