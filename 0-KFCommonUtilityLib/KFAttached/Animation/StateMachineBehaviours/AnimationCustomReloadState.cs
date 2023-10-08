@@ -6,35 +6,42 @@ public class AnimationCustomReloadState : StateMachineBehaviour
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        animator.speed = 1f;
         animator.SetBool("Reload", false);
-        EntityAlive componentInParent = animator.GetComponentInParent<EntityAlive>();
-        if (componentInParent == null)
+        if (actionData == null || player == null || eventBridge == null)
         {
-            return;
+            player = animator.GetComponentInParent<EntityPlayerLocal>();
+            actionData = player.inventory.holdingItemData.actionData[0] as ItemActionRanged.ItemActionDataRanged;
+            eventBridge = animator.GetComponent<AnimationReloadEvents>();
         }
-        actionData = componentInParent.inventory.holdingItemData.actionData[0] as ItemActionRanged.ItemActionDataRanged;
-        //Log.Out("ANIMATOR STATE ENTER");
-        animator.GetComponent<AnimationReloadEvents>()?.OnReloadStart();
-        stateEnteredThisFrame = true;
+
+#if DEBUG
+        Log.Out($"ANIMATOR STATE ENTER : {actionData.invData.item.Name}");
+#endif
+        eventBridge.OnReloadStart();
+        eventBridge.OnReloadUpdate();
     }
 
     // Token: 0x06000B5C RID: 2908 RVA: 0x000AC3A8 File Offset: 0x000AA5A8
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.speed = 1f;
+        eventBridge.OnReloadUpdate();
         if (actionData == null)
         {
             return;
         }
-        //actionData.isReloading = false;
-        //actionData.isReloadCancelled = false;
-        //actionData.isChangingAmmoType = false;
-        //Log.Out("ANIMATOR STATE EXIT");
+        actionData.isReloading = false;
+        actionData.isReloadCancelled = false;
+        actionData.isChangingAmmoType = false;
+#if DEBUG
+        Log.Out($"ANIMATOR STATE EXIT : {actionData.invData.item.Name}");
+#endif
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        stateEnteredThisFrame = false;
+        eventBridge.OnReloadUpdate();
         if (actionData == null)
         {
             return;
@@ -42,7 +49,9 @@ public class AnimationCustomReloadState : StateMachineBehaviour
         if (actionData.isReloadCancelled)
         {
             animator.speed = 30f;
-            //Log.Out($"ANIMATOR UPDATE: RELOAD CANCELLED, ANIMATOR SPEED {animator.speed}");
+#if DEBUG
+            Log.Out($"ANIMATOR UPDATE: RELOAD CANCELLED, ANIMATOR SPEED {animator.speed}");
+#endif
         }
         if (!actionData.isReloadCancelled && actionData.isReloading)
         {
@@ -52,6 +61,7 @@ public class AnimationCustomReloadState : StateMachineBehaviour
     }
 
     private ItemActionRanged.ItemActionDataRanged actionData;
-    private static bool stateEnteredThisFrame = false;
+    private EntityPlayerLocal player;
+    private AnimationReloadEvents eventBridge;
 #endif
-}
+        }

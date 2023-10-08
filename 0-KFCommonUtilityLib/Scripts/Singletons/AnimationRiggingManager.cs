@@ -5,28 +5,31 @@ namespace KFCommonUtilityLib.Scripts.Singletons
 {
     public static class AnimationRiggingManager
     {
-        private class FpvTransformRef
+        public class FpvTransformRef
         {
             public Animator fpvAnimator;
+            public RigTargets targets;
             public Transform muzzle;
             public Transform muzzle2;
             public bool isDoubleBarrel;
 
-            public FpvTransformRef(Transform root, bool isDoubleBarrel)
+            public FpvTransformRef(RigTargets targets, bool isDoubleBarrel)
             {
+                this.targets = targets;
                 this.isDoubleBarrel = isDoubleBarrel;
-                fpvAnimator = root.GetComponentInChildren<Animator>();
+                fpvAnimator = targets.itemFpv.GetComponentInChildren<Animator>();
                 if (isDoubleBarrel)
                 {
-                    muzzle = root.FindInChildren("Muzzle_L");
-                    muzzle2 = root.FindInChildren("Muzzle_R");
+                    muzzle = targets.itemFpv.transform.FindInChildren("Muzzle_L");
+                    muzzle2 = targets.itemFpv.transform.FindInChildren("Muzzle_R");
                 }
                 else
-                    muzzle = root.FindInChilds("Muzzle");
+                    muzzle = targets.itemFpv.transform.FindInChilds("Muzzle");
             }
         }
 
         public static bool IsHoldingRiggedWeapon => fpvTransformRef != null;
+        public static FpvTransformRef FpvTransformReference => fpvTransformRef;
 
         //private static readonly HashSet<int> hash_rig_items = new HashSet<int>();
         private static FpvTransformRef fpvTransformRef;
@@ -69,7 +72,15 @@ namespace KFCommonUtilityLib.Scripts.Singletons
         public static void UpdateLocalPlayerAvatar(AvatarLocalPlayerController controller)
         {
             if (fpvTransformRef != null && (controller.Entity as EntityPlayerLocal).bFirstPersonView)
+            {
+                //workaround for animator bullshit
+                if (!fpvTransformRef.targets.itemFpv.gameObject.activeSelf)
+                {
+                    Log.Out("Rigged weapon not active, enabling it...");
+                    fpvTransformRef.targets.SetEnabled(true);
+                }
                 controller.FPSArms?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
+            }
         }
 
         public static void OnClearInventorySlot(Inventory inv, int slot)
@@ -86,7 +97,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             Transform transform = inv.models[inv.holdingItemIdx];
             fpvTransformRef = null;
             if (transform != null && transform.TryGetComponent(out RigTargets targets))
-                fpvTransformRef = new FpvTransformRef(targets.itemFpv, inv.holdingItemData.item.ItemTags.Test_Bit(FastTags.GetBit("dBarrel")));
+                fpvTransformRef = new FpvTransformRef(targets, inv.holdingItemData.item.ItemTags.Test_Bit(FastTags.GetBit("dBarrel")));
         }
 
         public static Transform GetAttachmentReferenceOverrideTransform(Transform transform, string transformPath, Entity entity)
@@ -196,31 +207,31 @@ namespace KFCommonUtilityLib.Scripts.Singletons
         public static void SetTrigger(int _pid)
         {
             if (fpvTransformRef != null)
-                fpvTransformRef.fpvAnimator.SetTrigger(_pid);
+                fpvTransformRef.fpvAnimator?.SetTrigger(_pid);
         }
 
         public static void ResetTrigger(int _pid)
         {
             if (fpvTransformRef != null)
-                fpvTransformRef.fpvAnimator.ResetTrigger(_pid);
+                fpvTransformRef.fpvAnimator?.ResetTrigger(_pid);
         }
 
         public static void SetFloat(int _pid, float _value)
         {
             if (fpvTransformRef != null)
-                fpvTransformRef.fpvAnimator.SetFloat(_pid, _value);
+                fpvTransformRef.fpvAnimator?.SetFloat(_pid, _value);
         }
 
         public static void SetBool(int _pid, bool _value)
         {
             if (fpvTransformRef != null)
-                fpvTransformRef.fpvAnimator.SetBool(_pid, _value);
+                fpvTransformRef.fpvAnimator?.SetBool(_pid, _value);
         }
 
         public static void SetInt(int _pid, int _value)
         {
             if (fpvTransformRef != null)
-                fpvTransformRef.fpvAnimator.SetInteger(_pid, _value);
+                fpvTransformRef.fpvAnimator?.SetInteger(_pid, _value);
         }
     }
 }

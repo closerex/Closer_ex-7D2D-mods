@@ -135,29 +135,19 @@ public class RigTargets : MonoBehaviour
         //itemFpv.GetComponentInChildren<Animator>().updateMode = AnimatorUpdateMode.Normal;
         attachmentReference?.SetParent(enabled ? itemFpv : transform, false);
         var rigBuilder = fpsArms.AddMissingComponent<RigBuilder>();
-        if(!enabled)
-            rigBuilder.enabled = false;
-        if (enabled)
-        {
-            itemFpv.gameObject.SetActive(enabled);
-            rigLayer.active = enabled;
-        }
-        else
-        {
-            rigLayer.active = enabled;
-            itemFpv.gameObject.SetActive(enabled);
-        }
-        //rigLayer.active = enabled;
-        //itemFpv.gameObject.SetActive(enabled);
+        //if (!enabled)
+        //    rigBuilder.enabled = false;
+        itemFpv.gameObject.SetActive(enabled);
+        rigLayer.active = enabled;
         rig.gameObject.SetActive(enabled);
-        if (enabled)
-            rigBuilder.enabled = true;
-        //fpsArms.gameObject.SetActive(false);
-        //fpsArms.gameObject.SetActive(true);
-        //rigLayer.active = enabled;
+        itemFpv.localPosition = new Vector3(0, 0, enabled ? 0 : -100);
+#if UNITY_EDITOR
+        //if (enabled)
+        //    rigBuilder.enabled = true;
+#endif
 #if !UNITY_EDITOR
-        if (AnimationRiggingManager.IsHoldingRiggedWeapon)
-            rigBuilder.enabled = true;
+        //if (AnimationRiggingManager.IsHoldingRiggedWeapon)
+        //    rigBuilder.enabled = true;
 #endif
 
         gameObject.SetActive(forceDisableRoot ? false : !enabled);

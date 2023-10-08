@@ -3,18 +3,30 @@
 [AddComponentMenu("KFAttachments/Utils/Animation Reload Events")]
 public class AnimationReloadEvents : MonoBehaviour
 {
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+#if !UNITY_EDITOR
+        player = GetComponentInParent<EntityPlayerLocal>();
+        actionData = player.inventory.holdingItemData.actionData[0] as ItemActionRanged.ItemActionDataRanged;
+        actionRanged = (ItemActionRanged)player.inventory.holdingItem.Actions[0];
+#endif
+    }
+
     public void OnReloadFinish()
     {
 #if !UNITY_EDITOR
-        var animator = GetComponent<Animator>();
-        animator.speed = 1f;
+        //animator.speed = 1f;
+        animator.SetBool("Reload", false);
         if (actionData == null)
         {
             return;
         }
         if (!actionData.isReloading)
         {
-            //Log.Out("ANIMATION RELOAD EVENT NOT RELOADING");
+#if DEBUG
+            Log.Out($"ANIMATION RELOAD EVENT NOT RELOADING : {actionData.invData.item.Name}");
+#endif
             return;
         }
         if (!actionData.isReloadCancelled)
@@ -31,7 +43,9 @@ public class AnimationReloadEvents : MonoBehaviour
                     actionData.invData.holdingEntitySoundID = -1;
                 }
             }
-            //Log.Out("ANIMATION RELOAD EVENT FINISHING");
+#if DEBUG
+            Log.Out($"ANIMATION RELOAD EVENT FINISHING : {actionData.invData.item.Name}");
+#endif
         }
         actionData.isReloading = false;
         actionData.invData.holdingEntity.MinEventContext.ItemActionData = actionData;
@@ -40,25 +54,48 @@ public class AnimationReloadEvents : MonoBehaviour
         actionData.invData.holdingEntity.inventory.CallOnToolbeltChangedInternal();
         actionData.isReloadCancelled = false;
         actionData.isChangingAmmoType = false;
-        //Log.Out("ANIMATION RELOAD EVENT FINISHED");
+#if DEBUG
+        Log.Out($"ANIMATION RELOAD EVENT FINISHED : {actionData.invData.item.Name}");
 #endif
-    }
+#endif
+        }
 
 #if !UNITY_EDITOR
+    public bool ReloadUpdatedThisFrame => reloadUpdatedThisFrame;
+    private bool reloadUpdatedThisFrame = false;
+    internal void OnReloadUpdate()
+    {
+        reloadUpdatedThisFrame = true;
+    }
+
+    private void OnAnimatorMove()
+    {
+        if (actionData != null)
+        {
+            if (actionData.isReloading && !reloadUpdatedThisFrame)
+            {
+                Log.Warning("Animator not sending update msg this frame, reloading is cancelled!");
+                actionData.isReloadCancelled = true;
+                OnReloadFinish();
+            }
+        }
+        else
+        {
+            //Log.Warning("actionData is null!");
+        }
+        reloadUpdatedThisFrame = false;
+    }
+
     public void OnReloadStart()
     {
-        var animator = GetComponent<Animator>();
-        EntityAlive componentInParent = GetComponentInParent<EntityAlive>();
-        if (componentInParent == null)
+        if (player == null)
         {
             return;
         }
-        actionData = componentInParent.inventory.holdingItemData.actionData[0] as ItemActionRanged.ItemActionDataRanged;
         if (actionData == null)
         {
             return;
         }
-        actionRanged = (ItemActionRanged)componentInParent.inventory.holdingItem.Actions[0];
         if (actionData.isReloading)
         {
             return;
@@ -77,12 +114,12 @@ public class AnimationReloadEvents : MonoBehaviour
         {
             if (actionRanged.SoundReload != null)
             {
-                componentInParent.PlayOneShot(actionRanged.SoundReload.Value, false);
+                player.PlayOneShot(actionRanged.SoundReload.Value, false);
             }
         }
         else if (animator.GetNextAnimatorClipInfo(0).Length != 0 && animator.GetNextAnimatorClipInfo(0)[0].clip.events.Length == 0 && actionRanged.SoundReload != null)
         {
-            componentInParent.PlayOneShot(actionRanged.SoundReload.Value, false);
+            player.PlayOneShot(actionRanged.SoundReload.Value, false);
         }
         int magSize = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, actionData.invData.itemValue, (float)actionRanged.BulletsPerMagazine, actionData.invData.holdingEntity, null, default(FastTags), true, true, true, true, 1, true, false);
         ItemActionLauncher itemActionLauncher = actionRanged as ItemActionLauncher;
@@ -104,7 +141,7 @@ public class AnimationReloadEvents : MonoBehaviour
             }
             for (int i = itemActionDataLauncher.projectileInstance.Count; i < projectileCount; i++)
             {
-                itemActionDataLauncher.projectileInstance.Add(itemActionLauncher.instantiateProjectile(actionData, new Vector3(0f, (float)i * 0.005f, 0f)));
+                itemActionDataLauncher.projectileInstance.Add(itemActionLauncher.instantiateProjectile(actionData, new Vector3(0f, (float)i, 0f)));
             }
         }
         actionData.isReloading = true;
@@ -114,7 +151,9 @@ public class AnimationReloadEvents : MonoBehaviour
         {
             actionHoldOpen.BeginReloadGun(actionData);
         }
-        //Log.Out("ANIMATION EVENT RELOAD START");
+#if DEBUG
+        Log.Out($"ANIMATION EVENT RELOAD START : {actionData.invData.item.Name}");
+#endif
     }
 
     private int GetAmmoCountToReload(EntityAlive ea, ItemValue ammo, int modifiedMagazineSize)
@@ -166,7 +205,9 @@ public class AnimationReloadEvents : MonoBehaviour
         return rps > 0 ? rps : 1;
     }
 
+    private EntityPlayerLocal player;
     private ItemActionRanged.ItemActionDataRanged actionData;
     private ItemActionRanged actionRanged;
 #endif
-}
+    private Animator animator;
+    }
