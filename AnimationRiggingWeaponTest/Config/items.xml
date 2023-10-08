@@ -353,7 +353,7 @@
 			<property name="ShowQuality" value="true"/>
 			<property name="SoundUnholster" value="weapon_unholster"/>
 			<property name="SoundHolster" value="weapon_holster"/>
-			<property name="TakeOverReloadTime" value="true"/>
+			<!-- <property name="TakeOverReloadTime" value="true"/> -->
 
 			<property class="Action0">
 				<property name="Class" value="HoldOpen,KFCommonUtilityLib"/>
