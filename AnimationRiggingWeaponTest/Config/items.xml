@@ -174,19 +174,19 @@
 				</triggered_effect>
 				<triggered_effect trigger="onSelfHoldingItemCreated" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="ironsight"/>
 				<passive_effect name="MaxRange" operation="base_set" value="90" tags="perkMachineGunner"/>
-				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="0.846">
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="0.661">
 					<requirement name="RoundsInMagazine" operation="LTE" value="0"/>
 					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="LT" value="5"/>
 				</passive_effect>
-				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="1.41">
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="0.952">
 					<requirement name="RoundsInMagazine" operation="LTE" value="0"/>
 					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="GTE" value="5"/>
 				</passive_effect>
-				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="0.84">
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="0.624">
 					<requirement name="RoundsInMagazine" operation="GT" value="0"/>
 					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="LT" value="5"/>
 				</passive_effect>
-				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="1.375">
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="0.971">
 					<requirement name="RoundsInMagazine" operation="GT" value="0"/>
 					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="GTE" value="5"/>
 				</passive_effect>
@@ -205,7 +205,7 @@
 				<passive_effect name="RoundsPerMinute" operation="base_set" value="650" tags="perkMachineGunner"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="999" tags="perkMachineGunner"/>
 				<passive_effect name="MagazineSize" operation="base_set" value="30" tags="perkMachineGunner"/>
-				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkMachineGunner"/> <!-- 3.8s -->
+				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="0.7" tags="perkMachineGunner"/> <!-- 3.8s -->
 
 				<passive_effect name="SpreadDegreesVertical" operation="base_set" value="2.8" tags="perkMachineGunner"/>
 				<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="2.8" tags="perkMachineGunner"/>
@@ -286,6 +286,22 @@
 				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="false">
 					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="LT" value="5"/>
 				</triggered_effect>
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="0.642">
+					<requirement name="RoundsInMagazine" operation="LTE" value="0"/>
+					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="LT" value="5"/>
+				</passive_effect>
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="0.926">
+					<requirement name="RoundsInMagazine" operation="LTE" value="0"/>
+					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="GTE" value="5"/>
+				</passive_effect>
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="0.591">
+					<requirement name="RoundsInMagazine" operation="GT" value="0"/>
+					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="LT" value="5"/>
+				</passive_effect>
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="0.962">
+					<requirement name="RoundsInMagazine" operation="GT" value="0"/>
+					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="GTE" value="5"/>
+				</passive_effect>
 				<passive_effect name="MaxRange" operation="base_set" value="90" tags="perkMachineGunner"/>
 				<passive_effect name="DamageFalloffRange" operation="base_set" value="49" tags="perkMachineGunner"/>
 				<passive_effect name="DamageFalloffRange" operation="perc_add" value="-.1,.05" tier="1,6" tags="perkMachineGunner"/> <!-- random effective rng -->
@@ -302,7 +318,7 @@
 				<passive_effect name="RoundsPerMinute" operation="base_set" value="600" tags="perkMachineGunner"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="999" tags="perkMachineGunner"/>
 				<passive_effect name="MagazineSize" operation="base_set" value="30" tags="perkMachineGunner"/>
-				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkMachineGunner"/> <!-- 3.8s -->
+				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="0.7" tags="perkMachineGunner"/> <!-- 3.8s -->
 
 				<passive_effect name="SpreadDegreesVertical" operation="base_set" value="2.8" tags="perkMachineGunner"/>
 				<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="2.8" tags="perkMachineGunner"/>
