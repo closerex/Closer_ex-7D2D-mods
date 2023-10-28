@@ -356,8 +356,8 @@
 			<property name="DegradationBreaksAfter" value="false"/>
 			<property name="SoundJammed" value="weapon_jam"/>
 			<property name="Attachments" value="meleeToolFlashlight02"/>
-			<property name="CrosshairOnAim" value="true"/> <!-- aimTest -->
-			<property name="CrosshairUpAfterShot" value="true"/> <!-- aimTest -->
+			<property name="CrosshairOnAim" value="false"/> <!-- aimTest -->
+			<property name="CrosshairUpAfterShot" value="false"/> <!-- aimTest -->
 			<property name="Sound_Sight_In" value="smg_sight_in"/>
 			<property name="Sound_Sight_Out" value="smg_sight_out"/>
 			<property name="Group" value="Ammo/Weapons,Ranged Weapons"/>
