@@ -14,6 +14,23 @@ using UnityEngine;
 [HarmonyPatch]
 class AnimationRiggingPatches
 {
+    /// <summary>
+    /// compatibility patch for launcher projectile joint
+    /// </summary>
+    /// <param name="__instance"></param>
+    /// <param name="_invData"></param>
+    [HarmonyPatch(typeof(ItemActionLauncher.ItemActionDataLauncher), MethodType.Constructor, new Type[] { typeof(ItemInventoryData), typeof(int) })]
+    [HarmonyPostfix]
+    private static void Postfix_ctor_ItemActionDataLauncher(ItemActionLauncher.ItemActionDataLauncher __instance, ItemInventoryData _invData)
+    {
+        __instance.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName("ProjectileJoint", _invData.model);
+    }
+
+    /// <summary>
+    /// attachment path patch, only apply to MinEventActionSetTransformActive!
+    /// </summary>
+    /// <param name="instructions"></param>
+    /// <returns></returns>
     [HarmonyPatch(typeof(MinEventActionSetTransformActive), nameof(MinEventActionSetTransformActive.Execute))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_Execute_MinEventActionSetTransformActive(IEnumerable<CodeInstruction> instructions)
@@ -39,6 +56,10 @@ class AnimationRiggingPatches
         return codes;
     }
 
+    /// <summary>
+    /// reload logging patch
+    /// </summary>
+    /// <param name="stateInfo"></param>
     [HarmonyPatch(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.OnStateEnter))]
     [HarmonyPostfix]
     private static void Postfix_OnStateEnter_AnimatorRangedReloadState(AnimatorStateInfo stateInfo)
@@ -63,7 +84,6 @@ class AnimationRiggingPatches
         AnimationRiggingManager.Clear();
     }
 
-    //altmode workarounds
     private static void ParseTakeOverReloadTime(XElement _node)
     {
         string itemName = _node.GetAttribute("name");

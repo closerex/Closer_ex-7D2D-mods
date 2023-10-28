@@ -2,7 +2,7 @@
 
 public class AnimationCustomReloadState : StateMachineBehaviour
 {
-#if !UNITY_EDITOR
+#if NotEditor
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {

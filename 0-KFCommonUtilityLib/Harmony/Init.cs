@@ -8,6 +8,7 @@ public class CommonUtilityLibInit : IModApi
         Log.Out(" Loading Patch: " + GetType());
         ModEvents.GameAwake.RegisterHandler(CommonUtilityPatch.InitShotStates);
         ModEvents.GameAwake.RegisterHandler(CustomEffectEnumManager.InitDefault);
+        ModEvents.GameAwake.RegisterHandler(DelayLoadModuleManager.DelayLoad);
         ModEvents.GameStartDone.RegisterHandler(RegisterKFEnums);
         ModEvents.GameStartDone.RegisterHandler(AnimationRiggingManager.ParseItemIDs);
         //ModEvents.GameStartDone.RegisterHandler(CustomEffectEnumManager.PrintResults);

@@ -1,4 +1,4 @@
-#if !UNITY_EDITOR
+#if NotEditor
 using KFCommonUtilityLib.Scripts.Singletons;
 #endif
 using System;
@@ -27,7 +27,7 @@ public class RigTargets : MonoBehaviour
 
     private float weight;
 
-#if !UNITY_EDITOR
+#if NotEditor
     private void Awake()
     {
         itemFpv.gameObject.SetActive(false);
@@ -60,7 +60,7 @@ public class RigTargets : MonoBehaviour
         rig.transform.position = Vector3.zero;
         rig.transform.localPosition = Vector3.zero;
         rig.transform.localRotation = Quaternion.identity;
-#if !UNITY_EDITOR
+#if NotEditor
         Utils.SetLayerRecursively(itemFpv.gameObject, 10, Utils.ExcludeLayerZoom);
         Utils.SetLayerRecursively(gameObject, 24, Utils.ExcludeLayerZoom);
 #endif
@@ -141,14 +141,6 @@ public class RigTargets : MonoBehaviour
         rigLayer.active = enabled;
         rig.gameObject.SetActive(enabled);
         itemFpv.localPosition = new Vector3(0, 0, enabled ? 0 : -100);
-#if UNITY_EDITOR
-        //if (enabled)
-        //    rigBuilder.enabled = true;
-#endif
-#if !UNITY_EDITOR
-        //if (AnimationRiggingManager.IsHoldingRiggedWeapon)
-        //    rigBuilder.enabled = true;
-#endif
 
         gameObject.SetActive(forceDisableRoot ? false : !enabled);
     }

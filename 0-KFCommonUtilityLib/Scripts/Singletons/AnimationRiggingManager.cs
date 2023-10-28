@@ -134,6 +134,17 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             return fpvTransformRef.muzzle2;
         }
 
+        public static Transform GetTransformOverrideByName(string name, Transform itemModel)
+        {
+            if(itemModel == null)
+                return null;
+            var player = GameManager.Instance.World.GetPrimaryPlayer();
+            if (player == null || !itemModel.TryGetComponent<RigTargets>(out var targets))
+                return itemModel.FindInAllChilds(name, false);
+
+            return (player.bFirstPersonView ? targets.itemFpv : itemModel).FindInAllChilds(name, false);
+        }
+
         //patched to ItemActionRanged.ItemActionEffect
         public static bool SpawnFpvParticles(bool isLocalFpv, ItemActionData _actionData, string particlesMuzzleFire, string particlesMuzzleFireFpv, string particlesMuzzleSmoke, string particlesMuzzleSmokeFpv)
         {

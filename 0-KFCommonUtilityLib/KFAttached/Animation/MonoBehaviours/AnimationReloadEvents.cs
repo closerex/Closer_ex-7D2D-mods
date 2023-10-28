@@ -6,7 +6,7 @@ public class AnimationReloadEvents : MonoBehaviour
     private void Awake()
     {
         animator = GetComponent<Animator>();
-#if !UNITY_EDITOR
+#if NotEditor
         player = GetComponentInParent<EntityPlayerLocal>();
         actionData = player.inventory.holdingItemData.actionData[0] as ItemActionRanged.ItemActionDataRanged;
         actionRanged = (ItemActionRanged)player.inventory.holdingItem.Actions[0];
@@ -15,7 +15,7 @@ public class AnimationReloadEvents : MonoBehaviour
 
     public void OnReloadFinish()
     {
-#if !UNITY_EDITOR
+#if NotEditor
         //animator.speed = 1f;
         animator.SetBool("Reload", false);
         if (actionData == null)
@@ -60,7 +60,7 @@ public class AnimationReloadEvents : MonoBehaviour
 #endif
         }
 
-#if !UNITY_EDITOR
+#if NotEditor
     public bool ReloadUpdatedThisFrame => reloadUpdatedThisFrame;
     private bool reloadUpdatedThisFrame = false;
     internal void OnReloadUpdate()
@@ -141,7 +141,7 @@ public class AnimationReloadEvents : MonoBehaviour
             }
             for (int i = itemActionDataLauncher.projectileInstance.Count; i < projectileCount; i++)
             {
-                itemActionDataLauncher.projectileInstance.Add(itemActionLauncher.instantiateProjectile(actionData, new Vector3(0f, (float)i, 0f)));
+                itemActionDataLauncher.projectileInstance.Add(itemActionLauncher.instantiateProjectile(actionData, new Vector3(0f, 0f, 0f)));
             }
         }
         actionData.isReloading = true;
