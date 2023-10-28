@@ -14,7 +14,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 [HarmonyPatch]
-class CommonUtilityPatch
+public class CommonUtilityPatch
 {
     //SCore NPC compatibility
     public static void FakeAttackOther(Entity entity, EntityAlive attacker, ItemValue damageItemValue, WorldRayHitInfo hitInfo, bool useInventory)
@@ -460,7 +460,7 @@ class CommonUtilityPatch
 
     [HarmonyPatch(typeof(MinEventActionBase), nameof(MinEventActionBase.ParseXmlAttribute))]
     [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_ParseXmlAttribute(IEnumerable<CodeInstruction> instructions)
+    private static IEnumerable<CodeInstruction> Transpiler_ParseXmlAttribute_MinEventActionBase(IEnumerable<CodeInstruction> instructions)
     {
         var codes = instructions.ToList();
         MethodInfo mtd_enum_parse = AccessTools.Method(typeof(EnumUtils), nameof(EnumUtils.Parse), new[] { typeof(string), typeof(bool) }, new[] { typeof(MinEventTypes) });
@@ -476,6 +476,42 @@ class CommonUtilityPatch
         }
 
         return codes;
+    }
+
+    [HarmonyPatch(typeof(ProjectileMoveScript), "checkCollision")]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_checkCollision_ProjectileMoveScript(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+        var fld_strain = AccessTools.Field(typeof(ItemActionLauncher.ItemActionDataLauncher), nameof(ItemActionLauncher.ItemActionDataLauncher.strainPercent));
+        var mtd_block = AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.GetDamageBlock));
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].LoadsField(fld_strain))
+            {
+                codes.InsertRange(i + 1, new CodeInstruction[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    CodeInstruction.LoadField(typeof(ProjectileMoveScript), nameof(ProjectileMoveScript.itemValueProjectile)),
+                    new CodeInstruction(OpCodes.Ldloc_S, 4),
+                    CodeInstruction.Call(typeof(CommonUtilityPatch), codes[i - 3].Calls(mtd_block) ? nameof(CommonUtilityPatch.GetProjectileBlockDamagePerc) : nameof(CommonUtilityPatch.GetProjectileEntityDamagePerc)),
+                    new CodeInstruction(OpCodes.Mul)
+                });
+            }
+        }
+
+        return codes;
+    }
+
+    public static float GetProjectileBlockDamagePerc(ItemValue _itemValue, EntityAlive _holdingEntity)
+    {
+        return EffectManager.GetValue(CustomEnums.ProjectileImpactDamagePercentBlock, _itemValue, 1, _holdingEntity, null);
+    }
+
+    public static float GetProjectileEntityDamagePerc(ItemValue _itemValue, EntityAlive _holdingEntity)
+    {
+        return EffectManager.GetValue(CustomEnums.ProjectileImpactDamagePercentEntity, _itemValue, 1, _holdingEntity, null);
     }
 
     //private static bool exported = false;

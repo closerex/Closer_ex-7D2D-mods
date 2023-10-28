@@ -9,5 +9,7 @@
     public static PassiveEffects ReloadSpeedRatioFPV2TPV;
     public static PassiveEffects RecoilSnappiness;
     public static PassiveEffects RecoilReturnSpeed;
+    public static PassiveEffects ProjectileImpactDamagePercentEntity;
+    public static PassiveEffects ProjectileImpactDamagePercentBlock;
     #endregion
 }
