@@ -23,7 +23,8 @@
 			<property name="ShowQuality" value="true"/>
 
 			<property class="Action0">
-				<property name="Class" value="Launcher"/>
+				<property name="Class" value="BetterLauncher,FullautoLauncher"/>
+				<!-- <property name="Class" value="Launcher"/> -->
 				<property name="Delay" value=".2"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammoKaboomstickShellHE,ammoKaboomstickShellFrag"/>
 				<property name="Reload_time" value="2.6"/>
@@ -33,7 +34,7 @@
 				<property name="Sound_end" value=""/>
 				<property name="Sound_empty" value="dryfire"/>
 				<property name="AutoReload" value="false"/>
-				<property name="Particles_muzzle_fire" value="rocketLauncherFire"/>
+				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/Kaboomstick_prefab.unity3d?kaboomstick_muzzle_flash_fpv.prefab"/>
 				<property name="Particles_muzzle_smoke" value="nozzlesmoke_m136"/>
 				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
 			</property>
@@ -41,10 +42,32 @@
 				<property name="Class" value="Zoom"/>
 				<property name="Zoom_max_out" value="55"/>
 				<property name="Zoom_max_in" value="55"/>
-				<property name="ScopeCameraOffset" value="0,-.005,0"/>
+				<property name="ScopeCameraOffset" value="0,0,0"/>
 			</property>
 
 			<effect_group name="gunKaboomstick">
+				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="true">
+					<requirement name="ProgressionLevel" progression_name="perkDemolitionsExpert" operation="GTE" value="5"/>
+				</triggered_effect>
+				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="false">
+					<requirement name="ProgressionLevel" progression_name="perkDemolitionsExpert" operation="LT" value="5"/>
+				</triggered_effect>
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="1.993">
+					<requirement name="RoundsInMagazine" operation="LTE" value="0"/>
+					<requirement name="ProgressionLevel" progression_name="perkDemolitionsExpert" operation="LT" value="5"/>
+				</passive_effect>
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="2.598">
+					<requirement name="RoundsInMagazine" operation="LTE" value="0"/>
+					<requirement name="ProgressionLevel" progression_name="perkDemolitionsExpert" operation="GTE" value="5"/>
+				</passive_effect>
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="1.898">
+					<requirement name="RoundsInMagazine" operation="GT" value="0"/>
+					<requirement name="ProgressionLevel" progression_name="perkDemolitionsExpert" operation="LT" value="5"/>
+				</passive_effect>
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="2.575">
+					<requirement name="RoundsInMagazine" operation="GT" value="0"/>
+					<requirement name="ProgressionLevel" progression_name="perkDemolitionsExpert" operation="GTE" value="5"/>
+				</passive_effect>
 				<passive_effect name="RoundsPerMinute" operation="base_set" value="1000" tags="perkDemolitionsExpert"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkDemolitionsExpert"/>
 
@@ -90,6 +113,7 @@
 			<property name="UnlockedBy" value="perkDemolitionsExpert"/>
 			<property class="Action1">
 				<property name="Class" value="Projectile"/>
+				<property name="CustomProjectileType" value="SimpleMesh,FullautoLauncher"/>
 				<property name="Explosion.ParticleIndex" value="#@modfolder(Kaboomstick):Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$HE"/>
 				<property name="Explosion.Duration" value="1"/>
 				<property name="Explosion.AudioName" value="kaboomstick_explosion"/>
@@ -104,6 +128,8 @@
 			<effect_group name="ammoKaboomstickShellHE" tiered="false">
 				<passive_effect name="BlockDamage" operation="base_set" value="220" tags="perkDemolitionsExpert"/>
 				<passive_effect name="EntityDamage" operation="base_set" value="50" tags="perkDemolitionsExpert"/>
+				<passive_effect name="ProjectileImpactDamagePercentBlock" operation="base_set" value="0" tags="perkDemolitionsExpert"/>
+				<passive_effect name="ProjectileImpactDamagePercentEntity" operation="base_set" value="0" tags="perkDemolitionsExpert"/>
 				<passive_effect name="ProjectileVelocity" operation="base_set" value="80" tags="perkDemolitionsExpert"/>
 				<display_value name="dExRadius" value="2.5"/>
 				<passive_effect name="RoundRayCount" operation="base_set" value="8" tags="perkDemolitionsExpert"/>
@@ -131,6 +157,7 @@
 			<property name="UnlockedBy" value="perkDemolitionsExpert"/>
 			<property class="Action1">
 				<property name="Class" value="Projectile"/>
+				<property name="CustomProjectileType" value="SimpleMesh,FullautoLauncher"/>
 				<property name="Explosion.ParticleIndex" value="#@modfolder(Kaboomstick):Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$Frag"/>
 				<property name="Explosion.Duration" value="1"/>
 				<property name="Explosion.AudioName" value="kaboomstick_explosion"/>
@@ -149,6 +176,8 @@
 			<effect_group name="ammoKaboomstickShellFrag" tiered="false">
 				<passive_effect name="BlockDamage" operation="base_set" value="5" tags="perkDemolitionsExpert"/>
 				<passive_effect name="EntityDamage" operation="base_set" value="120" tags="perkDemolitionsExpert"/>
+				<passive_effect name="ProjectileImpactDamagePercentBlock" operation="base_set" value="0" tags="perkDemolitionsExpert"/>
+				<passive_effect name="ProjectileImpactDamagePercentEntity" operation="base_set" value="0" tags="perkDemolitionsExpert"/>
 				<passive_effect name="ProjectileVelocity" operation="base_set" value="80" tags="perkDemolitionsExpert"/>
 				<display_value name="dExRadius" value="2.5"/>
 				<passive_effect name="RoundRayCount" operation="base_set" value="8" tags="perkDemolitionsExpert"/>
