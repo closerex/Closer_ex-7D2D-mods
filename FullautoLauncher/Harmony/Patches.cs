@@ -136,15 +136,25 @@ class ItemActionLauncherProjectilePatch
                     new CodeInstruction(OpCodes.Mul)
                 });
                 totali += 5;
-            }else if (codes[i].opcode == OpCodes.Ldc_R4 && codes[i].OperandIs(0.005f))
-            {
-                codes.Insert(i + 2, new CodeInstruction(OpCodes.Ldc_R4, 0f));
-                codes.RemoveRange(i - 2, 4);
                 break;
             }
+            //else if (codes[i].opcode == OpCodes.Ldc_R4 && codes[i].OperandIs(0.005f))
+            //{
+            //    codes.Insert(i + 2, new CodeInstruction(OpCodes.Ldc_R4, 0f));
+            //    codes.RemoveRange(i - 2, 4);
+            //    break;
+            //}
         }
 
         return codes;
+    }
+
+    [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.instantiateProjectile))]
+    [HarmonyPrefix]
+    private static bool Postfix_instantiateProjectile_ItemActionLauncher(ref Vector3 _positionOffset)
+    {
+        _positionOffset = Vector3.zero;
+        return true;
     }
 
     [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.instantiateProjectile))]
