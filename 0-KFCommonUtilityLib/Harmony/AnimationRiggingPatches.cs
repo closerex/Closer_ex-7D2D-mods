@@ -313,7 +313,7 @@ class AnimationRiggingPatches
     {
         if (_entity != null && _entity is EntityItem _entityItem)
         {
-            var targets = _entityItem.GetComponentInChildren<RigTargets>();
+            var targets = _entityItem.GetComponentInChildren<RigTargets>(true);
             if (targets != null)
             {
                 targets.Destroy();

@@ -144,4 +144,14 @@ public class RigTargets : MonoBehaviour
 
         gameObject.SetActive(forceDisableRoot ? false : !enabled);
     }
+
+    //VRoid switch view workaround
+    public void OnEnable()
+    {
+        var player = GetComponentInParent<EntityPlayerLocal>();
+        if (player != null && player.bFirstPersonView)
+        {
+            gameObject.SetActive(false);
+        }
+    }
 }
