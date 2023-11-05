@@ -238,8 +238,8 @@
 			<property name="Material" value="MMachineGunParts"/>
 			<property name="TintColor" value="102, 102, 51"/>
 			<property name="Weight" value="1"/>
-			<property name="CrosshairOnAim" value="true"/> <!-- aimTest -->
-			<property name="CrosshairUpAfterShot" value="true"/> <!-- aimTest -->
+			<property name="CrosshairOnAim" value="false"/> <!-- aimTest -->
+			<property name="CrosshairUpAfterShot" value="false"/> <!-- aimTest -->
 			<property name="RepairTools" value="resourceRepairKit"/>
 			<property name="DegradationBreaksAfter" value="false"/>
 			<property name="SoundJammed" value="weapon_jam"/>
