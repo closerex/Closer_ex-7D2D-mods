@@ -145,6 +145,7 @@ public class RigTargets : MonoBehaviour
         gameObject.SetActive(forceDisableRoot ? false : !enabled);
     }
 
+#if NotEditor
     //VRoid switch view workaround
     public void OnEnable()
     {
@@ -154,4 +155,5 @@ public class RigTargets : MonoBehaviour
             gameObject.SetActive(false);
         }
     }
+#endif
 }
