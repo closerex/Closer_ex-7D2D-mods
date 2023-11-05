@@ -354,7 +354,6 @@
     <Compile Include="KFAttached\RigAdaptors\Adaptors\TwoBoneIKConstraintAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\Utils\KFExtensions.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdReloadDebug.cs" />
-    <Compile Include="Scripts\Items\Modular\ModularItemActionBase.cs" />
     <Compile Include="Scripts\Singletons\AnimationRiggingManager.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdCalibrateWeapon.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPlayerDebugInfo.cs" />
@@ -394,6 +393,9 @@
     <Compile Include="Scripts\Singletons\RecoilManager.cs" />
     <Compile Include="Scripts\Utilities\SaveTextureToFileUtility.cs" />
     <Compile Include="Scripts\Utilities\EntityInventoryExtension.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Scripts\Items\Modular\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

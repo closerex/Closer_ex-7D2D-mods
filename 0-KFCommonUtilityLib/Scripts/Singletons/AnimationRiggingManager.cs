@@ -79,7 +79,9 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                     Log.Out("Rigged weapon not active, enabling it...");
                     fpvTransformRef.targets.SetEnabled(true);
                 }
-                controller.FPSArms?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
+                controller.UpdateInt(AvatarController.weaponHoldTypeHash, -1, false);
+                //controller.FPSArms?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
+                //controller.CharacterBody?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
             }
         }
 
