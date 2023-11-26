@@ -64,6 +64,22 @@
       <HintPath>..\..\7DaysToDie_Data\Managed\LogLibrary.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Mono.Cecil">
+      <HintPath>..\..\7DaysToDie_Data\Managed\Mono.Cecil.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Mdb">
+      <HintPath>..\..\7DaysToDie_Data\Managed\Mono.Cecil.Mdb.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb">
+      <HintPath>..\..\7DaysToDie_Data\Managed\Mono.Cecil.Pdb.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks">
+      <HintPath>..\..\7DaysToDie_Data\Managed\Mono.Cecil.Rocks.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -353,6 +369,8 @@
     <Compile Include="KFAttached\RigAdaptors\Adaptors\TwistCorrectionAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\Adaptors\TwoBoneIKConstraintAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\Utils\KFExtensions.cs" />
+    <Compile Include="Scripts\Attributes\MethodTargetAttribute.cs" />
+    <Compile Include="Scripts\Attributes\PatchTargetAttribute.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdReloadDebug.cs" />
     <Compile Include="Scripts\Singletons\AnimationRiggingManager.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdCalibrateWeapon.cs" />
@@ -390,6 +408,7 @@
     <Compile Include="Scripts\Requirements\RoundsInInventory.cs" />
     <Compile Include="Scripts\Requirements\RoundsInMagazineBase.cs" />
     <Compile Include="Scripts\Singletons\DelayLoadModuleManager.cs" />
+    <Compile Include="Scripts\Singletons\ItemActionModuleManager.cs" />
     <Compile Include="Scripts\Singletons\RecoilManager.cs" />
     <Compile Include="Scripts\Utilities\SaveTextureToFileUtility.cs" />
     <Compile Include="Scripts\Utilities\EntityInventoryExtension.cs" />
