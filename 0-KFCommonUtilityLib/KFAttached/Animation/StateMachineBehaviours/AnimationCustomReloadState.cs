@@ -64,4 +64,4 @@ public class AnimationCustomReloadState : StateMachineBehaviour
     private EntityPlayerLocal player;
     private AnimationReloadEvents eventBridge;
 #endif
-        }
+}

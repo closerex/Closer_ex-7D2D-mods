@@ -147,10 +147,6 @@ public class AnimationReloadEvents : MonoBehaviour
         actionData.isReloading = true;
         actionData.invData.holdingEntity.MinEventContext.ItemActionData = actionData;
         actionData.invData.holdingEntity.FireEvent(MinEventTypes.onReloadStart, true);
-        if (actionRanged is ItemActionHoldOpen actionHoldOpen)
-        {
-            actionHoldOpen.BeginReloadGun(actionData);
-        }
 #if DEBUG
         Log.Out($"ANIMATION EVENT RELOAD START : {actionData.invData.item.Name}");
 #endif

@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ItemActionHoldOpen : ItemActionRanged
 {
     private const string emptyAnimatorBool = "empty";
-    private EntityAlive lastHoldingEntity = null;
-    private HashSet<EntityAlive> hashset_dirty = new HashSet<EntityAlive>();
-    private bool reloadReset = false;
+    //private EntityAlive lastHoldingEntity = null;
+    //private HashSet<EntityAlive> hashset_dirty = new HashSet<EntityAlive>();
+    //private bool reloadReset = false;
 
     public Animator getAnimator(EntityAlive holdingEntity)
     {
@@ -58,29 +59,33 @@ public class ItemActionHoldOpen : ItemActionRanged
     public override void ReloadGun(ItemActionData _actionData)
     {
         base.ReloadGun(_actionData);
-    }
-
-    public void BeginReloadGun(ItemActionData _actionData)
-    {
-        reloadReset = true;
+        //delay 2 frames before reloading, since the animation is likely to be triggered the next frame this is called
+        ThreadManager.StartCoroutine(DelaySetEmpty(_actionData, false, 2));
+        //reloadReset = true;
     }
 
     public override void StartHolding(ItemActionData _data)
     {
-        reloadReset = false;
-        lastHoldingEntity = _data.invData.holdingEntity;
-        lastHoldingEntity.inventory.OnToolbeltItemsChangedInternal += OnStartHolding;
+        //reloadReset = false;
+        //if(_data.invData.itemValue.Meta <= 0)
+        //    hashset_dirty.Add(_data.invData.holdingEntity);
+        //lastHoldingEntity = _data.invData.holdingEntity;
+        //lastHoldingEntity.inventory.OnToolbeltItemsChangedInternal += OnStartHolding;
+        //delay 1 frame before equipping weapon
+        if(_data.invData.itemValue.Meta <= 0)
+            ThreadManager.StartCoroutine(DelaySetEmpty(_data, true, 1));
         base.StartHolding(_data);
     }
 
-    protected virtual void OnStartHolding()
-    {
-        if(lastHoldingEntity.inventory.holdingItemItemValue.Meta <= 0)
-            hashset_dirty.Add(lastHoldingEntity);
-        //Log.Out("Entity " + lastHoldingEntity.entityId + " start holding " + lastHoldingEntity.inventory.holdingItemItemValue.ItemClass.Name + " meta: " + lastHoldingEntity.inventory.holdingItemItemValue.Meta);
-        lastHoldingEntity.inventory.OnToolbeltItemsChangedInternal -= OnStartHolding;
-        lastHoldingEntity = null;
-    }
+    //protected virtual void OnStartHolding()
+    //{
+    //    if(lastHoldingEntity.inventory.holdingItemItemValue.Meta <= 0)
+    //        setAnimatorBool(lastHoldingEntity, emptyAnimatorBool, true);
+    //    //hashset_dirty.Add(lastHoldingEntity);
+    //    //Log.Out("Entity " + lastHoldingEntity.entityId + " start holding " + lastHoldingEntity.inventory.holdingItemItemValue.ItemClass.Name + " meta: " + lastHoldingEntity.inventory.holdingItemItemValue.Meta);
+    //    lastHoldingEntity.inventory.OnToolbeltItemsChangedInternal -= OnStartHolding;
+    //    lastHoldingEntity = null;
+    //}
 
     protected override void ConsumeAmmo(ItemActionData _actionData)
     {
@@ -99,57 +104,70 @@ public class ItemActionHoldOpen : ItemActionRanged
         if (_action != null && !_action.isReloading && _action.invData.itemValue.Meta <= 0)
         */
     }
-    
-    public override void OnHoldingUpdate(ItemActionData _actionData)
+
+    private IEnumerator DelaySetEmpty(ItemActionData _actionData, bool empty, int delay)
     {
-        base.OnHoldingUpdate(_actionData);
-
-        if (GameManager.IsDedicatedServer)
-            return;
-
-        if (reloadReset)
+        for (int i = 0; i < delay; i++)
         {
-            setAnimatorBool(GameManager.Instance.World.GetPrimaryPlayer(), emptyAnimatorBool, false);
-            reloadReset = false;
+            yield return null;
         }
-
-        if (hashset_dirty.Count <= 0)
-            return;
-
-        foreach (EntityAlive holdingEntity in hashset_dirty)
-            setAnimatorBool(holdingEntity, emptyAnimatorBool, true);
-        hashset_dirty.Clear();
-        /*
-        EntityAlive holdingEntity = _actionData.invData.holdingEntity;
-        if (hash_dirty.Count <= 0 || !hash_dirty.ContainsKey(holdingEntity))
-            return;
-
-        if (hash_dirty[holdingEntity])
-            hash_dirty[holdingEntity] = false;
-        else
+        if (_actionData.invData.holdingEntity.inventory.holdingItemIdx == _actionData.invData.slotIdx)
         {
-            hash_dirty.Remove(holdingEntity);
-            setAnimatorBool(holdingEntity, emptyAnimatorBool, true);
+            setAnimatorBool(_actionData.invData.holdingEntity, emptyAnimatorBool, empty);
         }
-        */
-        /*
-        EntityAlive holdingEntity = _actionData.invData.holdingEntity;
-        bool isReloading = (_actionData as ItemActionDataRanged).isReloading;
-        if (holdingEntity.isEntityRemote && !isReloading)
-            return;
-        int meta = _actionData.invData.itemValue.Meta;
-        if (!isReloading && meta <= 0 && !getAnimatorBool(holdingEntity, emptyAnimatorBool))
-        {
-            Log.Out("trying to update param: " + emptyAnimatorBool + " flag: " + true);
-            setAnimatorBool(holdingEntity, emptyAnimatorBool, true);
-        }
-        else if ((isReloading || meta > 0) && getAnimatorBool(holdingEntity, emptyAnimatorBool))
-        {
-            Log.Out("trying to update param: " + emptyAnimatorBool + " flag: " + false);
-            setAnimatorBool(holdingEntity, emptyAnimatorBool, false);
-        }
-        */
+        yield break;
     }
+    
+    //public override void OnHoldingUpdate(ItemActionData _actionData)
+    //{
+    //    base.OnHoldingUpdate(_actionData);
+
+    //    if (GameManager.IsDedicatedServer)
+    //        return;
+
+    //    if (reloadReset)
+    //    {
+    //        setAnimatorBool(GameManager.Instance.World.GetPrimaryPlayer(), emptyAnimatorBool, false);
+    //        reloadReset = false;
+    //    }
+
+    //    if (hashset_dirty.Count <= 0)
+    //        return;
+
+    //    foreach (EntityAlive holdingEntity in hashset_dirty)
+    //        setAnimatorBool(holdingEntity, emptyAnimatorBool, true);
+    //    hashset_dirty.Clear();
+    //    /*
+    //    EntityAlive holdingEntity = _actionData.invData.holdingEntity;
+    //    if (hash_dirty.Count <= 0 || !hash_dirty.ContainsKey(holdingEntity))
+    //        return;
+
+    //    if (hash_dirty[holdingEntity])
+    //        hash_dirty[holdingEntity] = false;
+    //    else
+    //    {
+    //        hash_dirty.Remove(holdingEntity);
+    //        setAnimatorBool(holdingEntity, emptyAnimatorBool, true);
+    //    }
+    //    */
+    //    /*
+    //    EntityAlive holdingEntity = _actionData.invData.holdingEntity;
+    //    bool isReloading = (_actionData as ItemActionDataRanged).isReloading;
+    //    if (holdingEntity.isEntityRemote && !isReloading)
+    //        return;
+    //    int meta = _actionData.invData.itemValue.Meta;
+    //    if (!isReloading && meta <= 0 && !getAnimatorBool(holdingEntity, emptyAnimatorBool))
+    //    {
+    //        Log.Out("trying to update param: " + emptyAnimatorBool + " flag: " + true);
+    //        setAnimatorBool(holdingEntity, emptyAnimatorBool, true);
+    //    }
+    //    else if ((isReloading || meta > 0) && getAnimatorBool(holdingEntity, emptyAnimatorBool))
+    //    {
+    //        Log.Out("trying to update param: " + emptyAnimatorBool + " flag: " + false);
+    //        setAnimatorBool(holdingEntity, emptyAnimatorBool, false);
+    //    }
+    //    */
+    //}
     
 }
 

@@ -79,6 +79,8 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                     Log.Out("Rigged weapon not active, enabling it...");
                     fpvTransformRef.targets.SetEnabled(true);
                 }
+                //vroid workaround
+                //it seems to use a separate animator for vroid model and does not replace CharacterBody
                 controller.UpdateInt(AvatarController.weaponHoldTypeHash, -1, false);
                 //controller.FPSArms?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
                 //controller.CharacterBody?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);

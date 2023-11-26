@@ -123,10 +123,6 @@ public class CommonUtilityPatch
     private static void Postfix_OnStateEnter_AnimatorRangedReloadState(ItemActionRanged.ItemActionDataRanged ___actionData, ItemActionRanged ___actionRanged)
     {
         //___actionData.invData.holdingEntity.emodel.avatarController.UpdateBool(AvatarController.isAimingHash, false, false);
-        if (___actionRanged is ItemActionHoldOpen actionHoldOpen)
-        {
-            actionHoldOpen.BeginReloadGun(___actionData);
-        }
     }
 
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SwapAmmoType))]
