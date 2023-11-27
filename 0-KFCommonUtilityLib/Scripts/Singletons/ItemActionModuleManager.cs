@@ -48,28 +48,28 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             ModuleDefinition module = workingAssembly.MainModule;
 
             //Prepare type info
-            TypeTargetAttribute[] moduleAttributes = moduleTypes.Select(t => t.GetCustomAttribute<TypeTargetAttribute>()).ToArray();
-            TypeReference[] moduleTypeReferences = moduleTypes.Select(t => module.ImportReference(t)).ToArray();
-            Type[] dataTypes = moduleAttributes.Select(a => a.DataType).ToArray();
-            TypeReference[] dataTypeReferences = dataTypes.Select(a => a != null ? module.ImportReference(a) : null).ToArray();
+            TypeTargetAttribute[] arr_attr_modules = moduleTypes.Select(t => t.GetCustomAttribute<TypeTargetAttribute>()).ToArray();
+            TypeReference[] arr_typeref_modules = moduleTypes.Select(t => module.ImportReference(t)).ToArray();
+            Type[] arr_type_data = arr_attr_modules.Select(a => a.DataType).ToArray();
+            TypeReference[] arr_typeref_data = arr_type_data.Select(a => a != null ? module.ImportReference(a) : null).ToArray();
 
             //Find ItemActionData subtype
             MethodInfo mtd_create_data = null;
             {
-                Type itemActionRootType = typeof(ItemAction);
-                Type itemActionBaseType = itemActionType;
-                while (typeof(ItemAction).IsAssignableFrom(itemActionBaseType))
+                Type type_itemActionRoot = typeof(ItemAction);
+                Type type_itemActionBase = itemActionType;
+                while (typeof(ItemAction).IsAssignableFrom(type_itemActionBase))
                 {
-                    mtd_create_data = itemActionBaseType.GetMethod(nameof(ItemAction.CreateModifierData), BindingFlags.Public | BindingFlags.Instance);
+                    mtd_create_data = type_itemActionBase.GetMethod(nameof(ItemAction.CreateModifierData), BindingFlags.Public | BindingFlags.Instance);
                     if (mtd_create_data != null)
                         break;
                 }
             }
 
             //Create new ItemAction
-            TypeReference typeref_itemaction = module.ImportReference(itemActionType);
-            TypeDefinition typedef_newaction = new TypeDefinition(null, CreateTypeName(itemActionType, moduleTypes), TypeAttributes.Public, typeref_itemaction);
-            module.Types.Add(typedef_newaction);
+            TypeReference typeref_itemAction = module.ImportReference(itemActionType);
+            TypeDefinition typedef_newAction = new TypeDefinition(null, CreateTypeName(itemActionType, moduleTypes), TypeAttributes.Public, typeref_itemAction);
+            module.Types.Add(typedef_newAction);
 
             //Create new ItemActionData
             //Find CreateModifierData
@@ -77,26 +77,26 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             //ItemActionData subtype is the return type of CreateModifierData
             TypeReference typeref_data = ((MethodReference)mtddef_create_data.Body.Instructions[mtddef_create_data.Body.Instructions.Count - 2].Operand).DeclaringType;
             //Get type by assembly qualified name since it might be from mod assembly
-            Type itemActionDataType = Type.GetType(Assembly.CreateQualifiedName(typeref_data.Module.Assembly.Name.Name, typeref_data.FullName));
-            TypeDefinition typedef_newactiondata = new TypeDefinition(null, CreateTypeName(typeref_data, dataTypeReferences), TypeAttributes.Public, typeref_data);
+            Type type_itemActionData = Type.GetType(Assembly.CreateQualifiedName(typeref_data.Module.Assembly.Name.Name, typeref_data.FullName));
+            TypeDefinition typedef_newactiondata = new TypeDefinition(null, CreateTypeName(typeref_data, arr_typeref_data), TypeAttributes.Public, typeref_data);
             module.Types.Add(typedef_newactiondata);
 
             //Create fields
-            FieldDefinition[] moduleFieldDefinitions = new FieldDefinition[moduleTypes.Length];
-            FieldDefinition[] dataFieldDefinitions = new FieldDefinition[moduleTypes.Length];
+            FieldDefinition[] arr_flddef_modules = new FieldDefinition[moduleTypes.Length];
+            FieldDefinition[] arr_flddef_data = new FieldDefinition[moduleTypes.Length];
             for (int i = 0; i < moduleTypes.Length; i++)
             {
                 //Create ItemAction field
-                FieldDefinition flddef_module = new FieldDefinition(CreateFieldName(moduleTypes[i]), FieldAttributes.Public, moduleTypeReferences[i]);
-                typedef_newaction.Fields.Add(flddef_module);
-                moduleFieldDefinitions[i] = flddef_module;
+                FieldDefinition flddef_module = new FieldDefinition(CreateFieldName(moduleTypes[i]), FieldAttributes.Public, arr_typeref_modules[i]);
+                typedef_newAction.Fields.Add(flddef_module);
+                arr_flddef_modules[i] = flddef_module;
 
                 //Create ItemActionData field
-                if (dataTypeReferences[i] != null)
+                if (arr_typeref_data[i] != null)
                 {
-                    FieldDefinition flddef_data = new FieldDefinition(CreateFieldName(moduleAttributes[i].DataType), FieldAttributes.Public, dataTypeReferences[i]);
+                    FieldDefinition flddef_data = new FieldDefinition(CreateFieldName(arr_attr_modules[i].DataType), FieldAttributes.Public, arr_typeref_data[i]);
                     typedef_newactiondata.Fields.Add(flddef_data);
-                    dataFieldDefinitions[i] = flddef_data;
+                    arr_flddef_data[i] = flddef_data;
                 }
             }
 
@@ -106,33 +106,33 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             il.Append(il.Create(OpCodes.Ldarg_0));
             il.Append(il.Create(OpCodes.Call, module.ImportReference(itemActionType.GetConstructor(Array.Empty<Type>()))));
             il.Append(il.Create(OpCodes.Nop));
-            for (int i = 0; i < moduleFieldDefinitions.Length; i++)
+            for (int i = 0; i < arr_flddef_modules.Length; i++)
             {
                 il.Append(il.Create(OpCodes.Ldarg_0));
                 il.Append(il.Create(OpCodes.Newobj, module.ImportReference(moduleTypes[i].GetConstructor(Array.Empty<Type>()))));
-                il.Append(il.Create(OpCodes.Stfld, moduleFieldDefinitions[i]));
+                il.Append(il.Create(OpCodes.Stfld, arr_flddef_modules[i]));
                 il.Append(il.Create(OpCodes.Nop));
             }
             il.Append(il.Create(OpCodes.Ret));
-            typedef_newaction.Methods.Add(mtddef_ctor);
+            typedef_newAction.Methods.Add(mtddef_ctor);
 
             //Create ItemActionData constructor
             MethodDefinition mtddef_ctor_data = new MethodDefinition(".ctor", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName, module.TypeSystem.Void);
             il = mtddef_ctor_data.Body.GetILProcessor();
             il.Append(il.Create(OpCodes.Ldarg_0));
-            il.Append(il.Create(OpCodes.Call, module.ImportReference(itemActionDataType.GetConstructor(new Type[] { typeof(ItemInventoryData), typeof(int) }))));
+            il.Append(il.Create(OpCodes.Call, module.ImportReference(type_itemActionData.GetConstructor(new Type[] { typeof(ItemInventoryData), typeof(int) }))));
             il.Append(il.Create(OpCodes.Nop));
-            for (int i = 0; i < dataFieldDefinitions.Length; i++)
+            for (int i = 0; i < arr_flddef_data.Length; i++)
             {
-                if (dataTypes[i] == null)
+                if (arr_type_data[i] == null)
                     continue;
                 il.Append(il.Create(OpCodes.Ldarg_0));
-                il.Append(il.Create(OpCodes.Newobj, module.ImportReference(dataTypes[i].GetConstructor(new Type[] { typeof(ItemInventoryData), typeof(int) }))));
-                il.Append(il.Create(OpCodes.Stfld, dataFieldDefinitions[i]));
+                il.Append(il.Create(OpCodes.Newobj, module.ImportReference(arr_type_data[i].GetConstructor(new Type[] { typeof(ItemInventoryData), typeof(int) }))));
+                il.Append(il.Create(OpCodes.Stfld, arr_flddef_data[i]));
                 il.Append(il.Create(OpCodes.Nop));
             }
             il.Append(il.Create(OpCodes.Ret));
-            typedef_newaction.Methods.Add(mtddef_ctor_data);
+            typedef_newAction.Methods.Add(mtddef_ctor_data);
 
             Dictionary<string, MethodDefinition> dict_overrides = new Dictionary<string, MethodDefinition>();
             //Apply Prefixes
@@ -142,9 +142,9 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                 Dictionary<string, (MethodInfo mtdInfo, Type prefType)> dict_targets = GetMethodOverrideTargets(itemActionType, moduleType);
                 foreach (var pair in dict_targets.Values)
                 {
-                    MethodInfo mtdInfoTarget = pair.mtdInfo;
-                    MethodReference mtdref_target = module.ImportReference(mtdInfoTarget);
-                    MethodDefinition mtddef_derived = new MethodDefinition(mtdInfoTarget.Name, MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot, mtdref_target.ReturnType);
+                    MethodInfo mtdinf_target = pair.mtdInfo;
+                    MethodReference mtdref_target = module.ImportReference(mtdinf_target);
+                    MethodDefinition mtddef_derived = new MethodDefinition(mtdinf_target.Name, MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot, mtdref_target.ReturnType);
                     foreach (var par in mtdref_target.Parameters)
                     {
                         mtddef_derived.Parameters.Add(new ParameterDefinition(par.Name, par.Attributes, par.ParameterType));
@@ -187,6 +187,32 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                 }
             }
             return dict_overrides;
+        }
+
+        private static MethodDefinition GetOrCreateOverride(Dictionary<string, MethodDefinition> dict_overrides, string id, MethodInfo mtdinf_target, ModuleDefinition module)
+        {
+            if (dict_overrides.TryGetValue(id, out var mtddef_derived))
+            {
+                return mtddef_derived;
+            }
+            MethodReference mtdref_target = module.ImportReference(mtdinf_target);
+            mtddef_derived = new MethodDefinition(mtdinf_target.Name, MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot, mtdref_target.ReturnType);
+            foreach (var par in mtdref_target.Parameters)
+            {
+                mtddef_derived.Parameters.Add(new ParameterDefinition(par.Name, par.Attributes, par.ParameterType));
+            }
+            mtddef_derived.Body.Variables.Clear();
+            mtddef_derived.Body.InitLocals = true;
+            mtddef_derived.Body.Variables.Add(new VariableDefinition(module.TypeSystem.Boolean));
+            var il = mtddef_derived.Body.GetILProcessor();
+            for (int i = 0; i < mtddef_derived.Parameters.Count; i++)
+            {
+                var par = mtddef_derived.Parameters[i];
+                il.Append(il.Create((par.IsIn || par.IsOut) ? OpCodes.Ldarga_S : OpCodes.Ldarg_S , i));
+            }
+            il.Append(il.Create(OpCodes.Call, mtdref_target));
+            il.Append(il.Create(OpCodes.Ret));
+            return mtddef_derived;
         }
 
         /// <summary>
