@@ -1,6 +1,7 @@
 ﻿using KFCommonUtilityLib.Scripts.Attributes;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using MusicUtils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -146,9 +147,10 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                 Dictionary<string, (MethodInfo mtdInfo, Type prefType)> dict_targets = GetMethodOverrideTargets(itemActionType, moduleType);
                 foreach (var pair in dict_targets)
                 {
-                    MethodInfo mtdinf_target = pair.Value.mtdInfo;
-                    MethodDefinition mtddef_derived = GetOrCreateOverride(dict_overrides, pair.Key, mtdinf_target, module);
-                    //insert prefix code
+                    MethodReference mtdref_target = module.ImportReference(pair.Value.mtdInfo);
+                    MethodDefinition mtddef_derived = GetOrCreateOverride(dict_overrides, pair.Key, mtdref_target, module);
+                    var list_inst_pars = MatchArguments(mtddef_derived, mtdref_target, arr_flddef_modules[i], arr_flddef_data[i], module, itemActionType, pair.Value.mtdInfo);
+                    //insert invocation
                 }
             }
 
@@ -187,14 +189,13 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             return dict_overrides;
         }
 
-        private static MethodDefinition GetOrCreateOverride(Dictionary<string, MethodDefinition> dict_overrides, string id, MethodInfo mtdinf_target, ModuleDefinition module)
+        private static MethodDefinition GetOrCreateOverride(Dictionary<string, MethodDefinition> dict_overrides, string id, MethodReference mtdref_target, ModuleDefinition module)
         {
             if (dict_overrides.TryGetValue(id, out var mtddef_derived))
             {
                 return mtddef_derived;
             }
-            MethodReference mtdref_target = module.ImportReference(mtdinf_target);
-            mtddef_derived = new MethodDefinition(mtdinf_target.Name, MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot, mtdref_target.ReturnType);
+            mtddef_derived = new MethodDefinition(mtdref_target.Name, MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot, mtdref_target.ReturnType);
             foreach (var par in mtdref_target.Parameters)
             {
                 mtddef_derived.Parameters.Add(new ParameterDefinition(par.Name, par.Attributes, par.ParameterType));
@@ -208,10 +209,11 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                 mtddef_derived.Body.Variables.Add(new VariableDefinition(mtdref_target.ReturnType));
             }
             var il = mtddef_derived.Body.GetILProcessor();
+            il.Append(il.Create(OpCodes.Ldarg_0));
             for (int i = 0; i < mtddef_derived.Parameters.Count; i++)
             {
                 var par = mtddef_derived.Parameters[i];
-                il.Append(il.Create((par.IsIn || par.IsOut) ? OpCodes.Ldarga_S : OpCodes.Ldarg_S , i));
+                il.Append(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldarga_S : OpCodes.Ldarg_S , i + 1));
             }
             il.Append(il.Create(OpCodes.Call, mtdref_target));
             if (hasReturnVal)
@@ -221,6 +223,93 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             }
             il.Append(il.Create(OpCodes.Ret));
             return mtddef_derived;
+        }
+
+        private static List<Instruction> MatchArguments(MethodDefinition mtddef_derived, MethodReference mtdref_target, FieldDefinition flddef_module, FieldDefinition flddef_data, ModuleDefinition module, Type itemActionType, MethodInfo mtdInfo)
+        {
+            var il = mtddef_derived.Body.GetILProcessor();
+            //Match parameters
+            List<Instruction> list_inst_pars = new List<Instruction>();
+            foreach (var par in mtdref_target.Parameters)
+            {
+                if (par.Name.StartsWith("__"))
+                {
+                    if (par.Name.StartsWith("___"))
+                    {
+                        //___ means non public fields
+                        string str_fldname = par.Name.Substring(3);
+                        FieldDefinition flddef_target = module.ImportReference(itemActionType.GetField(str_fldname, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)).Resolve();
+                        if (flddef_target == null)
+                            throw new MissingFieldException($"Field with name \"{str_fldname}\" not found! Patch method: {mtdInfo.ReflectedType.FullName}.{mtdref_target.Name}");
+                        if (flddef_target.IsStatic)
+                        {
+                            list_inst_pars.Add(il.Create((par.ParameterType.IsByReference) ? OpCodes.Ldsflda : OpCodes.Ldsfld, flddef_target));
+                        }
+                        else
+                        {
+                            list_inst_pars.Add(il.Create(OpCodes.Ldarg_0));
+                            list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldflda : OpCodes.Ldfld, flddef_target));
+                        }
+                    }
+                    else
+                    {
+                        //__ means special data
+                        switch (par.Name)
+                        {
+                            //load module instance
+                            case "__self":
+                                list_inst_pars.Add(il.Create(OpCodes.Ldarg_0));
+                                list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldflda : OpCodes.Ldfld, flddef_module));
+                                break;
+                            //load injected data instance
+                            case "__data":
+                                if (flddef_data == null)
+                                    throw new ArgumentNullException($"No Injected ItemActionData in {mtdInfo.ReflectedType.FullName}!");
+                                int index = -1;
+                                for (int j = 0; j < mtddef_derived.Parameters.Count; j++)
+                                {
+                                    if (mtddef_derived.Parameters[j].ParameterType.Name == "ItemActionData")
+                                    {
+                                        index = j;
+                                        break;
+                                    }
+                                }
+                                if (index < 0)
+                                    throw new ArgumentException($"ItemActionData is not present in target method! Patch method: {mtdInfo.ReflectedType.FullName}.{mtdref_target.Name}");
+                                list_inst_pars.Add(il.Create(OpCodes.Ldarg_S, index));
+                                list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldflda : OpCodes.Ldfld, flddef_data));
+                                break;
+                            //load ItemAction instance
+                            case "__instance":
+                                list_inst_pars.Add(il.Create(OpCodes.Ldarg_0));
+                                break;
+                            //load return value
+                            case "__result":
+                                list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldloca_S : OpCodes.Ldloc_S, 1));
+                                break;
+                            default:
+                                throw new ArgumentException($"Invalid Parameter Name in {mtdInfo.ReflectedType.FullName}.{mtdref_target.Name}: {par.Name}");
+                        }
+                    }
+                }
+                else
+                {
+                    //match param by name
+                    int index = -1;
+                    for (int j = 0; j < mtddef_derived.Parameters.Count; j++)
+                    {
+                        if (mtddef_derived.Parameters[j].Name == par.Name)
+                        {
+                            index = j;
+                            break;
+                        }
+                        if (index < 0)
+                            throw new ArgumentException($"Parameter \"{par.Name}\" not found! Patch method: {mtdInfo.ReflectedType.FullName}.{mtdref_target.Name}");
+                        list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldarga_S : OpCodes.Ldarg_S, index));
+                    }
+                }
+            }
+            return list_inst_pars;
         }
 
         /// <summary>
