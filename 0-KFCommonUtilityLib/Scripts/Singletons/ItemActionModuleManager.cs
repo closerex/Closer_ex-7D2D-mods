@@ -13,6 +13,19 @@ using TypeAttributes = Mono.Cecil.TypeAttributes;
 
 namespace KFCommonUtilityLib.Scripts.Singletons
 {
+    public class MethodPatchInfo
+    {
+        public readonly MethodDefinition Method;
+        public Instruction PostfixBegin;
+        public Instruction PostfixEnd;
+
+        public MethodPatchInfo(MethodDefinition mtddef, Instruction postfixEnd)
+        {
+            Method = mtddef;
+            PostfixEnd = postfixEnd;
+        }
+    }
+
     public static class ItemActionModuleManager
     {
         private static readonly List<Assembly> list_created = new List<Assembly>();
@@ -139,31 +152,46 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             il.Append(il.Create(OpCodes.Ret));
             typedef_newAction.Methods.Add(mtddef_ctor_data);
 
-            Dictionary<string, MethodDefinition> dict_overrides = new Dictionary<string, MethodDefinition>();
-            //Apply Prefixes
-            for (int i = moduleTypes.Length - 1; i >= 0; i++)
+            Dictionary<string, MethodPatchInfo> dict_overrides = new Dictionary<string, MethodPatchInfo>();
+
+            //Apply Postfixes
+            for (int i = 0; i < moduleTypes.Length - 1; i++)
             {
                 Type moduleType = moduleTypes[i];
-                Dictionary<string, (MethodInfo mtdInfo, Type prefType)> dict_targets = GetMethodOverrideTargets(itemActionType, moduleType);
+                Dictionary<string, (MethodInfo mtdInfo, Type prefType)> dict_targets = GetMethodOverrideTargets<MethodTargetPostfixAttribute>(itemActionType, moduleType);
                 foreach (var pair in dict_targets)
                 {
                     MethodReference mtdref_target = module.ImportReference(pair.Value.mtdInfo);
-                    MethodDefinition mtddef_derived = GetOrCreateOverride(dict_overrides, pair.Key, mtdref_target, module);
+                    MethodPatchInfo mtdpinf_derived = GetOrCreateOverride(dict_overrides, pair.Key, mtdref_target, module);
+                    MethodDefinition mtddef_derived = mtdpinf_derived.Method;
                     var list_inst_pars = MatchArguments(mtddef_derived, mtdref_target, arr_flddef_modules[i], arr_flddef_data[i], module, itemActionType, pair.Value.mtdInfo);
                     //insert invocation
                 }
             }
 
-            //Apply Postfixes
 
+            //Apply Prefixes
+            for (int i = 0; i < moduleTypes.Length - 1; i++)
+            {
+                Type moduleType = moduleTypes[i];
+                Dictionary<string, (MethodInfo mtdInfo, Type prefType)> dict_targets = GetMethodOverrideTargets<MethodTargetPrefixAttribute>(itemActionType, moduleType);
+                foreach (var pair in dict_targets)
+                {
+                    MethodReference mtdref_target = module.ImportReference(pair.Value.mtdInfo);
+                    MethodPatchInfo mtdpinf_derived = GetOrCreateOverride(dict_overrides, pair.Key, mtdref_target, module);
+                    MethodDefinition mtddef_derived = mtdpinf_derived.Method;
+                    var list_inst_pars = MatchArguments(mtddef_derived, mtdref_target, arr_flddef_modules[i], arr_flddef_data[i], module, itemActionType, pair.Value.mtdInfo);
+                    //insert invocation
+                }
+            }
         }
 
-        private static Dictionary<string, (MethodInfo mtdInfo, Type prefType)> GetMethodOverrideTargets(Type itemActionType, Type moduleType)
+        private static Dictionary<string, (MethodInfo mtdInfo, Type prefType)> GetMethodOverrideTargets<T>(Type itemActionType, Type moduleType) where T: Attribute, IMethodTarget
         {
             Dictionary<string, (MethodInfo mtdInfo, Type prefType)> dict_overrides = new Dictionary<string, (MethodInfo mtdInfo, Type prefType)>();
             foreach (var mtd in moduleType.GetMethods())
             {
-                MethodTargetPrefixAttribute attr = mtd.GetCustomAttribute<MethodTargetPrefixAttribute>();
+                IMethodTarget attr = mtd.GetCustomAttribute<T>();
                 if (attr != null && (attr.PreferredType == null || itemActionType.IsAssignableFrom(attr.PreferredType)))
                 {
                     string id = attr.GetTargetMethodIdentifier();
@@ -189,13 +217,13 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             return dict_overrides;
         }
 
-        private static MethodDefinition GetOrCreateOverride(Dictionary<string, MethodDefinition> dict_overrides, string id, MethodReference mtdref_target, ModuleDefinition module)
+        private static MethodPatchInfo GetOrCreateOverride(Dictionary<string, MethodPatchInfo> dict_overrides, string id, MethodReference mtdref_target, ModuleDefinition module)
         {
-            if (dict_overrides.TryGetValue(id, out var mtddef_derived))
+            if (dict_overrides.TryGetValue(id, out var mtdpinf_derived))
             {
-                return mtddef_derived;
+                return mtdpinf_derived;
             }
-            mtddef_derived = new MethodDefinition(mtdref_target.Name, MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot, mtdref_target.ReturnType);
+            MethodDefinition mtddef_derived = new MethodDefinition(mtdref_target.Name, MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot, mtdref_target.ReturnType);
             foreach (var par in mtdref_target.Parameters)
             {
                 mtddef_derived.Parameters.Add(new ParameterDefinition(par.Name, par.Attributes, par.ParameterType));
@@ -209,20 +237,24 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                 mtddef_derived.Body.Variables.Add(new VariableDefinition(mtdref_target.ReturnType));
             }
             var il = mtddef_derived.Body.GetILProcessor();
-            il.Append(il.Create(OpCodes.Ldarg_0));
+            il.Emit(OpCodes.Ldc_I4_1);
+            il.Emit(OpCodes.Stloc_S, mtddef_derived.Body.Variables[0]);
+            il.Emit(OpCodes.Ldarg_0);
             for (int i = 0; i < mtddef_derived.Parameters.Count; i++)
             {
                 var par = mtddef_derived.Parameters[i];
-                il.Append(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldarga_S : OpCodes.Ldarg_S , i + 1));
+                il.Emit(par.ParameterType.IsByReference ? OpCodes.Ldarga_S : OpCodes.Ldarg_S , i + 1);
             }
-            il.Append(il.Create(OpCodes.Call, mtdref_target));
+            il.Emit(OpCodes.Call, mtdref_target);
             if (hasReturnVal)
             {
-                il.Append(il.Create(OpCodes.Stloc_1));
-                il.Append(il.Create(OpCodes.Ldloc_1));
+                il.Emit(OpCodes.Stloc_S, mtddef_derived.Body.Variables[1]);
+                il.Emit(OpCodes.Ldloc_S, mtddef_derived.Body.Variables[1]);
             }
-            il.Append(il.Create(OpCodes.Ret));
-            return mtddef_derived;
+            il.Emit(OpCodes.Ret);
+            mtdpinf_derived = new MethodPatchInfo(mtddef_derived, mtddef_derived.Body.Instructions[mtddef_derived.Body.Instructions.Count - (hasReturnVal ? 2 : 1)]);
+            dict_overrides.Add(id, mtdpinf_derived);
+            return mtdpinf_derived;
         }
 
         private static List<Instruction> MatchArguments(MethodDefinition mtddef_derived, MethodReference mtdref_target, FieldDefinition flddef_module, FieldDefinition flddef_data, ModuleDefinition module, Type itemActionType, MethodInfo mtdInfo)
@@ -276,7 +308,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                                 }
                                 if (index < 0)
                                     throw new ArgumentException($"ItemActionData is not present in target method! Patch method: {mtdInfo.ReflectedType.FullName}.{mtdref_target.Name}");
-                                list_inst_pars.Add(il.Create(OpCodes.Ldarg_S, index));
+                                list_inst_pars.Add(il.Create(OpCodes.Ldarg_S, index + 1));
                                 list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldflda : OpCodes.Ldfld, flddef_data));
                                 break;
                             //load ItemAction instance
@@ -285,7 +317,12 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                                 break;
                             //load return value
                             case "__result":
-                                list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldloca_S : OpCodes.Ldloc_S, 1));
+                                list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldloca_S : OpCodes.Ldloc_S, mtddef_derived.Body.Variables[1]));
+                                break;
+                            case "__runOriginal":
+                                if (par.ParameterType.IsByReference)
+                                    throw new ArgumentException($"__runOriginal is readonly! Patch method: {mtdInfo.ReflectedType.FullName}.{mtdref_target.Name}");
+                                list_inst_pars.Add(il.Create(OpCodes.Ldloc_S, mtddef_derived.Body.Variables[0]));
                                 break;
                             default:
                                 throw new ArgumentException($"Invalid Parameter Name in {mtdInfo.ReflectedType.FullName}.{mtdref_target.Name}: {par.Name}");
@@ -305,7 +342,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                         }
                         if (index < 0)
                             throw new ArgumentException($"Parameter \"{par.Name}\" not found! Patch method: {mtdInfo.ReflectedType.FullName}.{mtdref_target.Name}");
-                        list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldarga_S : OpCodes.Ldarg_S, index));
+                        list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldarga_S : OpCodes.Ldarg_S, index + 1));
                     }
                 }
             }
