@@ -30,10 +30,17 @@ namespace KFCommonUtilityLib.Scripts.Singletons
     {
         private static readonly List<Assembly> list_created = new List<Assembly>();
         private static AssemblyDefinition workingAssembly = null;
+        private static readonly Dictionary<string, (string methodID, int indexOfAction)> dict_replacement_mapping = new Dictionary<string, (string methodID, int indexOfAction)>();
 
         internal static void InitNew()
         {
+            dict_replacement_mapping.Clear();
             workingAssembly = AssemblyDefinition.CreateAssembly(new AssemblyNameDefinition("ItemActionModule" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), new Version(0, 0, 0, 0)), "Main", ModuleKind.Dll);
+        }
+
+        internal static void CheckItem(ItemClass item)
+        {
+
         }
 
         internal static void FinishAndLoad()
@@ -55,6 +62,10 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             //cleanup
             workingAssembly?.Dispose();
             workingAssembly = null;
+            //replace ItemActions
+
+
+            dict_replacement_mapping.Clear();
         }
 
         private static void PatchType(Type itemActionType, params Type[] moduleTypes)
@@ -93,10 +104,10 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             //Find CreateModifierData
             MethodDefinition mtddef_create_data = module.ImportReference(mtdinf_create_data).Resolve();
             //ItemActionData subtype is the return type of CreateModifierData
-            TypeReference typeref_data = ((MethodReference)mtddef_create_data.Body.Instructions[mtddef_create_data.Body.Instructions.Count - 2].Operand).DeclaringType;
+            TypeReference typeref_actiondata = ((MethodReference)mtddef_create_data.Body.Instructions[mtddef_create_data.Body.Instructions.Count - 2].Operand).DeclaringType;
             //Get type by assembly qualified name since it might be from mod assembly
-            Type type_itemActionData = Type.GetType(Assembly.CreateQualifiedName(typeref_data.Module.Assembly.Name.Name, typeref_data.FullName));
-            TypeDefinition typedef_newactiondata = new TypeDefinition(null, CreateTypeName(typeref_data, arr_typeref_data), TypeAttributes.Public, typeref_data);
+            Type type_itemActionData = Type.GetType(Assembly.CreateQualifiedName(typeref_actiondata.Module.Assembly.Name.Name, typeref_actiondata.FullName));
+            TypeDefinition typedef_newactiondata = new TypeDefinition(null, CreateTypeName(typeref_actiondata, arr_typeref_data), TypeAttributes.Public, typeref_actiondata);
             module.Types.Add(typedef_newactiondata);
 
             //Create fields
@@ -157,6 +168,17 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             }
             il.Append(il.Create(OpCodes.Ret));
             typedef_newactiondata.Methods.Add(mtddef_ctor_data);
+
+            //Create ItemAction.CreateModifierData override
+            MethodDefinition mtddef_create_modifier_data = new MethodDefinition(nameof(ItemAction.CreateModifierData), MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot, module.ImportReference(typeof(ItemActionData)));
+            mtddef_ctor_data.Parameters.Add(new ParameterDefinition("_invData", Mono.Cecil.ParameterAttributes.None, module.ImportReference(typeof(ItemInventoryData))));
+            mtddef_ctor_data.Parameters.Add(new ParameterDefinition("_indexInEntityOfAction", Mono.Cecil.ParameterAttributes.None, module.TypeSystem.Int32));
+            il = mtddef_create_modifier_data.Body.GetILProcessor();
+            il.Emit(OpCodes.Ldarg_1);
+            il.Emit(OpCodes.Ldarg_2);
+            il.Emit(OpCodes.Newobj, mtddef_ctor_data);
+            il.Emit(OpCodes.Ret);
+            typedef_newAction.Methods.Add(mtddef_create_modifier_data);
 
             Dictionary<string, MethodPatchInfo> dict_overrides = new Dictionary<string, MethodPatchInfo>();
 
@@ -264,6 +286,8 @@ namespace KFCommonUtilityLib.Scripts.Singletons
         /// <returns></returns>
         private static MethodPatchInfo GetOrCreateOverride(Dictionary<string, MethodPatchInfo> dict_overrides, string id, MethodReference mtdref_base, ModuleDefinition module)
         {
+            if (mtdref_base.FullName == "CreateModifierData")
+                throw new MethodAccessException($"YOU SHOULD NOT MANUALLY MODIFY CreateModifierData!");
             if (dict_overrides.TryGetValue(id, out var mtdpinf_derived))
             {
                 return mtdpinf_derived;

@@ -315,6 +315,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Harmony\ItemActionModulePatch.cs" />
     <Compile Include="Harmony\RecoilPatch.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationProceduralRecoildAbs.cs" />
     <Compile Include="KFAttached\KFUtilAttached\ApexWeaponHudControllerBase.cs" />
