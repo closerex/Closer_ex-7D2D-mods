@@ -30,7 +30,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
     {
         private static readonly List<Assembly> list_created = new List<Assembly>();
         private static AssemblyDefinition workingAssembly = null;
-        private static readonly Dictionary<string, (string methodID, int indexOfAction)> dict_replacement_mapping = new Dictionary<string, (string methodID, int indexOfAction)>();
+        private static readonly Dictionary<string, List<(string typename, int indexOfAction)>> dict_replacement_mapping = new Dictionary<string, List<(string typename, int indexOfAction)>>();
 
         internal static void InitNew()
         {
@@ -40,7 +40,25 @@ namespace KFCommonUtilityLib.Scripts.Singletons
 
         internal static void CheckItem(ItemClass item)
         {
-
+            for (int i = 0; i < item.Actions.Length; i++)
+            {
+                ItemAction itemAction = item.Actions[i];
+                if (itemAction != null && itemAction.Properties.Values.TryGetString("ItemActionModules", out string str_modules))
+                {
+                    string[] modules = str_modules.Split(';');
+                    Type[] moduleTypes = modules.Select(s => Type.GetType(s.Trim())).ToArray();
+                    string typename = CreateTypeName(itemAction.GetType(), moduleTypes);
+                    if (TryFindType(typename, out _) || TryFindInCur(typename, out _))
+                        continue;
+                    PatchType(itemAction.GetType(), moduleTypes);
+                    if (!dict_replacement_mapping.TryGetValue(item.Name, out var list))
+                    {
+                        list = new List<(string typename, int indexOfAction)>();
+                        dict_replacement_mapping.Add(item.Name, list);
+                    }
+                    list.Add((typename, i));
+                }
+            }
         }
 
         internal static void FinishAndLoad()
@@ -63,7 +81,17 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             workingAssembly?.Dispose();
             workingAssembly = null;
             //replace ItemActions
-
+            foreach (var pair in dict_replacement_mapping)
+            {
+                ItemClass item = ItemClass.GetItemClass(pair.Key, true);
+                foreach ((string typename, int indexOfAction) in pair.Value)
+                {
+                    if (TryFindType(typename, out Type itemActionType))
+                    {
+                        item.Actions[indexOfAction] = (ItemAction)Activator.CreateInstance(itemActionType);
+                    }
+                }
+            }
 
             dict_replacement_mapping.Clear();
         }
