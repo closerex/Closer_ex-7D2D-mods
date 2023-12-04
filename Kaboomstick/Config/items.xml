@@ -24,6 +24,7 @@
 
 			<property class="Action0">
 				<property name="Class" value="BetterLauncher,FullautoLauncher"/>
+				<property name="ItemActionModules" value="HoldOpen,KFCommonUtilityLib"/>
 				<!-- <property name="Class" value="Launcher"/> -->
 				<property name="Delay" value=".2"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammoKaboomstickShellHE,ammoKaboomstickShellFrag"/>

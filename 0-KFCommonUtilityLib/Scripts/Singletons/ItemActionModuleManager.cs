@@ -1,4 +1,5 @@
-﻿using KFCommonUtilityLib.Scripts.Attributes;
+﻿using HarmonyLib;
+using KFCommonUtilityLib.Scripts.Attributes;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MusicUtils;
@@ -6,13 +7,52 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Security;
+using System.Security.Permissions;
+using System.Text;
 using UniLinq;
+using UnityEngine;
+using UnityEngine.Scripting;
 using FieldAttributes = Mono.Cecil.FieldAttributes;
 using MethodAttributes = Mono.Cecil.MethodAttributes;
+using SecurityAction = System.Security.Permissions.SecurityAction;
 using TypeAttributes = Mono.Cecil.TypeAttributes;
 
 namespace KFCommonUtilityLib.Scripts.Singletons
 {
+    public static class AssemblyLocator
+    {
+        private static Dictionary<string, Assembly> assemblies;
+
+        public static void Init()
+        {
+            assemblies = new Dictionary<string, Assembly>();
+            foreach (var assembly in ModManager.GetLoadedAssemblies())
+            {
+                assemblies.Add(assembly.FullName, assembly);
+            }
+            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(CurrentDomain_AssemblyLoad);
+            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+        }
+
+        private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            assemblies.TryGetValue(args.Name, out Assembly assembly);
+            if (assembly != null)
+                Log.Out($"RESOLVING ASSEMBLY {assembly.FullName}");
+            else
+                Log.Error($"RESOLVING ASSEMBBLY {args.Name} FAILED!");
+            return assembly;
+        }
+
+        private static void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
+        {
+            Assembly assembly = args.LoadedAssembly;
+            assemblies[assembly.FullName] = assembly;
+            Log.Out($"LOADING ASSEMBLY {assembly.FullName}");
+        }
+    }
+
     public class MethodPatchInfo
     {
         public readonly MethodDefinition Method;
@@ -30,12 +70,61 @@ namespace KFCommonUtilityLib.Scripts.Singletons
     {
         private static readonly List<Assembly> list_created = new List<Assembly>();
         private static AssemblyDefinition workingAssembly = null;
+        private static DefaultAssemblyResolver resolver;
+        private static ModuleAttributes moduleAttributes;
+        private static ModuleCharacteristics moduleCharacteristics;
         private static readonly Dictionary<string, List<(string typename, int indexOfAction)>> dict_replacement_mapping = new Dictionary<string, List<(string typename, int indexOfAction)>>();
+
+        internal static void ClearOutputFolder()
+        {
+            Mod self = ModManager.GetMod("CommonUtilityLib");
+            string path = Path.Combine(self.Path, "AssemblyOutput");
+            if (Directory.Exists(path))
+                Array.ForEach(Directory.GetFiles(path), File.Delete);
+            else
+                Directory.CreateDirectory(path);
+        }
 
         internal static void InitNew()
         {
             dict_replacement_mapping.Clear();
-            workingAssembly = AssemblyDefinition.CreateAssembly(new AssemblyNameDefinition("ItemActionModule" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), new Version(0, 0, 0, 0)), "Main", ModuleKind.Dll);
+            workingAssembly?.Dispose();
+            if (resolver == null)
+            {
+                resolver = new DefaultAssemblyResolver();
+                resolver.AddSearchDirectory(Path.Combine(Application.dataPath, "Managed"));
+
+                foreach (var mod in ModManager.GetLoadedMods())
+                {
+                    resolver.AddSearchDirectory(mod.Path);
+                }
+
+                AssemblyDefinition assdef_main = AssemblyDefinition.ReadAssembly(Assembly.GetAssembly(typeof(GameManager)).Location, new ReaderParameters() { AssemblyResolver = resolver });
+                moduleAttributes = assdef_main.MainModule.Attributes;
+                moduleCharacteristics = assdef_main.MainModule.Characteristics;
+                Log.Out("Reading Attributes from assembly: " + assdef_main.FullName);
+            }
+            string assname = "ItemActionModule" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            workingAssembly = AssemblyDefinition.CreateAssembly(new AssemblyNameDefinition(assname,
+                                                                                           new Version(0, 0, 0, 0)),
+                                                                                           assname + ".dll",
+                                                                                           new ModuleParameters()
+                                                                                           {
+                                                                                               Kind = ModuleKind.Dll,
+                                                                                               AssemblyResolver = resolver,
+                                                                                               Architecture = TargetArchitecture.I386,
+                                                                                               Runtime = TargetRuntime.Net_4_0,
+                                                                                           });
+            workingAssembly.MainModule.Attributes = moduleAttributes;
+            workingAssembly.MainModule.Characteristics = moduleCharacteristics;
+            //write security attributes so that calling non-public patch methods from this assembly is allowed
+            Mono.Cecil.SecurityAttribute sattr_permission = new Mono.Cecil.SecurityAttribute(workingAssembly.MainModule.ImportReference(typeof(SecurityPermissionAttribute)));
+            Mono.Cecil.CustomAttributeNamedArgument caarg_SkipVerification = new Mono.Cecil.CustomAttributeNamedArgument(nameof(SecurityPermissionAttribute.SkipVerification), new CustomAttributeArgument(workingAssembly.MainModule.TypeSystem.Boolean, true));
+            sattr_permission.Properties.Add(caarg_SkipVerification);
+            SecurityDeclaration sdec = new SecurityDeclaration(Mono.Cecil.SecurityAction.RequestMinimum);
+            sdec.SecurityAttributes.Add(sattr_permission);
+            workingAssembly.SecurityDeclarations.Add(sdec);
+            Log.Out("======Init New======");
         }
 
         internal static void CheckItem(ItemClass item)
@@ -46,11 +135,11 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                 if (itemAction != null && itemAction.Properties.Values.TryGetString("ItemActionModules", out string str_modules))
                 {
                     string[] modules = str_modules.Split(';');
-                    Type[] moduleTypes = modules.Select(s => Type.GetType(s.Trim())).ToArray();
+                    Type[] moduleTypes = modules.Select(s => ReflectionHelpers.GetTypeWithPrefix("ActionModule", s.Trim())).ToArray();
                     string typename = CreateTypeName(itemAction.GetType(), moduleTypes);
-                    if (TryFindType(typename, out _) || TryFindInCur(typename, out _))
-                        continue;
-                    PatchType(itemAction.GetType(), moduleTypes);
+                    Log.Out(typename);
+                    if (!TryFindType(typename, out _) && !TryFindInCur(typename, out _))
+                        PatchType(itemAction.GetType(), moduleTypes);
                     if (!dict_replacement_mapping.TryGetValue(item.Name, out var list))
                     {
                         list = new List<(string typename, int indexOfAction)>();
@@ -63,36 +152,64 @@ namespace KFCommonUtilityLib.Scripts.Singletons
 
         internal static void FinishAndLoad()
         {
-            if (workingAssembly != null && workingAssembly.MainModule.Types.Count > 0)
+            //output assembly
+            Log.Out("======Finish and Load======");
+            Mod self = ModManager.GetMod("CommonUtilityLib");
+            if (self == null)
             {
-                Mod self = ModManager.GetMod("CommonUtilityLib");
-                if (self != null)
+                Log.Warning("Failed to get mod!");
+                self = ModManager.GetModForAssembly(typeof(ItemActionModuleManager).Assembly);
+            }
+            if (self != null && workingAssembly != null && workingAssembly.MainModule.Types.Count > 1)
+            {
+                Log.Out("Assembly is valid!");
+                using (MemoryStream ms = new MemoryStream())
                 {
+                    try
+                    {
+                        workingAssembly.Write(ms);
+                    }
+                    catch (Exception)
+                    {
+                        new ConsoleCmdShutdown().Execute(new List<string>(), new CommandSenderInfo());
+                    }
                     DirectoryInfo dirInfo = Directory.CreateDirectory(Path.Combine(self.Path, "AssemblyOutput"));
-                    string filename = Path.Combine(dirInfo.FullName, workingAssembly.Name.Name);
-                    workingAssembly.Write(filename);
-                    Assembly newAssembly = Assembly.LoadFrom(filename);
+                    string filename = Path.Combine(dirInfo.FullName, workingAssembly.Name.Name + ".dll");
+                    Log.Out("Output Assembly: " + filename);
+                    using (FileStream fs = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Write))
+                    {
+                        ms.WriteTo(fs);
+                    }
+                    Assembly newAssembly = Assembly.LoadFile(filename);
                     list_created.Add(newAssembly);
                 }
-                //replace item actions
-
             }
-            //cleanup
-            workingAssembly?.Dispose();
-            workingAssembly = null;
-            //replace ItemActions
-            foreach (var pair in dict_replacement_mapping)
+
+            //replace item actions
+            if (list_created.Count > 0)
             {
-                ItemClass item = ItemClass.GetItemClass(pair.Key, true);
-                foreach ((string typename, int indexOfAction) in pair.Value)
+                foreach (var pair in dict_replacement_mapping)
                 {
-                    if (TryFindType(typename, out Type itemActionType))
+                    ItemClass item = ItemClass.GetItemClass(pair.Key, true);
+                    foreach ((string typename, int indexOfAction) in pair.Value)
                     {
-                        item.Actions[indexOfAction] = (ItemAction)Activator.CreateInstance(itemActionType);
+                        if (TryFindType(typename, out Type itemActionType))
+                        {
+                            Log.Out($"Replace ItemAction {item.Actions[indexOfAction].GetType().FullName} with {itemActionType.FullName}");
+                            ItemAction itemActionPrev = item.Actions[indexOfAction];
+                            item.Actions[indexOfAction] = (ItemAction)Activator.CreateInstance(itemActionType);
+                            item.Actions[indexOfAction].ActionIndex = indexOfAction;
+                            item.Actions[indexOfAction].item = item;
+                            item.Actions[indexOfAction].ExecutionRequirements = itemActionPrev.ExecutionRequirements;
+                            item.Actions[indexOfAction].ReadFrom(itemActionPrev.Properties);
+                        }
                     }
                 }
             }
 
+            //cleanup
+            workingAssembly?.Dispose();
+            workingAssembly = null;
             dict_replacement_mapping.Clear();
         }
 
@@ -125,7 +242,8 @@ namespace KFCommonUtilityLib.Scripts.Singletons
 
             //Create new ItemAction
             TypeReference typeref_itemAction = module.ImportReference(itemActionType);
-            TypeDefinition typedef_newAction = new TypeDefinition(null, CreateTypeName(itemActionType, moduleTypes), TypeAttributes.Public, typeref_itemAction);
+            TypeDefinition typedef_newAction = new TypeDefinition(null, CreateTypeName(itemActionType, moduleTypes), TypeAttributes.AnsiClass | TypeAttributes.BeforeFieldInit | TypeAttributes.Public | TypeAttributes.Sealed, typeref_itemAction);
+            typedef_newAction.CustomAttributes.Add(new CustomAttribute(module.ImportReference(typeof(PreserveAttribute).GetConstructor(Array.Empty<Type>()))));
             module.Types.Add(typedef_newAction);
 
             //Create new ItemActionData
@@ -135,8 +253,9 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             TypeReference typeref_actiondata = ((MethodReference)mtddef_create_data.Body.Instructions[mtddef_create_data.Body.Instructions.Count - 2].Operand).DeclaringType;
             //Get type by assembly qualified name since it might be from mod assembly
             Type type_itemActionData = Type.GetType(Assembly.CreateQualifiedName(typeref_actiondata.Module.Assembly.Name.Name, typeref_actiondata.FullName));
-            TypeDefinition typedef_newactiondata = new TypeDefinition(null, CreateTypeName(typeref_actiondata, arr_typeref_data), TypeAttributes.Public, typeref_actiondata);
-            module.Types.Add(typedef_newactiondata);
+            TypeDefinition typedef_newactiondata = new TypeDefinition(null, CreateTypeName(type_itemActionData, arr_type_data), TypeAttributes.AnsiClass | TypeAttributes.BeforeFieldInit | TypeAttributes.NestedPublic | TypeAttributes.Sealed, module.ImportReference(typeref_actiondata));
+            typedef_newactiondata.CustomAttributes.Add(new CustomAttribute(module.ImportReference(typeof(PreserveAttribute).GetConstructor(Array.Empty<Type>()))));
+            typedef_newAction.NestedTypes.Add(typedef_newactiondata);
 
             //Create fields
             FieldDefinition[] arr_flddef_modules = new FieldDefinition[moduleTypes.Length];
@@ -199,8 +318,8 @@ namespace KFCommonUtilityLib.Scripts.Singletons
 
             //Create ItemAction.CreateModifierData override
             MethodDefinition mtddef_create_modifier_data = new MethodDefinition(nameof(ItemAction.CreateModifierData), MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot, module.ImportReference(typeof(ItemActionData)));
-            mtddef_ctor_data.Parameters.Add(new ParameterDefinition("_invData", Mono.Cecil.ParameterAttributes.None, module.ImportReference(typeof(ItemInventoryData))));
-            mtddef_ctor_data.Parameters.Add(new ParameterDefinition("_indexInEntityOfAction", Mono.Cecil.ParameterAttributes.None, module.TypeSystem.Int32));
+            mtddef_create_modifier_data.Parameters.Add(new ParameterDefinition("_invData", Mono.Cecil.ParameterAttributes.None, module.ImportReference(typeof(ItemInventoryData))));
+            mtddef_create_modifier_data.Parameters.Add(new ParameterDefinition("_indexInEntityOfAction", Mono.Cecil.ParameterAttributes.None, module.TypeSystem.Int32));
             il = mtddef_create_modifier_data.Body.GetILProcessor();
             il.Emit(OpCodes.Ldarg_1);
             il.Emit(OpCodes.Ldarg_2);
@@ -211,39 +330,42 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             Dictionary<string, MethodPatchInfo> dict_overrides = new Dictionary<string, MethodPatchInfo>();
 
             //Apply Postfixes first so that Prefixes can jump to the right instruction
-            for (int i = 0; i < moduleTypes.Length - 1; i++)
+            for (int i = 0; i < moduleTypes.Length; i++)
             {
                 Type moduleType = moduleTypes[i];
-                Dictionary<string, (MethodInfo mtdInfo, MethodReference mtdRef, Type prefType)> dict_targets = GetMethodOverrideTargets<MethodTargetPostfixAttribute>(itemActionType, moduleType, module);
+                Dictionary<string, MethodOverrideInfo> dict_targets = GetMethodOverrideTargets<MethodTargetPostfixAttribute>(itemActionType, moduleType, module);
                 foreach (var pair in dict_targets)
                 {
-                    MethodReference mtdref_target = module.ImportReference(pair.Value.mtdInfo);
-                    MethodPatchInfo mtdpinf_derived = GetOrCreateOverride(dict_overrides, pair.Key, pair.Value.mtdRef, module);
+                    MethodDefinition mtddef_root = module.ImportReference(pair.Value.mtdinf_base.GetBaseDefinition()).Resolve();
+                    MethodDefinition mtddef_target = module.ImportReference(pair.Value.mtdinf_target).Resolve();
+                    MethodPatchInfo mtdpinf_derived = GetOrCreateOverride(dict_overrides, pair.Key, pair.Value.mtddef_base, module);
                     MethodDefinition mtddef_derived = mtdpinf_derived.Method;
-                    var list_inst_pars = MatchArguments(mtddef_derived, mtdref_target, arr_flddef_modules[i], arr_flddef_data[i], module, itemActionType);
+                    var list_inst_pars = MatchArguments(mtddef_root, mtddef_derived, mtddef_target, arr_flddef_modules[i], arr_flddef_data[i], module, itemActionType, typedef_newactiondata);
                     //insert invocation
                     il = mtddef_derived.Body.GetILProcessor();
                     foreach (var ins in list_inst_pars)
                     {
                         il.InsertBefore(mtdpinf_derived.PostfixEnd, ins);
                     }
-                    il.InsertBefore(mtdpinf_derived.PostfixEnd, il.Create(OpCodes.Call, mtdref_target));
-                    if(mtdpinf_derived.PostfixBegin == null)
+                    il.InsertBefore(mtdpinf_derived.PostfixEnd, il.Create(OpCodes.Call, module.ImportReference(mtddef_target)));
+                    if (mtdpinf_derived.PostfixBegin == null)
                         mtdpinf_derived.PostfixBegin = list_inst_pars[0];
                 }
             }
 
             //Apply Prefixes
-            for (int i = 0; i < moduleTypes.Length - 1; i++)
+            for (int i = 0; i < moduleTypes.Length; i++)
             {
                 Type moduleType = moduleTypes[i];
-                Dictionary<string, (MethodInfo mtdInfo, MethodReference mtdRef, Type prefType)> dict_targets = GetMethodOverrideTargets<MethodTargetPrefixAttribute>(itemActionType, moduleType, module);
+                Dictionary<string, MethodOverrideInfo> dict_targets = GetMethodOverrideTargets<MethodTargetPrefixAttribute>(itemActionType, moduleType, module);
                 foreach (var pair in dict_targets)
                 {
-                    MethodReference mtdref_target = module.ImportReference(pair.Value.mtdInfo);
-                    MethodPatchInfo mtdpinf_derived = GetOrCreateOverride(dict_overrides, pair.Key, pair.Value.mtdRef, module);
+                    MethodDefinition mtddef_root = module.ImportReference(pair.Value.mtdinf_base.GetBaseDefinition()).Resolve();
+                    MethodDefinition mtddef_target = module.ImportReference(pair.Value.mtdinf_target).Resolve();
+                    MethodPatchInfo mtdpinf_derived = GetOrCreateOverride(dict_overrides, pair.Key, pair.Value.mtddef_base, module);
                     MethodDefinition mtddef_derived = mtdpinf_derived.Method;
-                    var list_inst_pars = MatchArguments(mtddef_derived, mtdref_target, arr_flddef_modules[i], arr_flddef_data[i], module, itemActionType);
+                    Log.Out($"Processing {pair.Key}");
+                    var list_inst_pars = MatchArguments(mtddef_root, mtddef_derived, mtddef_target, arr_flddef_modules[i], arr_flddef_data[i], module, itemActionType, typedef_newactiondata);
                     //insert invocation
                     il = mtdpinf_derived.Method.Body.GetILProcessor();
                     Instruction ins_insert = mtdpinf_derived.Method.Body.Instructions[0];
@@ -251,7 +373,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                     {
                         il.InsertBefore(ins_insert, ins);
                     }
-                    il.InsertBefore(ins_insert, il.Create(OpCodes.Call, mtdref_target));
+                    il.InsertBefore(ins_insert, il.Create(OpCodes.Call, module.ImportReference(mtddef_target)));
                     il.InsertBefore(ins_insert, il.Create(OpCodes.Brfalse_S, mtdpinf_derived.PostfixBegin ?? mtdpinf_derived.PostfixEnd));
                 }
             }
@@ -260,31 +382,37 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             foreach (var mtd in dict_overrides.Values)
             {
                 typedef_newAction.Methods.Add(mtd.Method);
+
+                Log.Out($"Add method override to new action: {mtd.Method.Name}");
             }
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="itemActionType"></param>
         /// <param name="moduleType"></param>
         /// <param name="module"></param>
         /// <returns></returns>
-        private static Dictionary<string, (MethodInfo mtdInfo, MethodReference mtdRef, Type prefType)> GetMethodOverrideTargets<T>(Type itemActionType, Type moduleType, ModuleDefinition module) where T: Attribute, IMethodTarget
+        private static Dictionary<string, MethodOverrideInfo> GetMethodOverrideTargets<T>(Type itemActionType, Type moduleType, ModuleDefinition module) where T : Attribute, IMethodTarget
         {
-            Dictionary<string, (MethodInfo mtdInfo, MethodReference mtdRef, Type prefType)> dict_overrides = new Dictionary<string, (MethodInfo mtdInfo, MethodReference mtdRef, Type prefType)>();
-            foreach (var mtd in moduleType.GetMethods())
+            Dictionary<string, MethodOverrideInfo> dict_overrides = new Dictionary<string, MethodOverrideInfo>();
+            const BindingFlags searchFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+            foreach (var mtd in moduleType.GetMethods(searchFlags))
             {
                 IMethodTarget attr = mtd.GetCustomAttribute<T>();
                 if (attr != null && (attr.PreferredType == null || itemActionType.IsAssignableFrom(attr.PreferredType)))
                 {
                     string id = attr.GetTargetMethodIdentifier();
-                    MethodInfo mtdinf_base = itemActionType.GetMethod(attr.TargetMethod, attr.Params);
+                    MethodInfo mtdinf_base = AccessTools.Method(itemActionType, attr.TargetMethod, attr.Params);
                     if (mtdinf_base == null || !mtdinf_base.IsVirtual || mtdinf_base.IsFinal)
+                    {
+                        Log.Error($"Method not found: {attr.TargetMethod}");
                         continue;
+                    }
 
-                    MethodReference mtdref_base = module.ImportReference(mtdinf_base);
+                    MethodDefinition mtddef_base = module.ImportReference(mtdinf_base).Resolve();
                     //Find preferred patch
                     if (dict_overrides.TryGetValue(id, out var pair))
                     {
@@ -292,13 +420,18 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                             continue;
                         if (itemActionType.IsAssignableFrom(attr.PreferredType) && (pair.prefType == null || attr.PreferredType.IsSubclassOf(pair.prefType)))
                         {
-                            dict_overrides[id] = (mtd, mtdref_base, attr.PreferredType);
+                            dict_overrides[id] = new MethodOverrideInfo(mtd, mtdinf_base, mtddef_base, attr.PreferredType);
                         }
                     }
                     else
                     {
-                        dict_overrides[id] = (mtd, mtdref_base, attr.PreferredType);
+                        dict_overrides[id] = new MethodOverrideInfo(mtd, mtdinf_base, mtddef_base, attr.PreferredType);
                     }
+                    Log.Out($"Add method override: {id}");
+                }
+                else
+                {
+                    Log.Out($"No override target found or preferred type not match on {mtd.Name}");
                 }
             }
             return dict_overrides;
@@ -309,29 +442,35 @@ namespace KFCommonUtilityLib.Scripts.Singletons
         /// </summary>
         /// <param name="dict_overrides"></param>
         /// <param name="id"></param>
-        /// <param name="mtdref_base"></param>
+        /// <param name="mtddef_base"></param>
         /// <param name="module"></param>
         /// <returns></returns>
-        private static MethodPatchInfo GetOrCreateOverride(Dictionary<string, MethodPatchInfo> dict_overrides, string id, MethodReference mtdref_base, ModuleDefinition module)
+        private static MethodPatchInfo GetOrCreateOverride(Dictionary<string, MethodPatchInfo> dict_overrides, string id, MethodDefinition mtddef_base, ModuleDefinition module)
         {
-            if (mtdref_base.FullName == "CreateModifierData")
+            if (mtddef_base.FullName == "CreateModifierData")
                 throw new MethodAccessException($"YOU SHOULD NOT MANUALLY MODIFY CreateModifierData!");
             if (dict_overrides.TryGetValue(id, out var mtdpinf_derived))
             {
                 return mtdpinf_derived;
             }
-            MethodDefinition mtddef_derived = new MethodDefinition(mtdref_base.Name, MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot, mtdref_base.ReturnType);
-            foreach (var par in mtdref_base.Parameters)
+            //when overriding, retain attributes of base but make sure to remove the 'new' keyword which presents if you are overriding the root method
+            MethodDefinition mtddef_derived = new MethodDefinition(mtddef_base.Name, (mtddef_base.Attributes | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot) & ~MethodAttributes.NewSlot, module.ImportReference(mtddef_base.ReturnType));
+
+            Log.Out($"Create method override: {id}");
+            foreach (var par in mtddef_base.Parameters)
             {
-                mtddef_derived.Parameters.Add(new ParameterDefinition(par.Name, par.Attributes, par.ParameterType));
+                ParameterDefinition pardef = new ParameterDefinition(par.Name, par.Attributes, module.ImportReference(par.ParameterType));
+                if (par.HasConstant)
+                    pardef.Constant = par.Constant;
+                mtddef_derived.Parameters.Add(pardef);
             }
             mtddef_derived.Body.Variables.Clear();
             mtddef_derived.Body.InitLocals = true;
             mtddef_derived.Body.Variables.Add(new VariableDefinition(module.TypeSystem.Boolean));
-            bool hasReturnVal = mtddef_derived.ReturnType != module.TypeSystem.Void;
+            bool hasReturnVal = mtddef_derived.ReturnType.MetadataType != MetadataType.Void;
             if (hasReturnVal)
             {
-                mtddef_derived.Body.Variables.Add(new VariableDefinition(mtdref_base.ReturnType));
+                mtddef_derived.Body.Variables.Add(new VariableDefinition(module.ImportReference(mtddef_base.ReturnType)));
             }
             var il = mtddef_derived.Body.GetILProcessor();
             il.Emit(OpCodes.Ldc_I4_1);
@@ -340,9 +479,9 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             for (int i = 0; i < mtddef_derived.Parameters.Count; i++)
             {
                 var par = mtddef_derived.Parameters[i];
-                il.Emit(par.ParameterType.IsByReference ? OpCodes.Ldarga_S : OpCodes.Ldarg_S , i + 1);
+                il.Emit(par.ParameterType.IsByReference ? OpCodes.Ldarga_S : OpCodes.Ldarg_S, par);
             }
-            il.Emit(OpCodes.Call, mtdref_base);
+            il.Emit(OpCodes.Call, module.ImportReference(mtddef_base));
             if (hasReturnVal)
             {
                 il.Emit(OpCodes.Stloc_S, mtddef_derived.Body.Variables[1]);
@@ -358,7 +497,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
         /// Create a List<Instruction> that loads all arguments required to call the method onto stack.
         /// </summary>
         /// <param name="mtddef_derived">The override method.</param>
-        /// <param name="mtdref_target">The patch method to be called.</param>
+        /// <param name="mtddef_target">The patch method to be called.</param>
         /// <param name="flddef_module">The injected module field.</param>
         /// <param name="flddef_data">The injected data field.</param>
         /// <param name="module">The assembly's main module.</param>
@@ -367,94 +506,106 @@ namespace KFCommonUtilityLib.Scripts.Singletons
         /// <exception cref="MissingFieldException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        private static List<Instruction> MatchArguments(MethodDefinition mtddef_derived, MethodReference mtdref_target, FieldDefinition flddef_module, FieldDefinition flddef_data, ModuleDefinition module, Type itemActionType)
+        private static List<Instruction> MatchArguments(MethodDefinition mtddef_root, MethodDefinition mtddef_derived, MethodDefinition mtddef_target, FieldDefinition flddef_module, FieldDefinition flddef_data, ModuleDefinition module, Type itemActionType, TypeDefinition typedef_newactiondata)
         {
             var il = mtddef_derived.Body.GetILProcessor();
             //Match parameters
             List<Instruction> list_inst_pars = new List<Instruction>();
             list_inst_pars.Add(il.Create(OpCodes.Ldarg_0));
             list_inst_pars.Add(il.Create(OpCodes.Ldfld, flddef_module));
-            foreach (var par in mtdref_target.Parameters)
+            foreach (var par in mtddef_target.Parameters)
             {
-                if (par.Name.StartsWith("__"))
+                if (par.Name.StartsWith("___"))
                 {
-                    if (par.Name.StartsWith("___"))
+                    //___ means non public fields
+                    string str_fldname = par.Name.Substring(3);
+                    FieldDefinition flddef_target = module.ImportReference(itemActionType.GetField(str_fldname, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)).Resolve();
+                    if (flddef_target == null)
+                        throw new MissingFieldException($"Field with name \"{str_fldname}\" not found! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
+                    if (flddef_target.IsStatic)
                     {
-                        //___ means non public fields
-                        string str_fldname = par.Name.Substring(3);
-                        FieldDefinition flddef_target = module.ImportReference(itemActionType.GetField(str_fldname, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)).Resolve();
-                        if (flddef_target == null)
-                            throw new MissingFieldException($"Field with name \"{str_fldname}\" not found! Patch method: {mtdref_target.DeclaringType.FullName}.{mtdref_target.Name}");
-                        if (flddef_target.IsStatic)
-                        {
-                            list_inst_pars.Add(il.Create((par.ParameterType.IsByReference) ? OpCodes.Ldsflda : OpCodes.Ldsfld, flddef_target));
-                        }
-                        else
-                        {
-                            list_inst_pars.Add(il.Create(OpCodes.Ldarg_0));
-                            list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldflda : OpCodes.Ldfld, flddef_target));
-                        }
+                        list_inst_pars.Add(il.Create((par.ParameterType.IsByReference) ? OpCodes.Ldsflda : OpCodes.Ldsfld, module.ImportReference(flddef_target)));
                     }
                     else
                     {
-                        //__ means special data
-                        switch (par.Name)
-                        {
-                            //load injected data instance
-                            case "__data":
-                                if (flddef_data == null)
-                                    throw new ArgumentNullException($"No Injected ItemActionData in {mtdref_target.DeclaringType.FullName}!");
-                                int index = -1;
-                                for (int j = 0; j < mtddef_derived.Parameters.Count; j++)
-                                {
-                                    if (mtddef_derived.Parameters[j].ParameterType.Name == "ItemActionData")
-                                    {
-                                        index = j;
-                                        break;
-                                    }
-                                }
-                                if (index < 0)
-                                    throw new ArgumentException($"ItemActionData is not present in target method! Patch method: {mtdref_target.DeclaringType.FullName}.{mtdref_target.Name}");
-                                list_inst_pars.Add(il.Create(OpCodes.Ldarg_S, index + 1));
-                                list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldflda : OpCodes.Ldfld, flddef_data));
-                                break;
-                            //load ItemAction instance
-                            case "__instance":
-                                list_inst_pars.Add(il.Create(OpCodes.Ldarg_0));
-                                break;
-                            //load return value
-                            case "__result":
-                                list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldloca_S : OpCodes.Ldloc_S, mtddef_derived.Body.Variables[1]));
-                                break;
-                            //for postfix only, indicates whether original method is executed
-                            case "__runOriginal":
-                                if (par.ParameterType.IsByReference)
-                                    throw new ArgumentException($"__runOriginal is readonly! Patch method: {mtdref_target.DeclaringType.FullName}.{mtdref_target.Name}");
-                                list_inst_pars.Add(il.Create(OpCodes.Ldloc_S, mtddef_derived.Body.Variables[0]));
-                                break;
-                            default:
-                                throw new ArgumentException($"Invalid Parameter Name in {mtdref_target.DeclaringType.FullName}.{mtdref_target.Name}: {par.Name}");
-                        }
+                        list_inst_pars.Add(il.Create(OpCodes.Ldarg_0));
+                        list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldflda : OpCodes.Ldfld, module.ImportReference(flddef_target)));
                     }
                 }
-                else
+                else if(!MatchSpecialParameters(par, flddef_data, mtddef_target, mtddef_derived, typedef_newactiondata, list_inst_pars, il))
                 {
                     //match param by name
                     int index = -1;
+                    for (int j = 0; j < mtddef_root.Parameters.Count; j++)
+                    {
+                        if (mtddef_root.Parameters[j].Name == par.Name)
+                        {
+                            index = mtddef_root.Parameters[j].Index;
+                            break;
+                        }
+                    }
+                    if (index < 0)
+                        throw new ArgumentException($"Parameter \"{par.Name}\" not found! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
+                    try
+                    {
+                        Log.Out($"Match Parameter {par.Name} to {mtddef_derived.Parameters[index].Name}/{mtddef_root.Parameters[index].Name} index: {index}");
+
+                    }
+                    catch (ArgumentOutOfRangeException e)
+                    {
+                        Log.Error($"index {index} parameter {par.Name}" +
+                                  $"root pars: {{{string.Join(",", mtddef_root.Parameters.Select(p => p.Name + "/" + p.Index).ToArray())}}}" +
+                                  $"derived pars: {{{string.Join(",", mtddef_derived.Parameters.Select(p => p.Name + "/" + p.Index).ToArray())}}}");
+                        throw e;
+                    }
+                    list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldarga_S : OpCodes.Ldarg_S, mtddef_derived.Parameters[index]));
+                }
+            }
+            return list_inst_pars;
+        }
+
+        private static bool MatchSpecialParameters(ParameterDefinition par, FieldDefinition flddef_data, MethodDefinition mtddef_target, MethodDefinition mtddef_derived, TypeDefinition typedef_newactiondata, List<Instruction> list_inst_pars, ILProcessor il)
+        {
+            switch (par.Name)
+            {
+                //load injected data instance
+                case "__customData":
+                    if (flddef_data == null)
+                        throw new ArgumentNullException($"No Injected ItemActionData in {mtddef_target.DeclaringType.FullName}!");
+                    int index = -1;
                     for (int j = 0; j < mtddef_derived.Parameters.Count; j++)
                     {
-                        if (mtddef_derived.Parameters[j].Name == par.Name)
+                        if (mtddef_derived.Parameters[j].ParameterType.Name == "ItemActionData")
                         {
                             index = j;
                             break;
                         }
-                        if (index < 0)
-                            throw new ArgumentException($"Parameter \"{par.Name}\" not found! Patch method: {mtdref_target.DeclaringType.FullName}.{mtdref_target.Name}");
-                        list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldarga_S : OpCodes.Ldarg_S, index + 1));
                     }
-                }
+                    if (index < 0)
+                        throw new ArgumentException($"ItemActionData is not present in target method! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
+                    list_inst_pars.Add(il.Create(OpCodes.Ldarg_S, mtddef_derived.Parameters[index]));
+                    list_inst_pars.Add(il.Create(OpCodes.Castclass, typedef_newactiondata));
+                    list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldflda : OpCodes.Ldfld, flddef_data));
+                    break;
+                //load ItemAction instance
+                case "__instance":
+                    list_inst_pars.Add(il.Create(OpCodes.Ldarg_0));
+                    break;
+                //load return value
+                case "__result":
+                    list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldloca_S : OpCodes.Ldloc_S, mtddef_derived.Body.Variables[1]));
+                    break;
+                //for postfix only, indicates whether original method is executed
+                case "__runOriginal":
+                    if (par.ParameterType.IsByReference)
+                        throw new ArgumentException($"__runOriginal is readonly! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
+                    list_inst_pars.Add(il.Create(OpCodes.Ldloc_S, mtddef_derived.Body.Variables[0]));
+                    break;
+
+                default:
+                    return false;
             }
-            return list_inst_pars;
+            return true;
         }
 
         /// <summary>
@@ -489,12 +640,12 @@ namespace KFCommonUtilityLib.Scripts.Singletons
 
         public static string CreateFieldName(Type moduleType)
         {
-            return (moduleType.FullName + "_" + moduleType.Assembly.GetName().Name).Replace(".", "_");
+            return (moduleType.FullName + "_" + moduleType.Assembly.GetName().Name).ReplaceInvalidChar();
         }
 
         public static string CreateFieldName(TypeReference moduleType)
         {
-            return (moduleType.FullName + "_" + moduleType.Module.Assembly.Name.Name).Replace(".", "_");
+            return (moduleType.FullName + "_" + moduleType.Module.Assembly.Name.Name).ReplaceInvalidChar();
         }
 
         public static string CreateTypeName(Type itemActionType, params Type[] moduleTypes)
@@ -505,7 +656,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                 if (type != null)
                     typeName += "__" + type.FullName + "_" + type.Assembly.GetName().Name;
             }
-            typeName = typeName.Replace('.', '_');
+            typeName = typeName.ReplaceInvalidChar();
             return typeName;
         }
 
@@ -517,8 +668,42 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                 if (type != null)
                     typeName += "__" + type.FullName + "_" + type.Module.Assembly.Name.Name;
             }
-            typeName = typeName.Replace('.', '_');
+            typeName = typeName.ReplaceInvalidChar();
             return typeName;
+        }
+
+        private static string ReplaceInvalidChar(this string self)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < self.Length; i++)
+            {
+                char c = self[i];
+                if (!char.IsLetterOrDigit(c) && c != '_')
+                {
+                    sb.Append('_');
+                }
+                else
+                {
+                    sb.Append(c);
+                }
+            }
+            return sb.ToString();
+        }
+    }
+
+    internal struct MethodOverrideInfo
+    {
+        public MethodInfo mtdinf_target;
+        public MethodInfo mtdinf_base;
+        public MethodDefinition mtddef_base;
+        public Type prefType;
+
+        public MethodOverrideInfo(MethodInfo mtdinf_target, MethodInfo mtdinf_base, MethodDefinition mtddef_base, Type prefType)
+        {
+            this.mtdinf_target = mtdinf_target;
+            this.mtdinf_base = mtdinf_base;
+            this.mtddef_base = mtddef_base;
+            this.prefType = prefType;
         }
     }
 }

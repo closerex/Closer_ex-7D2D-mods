@@ -30,7 +30,8 @@
 			<property name="SoundHolster" value="weapon_holster"/>
 
 			<property class="Action0">
-				<property name="Class" value="HoldOpen,KFCommonUtilityLib"/>
+				<property name="Class" value="Ranged"/>
+				<property name="ItemActionModules" value="HoldOpen,KFCommonUtilityLib"/>
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
 				<property name="Sound_start" value="Pistol9mm_Fire"/>
 				<property name="Sound_loop" value="Pistol9mm_Fire"/>
@@ -142,7 +143,8 @@
 			<property name="SoundHolster" value="weapon_holster"/>
 
 			<property class="Action0">
-				<property name="Class" value="HoldOpen,KFCommonUtilityLib"/>
+				<property name="Class" value="Ranged"/>
+				<property name="ItemActionModules" value="HoldOpen,KFCommonUtilityLib"/>
 				<property name="Delay" value=".150"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammo762mmBulletBall,ammo762mmBulletHP,ammo762mmBulletAP"/>
 				<property name="Sound_start" value="L85A2_Fire"/>
@@ -255,7 +257,8 @@
 			<property name="SoundHolster" value="weapon_holster"/>
 
 			<property class="Action0">
-				<property name="Class" value="HoldOpen,KFCommonUtilityLib"/>
+				<property name="Class" value="Ranged"/>
+				<property name="ItemActionModules" value="HoldOpen,KFCommonUtilityLib"/>
 				<property name="Delay" value=".150"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammo762mmBulletBall,ammo762mmBulletHP,ammo762mmBulletAP"/>
 				<property name="Sound_start" value="AK12_Fire"/>
@@ -372,7 +375,14 @@
 			<!-- <property name="TakeOverReloadTime" value="true"/> -->
 
 			<property class="Action0">
-				<property name="Class" value="HoldOpen,KFCommonUtilityLib"/>
+				<property name="Class" value="Ranged"/>
+				<property name="ItemActionModules" value="HoldOpen,KFCommonUtilityLib"/>
+				<property name="RampMultiplier" value="3"/>
+				<property name="RampTime" value="1.75"/>
+				<property name="MinRampShots" value="3"/>
+				<property name="RampStartSound" value="devotion_ramp"/>
+				<property name="PrepareTime" value="0"/>
+				
 				<property name="Delay" value=".150"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
 				<property name="Reload_time" value="4.1"/>

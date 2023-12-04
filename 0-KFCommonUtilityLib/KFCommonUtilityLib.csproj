@@ -373,6 +373,8 @@
     <Compile Include="Scripts\Attributes\MethodTargetAttribute.cs" />
     <Compile Include="Scripts\Attributes\PatchTargetAttribute.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdReloadDebug.cs" />
+    <Compile Include="Scripts\Items\Modular\ActionModuleHoldOpen.cs" />
+    <Compile Include="Scripts\Items\Modular\ActionModuleRampUp.cs" />
     <Compile Include="Scripts\Singletons\AnimationRiggingManager.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdCalibrateWeapon.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPlayerDebugInfo.cs" />
@@ -414,9 +416,7 @@
     <Compile Include="Scripts\Utilities\SaveTextureToFileUtility.cs" />
     <Compile Include="Scripts\Utilities\EntityInventoryExtension.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Scripts\Items\Modular\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <AttachedScriptFolder>KFAttached</AttachedScriptFolder>

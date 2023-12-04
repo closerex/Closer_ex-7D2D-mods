@@ -23,7 +23,8 @@
 			<property name="ShowQuality" value="true"/>
 
 			<property class="Action0">
-				<property name="Class" value="RampUp,KFCommonUtilityLib"/>
+				<property name="Class" value="Ranged"/>
+				<property name="ItemActionModules" value="HoldOpen,KFCommonUtilityLib;RampUp,KFCommonUtilityLib"/>
 				<property name="Delay" value=".2"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammo762mmBulletBall,ammo762mmBulletHP,ammo762mmBulletAP"/>
 				<property name="RampMultiplier" value="3"/>
