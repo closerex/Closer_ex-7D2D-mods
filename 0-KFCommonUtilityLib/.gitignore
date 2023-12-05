@@ -78,3 +78,5 @@ ModelManifest.xml
 #zzzili
 v15/
 
+AssemblyOutput/
+AssemblyOutput/**
