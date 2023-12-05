@@ -379,6 +379,7 @@
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdCalibrateWeapon.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPlayerDebugInfo.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdReloadLog.cs" />
+    <Compile Include="Scripts\Singletons\BackgroundInventoryUpdateManager.cs" />
     <Compile Include="Scripts\Singletons\CustomEffectEnumManager.cs" />
     <Compile Include="Scripts\FbxExporter07.cs" />
     <Compile Include="Scripts\Global\CustomEnums.cs" />
