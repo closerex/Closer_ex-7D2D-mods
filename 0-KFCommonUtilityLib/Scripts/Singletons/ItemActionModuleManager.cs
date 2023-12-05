@@ -296,6 +296,8 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             MethodDefinition mtddef_ctor_data = new MethodDefinition(".ctor", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName, module.TypeSystem.Void);
             mtddef_ctor_data.Parameters.Add(new ParameterDefinition("_inventoryData", Mono.Cecil.ParameterAttributes.None, module.ImportReference(typeof(ItemInventoryData))));
             mtddef_ctor_data.Parameters.Add(new ParameterDefinition("_indexInEntityOfAction", Mono.Cecil.ParameterAttributes.None, module.TypeSystem.Int32));
+            FieldReference fldref_invdata_item = module.ImportReference(typeof(ItemInventoryData).GetField(nameof(ItemInventoryData.item)));
+            FieldReference fldref_item_actions = module.ImportReference(typeof(ItemClass).GetField(nameof(ItemClass.Actions)));
             il = mtddef_ctor_data.Body.GetILProcessor();
             il.Append(il.Create(OpCodes.Ldarg_0));
             il.Append(il.Create(OpCodes.Ldarg_1));
@@ -309,7 +311,14 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                 il.Append(il.Create(OpCodes.Ldarg_0));
                 il.Append(il.Create(OpCodes.Ldarg_1));
                 il.Append(il.Create(OpCodes.Ldarg_2));
-                il.Append(il.Create(OpCodes.Newobj, module.ImportReference(arr_type_data[i].GetConstructor(new Type[] { typeof(ItemInventoryData), typeof(int) }))));
+                il.Emit(OpCodes.Ldarg_1);
+                il.Emit(OpCodes.Ldfld, fldref_invdata_item);
+                il.Emit(OpCodes.Ldfld, fldref_item_actions);
+                il.Emit(OpCodes.Ldarg_2);
+                il.Emit(OpCodes.Ldelem_Ref);
+                il.Emit(OpCodes.Castclass, typedef_newAction);
+                il.Emit(OpCodes.Ldfld, arr_flddef_modules[i]);
+                il.Append(il.Create(OpCodes.Newobj, module.ImportReference(arr_type_data[i].GetConstructor(new Type[] { typeof(ItemInventoryData), typeof(int), moduleTypes[i] }))));
                 il.Append(il.Create(OpCodes.Stfld, arr_flddef_data[i]));
                 il.Append(il.Create(OpCodes.Nop));
             }

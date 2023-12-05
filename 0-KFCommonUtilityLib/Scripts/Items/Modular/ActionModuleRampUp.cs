@@ -183,8 +183,11 @@ public class ActionModuleRampUp
 
         public bool zoomPrepare = false;
 
-        public RampUpData(ItemInventoryData _invData, int _indexInEntityOfAction)
+        public ActionModuleRampUp rampUpModule;
+
+        public RampUpData(ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleRampUp _module)
         {
+            rampUpModule = _module;
         }
     }
 }
