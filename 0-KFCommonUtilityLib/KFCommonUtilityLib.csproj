@@ -375,6 +375,7 @@
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdReloadDebug.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleHoldOpen.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleRampUp.cs" />
+    <Compile Include="Scripts\Items\Modular\ActionModuleRecharge.cs" />
     <Compile Include="Scripts\Singletons\AnimationRiggingManager.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdCalibrateWeapon.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPlayerDebugInfo.cs" />

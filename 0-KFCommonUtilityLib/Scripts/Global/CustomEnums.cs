@@ -11,5 +11,8 @@
     public static PassiveEffects RecoilReturnSpeed;
     public static PassiveEffects ProjectileImpactDamagePercentEntity;
     public static PassiveEffects ProjectileImpactDamagePercentBlock;
+    public static PassiveEffects RechargeDataValue;
+    public static PassiveEffects RechargeDataInterval;
+    public static PassiveEffects RechargeDataMaximum;
     #endregion
 }
