@@ -29,6 +29,7 @@ public class CommonUtilityLibInit : IModApi
         CustomEnums.ProjectileImpactDamagePercentBlock = CustomEffectEnumManager.RegisterOrGetPassive("ProjectileImpactDamagePercentBlock");
         CustomEnums.ProjectileImpactDamagePercentEntity = CustomEffectEnumManager.RegisterOrGetPassive("ProjectileImpactDamagePercentEntity");
         CustomEnums.RechargeDataValue = CustomEffectEnumManager.RegisterOrGetPassive("RechargeDataValue");
+        CustomEnums.RechargeDataDecrease = CustomEffectEnumManager.RegisterOrGetPassive("RechargeDataDecrease");
         CustomEnums.RechargeDataInterval = CustomEffectEnumManager.RegisterOrGetPassive("RechargeDataInterval");
         CustomEnums.RechargeDataMaximum = CustomEffectEnumManager.RegisterOrGetPassive("RechargeDataMaximum");
     }

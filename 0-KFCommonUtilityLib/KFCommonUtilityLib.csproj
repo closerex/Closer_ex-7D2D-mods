@@ -320,6 +320,7 @@
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationProceduralRecoildAbs.cs" />
     <Compile Include="KFAttached\KFUtilAttached\ApexWeaponHudControllerBase.cs" />
     <Compile Include="KFAttached\KFUtilAttached\RigActivationBinding.cs" />
+    <Compile Include="KFAttached\KFUtilAttached\WeaponLabelControllerBatch.cs" />
     <Compile Include="KFAttached\LeanTween\Framework\LeanAudio.cs" />
     <Compile Include="KFAttached\LeanTween\Framework\LeanSmooth.cs" />
     <Compile Include="KFAttached\LeanTween\Framework\LeanTest.cs" />
