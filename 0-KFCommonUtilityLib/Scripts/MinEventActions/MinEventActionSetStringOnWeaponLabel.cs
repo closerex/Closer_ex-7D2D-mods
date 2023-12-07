@@ -38,9 +38,9 @@ class MinEventActionSetStringOnWeaponLabel : MinEventActionRemoteHoldingBase
     public override void Execute(MinEventParams _params)
     {
         if (isRemoteHolding)
-            NetPackageSyncWeaponLabelText.setWeaponLabelText(_params.Self, slot, isCvar ? _params.Self.GetCVar(text).ToString() : text);
+            NetPackageSyncWeaponLabelText.SetWeaponLabelText(_params.Self, slot, isCvar ? _params.Self.GetCVar(text).ToString() : text);
         else if(!_params.Self.isEntityRemote)
-            NetPackageSyncWeaponLabelText.netSyncSetWeaponLabelText(_params.Self, slot, isCvar ? _params.Self.GetCVar(text).ToString() : text);
+            NetPackageSyncWeaponLabelText.NetSyncSetWeaponLabelText(_params.Self, slot, isCvar ? _params.Self.GetCVar(text).ToString() : text);
     }
 }
 

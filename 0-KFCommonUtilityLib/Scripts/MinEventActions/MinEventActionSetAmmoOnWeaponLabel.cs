@@ -57,9 +57,9 @@ class MinEventActionSetAmmoOnWeaponLabel : MinEventActionRemoteHoldingBase
         string str = usePattern ? string.Join(meta.ToString(), wrap) : meta.ToString();
         //int num = consume_ammo ? meta - 1 : meta;
         if (isRemoteHolding)
-            NetPackageSyncWeaponLabelText.setWeaponLabelText(_params.Self, slot, str);
+            NetPackageSyncWeaponLabelText.SetWeaponLabelText(_params.Self, slot, str);
         else if(!_params.Self.isEntityRemote)
-            NetPackageSyncWeaponLabelText.netSyncSetWeaponLabelText(_params.Self, slot, str);
+            NetPackageSyncWeaponLabelText.NetSyncSetWeaponLabelText(_params.Self, slot, str);
     }
 }
 

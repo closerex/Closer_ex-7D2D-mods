@@ -58,13 +58,13 @@ public class ActionModuleRecharge
                     float dec = EffectManager.GetValue(CustomEnums.RechargeDataDecrease, itemValue, float.MaxValue, invData.holdingEntity, null, tags);
                     cur = Mathf.Max(cur - dec, max);
                 }
-                else
+                else if (cur < max)
                 {
                     //add up and clamp to max
                     float add = EffectManager.GetValue(CustomEnums.RechargeDataValue, itemValue, 0, invData.holdingEntity, null, tags);
                     cur = Mathf.Min(cur + add, max);
                 }
-                itemValue.SetMetadata(rechargeData, max, TypedMetadataValue.TypeTag.Float);
+                itemValue.SetMetadata(rechargeData, cur, TypedMetadataValue.TypeTag.Float);
             }
         }
 

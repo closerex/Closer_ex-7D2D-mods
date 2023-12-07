@@ -1,4 +1,6 @@
-﻿class NetPackageSyncWeaponLabelText : NetPackage
+﻿using KFCommonUtilityLib.Scripts.Singletons;
+
+class NetPackageSyncWeaponLabelText : NetPackage
 {
     public NetPackageSyncWeaponLabelText Setup(int entityId, int slot, string data)
     {
@@ -17,7 +19,7 @@
         if (_world == null)
             return;
 
-        netSyncSetWeaponLabelText(_world.GetEntity(entityId) as EntityAlive, slot, data, true);
+        NetSyncSetWeaponLabelText(_world.GetEntity(entityId) as EntityAlive, slot, data, true);
     }
 
     public override void read(PooledBinaryReader _reader)
@@ -35,7 +37,7 @@
         _writer.Write(data);
     }
 
-    public static void netSyncSetWeaponLabelText(EntityAlive holdingEntity, int slot, string data, bool fromNet = false)
+    public static void NetSyncSetWeaponLabelText(EntityAlive holdingEntity, int slot, string data, bool fromNet = false)
     {
         if (!holdingEntity || (holdingEntity.isEntityRemote && !fromNet))
         {
@@ -46,7 +48,7 @@
             return;
         }
 
-        if (setWeaponLabelText(holdingEntity, slot, data))
+        if (SetWeaponLabelText(holdingEntity, slot, data))
         {
             //Log.Out("trying to set weapon label on " + (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer ? "server" : "client") + " slot: " + slot + " text: " + data + " entity: " + holdingEntity.entityId + " from net: " + fromNet);
             if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && SingletonMonoBehaviour<ConnectionManager>.Instance.ClientCount() > 0)
@@ -61,16 +63,16 @@
         }
     }
 
-    public static bool setWeaponLabelText(EntityAlive holdingEntity, int slot, string data)
+    public static bool SetWeaponLabelText(EntityAlive holdingEntity, int slot, string data)
     {
         if (GameManager.IsDedicatedServer)
             return true;
 
-        WeaponLabelControllerBase controller = null;
-        if (holdingEntity.emodel.avatarController is AvatarMultiBodyController multiBody && multiBody.HeldItemTransform != null)
-            controller = multiBody.HeldItemTransform.GetComponent<WeaponLabelControllerBase>();
-        else if (holdingEntity.emodel.avatarController is LegacyAvatarController legacy && legacy.HeldItemTransform)
-            controller = legacy.HeldItemTransform.GetComponent<WeaponLabelControllerBase>();
+        WeaponLabelControllerBase controller = holdingEntity.inventory.GetHoldingItemTransform()?.GetComponent<WeaponLabelControllerBase>();
+        //if (holdingEntity.emodel.avatarController is AvatarMultiBodyController multiBody && multiBody.HeldItemTransform != null)
+        //    controller = multiBody.HeldItemTransform.GetComponent<WeaponLabelControllerBase>();
+        //else if (holdingEntity.emodel.avatarController is LegacyAvatarController legacy && legacy.HeldItemTransform)
+        //    controller = legacy.HeldItemTransform.GetComponent<WeaponLabelControllerBase>();
 
         return controller && controller.setLabelText(slot, data);
     }

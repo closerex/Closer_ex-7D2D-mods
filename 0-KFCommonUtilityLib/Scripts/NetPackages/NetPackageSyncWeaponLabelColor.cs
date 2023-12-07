@@ -26,10 +26,10 @@ class NetPackageSyncWeaponLabelColor : NetPackage
         if (_world == null)
             return;
 
-        netSyncSetWeaponLabelColor(_world.GetEntity(entityId) as EntityAlive, isText, index0, color, index1, nameId, true);
+        NetSyncSetWeaponLabelColor(_world.GetEntity(entityId) as EntityAlive, isText, index0, color, index1, nameId, true);
     }
 
-    public static void netSyncSetWeaponLabelColor(EntityAlive holdingEntity, bool isText, int slot0, Color color, int slot1, int nameId, bool fromNet = false)
+    public static void NetSyncSetWeaponLabelColor(EntityAlive holdingEntity, bool isText, int slot0, Color color, int slot1, int nameId, bool fromNet = false)
     {
         if (!holdingEntity || (holdingEntity.isEntityRemote && !fromNet))
         {
@@ -40,7 +40,7 @@ class NetPackageSyncWeaponLabelColor : NetPackage
             return;
         }
 
-        if(setWeaponLabelColor(holdingEntity, isText, slot0, color, slot1, nameId))
+        if(SetWeaponLabelColor(holdingEntity, isText, slot0, color, slot1, nameId))
         {
             //Log.Out("trying to set weapon label on " + (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer ? "server" : "client") + " color: " + color.ToString() + " entity: " + holdingEntity.entityId + " from net: " + fromNet);
             if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && SingletonMonoBehaviour<ConnectionManager>.Instance.ClientCount() > 0)
@@ -55,27 +55,27 @@ class NetPackageSyncWeaponLabelColor : NetPackage
         }
     }
 
-    public static bool setWeaponLabelColor(EntityAlive holdingEntity, bool isText, int slot0, Color color, int slot1, int nameId)
+    public static bool SetWeaponLabelColor(EntityAlive holdingEntity, bool isText, int slot0, Color color, int slot1, int nameId)
     {
         if (GameManager.IsDedicatedServer)
             return true;
 
         if (isText)
         {
-            WeaponLabelControllerBase controller = null;
-            if (holdingEntity.emodel.avatarController is AvatarMultiBodyController multiBody && multiBody.HeldItemTransform != null)
-                controller = multiBody.HeldItemTransform.GetComponent<WeaponLabelControllerBase>();
-            else if (holdingEntity.emodel.avatarController is LegacyAvatarController legacy && legacy.HeldItemTransform != null)
-                controller = legacy.HeldItemTransform.GetComponent<WeaponLabelControllerBase>();
+            WeaponLabelControllerBase controller = holdingEntity.inventory.GetHoldingItemTransform()?.GetComponent<WeaponLabelControllerBase>();
+            //if (holdingEntity.emodel.avatarController is AvatarMultiBodyController multiBody && multiBody.HeldItemTransform != null)
+            //    controller = multiBody.HeldItemTransform.GetComponent<WeaponLabelControllerBase>();
+            //else if (holdingEntity.emodel.avatarController is LegacyAvatarController legacy && legacy.HeldItemTransform != null)
+            //    controller = legacy.HeldItemTransform.GetComponent<WeaponLabelControllerBase>();
             return controller && controller.setLabelColor(slot0, color);
         }
         else
         {
-            WeaponColorControllerBase controller = null;
-            if (holdingEntity.emodel.avatarController is AvatarMultiBodyController multiBody && multiBody.HeldItemTransform != null)
-                controller = multiBody.HeldItemTransform.GetComponent<WeaponColorControllerBase>();
-            else if (holdingEntity.emodel.avatarController is LegacyAvatarController legacy && legacy.HeldItemTransform != null)
-                controller = legacy.HeldItemTransform.GetComponent<WeaponColorControllerBase>();
+            WeaponColorControllerBase controller = holdingEntity.inventory.GetHoldingItemTransform()?.GetComponent<WeaponColorControllerBase>();
+            //if (holdingEntity.emodel.avatarController is AvatarMultiBodyController multiBody && multiBody.HeldItemTransform != null)
+            //    controller = multiBody.HeldItemTransform.GetComponent<WeaponColorControllerBase>();
+            //else if (holdingEntity.emodel.avatarController is LegacyAvatarController legacy && legacy.HeldItemTransform != null)
+            //    controller = legacy.HeldItemTransform.GetComponent<WeaponColorControllerBase>();
             return controller && controller.setMaterialColor(slot0, slot1, nameId, color);
         }
     }

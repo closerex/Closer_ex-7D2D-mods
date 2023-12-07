@@ -44,9 +44,9 @@ class MinEventActionSetWeaponLabelColor : MinEventActionRemoteHoldingBase
     public override void Execute(MinEventParams _params)
     {
         if (isRemoteHolding)
-            NetPackageSyncWeaponLabelColor.setWeaponLabelColor(_params.Self, isText, slot0, color, slot1, nameId);
+            NetPackageSyncWeaponLabelColor.SetWeaponLabelColor(_params.Self, isText, slot0, color, slot1, nameId);
         else if(!_params.Self.isEntityRemote)
-            NetPackageSyncWeaponLabelColor.netSyncSetWeaponLabelColor(_params.Self, isText, slot0, color, slot1, nameId);
+            NetPackageSyncWeaponLabelColor.NetSyncSetWeaponLabelColor(_params.Self, isText, slot0, color, slot1, nameId);
     }
 }
 
