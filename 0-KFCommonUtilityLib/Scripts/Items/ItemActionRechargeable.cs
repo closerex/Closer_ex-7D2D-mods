@@ -25,7 +25,7 @@
     {
         ItemActionDataAltMode _data = _actionData as ItemActionDataAltMode;
         EntityAlive holdingEntity = _data.invData.holdingEntity;
-        ItemValue value = _data.invData.itemValue;
+        ItemValue itemValue = _data.invData.itemValue;
         if (!_bReleased)
         {
             int curAltIndex = _data.modeIndex;
@@ -33,7 +33,9 @@
                 InfiniteAmmo = altInfiniteAmmo.Length > curAltIndex ? altInfiniteAmmo[curAltIndex] : false;
             else
                 InfiniteAmmo = originalInfiniteAmmo;
-            if ((!((int)_data.curBurstCount < GetBurstCount(_actionData) || GetBurstCount(_actionData) == -1) || (!InfiniteAmmo && value.Meta <= 0)))
+
+            int burstCount = GetBurstCount(_actionData);
+            if ((_data.curBurstCount >= burstCount && burstCount != -1) || (!InfiniteAmmo && itemValue.Meta <= 0))
             {
                 base.ExecuteAction(_actionData, _bReleased);
                 return;

@@ -315,6 +315,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Harmony\DisplayMetaAsBuffPatch.cs" />
     <Compile Include="Harmony\ItemActionModulePatch.cs" />
     <Compile Include="Harmony\RecoilPatch.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationProceduralRecoildAbs.cs" />
@@ -374,9 +375,11 @@
     <Compile Include="Scripts\Attributes\MethodTargetAttribute.cs" />
     <Compile Include="Scripts\Attributes\PatchTargetAttribute.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdReloadDebug.cs" />
+    <Compile Include="Scripts\Items\Modular\ActionModuleDisplayAsBuff.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleHoldOpen.cs" />
+    <Compile Include="Scripts\Items\Modular\ActionModuleMetaConsumer.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleRampUp.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleRecharge.cs" />
+    <Compile Include="Scripts\Items\Modular\ActionModuleMetaRecharger.cs" />
     <Compile Include="Scripts\Singletons\AnimationRiggingManager.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdCalibrateWeapon.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPlayerDebugInfo.cs" />
@@ -416,6 +419,7 @@
     <Compile Include="Scripts\Singletons\DelayLoadModuleManager.cs" />
     <Compile Include="Scripts\Singletons\ItemActionModuleManager.cs" />
     <Compile Include="Scripts\Singletons\RecoilManager.cs" />
+    <Compile Include="Scripts\Utilities\MultiActionUtils.cs" />
     <Compile Include="Scripts\Utilities\SaveTextureToFileUtility.cs" />
     <Compile Include="Scripts\Utilities\EntityInventoryExtension.cs" />
   </ItemGroup>

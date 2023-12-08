@@ -8,8 +8,6 @@ public class AnimationReloadEvents : MonoBehaviour
         animator = GetComponent<Animator>();
 #if NotEditor
         player = GetComponentInParent<EntityPlayerLocal>();
-        actionData = player.inventory.holdingItemData.actionData[0] as ItemActionRanged.ItemActionDataRanged;
-        actionRanged = (ItemActionRanged)player.inventory.holdingItem.Actions[0];
 #endif
     }
 
@@ -86,12 +84,14 @@ public class AnimationReloadEvents : MonoBehaviour
         reloadUpdatedThisFrame = false;
     }
 
-    public void OnReloadStart()
+    public void OnReloadStart(int actionIndex)
     {
         if (player == null)
         {
             return;
         }
+        actionData = player.inventory.holdingItemData.actionData[actionIndex] as ItemActionRanged.ItemActionDataRanged;
+        actionRanged = (ItemActionRanged)player.inventory.holdingItem.Actions[actionIndex];
         if (actionData == null)
         {
             return;

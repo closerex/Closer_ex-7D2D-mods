@@ -15,5 +15,6 @@
     public static PassiveEffects RechargeDataDecrease;
     public static PassiveEffects RechargeDataInterval;
     public static PassiveEffects RechargeDataMaximum;
+    public static PassiveEffects ConsumptionValue;
     #endregion
 }

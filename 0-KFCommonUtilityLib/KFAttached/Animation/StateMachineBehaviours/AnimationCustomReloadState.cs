@@ -2,6 +2,8 @@
 
 public class AnimationCustomReloadState : StateMachineBehaviour
 {
+    [SerializeField]
+    private int actionIndex = 0;
 #if NotEditor
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -11,14 +13,14 @@ public class AnimationCustomReloadState : StateMachineBehaviour
         if (actionData == null || player == null || eventBridge == null)
         {
             player = animator.GetComponentInParent<EntityPlayerLocal>();
-            actionData = player.inventory.holdingItemData.actionData[0] as ItemActionRanged.ItemActionDataRanged;
+            actionData = player.inventory.holdingItemData.actionData[actionIndex] as ItemActionRanged.ItemActionDataRanged;
             eventBridge = animator.GetComponent<AnimationReloadEvents>();
         }
 
 #if DEBUG
         Log.Out($"ANIMATOR STATE ENTER : {actionData.invData.item.Name}");
 #endif
-        eventBridge.OnReloadStart();
+        eventBridge.OnReloadStart(actionIndex);
         eventBridge.OnReloadUpdate();
     }
 

@@ -32,6 +32,7 @@ public class CommonUtilityLibInit : IModApi
         CustomEnums.RechargeDataDecrease = CustomEffectEnumManager.RegisterOrGetPassive("RechargeDataDecrease");
         CustomEnums.RechargeDataInterval = CustomEffectEnumManager.RegisterOrGetPassive("RechargeDataInterval");
         CustomEnums.RechargeDataMaximum = CustomEffectEnumManager.RegisterOrGetPassive("RechargeDataMaximum");
+        CustomEnums.ConsumptionValue = CustomEffectEnumManager.RegisterOrGetPassive("ConsumptionValue");
     }
 }
 
