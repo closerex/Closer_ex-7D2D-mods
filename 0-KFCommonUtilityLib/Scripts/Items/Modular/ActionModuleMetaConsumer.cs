@@ -37,7 +37,7 @@ public class ActionModuleMetaConsumer
             }
 
             if (tags.IsEmpty)
-                tags = itemValue.ItemClass.ItemTags | MultiActionUtils.ActionIndexToTag(__instance.ActionIndex);
+                tags = MultiActionUtils.GetItemTagsWithActionIndex(_actionData);
 
             float stock = (float)itemValue.GetMetadata(consumeData);
             float consumption = EffectManager.GetValue(CustomEnums.ConsumptionValue, itemValue, float.MaxValue, _actionData.invData.holdingEntity, null, tags);

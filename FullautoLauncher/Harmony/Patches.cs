@@ -21,7 +21,7 @@ class ItemActionLauncherProjectilePatch
         if (invD != null)
         {
             ItemClass item = invD.itemValue != null ? invD.itemValue.ItemClass : null;
-            rps = (int)EffectManager.GetValue(PassiveEffects.RoundRayCount, invD.itemValue, rps, invD.holdingEntity, null, item != null ? item.ItemTags : default(FastTags));
+            rps = (int)EffectManager.GetValue(PassiveEffects.RoundRayCount, invD.itemValue, rps, invD.holdingEntity, null, item != null ? item.ItemTags | _data.ActionTags : default(FastTags));
         }
         return rps > 0 ? rps : 1;
     }
@@ -151,7 +151,7 @@ class ItemActionLauncherProjectilePatch
 
     [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.instantiateProjectile))]
     [HarmonyPrefix]
-    private static bool Postfix_instantiateProjectile_ItemActionLauncher(ref Vector3 _positionOffset)
+    private static bool Prefix_instantiateProjectile_ItemActionLauncher(ref Vector3 _positionOffset)
     {
         _positionOffset = Vector3.zero;
         return true;

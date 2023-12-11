@@ -60,6 +60,10 @@
       <HintPath>.\DOTween.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="InControl">
+      <HintPath>..\..\7DaysToDie_Data\Managed\InControl.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="LogLibrary">
       <HintPath>..\..\7DaysToDie_Data\Managed\LogLibrary.dll</HintPath>
       <Private>False</Private>
@@ -379,8 +383,10 @@
     <Compile Include="Scripts\Items\Modular\ActionModuleDisplayAsBuff.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleHoldOpen.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleMetaConsumer.cs" />
+    <Compile Include="Scripts\Items\Modular\ActionModuleMultiActionFix.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleRampUp.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleMetaRecharger.cs" />
+    <Compile Include="Scripts\NetPackages\NetPackageFixedReload.cs" />
     <Compile Include="Scripts\Singletons\AnimationRiggingManager.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdCalibrateWeapon.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPlayerDebugInfo.cs" />
@@ -419,6 +425,7 @@
     <Compile Include="Scripts\Requirements\RoundsInMagazineBase.cs" />
     <Compile Include="Scripts\Singletons\DelayLoadModuleManager.cs" />
     <Compile Include="Scripts\Singletons\ItemActionModuleManager.cs" />
+    <Compile Include="Scripts\Singletons\MultiActionManager.cs" />
     <Compile Include="Scripts\Singletons\RecoilManager.cs" />
     <Compile Include="Scripts\Utilities\MultiActionUtils.cs" />
     <Compile Include="Scripts\Utilities\SaveTextureToFileUtility.cs" />

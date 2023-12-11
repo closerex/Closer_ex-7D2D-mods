@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using KFCommonUtilityLib.Scripts.Utilities;
+using UnityEngine;
 
 [AddComponentMenu("KFAttachments/Utils/Animation Reload Events")]
 public class AnimationReloadEvents : MonoBehaviour
@@ -30,12 +31,12 @@ public class AnimationReloadEvents : MonoBehaviour
         if (!actionData.isReloadCancelled)
         {
             EntityAlive holdingEntity = actionData.invData.holdingEntity;
-            ItemValue item = ItemClass.GetItem(actionRanged.MagazineItemNames[(int)actionData.invData.itemValue.SelectedAmmoTypeIndex], false);
-            int num = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, actionData.invData.itemValue, (float)actionRanged.BulletsPerMagazine, holdingEntity, null, default(FastTags), true, true, true, true, 1, true, false);
+            ItemValue item = ItemClass.GetItem(actionRanged.MagazineItemNames[MultiActionUtils.MultiActionGetSelectedAmmoTypeIndex(actionData)], false);
+            int num = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, actionData.invData.itemValue, (float)actionRanged.BulletsPerMagazine, holdingEntity, null, MultiActionUtils.GetItemTagsWithActionIndex(actionData), true, true, true, true, 1, true, false);
             actionData.reloadAmount = GetAmmoCountToReload(holdingEntity, item, num);
             if (actionData.reloadAmount > 0)
             {
-                actionData.invData.itemValue.Meta = Utils.FastMin(actionData.invData.itemValue.Meta + actionData.reloadAmount, num);
+                MultiActionUtils.MultiActionReload(actionData);
                 if (actionData.invData.item.Properties.Values[ItemClass.PropSoundIdle] != null)
                 {
                     actionData.invData.holdingEntitySoundID = -1;
@@ -121,12 +122,12 @@ public class AnimationReloadEvents : MonoBehaviour
         {
             player.PlayOneShot(actionRanged.SoundReload.Value, false);
         }
-        int magSize = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, actionData.invData.itemValue, (float)actionRanged.BulletsPerMagazine, actionData.invData.holdingEntity, null, default(FastTags), true, true, true, true, 1, true, false);
+        int magSize = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, actionData.invData.itemValue, (float)actionRanged.BulletsPerMagazine, actionData.invData.holdingEntity, null, MultiActionUtils.GetItemTagsWithActionIndex(actionData), true, true, true, true, 1, true, false);
         ItemActionLauncher itemActionLauncher = actionRanged as ItemActionLauncher;
-        if (itemActionLauncher != null && actionData.invData.itemValue.Meta < magSize)
+        if (itemActionLauncher != null && MultiActionUtils.MultiActionGetMeta(actionData) < magSize)
         {
             ItemValue itemValue = actionData.invData.itemValue;
-            ItemValue item = ItemClass.GetItem(actionRanged.MagazineItemNames[(int)itemValue.SelectedAmmoTypeIndex], false);
+            ItemValue item = ItemClass.GetItem(actionRanged.MagazineItemNames[MultiActionUtils.MultiActionGetSelectedAmmoTypeIndex(actionData)], false);
             ItemActionLauncher.ItemActionDataLauncher itemActionDataLauncher = actionData as ItemActionLauncher.ItemActionDataLauncher;
             if (itemActionDataLauncher.isChangingAmmoType)
             {
@@ -154,13 +155,14 @@ public class AnimationReloadEvents : MonoBehaviour
 
     private int GetAmmoCountToReload(EntityAlive ea, ItemValue ammo, int modifiedMagazineSize)
     {
+        int meta = MultiActionUtils.MultiActionGetMeta(actionData);
         if (actionRanged.HasInfiniteAmmo(actionData))
         {
             if (actionRanged.AmmoIsPerMagazine)
             {
                 return modifiedMagazineSize;
             }
-            return modifiedMagazineSize - actionData.invData.itemValue.Meta;
+            return modifiedMagazineSize - meta;
         }
         else if (ea.bag.GetItemCount(ammo, -1, -1, true) > 0)
         {
@@ -168,7 +170,7 @@ public class AnimationReloadEvents : MonoBehaviour
             {
                 return modifiedMagazineSize * ea.bag.DecItem(ammo, 1, false, null);
             }
-            return ea.bag.DecItem(ammo, modifiedMagazineSize - actionData.invData.itemValue.Meta, false, null);
+            return ea.bag.DecItem(ammo, modifiedMagazineSize - meta, false, null);
         }
         else
         {
@@ -180,7 +182,7 @@ public class AnimationReloadEvents : MonoBehaviour
             {
                 return modifiedMagazineSize * ea.inventory.DecItem(ammo, 1, false, null);
             }
-            return actionData.invData.holdingEntity.inventory.DecItem(ammo, modifiedMagazineSize - actionData.invData.itemValue.Meta, false, null);
+            return actionData.invData.holdingEntity.inventory.DecItem(ammo, modifiedMagazineSize - meta, false, null);
         }
     }
 
@@ -196,7 +198,7 @@ public class AnimationReloadEvents : MonoBehaviour
         if (invD != null)
         {
             ItemClass item = invD.itemValue != null ? invD.itemValue.ItemClass : null;
-            rps = (int)EffectManager.GetValue(PassiveEffects.RoundRayCount, invD.itemValue, rps, invD.holdingEntity, null, item != null ? item.ItemTags : default(FastTags));
+            rps = (int)EffectManager.GetValue(PassiveEffects.RoundRayCount, invD.itemValue, rps, invD.holdingEntity, null, item != null ? MultiActionUtils.GetItemTagsWithActionIndex(_data) : default(FastTags));
         }
         return rps > 0 ? rps : 1;
     }
