@@ -17,6 +17,7 @@ namespace KFCommonUtilityLib.Harmony
     //todo: patch passive effect handling and trigger effect firing, in ItemValue.ModifyValue set action index from tags
     //todo: patch trigger action index enum/ or just let it use secondary and tag check?
     //todo: handle ItemActionAttack.GetDamageEntity/GetDamageBlock and call sites actionIndex
+    //todo: sell, assemble, scrap remove ammo
 
     //todo: figure out when is meta and ammo index used, how to set their value in minimum patches
     //ExecuteAction, Reload, what's more?
@@ -26,15 +27,6 @@ namespace KFCommonUtilityLib.Harmony
     public static class MultiActionPatches
     {
         #region Run Correct ItemAction
-
-        #region ActionData tags
-        [HarmonyPatch(typeof(ItemActionData), MethodType.Constructor)]
-        [HarmonyPostfix]
-        private static void Postfix_ctor_ItemActionData(ItemActionData __instance)
-        {
-            __instance.ActionTags = MultiActionUtils.ActionIndexToTag(__instance.indexInEntityOfAction);
-        }
-        #endregion
 
         #region Passive tags
         //maybe use TriggerHasTags instead?
@@ -236,82 +228,6 @@ namespace KFCommonUtilityLib.Harmony
         }
         #endregion
 
-        #region Infinite Ammo
-        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.HasInfiniteAmmo))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_HasInfiniteAmmo_ItemActionRanged(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
-        {
-            var codes = instructions.ToList();
-
-            for (int i = 0; i < codes.Count; i++)
-            {
-                var code = codes[i];
-                if (code.opcode == OpCodes.Initobj)
-                {
-                    codes.InsertRange(i + 2, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldarg_1),
-                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetItemTagsWithActionIndex))
-                    });
-                    codes.RemoveRange(i - 1, 3);
-                    break;
-                }
-            }
-
-            return codes;
-        }
-        #endregion
-
-        #region Spread multiplier
-        [HarmonyPatch(typeof(ItemActionRanged), "onHoldingEntityFired")]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_onHoldingEntityFired_ItemActionRanged(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
-        {
-            var codes = instructions.ToList();
-
-            for (int i = 0; i < codes.Count; i++)
-            {
-                var code = codes[i];
-                if (code.opcode == OpCodes.Initobj)
-                {
-                    codes.InsertRange(i + 2, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldarg_1),
-                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetItemTagsWithActionIndex))
-                    });
-                    codes.RemoveRange(i - 1, 3);
-                    break;
-                }
-            }
-
-            return codes;
-        }
-
-        [HarmonyPatch(typeof(ItemActionRanged), "updateAccuracy")]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_updateAccuracy_ItemActionRanged(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
-        {
-            var codes = instructions.ToList();
-
-            for (int i = 0; i < codes.Count; i++)
-            {
-                var code = codes[i];
-                if (code.opcode == OpCodes.Initobj)
-                {
-                    codes.InsertRange(i + 2, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldarg_1),
-                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetItemTagsWithActionIndex))
-                    });
-                    codes.RemoveRange(i - 1, 3);
-                    break;
-                }
-            }
-
-            return codes;
-        }
-        #endregion
-
         #region Aiming
         [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.IsAimingGunPossible))]
         [HarmonyPrefix]
@@ -490,22 +406,6 @@ namespace KFCommonUtilityLib.Harmony
                 itemValue.SetMetadata(MultiActionUtils.ActionSelectedAmmoNames[actionIndex], actionIndex == 0 ? itemValue.SelectedAmmoTypeIndex : 0, TypedMetadataValue.TypeTag.Integer);
             }
         }
-
-        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.GetMaxAmmoCount))]
-        [HarmonyPrefix]
-        private static bool Prefix_GetMaxAmmoCount_ItemActionRanged(ItemActionRanged __instance, ItemActionData _actionData, ref int __result)
-        {
-            __result = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, _actionData.invData.itemValue, __instance.BulletsPerMagazine, _actionData.invData.holdingEntity, null, MultiActionUtils.GetItemTagsWithActionIndex(_actionData), true, true, true, true, 1, true, false);
-            return false;
-        }
-
-        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.GetRange))]
-        [HarmonyPrefix]
-        private static bool Prefix_GetRange_ItemActionRanged(ItemActionRanged __instance, ItemActionData _actionData, ref int __result)
-        {
-            __result = (int)EffectManager.GetValue(PassiveEffects.MaxRange, _actionData.invData.itemValue, __instance.Range, _actionData.invData.holdingEntity, null, MultiActionUtils.GetItemTagsWithActionIndex(_actionData), true, true, true, true, 1, true, false);
-            return false;
-        }
         #endregion
 
         #region Ranged ExecuteAction FireEvent params
@@ -517,6 +417,8 @@ namespace KFCommonUtilityLib.Harmony
             var codes = instructions.ToList();
 
             FieldInfo fld_itemactiondata = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.ItemActionData));
+            MethodInfo mtd_reloadserver = AccessTools.Method(typeof(IGameManager), nameof(IGameManager.ItemReloadServer));
+            FieldInfo fld_gamemanager = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.gameManager));
             for (int i = 0; i < codes.Count; i++)
             {
                 var code = codes[i];
@@ -525,6 +427,22 @@ namespace KFCommonUtilityLib.Harmony
                     codes.Insert(i, new CodeInstruction(OpCodes.Ldarg_1));
                     codes.RemoveRange(i - 5, 5);
                     break;
+                }
+                else if (code.Calls(mtd_reloadserver))
+                {
+                    int j = i;
+                    while (!codes[j].LoadsField(fld_gamemanager))
+                    {
+                        j--;
+                    }
+                    codes.RemoveAt(i);
+                    codes.InsertRange(i, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldloc_0),
+                        CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.indexInEntityOfAction)),
+                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.FixedItemReloadServer))
+                    });
+                    codes.RemoveRange(j - 2, 3);
                 }
             }
 
@@ -555,6 +473,10 @@ namespace KFCommonUtilityLib.Harmony
 
         #endregion
 
+        #region GameManager.ItemReload*
+        //SwapSelectedAmmo and SwapAmmoType?
+        #endregion
+
         #endregion
 
         #region Use Correct Meta
@@ -579,6 +501,107 @@ namespace KFCommonUtilityLib.Harmony
         #endregion
 
         #region Correct tags for PassiveEffects
+
+        #region ActionData tags
+        [HarmonyPatch(typeof(ItemActionData), MethodType.Constructor)]
+        [HarmonyPostfix]
+        private static void Postfix_ctor_ItemActionData(ItemActionData __instance)
+        {
+            __instance.ActionTags = MultiActionUtils.ActionIndexToTag(__instance.indexInEntityOfAction);
+        }
+        #endregion
+
+        #region Spread multiplier
+        [HarmonyPatch(typeof(ItemActionRanged), "onHoldingEntityFired")]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_onHoldingEntityFired_ItemActionRanged(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            var codes = instructions.ToList();
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                var code = codes[i];
+                if (code.opcode == OpCodes.Initobj)
+                {
+                    codes.InsertRange(i + 2, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_1),
+                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetItemTagsWithActionIndex))
+                    });
+                    codes.RemoveRange(i - 1, 3);
+                    break;
+                }
+            }
+
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(ItemActionRanged), "updateAccuracy")]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_updateAccuracy_ItemActionRanged(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            var codes = instructions.ToList();
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                var code = codes[i];
+                if (code.opcode == OpCodes.Initobj)
+                {
+                    codes.InsertRange(i + 2, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_1),
+                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetItemTagsWithActionIndex))
+                    });
+                    codes.RemoveRange(i - 1, 3);
+                    break;
+                }
+            }
+
+            return codes;
+        }
+        #endregion
+
+        #region Simple patches
+        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.HasInfiniteAmmo))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_HasInfiniteAmmo_ItemActionRanged(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            var codes = instructions.ToList();
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                var code = codes[i];
+                if (code.opcode == OpCodes.Initobj)
+                {
+                    codes.InsertRange(i + 2, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_1),
+                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetItemTagsWithActionIndex))
+                    });
+                    codes.RemoveRange(i - 1, 3);
+                    break;
+                }
+            }
+
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.GetMaxAmmoCount))]
+        [HarmonyPrefix]
+        private static bool Prefix_GetMaxAmmoCount_ItemActionRanged(ItemActionRanged __instance, ItemActionData _actionData, ref int __result)
+        {
+            __result = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, _actionData.invData.itemValue, __instance.BulletsPerMagazine, _actionData.invData.holdingEntity, null, MultiActionUtils.GetItemTagsWithActionIndex(_actionData), true, true, true, true, 1, true, false);
+            return false;
+        }
+
+        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.GetRange))]
+        [HarmonyPrefix]
+        private static bool Prefix_GetRange_ItemActionRanged(ItemActionRanged __instance, ItemActionData _actionData, ref int __result)
+        {
+            __result = (int)EffectManager.GetValue(PassiveEffects.MaxRange, _actionData.invData.itemValue, __instance.Range, _actionData.invData.holdingEntity, null, MultiActionUtils.GetItemTagsWithActionIndex(_actionData), true, true, true, true, 1, true, false);
+            return false;
+        }
+        #endregion
 
         #endregion
     }
@@ -673,49 +696,6 @@ namespace KFCommonUtilityLib.Harmony
                     instruction.opcode = OpCodes.Ldc_I4_5;
                 yield return instruction;
             }
-        }
-    }
-    #endregion
-
-    #region ItemActionRanged meta and ammo index
-    [HarmonyPatch]
-    public static class MetaAndAmmoIndexPatch
-    {
-        private static IEnumerable<MethodBase> TargetMethods()
-        {
-            return AppDomain.CurrentDomain.GetAssemblies()
-                                          .SelectMany(a => a.GetTypes())
-                                          .Where(t => typeof(ItemActionRanged).IsAssignableFrom(t) && !typeof(ItemActionReplaceBlock).IsAssignableFrom(t) && !typeof(ItemActionTerrainTool).IsAssignableFrom(t) && !typeof(ItemActionTextureBlock).IsAssignableFrom(t))
-                                          .SelectMany(t => t.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly))
-                                          .Where(m => m.GetParameters().Any(p => typeof(ItemActionData).IsAssignableFrom(p.ParameterType)));
-        }
-
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_MetaAndAmmoPatch(IEnumerable<CodeInstruction> instructions, MethodBase original)
-        {
-            int index = Array.FindIndex(original.GetParameters(), p => typeof(ItemActionData).IsAssignableFrom(p.ParameterType)) + 1;
-            if(index == 0)
-            { 
-                return instructions;
-            }
-
-            var codes = instructions.ToList();
-            codes.InsertRange(0, new[]
-            {
-                new CodeInstruction(OpCodes.Ldarg_S, index),
-                CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.SetCurrentMetaAndAmmoIndex))
-            });
-            //check if there's labels before return, if it's on the last instruction then insert right before ret, otherwise insert to the one before ret
-            //label is always moved to the new instructions
-            int endIndex = codes[codes.Count - 1].labels.Count > 0 ? codes.Count - 1 : codes.Count - 2;
-            var arr = new[]
-            {
-                new CodeInstruction(OpCodes.Ldarg_S, index),
-                CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.ResetCurrentMetaAndAmmoIndex))
-            };
-            arr[0].MoveLabelsFrom(codes[endIndex]);
-            codes.InsertRange(endIndex, arr);
-            return codes;
         }
     }
     #endregion

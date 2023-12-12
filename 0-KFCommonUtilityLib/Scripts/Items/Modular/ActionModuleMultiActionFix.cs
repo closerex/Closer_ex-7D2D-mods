@@ -23,32 +23,6 @@ public class ActionModuleMultiActionFix
         MultiActionUtils.ResetCurrentMetaAndAmmoIndex(_actionData);
     }
 
-    [MethodTargetPrefix(nameof(ItemActionRanged.CanReload))]
-    private bool Prefix_CanReload(ItemActionData _actionData)
-    {
-        MultiActionUtils.SetCurrentMetaAndAmmoIndex(_actionData);
-        return true;
-    }
-
-    [MethodTargetPostfix(nameof(ItemActionRanged.CanReload))]
-    private void Postfix_CanReload(ItemActionData _actionData)
-    {
-        MultiActionUtils.ResetCurrentMetaAndAmmoIndex(_actionData);
-    }
-
-    [MethodTargetPrefix("ConsumeAmmo")]
-    private bool Prefix_ConsumeAmmo(ItemActionData _actionData)
-    {
-        MultiActionUtils.SetCurrentMetaAndAmmoIndex(_actionData);
-        return true;
-    }
-
-    [MethodTargetPostfix("ConsumeAmmo")]
-    private void Postfix_ConsumeAmmo(ItemActionData _actionData)
-    {
-        MultiActionUtils.ResetCurrentMetaAndAmmoIndex(_actionData);
-    }
-
     [MethodTargetPrefix(nameof(ItemActionRanged.ExecuteAction))]
     private bool Prefix_ExecuteAction(ItemActionData _actionData, MultiActionData __customData)
     {
@@ -64,19 +38,6 @@ public class ActionModuleMultiActionFix
 
     [MethodTargetPostfix(nameof(ItemActionRanged.ExecuteAction))]
     private void Postfix_ExecuteAction(ItemActionData _actionData)
-    {
-        MultiActionUtils.ResetCurrentMetaAndAmmoIndex(_actionData);
-    }
-
-    [MethodTargetPrefix(nameof(ItemActionRanged.GetBurstCount))]
-    private bool Prefix_GetBurstCount(ItemActionData _actionData)
-    {
-        MultiActionUtils.SetCurrentMetaAndAmmoIndex(_actionData);
-        return true;
-    }
-
-    [MethodTargetPostfix(nameof(ItemActionRanged.GetBurstCount))]
-    private void Postfix_GetBurstCount(ItemActionData _actionData)
     {
         MultiActionUtils.ResetCurrentMetaAndAmmoIndex(_actionData);
     }
@@ -103,19 +64,6 @@ public class ActionModuleMultiActionFix
 
     [MethodTargetPostfix(nameof(ItemActionRanged.GetCrosshairType))]
     private void Postfix_GetCrosshairType(ItemActionData _actionData)
-    {
-        MultiActionUtils.ResetCurrentMetaAndAmmoIndex(_actionData);
-    }
-
-    [MethodTargetPrefix(nameof(ItemActionRanged.GetExecuteActionTarget))]
-    private bool Prefix_GetExecuteActionTarget(ItemActionData _actionData)
-    {
-        MultiActionUtils.SetCurrentMetaAndAmmoIndex(_actionData);
-        return true;
-    }
-
-    [MethodTargetPostfix(nameof(ItemActionRanged.GetExecuteActionTarget))]
-    private void Postfix_GetExecuteActionTarget(ItemActionData _actionData)
     {
         MultiActionUtils.ResetCurrentMetaAndAmmoIndex(_actionData);
     }
@@ -244,5 +192,10 @@ public class ActionModuleMultiActionFix
     public class MultiActionData
     {
         public float lastAccuracy;
+
+        public MultiActionData(ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleMultiActionFix _module)
+        {
+
+        }
     }
 }
