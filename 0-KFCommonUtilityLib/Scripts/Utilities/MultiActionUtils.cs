@@ -29,6 +29,36 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             "AmmoIndex4",
         };
 
+        public static void SetMinEventArrays()
+        {
+            MinEvent.Start = new[]
+            {
+                MinEventTypes.onSelfPrimaryActionStart,
+                MinEventTypes.onSelfSecondaryActionStart,
+                MinEventTypes.onSelfAction2Start,
+                CustomEnums.onSelfAction3Start,
+                CustomEnums.onSelfAction4Start,
+            };
+
+            MinEvent.Update = new[]
+            {
+                MinEventTypes.onSelfPrimaryActionUpdate,
+                MinEventTypes.onSelfSecondaryActionUpdate,
+                MinEventTypes.onSelfAction2Update,
+                CustomEnums.onSelfAction3Update,
+                CustomEnums.onSelfAction4Update,
+            };
+
+            MinEvent.End = new[]
+            {
+                MinEventTypes.onSelfPrimaryActionEnd,
+                MinEventTypes.onSelfSecondaryActionEnd,
+                MinEventTypes.onSelfAction2End,
+                CustomEnums.onSelfAction3End,
+                CustomEnums.onSelfAction4End,
+            };
+        }
+
         public static FastTags ActionIndexToTag(int index)
         {
             return ActionIndexTags[index];
@@ -201,7 +231,17 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             {
                 actionRanged.ReloadGun(entityAlive.inventory.holdingItemData.actionData[actionIndex]);
             }
+        }
 
+        public static void UpdateExecutingActionIndex(int index, ItemInventoryData invData, PlayerActionsLocal playerActions)
+        {
+            if (playerActions == null || !(invData.holdingEntity is EntityPlayerLocal player))
+            {
+                return;
+            }
+
+            player.MinEventContext.ItemActionData = invData.actionData[index];
+            player.MinEventContext.Tags = MultiActionUtils.GetItemTagsWithActionIndex(invData.actionData[index]);
         }
     }
 }

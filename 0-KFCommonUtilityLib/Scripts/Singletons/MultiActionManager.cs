@@ -8,19 +8,88 @@ using System.Threading.Tasks;
 
 namespace KFCommonUtilityLib.Scripts.Singletons
 {
+    //concept: maintain an entityID-AltActionIndice mapping on both server and client
+    //and get the correct action before calling ItemAction.*
+    //always set MinEventParams.itemActionData
+    //set meta and ammoindex on switching mode, keep current mode in metadata
+    //should take care of accuracy updating
+    //should support shared meta
+    //alt actions should be considered primary, redirect index == 0 to custom method
+    //redirect ItemClass.Actions[0] to custom method
+    //patch GameManager.updateSendClientPlayerPositionToServer to sync data, so that mode change always happens after holding item change
+
+    public struct MultiActionIndice
+    {
+        public const int MAX_ACTION_COUNT = 3;
+        public unsafe fixed int indice[MAX_ACTION_COUNT];
+        public unsafe fixed int metaIndice[MAX_ACTION_COUNT];
+
+        //this should only be called in createModifierData
+        public unsafe MultiActionIndice(ItemAction[] actions)
+        {
+            indice[0] = 0;
+            metaIndice[0] = 0;
+            int last = 1;
+            for (int i = 3; i < actions.Length && last < MAX_ACTION_COUNT; i++)
+            {
+                if (actions[i] != null)
+                {
+                    indice[last] = i;
+                    if (actions[i].Properties.Values.TryGetString("ShareMetaWith", out string str) && int.TryParse(str, out int shareWith))
+                    {
+                        metaIndice[last] = shareWith;
+                    }
+                    else
+                    {
+                        metaIndice[last] = i;
+                    }
+                    last++;
+                }
+            }
+        }
+    }
+
+    //MultiActionMapping instance should be changed on ItemAction.StartHolding, so we only need to send curIndex.
+    public class MultiActionMapping
+    {
+        public readonly MultiActionIndice mapping;
+        private int curIndex;
+        public ItemValue itemValue;
+
+        /// <summary>
+        /// when set CurIndex from local input, also set manager to dirty to update the index on other clients
+        /// </summary>
+        public int CurIndex
+        {
+            get => curIndex;
+            set
+            {
+                curIndex = value;
+                itemValue.SetMetadata("MultiActionIndex", curIndex, TypedMetadataValue.TypeTag.Integer);
+                //also set meta and ammo index
+            }
+        }
+
+        public MultiActionMapping(MultiActionIndice mapping, ItemValue itemValue)
+        {
+            this.mapping = mapping;
+            this.itemValue = itemValue;
+            if (itemValue.HasMetadata("MultiActionIndex", TypedMetadataValue.TypeTag.Integer))
+            {
+                curIndex = (int)itemValue.GetMetadata("MultiActionIndex");
+            }
+            else
+            {
+                itemValue.SetMetadata("MultiActionIndex", 0, TypedMetadataValue.TypeTag.Integer);
+                curIndex = 0;
+            }
+        }
+    }
+
     public static class MultiActionManager
     {
-
-        public static void UpdateExecutingActionIndex(int index, ItemInventoryData invData, PlayerActionsLocal playerActions)
-        {
-            if(playerActions == null || !(invData.holdingEntity is EntityPlayerLocal player))
-            {
-                return;
-            }
-
-            player.MinEventContext.ItemActionData = invData.actionData[index];
-            player.MinEventContext.Tags = MultiActionUtils.GetItemTagsWithActionIndex(invData.actionData[index]);
-        }
+        //clear on game load
+        private static readonly Dictionary<int, MultiActionMapping> dict_mappings = new Dictionary<int, MultiActionMapping>();
 
         public static void SetupRadial(XUiC_Radial _xuiRadialWindow, EntityPlayerLocal _epl)
         {

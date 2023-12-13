@@ -5,45 +5,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UAI;
 using UnityEngine;
+using static EventDelegate;
 
 [TypeTarget(typeof(ItemActionRanged))]
 public class ActionModuleHoldOpen
 {
     private const string emptyAnimatorBool = "empty";
+    private int emptyAnimatorBoolHash;
 
-    public Animator getAnimator(EntityAlive holdingEntity)
+    [MethodTargetPostfix(nameof(ItemActionRanged.ReadFrom))]
+    private void Postfix_ReadFrom(DynamicProperties _props, ItemActionRanged __instance)
     {
-        Animator animator = null;
-        //should not use ?. here because when you use something from bag ui entry, the holding item is destroyed but still referenced in the avatar controller
-        //and ?. will try to access that reference instead of return null and throw NRE, while != in unity is override to return null in such case
-        if (holdingEntity.emodel.avatarController is AvatarMultiBodyController multiBody && multiBody.HeldItemAnimator != null)
-            animator = multiBody.HeldItemAnimator;
-        else if (holdingEntity.emodel.avatarController is LegacyAvatarController legacy && legacy.HeldItemTransform != null)
-            animator = legacy.HeldItemTransform.GetComponent<Animator>();
-        return animator;
-    }
-
-    public void setAnimatorBool(EntityAlive holdingEntity, string parameter, bool flag)
-    {
-        holdingEntity.emodel.avatarController.UpdateBool(parameter, flag, false);
-        //Animator animator = getAnimator(holdingEntity);
-        //if (animator)
-        //{
-        //    animator.SetBool(parameter, flag);
-        //    //Log.Out("trying to set param: " + parameter + " flag: " + flag + " result: " + getAnimatorBool(holdingEntity, parameter) + " transform: " + animator.transform.name);
-        //}
-    }
-
-    public void setAnimatorFloat(EntityAlive holdingEntity, string parameter, float value)
-    {
-        holdingEntity.emodel.avatarController.UpdateFloat(parameter, value, false);
-        //Animator animator = getAnimator(holdingEntity);
-        //if (animator)
-        //{
-        //    animator.SetFloat(parameter, value);
-        //    //Log.Out("trying to set param: " + parameter + " flag: " + flag + " result: " + getAnimatorBool(holdingEntity, parameter) + " transform: " + animator.transform.name);
-        //}
+        if (__instance.ActionIndex > 0)
+        {
+            emptyAnimatorBoolHash = Animator.StringToHash(emptyAnimatorBool + __instance.ActionIndex);
+        }
+        else
+        {
+            emptyAnimatorBoolHash = Animator.StringToHash(emptyAnimatorBool);
+        }
     }
 
     [MethodTargetPostfix("getUserData")]
@@ -56,7 +38,7 @@ public class ActionModuleHoldOpen
     public void Postfix_ItemActionEffects(ItemActionData _actionData, int _firingState, int _userData)
     {
         if (_firingState != (int)ItemActionFiringState.Off && (_userData & 1) > 0)
-            setAnimatorBool(_actionData.invData.holdingEntity, emptyAnimatorBool, true);
+            _actionData.invData.holdingEntity.emodel.avatarController.UpdateBool(emptyAnimatorBoolHash, true, false);
     }
 
     [MethodTargetPostfix(nameof(ItemActionRanged.ReloadGun))]
@@ -85,7 +67,7 @@ public class ActionModuleHoldOpen
     [MethodTargetPrefix(nameof(ItemActionRanged.SwapAmmoType))]
     public bool Prefix_SwapAmmoType(EntityAlive _entity)
     {
-        setAnimatorBool(_entity, emptyAnimatorBool, true);
+        _entity.emodel.avatarController.UpdateBool(emptyAnimatorBoolHash, true, false);
         return true;
     }
 
@@ -97,7 +79,7 @@ public class ActionModuleHoldOpen
         }
         if (_actionData.invData.holdingEntity.inventory.holdingItemIdx == _actionData.invData.slotIdx)
         {
-            setAnimatorBool(_actionData.invData.holdingEntity, emptyAnimatorBool, empty);
+            _actionData.invData.holdingEntity.emodel.avatarController.UpdateBool(emptyAnimatorBoolHash, empty, false);
         }
         yield break;
     }

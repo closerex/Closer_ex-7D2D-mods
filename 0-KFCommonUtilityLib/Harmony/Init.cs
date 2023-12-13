@@ -1,4 +1,5 @@
 ﻿using KFCommonUtilityLib.Scripts.Singletons;
+using KFCommonUtilityLib.Scripts.Utilities;
 using System.Reflection;
 
 public class CommonUtilityLibInit : IModApi
@@ -11,6 +12,7 @@ public class CommonUtilityLibInit : IModApi
         ModEvents.GameAwake.RegisterHandler(DelayLoadModuleManager.DelayLoad);
         ModEvents.GameAwake.RegisterHandler(ItemActionModuleManager.ClearOutputFolder);
         ModEvents.GameAwake.RegisterHandler(AssemblyLocator.Init);
+        ModEvents.GameAwake.RegisterHandler(MultiActionUtils.SetMinEventArrays);
         ModEvents.GameStartDone.RegisterHandler(RegisterKFEnums);
         ModEvents.GameStartDone.RegisterHandler(AnimationRiggingManager.ParseItemIDs);
         //ModEvents.GameStartDone.RegisterHandler(CustomEffectEnumManager.PrintResults);
@@ -23,6 +25,13 @@ public class CommonUtilityLibInit : IModApi
     {
         CustomEnums.onSelfMagzineDeplete = CustomEffectEnumManager.RegisterOrGetTrigger("onSelfMagzineDeplete");
         CustomEnums.onReloadAboutToStart = CustomEffectEnumManager.RegisterOrGetTrigger("onReloadAboutToStart");
+        CustomEnums.onSelfAction3Start = CustomEffectEnumManager.RegisterOrGetTrigger("onSelfAction3Start");
+        CustomEnums.onSelfAction3Update = CustomEffectEnumManager.RegisterOrGetTrigger("onSelfAction3Update");
+        CustomEnums.onSelfAction3End = CustomEffectEnumManager.RegisterOrGetTrigger("onSelfAction3End");
+        CustomEnums.onSelfAction4Start = CustomEffectEnumManager.RegisterOrGetTrigger("onSelfAction4Start");
+        CustomEnums.onSelfAction4Update = CustomEffectEnumManager.RegisterOrGetTrigger("onSelfAction4Update");
+        CustomEnums.onSelfAction4End = CustomEffectEnumManager.RegisterOrGetTrigger("onSelfAction4End");
+
         CustomEnums.ReloadSpeedRatioFPV2TPV = CustomEffectEnumManager.RegisterOrGetPassive("ReloadSpeedRatioFPV2TPV");
         CustomEnums.RecoilSnappiness = CustomEffectEnumManager.RegisterOrGetPassive("RecoilSnappiness");
         CustomEnums.RecoilReturnSpeed = CustomEffectEnumManager.RegisterOrGetPassive("RecoilReturnSpeed");

@@ -11,13 +11,21 @@ using System;
 namespace KFCommonUtilityLib.Harmony
 {
     //done?: patch all accesses to ItemClass.Actions so that they process all actions
-    //todo: patch ItemClass.ExecuteAction, MinEvent triggers
-    //todo: replace GameManager.ItemReload*
+    //done?: patch ItemClass.ExecuteAction, MinEvent triggers
+    //done: replace GameManager.ItemReload*
     //done: patch ItemActionRanged.ConsumeAmmo
     //todo: patch passive effect handling and trigger effect firing, in ItemValue.ModifyValue set action index from tags
     //todo: patch trigger action index enum/ or just let it use secondary and tag check?
     //todo: handle ItemActionAttack.GetDamageEntity/GetDamageBlock and call sites actionIndex
     //todo: sell, assemble, scrap remove ammo
+
+    //nope, not gonna work
+    //try old style action toggle,
+    //replace meta and ammo index when toggling, => solves ammo issue
+    //provide requirement for checking current mode, => solves effect group condition issue
+    //replace hardcoded action index with current mode => bulk patch is enough?
+    //ItemClass subclass? maybe not
+    //is inventory update on remote client really needed? put off
 
     //todo: figure out when is meta and ammo index used, how to set their value in minimum patches
     //ExecuteAction, Reload, what's more?
@@ -474,29 +482,101 @@ namespace KFCommonUtilityLib.Harmony
         #endregion
 
         #region GameManager.ItemReload*
-        //SwapSelectedAmmo and SwapAmmoType?
+        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SetAmmoType))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_SetAmmoType_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            MethodInfo mtd_reloadserver = AccessTools.Method(typeof(GameManager), nameof(GameManager.ItemReloadServer));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                var code = codes[i];
+                if (code.Calls(mtd_reloadserver))
+                {
+                    codes.RemoveAt(i);
+                    codes.InsertRange(i, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.FixedItemReloadServer))
+                    });
+                    codes.RemoveAt(i - 3);
+                    break;
+                }
+            }
+
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SwapAmmoType))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_SwapAmmoType_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            MethodInfo mtd_reloadserver = AccessTools.Method(typeof(GameManager), nameof(GameManager.ItemReloadServer));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                var code = codes[i];
+                if (code.Calls(mtd_reloadserver))
+                {
+                    codes.RemoveAt(i);
+                    codes.InsertRange(i, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.FixedItemReloadServer))
+                    });
+                    codes.RemoveAt(i - 5);
+                    break;
+                }
+            }
+
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SwapSelectedAmmo))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_SwapSelectedAmmo_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            MethodInfo mtd_reloadserver = AccessTools.Method(typeof(GameManager), nameof(GameManager.ItemReloadServer));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                var code = codes[i];
+                if (code.Calls(mtd_reloadserver))
+                {
+                    codes.RemoveAt(i);
+                    codes.InsertRange(i, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.FixedItemReloadServer))
+                    });
+                    codes.RemoveAt(i - 3);
+                    break;
+                }
+            }
+
+            return codes;
+        }
+        #endregion
+
+        #region ItemClass ExecuteAction, set MinEventParams
+        [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.ExecuteAction))]
+        [HarmonyPrefix]
+        private static bool Prefix_ExecuteAction_ItemClass(int _actionIdx, ItemInventoryData _data, PlayerActionsLocal _playerActions)
+        {
+            MultiActionUtils.UpdateExecutingActionIndex(_actionIdx, _data, _playerActions);
+            return true;
+        }
         #endregion
 
         #endregion
 
         #region Use Correct Meta
-
-        #region ItemActionLauncher initiate projectile, swap ammo index
-        [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.instantiateProjectile))]
-        [HarmonyPrefix]
-        private static bool Prefix_instantiateProjectile_ItemActionLauncher(ItemActionData _actionData)
-        {
-            MultiActionUtils.SetCurrentMetaAndAmmoIndex(_actionData);
-            return true;
-        }
-
-        [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.instantiateProjectile))]
-        [HarmonyPostfix]
-        private static void Postfix_instantiateProjectile_ItemActionLauncher(ItemActionData _actionData)
-        {
-            MultiActionUtils.ResetCurrentMetaAndAmmoIndex(_actionData);
-        }
-        #endregion
 
         #endregion
 

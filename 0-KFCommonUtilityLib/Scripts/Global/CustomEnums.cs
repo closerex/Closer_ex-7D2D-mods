@@ -3,6 +3,13 @@
     #region Triggers
     public static MinEventTypes onSelfMagzineDeplete;
     public static MinEventTypes onReloadAboutToStart;
+
+    public static MinEventTypes onSelfAction3Start;
+    public static MinEventTypes onSelfAction4Start;
+    public static MinEventTypes onSelfAction3Update;
+    public static MinEventTypes onSelfAction4Update;
+    public static MinEventTypes onSelfAction3End;
+    public static MinEventTypes onSelfAction4End;
     #endregion
 
     #region Passives
