@@ -2,14 +2,13 @@
 
 public class AnimationCustomReloadState : StateMachineBehaviour
 {
-    [SerializeField]
-    private int actionIndex = 0;
 #if NotEditor
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.speed = 1f;
         animator.SetBool("Reload", false);
+        int actionIndex = animator.GetInteger(AvatarController.itemActionIndexHash);
         if (actionData == null || player == null || eventBridge == null)
         {
             player = animator.GetComponentInParent<EntityPlayerLocal>();

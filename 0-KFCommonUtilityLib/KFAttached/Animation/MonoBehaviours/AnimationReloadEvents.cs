@@ -122,12 +122,13 @@ public class AnimationReloadEvents : MonoBehaviour
         {
             player.PlayOneShot(actionRanged.SoundReload.Value, false);
         }
-        int magSize = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, actionData.invData.itemValue, (float)actionRanged.BulletsPerMagazine, actionData.invData.holdingEntity, null, MultiActionUtils.GetItemTagsWithActionIndex(actionData), true, true, true, true, 1, true, false);
+
+        ItemValue itemValue = actionData.invData.itemValue;
+        int magSize = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, itemValue, actionRanged.BulletsPerMagazine, actionData.invData.holdingEntity, null, MultiActionUtils.GetItemTagsWithActionIndex(actionData), true, true, true, true, 1, true, false);
         ItemActionLauncher itemActionLauncher = actionRanged as ItemActionLauncher;
-        if (itemActionLauncher != null && MultiActionUtils.MultiActionGetMeta(actionData) < magSize)
+        if (itemActionLauncher != null && itemValue.Meta < magSize)
         {
-            ItemValue itemValue = actionData.invData.itemValue;
-            ItemValue item = ItemClass.GetItem(actionRanged.MagazineItemNames[MultiActionUtils.MultiActionGetSelectedAmmoTypeIndex(actionData)], false);
+            ItemValue ammoValue = ItemClass.GetItem(actionRanged.MagazineItemNames[MultiActionUtils.MultiActionGetSelectedAmmoTypeIndex(actionData)], false);
             ItemActionLauncher.ItemActionDataLauncher itemActionDataLauncher = actionData as ItemActionLauncher.ItemActionDataLauncher;
             if (itemActionDataLauncher.isChangingAmmoType)
             {
@@ -137,7 +138,7 @@ public class AnimationReloadEvents : MonoBehaviour
             int projectileCount = 1;
             if (!actionData.invData.holdingEntity.isEntityRemote)
             {
-                projectileCount = (itemActionLauncher.HasInfiniteAmmo(actionData) ? magSize : GetAmmoCount(actionData.invData.holdingEntity, item, magSize));
+                projectileCount = (itemActionLauncher.HasInfiniteAmmo(actionData) ? magSize : GetAmmoCount(actionData.invData.holdingEntity, ammoValue, magSize));
                 projectileCount *= getProjectileCount(itemActionDataLauncher);
             }
             for (int i = itemActionDataLauncher.projectileInstance.Count; i < projectileCount; i++)
@@ -155,7 +156,7 @@ public class AnimationReloadEvents : MonoBehaviour
 
     private int GetAmmoCountToReload(EntityAlive ea, ItemValue ammo, int modifiedMagazineSize)
     {
-        int meta = MultiActionUtils.MultiActionGetMeta(actionData);
+        int meta = actionData.invData.itemValue.Meta;
         if (actionRanged.HasInfiniteAmmo(actionData))
         {
             if (actionRanged.AmmoIsPerMagazine)

@@ -60,7 +60,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
     public class MultiActionMapping
     {
         public const string STR_MULTI_ACTION_INDEX = "MultiActionIndex";
-        public readonly MultiActionIndice mapping;
+        public readonly MultiActionIndice indices;
         private int curIndex;
         public ItemValue itemValue;
         public string toggleSound;
@@ -78,7 +78,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                     if (curIndex == value)
                         return;
                     //mostly for CurIndex++, cycle through available indices
-                    if (value >= MultiActionIndice.MAX_ACTION_COUNT || mapping.indices[value] == -1)
+                    if (value >= MultiActionIndice.MAX_ACTION_COUNT || indices.indices[value] == -1)
                         value = 0;
                     //save previous meta and ammo index to metadata
                     int curMetaIndex = CurMetaIndex;
@@ -120,7 +120,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             {
                 unsafe
                 {
-                    return mapping.indices[curIndex];
+                    return indices.indices[curIndex];
                 }
             }
         }
@@ -132,20 +132,20 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             {
                 unsafe
                 {
-                    return mapping.metaIndice[curIndex];
+                    return indices.metaIndice[curIndex];
                 }
             }
         }
 
-        public int ModeCount => mapping.modeCount;
+        public int ModeCount => indices.modeCount;
 
         //while mapping object is changed on StartHolding, it's initialized on createModifierData
         //we set the curIndex field instead of the property, according to following situations:
         //1. it's a newly created ItemValue, meta and ammo index belongs to action0, no saving is needed;
         //2. it's an existing ItemValue, meta and ammo index is set to its action index, still saving is unnecessary.
-        public MultiActionMapping(MultiActionIndice mapping, ItemValue itemValue, string toggleSound)
+        public MultiActionMapping(MultiActionIndice indices, ItemValue itemValue, string toggleSound)
         {
-            this.mapping = mapping;
+            this.indices = indices;
             this.itemValue = itemValue;
             object res = itemValue.GetMetadata(STR_MULTI_ACTION_INDEX);
             if (res is false || res is null)
@@ -158,6 +158,24 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                 curIndex = (int)res;
             }
 
+            unsafe
+            {
+                for (int i = 0; i < MultiActionIndice.MAX_ACTION_COUNT; i++)
+                {
+                    int metaIndex = indices.metaIndice[i];
+                    if (metaIndex < 0)
+                        break;
+                    if (!itemValue.HasMetadata(MultiActionUtils.ActionMetaNames[metaIndex], TypedMetadataValue.TypeTag.Integer))
+                    {
+                        itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[metaIndex], 0, TypedMetadataValue.TypeTag.Integer);
+                    }
+
+                    if (!itemValue.HasMetadata(MultiActionUtils.ActionSelectedAmmoNames[metaIndex], TypedMetadataValue.TypeTag.Integer))
+                    {
+                        itemValue.SetMetadata(MultiActionUtils.ActionSelectedAmmoNames[metaIndex], 0, TypedMetadataValue.TypeTag.Integer);
+                    }
+                }
+            }
             this.toggleSound = toggleSound;
         }
     }
@@ -178,11 +196,16 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             if (player == null || !dict_mappings.TryGetValue(player.entityId, out MultiActionMapping mapping))
                 return;
 
-            if (mapping.ModeCount <= 1)
+            if (mapping.ModeCount <= 1 || player.inventory.IsHoldingItemActionRunning())
                 return;
             mapping.CurIndex++;
             player.PlayOneShot(mapping.toggleSound);
             LocalModeChanged = true;
+        }
+
+        public static void SetMappingForEntity(int entityID, MultiActionMapping mapping)
+        {
+            dict_mappings[entityID] = mapping;
         }
 
         public static int GetActionIndexForEntity(int entityID)

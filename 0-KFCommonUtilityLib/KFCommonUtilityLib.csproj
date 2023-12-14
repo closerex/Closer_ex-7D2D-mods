@@ -382,6 +382,7 @@
     <Compile Include="Scripts\Attributes\MethodTargetAttribute.cs" />
     <Compile Include="Scripts\Attributes\PatchTargetAttribute.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdReloadDebug.cs" />
+    <Compile Include="Scripts\Items\Modular\ActionModuleAlternative.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleDisplayAsBuff.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleHoldOpen.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleMetaConsumer.cs" />

@@ -456,8 +456,8 @@ namespace KFCommonUtilityLib.Scripts.Singletons
         /// <returns></returns>
         private static MethodPatchInfo GetOrCreateOverride(Dictionary<string, MethodPatchInfo> dict_overrides, string id, MethodDefinition mtddef_base, ModuleDefinition module)
         {
-            if (mtddef_base.FullName == "CreateModifierData")
-                throw new MethodAccessException($"YOU SHOULD NOT MANUALLY MODIFY CreateModifierData!");
+            //if (mtddef_base.FullName == "CreateModifierData")
+            //    throw new MethodAccessException($"YOU SHOULD NOT MANUALLY MODIFY CreateModifierData!");
             if (dict_overrides.TryGetValue(id, out var mtdpinf_derived))
             {
                 return mtdpinf_derived;

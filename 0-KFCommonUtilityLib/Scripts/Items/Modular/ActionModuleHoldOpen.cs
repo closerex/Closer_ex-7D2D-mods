@@ -18,7 +18,12 @@ public class ActionModuleHoldOpen
     [MethodTargetPostfix(nameof(ItemActionRanged.ReadFrom))]
     private void Postfix_ReadFrom(DynamicProperties _props, ItemActionRanged __instance)
     {
-        if (__instance.ActionIndex > 0)
+        int metaIndex = __instance.ActionIndex;
+        if (_props.Values.TryGetString("ShareMetaWith", out string str) && int.TryParse(str, out metaIndex))
+        {
+
+        }
+        if (metaIndex > 0)
         {
             emptyAnimatorBoolHash = Animator.StringToHash(emptyAnimatorBool + __instance.ActionIndex);
         }
