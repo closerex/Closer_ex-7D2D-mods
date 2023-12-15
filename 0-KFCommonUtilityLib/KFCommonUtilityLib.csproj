@@ -431,6 +431,7 @@
     <Compile Include="Scripts\Singletons\MultiActionManager.cs" />
     <Compile Include="Scripts\Singletons\RecoilManager.cs" />
     <Compile Include="Scripts\Utilities\MultiActionUtils.cs" />
+    <Compile Include="Scripts\Utilities\Rewrites.cs" />
     <Compile Include="Scripts\Utilities\SaveTextureToFileUtility.cs" />
     <Compile Include="Scripts\Utilities\EntityInventoryExtension.cs" />
   </ItemGroup>
