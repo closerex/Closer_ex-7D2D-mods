@@ -75,7 +75,6 @@ namespace FullautoLauncher.Scripts.ProjectileManager
             {
                 EntityAlive entityAlive = GameManager.Instance.World.GetEntity(pair.Key) as EntityAlive;
 
-
                 list_remove.Clear();
                 foreach (var projectile in pair.Value)
                 {
@@ -89,7 +88,7 @@ namespace FullautoLauncher.Scripts.ProjectileManager
                     }
                 }
 
-                if (entityAlive != null && !entityAlive.isEntityRemote)
+                if (entityAlive != null)
                 {
                     int prevLayer = 0;
                     if (entityAlive.emodel != null)

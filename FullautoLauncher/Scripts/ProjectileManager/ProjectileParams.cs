@@ -78,14 +78,19 @@ namespace FullautoLauncher.Scripts.ProjectileManager
 
         public bool CheckCollision(EntityAlive entityAlive)
         {
+            //Already checked in ItemActionBetterLauncher.ItemActionEffects, projectiles are not created on dedi if fired from remote entity.
+            //if(entityAlive.isEntityRemote && GameManager.IsDedicatedServer)
+            //    return true;
             World world = GameManager.Instance.World;
             Vector3 dir = currentPosition - previousPosition;
+            Vector3 dirNorm = dir.normalized;
             float magnitude = dir.magnitude;
             if (magnitude < 0.04f)
             {
                 return false;
             }
-            Ray ray = new Ray(previousPosition, dir.normalized);
+
+            Ray ray = new Ray(previousPosition, dir);
             waterCollisionParticles.CheckCollision(ray.origin, ray.direction, magnitude, (entityAlive != null) ? entityAlive.entityId : (-1));
             int hitmask = ((hmOverride == 0) ? 80 : hmOverride);
             bool bHit = Voxel.Raycast(world, ray, magnitude, -538750997, hitmask, radius);
@@ -98,7 +103,28 @@ namespace FullautoLauncher.Scripts.ProjectileManager
                     {
                         WeaponTypeTag = ItemActionAttack.RangedTag
                     };
-                    ItemActionAttack.Hit(Voxel.voxelRayHitInfo, entityAlive.entityId, EnumDamageTypes.Piercing, info.itemActionProjectile.GetDamageBlock(info.itemValueLauncher, ItemActionAttack.GetBlockHit(world, Voxel.voxelRayHitInfo), entityAlive, info.actionData.indexInEntityOfAction), info.itemActionProjectile.GetDamageEntity(info.itemValueLauncher, entityAlive, info.actionData.indexInEntityOfAction), 1f, 1f, EffectManager.GetValue(PassiveEffects.CriticalChance, info.itemValueLauncher, info.itemProjectile.CritChance.Value, entityAlive, null, info.itemProjectile.ItemTags, true, true, true, true, 1, true, false), ItemAction.GetDismemberChance(info.actionData, Voxel.voxelRayHitInfo), info.itemProjectile.MadeOfMaterial.SurfaceCategory, info.itemActionProjectile.GetDamageMultiplier(), info.itemActionProjectile.BuffActions, attackHitInfo, 1, info.itemActionProjectile.ActionExp, info.itemActionProjectile.ActionExpBonusMultiplier, null, null, ItemActionAttack.EnumAttackMode.RealNoHarvesting, null, -1, info.itemValueLauncher);
+                    ItemActionAttack.Hit(Voxel.voxelRayHitInfo,
+                                         entityAlive.entityId,
+                                         EnumDamageTypes.Piercing,
+                                         info.itemActionProjectile.GetDamageBlock(info.itemValueLauncher, ItemActionAttack.GetBlockHit(world, Voxel.voxelRayHitInfo), entityAlive, info.actionData.indexInEntityOfAction),
+                                         info.itemActionProjectile.GetDamageEntity(info.itemValueLauncher, entityAlive, info.actionData.indexInEntityOfAction),
+                                         1f,
+                                         1f,
+                                         EffectManager.GetValue(PassiveEffects.CriticalChance, info.itemValueLauncher, info.itemProjectile.CritChance.Value, entityAlive, null, info.itemProjectile.ItemTags, true, true, true, true, 1, true, false),
+                                         ItemAction.GetDismemberChance(info.actionData, Voxel.voxelRayHitInfo),
+                                         info.itemProjectile.MadeOfMaterial.SurfaceCategory,
+                                         info.itemActionProjectile.GetDamageMultiplier(),
+                                         info.itemActionProjectile.BuffActions,
+                                         attackHitInfo,
+                                         1,
+                                         info.itemActionProjectile.ActionExp,
+                                         info.itemActionProjectile.ActionExpBonusMultiplier,
+                                         null,
+                                         null,
+                                         ItemActionAttack.EnumAttackMode.RealNoHarvesting,
+                                         null,
+                                         -1,
+                                         info.itemValueLauncher);
                     if (entityAlive.MinEventContext.Other == null)
                     {
                         entityAlive.FireEvent(MinEventTypes.onSelfPrimaryActionMissEntity, true);
@@ -111,14 +137,38 @@ namespace FullautoLauncher.Scripts.ProjectileManager
                     info.itemProjectile.FireEvent(MinEventTypes.onProjectileImpact, MinEventParams.CachedEventParam);
                     if (info.itemActionProjectile.Explosion.ParticleIndex > 0)
                     {
-                        Vector3 vector3 = Voxel.voxelRayHitInfo.hit.pos - dir.normalized * 0.1f;
+                        Vector3 vector3 = Voxel.voxelRayHitInfo.hit.pos - dirNorm * 0.1f;
                         Vector3i vector3i = World.worldToBlockPos(vector3);
                         if (!world.GetBlock(vector3i).isair)
                         {
                             BlockFace blockFace;
-                            vector3i = Voxel.OneVoxelStep(vector3i, vector3, -dir.normalized, out vector3, out blockFace);
+                            vector3i = Voxel.OneVoxelStep(vector3i, vector3, -dirNorm, out vector3, out blockFace);
                         }
                         GameManager.Instance.ExplosionServer(Voxel.voxelRayHitInfo.hit.clrIdx, vector3, vector3i, Quaternion.identity, info.itemActionProjectile.Explosion, entityAlive.entityId, 0f, false, info.itemValueProjectile);
+                    }
+                    else if (info.itemProjectile.IsSticky)
+                    {
+                        GameRandom gameRandom = world.GetGameRandom();
+                        if (GameUtils.IsBlockOrTerrain(Voxel.voxelRayHitInfo.tag))
+                        {
+                            if (gameRandom.RandomFloat < EffectManager.GetValue(PassiveEffects.ProjectileStickChance, info.itemValueLauncher, 0.5f, entityAlive, null, info.itemProjectile.ItemTags | FastTags.Parse(Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory), true, true, true, true, 1, true, false))
+                            {
+                                global::ProjectileManager.AddProjectileItem(null, -1, Voxel.voxelRayHitInfo.hit.pos, dirNorm, info.itemValueProjectile.type);
+                            }
+                            else
+                            {
+                                GameManager.Instance.SpawnParticleEffectServer(new ParticleEffect("impact_metal_on_wood", Voxel.voxelRayHitInfo.hit.pos, Utils.BlockFaceToRotation(Voxel.voxelRayHitInfo.fmcHit.blockFace), 1f, Color.white, string.Format("{0}hit{1}", Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory, info.itemProjectile.MadeOfMaterial.SurfaceCategory), null), entityAlive.entityId, false, false);
+                            }
+                        }
+                        else if (gameRandom.RandomFloat < EffectManager.GetValue(PassiveEffects.ProjectileStickChance, info.itemValueLauncher, 0.5f, entityAlive, null, info.itemProjectile.ItemTags, true, true, true, true, 1, true, false))
+                        {
+                            int id = global::ProjectileManager.AddProjectileItem(null, -1, Voxel.voxelRayHitInfo.hit.pos, dirNorm, info.itemValueProjectile.type);
+                            Utils.SetLayerRecursively(global::ProjectileManager.GetProjectile(id).gameObject, 14, null);
+                        }
+                        else
+                        {
+                            GameManager.Instance.SpawnParticleEffectServer(new ParticleEffect("impact_metal_on_wood", Voxel.voxelRayHitInfo.hit.pos, Utils.BlockFaceToRotation(Voxel.voxelRayHitInfo.fmcHit.blockFace), 1f, Color.white, "bullethitwood", null), entityAlive.entityId, false, false);
+                        }
                     }
                 }
                 return true;

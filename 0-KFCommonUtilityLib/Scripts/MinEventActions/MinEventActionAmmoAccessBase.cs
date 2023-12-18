@@ -9,7 +9,7 @@ public class MinEventActionAmmoAccessBase : MinEventActionItemCountRandomBase
     private float perc = 1;
     protected override int GetCount(MinEventParams _params)
     {
-        if(!useMag || !(_params.ItemValue.ItemClass.Actions[0] is ItemActionRanged _ranged))
+        if(!useMag || !(_params.ItemValue.ItemClass.Actions[_params.ItemActionData.indexInEntityOfAction] is ItemActionRanged _ranged))
             return base.GetCount(_params);
 
         if(!useRounds)
@@ -23,7 +23,7 @@ public class MinEventActionAmmoAccessBase : MinEventActionItemCountRandomBase
 
     public override bool CanExecute(MinEventTypes _eventType, MinEventParams _params)
     {
-        return !_params.Self.isEntityRemote && base.CanExecute(_eventType, _params) && _params.ItemValue.ItemClass.Actions[0] is ItemActionRanged;
+        return !_params.Self.isEntityRemote && base.CanExecute(_eventType, _params) && _params.ItemActionData is ItemActionRanged.ItemActionDataRanged && _params.ItemValue.ItemClass.Actions[_params.ItemActionData.indexInEntityOfAction] is ItemActionRanged;
     }
 
     public override bool ParseXmlAttribute(XAttribute _attribute)

@@ -14,7 +14,6 @@ public class ActionModuleAlternative
     private static bool Prefix_StartHolding(ItemActionData _data, AlternativeData __customData)
     {
         MultiActionManager.SetMappingForEntity(_data.invData.holdingEntity.entityId, __customData.mapping);
-        MultiActionManager.LocalModeChanged = true;
         return true;
     }
 

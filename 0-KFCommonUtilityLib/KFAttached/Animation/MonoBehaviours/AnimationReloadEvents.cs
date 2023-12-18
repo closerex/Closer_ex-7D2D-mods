@@ -128,7 +128,7 @@ public class AnimationReloadEvents : MonoBehaviour
         ItemActionLauncher itemActionLauncher = actionRanged as ItemActionLauncher;
         if (itemActionLauncher != null && itemValue.Meta < magSize)
         {
-            ItemValue ammoValue = ItemClass.GetItem(actionRanged.MagazineItemNames[MultiActionUtils.MultiActionGetSelectedAmmoTypeIndex(actionData)], false);
+            ItemValue ammoValue = ItemClass.GetItem(actionRanged.MagazineItemNames[itemValue.SelectedAmmoTypeIndex], false);
             ItemActionLauncher.ItemActionDataLauncher itemActionDataLauncher = actionData as ItemActionLauncher.ItemActionDataLauncher;
             if (itemActionDataLauncher.isChangingAmmoType)
             {

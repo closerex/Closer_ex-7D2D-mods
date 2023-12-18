@@ -324,6 +324,7 @@
     <Compile Include="Harmony\DisplayMetaAsBuffPatch.cs" />
     <Compile Include="Harmony\ItemActionModulePatch.cs" />
     <Compile Include="Harmony\MultiActionPatches.cs" />
+    <Compile Include="Harmony\MultiActionReversePatches.cs" />
     <Compile Include="Harmony\RecoilPatch.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationProceduralRecoildAbs.cs" />
     <Compile Include="KFAttached\KFUtilAttached\ApexWeaponHudControllerBase.cs" />
@@ -389,7 +390,10 @@
     <Compile Include="Scripts\Items\Modular\ActionModuleMultiActionFix.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleRampUp.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleMetaRecharger.cs" />
+    <Compile Include="Scripts\NetPackages\NetPackageEntityActionIndex.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageFixedReload.cs" />
+    <Compile Include="Scripts\Requirements\ActionIndexIs.cs" />
+    <Compile Include="Scripts\Requirements\HoldingActionIndexIs.cs" />
     <Compile Include="Scripts\Singletons\AnimationRiggingManager.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdCalibrateWeapon.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPlayerDebugInfo.cs" />
@@ -431,7 +435,7 @@
     <Compile Include="Scripts\Singletons\MultiActionManager.cs" />
     <Compile Include="Scripts\Singletons\RecoilManager.cs" />
     <Compile Include="Scripts\Utilities\MultiActionUtils.cs" />
-    <Compile Include="Scripts\Utilities\Rewrites.cs" />
+    <Compile Include="Scripts\Utilities\MultiActionProjectileRewrites.cs" />
     <Compile Include="Scripts\Utilities\SaveTextureToFileUtility.cs" />
     <Compile Include="Scripts\Utilities\EntityInventoryExtension.cs" />
   </ItemGroup>

@@ -1,19 +1,179 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using static InvGameItem;
+using static TypedMetadataValue;
 
 namespace KFCommonUtilityLib.Scripts.Utilities
 {
-    public static class Rewrites
+    /// <summary>
+    /// This new script make following changes:
+    /// - projectile ItemValue fields are reused for custom passive calculation:
+    /// -- Meta => launcher ItemClass id
+    /// -- SelectedAmmoIndex => launcher action index
+    /// -- Activated => launcher data strain perc
+    /// -- cosmetics and mods reference launcher ItemValue
+    /// -- Quality and Durability is copied from launcher ItemValue
+    /// - MinEventParams.itemActionData is set to correct launcher data.
+    /// </summary>
+    public class CustomProjectileMoveScript : ProjectileMoveScript
     {
-        public static void Hit(WorldRayHitInfo hitInfo, int _attackerEntityId, EnumDamageTypes _damageType, float _blockDamage,
+        private CollisionParticleController waterCollisionParticles = new CollisionParticleController();
+        protected override void checkCollision()
+        {
+            if (this.firingEntity == null || !bArmed || gameManager == null)
+                return;
+            World world = gameManager.World;
+            if (world == null)
+            {
+                return;
+            }
+            Vector3 checkPos;
+            if (bOnIdealPos)
+            {
+                checkPos = transform.position + Origin.position;
+            }
+            else
+            {
+                checkPos = idealPosition;
+            }
+            Vector3 dir = checkPos - previousPosition;
+            float magnitude = dir.magnitude;
+            if (magnitude < 0.04f)
+            {
+                return;
+            }
+            EntityAlive firingEntity = (EntityAlive)this.firingEntity;
+            Ray ray = new Ray(previousPosition, dir.normalized);
+            waterCollisionParticles.CheckCollision(ray.origin, ray.direction, magnitude, (firingEntity != null) ? firingEntity.entityId : (-1));
+            int num = 0;
+            if (firingEntity != null && firingEntity.emodel != null)
+            {
+                num = firingEntity.GetModelLayer();
+                firingEntity.SetModelLayer(2, false, null);
+            }
+            int num2 = ((hmOverride == 0) ? 80 : hmOverride);
+            bool flag = Voxel.Raycast(world, ray, magnitude, -538750997, num2, 0);
+            if (firingEntity != null && firingEntity.emodel != null)
+            {
+                firingEntity.SetModelLayer(num, false, null);
+            }
+            if (flag && (GameUtils.IsBlockOrTerrain(Voxel.voxelRayHitInfo.tag) || Voxel.voxelRayHitInfo.tag.StartsWith("E_")))
+            {
+                if (firingEntity != null && !firingEntity.isEntityRemote)
+                {
+                    firingEntity.MinEventContext.Other = ItemActionAttack.FindHitEntity(Voxel.voxelRayHitInfo) as EntityAlive;
+                    firingEntity.MinEventContext.ItemActionData = actionData;
+                    firingEntity.MinEventContext.ItemValue = itemValueLauncher;
+                    firingEntity.MinEventContext.Position = Voxel.voxelRayHitInfo.hit.pos;
+                    ItemActionAttack.AttackHitInfo attackHitInfo = new ItemActionAttack.AttackHitInfo
+                    {
+                        WeaponTypeTag = ItemActionAttack.RangedTag
+                    };
+                    float strainPerc = itemValueProjectile.Activated / (float)byte.MaxValue;
+                    MultiActionProjectileRewrites.ProjectileHit(Voxel.voxelRayHitInfo,
+                                 ProjectileOwnerID,
+                                 EnumDamageTypes.Piercing,
+                                 Mathf.Lerp(1f, MultiActionProjectileRewrites.GetProjectileDamageBlock(itemValueProjectile, ItemActionAttack.GetBlockHit(world, Voxel.voxelRayHitInfo), firingEntity, 0), strainPerc),
+                                 Mathf.Lerp(1f, MultiActionProjectileRewrites.GetProjectileDamageEntity(itemValueProjectile, firingEntity, 0), strainPerc),
+                                 1f,
+                                 1f,
+                                 MultiActionReversePatches.ProjectileGetValue(PassiveEffects.CriticalChance, itemValueProjectile, itemProjectile.CritChance.Value, firingEntity, null, itemProjectile.ItemTags, true, true, true, true, 1, true, false),
+                                 ItemAction.GetDismemberChance(actionData, Voxel.voxelRayHitInfo),
+                                 itemProjectile.MadeOfMaterial.SurfaceCategory,
+                                 itemActionProjectile.GetDamageMultiplier(),
+                                 getBuffActions(),
+                                 attackHitInfo,
+                                 1,
+                                 itemActionProjectile.ActionExp,
+                                 itemActionProjectile.ActionExpBonusMultiplier,
+                                 null,
+                                 null,
+                                 ItemActionAttack.EnumAttackMode.RealNoHarvesting,
+                                 null,
+                                 -1,
+                                 itemValueProjectile);
+                    if (firingEntity.MinEventContext.Other == null)
+                    {
+                        firingEntity.FireEvent(MinEventTypes.onSelfPrimaryActionMissEntity, true);
+                    }
+                    firingEntity.FireEvent(MinEventTypes.onProjectileImpact, false);
+                    MinEventParams.CachedEventParam.Self = firingEntity;
+                    MinEventParams.CachedEventParam.Position = Voxel.voxelRayHitInfo.hit.pos;
+                    MinEventParams.CachedEventParam.ItemValue = itemValueProjectile;
+                    MinEventParams.CachedEventParam.ItemActionData = actionData;
+                    MinEventParams.CachedEventParam.Other = firingEntity.MinEventContext.Other;
+                    itemProjectile.FireEvent(MinEventTypes.onProjectileImpact, MinEventParams.CachedEventParam);
+                    if (itemActionProjectile.Explosion.ParticleIndex > 0)
+                    {
+                        Vector3 vector3 = Voxel.voxelRayHitInfo.hit.pos - dir.normalized * 0.1f;
+                        Vector3i vector3i = World.worldToBlockPos(vector3);
+                        if (!world.GetBlock(vector3i).isair)
+                        {
+                            BlockFace blockFace;
+                            vector3i = Voxel.OneVoxelStep(vector3i, vector3, -dir.normalized, out vector3, out blockFace);
+                        }
+                        gameManager.ExplosionServer(Voxel.voxelRayHitInfo.hit.clrIdx, vector3, vector3i, Quaternion.identity, itemActionProjectile.Explosion, ProjectileOwnerID, 0f, false, itemValueProjectile);
+                        bArmed = false;
+                        UnityEngine.Object.Destroy(gameObject);
+                        return;
+                    }
+                    if (itemProjectile.IsSticky)
+                    {
+                        GameRandom gameRandom = world.GetGameRandom();
+                        if (GameUtils.IsBlockOrTerrain(Voxel.voxelRayHitInfo.tag))
+                        {
+                            if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, itemValueProjectile, 0.5f, firingEntity, null, itemProjectile.ItemTags | FastTags.Parse(Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory), true, true, true, true, 1, true, false))
+                            {
+                                ProjectileID = ProjectileManager.AddProjectileItem(transform, -1, Voxel.voxelRayHitInfo.hit.pos, dir.normalized, itemValueProjectile.type);
+                            }
+                            else
+                            {
+                                gameManager.SpawnParticleEffectServer(new ParticleEffect("impact_metal_on_wood", Voxel.voxelRayHitInfo.hit.pos, Utils.BlockFaceToRotation(Voxel.voxelRayHitInfo.fmcHit.blockFace), 1f, Color.white, string.Format("{0}hit{1}", Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory, itemProjectile.MadeOfMaterial.SurfaceCategory), null), firingEntity.entityId, false, false);
+                                UnityEngine.Object.Destroy(gameObject);
+                            }
+                        }
+                        else if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, itemValueProjectile, 0.5f, firingEntity, null, itemProjectile.ItemTags, true, true, true, true, 1, true, false))
+                        {
+                            ProjectileID = ProjectileManager.AddProjectileItem(transform, -1, Voxel.voxelRayHitInfo.hit.pos, dir.normalized, itemValueProjectile.type);
+                            Utils.SetLayerRecursively(ProjectileManager.GetProjectile(ProjectileID).gameObject, 14, null);
+                        }
+                        else
+                        {
+                            gameManager.SpawnParticleEffectServer(new ParticleEffect("impact_metal_on_wood", Voxel.voxelRayHitInfo.hit.pos, Utils.BlockFaceToRotation(Voxel.voxelRayHitInfo.fmcHit.blockFace), 1f, Color.white, "bullethitwood", null), firingEntity.entityId, false, false);
+                            UnityEngine.Object.Destroy(gameObject);
+                        }
+                    }
+                    else
+                    {
+                        UnityEngine.Object.Destroy(gameObject);
+                    }
+                }
+                else
+                {
+                    UnityEngine.Object.Destroy(gameObject);
+                }
+                bArmed = false;
+            }
+            previousPosition = checkPos;
+        }
+    }
+
+    public static class MultiActionProjectileRewrites
+    {
+        public static void ProjectileHit(WorldRayHitInfo hitInfo, int _attackerEntityId, EnumDamageTypes _damageType, float _blockDamage,
                                float _entityDamage, float _staminaDamageMultiplier, float _weaponCondition, float _criticalHitChanceOLD,
                                float _dismemberChance, string _attackingDeviceMadeOf, DamageMultiplier _damageMultiplier,
                                List<string> _buffActions, ItemActionAttack.AttackHitInfo _attackDetails, int _flags = 1, int _actionExp = 0,
                                float _actionExpBonus = 0f, ItemActionAttack rangeCheckedAction = null,
                                Dictionary<string, ItemActionAttack.Bonuses> _toolBonuses = null,
                                ItemActionAttack.EnumAttackMode _attackMode = ItemActionAttack.EnumAttackMode.RealNoHarvesting,
-                               Dictionary<string, string> _hitSoundOverrides = null, int ownedEntityId = -1, ItemValue damagingItemValue = null)
+                               Dictionary<string, string> _hitSoundOverrides = null, int ownedEntityId = -1, ItemValue projectileValue = null)
         {
+            if (_attackDetails != null)
+            {
+                _attackDetails.hitPosition = Vector3i.zero;
+                _attackDetails.bKilled = false;
+            }
             if (hitInfo == null || hitInfo.tag == null)
             {
                 return;
@@ -40,11 +200,11 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             bool isHoldingDamageItem = false;
             if (attackerEntity != null)
             {
-                if (damagingItemValue == null)
+                if (projectileValue == null)
                 {
-                    damagingItemValue = attackerEntity.inventory.holdingItemItemValue;
+                    projectileValue = attackerEntity.inventory.holdingItemItemValue;
                 }
-                isHoldingDamageItem = damagingItemValue.Equals(attackerEntity.inventory.holdingItemItemValue);
+                isHoldingDamageItem = projectileValue.Equals(attackerEntity.inventory.holdingItemItemValue);
             }
             bool isHitTargetPlayer = true;
             //if hits block or terrain
@@ -92,7 +252,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 }
                 if (landProtectionModifier != 1f)
                 {
-                    if (attackerEntity && _attackMode != ItemActionAttack.EnumAttackMode.Simulate && attackerEntity is EntityPlayer && !damagingItemValue.ItemClass.ignoreKeystoneSound && !damagingItemValue.ToBlockValue().Block.IgnoreKeystoneOverlay)
+                    if (attackerEntity && _attackMode != ItemActionAttack.EnumAttackMode.Simulate && attackerEntity is EntityPlayer && !projectileValue.ItemClass.ignoreKeystoneSound && !projectileValue.ToBlockValue().Block.IgnoreKeystoneOverlay)
                     {
                         attackerEntity.PlayOneShot("keystone_impact_overlay", false);
                     }
@@ -101,7 +261,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                         isProtectionApplied = true;
                     }
                 }
-                if (hitBlockPos != _attackDetails.hitPosition || landProtectionModifier != _attackDetails.hardnessScale || hitBlockValue.type != _attackDetails.blockBeingDamaged.type || (isHoldingDamageItem && damagingItemValue.SelectedAmmoTypeIndex != _attackDetails.ammoIndex))
+                if (hitBlockPos != _attackDetails.hitPosition || landProtectionModifier != _attackDetails.hardnessScale || hitBlockValue.type != _attackDetails.blockBeingDamaged.type || (isHoldingDamageItem && projectileValue.SelectedAmmoTypeIndex != _attackDetails.ammoIndex))
                 {
                     float finalHardness = Mathf.Max(hitBlock.GetHardness(), 0.1f) * landProtectionModifier;
                     float finalBlockDamage = _blockDamage * ((_damageMultiplier != null) ? _damageMultiplier.Get(hitBlock.blockMaterial.DamageCategory) : 1f);
@@ -121,7 +281,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                     _attackDetails.blockBeingDamaged = hitBlockValue;
                     if (isHoldingDamageItem)
                     {
-                        _attackDetails.ammoIndex = damagingItemValue.SelectedAmmoTypeIndex;
+                        _attackDetails.ammoIndex = projectileValue.SelectedAmmoTypeIndex;
                     }
                 }
                 _attackDetails.raycastHitPosition = hitInfo.hit.blockPos;
@@ -135,7 +295,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 if (attackerEntity)
                 {
                     string blockFaceDamageCategory = materialForSide.DamageCategory ?? string.Empty;
-                    modifiedBlockDamage = (int)EffectManager.GetValue(PassiveEffects.DamageModifier, damagingItemValue, modifiedBlockDamage, attackerEntity, null, FastTags.Parse(blockFaceDamageCategory) | _attackDetails.WeaponTypeTag | hitInfo.fmcHit.blockValue.Block.Tags, true, true, true, true, 1, true, false);
+                    modifiedBlockDamage = (int)MultiActionReversePatches.ProjectileGetValue(PassiveEffects.DamageModifier, projectileValue, modifiedBlockDamage, attackerEntity, null, FastTags.Parse(blockFaceDamageCategory) | _attackDetails.WeaponTypeTag | hitInfo.fmcHit.blockValue.Block.Tags, true, true, true, true, 1, true, false);
                 }
                 modifiedBlockDamage = ItemActionAttack.DegradationModifier(modifiedBlockDamage, _weaponCondition);
                 modifiedBlockDamage = isProtectionApplied ? 0f : Utils.FastMax(1f, modifiedBlockDamage);
@@ -174,7 +334,6 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                     _attackDetails.materialCategory = hitBlock.blockMaterial.SurfaceCategory;
                     if (attackerEntity != null && _attackMode != ItemActionAttack.EnumAttackMode.Simulate)
                     {
-                        attackerEntity.MinEventContext.ItemValue = damagingItemValue;
                         attackerEntity.MinEventContext.BlockValue = hitBlockValue;
                         attackerEntity.MinEventContext.Tags = hitBlock.Tags;
                         if (_attackDetails.bKilled)
@@ -206,7 +365,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 }
                 EntityAlive hitEntityAlive = hitEntity as EntityAlive;
                 DamageSourceEntity damageSourceEntity = new DamageSourceEntity(EnumDamageSource.External, _damageType, _attackerEntityId, hitInfo.ray.direction, hitInfo.transform.name, hitInfo.hit.pos, Voxel.phyxRaycastHit.textureCoord);
-                damageSourceEntity.AttackingItem = damagingItemValue;
+                damageSourceEntity.AttackingItem = projectileValue;
                 damageSourceEntity.DismemberChance = _dismemberChance;
                 damageSourceEntity.CreatorEntityId = ownedEntityId;
                 bool isCriticalHit = _attackDetails.isCriticalHit;
@@ -218,8 +377,8 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                     {
                         equipmentTags = FastTags.Parse(damageSourceEntity.GetEntityDamageEquipmentSlotGroup(hitEntityAlive).ToStringCached());
                     }
-                    finalEntityDamage = (int)EffectManager.GetValue(PassiveEffects.DamageModifier, damagingItemValue, finalEntityDamage, attackerEntity, null, equipmentTags | _attackDetails.WeaponTypeTag | hitEntityAlive.EntityClass.Tags, true, true, true, true, 1, true, false);
-                    finalEntityDamage = (int)EffectManager.GetValue(PassiveEffects.InternalDamageModifier, damagingItemValue, finalEntityDamage, hitEntityAlive, null, equipmentTags | damagingItemValue.ItemClass.ItemTags, true, true, true, true, 1, true, false);
+                    finalEntityDamage = (int)MultiActionReversePatches.ProjectileGetValue(PassiveEffects.DamageModifier, projectileValue, finalEntityDamage, attackerEntity, null, equipmentTags | _attackDetails.WeaponTypeTag | hitEntityAlive.EntityClass.Tags, true, true, true, true, 1, true, false);
+                    finalEntityDamage = (int)MultiActionReversePatches.ProjectileGetValue(PassiveEffects.InternalDamageModifier, projectileValue, finalEntityDamage, hitEntityAlive, null, equipmentTags | projectileValue.ItemClass.ItemTags, true, true, true, true, 1, true, false);
                 }
                 if (!hitEntityAlive || hitEntityAlive.Health > 0)
                 {
@@ -237,7 +396,6 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                     {
                         MinEventParams minEventContext = attackerEntity.MinEventContext;
                         minEventContext.Other = hitEntityAlive;
-                        minEventContext.ItemValue = damagingItemValue;
                         minEventContext.StartPosition = hitInfo.ray.origin;
                     }
                     if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && (attackerEntity as EntityPlayer == null || !attackerEntity.isEntityRemote) && hitEntity.isEntityRemote && rangeCheckedAction != null)
@@ -301,11 +459,10 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                         {
                             MinEventParams attackerMinEventParams = attackerEntity.MinEventContext;
                             attackerMinEventParams.Other = hitEntityAlive;
-                            attackerMinEventParams.ItemValue = damagingItemValue;
                             attackerMinEventParams.StartPosition = hitInfo.ray.origin;
                             if (ownedEntityId != -1)
                             {
-                                damagingItemValue.FireEvent(MinEventTypes.onSelfAttackedOther, attackerEntity.MinEventContext);
+                                projectileValue.FireEvent(MinEventTypes.onSelfAttackedOther, attackerEntity.MinEventContext);
                             }
                             attackerEntity.FireEvent(MinEventTypes.onSelfAttackedOther, isHoldingDamageItem);
                             if (hitEntityAlive && hitEntityAlive.RecordedDamage.Strength > 0)
@@ -324,7 +481,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                                 BuffClass buff = BuffManager.GetBuff(_buffActions[i]);
                                 if (buff != null)
                                 {
-                                    float bufProcChance = EffectManager.GetValue(PassiveEffects.BuffProcChance, null, 1f, attackerEntity, null, FastTags.Parse(buff.Name), true, true, true, true, 1, true, false);
+                                    float bufProcChance = MultiActionReversePatches.ProjectileGetValue(PassiveEffects.BuffProcChance, null, 1f, attackerEntity, null, FastTags.Parse(buff.Name), true, true, true, true, 1, true, false);
                                     if (hitEntityAlive.rand.RandomFloat <= bufProcChance)
                                     {
                                         hitEntityAlive.Buffs.AddBuff(_buffActions[i], attackerEntity.entityId, true, false, false, -1f);
@@ -361,7 +518,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                     {
                         if ((_flags & 2) > 0)
                         {
-                            float trapXP = EffectManager.GetValue(PassiveEffects.ElectricalTrapXP, attackerPlayer.inventory.holdingItemItemValue, 0f, attackerPlayer, null, default, true, true, true, true, 1, true, false);
+                            float trapXP = MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ElectricalTrapXP, attackerPlayer.inventory.holdingItemItemValue, 0f, attackerPlayer, null, default, true, true, true, true, 1, true, false);
                             if (trapXP > 0f)
                             {
                                 attackerPlayer.AddKillXP(hitEntityAlive, trapXP);
@@ -477,6 +634,122 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 }
             }
             return _strength;
+        }
+
+        public static float GetProjectileDamageBlock(ItemValue _itemValue, BlockValue _blockValue, EntityAlive _holdingEntity = null, int actionIndex = 0)
+        {
+            FastTags tmpTag = ((actionIndex != 1) ? ItemActionAttack.PrimaryTag : ItemActionAttack.SecondaryTag);
+            ItemClass launcherClass = ItemClass.GetForId(_itemValue.Meta);
+            tmpTag |= ((launcherClass == null) ? ItemActionAttack.MeleeTag : launcherClass.ItemTags);
+            if (_holdingEntity != null)
+            {
+                tmpTag |= _holdingEntity.CurrentStanceTag | _holdingEntity.CurrentMovementTag;
+            }
+
+            tmpTag |= _blockValue.Block.Tags;
+            return MultiActionReversePatches.ProjectileGetValue(PassiveEffects.BlockDamage, _itemValue, 0, _holdingEntity, null, tmpTag);
+        }
+
+        public static float GetProjectileDamageEntity(ItemValue _itemValue, EntityAlive _holdingEntity = null, int actionIndex = 0)
+        {
+            FastTags tmpTag = ((actionIndex != 1) ? ItemActionAttack.PrimaryTag : ItemActionAttack.SecondaryTag);
+            ItemClass launcherClass = ItemClass.GetForId(_itemValue.Meta);
+            tmpTag |= ((launcherClass == null) ? ItemActionAttack.MeleeTag : launcherClass.ItemTags);
+            if (_holdingEntity != null)
+            {
+                tmpTag |= _holdingEntity.CurrentStanceTag | _holdingEntity.CurrentMovementTag;
+            }
+
+            return MultiActionReversePatches.ProjectileGetValue(PassiveEffects.EntityDamage, _itemValue, 0, _holdingEntity, null, tmpTag);
+        }
+
+        public static void ProjectileValueModifyValue(this ItemValue _projectileItemValue, EntityAlive _entity, ItemValue _originalItemValue, PassiveEffects _passiveEffect, ref float _originalValue, ref float _perc_value, FastTags _tags, bool _useMods = true, bool _useDurability = false)
+        {
+            if (_originalItemValue != null)
+            {
+                return;
+            }
+            int seed = MinEventParams.CachedEventParam.Seed;
+            if (_entity != null)
+            {
+                seed = _entity.MinEventContext.Seed;
+            }
+
+            ItemClass launcherClass = ItemClass.GetForId(_projectileItemValue.Meta);
+            int actionIndex = _projectileItemValue.SelectedAmmoTypeIndex;
+            if (launcherClass != null)
+            {
+                if (launcherClass.Actions != null && launcherClass.Actions.Length != 0 && launcherClass.Actions[actionIndex] is ItemActionRanged)
+                {
+                    ItemClass ammoClass = _projectileItemValue.ItemClass;
+                    if (ammoClass != null && ammoClass.Effects != null)
+                    {
+                        ammoClass.Effects.ModifyValue(_entity, _passiveEffect, ref _originalValue, ref _perc_value, 0f, _tags);
+                    }
+                }
+
+                if (launcherClass.Effects != null)
+                {
+                    MinEventParams.CachedEventParam.Seed = (int)_projectileItemValue.Seed + (int)((_projectileItemValue.Seed != 0) ? _passiveEffect : PassiveEffects.None);
+                    if (_entity != null)
+                    {
+                        _entity.MinEventContext.Seed = MinEventParams.CachedEventParam.Seed;
+                    }
+
+                    float num = _originalValue;
+                    launcherClass.Effects.ModifyValue(_entity, _passiveEffect, ref _originalValue, ref _perc_value, _projectileItemValue.Quality, _tags);
+                    if (_useDurability)
+                    {
+                        float percentUsesLeft = _projectileItemValue.PercentUsesLeft;
+                        switch (_passiveEffect)
+                        {
+                            case PassiveEffects.PhysicalDamageResist:
+                                if (percentUsesLeft < 0.5f)
+                                {
+                                    float num3 = _originalValue - num;
+                                    _originalValue = num + num3 * percentUsesLeft * 2f;
+                                }
+
+                                break;
+                            case PassiveEffects.ElementalDamageResist:
+                                if (percentUsesLeft < 0.5f)
+                                {
+                                    float num4 = _originalValue - num;
+                                    _originalValue = num + num4 * percentUsesLeft * 2f;
+                                }
+
+                                break;
+                            case PassiveEffects.BuffResistance:
+                                if (percentUsesLeft < 0.5f)
+                                {
+                                    float num2 = _originalValue - num;
+                                    _originalValue = num + num2 * percentUsesLeft * 2f;
+                                }
+
+                                break;
+                        }
+                    }
+                }
+            }
+
+            if (_useMods)
+            {
+                for (int i = 0; i < _projectileItemValue.CosmeticMods.Length; i++)
+                {
+                    if (_projectileItemValue.CosmeticMods[i] != null && _projectileItemValue.CosmeticMods[i].ItemClass is ItemClassModifier)
+                    {
+                        _projectileItemValue.CosmeticMods[i].ModifyValue(_entity, _projectileItemValue, _passiveEffect, ref _originalValue, ref _perc_value, _tags);
+                    }
+                }
+
+                for (int j = 0; j < _projectileItemValue.Modifications.Length; j++)
+                {
+                    if (_projectileItemValue.Modifications[j] != null && _projectileItemValue.Modifications[j].ItemClass is ItemClassModifier)
+                    {
+                        _projectileItemValue.Modifications[j].ModifyValue(_entity, _projectileItemValue, _passiveEffect, ref _originalValue, ref _perc_value, _tags);
+                    }
+                }
+            }
         }
     }
 }

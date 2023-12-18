@@ -25,12 +25,6 @@ public class CommonUtilityLibInit : IModApi
     {
         CustomEnums.onSelfMagzineDeplete = CustomEffectEnumManager.RegisterOrGetTrigger("onSelfMagzineDeplete");
         CustomEnums.onReloadAboutToStart = CustomEffectEnumManager.RegisterOrGetTrigger("onReloadAboutToStart");
-        CustomEnums.onSelfAction3Start = CustomEffectEnumManager.RegisterOrGetTrigger("onSelfAction3Start");
-        CustomEnums.onSelfAction3Update = CustomEffectEnumManager.RegisterOrGetTrigger("onSelfAction3Update");
-        CustomEnums.onSelfAction3End = CustomEffectEnumManager.RegisterOrGetTrigger("onSelfAction3End");
-        CustomEnums.onSelfAction4Start = CustomEffectEnumManager.RegisterOrGetTrigger("onSelfAction4Start");
-        CustomEnums.onSelfAction4Update = CustomEffectEnumManager.RegisterOrGetTrigger("onSelfAction4Update");
-        CustomEnums.onSelfAction4End = CustomEffectEnumManager.RegisterOrGetTrigger("onSelfAction4End");
 
         CustomEnums.ReloadSpeedRatioFPV2TPV = CustomEffectEnumManager.RegisterOrGetPassive("ReloadSpeedRatioFPV2TPV");
         CustomEnums.RecoilSnappiness = CustomEffectEnumManager.RegisterOrGetPassive("RecoilSnappiness");

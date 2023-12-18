@@ -7,6 +7,8 @@ using UnityEngine;
 using UniLinq;
 using System.Xml.Linq;
 using System;
+using KFCommonUtilityLib.Scripts.Singletons;
+using KFCommonUtilityLib.Scripts.NetPackages;
 
 namespace KFCommonUtilityLib.Harmony
 {
@@ -361,60 +363,45 @@ namespace KFCommonUtilityLib.Harmony
         }
         #endregion
 
-        #region Initial meta, Max ammo count
-        [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.GetInitialMetadata))]
-        [HarmonyPrefix]
-        private static bool Prefix_GetInitialMetadata_ItemClass(ItemClass __instance, ItemValue _itemValue, ref int __result)
-        {
-            if (__instance.Actions[0] == null)
-            {
-                __result = 0;
-            }
-            else
-            {
-                foreach (var action in __instance.Actions)
-                {
-                    int? meta = action?.GetInitialMeta(_itemValue);
-                    if (action.ActionIndex == 0)
-                        __result = meta.Value;
-                }
-            }
+        //#region Initial meta, Max ammo count
+        ////when initialize ItemValue with full meta, set all metadata ammo count to full.
+        //[HarmonyPatch(typeof(ItemClass), nameof(ItemClass.GetInitialMetadata))]
+        //[HarmonyPrefix]
+        //private static bool Prefix_GetInitialMetadata_ItemClass(ItemClass __instance, ItemValue _itemValue, ref int __result)
+        //{
+        //    if (__instance.Actions[0] == null)
+        //    {
+        //        __result = 0;
+        //    }
+        //    else
+        //    {
+        //        foreach (var action in __instance.Actions)
+        //        {
+        //            int? meta = action?.GetInitialMeta(_itemValue);
+        //            if (action.ActionIndex == 0)
+        //                __result = meta.Value;
+        //        }
+        //    }
 
-            return false;
-        }
-        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.GetInitialMeta))]
-        [HarmonyPrefix]
-        private static bool Prefix_GetInitialMeta_ItemActionRanged(ItemActionRanged __instance, ItemValue _itemValue, ref int __result)
-        {
-            __result = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, _itemValue, __instance.BulletsPerMagazine, null, null, _itemValue.ItemClass.ItemTags | MultiActionUtils.ActionIndexToTag(__instance.ActionIndex), true, true, true, true, 1, true, false);
-            return false;
-        }
+        //    return false;
+        //}
+        //[HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.GetInitialMeta))]
+        //[HarmonyPrefix]
+        //private static bool Prefix_GetInitialMeta_ItemActionRanged(ItemActionRanged __instance, ItemValue _itemValue, ref int __result)
+        //{
+        //    __result = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, _itemValue, __instance.BulletsPerMagazine, null, null, _itemValue.ItemClass.ItemTags | MultiActionUtils.ActionIndexToTag(__instance.ActionIndex), true, true, true, true, 1, true, false);
+        //    return false;
+        //}
 
-        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.GetInitialMeta))]
-        [HarmonyPostfix]
-        private static void Postfix_GetInitialMeta_ItemActionRanged(ItemActionRanged __instance, ItemValue _itemValue, int __result)
-        {
-            _itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[__instance.ActionIndex], __result, TypedMetadataValue.TypeTag.Integer);
-        }
-
-        [HarmonyPatch(typeof(ItemActionRanged.ItemActionDataRanged), MethodType.Constructor)]
-        [HarmonyPostfix]
-        private static void Postfix_ctor_ItemActionDataRanged(ItemActionRanged.ItemActionDataRanged __instance)
-        {
-            ItemValue itemValue = __instance.invData.itemValue;
-            int actionIndex = __instance.indexInEntityOfAction;
-            //if metadata of index 0 does not exist then the item is not initialized
-            if (!itemValue.HasMetadata(MultiActionUtils.ActionMetaNames[actionIndex], TypedMetadataValue.TypeTag.Integer))
-            {
-                itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[actionIndex], actionIndex == 0 ? itemValue.Meta : 0, TypedMetadataValue.TypeTag.Integer);
-            }
-
-            if (!itemValue.HasMetadata(MultiActionUtils.ActionSelectedAmmoNames[actionIndex], TypedMetadataValue.TypeTag.Integer))
-            {
-                itemValue.SetMetadata(MultiActionUtils.ActionSelectedAmmoNames[actionIndex], actionIndex == 0 ? itemValue.SelectedAmmoTypeIndex : 0, TypedMetadataValue.TypeTag.Integer);
-            }
-        }
-        #endregion
+        //[HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.GetInitialMeta))]
+        //[HarmonyPostfix]
+        //private static void Postfix_GetInitialMeta_ItemActionRanged(ItemActionRanged __instance, ItemValue _itemValue, int __result)
+        //{
+        //    //only set meta if action is not 0
+        //    if (__instance.ActionIndex > 0)
+        //        _itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[__instance.ActionIndex], __result, TypedMetadataValue.TypeTag.Integer);
+        //}
+        //#endregion
 
         #region Ranged ExecuteAction FireEvent params
         //why? ask TFP the fuck they are doing
@@ -574,6 +561,35 @@ namespace KFCommonUtilityLib.Harmony
         }
         #endregion
 
+        #region Launcher logic
+        [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.instantiateProjectile))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_instantiateProjectile_ItemActionLauncher(IEnumerable<CodeInstruction> instructions)
+        {
+            MethodInfo mtd_addcomponent = AccessTools.Method(typeof(GameObject), nameof(GameObject.AddComponent), Array.Empty<Type>(), new[] { typeof(ProjectileMoveScript) });
+            MethodInfo mtd_addcomponentnew = mtd_addcomponent.MakeGenericMethod(typeof(CustomProjectileMoveScript));
+            foreach(var code in instructions)
+            {
+                if (code.Calls(mtd_addcomponent))
+                {
+                    code.operand = mtd_addcomponentnew;
+                }
+                yield return code;
+            }
+        }
+
+        [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.instantiateProjectile))]
+        [HarmonyPostfix]
+        private static void Postfix_instantiateProjectile_ItemActionLauncher(Transform __result)
+        {
+            var script = __result.GetComponent<ProjectileMoveScript>();
+            var projectileValue = script.itemValueProjectile;
+            var launcherValue = script.itemValueLauncher;
+            projectileValue.Activated = (byte)(Mathf.Clamp01(script.actionData.strainPercent) * byte.MaxValue);
+            MultiActionUtils.CopyLauncherValueToProjectile(launcherValue, projectileValue, script.actionData.indexInEntityOfAction);
+        }
+        #endregion
+
         #endregion
 
         #region Use Correct Meta
@@ -581,15 +597,6 @@ namespace KFCommonUtilityLib.Harmony
         #endregion
 
         #region Correct tags for PassiveEffects
-
-        #region ActionData tags
-        [HarmonyPatch(typeof(ItemActionData), MethodType.Constructor)]
-        [HarmonyPostfix]
-        private static void Postfix_ctor_ItemActionData(ItemActionData __instance)
-        {
-            __instance.ActionTags = MultiActionUtils.ActionIndexToTag(__instance.indexInEntityOfAction);
-        }
-        #endregion
 
         #region Spread multiplier
         [HarmonyPatch(typeof(ItemActionRanged), "onHoldingEntityFired")]
@@ -684,8 +691,86 @@ namespace KFCommonUtilityLib.Harmony
         #endregion
 
         #endregion
+
+        //KEEP
+        #region Misc
+        //load correct property for melee
+        [HarmonyPatch(typeof(AnimatorMeleeAttackState), nameof(AnimatorMeleeAttackState.OnStateEnter))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_OnStateEnter_AnimatorMeleeAttackState(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+            var fld_actionindex = AccessTools.Field(typeof(AnimatorMeleeAttackState), "actionIndex");
+            for (int i = 0; i < codes.Count; i++)
+            {
+                var code = codes[i];
+                if(code.LoadsField(fld_actionindex) && codes[i + 2].opcode == OpCodes.Ldstr)
+                {
+                    string property = codes[i + 2].operand.ToString();
+                    property = property.Split('.')[1];
+                    codes.RemoveRange(i + 1, 4);
+                    codes.InsertRange(i + 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldstr, property),
+                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetPropertyName))
+                    });
+                }
+            }
+
+            return codes;
+        }
+
+        #endregion
+
+        //KEEP
+        #region Action mode handling
+        [HarmonyPatch(typeof(NetPackagePlayerStats), nameof(NetPackagePlayerStats.ProcessPackage))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_ProcessPackage_NetPackagePlayerStats(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var fld_entityid = AccessTools.Field(typeof(NetPackagePlayerStats), "entityId");
+            var fld_itemstack = AccessTools.Field(typeof(NetPackagePlayerStats), "holdingItemStack");
+            codes.InsertRange(codes.Count - 1, new[]
+            {
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldfld, fld_entityid),
+                new CodeInstruction(OpCodes.Ldfld, fld_itemstack),
+                CodeInstruction.Call(typeof(MultiActionPatches), nameof(MultiActionPatches.CheckItemValueMode))
+            });
+
+            return codes;
+        }
+
+        private static void CheckItemValueMode(int entityId, ItemStack holdingItemStack)
+        {
+            ItemValue itemValue = holdingItemStack.itemValue;
+            if (itemValue.HasMetadata(MultiActionMapping.STR_MULTI_ACTION_INDEX, TypedMetadataValue.TypeTag.Integer))
+            {
+                int mode = (int)itemValue.GetMetadata(MultiActionMapping.STR_MULTI_ACTION_INDEX);
+                if(MultiActionManager.SetModeForEntity(entityId, mode) && ConnectionManager.Instance.IsServer)
+                {
+                    ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageEntityActionIndex>().Setup(entityId, mode), false, -1, entityId);
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(GameManager), "updateSendClientPlayerPositionToServer")]
+        [HarmonyPostfix]
+        private static void Postfix_UpdateTick_GameManager(World ___m_world)
+        {
+            if (MultiActionManager.LocalModeChanged)
+            {
+                MultiActionManager.LocalModeChanged = false;
+                int playerID = ___m_world.GetPrimaryPlayerId();
+                ConnectionManager.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageEntityActionIndex>().Setup(playerID, MultiActionManager.GetModeForEntity(playerID)));
+            }
+        }
+        #endregion
     }
 
+    //KEEP
     #region Ranged Reload
     [HarmonyPatch]
     public static class RangedReloadPatches
@@ -710,6 +795,7 @@ namespace KFCommonUtilityLib.Harmony
     }
     #endregion
 
+    //KEEP
     #region Melee action tags
     [HarmonyPatch]
     public static class ActionTagPatches
@@ -729,8 +815,9 @@ namespace KFCommonUtilityLib.Harmony
         }
 
         //set correct tag for action index above 2
+        //only action 1 uses secondary tag, others still use primary
         [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_OnStateEnter_AnimatorMeleeAttackState(IEnumerable<CodeInstruction> instructions)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
 
@@ -740,8 +827,11 @@ namespace KFCommonUtilityLib.Harmony
                 var code = codes[i];
                 if (code.LoadsField(fld_tag))
                 {
-                    codes.Insert(i + 1, CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.ActionIndexToTag)));
-                    codes.RemoveRange(i - 3, 4);
+                    codes.InsertRange(i - 3, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldc_I4_1),
+                        new CodeInstruction(OpCodes.Ceq)
+                    });
                     break;
                 }
             }
@@ -751,6 +841,7 @@ namespace KFCommonUtilityLib.Harmony
     }
     #endregion
 
+    //KEEP
     #region 3
     [HarmonyPatch]
     public static class ThreePatches
@@ -779,5 +870,4 @@ namespace KFCommonUtilityLib.Harmony
         }
     }
     #endregion
-    //todo: handle meta switch
 }

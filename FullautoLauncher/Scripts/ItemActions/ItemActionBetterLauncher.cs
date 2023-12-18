@@ -55,7 +55,7 @@ public class ItemActionBetterLauncher : ItemActionRanged
     public override void SwapAmmoType(EntityAlive _entity, int _ammoItemId = -1)
     {
         base.SwapAmmoType(_entity, _ammoItemId);
-        ItemActionDataBetterLauncher ItemActionDataBetterLauncher = (ItemActionDataBetterLauncher)_entity.inventory.holdingItemData.actionData[0];
+        ItemActionDataBetterLauncher ItemActionDataBetterLauncher = (ItemActionDataBetterLauncher)_entity.inventory.holdingItemData.actionData[ActionIndex];
         ItemValue itemValue = ItemActionDataBetterLauncher.invData.itemValue;
         ItemClass forId = ItemClass.GetForId(ItemClass.GetItem(MagazineItemNames[(int)itemValue.SelectedAmmoTypeIndex], false).type);
         group = CustomProjectileManager.Get(forId.Name);

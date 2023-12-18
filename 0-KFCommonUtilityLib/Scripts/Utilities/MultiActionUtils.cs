@@ -1,17 +1,11 @@
-﻿using static Inventory;
+﻿using System;
+using UnityEngine;
+using static Inventory;
 
 namespace KFCommonUtilityLib.Scripts.Utilities
 {
     public static class MultiActionUtils
     {
-        public static readonly FastTags[] ActionIndexTags = new FastTags[]
-        {
-            FastTags.Parse("primary"),
-            FastTags.Parse("secondary"),
-            FastTags.Parse("tertiary"),
-            FastTags.Parse("quaternary"),
-            FastTags.Parse("quinary")
-        };
         public static readonly string[] ActionMetaNames = new string[]
         {
             "Meta0",
@@ -36,8 +30,8 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 MinEventTypes.onSelfPrimaryActionStart,
                 MinEventTypes.onSelfSecondaryActionStart,
                 MinEventTypes.onSelfAction2Start,
-                CustomEnums.onSelfAction3Start,
-                CustomEnums.onSelfAction4Start,
+                MinEventTypes.onSelfPrimaryActionStart,
+                MinEventTypes.onSelfPrimaryActionStart,
             };
 
             MinEvent.Update = new[]
@@ -45,8 +39,8 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 MinEventTypes.onSelfPrimaryActionUpdate,
                 MinEventTypes.onSelfSecondaryActionUpdate,
                 MinEventTypes.onSelfAction2Update,
-                CustomEnums.onSelfAction3Update,
-                CustomEnums.onSelfAction4Update,
+                MinEventTypes.onSelfPrimaryActionUpdate,
+                MinEventTypes.onSelfPrimaryActionUpdate,
             };
 
             MinEvent.End = new[]
@@ -54,29 +48,14 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 MinEventTypes.onSelfPrimaryActionEnd,
                 MinEventTypes.onSelfSecondaryActionEnd,
                 MinEventTypes.onSelfAction2End,
-                CustomEnums.onSelfAction3End,
-                CustomEnums.onSelfAction4End,
+                MinEventTypes.onSelfPrimaryActionEnd,
+                MinEventTypes.onSelfPrimaryActionEnd,
             };
-        }
-
-        public static FastTags ActionIndexToTag(int index)
-        {
-            return ActionIndexTags[index];
         }
 
         public static FastTags GetItemTagsWithActionIndex(ItemActionData actionData)
         {
             return actionData.invData.item.ItemTags | actionData.ActionTags;
-        }
-
-        public static int TagToActionIndex(FastTags tag)
-        {
-            for (int i = 0; i < ActionIndexTags.Length; i++)
-            {
-                if (tag.Test_AnySet(ActionIndexTags[i]))
-                    return i;
-            }
-            return 0;
         }
 
         public static string GetPropertyName(int index, string prop)
@@ -138,70 +117,6 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             return (int)itemValue.GetMetadata(ammoindex);
         }
 
-        public static void SetCurrentMetaAndAmmoIndex(ItemActionData itemActionData)
-        {
-            if(itemActionData.indexInEntityOfAction == 0)
-                return;
-            ItemValue itemValue = itemActionData.invData.itemValue;
-            string metaname = ActionMetaNames[0];
-            string ammoindex = ActionSelectedAmmoNames[0];
-            itemValue.SetMetadata(metaname, itemValue.Meta, TypedMetadataValue.TypeTag.Integer);
-            itemValue.SetMetadata(ammoindex, itemValue.SelectedAmmoTypeIndex, TypedMetadataValue.TypeTag.Integer);
-
-            metaname = ActionMetaNames[itemActionData.indexInEntityOfAction];
-            ammoindex = ActionSelectedAmmoNames[itemActionData.indexInEntityOfAction];
-
-            if (!itemValue.HasMetadata(ammoindex))
-            {
-                itemValue.SetMetadata(ammoindex, 0, TypedMetadataValue.TypeTag.Integer);
-                itemValue.SelectedAmmoTypeIndex = 0;
-            }
-            else
-            {
-                itemValue.SelectedAmmoTypeIndex = (byte)itemValue.GetMetadata(ammoindex);
-            }
-            if (!itemValue.HasMetadata(metaname))
-            {
-                itemValue.SetMetadata(metaname, 0, TypedMetadataValue.TypeTag.Integer);
-                itemValue.Meta = 0;
-            }
-            else
-            {
-                itemValue.Meta = (int)itemValue.GetMetadata(metaname);
-            }
-        }
-
-        public static void ResetCurrentMetaAndAmmoIndex(ItemActionData itemActionData)
-        {
-            if(itemActionData.indexInEntityOfAction == 0)
-                return;
-            ItemValue itemValue = itemActionData.invData.itemValue;
-            string metaname = ActionMetaNames[itemActionData.indexInEntityOfAction];
-            string ammoindex = ActionSelectedAmmoNames[itemActionData.indexInEntityOfAction];
-            itemValue.SetMetadata(metaname, itemValue.Meta, TypedMetadataValue.TypeTag.Integer);
-            itemValue.SetMetadata(ammoindex, itemValue.SelectedAmmoTypeIndex, TypedMetadataValue.TypeTag.Integer);
-
-            metaname = ActionMetaNames[0];
-            ammoindex = ActionSelectedAmmoNames[0];
-            if (!itemValue.HasMetadata(ammoindex))
-            {
-                itemValue.SetMetadata(ammoindex, 0, TypedMetadataValue.TypeTag.Integer);
-                itemValue.SelectedAmmoTypeIndex = 0;
-            }
-            else
-            {
-                itemValue.SelectedAmmoTypeIndex = (byte)itemValue.GetMetadata(ammoindex);
-            }
-            if (!itemValue.HasMetadata(metaname))
-            {
-                itemValue.SetMetadata(metaname, 0, TypedMetadataValue.TypeTag.Integer);
-                itemValue.Meta = 0;
-            }
-            else
-            {
-                itemValue.Meta = (int)itemValue.GetMetadata(metaname);
-            }
-        }
 
         public static void FixedItemReloadServer(int entityId, int actionIndex)
         {
@@ -242,6 +157,16 @@ namespace KFCommonUtilityLib.Scripts.Utilities
 
             player.MinEventContext.ItemActionData = invData.actionData[index];
             player.MinEventContext.Tags = MultiActionUtils.GetItemTagsWithActionIndex(invData.actionData[index]);
+        }
+
+        public static void CopyLauncherValueToProjectile(ItemValue launcherValue, ItemValue projectileValue, int index)
+        {
+            projectileValue.Meta = launcherValue.type;
+            projectileValue.SelectedAmmoTypeIndex = (byte)index;
+            projectileValue.UseTimes = launcherValue.UseTimes;
+            projectileValue.Quality = launcherValue.Quality;
+            Array.Copy(launcherValue.Modifications, projectileValue.Modifications, launcherValue.Modifications.Length);
+            Array.Copy(launcherValue.CosmeticMods, projectileValue.CosmeticMods, launcherValue.Modifications.Length);
         }
     }
 }

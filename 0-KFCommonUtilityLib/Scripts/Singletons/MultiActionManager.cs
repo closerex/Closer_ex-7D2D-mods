@@ -68,7 +68,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
         /// <summary>
         /// when set CurIndex from local input, also set manager to dirty to update the index on other clients
         /// </summary>
-        public int CurIndex
+        public int CurMode
         {
             get => curIndex;
             set
@@ -114,7 +114,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
         }
 
         //for ItemClass.Actions access
-        public int CurMode
+        public int CurActionIndex
         {
             get
             {
@@ -186,7 +186,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
         private static readonly Dictionary<int, MultiActionMapping> dict_mappings = new Dictionary<int, MultiActionMapping>();
         //should set to true when:
         //mode switch input received;
-        //start holding new multi action weapon.
+        //start holding new multi action weapon.?
         //if true, send local curIndex to other clients in updateSendClientPlayerPositionToServer.
         public static bool LocalModeChanged { get; set; }
 
@@ -198,7 +198,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
 
             if (mapping.ModeCount <= 1 || player.inventory.IsHoldingItemActionRunning())
                 return;
-            mapping.CurIndex++;
+            mapping.CurMode++;
             player.PlayOneShot(mapping.toggleSound);
             LocalModeChanged = true;
         }
@@ -208,11 +208,29 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             dict_mappings[entityID] = mapping;
         }
 
+        public static bool SetModeForEntity(int entityID, int mode)
+        {
+            if (dict_mappings.TryGetValue(entityID, out MultiActionMapping mapping) && mapping != null)
+            {
+                int prevMode = mapping.CurMode;
+                mapping.CurMode = mode;
+                return prevMode != mapping.CurMode;
+            }
+            return false;
+        }
+
+        public static int GetModeForEntity(int entityID)
+        {
+            if (!dict_mappings.TryGetValue(entityID, out MultiActionMapping mapping) || mapping == null)
+                return 0;
+            return mapping.CurMode;
+        }
+
         public static int GetActionIndexForEntity(int entityID)
         {
             if (!dict_mappings.TryGetValue(entityID, out var mapping) || mapping == null)
                 return 0;
-            return mapping.CurMode;
+            return mapping.CurActionIndex;
         }
 
         public static int GetMetaIndexForEntity(int entityID)
