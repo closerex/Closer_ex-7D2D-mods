@@ -99,10 +99,11 @@ public class NetPackageExplosionParams : NetPackage
 		{
 			return;
 		}
+		bool isCustom = false;
 		if(explosionData.ParticleIndex >= WorldStaticData.prefabExplosions.Length)
         {
-			bool flag = CustomExplosionManager.GetCustomParticleComponents(explosionData.ParticleIndex, out ExplosionComponent component);
-			if(flag && component != null)
+			isCustom = CustomExplosionManager.GetCustomParticleComponents(explosionData.ParticleIndex, out ExplosionComponent component) && component != null;
+			if (isCustom)
 			{
 				ExplosionValue value = new ExplosionValue()
 				{
@@ -113,17 +114,21 @@ public class NetPackageExplosionParams : NetPackage
 				CustomExplosionManager.PushLastInitComponent(value);
 			}
         }
-		GameObject result = _world.GetGameManager().ExplosionClient(clrIdx, worldPos, rotation, explosionData.ParticleIndex, explosionData.BlastPower, (float)explosionData.EntityRadius, (float)explosionData.BlockDamage, entityId, explosionChanges);
-		NetSyncHelper helper = result.GetComponent<NetSyncHelper>();
-		if (helper != null && dataToSync != null)
-        {
-			using (PooledBinaryReader _br = MemoryPools.poolBinaryReader.AllocSync(false))
+
+		GameObject result = _callbacks.ExplosionClient(clrIdx, worldPos, rotation, explosionData.ParticleIndex, explosionData.BlastPower, (float)explosionData.EntityRadius, (float)explosionData.BlockDamage, entityId, explosionChanges);
+		if (isCustom)
+		{
+			NetSyncHelper helper = result?.GetComponent<NetSyncHelper>();
+			if (helper != null && dataToSync != null)
 			{
-				_br.SetBaseStream(new MemoryStream(dataToSync));
-				helper.OnExplosionClientInit(_br);
+				using (PooledBinaryReader _br = MemoryPools.poolBinaryReader.AllocSync(false))
+				{
+					_br.SetBaseStream(new MemoryStream(dataToSync));
+					helper.OnExplosionClientInit(_br);
+				}
 			}
-        }
-		CustomExplosionManager.PopLastInitComponent();
+			CustomExplosionManager.PopLastInitComponent();
+		}
 	}
 
 	public override NetPackageDirection PackageDirection
