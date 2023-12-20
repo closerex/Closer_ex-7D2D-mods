@@ -53,8 +53,10 @@ class ExplosionEffectPatch
                 CustomExplosionManager.PushLastInitComponent(value);
                 __state.useCustom = true;
             }
+#if DEBUG
             else
                 Log.Warning("Failed to retrieve particle on server! Index:" + index.ToString());
+#endif
         }
         EntityPlayerLocal player = __instance.World.GetPrimaryPlayer();
         if (player != null)
@@ -126,13 +128,19 @@ class ExplosionEffectPatch
             return;
 
         ExplosionValue components = CustomExplosionManager.LastInitializedComponent;
-        if (components != null)
+        //sorcery uses index over 20 to trigger explosion without particle and spawn visual particle on its own, 
+        //such usage could potentially break the chained explosion stack, thus this additional check is added.
+        //invalid explosion component is not pushed to the stack, if index param does not match index on the stack,
+        //then the param must be invalid, skip particle creation.
+        if (components != null && components.CurrentExplosionParams._explosionData.ParticleIndex == _index)
         {
             ApplyExplosionForce.Explode(_center, (float)_blastPower, _blastRadius);
             __result = CustomExplosionManager.InitializeParticle(components.Component, _center - Origin.position, _rotation);
         }
+#if DEBUG
         else
             Log.Warning("Failed to retrieve particle on client! Index:" + _index.ToString());
+#endif
     }
 
     [HarmonyPatch(nameof(GameManager.SaveAndCleanupWorld))]

@@ -5,5 +5,5 @@
 	<DisplayName value="Custom Explosion Particle Loader" />
 	<Description value="Allow you to use custom particle for explosion effects, with your own monoscripts." />
 	<Author value="closer_ex" />
-	<Version value="1.4.5" />
+	<Version value="1.4.6" />
 </xml>
