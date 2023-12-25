@@ -106,6 +106,7 @@ namespace KFCommonUtilityLib.Harmony
 
         #region Ranged Reload
         //Replace reload action index with animator item action index parameter
+        //set MinEventParams.ItemActionData before getting passive value
         [HarmonyPatch(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.OnStateEnter))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_OnStateEnter_AnimatorRangedReloadState(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -118,6 +119,7 @@ namespace KFCommonUtilityLib.Harmony
             FieldInfo fld_actionData = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.actionData));
             FieldInfo fld_meta = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Meta));
             FieldInfo fld_ammoindex = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
+            MethodInfo mtd_getvalue = AccessTools.Method(typeof(EffectManager), nameof(EffectManager.GetValue));
 
             for (int i = 0; i < codes.Count; i++)
             {
@@ -128,33 +130,20 @@ namespace KFCommonUtilityLib.Harmony
                     codes[i + 1].opcode = OpCodes.Ldloc_S;
                     codes[i + 1].operand = lbd_index;
                 }
-                else if (code.opcode == OpCodes.Initobj)
+                else if (code.Calls(mtd_getvalue))
                 {
-                    //set action index tag
-                    codes.InsertRange(i + 2, new[]
+                    codes.InsertRange(i, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), "actionData"),
-                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetItemTagsWithActionIndex))
-                    });
-                    codes.RemoveRange(i - 1, 3);
-                }
-                else if (code.LoadsField(fld_meta))
-                {
-                    //load correct meta
-                    codes.Insert(i + 1, CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.MultiActionGetMeta)));
-                    codes.RemoveRange(i - 2, 3);
-                }
-                else if (code.LoadsField(fld_ammoindex))
-                {
-                    //load correct selected ammo index
-                    codes.InsertRange(i + 1, new[]
-                    {
+                        new CodeInstruction(OpCodes.Ldfld, fld_actionData),
+                        CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
+                        CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity)),
+                        CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.MinEventContext)),
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), "actionData"),
-                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.MultiActionGetSelectedAmmoTypeIndex))
+                        new CodeInstruction(OpCodes.Ldfld, fld_actionData),
+                        CodeInstruction.StoreField(typeof(MinEventParams), nameof(MinEventParams.ItemActionData))
                     });
-                    codes.RemoveRange(i - 1, 2);
+                    break;
                 }
             }
 
@@ -171,66 +160,30 @@ namespace KFCommonUtilityLib.Harmony
 
         [HarmonyPatch(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.OnStateExit))]
         [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_OnStateExit_AnimatorRangedReloadState(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler_OnStateExit_AnimatorRangedReloadState(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
 
-            MethodInfo mtd_fastmin = AccessTools.Method(typeof(Utils), nameof(Utils.FastMin), new[] { typeof(int), typeof(int) });
-            MethodInfo prop_itemvalue = AccessTools.PropertyGetter(typeof(ItemInventoryData), nameof(ItemInventoryData.itemValue));
-            FieldInfo fld_ammoindex = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
+            FieldInfo fld_actionData = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.actionData));
+            MethodInfo mtd_getvalue = AccessTools.Method(typeof(EffectManager), nameof(EffectManager.GetValue));
+
             for (int i = 0; i < codes.Count; i++)
             {
                 var code = codes[i];
-                if (code.opcode == OpCodes.Initobj)
+                if (code.Calls(mtd_getvalue))
                 {
-                    //set action index tag
-                    codes.InsertRange(i + 2, new[]
+                    codes.InsertRange(i, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), "actionData"),
-                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetItemTagsWithActionIndex))
-                    });
-                    codes.RemoveRange(i - 1, 3);
-                }
-                else if (code.Calls(mtd_fastmin))
-                {
-                    //reload to correct metadata
-                    codes.InsertRange(i + 2, new[]
-                    {
+                        new CodeInstruction(OpCodes.Ldfld, fld_actionData),
+                        CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
+                        CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity)),
+                        CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.MinEventContext)),
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), "actionData"),
-                        CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData)),
-                        new CodeInstruction(OpCodes.Castclass, typeof(ItemActionRanged.ItemActionDataRanged)),
-                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.MultiActionReload))
+                        new CodeInstruction(OpCodes.Ldfld, fld_actionData),
+                        CodeInstruction.StoreField(typeof(MinEventParams), nameof(MinEventParams.ItemActionData))
                     });
-                    codes.RemoveRange(i - 14, 16);
-                }
-                else if (code.LoadsField(fld_ammoindex))
-                {
-                    //load correct ammo index
-                    codes.Insert(i + 1, CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.MultiActionGetSelectedAmmoTypeIndex)));
-                    codes.RemoveRange(i - 2, 3);
-                }
-            }
-
-            return codes;
-        }
-
-
-        [HarmonyPatch(typeof(AnimatorRangedReloadState), "GetAmmoCountToReload")]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_GetAmmoCountToReload_AnimatorRangedReloadState(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
-        {
-            var codes = instructions.ToList();
-
-            FieldInfo fld_meta = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Meta));
-            for (int i = 0; i < codes.Count; i++)
-            {
-                var code = codes[i];
-                if (code.LoadsField(fld_meta))
-                {
-                    codes.Insert(i + 1, CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.MultiActionGetMeta)));
-                    codes.RemoveRange(i - 2, 3);
+                    break;
                 }
             }
 
@@ -238,6 +191,7 @@ namespace KFCommonUtilityLib.Harmony
         }
         #endregion
 
+        //KEEP
         #region Aiming
         [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.IsAimingGunPossible))]
         [HarmonyPrefix]
@@ -254,6 +208,7 @@ namespace KFCommonUtilityLib.Harmony
         }
         #endregion
 
+        //KEEP
         #region Cancel bow draw
         [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.TryCancelBowDraw))]
         [HarmonyPrefix]
@@ -273,6 +228,7 @@ namespace KFCommonUtilityLib.Harmony
         }
         #endregion
 
+        //KEEP
         #region Consume wheel scroll
         [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.ConsumeScrollWheel))]
         [HarmonyPrefix]
@@ -293,6 +249,7 @@ namespace KFCommonUtilityLib.Harmony
         }
         #endregion
 
+        //KEEP
         #region Create modifier data for more actions
         [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.CreateInventoryData))]
         [HarmonyPostfix]
@@ -313,6 +270,7 @@ namespace KFCommonUtilityLib.Harmony
 
         //todo: should I patch ItemClass.ExecuteAction for melee actions?
 
+        //KEEP
         #region IsFocusBlockInside?
         [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.IsFocusBlockInside))]
         [HarmonyPrefix]
@@ -323,6 +281,7 @@ namespace KFCommonUtilityLib.Harmony
         }
         #endregion
 
+        //KEEP
         #region IsHUDDisabled
         [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.IsHUDDisabled))]
         [HarmonyPrefix]
@@ -337,6 +296,7 @@ namespace KFCommonUtilityLib.Harmony
         }
         #endregion
 
+        //KEEP
         #region OnHUD
         [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.OnHUD))]
         [HarmonyPrefix]
@@ -348,8 +308,40 @@ namespace KFCommonUtilityLib.Harmony
             }
             return false;
         }
+
+        [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.GetCrosshairType))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_GetCrosshairType_ItemClass(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            var codes = instructions.ToList();
+
+            LocalBuilder lbd_index = generator.DeclareLocal(typeof(int));
+
+            FieldInfo fld_action = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
+            for (int i = 0; i < codes.Count; i++)
+            {
+                var code = codes[i];
+                if (code.LoadsField(fld_action) && codes[i + 1].opcode == OpCodes.Ldc_I4_0)
+                {
+                    codes[i + 1].opcode = OpCodes.Ldloc_S;
+                    codes[i + 1].operand = lbd_index;
+                }
+            }
+
+            codes.InsertRange(0, new[]
+            {
+                new CodeInstruction(OpCodes.Ldarg_1),
+                CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity)),
+                CodeInstruction.LoadField(typeof(Entity), nameof(Entity.entityId)),
+                CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.GetActionIndexForEntity)),
+                new CodeInstruction(OpCodes.Stloc_S, lbd_index)
+            });
+
+            return codes;
+        }
         #endregion
 
+        //KEEP
         #region OnScreenOverlay
         [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.OnScreenOverlay))]
         [HarmonyPrefix]
@@ -363,47 +355,179 @@ namespace KFCommonUtilityLib.Harmony
         }
         #endregion
 
-        //#region Initial meta, Max ammo count
-        ////when initialize ItemValue with full meta, set all metadata ammo count to full.
-        //[HarmonyPatch(typeof(ItemClass), nameof(ItemClass.GetInitialMetadata))]
-        //[HarmonyPrefix]
-        //private static bool Prefix_GetInitialMetadata_ItemClass(ItemClass __instance, ItemValue _itemValue, ref int __result)
-        //{
-        //    if (__instance.Actions[0] == null)
-        //    {
-        //        __result = 0;
-        //    }
-        //    else
-        //    {
-        //        foreach (var action in __instance.Actions)
-        //        {
-        //            int? meta = action?.GetInitialMeta(_itemValue);
-        //            if (action.ActionIndex == 0)
-        //                __result = meta.Value;
-        //        }
-        //    }
+        #region inventory related
+        [HarmonyPatch(typeof(Inventory), nameof(Inventory.GetHoldingGun))]
+        [HarmonyPrefix]
+        private static bool Prefix_GetHoldingGun_Inventory(Inventory __instance, ItemActionAttack __result, EntityAlive ___entity)
+        {
+            __result = __instance.holdingItem.Actions[___entity != null ? MultiActionManager.GetActionIndexForEntity(___entity.entityId) : -1] as ItemActionAttack;
+            return false;
+        }
 
-        //    return false;
-        //}
-        //[HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.GetInitialMeta))]
-        //[HarmonyPrefix]
-        //private static bool Prefix_GetInitialMeta_ItemActionRanged(ItemActionRanged __instance, ItemValue _itemValue, ref int __result)
-        //{
-        //    __result = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, _itemValue, __instance.BulletsPerMagazine, null, null, _itemValue.ItemClass.ItemTags | MultiActionUtils.ActionIndexToTag(__instance.ActionIndex), true, true, true, true, 1, true, false);
-        //    return false;
-        //}
+        [HarmonyPatch(typeof(Inventory), nameof(Inventory.GetHoldingDynamicMelee))]
+        [HarmonyPrefix]
+        private static bool Prefix_GetHoldingDynamicMelee_Inventory(Inventory __instance, ItemActionDynamic __result, EntityAlive ___entity)
+        {
+            __result = __instance.holdingItem.Actions[___entity != null ? MultiActionManager.GetActionIndexForEntity(___entity.entityId) : -1] as ItemActionDynamic;
+            return false;
+        }
+        #endregion
 
-        //[HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.GetInitialMeta))]
-        //[HarmonyPostfix]
-        //private static void Postfix_GetInitialMeta_ItemActionRanged(ItemActionRanged __instance, ItemValue _itemValue, int __result)
-        //{
-        //    //only set meta if action is not 0
-        //    if (__instance.ActionIndex > 0)
-        //        _itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[__instance.ActionIndex], __result, TypedMetadataValue.TypeTag.Integer);
-        //}
-        //#endregion
+        #region GameManager.ItemReload*
+        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SetAmmoType))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_SetAmmoType_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
 
+            MethodInfo mtd_reloadserver = AccessTools.Method(typeof(GameManager), nameof(GameManager.ItemReloadServer));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                var code = codes[i];
+                if (code.Calls(mtd_reloadserver))
+                {
+                    codes.RemoveAt(i);
+                    codes.InsertRange(i, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(ItemAction), nameof(ItemAction.ActionIndex)),
+                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.FixedItemReloadServer))
+                    });
+                    codes.RemoveAt(i - 3);
+                    break;
+                }
+            }
+
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SwapAmmoType))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_SwapAmmoType_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            MethodInfo mtd_reloadserver = AccessTools.Method(typeof(GameManager), nameof(GameManager.ItemReloadServer));
+            FieldInfo fld_actiondata = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.actionData));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                var code = codes[i];
+                if (code.Calls(mtd_reloadserver))
+                {
+                    codes.RemoveAt(i);
+                    codes.InsertRange(i, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(ItemAction), nameof(ItemAction.ActionIndex)),
+                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.FixedItemReloadServer))
+                    });
+                    codes.RemoveAt(i - 5);
+                    break;
+                }
+                else if (code.LoadsField(fld_actiondata))
+                {
+                    codes.RemoveAt(i + 1);
+                    codes.InsertRange(i + 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(ItemAction), nameof(ItemAction.ActionIndex))
+                    });
+                    i += 1;
+                }
+            }
+
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SwapSelectedAmmo))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_SwapSelectedAmmo_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            MethodInfo mtd_reloadserver = AccessTools.Method(typeof(GameManager), nameof(GameManager.ItemReloadServer));
+            MethodInfo mtd_canreload = AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.CanReload));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                var code = codes[i];
+                if (code.Calls(mtd_reloadserver))
+                {
+                    codes.RemoveAt(i);
+                    codes.InsertRange(i, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(ItemAction), nameof(ItemAction.ActionIndex)),
+                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.FixedItemReloadServer))
+                    });
+                    codes.RemoveAt(i - 3);
+                    break;
+                }
+                else if (code.Calls(mtd_canreload))
+                {
+                    codes.RemoveAt(i - 2);
+                    codes.InsertRange(i - 2, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(ItemAction), nameof(ItemAction.ActionIndex))
+                    });
+                    codes.RemoveRange(i - 9, 3);
+                    codes.Insert(i - 9, new CodeInstruction(OpCodes.Ldarg_0));
+                    i -= 2;
+                }
+            }
+
+            return codes;
+        }
+        #endregion
+
+        //KEEP
+        #region Launcher logic
+        [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.instantiateProjectile))]
+        [HarmonyTranspiler]
+        //use custom script
+        private static IEnumerable<CodeInstruction> Transpiler_instantiateProjectile_ItemActionLauncher(IEnumerable<CodeInstruction> instructions)
+        {
+            MethodInfo mtd_addcomponent = AccessTools.Method(typeof(GameObject), nameof(GameObject.AddComponent), Array.Empty<Type>(), new[] { typeof(ProjectileMoveScript) });
+            MethodInfo mtd_addcomponentnew = mtd_addcomponent.MakeGenericMethod(typeof(CustomProjectileMoveScript));
+            foreach(var code in instructions)
+            {
+                if (code.Calls(mtd_addcomponent))
+                {
+                    code.operand = mtd_addcomponentnew;
+                }
+                yield return code;
+            }
+        }
+
+        //copy ItemValue to projectile
+        [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.instantiateProjectile))]
+        [HarmonyPostfix]
+        private static void Postfix_instantiateProjectile_ItemActionLauncher(Transform __result)
+        {
+            var script = __result.GetComponent<ProjectileMoveScript>();
+            var projectileValue = script.itemValueProjectile;
+            var launcherValue = script.itemValueLauncher;
+            projectileValue.Activated = (byte)(Mathf.Clamp01(script.actionData.strainPercent) * byte.MaxValue);
+            MultiActionUtils.CopyLauncherValueToProjectile(launcherValue, projectileValue, script.actionData.indexInEntityOfAction);
+        }
+        #endregion
+
+        #endregion
+
+        #region EntityAlive.FireEvent patches, set params
+        //KEEP
         #region Ranged ExecuteAction FireEvent params
+        [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.ExecuteAction))]
+        [HarmonyPrefix]
+        private static bool Prefix_ExecuteAction_ItemClass(int _actionIdx, ItemInventoryData _data, PlayerActionsLocal _playerActions)
+        {
+            MultiActionUtils.UpdateExecutingActionIndex(_actionIdx, _data, _playerActions);
+            return true;
+        }
+
         //why? ask TFP the fuck they are doing
         [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ExecuteAction))]
         [HarmonyTranspiler]
@@ -421,7 +545,7 @@ namespace KFCommonUtilityLib.Harmony
                 {
                     codes.Insert(i, new CodeInstruction(OpCodes.Ldarg_1));
                     codes.RemoveRange(i - 5, 5);
-                    break;
+                    i -= 4;
                 }
                 else if (code.Calls(mtd_reloadserver))
                 {
@@ -445,250 +569,111 @@ namespace KFCommonUtilityLib.Harmony
         }
         #endregion
 
-        #region ItemActionEffect meta
-        //load correct meta
-        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ItemActionEffects))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_ItemActionEffects_ItemActionRanged(IEnumerable<CodeInstruction> codeInstructions)
-        {
-            var codes = codeInstructions.ToList();
-            FieldInfo fld_meta = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Meta));
-
-            for (int i = 0; i < codes.Count; i++)
-            {
-                var code = codes[i];
-                if (code.LoadsField(fld_meta))
-                {
-                    codes.Insert(i + 1, CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.MultiActionGetMeta)));
-                    codes.RemoveRange(i - 2, 3);
-                }
-            }
-            return codes;
-        }
-
-        #endregion
-
-        #region GameManager.ItemReload*
-        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SetAmmoType))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_SetAmmoType_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
-        {
-            var codes = instructions.ToList();
-
-            MethodInfo mtd_reloadserver = AccessTools.Method(typeof(GameManager), nameof(GameManager.ItemReloadServer));
-
-            for (int i = 0; i < codes.Count; i++)
-            {
-                var code = codes[i];
-                if (code.Calls(mtd_reloadserver))
-                {
-                    codes.RemoveAt(i);
-                    codes.InsertRange(i, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.FixedItemReloadServer))
-                    });
-                    codes.RemoveAt(i - 3);
-                    break;
-                }
-            }
-
-            return codes;
-        }
-
-        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SwapAmmoType))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_SwapAmmoType_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
-        {
-            var codes = instructions.ToList();
-
-            MethodInfo mtd_reloadserver = AccessTools.Method(typeof(GameManager), nameof(GameManager.ItemReloadServer));
-
-            for (int i = 0; i < codes.Count; i++)
-            {
-                var code = codes[i];
-                if (code.Calls(mtd_reloadserver))
-                {
-                    codes.RemoveAt(i);
-                    codes.InsertRange(i, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.FixedItemReloadServer))
-                    });
-                    codes.RemoveAt(i - 5);
-                    break;
-                }
-            }
-
-            return codes;
-        }
-
-        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SwapSelectedAmmo))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_SwapSelectedAmmo_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
-        {
-            var codes = instructions.ToList();
-
-            MethodInfo mtd_reloadserver = AccessTools.Method(typeof(GameManager), nameof(GameManager.ItemReloadServer));
-
-            for (int i = 0; i < codes.Count; i++)
-            {
-                var code = codes[i];
-                if (code.Calls(mtd_reloadserver))
-                {
-                    codes.RemoveAt(i);
-                    codes.InsertRange(i, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.FixedItemReloadServer))
-                    });
-                    codes.RemoveAt(i - 3);
-                    break;
-                }
-            }
-
-            return codes;
-        }
-        #endregion
-
-        #region ItemClass ExecuteAction, set MinEventParams
-        [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.ExecuteAction))]
+        #region ItemAction.CancelAction
+        [HarmonyPatch(typeof(ItemActionCatapult), nameof(ItemActionCatapult.CancelAction))]
         [HarmonyPrefix]
-        private static bool Prefix_ExecuteAction_ItemClass(int _actionIdx, ItemInventoryData _data, PlayerActionsLocal _playerActions)
+        private static bool Prefix_CancelAction_ItemActionCatapult(ItemActionData _actionData)
         {
-            MultiActionUtils.UpdateExecutingActionIndex(_actionIdx, _data, _playerActions);
+            _actionData.invData.holdingEntity.MinEventContext.ItemActionData = _actionData;
             return true;
         }
         #endregion
 
-        #region Launcher logic
-        [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.instantiateProjectile))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_instantiateProjectile_ItemActionLauncher(IEnumerable<CodeInstruction> instructions)
+        #region ItemActionDynamicMelee.Raycast
+        [HarmonyPatch(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.Raycast))]
+        [HarmonyPrefix]
+        private static bool Prefix_Raycast_ItemActionDynamicMelee(ItemActionDynamic.ItemActionDynamicData _actionData)
         {
-            MethodInfo mtd_addcomponent = AccessTools.Method(typeof(GameObject), nameof(GameObject.AddComponent), Array.Empty<Type>(), new[] { typeof(ProjectileMoveScript) });
-            MethodInfo mtd_addcomponentnew = mtd_addcomponent.MakeGenericMethod(typeof(CustomProjectileMoveScript));
-            foreach(var code in instructions)
+            _actionData.invData.holdingEntity.MinEventContext.ItemActionData = _actionData;
+            return true;
+        }
+        #endregion
+
+        //onSelfEquipStop, onSelfHoldingItemCreated, onSelfEquipStart are not available for individual action,
+        //MinEventParams.ItemActionData is set to null in MultiActionFix, does not affect vanilla actions.
+
+        //some are already set in update or execute action
+
+        #endregion
+
+        #region EffectManager.GetValue patches, set params
+        //set correct action index for ItemValue
+        [HarmonyPatch(typeof(ItemValue), nameof(ItemValue.ModifyValue))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_ModifyValue_ItemValue(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            var codes = instructions.ToList();
+
+            LocalBuilder lbd_index = generator.DeclareLocal(typeof(int));
+
+            FieldInfo fld_action = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
+
+            for (int i = 0; i < codes.Count; i++)
             {
-                if (code.Calls(mtd_addcomponent))
+                var code = codes[i];
+                if (code.opcode == OpCodes.Stloc_1)
                 {
-                    code.operand = mtd_addcomponentnew;
+                    codes.InsertRange(i + 10, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_1),
+                        CodeInstruction.LoadField(typeof(Entity), nameof(Entity.entityId)),
+                        CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.GetActionIndexForEntity)),
+                        new CodeInstruction(OpCodes.Stloc_S, lbd_index)
+                    });
                 }
-                yield return code;
+                else if (code.LoadsField(fld_action) && codes[i + 1].opcode == OpCodes.Ldc_I4_0)
+                {
+                    codes[i + 1].opcode = OpCodes.Ldloc_S;
+                    codes[i + 1].operand = lbd_index;
+                }
             }
+
+            return codes;
         }
 
-        [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.instantiateProjectile))]
+        [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.OnHUD))]
+        [HarmonyPrefix]
+        private static bool Prefix_OnHUD_EntityPlayerLocal(EntityPlayerLocal __instance, out ItemActionData __state)
+        {
+            __state = __instance.MinEventContext.ItemActionData;
+            __instance.MinEventContext.ItemActionData = __instance.inventory?.holdingItemData?.actionData[MultiActionManager.GetActionIndexForEntity(__instance.entityId)];
+            return true;
+        }
+
+        [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.OnHUD))]
         [HarmonyPostfix]
-        private static void Postfix_instantiateProjectile_ItemActionLauncher(Transform __result)
+        private static void Postfix_OnHUD_EntityPlayerLocal(EntityPlayerLocal __instance, ItemActionData __state)
         {
-            var script = __result.GetComponent<ProjectileMoveScript>();
-            var projectileValue = script.itemValueProjectile;
-            var launcherValue = script.itemValueLauncher;
-            projectileValue.Activated = (byte)(Mathf.Clamp01(script.actionData.strainPercent) * byte.MaxValue);
-            MultiActionUtils.CopyLauncherValueToProjectile(launcherValue, projectileValue, script.actionData.indexInEntityOfAction);
-        }
-        #endregion
-
-        #endregion
-
-        #region Use Correct Meta
-
-        #endregion
-
-        #region Correct tags for PassiveEffects
-
-        #region Spread multiplier
-        [HarmonyPatch(typeof(ItemActionRanged), "onHoldingEntityFired")]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_onHoldingEntityFired_ItemActionRanged(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
-        {
-            var codes = instructions.ToList();
-
-            for (int i = 0; i < codes.Count; i++)
-            {
-                var code = codes[i];
-                if (code.opcode == OpCodes.Initobj)
-                {
-                    codes.InsertRange(i + 2, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldarg_1),
-                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetItemTagsWithActionIndex))
-                    });
-                    codes.RemoveRange(i - 1, 3);
-                    break;
-                }
-            }
-
-            return codes;
+            __instance.MinEventContext.ItemActionData = __state;
         }
 
-        [HarmonyPatch(typeof(ItemActionRanged), "updateAccuracy")]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_updateAccuracy_ItemActionRanged(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
-        {
-            var codes = instructions.ToList();
-
-            for (int i = 0; i < codes.Count; i++)
-            {
-                var code = codes[i];
-                if (code.opcode == OpCodes.Initobj)
-                {
-                    codes.InsertRange(i + 2, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldarg_1),
-                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetItemTagsWithActionIndex))
-                    });
-                    codes.RemoveRange(i - 1, 3);
-                    break;
-                }
-            }
-
-            return codes;
-        }
-        #endregion
-
-        #region Simple patches
-        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.HasInfiniteAmmo))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_HasInfiniteAmmo_ItemActionRanged(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
-        {
-            var codes = instructions.ToList();
-
-            for (int i = 0; i < codes.Count; i++)
-            {
-                var code = codes[i];
-                if (code.opcode == OpCodes.Initobj)
-                {
-                    codes.InsertRange(i + 2, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldarg_1),
-                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetItemTagsWithActionIndex))
-                    });
-                    codes.RemoveRange(i - 1, 3);
-                    break;
-                }
-            }
-
-            return codes;
-        }
-
-        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.GetMaxAmmoCount))]
+        [HarmonyPatch(typeof(ItemAction), nameof(ItemAction.ExecuteBuffActions))]
         [HarmonyPrefix]
-        private static bool Prefix_GetMaxAmmoCount_ItemActionRanged(ItemActionRanged __instance, ItemActionData _actionData, ref int __result)
+        private static bool Prefix_ExecuteBuffActions_ItemAction(int instigatorId, out (EntityAlive entity, ItemActionData actionData) __state)
         {
-            __result = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, _actionData.invData.itemValue, __instance.BulletsPerMagazine, _actionData.invData.holdingEntity, null, MultiActionUtils.GetItemTagsWithActionIndex(_actionData), true, true, true, true, 1, true, false);
-            return false;
+            __state = default;
+            EntityAlive entity = GameManager.Instance.World.GetEntity(instigatorId) as EntityAlive;
+            if (entity != null)
+            {
+                __state.entity = entity;
+                __state.actionData = entity.MinEventContext.ItemActionData;
+                entity.MinEventContext.ItemActionData = entity.inventory?.holdingItemData?.actionData[MultiActionManager.GetActionIndexForEntity(entity.entityId)];
+            }
+            else
+                return false;
+            return true;
         }
 
-        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.GetRange))]
-        [HarmonyPrefix]
-        private static bool Prefix_GetRange_ItemActionRanged(ItemActionRanged __instance, ItemActionData _actionData, ref int __result)
+        [HarmonyPatch(typeof(ItemAction), nameof(ItemAction.ExecuteBuffActions))]
+        [HarmonyPostfix]
+        private static void Postfix_ExecuteBuffActions_ItemAction((EntityAlive entity, ItemActionData actionData) __state, bool __runOriginal)
         {
-            __result = (int)EffectManager.GetValue(PassiveEffects.MaxRange, _actionData.invData.itemValue, __instance.Range, _actionData.invData.holdingEntity, null, MultiActionUtils.GetItemTagsWithActionIndex(_actionData), true, true, true, true, 1, true, false);
-            return false;
+            if (__runOriginal && __state.entity != null)
+                __state.entity.MinEventContext.ItemActionData = __state.actionData;
         }
-        #endregion
+
+        //ItemAction.GetDismemberChance already set
+        //ItemActionDynamic.GetExecuteActionTarget not needed
 
         #endregion
 
@@ -701,6 +686,7 @@ namespace KFCommonUtilityLib.Harmony
         {
             var codes = instructions.ToList();
             var fld_actionindex = AccessTools.Field(typeof(AnimatorMeleeAttackState), "actionIndex");
+            MethodInfo mtd_getvalue = AccessTools.Method(typeof(EffectManager), nameof(EffectManager.GetValue));
             for (int i = 0; i < codes.Count; i++)
             {
                 var code = codes[i];
@@ -714,6 +700,19 @@ namespace KFCommonUtilityLib.Harmony
                         new CodeInstruction(OpCodes.Ldstr, property),
                         CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetPropertyName))
                     });
+                    i -= 2;
+                }
+                else if (code.Calls(mtd_getvalue))
+                {
+                    codes.InsertRange(i, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(AnimatorMeleeAttackState), "entity"),
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(AnimatorMeleeAttackState), "actionIndex"),
+                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.SetMinEventParamsActionData))
+                    });
+                    i += 5;
                 }
             }
 
@@ -727,6 +726,24 @@ namespace KFCommonUtilityLib.Harmony
         [HarmonyPatch(typeof(NetPackagePlayerStats), nameof(NetPackagePlayerStats.ProcessPackage))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_ProcessPackage_NetPackagePlayerStats(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var fld_entityid = AccessTools.Field(typeof(NetPackagePlayerStats), "entityId");
+            var fld_itemstack = AccessTools.Field(typeof(NetPackagePlayerStats), "holdingItemStack");
+            codes.InsertRange(codes.Count - 1, new[]
+            {
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldfld, fld_entityid),
+                new CodeInstruction(OpCodes.Ldfld, fld_itemstack),
+                CodeInstruction.Call(typeof(MultiActionPatches), nameof(MultiActionPatches.CheckItemValueMode))
+            });
+
+            return codes;
+        }
+        [HarmonyPatch(typeof(NetPackageHoldingItem), nameof(NetPackagePlayerStats.ProcessPackage))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_ProcessPackage_NetPackageHoldingItem(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
 
@@ -787,9 +804,10 @@ namespace KFCommonUtilityLib.Harmony
 
         //Why? Ask TFP why they don't just call base.ReloadGun()
         [HarmonyPrefix]
-        private static bool Prefix_ReloadGun_ItemActionLauncher(ItemActionData _actionData)
+        private static bool Prefix_ReloadGun(ItemActionData _actionData)
         {
             _actionData.invData.holdingEntity.emodel?.avatarController?.UpdateInt(AvatarController.itemActionIndexHash, _actionData.indexInEntityOfAction, false);
+            _actionData.invData.holdingEntity.MinEventContext.ItemActionData = _actionData;
             return true;
         }
     }
@@ -798,7 +816,7 @@ namespace KFCommonUtilityLib.Harmony
     //KEEP
     #region Melee action tags
     [HarmonyPatch]
-    public static class ActionTagPatches
+    public static class ActionTagPatches1
     {
         private static IEnumerable<MethodBase> TargetMethods()
         {
@@ -821,18 +839,64 @@ namespace KFCommonUtilityLib.Harmony
         {
             var codes = instructions.ToList();
 
-            FieldInfo fld_tag = AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.PrimaryTag));
+            FieldInfo fld_tag = AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.SecondaryTag));
             for (int i = 0; i < codes.Count; i++)
             {
                 var code = codes[i];
                 if (code.LoadsField(fld_tag))
                 {
-                    codes.InsertRange(i - 3, new[]
+                    codes.InsertRange(i - 1, new[]
                     {
                         new CodeInstruction(OpCodes.Ldc_I4_1),
                         new CodeInstruction(OpCodes.Ceq)
                     });
-                    break;
+                    i += 2;
+                }
+            }
+
+            return codes;
+        }
+    }
+
+    [HarmonyPatch]
+    public static class ActionTagPatches2
+    {
+        private static IEnumerable<MethodBase> TargetMethods()
+        {
+            return new MethodInfo[]
+            {
+                AccessTools.Method(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.Raycast)),
+                AccessTools.Method(typeof(ItemActionDynamic), nameof(ItemActionDynamic.GetExecuteActionGrazeTarget)),
+                AccessTools.Method(typeof(ItemActionDynamic), "hitTarget"),
+                AccessTools.Method(typeof(ItemActionDynamicMelee), "canStartAttack"),
+                AccessTools.Method(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.OnHoldingUpdate)),
+                AccessTools.Method(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.SetAttackFinished)),
+                AccessTools.Method(typeof(ItemActionMelee), nameof(ItemActionMelee.OnHoldingUpdate)),
+                AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.ExecuteAction)),
+                AccessTools.Method(typeof(ItemActionRanged), "fireShot"),
+                AccessTools.Method(typeof(ItemActionThrownWeapon), "throwAway"),
+                AccessTools.Method(typeof(ItemActionUseOther), nameof(ItemActionUseOther.ExecuteAction)),
+
+            };
+        }
+
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            FieldInfo fld_index = AccessTools.Field(typeof(ItemActionData), nameof(ItemActionData.indexInEntityOfAction));
+            for (int i = 0; i < codes.Count; i++)
+            {
+                var code = codes[i];
+                if (code.LoadsField(fld_index) && codes[i + 1].opcode == OpCodes.Brfalse_S || codes[i + 1].opcode == OpCodes.Brfalse)
+                {
+                    codes.InsertRange(i + 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldc_I4_1),
+                        new CodeInstruction(OpCodes.Ceq)
+                    });
+                    i += 2;
                 }
             }
 

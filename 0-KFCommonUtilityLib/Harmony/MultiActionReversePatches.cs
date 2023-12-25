@@ -16,6 +16,8 @@ public class MultiActionReversePatches
     {
         IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
+            if (instructions == null)
+                return null;
             var codes = instructions.ToList();
 
             var mtd_modify = AccessTools.Method(typeof(ItemValue), nameof(ItemValue.ModifyValue));
@@ -31,6 +33,7 @@ public class MultiActionReversePatches
             return codes;
         }
 
+        _ = Transpiler(null);
         return _originalValue;
     }
 }

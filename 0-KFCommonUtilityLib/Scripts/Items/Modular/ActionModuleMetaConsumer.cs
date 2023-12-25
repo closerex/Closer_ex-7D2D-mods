@@ -13,7 +13,6 @@ using static ItemActionAltMode;
 public class ActionModuleMetaConsumer
 {
     public string consumeData;
-    public FastTags tags = FastTags.none;
 
     [MethodTargetPostfix(nameof(ItemActionRanged.ReadFrom))]
     private void Postfix_ReadFrom(DynamicProperties _props)
@@ -36,11 +35,8 @@ public class ActionModuleMetaConsumer
                 return true;
             }
 
-            if (tags.IsEmpty)
-                tags = MultiActionUtils.GetItemTagsWithActionIndex(_actionData);
-
             float stock = (float)itemValue.GetMetadata(consumeData);
-            float consumption = EffectManager.GetValue(CustomEnums.ConsumptionValue, itemValue, float.MaxValue, _actionData.invData.holdingEntity, null, tags);
+            float consumption = EffectManager.GetValue(CustomEnums.ConsumptionValue, itemValue, float.MaxValue, _actionData.invData.holdingEntity);
             if (stock < consumption)
             {
                 holdingEntity.PlayOneShot(___soundEmpty);

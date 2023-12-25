@@ -53,70 +53,10 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             };
         }
 
-        public static FastTags GetItemTagsWithActionIndex(ItemActionData actionData)
-        {
-            return actionData.invData.item.ItemTags | actionData.ActionTags;
-        }
-
         public static string GetPropertyName(int index, string prop)
         {
             return $"Action{index}.{prop}";
         }
-
-        public static void MultiActionReload(ItemActionRanged.ItemActionDataRanged itemActionData)
-        {
-            ItemValue itemValue = itemActionData.invData.itemValue;
-            int actionIndex = itemActionData.indexInEntityOfAction;
-            if (actionIndex == 0)
-            {
-                itemValue.Meta = itemValue.Meta + itemActionData.reloadAmount;
-            }
-            string metaname = ActionMetaNames[actionIndex];
-            if (!itemValue.HasMetadata(metaname))
-            {
-                itemValue.SetMetadata(metaname, itemActionData.reloadAmount, TypedMetadataValue.TypeTag.Integer);
-            }
-            else
-            {
-                int meta = (int)itemValue.GetMetadata(metaname);
-                itemValue.SetMetadata(metaname, meta + itemActionData.reloadAmount, TypedMetadataValue.TypeTag.Integer);
-            }
-        }
-
-        public static int MultiActionGetMeta(ItemActionData itemActionData)
-        {
-            ItemValue itemValue = itemActionData.invData.itemValue;
-            if (itemActionData.indexInEntityOfAction == 0)
-            {
-                return itemValue.Meta;
-            }
-
-            string metaname = ActionMetaNames[itemActionData.indexInEntityOfAction];
-            if (!itemValue.HasMetadata(metaname))
-            {
-                itemValue.SetMetadata(metaname, 0, TypedMetadataValue.TypeTag.Integer);
-                return 0;
-            }
-            return (int)itemValue.GetMetadata(metaname);
-        }
-
-        public static int MultiActionGetSelectedAmmoTypeIndex(ItemActionData itemActionData)
-        {
-            ItemValue itemValue = itemActionData.invData.itemValue;
-            if (itemActionData.indexInEntityOfAction == 0)
-            {
-                return itemValue.SelectedAmmoTypeIndex;
-            }
-
-            string ammoindex = ActionSelectedAmmoNames[itemActionData.indexInEntityOfAction];
-            if (!itemValue.HasMetadata(ammoindex))
-            {
-                itemValue.SetMetadata(ammoindex, 0, TypedMetadataValue.TypeTag.Integer);
-                return 0;
-            }
-            return (int)itemValue.GetMetadata(ammoindex);
-        }
-
 
         public static void FixedItemReloadServer(int entityId, int actionIndex)
         {
@@ -156,7 +96,6 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             }
 
             player.MinEventContext.ItemActionData = invData.actionData[index];
-            player.MinEventContext.Tags = MultiActionUtils.GetItemTagsWithActionIndex(invData.actionData[index]);
         }
 
         public static void CopyLauncherValueToProjectile(ItemValue launcherValue, ItemValue projectileValue, int index)
@@ -167,6 +106,11 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             projectileValue.Quality = launcherValue.Quality;
             Array.Copy(launcherValue.Modifications, projectileValue.Modifications, launcherValue.Modifications.Length);
             Array.Copy(launcherValue.CosmeticMods, projectileValue.CosmeticMods, launcherValue.Modifications.Length);
+        }
+
+        public static void SetMinEventParamsActionData(EntityAlive entity, int actionIndex)
+        {
+            entity.MinEventContext.ItemActionData = entity.inventory.holdingItemData.actionData[actionIndex];
         }
     }
 }

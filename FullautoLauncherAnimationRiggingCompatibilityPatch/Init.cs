@@ -131,7 +131,7 @@ public static class FLARPatch
                                        MultiActionProjectileRewrites.GetProjectileDamageEntity(info.itemValueProjectile, entityAlive, 0),
                                        1f,
                                        1f,
-                                       MultiActionReversePatches.ProjectileGetValue(PassiveEffects.CriticalChance, info.itemValueProjectile, info.itemProjectile.CritChance.Value, entityAlive, null, info.itemProjectile.ItemTags, true, true, true, true, 1, true, false),
+                                       MultiActionReversePatches.ProjectileGetValue(PassiveEffects.CriticalChance, info.itemValueProjectile, info.itemProjectile.CritChance.Value, entityAlive, null, info.itemProjectile.ItemTags, true, false),
                                        ItemAction.GetDismemberChance(info.actionData, Voxel.voxelRayHitInfo),
                                        info.itemProjectile.MadeOfMaterial.SurfaceCategory,
                                        info.itemActionProjectile.GetDamageMultiplier(),
@@ -173,7 +173,7 @@ public static class FLARPatch
                     GameRandom gameRandom = world.GetGameRandom();
                     if (GameUtils.IsBlockOrTerrain(Voxel.voxelRayHitInfo.tag))
                     {
-                        if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, info.itemValueProjectile, 0.5f, entityAlive, null, info.itemProjectile.ItemTags | FastTags.Parse(Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory), true, true, true, true, 1, true, false))
+                        if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, info.itemValueProjectile, 0.5f, entityAlive, null, info.itemProjectile.ItemTags | FastTags.Parse(Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory), true, false))
                         {
                             ProjectileManager.AddProjectileItem(null, -1, Voxel.voxelRayHitInfo.hit.pos, dir.normalized, info.itemValueProjectile.type);
                         }
@@ -182,7 +182,7 @@ public static class FLARPatch
                             GameManager.Instance.SpawnParticleEffectServer(new ParticleEffect("impact_metal_on_wood", Voxel.voxelRayHitInfo.hit.pos, Utils.BlockFaceToRotation(Voxel.voxelRayHitInfo.fmcHit.blockFace), 1f, Color.white, string.Format("{0}hit{1}", Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory, info.itemProjectile.MadeOfMaterial.SurfaceCategory), null), entityAlive.entityId, false, false);
                         }
                     }
-                    else if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, info.itemValueProjectile, 0.5f, entityAlive, null, info.itemProjectile.ItemTags, true, true, true, true, 1, true, false))
+                    else if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, info.itemValueProjectile, 0.5f, entityAlive, null, info.itemProjectile.ItemTags, true, false))
                     {
                         int ProjectileID = ProjectileManager.AddProjectileItem(null, -1, Voxel.voxelRayHitInfo.hit.pos, dir.normalized, info.itemValueProjectile.type);
                         Utils.SetLayerRecursively(ProjectileManager.GetProjectile(ProjectileID).gameObject, 14, null);

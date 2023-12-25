@@ -6,10 +6,59 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UAI;
+using static ActionModuleAlternative;
 
 [TypeTarget(typeof(ItemActionRanged), typeof(MultiActionData))]
 public class ActionModuleMultiActionFix
 {
+    private static ItemActionData lastActionData = null;
+
+    [MethodTargetPrefix(nameof(ItemActionRanged.StartHolding))]
+    private bool Prefix_StartHolding(ItemActionData _data)
+    {
+        lastActionData = _data.invData.holdingEntity.MinEventContext.ItemActionData;
+        _data.invData.holdingEntity.MinEventContext.ItemActionData = _data;
+        return true;
+    }
+
+    [MethodTargetPostfix(nameof(ItemActionRanged.StartHolding))]
+    private void Postfix_StartHolding(ItemActionData _data)
+    {
+        _data.invData.holdingEntity.MinEventContext.ItemActionData = null;
+        lastActionData = null;
+    }
+
+    [MethodTargetPrefix(nameof(ItemActionRanged.StopHolding))]
+    private bool Prefix_StopHolding(ItemActionData _data)
+    {
+        lastActionData = _data.invData.holdingEntity.MinEventContext.ItemActionData;
+        _data.invData.holdingEntity.MinEventContext.ItemActionData = _data;
+        return true;
+    }
+
+    [MethodTargetPostfix(nameof(ItemActionRanged.StopHolding))]
+    private void Postfix_StopHolding(ItemActionData _data)
+    {
+        _data.invData.holdingEntity.MinEventContext.ItemActionData = null;
+        lastActionData = null;
+    }
+
+    [MethodTargetPrefix(nameof(ItemActionRanged.OnHUD))]
+    private bool Prefix_OnHUD(ItemActionData _actionData)
+    {
+        lastActionData = _actionData.invData.holdingEntity.MinEventContext.ItemActionData;
+        _actionData.invData.holdingEntity.MinEventContext.ItemActionData = _actionData;
+        return true;
+    }
+
+    [MethodTargetPostfix(nameof(ItemActionRanged.OnHUD))]
+    private void Postfix_OnHUD(ItemActionData _actionData)
+    {
+        _actionData.invData.holdingEntity.MinEventContext.ItemActionData = lastActionData;
+        lastActionData = null;
+    }
+
     [MethodTargetPrefix(nameof(ItemActionRanged.ExecuteAction))]
     private bool Prefix_ExecuteAction(ItemActionData _actionData, MultiActionData __customData)
     {

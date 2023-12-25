@@ -24,12 +24,10 @@ public class ActionModuleMetaRecharger
     {
         private ActionModuleMetaRecharger module;
         private float lastUpdateTime;
-        private FastTags tags;
         public MetaRechargerData(ItemInventoryData _invData, int _indexOfAction, ActionModuleMetaRecharger _rechargeModule)
         {
             module = _rechargeModule;
             lastUpdateTime = Time.time;
-            tags = _invData.item.ItemTags | MultiActionUtils.ActionIndexToTag(_indexOfAction);
             if (!_invData.itemValue.HasMetadata(_rechargeModule.rechargeData, TypedMetadataValue.TypeTag.Float))
             {
                 _invData.itemValue.SetMetadata(_rechargeModule.rechargeData, 0, TypedMetadataValue.TypeTag.Float);
@@ -41,22 +39,22 @@ public class ActionModuleMetaRecharger
         {
             ItemValue itemValue = invData.itemValue;
             float curTime = Time.time;
-            float updateInterval = EffectManager.GetValue(CustomEnums.RechargeDataInterval, itemValue, 0, invData.holdingEntity, null, tags);
+            float updateInterval = EffectManager.GetValue(CustomEnums.RechargeDataInterval, itemValue, 0, invData.holdingEntity);
             if (curTime - lastUpdateTime > updateInterval)
             {
                 lastUpdateTime = curTime;
                 float cur = (float)itemValue.GetMetadata(module.rechargeData);
-                float max = EffectManager.GetValue(CustomEnums.RechargeDataMaximum, itemValue, 0, invData.holdingEntity, null, tags);
+                float max = EffectManager.GetValue(CustomEnums.RechargeDataMaximum, itemValue, 0, invData.holdingEntity);
                 if (cur > max)
                 {
                     //the result updated here won't exceed max so it's set somewhere else, decrease slowly
-                    float dec = EffectManager.GetValue(CustomEnums.RechargeDataDecrease, itemValue, float.MaxValue, invData.holdingEntity, null, tags);
+                    float dec = EffectManager.GetValue(CustomEnums.RechargeDataDecrease, itemValue, float.MaxValue, invData.holdingEntity);
                     cur = Mathf.Max(cur - dec, max);
                 }
                 else if (cur < max)
                 {
                     //add up and clamp to max
-                    float add = EffectManager.GetValue(CustomEnums.RechargeDataValue, itemValue, 0, invData.holdingEntity, null, tags);
+                    float add = EffectManager.GetValue(CustomEnums.RechargeDataValue, itemValue, 0, invData.holdingEntity);
                     cur = Mathf.Min(cur + add, max);
                 }
                 itemValue.SetMetadata(module.rechargeData, cur, TypedMetadataValue.TypeTag.Float);

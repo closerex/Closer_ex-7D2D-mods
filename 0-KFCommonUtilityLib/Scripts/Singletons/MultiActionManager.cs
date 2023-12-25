@@ -178,6 +178,29 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             }
             this.toggleSound = toggleSound;
         }
+
+        public unsafe int SetupRadial(XUiC_Radial _xuiRadialWindow, EntityPlayerLocal _epl)
+        {
+            _xuiRadialWindow.ResetRadialEntries();
+            int preSelectedIndex = -1;
+            string[] magazineItemNames = ((ItemActionAttack)_epl.inventory.holdingItem.Actions[CurMetaIndex]).MagazineItemNames;
+            for (int i = 0; i < magazineItemNames.Length; i++)
+            {
+                ItemClass ammoClass = ItemClass.GetItemClass(magazineItemNames[i], false);
+                if (ammoClass != null && (!_epl.isHeadUnderwater || ammoClass.UsableUnderwater))
+                {
+                    int ammoCount = _xuiRadialWindow.xui.PlayerInventory.GetItemCount(ammoClass.Id);
+                    bool isCurrentUsing = _epl.inventory.holdingItemItemValue.SelectedAmmoTypeIndex == i;
+                    _xuiRadialWindow.CreateRadialEntry(i, ammoClass.GetIconName(), (ammoCount > 0) ? "ItemIconAtlas" : "ItemIconAtlasGreyscale", ammoCount.ToString(), ammoClass.GetLocalizedItemName(), isCurrentUsing);
+                    if (isCurrentUsing)
+                    {
+                        preSelectedIndex = i;
+                    }
+                }
+            }
+
+            return preSelectedIndex;
+        }
     }
 
     public static class MultiActionManager
@@ -240,61 +263,10 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             return mapping.CurMetaIndex;
         }
 
-        public static void SetupRadial(XUiC_Radial _xuiRadialWindow, EntityPlayerLocal _epl)
+        public static MultiActionMapping GetMappingForEntity(int entityID)
         {
-            _xuiRadialWindow.ResetRadialEntries();
-            string[] magazineItemNames = _epl.inventory.GetHoldingGun().MagazineItemNames;
-            int preSelectedIndex = -1;
-            for (int i = 0; i < magazineItemNames.Length; i++)
-            {
-                ItemClass itemClass = ItemClass.GetItemClass(magazineItemNames[i], false);
-                if (itemClass != null && (!_epl.isHeadUnderwater || itemClass.UsableUnderwater))
-                {
-                    int itemCount = _xuiRadialWindow.xui.PlayerInventory.GetItemCount(itemClass.Id);
-                    bool flag = (int)_epl.inventory.holdingItemItemValue.SelectedAmmoTypeIndex == i;
-                    _xuiRadialWindow.CreateRadialEntry(i, itemClass.GetIconName(), (itemCount > 0) ? "ItemIconAtlas" : "ItemIconAtlasGreyscale", itemCount.ToString(), itemClass.GetLocalizedItemName(), flag);
-                    if (flag)
-                    {
-                        preSelectedIndex = i;
-                    }
-                }
-            }
-            _xuiRadialWindow.SetCommonData(UIUtils.ButtonIcon.FaceButtonEast, new XUiC_Radial.CommandHandlerDelegate(handleRadialCommand), new RadialContextMultiAction(_epl.inventory.holdingItemData), preSelectedIndex, false, new XUiC_Radial.RadialStillValidDelegate(radialValidTest));
-        }
-
-        private static bool radialValidTest(XUiC_Radial _sender, XUiC_Radial.RadialContextAbs _context)
-        {
-            RadialContextMultiAction radialContextItem = _context as RadialContextMultiAction;
-            if (radialContextItem == null)
-            {
-                return false;
-            }
-            EntityPlayerLocal entityPlayer = _sender.xui.playerUI.entityPlayer;
-            return radialContextItem.invData == entityPlayer.inventory.holdingItemData;
-        }
-
-        private static void handleRadialCommand(XUiC_Radial _sender, int _commandIndex, XUiC_Radial.RadialContextAbs _context)
-        {
-            RadialContextMultiAction radialContextItem = _context as RadialContextMultiAction;
-            if (radialContextItem == null)
-            {
-                return;
-            }
-            EntityPlayerLocal entityPlayer = _sender.xui.playerUI.entityPlayer;
-            if (radialContextItem.invData == entityPlayer.inventory.holdingItemData)
-            {
-                radialContextItem.RangedItemAction.SwapSelectedAmmo(entityPlayer, _commandIndex);
-            }
-        }
-
-        public class RadialContextMultiAction : XUiC_Radial.RadialContextAbs
-        {
-            public ItemInventoryData invData;
-
-            public RadialContextMultiAction(ItemInventoryData invData)
-            {
-                this.invData = invData;
-            }
+            dict_mappings.TryGetValue(entityID, out var mapping);
+            return mapping;
         }
     }
 }

@@ -77,7 +77,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                                  Mathf.Lerp(1f, MultiActionProjectileRewrites.GetProjectileDamageEntity(itemValueProjectile, firingEntity, 0), strainPerc),
                                  1f,
                                  1f,
-                                 MultiActionReversePatches.ProjectileGetValue(PassiveEffects.CriticalChance, itemValueProjectile, itemProjectile.CritChance.Value, firingEntity, null, itemProjectile.ItemTags, true, true, true, true, 1, true, false),
+                                 MultiActionReversePatches.ProjectileGetValue(PassiveEffects.CriticalChance, itemValueProjectile, itemProjectile.CritChance.Value, firingEntity, null, itemProjectile.ItemTags, true, false),
                                  ItemAction.GetDismemberChance(actionData, Voxel.voxelRayHitInfo),
                                  itemProjectile.MadeOfMaterial.SurfaceCategory,
                                  itemActionProjectile.GetDamageMultiplier(),
@@ -122,7 +122,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                         GameRandom gameRandom = world.GetGameRandom();
                         if (GameUtils.IsBlockOrTerrain(Voxel.voxelRayHitInfo.tag))
                         {
-                            if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, itemValueProjectile, 0.5f, firingEntity, null, itemProjectile.ItemTags | FastTags.Parse(Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory), true, true, true, true, 1, true, false))
+                            if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, itemValueProjectile, 0.5f, firingEntity, null, itemProjectile.ItemTags | FastTags.Parse(Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory), true, false))
                             {
                                 ProjectileID = ProjectileManager.AddProjectileItem(transform, -1, Voxel.voxelRayHitInfo.hit.pos, dir.normalized, itemValueProjectile.type);
                             }
@@ -132,7 +132,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                                 UnityEngine.Object.Destroy(gameObject);
                             }
                         }
-                        else if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, itemValueProjectile, 0.5f, firingEntity, null, itemProjectile.ItemTags, true, true, true, true, 1, true, false))
+                        else if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, itemValueProjectile, 0.5f, firingEntity, null, itemProjectile.ItemTags, true, false))
                         {
                             ProjectileID = ProjectileManager.AddProjectileItem(transform, -1, Voxel.voxelRayHitInfo.hit.pos, dir.normalized, itemValueProjectile.type);
                             Utils.SetLayerRecursively(ProjectileManager.GetProjectile(ProjectileID).gameObject, 14, null);
@@ -295,7 +295,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 if (attackerEntity)
                 {
                     string blockFaceDamageCategory = materialForSide.DamageCategory ?? string.Empty;
-                    modifiedBlockDamage = (int)MultiActionReversePatches.ProjectileGetValue(PassiveEffects.DamageModifier, projectileValue, modifiedBlockDamage, attackerEntity, null, FastTags.Parse(blockFaceDamageCategory) | _attackDetails.WeaponTypeTag | hitInfo.fmcHit.blockValue.Block.Tags, true, true, true, true, 1, true, false);
+                    modifiedBlockDamage = (int)MultiActionReversePatches.ProjectileGetValue(PassiveEffects.DamageModifier, projectileValue, modifiedBlockDamage, attackerEntity, null, FastTags.Parse(blockFaceDamageCategory) | _attackDetails.WeaponTypeTag | hitInfo.fmcHit.blockValue.Block.Tags, true, false);
                 }
                 modifiedBlockDamage = ItemActionAttack.DegradationModifier(modifiedBlockDamage, _weaponCondition);
                 modifiedBlockDamage = isProtectionApplied ? 0f : Utils.FastMax(1f, modifiedBlockDamage);
@@ -377,8 +377,8 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                     {
                         equipmentTags = FastTags.Parse(damageSourceEntity.GetEntityDamageEquipmentSlotGroup(hitEntityAlive).ToStringCached());
                     }
-                    finalEntityDamage = (int)MultiActionReversePatches.ProjectileGetValue(PassiveEffects.DamageModifier, projectileValue, finalEntityDamage, attackerEntity, null, equipmentTags | _attackDetails.WeaponTypeTag | hitEntityAlive.EntityClass.Tags, true, true, true, true, 1, true, false);
-                    finalEntityDamage = (int)MultiActionReversePatches.ProjectileGetValue(PassiveEffects.InternalDamageModifier, projectileValue, finalEntityDamage, hitEntityAlive, null, equipmentTags | projectileValue.ItemClass.ItemTags, true, true, true, true, 1, true, false);
+                    finalEntityDamage = (int)MultiActionReversePatches.ProjectileGetValue(PassiveEffects.DamageModifier, projectileValue, finalEntityDamage, attackerEntity, null, equipmentTags | _attackDetails.WeaponTypeTag | hitEntityAlive.EntityClass.Tags, true, false);
+                    finalEntityDamage = (int)MultiActionReversePatches.ProjectileGetValue(PassiveEffects.InternalDamageModifier, projectileValue, finalEntityDamage, hitEntityAlive, null, equipmentTags | projectileValue.ItemClass.ItemTags, true, false);
                 }
                 if (!hitEntityAlive || hitEntityAlive.Health > 0)
                 {
@@ -481,7 +481,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                                 BuffClass buff = BuffManager.GetBuff(_buffActions[i]);
                                 if (buff != null)
                                 {
-                                    float bufProcChance = MultiActionReversePatches.ProjectileGetValue(PassiveEffects.BuffProcChance, null, 1f, attackerEntity, null, FastTags.Parse(buff.Name), true, true, true, true, 1, true, false);
+                                    float bufProcChance = MultiActionReversePatches.ProjectileGetValue(PassiveEffects.BuffProcChance, null, 1f, attackerEntity, null, FastTags.Parse(buff.Name), true, false);
                                     if (hitEntityAlive.rand.RandomFloat <= bufProcChance)
                                     {
                                         hitEntityAlive.Buffs.AddBuff(_buffActions[i], attackerEntity.entityId, true, false, false, -1f);
@@ -518,7 +518,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                     {
                         if ((_flags & 2) > 0)
                         {
-                            float trapXP = MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ElectricalTrapXP, attackerPlayer.inventory.holdingItemItemValue, 0f, attackerPlayer, null, default, true, true, true, true, 1, true, false);
+                            float trapXP = MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ElectricalTrapXP, attackerPlayer.inventory.holdingItemItemValue, 0f, attackerPlayer, null, default, true, false);
                             if (trapXP > 0f)
                             {
                                 attackerPlayer.AddKillXP(hitEntityAlive, trapXP);
@@ -647,7 +647,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             }
 
             tmpTag |= _blockValue.Block.Tags;
-            return MultiActionReversePatches.ProjectileGetValue(PassiveEffects.BlockDamage, _itemValue, 0, _holdingEntity, null, tmpTag);
+            return MultiActionReversePatches.ProjectileGetValue(PassiveEffects.BlockDamage, _itemValue, 0, _holdingEntity, null, tmpTag, true, false);
         }
 
         public static float GetProjectileDamageEntity(ItemValue _itemValue, EntityAlive _holdingEntity = null, int actionIndex = 0)
@@ -660,7 +660,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 tmpTag |= _holdingEntity.CurrentStanceTag | _holdingEntity.CurrentMovementTag;
             }
 
-            return MultiActionReversePatches.ProjectileGetValue(PassiveEffects.EntityDamage, _itemValue, 0, _holdingEntity, null, tmpTag);
+            return MultiActionReversePatches.ProjectileGetValue(PassiveEffects.EntityDamage, _itemValue, 0, _holdingEntity, null, tmpTag, true, false);
         }
 
         public static void ProjectileValueModifyValue(this ItemValue _projectileItemValue, EntityAlive _entity, ItemValue _originalItemValue, PassiveEffects _passiveEffect, ref float _originalValue, ref float _perc_value, FastTags _tags, bool _useMods = true, bool _useDurability = false)
@@ -696,7 +696,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                         _entity.MinEventContext.Seed = MinEventParams.CachedEventParam.Seed;
                     }
 
-                    float num = _originalValue;
+                    float prevOriginal = _originalValue;
                     launcherClass.Effects.ModifyValue(_entity, _passiveEffect, ref _originalValue, ref _perc_value, _projectileItemValue.Quality, _tags);
                     if (_useDurability)
                     {
@@ -706,24 +706,24 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                             case PassiveEffects.PhysicalDamageResist:
                                 if (percentUsesLeft < 0.5f)
                                 {
-                                    float num3 = _originalValue - num;
-                                    _originalValue = num + num3 * percentUsesLeft * 2f;
+                                    float diff = _originalValue - prevOriginal;
+                                    _originalValue = prevOriginal + diff * percentUsesLeft * 2f;
                                 }
 
                                 break;
                             case PassiveEffects.ElementalDamageResist:
                                 if (percentUsesLeft < 0.5f)
                                 {
-                                    float num4 = _originalValue - num;
-                                    _originalValue = num + num4 * percentUsesLeft * 2f;
+                                    float diff = _originalValue - prevOriginal;
+                                    _originalValue = prevOriginal + diff * percentUsesLeft * 2f;
                                 }
 
                                 break;
                             case PassiveEffects.BuffResistance:
                                 if (percentUsesLeft < 0.5f)
                                 {
-                                    float num2 = _originalValue - num;
-                                    _originalValue = num + num2 * percentUsesLeft * 2f;
+                                    float diff = _originalValue - prevOriginal;
+                                    _originalValue = prevOriginal + diff * percentUsesLeft * 2f;
                                 }
 
                                 break;
