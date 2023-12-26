@@ -84,6 +84,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             EntityAlive entityAlive = (EntityAlive)GameManager.Instance.World.GetEntity(entityId);
             if (entityAlive != null && entityAlive.inventory.holdingItem.Actions[actionIndex] is ItemActionRanged actionRanged)
             {
+                entityAlive.MinEventContext.ItemActionData = entityAlive.inventory.holdingItemData.actionData[actionIndex];
                 actionRanged.ReloadGun(entityAlive.inventory.holdingItemData.actionData[actionIndex]);
             }
         }

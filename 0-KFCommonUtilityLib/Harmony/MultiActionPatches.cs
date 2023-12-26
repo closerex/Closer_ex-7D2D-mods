@@ -441,6 +441,32 @@ namespace KFCommonUtilityLib.Harmony
             return codes;
         }
 
+        [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.SwapAmmoType))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_SwapAmmoType_ItemActionLauncher(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            FieldInfo fld_actiondata = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.actionData));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                var code = codes[i];
+                if (code.LoadsField(fld_actiondata))
+                {
+                    codes.RemoveAt(i + 1);
+                    codes.InsertRange(i + 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(ItemAction), nameof(ItemAction.ActionIndex))
+                    });
+                    break;
+                }
+            }
+
+            return codes;
+        }
+
         [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SwapSelectedAmmo))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_SwapSelectedAmmo_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
@@ -631,6 +657,7 @@ namespace KFCommonUtilityLib.Harmony
             return codes;
         }
 
+        //only current mode should execute OnHUD
         [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.OnHUD))]
         [HarmonyPrefix]
         private static bool Prefix_OnHUD_EntityPlayerLocal(EntityPlayerLocal __instance, out ItemActionData __state)
@@ -675,6 +702,37 @@ namespace KFCommonUtilityLib.Harmony
         //ItemAction.GetDismemberChance already set
         //ItemActionDynamic.GetExecuteActionTarget not needed
 
+        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ItemActionEffects))]
+        [HarmonyPrefix]
+        private static bool Prefix_ItemActionEffects_ItemActionLauncher(ItemActionData _actionData, out ItemActionData __state)
+        {
+            __state = _actionData.invData.holdingEntity.MinEventContext.ItemActionData;
+            _actionData.invData.holdingEntity.MinEventContext.ItemActionData = _actionData;
+            return true;
+        }
+
+        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ItemActionEffects))]
+        [HarmonyPostfix]
+        private static void Postfix_ItemActionEffects_ItemActionLauncher(ItemActionData _actionData, ItemActionData __state)
+        {
+            _actionData.invData.holdingEntity.MinEventContext.ItemActionData = __state;
+        }
+
+        [HarmonyPatch(typeof(ItemActionLauncher), "ClampAmmoCount")]
+        [HarmonyPrefix]
+        private static bool Prefix_ClampAmmoCount_ItemActionLauncher(ItemActionLauncher.ItemActionDataLauncher actionData, out ItemActionData __state)
+        {
+            __state = actionData.invData.holdingEntity.MinEventContext.ItemActionData;
+            actionData.invData.holdingEntity.MinEventContext.ItemActionData = actionData;
+            return true;
+        }
+
+        [HarmonyPatch(typeof(ItemActionLauncher), "ClampAmmoCount")]
+        [HarmonyPostfix]
+        private static void Postfix_ClampAmmoCount_ItemActionLauncher(ItemActionLauncher.ItemActionDataLauncher actionData, ItemActionData __state)
+        {
+            actionData.invData.holdingEntity.MinEventContext.ItemActionData = __state;
+        }
         #endregion
 
         //KEEP
@@ -717,6 +775,14 @@ namespace KFCommonUtilityLib.Harmony
             }
 
             return codes;
+        }
+
+        [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.OnHoldingUpdate))]
+        [HarmonyPostfix]
+        private static void Postfix_OnHoldingUpdate_ItemClass(ItemInventoryData _data)
+        {
+            if(_data.holdingEntity != null && _data.holdingEntity.inventory != null)
+                _data.holdingEntity.MinEventContext.ItemActionData = _data.holdingEntity.inventory.holdingItemData.actionData[MultiActionManager.GetActionIndexForEntity(_data.holdingEntity.entityId)];
         }
 
         #endregion

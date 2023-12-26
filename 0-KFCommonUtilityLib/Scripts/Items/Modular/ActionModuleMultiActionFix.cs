@@ -17,46 +17,74 @@ public class ActionModuleMultiActionFix
     [MethodTargetPrefix(nameof(ItemActionRanged.StartHolding))]
     private bool Prefix_StartHolding(ItemActionData _data)
     {
-        lastActionData = _data.invData.holdingEntity.MinEventContext.ItemActionData;
-        _data.invData.holdingEntity.MinEventContext.ItemActionData = _data;
+        SetAndSaveItemActionData(_data);
         return true;
     }
 
     [MethodTargetPostfix(nameof(ItemActionRanged.StartHolding))]
     private void Postfix_StartHolding(ItemActionData _data)
     {
-        _data.invData.holdingEntity.MinEventContext.ItemActionData = null;
-        lastActionData = null;
+        RestoreItemActionData(_data);
     }
 
     [MethodTargetPrefix(nameof(ItemActionRanged.StopHolding))]
     private bool Prefix_StopHolding(ItemActionData _data)
     {
-        lastActionData = _data.invData.holdingEntity.MinEventContext.ItemActionData;
-        _data.invData.holdingEntity.MinEventContext.ItemActionData = _data;
+        SetAndSaveItemActionData(_data);
         return true;
     }
 
     [MethodTargetPostfix(nameof(ItemActionRanged.StopHolding))]
     private void Postfix_StopHolding(ItemActionData _data)
     {
-        _data.invData.holdingEntity.MinEventContext.ItemActionData = null;
-        lastActionData = null;
+        RestoreItemActionData(_data);
+    }
+
+    [MethodTargetPrefix(nameof(ItemActionRanged.ItemActionEffects), typeof(ItemActionLauncher))]
+    private bool Prefix_ItemActionEffects(ItemActionData _actionData)
+    {
+        SetAndSaveItemActionData(_actionData);
+        return true;
+    }
+
+    [MethodTargetPostfix(nameof(ItemActionRanged.ItemActionEffects), typeof(ItemActionLauncher))]
+    private void Postfix_ItemActionEffects(ItemActionData _actionData)
+    {
+        RestoreItemActionData(_actionData);
+    }
+
+    [MethodTargetPrefix(nameof(ItemActionRanged.CancelAction))]
+    private bool Prefix_CancelAction(ItemActionData _actionData)
+    {
+        SetAndSaveItemActionData(_actionData);
+        return true;
+    }
+
+    [MethodTargetPostfix(nameof(ItemActionRanged.CancelAction))]
+    private void Postfix_CancelAction(ItemActionData _actionData)
+    {
+        RestoreItemActionData(_actionData);
+    }
+
+    [MethodTargetPrefix(nameof(ItemActionRanged.CancelReload))]
+    private bool Prefix_CancelReload(ItemActionData _data)
+    {
+        SetAndSaveItemActionData(_data);
+        return true;
+    }
+
+    [MethodTargetPostfix(nameof(ItemActionRanged.CancelReload))]
+    private void Postfix_CancelReload(ItemActionData _data)
+    {
+        RestoreItemActionData(_data);
     }
 
     [MethodTargetPrefix(nameof(ItemActionRanged.OnHUD))]
     private bool Prefix_OnHUD(ItemActionData _actionData)
     {
-        lastActionData = _actionData.invData.holdingEntity.MinEventContext.ItemActionData;
-        _actionData.invData.holdingEntity.MinEventContext.ItemActionData = _actionData;
+        if (_actionData.indexInEntityOfAction != _actionData.invData.holdingEntity.MinEventContext.ItemActionData.indexInEntityOfAction)
+            return false;
         return true;
-    }
-
-    [MethodTargetPostfix(nameof(ItemActionRanged.OnHUD))]
-    private void Postfix_OnHUD(ItemActionData _actionData)
-    {
-        _actionData.invData.holdingEntity.MinEventContext.ItemActionData = lastActionData;
-        lastActionData = null;
     }
 
     [MethodTargetPrefix(nameof(ItemActionRanged.ExecuteAction))]
@@ -102,6 +130,18 @@ public class ActionModuleMultiActionFix
         {
             __customData.lastAccuracy = ((ItemActionRanged.ItemActionDataRanged)_actionData).lastAccuracy;
         }
+    }
+
+    private static void SetAndSaveItemActionData(ItemActionData _actionData)
+    {
+        lastActionData = _actionData.invData.holdingEntity.MinEventContext.ItemActionData;
+        _actionData.invData.holdingEntity.MinEventContext.ItemActionData = _actionData;
+    }
+
+    private static void RestoreItemActionData(ItemActionData _actionData)
+    {
+        _actionData.invData.holdingEntity.MinEventContext.ItemActionData = lastActionData;
+        lastActionData = null;
     }
 
     public class MultiActionData

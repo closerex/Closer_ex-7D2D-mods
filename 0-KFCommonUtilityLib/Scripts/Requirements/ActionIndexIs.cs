@@ -10,7 +10,7 @@ public class ActionIndexIs : RequirementBase
     protected int index;
     public override bool IsValid(MinEventParams _params)
     {
-        return _params.ItemActionData?.indexInEntityOfAction == index;
+        return _params.ItemActionData?.indexInEntityOfAction == index || index == 0;
     }
 
     public override bool ParamsValid(MinEventParams _params)
@@ -22,7 +22,7 @@ public class ActionIndexIs : RequirementBase
     {
         if (_attribute.Name == "index")
         {
-            index = int.Parse(_attribute.Value);
+            index = Math.Max(int.Parse(_attribute.Value), 0);
             return true;
         }
         return false;

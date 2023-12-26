@@ -64,6 +64,7 @@ public class ActionModuleAlternative
         EntityPlayerLocal entityPlayer = _sender.xui.playerUI.entityPlayer;
         if (radialContextItem.mapping == MultiActionManager.GetMappingForEntity(entityPlayer.entityId) && radialContextItem.mapping.CurMetaIndex == radialContextItem.MetaActionIndex)
         {
+            entityPlayer.MinEventContext.ItemActionData = entityPlayer.inventory.holdingItemData.actionData[radialContextItem.MetaActionIndex];
             ((ItemActionRanged)entityPlayer.inventory.holdingItem.Actions[radialContextItem.MetaActionIndex]).SwapSelectedAmmo(entityPlayer, _commandIndex);
         }
     }
