@@ -89,24 +89,16 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             }
         }
 
-        public static void UpdateExecutingActionIndex(int index, ItemInventoryData invData, PlayerActionsLocal playerActions)
-        {
-            if (playerActions == null || !(invData.holdingEntity is EntityPlayerLocal player))
-            {
-                return;
-            }
-
-            player.MinEventContext.ItemActionData = invData.actionData[index];
-        }
-
         public static void CopyLauncherValueToProjectile(ItemValue launcherValue, ItemValue projectileValue, int index)
         {
             projectileValue.Meta = launcherValue.type;
             projectileValue.SelectedAmmoTypeIndex = (byte)index;
             projectileValue.UseTimes = launcherValue.UseTimes;
             projectileValue.Quality = launcherValue.Quality;
+            projectileValue.Modifications = new ItemValue[launcherValue.Modifications.Length];
             Array.Copy(launcherValue.Modifications, projectileValue.Modifications, launcherValue.Modifications.Length);
-            Array.Copy(launcherValue.CosmeticMods, projectileValue.CosmeticMods, launcherValue.Modifications.Length);
+            projectileValue.CosmeticMods = new ItemValue[launcherValue.CosmeticMods.Length];
+            Array.Copy(launcherValue.CosmeticMods, projectileValue.CosmeticMods, launcherValue.CosmeticMods.Length);
         }
 
         public static void SetMinEventParamsActionData(EntityAlive entity, int actionIndex)

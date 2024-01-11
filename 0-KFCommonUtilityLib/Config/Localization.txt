@@ -1,0 +1,4 @@
+Key,File,Type,UsedInMainMenu,english,schinese
+inpGrpMultiActionName,UI,Controls Dialog,x,Multi Action,武器模式
+inpActToggleWeaponModeName,UI,Controls Dialog,x,Toggle Weapon Mode,切换武器模式
+inpActToggleWeaponModeDesc,UI,Controls Dialog,x,"For weapons with multiple modes, cycle between them with this key",使用有多种模式的武器时，在不同模式间循环切换

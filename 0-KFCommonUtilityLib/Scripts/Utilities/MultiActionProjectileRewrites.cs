@@ -73,8 +73,8 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                     MultiActionProjectileRewrites.ProjectileHit(Voxel.voxelRayHitInfo,
                                  ProjectileOwnerID,
                                  EnumDamageTypes.Piercing,
-                                 Mathf.Lerp(1f, MultiActionProjectileRewrites.GetProjectileDamageBlock(itemValueProjectile, ItemActionAttack.GetBlockHit(world, Voxel.voxelRayHitInfo), firingEntity, 0), strainPerc),
-                                 Mathf.Lerp(1f, MultiActionProjectileRewrites.GetProjectileDamageEntity(itemValueProjectile, firingEntity, 0), strainPerc),
+                                 Mathf.Lerp(1f, MultiActionProjectileRewrites.GetProjectileDamageBlock(itemValueProjectile, ItemActionAttack.GetBlockHit(world, Voxel.voxelRayHitInfo), firingEntity, actionData.indexInEntityOfAction), strainPerc),
+                                 Mathf.Lerp(1f, MultiActionProjectileRewrites.GetProjectileDamageEntity(itemValueProjectile, firingEntity, actionData.indexInEntityOfAction), strainPerc),
                                  1f,
                                  1f,
                                  MultiActionReversePatches.ProjectileGetValue(PassiveEffects.CriticalChance, itemValueProjectile, itemProjectile.CritChance.Value, firingEntity, null, itemProjectile.ItemTags, true, false),
@@ -388,6 +388,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 {
                     finalEntityDamage = (int)(finalEntityDamage * calculateHarvestToolDamageBonus(_toolBonuses, EntityClass.list[hitEntity.entityClass].itemsToDrop));
                 }
+                //Log.Out("Final entity damage: " + finalEntityDamage);
                 bool isAlreadyDead = hitEntity.IsDead();
                 int deathHealth = (hitEntityAlive != null) ? hitEntityAlive.DeathHealth : 0;
                 if (_attackMode != ItemActionAttack.EnumAttackMode.Simulate)
@@ -647,7 +648,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             }
 
             tmpTag |= _blockValue.Block.Tags;
-            return MultiActionReversePatches.ProjectileGetValue(PassiveEffects.BlockDamage, _itemValue, 0, _holdingEntity, null, tmpTag, true, false);
+            return MultiActionReversePatches.ProjectileGetValue(PassiveEffects.BlockDamage, _itemValue, 0, _holdingEntity, null, tmpTag, true, false) * GetProjectileBlockDamagePerc(_itemValue, _holdingEntity);
         }
 
         public static float GetProjectileDamageEntity(ItemValue _itemValue, EntityAlive _holdingEntity = null, int actionIndex = 0)
@@ -660,7 +661,21 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 tmpTag |= _holdingEntity.CurrentStanceTag | _holdingEntity.CurrentMovementTag;
             }
 
-            return MultiActionReversePatches.ProjectileGetValue(PassiveEffects.EntityDamage, _itemValue, 0, _holdingEntity, null, tmpTag, true, false);
+            return MultiActionReversePatches.ProjectileGetValue(PassiveEffects.EntityDamage, _itemValue, 0, _holdingEntity, null, tmpTag, true, false) * GetProjectileEntityDamagePerc(_itemValue, _holdingEntity);
+        }
+
+        public static float GetProjectileBlockDamagePerc(ItemValue _itemValue, EntityAlive _holdingEntity)
+        {
+            float value = MultiActionReversePatches.ProjectileGetValue(CustomEnums.ProjectileImpactDamagePercentBlock, _itemValue, 1, _holdingEntity, null);
+            //Log.Out("Block damage perc: " +  value);
+            return value;
+        }
+
+        public static float GetProjectileEntityDamagePerc(ItemValue _itemValue, EntityAlive _holdingEntity)
+        {
+            float value = MultiActionReversePatches.ProjectileGetValue(CustomEnums.ProjectileImpactDamagePercentEntity, _itemValue, 1, _holdingEntity, null);
+            //Log.Out("Entity damage perc: " +  value);
+            return value;
         }
 
         public static void ProjectileValueModifyValue(this ItemValue _projectileItemValue, EntityAlive _entity, ItemValue _originalItemValue, PassiveEffects _passiveEffect, ref float _originalValue, ref float _perc_value, FastTags _tags, bool _useMods = true, bool _useDurability = false)

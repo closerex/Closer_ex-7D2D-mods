@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿#if NotEditor
+using KFCommonUtilityLib.Scripts.Singletons;
+#endif
+using UnityEngine;
 
 public class AnimationCustomReloadState : StateMachineBehaviour
 {
@@ -8,11 +11,17 @@ public class AnimationCustomReloadState : StateMachineBehaviour
     {
         animator.speed = 1f;
         animator.SetBool("Reload", false);
-        int actionIndex = animator.GetInteger(AvatarController.itemActionIndexHash);
-        if (actionData == null || player == null || eventBridge == null)
+        if (player == null)
         {
             player = animator.GetComponentInParent<EntityPlayerLocal>();
-            actionData = player.inventory.holdingItemData.actionData[actionIndex] as ItemActionRanged.ItemActionDataRanged;
+        }
+        int actionIndex = MultiActionManager.GetActionIndexForEntityID(player.entityId);
+#if DEBUG
+        Log.Out($"start reload {actionIndex}");
+#endif
+        actionData = player.inventory.holdingItemData.actionData[actionIndex] as ItemActionRanged.ItemActionDataRanged;
+        if (eventBridge == null)
+        {
             eventBridge = animator.GetComponent<AnimationReloadEvents>();
         }
 
@@ -65,4 +74,4 @@ public class AnimationCustomReloadState : StateMachineBehaviour
     private EntityPlayerLocal player;
     private AnimationReloadEvents eventBridge;
 #endif
-}
+    }

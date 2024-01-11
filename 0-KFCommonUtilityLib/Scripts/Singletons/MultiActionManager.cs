@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace KFCommonUtilityLib.Scripts.Singletons
 {
@@ -62,7 +63,8 @@ namespace KFCommonUtilityLib.Scripts.Singletons
         public const string STR_MULTI_ACTION_INDEX = "MultiActionIndex";
         public readonly MultiActionIndice indices;
         private int curIndex;
-        public ItemValue itemValue;
+        private int lastDisplayMode = -1;
+        public EntityAlive entity;
         public string toggleSound;
 
         /// <summary>
@@ -82,8 +84,9 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                         value = 0;
                     //save previous meta and ammo index to metadata
                     int curMetaIndex = CurMetaIndex;
+                    ItemValue itemValue = entity.inventory.holdingItemItemValue;
                     itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[curMetaIndex], itemValue.Meta, TypedMetadataValue.TypeTag.Integer);
-                    itemValue.SetMetadata(MultiActionUtils.ActionSelectedAmmoNames[curMetaIndex], itemValue.SelectedAmmoTypeIndex, TypedMetadataValue.TypeTag.Integer);
+                    itemValue.SetMetadata(MultiActionUtils.ActionSelectedAmmoNames[curMetaIndex], (int)itemValue.SelectedAmmoTypeIndex, TypedMetadataValue.TypeTag.Integer);
 
                     //load current meta and ammo index from metadata
                     curIndex = value;
@@ -107,7 +110,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                     }
                     else
                     {
-                        itemValue.SelectedAmmoTypeIndex = (byte)res;
+                        itemValue.SelectedAmmoTypeIndex = (byte)(int)res;
                     }
                 }
             }
@@ -143,10 +146,11 @@ namespace KFCommonUtilityLib.Scripts.Singletons
         //we set the curIndex field instead of the property, according to following situations:
         //1. it's a newly created ItemValue, meta and ammo index belongs to action0, no saving is needed;
         //2. it's an existing ItemValue, meta and ammo index is set to its action index, still saving is unnecessary.
-        public MultiActionMapping(MultiActionIndice indices, ItemValue itemValue, string toggleSound)
+        public MultiActionMapping(MultiActionIndice indices, EntityAlive entity, string toggleSound)
         {
             this.indices = indices;
-            this.itemValue = itemValue;
+            this.entity = entity;
+            ItemValue itemValue = entity.inventory.holdingItemItemValue;
             object res = itemValue.GetMetadata(STR_MULTI_ACTION_INDEX);
             if (res is false || res is null)
             {
@@ -165,12 +169,12 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                     int metaIndex = indices.metaIndice[i];
                     if (metaIndex < 0)
                         break;
-                    if (!itemValue.HasMetadata(MultiActionUtils.ActionMetaNames[metaIndex], TypedMetadataValue.TypeTag.Integer))
+                    if (!itemValue.HasMetadata(MultiActionUtils.ActionMetaNames[metaIndex]))
                     {
                         itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[metaIndex], 0, TypedMetadataValue.TypeTag.Integer);
                     }
 
-                    if (!itemValue.HasMetadata(MultiActionUtils.ActionSelectedAmmoNames[metaIndex], TypedMetadataValue.TypeTag.Integer))
+                    if (!itemValue.HasMetadata(MultiActionUtils.ActionSelectedAmmoNames[metaIndex]))
                     {
                         itemValue.SetMetadata(MultiActionUtils.ActionSelectedAmmoNames[metaIndex], 0, TypedMetadataValue.TypeTag.Integer);
                     }
@@ -179,11 +183,28 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             this.toggleSound = toggleSound;
         }
 
+        public int GetModeForAction(int actionIndex)
+        {
+            int mode = -1;
+            for (int i = 0; i < MultiActionIndice.MAX_ACTION_COUNT; i++)
+            {
+                unsafe
+                {
+                    if (indices.indices[i] == actionIndex)
+                    {
+                        mode = i;
+                        break;
+                    }
+                }
+            }
+            return mode;
+        }
+
         public unsafe int SetupRadial(XUiC_Radial _xuiRadialWindow, EntityPlayerLocal _epl)
         {
             _xuiRadialWindow.ResetRadialEntries();
             int preSelectedIndex = -1;
-            string[] magazineItemNames = ((ItemActionAttack)_epl.inventory.holdingItem.Actions[CurMetaIndex]).MagazineItemNames;
+            string[] magazineItemNames = ((ItemActionAttack)_epl.inventory.holdingItem.Actions[CurActionIndex]).MagazineItemNames;
             for (int i = 0; i < magazineItemNames.Length; i++)
             {
                 ItemClass ammoClass = ItemClass.GetItemClass(magazineItemNames[i], false);
@@ -201,6 +222,19 @@ namespace KFCommonUtilityLib.Scripts.Singletons
 
             return preSelectedIndex;
         }
+
+        public bool CheckDisplayMode()
+        {
+            if (lastDisplayMode == CurMode)
+            {
+                return false;
+            }
+            else
+            {
+                lastDisplayMode = CurMode;
+                return true;
+            }
+        }
     }
 
     public static class MultiActionManager
@@ -213,9 +247,8 @@ namespace KFCommonUtilityLib.Scripts.Singletons
         //if true, send local curIndex to other clients in updateSendClientPlayerPositionToServer.
         public static bool LocalModeChanged { get; set; }
 
-        public static void ToggleLocalActionIndex()
+        public static void ToggleLocalActionIndex(EntityPlayerLocal player)
         {
-            EntityPlayerLocal player = GameManager.Instance.World.GetPrimaryPlayer();
             if (player == null || !dict_mappings.TryGetValue(player.entityId, out MultiActionMapping mapping))
                 return;
 
@@ -229,6 +262,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
         public static void SetMappingForEntity(int entityID, MultiActionMapping mapping)
         {
             dict_mappings[entityID] = mapping;
+            //Log.Out($"current item index mapping: {((mapping == null || mapping.itemValue == null) ? "null" : mapping.itemValue.ItemClass.Name)}");
         }
 
         public static bool SetModeForEntity(int entityID, int mode)
@@ -249,7 +283,14 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             return mapping.CurMode;
         }
 
-        public static int GetActionIndexForEntity(int entityID)
+        public static int GetActionIndexForEntity(EntityAlive entity)
+        {
+            if(entity == null || !dict_mappings.TryGetValue(entity.entityId, out var mapping) || mapping == null)
+                return 0;
+            return mapping.CurActionIndex;
+        }
+
+        public static int GetActionIndexForEntityID(int entityID)
         {
             if (!dict_mappings.TryGetValue(entityID, out var mapping) || mapping == null)
                 return 0;
@@ -263,10 +304,66 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             return mapping.CurMetaIndex;
         }
 
+        public static int GetMetaIndexForActionIndex(int entityID, int actionIndex)
+        {
+            if (!dict_mappings.TryGetValue(entityID, out var mapping) || mapping == null)
+            {
+                return actionIndex;
+            }
+
+            int mode = mapping.GetModeForAction(actionIndex);
+            if (mode > 0)
+            {
+                unsafe
+                {
+                    return mapping.indices.metaIndice[mode];
+                }
+            }
+            return actionIndex;
+        }
+
         public static MultiActionMapping GetMappingForEntity(int entityID)
         {
             dict_mappings.TryGetValue(entityID, out var mapping);
             return mapping;
+        }
+
+        private static float inputCD = 0;
+        internal static void UpdateLocalInput(EntityPlayerLocal player, PlayerActionsLocal localActions, bool isUIOpen, float _dt)
+        {
+            if (inputCD > 0)
+            {
+                inputCD = Math.Max(0, inputCD - _dt);
+            }
+            if (isUIOpen || inputCD > 0 || player.emodel.IsRagdollActive || player.IsDead() || player.AttachedToEntity != null)
+            {
+                return;
+            }
+
+            if (PlayerActionToggleMode.Instance.Enabled && PlayerActionToggleMode.Instance.Toggle.WasPressed)
+            {
+                var mapping = GetMappingForEntity(player.entityId);
+
+                if (mapping == null)
+                {
+                    return;
+                }
+
+                if (player.inventory.IsHoldingItemActionRunning())
+                {
+                    return;
+                }
+
+                if (localActions.Reload.WasPressed || localActions.PermanentActions.Reload.WasPressed)
+                {
+                    inputCD = 0.1f;
+                    return;
+                }
+
+                player.inventory.Execute(mapping.CurActionIndex, true, localActions);
+                localActions.Primary.ClearInputState();
+                ToggleLocalActionIndex(player);
+            }
         }
     }
 }

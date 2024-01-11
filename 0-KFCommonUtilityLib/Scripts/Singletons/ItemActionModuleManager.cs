@@ -20,49 +20,51 @@ using TypeAttributes = Mono.Cecil.TypeAttributes;
 
 namespace KFCommonUtilityLib.Scripts.Singletons
 {
-    public static class AssemblyLocator
-    {
-        private static Dictionary<string, Assembly> assemblies;
+    //public static class AssemblyLocator
+    //{
+    //    private static Dictionary<string, Assembly> assemblies;
 
-        public static void Init()
-        {
-            assemblies = new Dictionary<string, Assembly>();
-            foreach (var assembly in ModManager.GetLoadedAssemblies())
-            {
-                assemblies.Add(assembly.FullName, assembly);
-            }
-            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(CurrentDomain_AssemblyLoad);
-            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
-        }
+    //    public static void Init()
+    //    {
+    //        assemblies = new Dictionary<string, Assembly>();
+    //        foreach (var assembly in ModManager.GetLoadedAssemblies())
+    //        {
+    //            assemblies.Add(assembly.FullName, assembly);
+    //        }
+    //        AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(CurrentDomain_AssemblyLoad);
+    //        AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+    //    }
 
-        private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
-        {
-            assemblies.TryGetValue(args.Name, out Assembly assembly);
-            if (assembly != null)
-                Log.Out($"RESOLVING ASSEMBLY {assembly.FullName}");
-            else
-                Log.Error($"RESOLVING ASSEMBBLY {args.Name} FAILED!");
-            return assembly;
-        }
+    //    private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+    //    {
+    //        assemblies.TryGetValue(args.Name, out Assembly assembly);
+    //        if (assembly != null)
+    //            Log.Out($"RESOLVING ASSEMBLY {assembly.FullName}");
+    //        else
+    //            Log.Error($"RESOLVING ASSEMBBLY {args.Name} FAILED!");
+    //        return assembly;
+    //    }
 
-        private static void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
-        {
-            Assembly assembly = args.LoadedAssembly;
-            assemblies[assembly.FullName] = assembly;
-            Log.Out($"LOADING ASSEMBLY {assembly.FullName}");
-        }
-    }
+    //    private static void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
+    //    {
+    //        Assembly assembly = args.LoadedAssembly;
+    //        assemblies[assembly.FullName] = assembly;
+    //        Log.Out($"LOADING ASSEMBLY {assembly.FullName}");
+    //    }
+    //}
 
     public class MethodPatchInfo
     {
         public readonly MethodDefinition Method;
+        public Instruction PrefixBegin;
         public Instruction PostfixBegin;
         public Instruction PostfixEnd;
 
-        public MethodPatchInfo(MethodDefinition mtddef, Instruction postfixEnd)
+        public MethodPatchInfo(MethodDefinition mtddef, Instruction postfixEnd, Instruction prefixBegin)
         {
             Method = mtddef;
             PostfixEnd = postfixEnd;
+            PrefixBegin = prefixBegin;
         }
     }
 
@@ -337,19 +339,28 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             typedef_newAction.Methods.Add(mtddef_create_modifier_data);
 
             Dictionary<string, MethodPatchInfo> dict_overrides = new Dictionary<string, MethodPatchInfo>();
+            //<derived method name, <module type name, local variable>>
+            Dictionary<string, Dictionary<string, VariableDefinition>> dict_all_states = new Dictionary<string, Dictionary<string, VariableDefinition>>();
 
             //Apply Postfixes first so that Prefixes can jump to the right instruction
             for (int i = 0; i < moduleTypes.Length; i++)
             {
                 Type moduleType = moduleTypes[i];
                 Dictionary<string, MethodOverrideInfo> dict_targets = GetMethodOverrideTargets<MethodTargetPostfixAttribute>(itemActionType, moduleType, module);
+                string moduleID = CreateFieldName(moduleType);
                 foreach (var pair in dict_targets)
                 {
                     MethodDefinition mtddef_root = module.ImportReference(pair.Value.mtdinf_base.GetBaseDefinition()).Resolve();
                     MethodDefinition mtddef_target = module.ImportReference(pair.Value.mtdinf_target).Resolve();
                     MethodPatchInfo mtdpinf_derived = GetOrCreateOverride(dict_overrides, pair.Key, pair.Value.mtddef_base, module);
                     MethodDefinition mtddef_derived = mtdpinf_derived.Method;
-                    var list_inst_pars = MatchArguments(mtddef_root, mtddef_derived, mtddef_target, arr_flddef_modules[i], arr_flddef_data[i], module, itemActionType, typedef_newactiondata);
+                    
+                    if (!dict_all_states.TryGetValue(pair.Key, out var dict_states))
+                    {
+                        dict_states = new Dictionary<string, VariableDefinition>();
+                        dict_all_states.Add(pair.Key, dict_states);
+                    }
+                    var list_inst_pars = MatchArguments(mtddef_root, mtdpinf_derived, mtddef_target, arr_flddef_modules[i], arr_flddef_data[i], module, itemActionType, typedef_newactiondata, true, dict_states, moduleID);
                     //insert invocation
                     il = mtddef_derived.Body.GetILProcessor();
                     foreach (var ins in list_inst_pars)
@@ -367,23 +378,34 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             {
                 Type moduleType = moduleTypes[i];
                 Dictionary<string, MethodOverrideInfo> dict_targets = GetMethodOverrideTargets<MethodTargetPrefixAttribute>(itemActionType, moduleType, module);
+                string moduleID = CreateFieldName(moduleType);
                 foreach (var pair in dict_targets)
                 {
                     MethodDefinition mtddef_root = module.ImportReference(pair.Value.mtdinf_base.GetBaseDefinition()).Resolve();
                     MethodDefinition mtddef_target = module.ImportReference(pair.Value.mtdinf_target).Resolve();
                     MethodPatchInfo mtdpinf_derived = GetOrCreateOverride(dict_overrides, pair.Key, pair.Value.mtddef_base, module);
                     MethodDefinition mtddef_derived = mtdpinf_derived.Method;
-                    Log.Out($"Processing {pair.Key}");
-                    var list_inst_pars = MatchArguments(mtddef_root, mtddef_derived, mtddef_target, arr_flddef_modules[i], arr_flddef_data[i], module, itemActionType, typedef_newactiondata);
+                    dict_all_states.TryGetValue(pair.Key, out var dict_states);
+                    var list_inst_pars = MatchArguments(mtddef_root, mtdpinf_derived, mtddef_target, arr_flddef_modules[i], arr_flddef_data[i], module, itemActionType, typedef_newactiondata, false, dict_states, moduleID);
                     //insert invocation
                     il = mtdpinf_derived.Method.Body.GetILProcessor();
-                    Instruction ins_insert = mtdpinf_derived.Method.Body.Instructions[0];
+                    Instruction ins_insert = mtdpinf_derived.PrefixBegin;
                     foreach (var ins in list_inst_pars)
                     {
                         il.InsertBefore(ins_insert, ins);
                     }
                     il.InsertBefore(ins_insert, il.Create(OpCodes.Call, module.ImportReference(mtddef_target)));
                     il.InsertBefore(ins_insert, il.Create(OpCodes.Brfalse_S, mtdpinf_derived.PostfixBegin ?? mtdpinf_derived.PostfixEnd));
+                }
+            }
+
+            foreach (var pair in dict_all_states)
+            {
+                var dict_states = pair.Value;
+                if (dict_states.Count > 0)
+                {
+                    Log.Error($"__state variable count does not match in prefixes and postfixes for {pair.Key}! check following modules:\n" + string.Join("\n", dict_states.Keys));
+                    throw new Exception();
                 }
             }
 
@@ -482,7 +504,15 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                 mtddef_derived.Body.Variables.Add(new VariableDefinition(module.ImportReference(mtddef_base.ReturnType)));
             }
             var il = mtddef_derived.Body.GetILProcessor();
-            il.Emit(OpCodes.Ldc_I4_1);
+            if (hasReturnVal)
+            {
+                il.Emit(OpCodes.Ldloca_S, mtddef_derived.Body.Variables[1]);
+                il.Emit(OpCodes.Initobj, module.ImportReference(mtddef_derived.ReturnType));
+            }
+            il.Emit(OpCodes.Ldc_I4_0);
+            il.Emit(OpCodes.Stloc_S, mtddef_derived.Body.Variables[0]);
+            Instruction prefixBegin = il.Create(OpCodes.Ldc_I4_1);
+            il.Append(prefixBegin);
             il.Emit(OpCodes.Stloc_S, mtddef_derived.Body.Variables[0]);
             il.Emit(OpCodes.Ldarg_0);
             for (int i = 0; i < mtddef_derived.Parameters.Count; i++)
@@ -497,7 +527,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                 il.Emit(OpCodes.Ldloc_S, mtddef_derived.Body.Variables[1]);
             }
             il.Emit(OpCodes.Ret);
-            mtdpinf_derived = new MethodPatchInfo(mtddef_derived, mtddef_derived.Body.Instructions[mtddef_derived.Body.Instructions.Count - (hasReturnVal ? 2 : 1)]);
+            mtdpinf_derived = new MethodPatchInfo(mtddef_derived, mtddef_derived.Body.Instructions[mtddef_derived.Body.Instructions.Count - (hasReturnVal ? 2 : 1)], prefixBegin);
             dict_overrides.Add(id, mtdpinf_derived);
             return mtdpinf_derived;
         }
@@ -515,8 +545,9 @@ namespace KFCommonUtilityLib.Scripts.Singletons
         /// <exception cref="MissingFieldException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        private static List<Instruction> MatchArguments(MethodDefinition mtddef_root, MethodDefinition mtddef_derived, MethodDefinition mtddef_target, FieldDefinition flddef_module, FieldDefinition flddef_data, ModuleDefinition module, Type itemActionType, TypeDefinition typedef_newactiondata)
+        private static List<Instruction> MatchArguments(MethodDefinition mtddef_root, MethodPatchInfo mtdpinf_derived, MethodDefinition mtddef_target, FieldDefinition flddef_module, FieldDefinition flddef_data, ModuleDefinition module, Type itemActionType, TypeDefinition typedef_newactiondata, bool isPostfix, Dictionary<string, VariableDefinition> dict_states, string moduleID)
         {
+            var mtddef_derived = mtdpinf_derived.Method;
             var il = mtddef_derived.Body.GetILProcessor();
             //Match parameters
             List<Instruction> list_inst_pars = new List<Instruction>();
@@ -541,7 +572,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                         list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldflda : OpCodes.Ldfld, module.ImportReference(flddef_target)));
                     }
                 }
-                else if(!MatchSpecialParameters(par, flddef_data, mtddef_target, mtddef_derived, typedef_newactiondata, list_inst_pars, il))
+                else if(!MatchSpecialParameters(par, flddef_data, mtddef_target, mtdpinf_derived, typedef_newactiondata, list_inst_pars, il, module, isPostfix, dict_states, moduleID))
                 {
                     //match param by name
                     int index = -1;
@@ -567,14 +598,26 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                                   $"derived pars: {{{string.Join(",", mtddef_derived.Parameters.Select(p => p.Name + "/" + p.Index).ToArray())}}}");
                         throw e;
                     }
-                    list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldarga_S : OpCodes.Ldarg_S, mtddef_derived.Parameters[index]));
+                    if (!mtddef_derived.Parameters[index].ParameterType.IsByReference)
+                    {
+                        list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldarga_S : OpCodes.Ldarg_S, mtddef_derived.Parameters[index]));
+                    }
+                    else
+                    {
+                        list_inst_pars.Add(il.Create(OpCodes.Ldarg_S, mtddef_derived.Parameters[index]));
+                        if (!par.ParameterType.IsByReference)
+                        {
+                            list_inst_pars.Add(il.Create(OpCodes.Ldind_Ref));
+                        }
+                    }
                 }
             }
             return list_inst_pars;
         }
 
-        private static bool MatchSpecialParameters(ParameterDefinition par, FieldDefinition flddef_data, MethodDefinition mtddef_target, MethodDefinition mtddef_derived, TypeDefinition typedef_newactiondata, List<Instruction> list_inst_pars, ILProcessor il)
+        private static bool MatchSpecialParameters(ParameterDefinition par, FieldDefinition flddef_data, MethodDefinition mtddef_target, MethodPatchInfo mtdpinf_derived, TypeDefinition typedef_newactiondata, List<Instruction> list_inst_pars, ILProcessor il, ModuleDefinition module, bool isPostfix, Dictionary<string, VariableDefinition> dict_states, string moduleID)
         {
+            MethodDefinition mtddef_derived = mtdpinf_derived.Method;
             switch (par.Name)
             {
                 //load injected data instance
@@ -610,7 +653,40 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                         throw new ArgumentException($"__runOriginal is readonly! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
                     list_inst_pars.Add(il.Create(OpCodes.Ldloc_S, mtddef_derived.Body.Variables[0]));
                     break;
-
+                case "__state":
+                    if(dict_states == null)
+                    {
+                        throw new ArgumentNullException($"__state is found in prefix but no matching postfix exists! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
+                    }
+                    if(!isPostfix && !dict_states.TryGetValue(moduleID, out var vardef))
+                    {
+                        throw new KeyNotFoundException($"__state is found in prefix but not found in corresponding postfix! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
+                    }
+                    if(par.IsOut && isPostfix)
+                    {
+                        throw new ArgumentException($"__state is marked as out parameter in postfix! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
+                    }
+                    if(!par.IsOut && !isPostfix)
+                    {
+                        throw new ArgumentException($"__state is not marked as out in prefix! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
+                    }
+                    if(isPostfix)
+                    {
+                        vardef = new VariableDefinition(module.ImportReference(par.ParameterType));
+                        mtddef_derived.Body.Variables.Add(vardef);
+                        dict_states.Add(moduleID, vardef);
+                        var ins = mtddef_derived.Body.Instructions[0];
+                        il.InsertBefore(ins, il.Create(OpCodes.Ldloca_S, vardef));
+                        il.InsertBefore(ins, il.Create(OpCodes.Initobj, module.ImportReference(par.ParameterType)));
+                        list_inst_pars.Add(il.Create(OpCodes.Ldloc_S, vardef));
+                    }
+                    else
+                    {
+                        vardef = dict_states[moduleID];
+                        dict_states.Remove(moduleID);
+                        list_inst_pars.Add(il.Create(OpCodes.Ldloca_S, vardef));
+                    }
+                    break;
                 default:
                     return false;
             }

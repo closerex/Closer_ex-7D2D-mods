@@ -9,6 +9,8 @@ using System.Xml.Linq;
 using System;
 using KFCommonUtilityLib.Scripts.Singletons;
 using KFCommonUtilityLib.Scripts.NetPackages;
+using XMLData.Item;
+using SteelSeries.GameSense;
 
 namespace KFCommonUtilityLib.Harmony
 {
@@ -38,71 +40,71 @@ namespace KFCommonUtilityLib.Harmony
     {
         #region Run Correct ItemAction
 
-        #region Passive tags
-        //maybe use TriggerHasTags instead?
-        public struct TagsForAll
-        {
-            public FastTags tags;
-            public bool matchAllTags;
-            public bool invertTagCheck;
+        //#region Passive tags
+        ////maybe use TriggerHasTags instead?
+        //public struct TagsForAll
+        //{
+        //    public FastTags tags;
+        //    public bool matchAllTags;
+        //    public bool invertTagCheck;
 
-            public bool IsValid()
-            {
-                return !tags.IsEmpty || matchAllTags || invertTagCheck;
-            }
-        }
+        //    public bool IsValid()
+        //    {
+        //        return !tags.IsEmpty || matchAllTags || invertTagCheck;
+        //    }
+        //}
 
-        [HarmonyPatch(typeof(MinEffectGroup), nameof(MinEffectGroup.ParseXml))]
-        [HarmonyPrefix]
-        private static bool Prefix_ParseXml_MinEffectGroup(XElement _element, out TagsForAll __state)
-        {
-            __state = new TagsForAll()
-            {
-                tags = FastTags.none,
-                matchAllTags = false,
-                invertTagCheck = false
-            };
-            string tags = _element.GetAttribute("tags");
-            __state.tags = tags != null ? FastTags.Parse(tags) : FastTags.none;
-            if (_element.HasAttribute("match_all_tags"))
-            {
-                __state.matchAllTags = true;
-            }
-            if (_element.HasAttribute("invert_tag_check"))
-            {
-                __state.invertTagCheck = true;
-            }
+        //[HarmonyPatch(typeof(MinEffectGroup), nameof(MinEffectGroup.ParseXml))]
+        //[HarmonyPrefix]
+        //private static bool Prefix_ParseXml_MinEffectGroup(XElement _element, out TagsForAll __state)
+        //{
+        //    __state = new TagsForAll()
+        //    {
+        //        tags = FastTags.none,
+        //        matchAllTags = false,
+        //        invertTagCheck = false
+        //    };
+        //    string tags = _element.GetAttribute("tags");
+        //    __state.tags = tags != null ? FastTags.Parse(tags) : FastTags.none;
+        //    if (_element.HasAttribute("match_all_tags"))
+        //    {
+        //        __state.matchAllTags = true;
+        //    }
+        //    if (_element.HasAttribute("invert_tag_check"))
+        //    {
+        //        __state.invertTagCheck = true;
+        //    }
 
-            return true;
-        }
+        //    return true;
+        //}
 
 
-        [HarmonyPatch(typeof(MinEffectGroup), nameof(MinEffectGroup.ParseXml))]
-        [HarmonyPostfix]
-        private static void Postfix_ParseXml_MinEffectGroup(MinEffectGroup __instance, TagsForAll __state)
-        {
-            if (!__state.IsValid())
-                return;
+        //[HarmonyPatch(typeof(MinEffectGroup), nameof(MinEffectGroup.ParseXml))]
+        //[HarmonyPostfix]
+        //private static void Postfix_ParseXml_MinEffectGroup(MinEffectGroup __result, TagsForAll __state)
+        //{
+        //    if (!__state.IsValid() || __result == null || __result.PassiveEffects == null)
+        //        return;
 
-            foreach (var passive in __instance.PassiveEffects)
-            {
-                if (!__state.tags.IsEmpty)
-                {
-                    passive.Tags |= __state.tags;
-                }
+        //    foreach (var passive in __result.PassiveEffects)
+        //    {
+        //        if (!__state.tags.IsEmpty)
+        //        {
+        //            passive.Tags |= __state.tags;
+        //        }
 
-                if (__state.matchAllTags)
-                {
-                    passive.MatchAnyTags = false;
-                }
+        //        if (__state.matchAllTags)
+        //        {
+        //            passive.MatchAnyTags = false;
+        //        }
 
-                if (__state.invertTagCheck)
-                {
-                    passive.InvertTagCheck = true;
-                }
-            }
-        }
-        #endregion
+        //        if (__state.invertTagCheck)
+        //        {
+        //            passive.InvertTagCheck = true;
+        //        }
+        //    }
+        //}
+        //#endregion
 
         #region Ranged Reload
         //Replace reload action index with animator item action index parameter
@@ -120,6 +122,7 @@ namespace KFCommonUtilityLib.Harmony
             FieldInfo fld_meta = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Meta));
             FieldInfo fld_ammoindex = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
             MethodInfo mtd_getvalue = AccessTools.Method(typeof(EffectManager), nameof(EffectManager.GetValue));
+            bool firstRet = true;
 
             for (int i = 0; i < codes.Count; i++)
             {
@@ -135,25 +138,29 @@ namespace KFCommonUtilityLib.Harmony
                     codes.InsertRange(i, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        new CodeInstruction(OpCodes.Ldfld, fld_actionData),
+                        CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), "actionData"),
                         CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
                         CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity)),
                         CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.MinEventContext)),
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        new CodeInstruction(OpCodes.Ldfld, fld_actionData),
+                        CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), "actionData"),
                         CodeInstruction.StoreField(typeof(MinEventParams), nameof(MinEventParams.ItemActionData))
                     });
                     break;
                 }
+                else if (code.opcode == OpCodes.Ret && firstRet)
+                {
+                    firstRet = false;
+                    var insert = new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldloc_0),
+                        CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.GetActionIndexForEntity)),
+                        new CodeInstruction(OpCodes.Stloc_S, lbd_index)
+                    };
+                    insert[0].MoveLabelsFrom(codes[i + 1]);
+                    codes.InsertRange(i + 1, insert);
+                }
             }
-
-            codes.InsertRange(0, new[]
-            {
-                new CodeInstruction(OpCodes.Ldarg_1),
-                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(AvatarController), nameof(AvatarController.itemActionIndexHash))),
-                CodeInstruction.Call(typeof(Animator), nameof(Animator.GetInteger), new [] { typeof(int) }),
-                new CodeInstruction(OpCodes.Stloc_S, lbd_index)
-            });
 
             return codes;
         }
@@ -164,7 +171,6 @@ namespace KFCommonUtilityLib.Harmony
         {
             var codes = instructions.ToList();
 
-            FieldInfo fld_actionData = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.actionData));
             MethodInfo mtd_getvalue = AccessTools.Method(typeof(EffectManager), nameof(EffectManager.GetValue));
 
             for (int i = 0; i < codes.Count; i++)
@@ -175,12 +181,12 @@ namespace KFCommonUtilityLib.Harmony
                     codes.InsertRange(i, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        new CodeInstruction(OpCodes.Ldfld, fld_actionData),
+                        CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), "actionData"),
                         CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
                         CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity)),
                         CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.MinEventContext)),
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        new CodeInstruction(OpCodes.Ldfld, fld_actionData),
+                        CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), "actionData"),
                         CodeInstruction.StoreField(typeof(MinEventParams), nameof(MinEventParams.ItemActionData))
                     });
                     break;
@@ -332,7 +338,6 @@ namespace KFCommonUtilityLib.Harmony
             {
                 new CodeInstruction(OpCodes.Ldarg_1),
                 CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity)),
-                CodeInstruction.LoadField(typeof(Entity), nameof(Entity.entityId)),
                 CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.GetActionIndexForEntity)),
                 new CodeInstruction(OpCodes.Stloc_S, lbd_index)
             });
@@ -358,17 +363,17 @@ namespace KFCommonUtilityLib.Harmony
         #region inventory related
         [HarmonyPatch(typeof(Inventory), nameof(Inventory.GetHoldingGun))]
         [HarmonyPrefix]
-        private static bool Prefix_GetHoldingGun_Inventory(Inventory __instance, ItemActionAttack __result, EntityAlive ___entity)
+        private static bool Prefix_GetHoldingGun_Inventory(Inventory __instance, ref ItemActionAttack __result, EntityAlive ___entity)
         {
-            __result = __instance.holdingItem.Actions[___entity != null ? MultiActionManager.GetActionIndexForEntity(___entity.entityId) : -1] as ItemActionAttack;
+            __result = __instance.holdingItem.Actions[MultiActionManager.GetActionIndexForEntity(___entity)] as ItemActionAttack;
             return false;
         }
 
         [HarmonyPatch(typeof(Inventory), nameof(Inventory.GetHoldingDynamicMelee))]
         [HarmonyPrefix]
-        private static bool Prefix_GetHoldingDynamicMelee_Inventory(Inventory __instance, ItemActionDynamic __result, EntityAlive ___entity)
+        private static bool Prefix_GetHoldingDynamicMelee_Inventory(Inventory __instance, ref ItemActionDynamic __result, EntityAlive ___entity)
         {
-            __result = __instance.holdingItem.Actions[___entity != null ? MultiActionManager.GetActionIndexForEntity(___entity.entityId) : -1] as ItemActionDynamic;
+            __result = __instance.holdingItem.Actions[MultiActionManager.GetActionIndexForEntity(___entity)] as ItemActionDynamic;
             return false;
         }
         #endregion
@@ -423,6 +428,7 @@ namespace KFCommonUtilityLib.Harmony
                         CodeInstruction.LoadField(typeof(ItemAction), nameof(ItemAction.ActionIndex)),
                         CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.FixedItemReloadServer))
                     });
+                    codes[i - 4].MoveLabelsFrom(codes[i - 5]);
                     codes.RemoveAt(i - 5);
                     break;
                 }
@@ -501,7 +507,7 @@ namespace KFCommonUtilityLib.Harmony
                     });
                     codes.RemoveRange(i - 9, 3);
                     codes.Insert(i - 9, new CodeInstruction(OpCodes.Ldarg_0));
-                    i -= 2;
+                    i--;
                 }
             }
 
@@ -516,12 +522,14 @@ namespace KFCommonUtilityLib.Harmony
         //use custom script
         private static IEnumerable<CodeInstruction> Transpiler_instantiateProjectile_ItemActionLauncher(IEnumerable<CodeInstruction> instructions)
         {
-            MethodInfo mtd_addcomponent = AccessTools.Method(typeof(GameObject), nameof(GameObject.AddComponent), Array.Empty<Type>(), new[] { typeof(ProjectileMoveScript) });
+            MethodInfo mtd_addcomponent = AccessTools.Method(typeof(GameObject), nameof(GameObject.AddComponent), Array.Empty<Type>());
+            MethodInfo mtd_addcomponentprev = mtd_addcomponent.MakeGenericMethod(typeof(ProjectileMoveScript));
             MethodInfo mtd_addcomponentnew = mtd_addcomponent.MakeGenericMethod(typeof(CustomProjectileMoveScript));
             foreach(var code in instructions)
             {
-                if (code.Calls(mtd_addcomponent))
+                if (code.Calls(mtd_addcomponentprev))
                 {
+                    Log.Out("replacing launcher projectile script...");
                     code.operand = mtd_addcomponentnew;
                 }
                 yield return code;
@@ -548,9 +556,15 @@ namespace KFCommonUtilityLib.Harmony
         #region Ranged ExecuteAction FireEvent params
         [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.ExecuteAction))]
         [HarmonyPrefix]
-        private static bool Prefix_ExecuteAction_ItemClass(int _actionIdx, ItemInventoryData _data, PlayerActionsLocal _playerActions)
+        private static bool Prefix_ExecuteAction_ItemClass(ref int _actionIdx, ItemInventoryData _data, PlayerActionsLocal _playerActions)
         {
-            MultiActionUtils.UpdateExecutingActionIndex(_actionIdx, _data, _playerActions);
+
+            if (_actionIdx != 0 || _playerActions == null || !(_data.holdingEntity is EntityPlayerLocal player))
+            {
+                return true;
+            }
+            _actionIdx = MultiActionManager.GetActionIndexForEntityID(player.entityId);
+            player.MinEventContext.ItemActionData = _data.actionData[_actionIdx];
             return true;
         }
 
@@ -588,6 +602,7 @@ namespace KFCommonUtilityLib.Harmony
                         CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.FixedItemReloadServer))
                     });
                     codes.RemoveRange(j - 2, 3);
+                    i--;
                 }
             }
 
@@ -642,7 +657,6 @@ namespace KFCommonUtilityLib.Harmony
                     codes.InsertRange(i + 10, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_1),
-                        CodeInstruction.LoadField(typeof(Entity), nameof(Entity.entityId)),
                         CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.GetActionIndexForEntity)),
                         new CodeInstruction(OpCodes.Stloc_S, lbd_index)
                     });
@@ -663,7 +677,7 @@ namespace KFCommonUtilityLib.Harmony
         private static bool Prefix_OnHUD_EntityPlayerLocal(EntityPlayerLocal __instance, out ItemActionData __state)
         {
             __state = __instance.MinEventContext.ItemActionData;
-            __instance.MinEventContext.ItemActionData = __instance.inventory?.holdingItemData?.actionData[MultiActionManager.GetActionIndexForEntity(__instance.entityId)];
+            __instance.MinEventContext.ItemActionData = __instance.inventory?.holdingItemData?.actionData[MultiActionManager.GetActionIndexForEntityID(__instance.entityId)];
             return true;
         }
 
@@ -684,7 +698,7 @@ namespace KFCommonUtilityLib.Harmony
             {
                 __state.entity = entity;
                 __state.actionData = entity.MinEventContext.ItemActionData;
-                entity.MinEventContext.ItemActionData = entity.inventory?.holdingItemData?.actionData[MultiActionManager.GetActionIndexForEntity(entity.entityId)];
+                entity.MinEventContext.ItemActionData = entity.inventory?.holdingItemData?.actionData[MultiActionManager.GetActionIndexForEntityID(entity.entityId)];
             }
             else
                 return false;
@@ -782,8 +796,306 @@ namespace KFCommonUtilityLib.Harmony
         private static void Postfix_OnHoldingUpdate_ItemClass(ItemInventoryData _data)
         {
             if(_data.holdingEntity != null && _data.holdingEntity.inventory != null)
-                _data.holdingEntity.MinEventContext.ItemActionData = _data.holdingEntity.inventory.holdingItemData.actionData[MultiActionManager.GetActionIndexForEntity(_data.holdingEntity.entityId)];
+                _data.holdingEntity.MinEventContext.ItemActionData = _data.holdingEntity.inventory.holdingItemData.actionData[MultiActionManager.GetActionIndexForEntityID(_data.holdingEntity.entityId)];
         }
+
+        //make sure it's set to null after stop holding events are triggered
+        [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.StopHolding))]
+        [HarmonyPostfix]
+        private static void Postfix_StopHolding_ItemClass(ItemInventoryData _data)
+        {
+            if(_data.holdingEntity != null)
+                MultiActionManager.SetMappingForEntity(_data.holdingEntity.entityId, null);
+        }
+
+        [HarmonyPatch(typeof(ItemClassesFromXml), "parseItem")]
+        [HarmonyPrefix]
+        private static bool Prefix_parseItem_ItemClassesFromXml(XElement _node)
+        {
+            DynamicProperties dynamicProperties = new DynamicProperties();
+            string attribute = _node.GetAttribute("name");
+            if (attribute.Length == 0)
+            {
+                throw new Exception("Attribute 'name' missing on item");
+            }
+
+            List<IRequirement>[] array = new List<IRequirement>[ItemClass.cMaxActionNames];
+            for (int i = 0; i < array.Length; i++)
+            {
+                array[i] = new List<IRequirement>();
+            }
+
+            foreach (XElement item in _node.Elements("property"))
+            {
+                dynamicProperties.Add(item);
+                string attribute2 = item.GetAttribute("class");
+                if (attribute2.StartsWith("Action"))
+                {
+                    int num = attribute2[attribute2.Length - 1] - 48;
+                    array[num].AddRange(RequirementBase.ParseRequirements(item));
+                }
+            }
+
+            if (dynamicProperties.Values.ContainsKey("Extends"))
+            {
+                string text = dynamicProperties.Values["Extends"];
+                ItemClass itemClass = ItemClass.GetItemClass(text);
+                if (itemClass == null)
+                {
+                    throw new Exception($"Extends item {text} is not specified for item {attribute}'");
+                }
+
+                HashSet<string> hashSet = new HashSet<string> { Block.PropCreativeMode };
+                if (dynamicProperties.Params1.ContainsKey("Extends"))
+                {
+                    string[] array2 = dynamicProperties.Params1["Extends"].Split(new[] { ',' }, StringSplitOptions.None);
+                    foreach (string text2 in array2)
+                    {
+                        hashSet.Add(text2.Trim());
+                    }
+                }
+
+                DynamicProperties dynamicProperties2 = new DynamicProperties();
+                dynamicProperties2.CopyFrom(itemClass.Properties, hashSet);
+                dynamicProperties2.CopyFrom(dynamicProperties);
+                dynamicProperties = dynamicProperties2;
+            }
+
+            ItemClass itemClass2;
+            if (dynamicProperties.Values.ContainsKey("Class"))
+            {
+                string text3 = dynamicProperties.Values["Class"];
+                if (!text3.Contains(","))
+                {
+                    text3 += ",Assembly-CSharp";
+                }
+                try
+                {
+                    itemClass2 = (ItemClass)Activator.CreateInstance(Type.GetType(text3));
+                }
+                catch (Exception)
+                {
+                    throw new Exception("No item class '" + text3 + " found!");
+                }
+            }
+            else
+            {
+                itemClass2 = new ItemClass();
+            }
+
+            itemClass2.Properties = dynamicProperties;
+            if (dynamicProperties.Params1.ContainsKey("Extends"))
+            {
+                string text4 = dynamicProperties.Values["Extends"];
+                if (ItemClass.GetItemClass(text4) == null)
+                {
+                    throw new Exception($"Extends item {text4} is not specified for item {attribute}'");
+                }
+            }
+
+            itemClass2.Effects = MinEffectController.ParseXml(_node, null, MinEffectController.SourceParentType.ItemClass, itemClass2.Id);
+            itemClass2.SetName(attribute);
+            itemClass2.setLocalizedItemName(Localization.Get(attribute));
+            if (dynamicProperties.Values.ContainsKey("Stacknumber"))
+            {
+                itemClass2.Stacknumber = new DataItem<int>(int.Parse(dynamicProperties.Values["Stacknumber"]));
+            }
+            else
+            {
+                itemClass2.Stacknumber = new DataItem<int>(500);
+            }
+
+            if (dynamicProperties.Values.ContainsKey("Canhold"))
+            {
+                itemClass2.SetCanHold(StringParsers.ParseBool(dynamicProperties.Values["Canhold"]));
+            }
+
+            if (dynamicProperties.Values.ContainsKey("Candrop"))
+            {
+                itemClass2.SetCanDrop(StringParsers.ParseBool(dynamicProperties.Values["Candrop"]));
+            }
+
+            if (!dynamicProperties.Values.ContainsKey("Material"))
+            {
+                throw new Exception("Attribute 'material' missing on item '" + attribute + "'");
+            }
+
+            itemClass2.MadeOfMaterial = MaterialBlock.fromString(dynamicProperties.Values["Material"]);
+            if (itemClass2.MadeOfMaterial == null)
+            {
+                throw new Exception("Attribute 'material' '" + dynamicProperties.Values["Material"] + "' refers to not existing material in item '" + attribute + "'");
+            }
+
+            if (!dynamicProperties.Values.ContainsKey("Meshfile") && itemClass2.CanHold())
+            {
+                throw new Exception("Attribute 'Meshfile' missing on item '" + attribute + "'");
+            }
+
+            itemClass2.MeshFile = dynamicProperties.Values["Meshfile"];
+            DataLoader.PreloadBundle(itemClass2.MeshFile);
+            StringParsers.TryParseFloat(dynamicProperties.Values["StickyOffset"], out itemClass2.StickyOffset);
+            StringParsers.TryParseFloat(dynamicProperties.Values["StickyColliderRadius"], out itemClass2.StickyColliderRadius);
+            StringParsers.TryParseSInt32(dynamicProperties.Values["StickyColliderUp"], out itemClass2.StickyColliderUp);
+            StringParsers.TryParseFloat(dynamicProperties.Values["StickyColliderLength"], out itemClass2.StickyColliderLength);
+            itemClass2.StickyMaterial = dynamicProperties.Values["StickyMaterial"];
+            if (dynamicProperties.Values.ContainsKey("ImageEffectOnActive"))
+            {
+                itemClass2.ImageEffectOnActive = new DataItem<string>(dynamicProperties.Values["ImageEffectOnActive"]);
+            }
+
+            if (dynamicProperties.Values.ContainsKey("Active"))
+            {
+                itemClass2.Active = new DataItem<bool>(_startValue: false);
+            }
+
+            if (dynamicProperties.Values.ContainsKey(ItemClass.PropIsSticky))
+            {
+                itemClass2.IsSticky = StringParsers.ParseBool(dynamicProperties.Values[ItemClass.PropIsSticky]);
+            }
+
+            if (dynamicProperties.Values.ContainsKey("DropMeshfile") && itemClass2.CanHold())
+            {
+                itemClass2.DropMeshFile = dynamicProperties.Values["DropMeshfile"];
+                DataLoader.PreloadBundle(itemClass2.DropMeshFile);
+            }
+
+            if (dynamicProperties.Values.ContainsKey("HandMeshfile") && itemClass2.CanHold())
+            {
+                itemClass2.HandMeshFile = dynamicProperties.Values["HandMeshfile"];
+                DataLoader.PreloadBundle(itemClass2.HandMeshFile);
+            }
+
+            if (dynamicProperties.Values.ContainsKey("HoldType"))
+            {
+                string s = dynamicProperties.Values["HoldType"];
+                int result = 0;
+                if (!int.TryParse(s, out result))
+                {
+                    throw new Exception("Cannot parse attribute hold_type for item '" + attribute + "'");
+                }
+
+                itemClass2.HoldType = new DataItem<int>(result);
+            }
+
+            if (dynamicProperties.Values.ContainsKey("RepairTools"))
+            {
+                string[] array3 = dynamicProperties.Values["RepairTools"].Replace(" ", "").Split(new[] { ',' }, StringSplitOptions.None);
+                DataItem<string>[] array4 = new DataItem<string>[array3.Length];
+                for (int k = 0; k < array3.Length; k++)
+                {
+                    array4[k] = new DataItem<string>(array3[k]);
+                }
+
+                itemClass2.RepairTools = new ItemData.DataItemArrayRepairTools(array4);
+            }
+
+            if (dynamicProperties.Values.ContainsKey("RepairAmount"))
+            {
+                int result2 = 0;
+                int.TryParse(dynamicProperties.Values["RepairAmount"], out result2);
+                itemClass2.RepairAmount = new DataItem<int>(result2);
+            }
+
+            if (dynamicProperties.Values.ContainsKey("RepairTime"))
+            {
+                float _result = 0f;
+                StringParsers.TryParseFloat(dynamicProperties.Values["RepairTime"], out _result);
+                itemClass2.RepairTime = new DataItem<float>(_result);
+            }
+            else if (itemClass2.RepairAmount != null)
+            {
+                itemClass2.RepairTime = new DataItem<float>(1f);
+            }
+
+            if (dynamicProperties.Values.ContainsKey("Degradation"))
+            {
+                itemClass2.MaxUseTimes = new DataItem<int>(int.Parse(dynamicProperties.Values["Degradation"]));
+            }
+            else
+            {
+                itemClass2.MaxUseTimes = new DataItem<int>(0);
+                itemClass2.MaxUseTimesBreaksAfter = new DataItem<bool>(_startValue: false);
+            }
+
+            if (dynamicProperties.Values.ContainsKey("DegradationBreaksAfter"))
+            {
+                itemClass2.MaxUseTimesBreaksAfter = new DataItem<bool>(StringParsers.ParseBool(dynamicProperties.Values["DegradationBreaksAfter"]));
+            }
+            else if (dynamicProperties.Values.ContainsKey("Degradation"))
+            {
+                itemClass2.MaxUseTimesBreaksAfter = new DataItem<bool>(_startValue: true);
+            }
+
+            if (dynamicProperties.Values.ContainsKey("EconomicValue"))
+            {
+                itemClass2.EconomicValue = StringParsers.ParseFloat(dynamicProperties.Values["EconomicValue"]);
+            }
+
+            if (dynamicProperties.Classes.ContainsKey("Preview"))
+            {
+                DynamicProperties dynamicProperties3 = dynamicProperties.Classes["Preview"];
+                itemClass2.Preview = new PreviewData();
+                if (dynamicProperties3.Values.ContainsKey("Zoom"))
+                {
+                    itemClass2.Preview.Zoom = new DataItem<int>(int.Parse(dynamicProperties3.Values["Zoom"]));
+                }
+
+                if (dynamicProperties3.Values.ContainsKey("Pos"))
+                {
+                    itemClass2.Preview.Pos = new DataItem<Vector2>(StringParsers.ParseVector2(dynamicProperties3.Values["Pos"]));
+                }
+                else
+                {
+                    itemClass2.Preview.Pos = new DataItem<Vector2>(Vector2.zero);
+                }
+
+                if (dynamicProperties3.Values.ContainsKey("Rot"))
+                {
+                    itemClass2.Preview.Rot = new DataItem<Vector3>(StringParsers.ParseVector3(dynamicProperties3.Values["Rot"]));
+                }
+                else
+                {
+                    itemClass2.Preview.Rot = new DataItem<Vector3>(Vector3.zero);
+                }
+            }
+
+            for (int l = 0; l < itemClass2.Actions.Length; l++)
+            {
+                string text5 = ItemClass.itemActionNames[l];
+                if (dynamicProperties.Classes.ContainsKey(text5))
+                {
+                    if (!dynamicProperties.Values.ContainsKey(text5 + ".Class"))
+                    {
+                        throw new Exception("No class attribute found on " + text5 + " in item with '" + attribute + "'");
+                    }
+
+                    string text6 = dynamicProperties.Values[text5 + ".Class"];
+                    ItemAction itemAction;
+                    try
+                    {
+                        itemAction = (ItemAction)Activator.CreateInstance(ReflectionHelpers.GetTypeWithPrefix("ItemAction", text6));
+                    }
+                    catch (Exception)
+                    {
+                        throw new Exception("ItemAction class '" + text6 + " could not be instantiated");
+                    }
+
+                    itemAction.item = itemClass2;
+                    itemAction.ActionIndex = l;
+                    itemAction.ReadFrom(dynamicProperties.Classes[text5]);
+                    if (array[l].Count > 0)
+                    {
+                        itemAction.ExecutionRequirements = array[l];
+                    }
+
+                    itemClass2.Actions[l] = itemAction;
+                }
+            }
+
+            itemClass2.Init();
+            return false;
+        }
+
 
         #endregion
 
@@ -801,6 +1113,7 @@ namespace KFCommonUtilityLib.Harmony
             {
                 new CodeInstruction(OpCodes.Ldarg_0),
                 new CodeInstruction(OpCodes.Ldfld, fld_entityid),
+                new CodeInstruction(OpCodes.Ldarg_0),
                 new CodeInstruction(OpCodes.Ldfld, fld_itemstack),
                 CodeInstruction.Call(typeof(MultiActionPatches), nameof(MultiActionPatches.CheckItemValueMode))
             });
@@ -819,6 +1132,7 @@ namespace KFCommonUtilityLib.Harmony
             {
                 new CodeInstruction(OpCodes.Ldarg_0),
                 new CodeInstruction(OpCodes.Ldfld, fld_entityid),
+                new CodeInstruction(OpCodes.Ldarg_0),
                 new CodeInstruction(OpCodes.Ldfld, fld_itemstack),
                 CodeInstruction.Call(typeof(MultiActionPatches), nameof(MultiActionPatches.CheckItemValueMode))
             });
@@ -829,7 +1143,7 @@ namespace KFCommonUtilityLib.Harmony
         private static void CheckItemValueMode(int entityId, ItemStack holdingItemStack)
         {
             ItemValue itemValue = holdingItemStack.itemValue;
-            if (itemValue.HasMetadata(MultiActionMapping.STR_MULTI_ACTION_INDEX, TypedMetadataValue.TypeTag.Integer))
+            if (itemValue.HasMetadata(MultiActionMapping.STR_MULTI_ACTION_INDEX))
             {
                 int mode = (int)itemValue.GetMetadata(MultiActionMapping.STR_MULTI_ACTION_INDEX);
                 if(MultiActionManager.SetModeForEntity(entityId, mode) && ConnectionManager.Instance.IsServer)
@@ -839,16 +1153,111 @@ namespace KFCommonUtilityLib.Harmony
             }
         }
 
-        [HarmonyPatch(typeof(GameManager), "updateSendClientPlayerPositionToServer")]
+        [HarmonyPatch(typeof(GameManager), "UpdateTick")]
         [HarmonyPostfix]
-        private static void Postfix_UpdateTick_GameManager(World ___m_world)
+        private static void Postfix_UpdateTick_GameManager(World ___m_World)
         {
             if (MultiActionManager.LocalModeChanged)
             {
                 MultiActionManager.LocalModeChanged = false;
-                int playerID = ___m_world.GetPrimaryPlayerId();
-                ConnectionManager.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageEntityActionIndex>().Setup(playerID, MultiActionManager.GetModeForEntity(playerID)));
+                int playerID = ___m_World.GetPrimaryPlayerId();
+                if (ConnectionManager.Instance.IsClient)
+                {
+                    ConnectionManager.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageEntityActionIndex>().Setup(playerID, MultiActionManager.GetModeForEntity(playerID)));
+                }
+                else
+                {
+                    ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageEntityActionIndex>().Setup(playerID, MultiActionManager.GetModeForEntity(playerID)), false, -1, playerID);
+                }
             }
+        }
+        #endregion
+
+        #region Input Handling
+        [HarmonyPatch(typeof(PlayerMoveController), "Update")]
+        [HarmonyPrefix]
+        private static bool Prefix_Update_PlayerMoveController(EntityPlayerLocal ___entityPlayerLocal, GameManager ___gameManager, GUIWindowManager ___windowManager, PlayerMoveController __instance)
+        {
+            if (DroneManager.Debug_LocalControl || !___gameManager.gameStateManager.IsGameStarted() || GameStats.GetInt(EnumGameStats.GameState) != 1)
+                return true;
+
+            bool isUIOpen = ___windowManager.IsCursorWindowOpen() || ___windowManager.IsInputActive() || ___windowManager.IsModalWindowOpen();
+
+            MultiActionManager.UpdateLocalInput(___entityPlayerLocal, __instance.playerInput, isUIOpen, Time.deltaTime);
+
+            return true;
+        }
+        #endregion
+
+        #region HUD display
+        [HarmonyPatch(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.HasChanged))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_HasChanged_XUiC_HUDStatBar(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            MethodInfo mtd_edittool = AccessTools.Method(typeof(ItemAction), nameof(ItemAction.IsEditingTool));
+            for (int i = 0; i < codes.Count; i++)
+            {
+                var code = codes[i];
+                if (code.Calls(mtd_edittool))
+                {
+                    codes.RemoveRange(i - 1, 3);
+                    break;
+                }
+            }
+
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(XUiC_HUDStatBar), "SetupActiveItemEntry")]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_SetupActiveItemEntry_XUiC_HUDStatBar(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+            FieldInfo fld_action = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].LoadsField(fld_action))
+                {
+                    codes.RemoveAt(i + 1);
+                    codes.InsertRange(i + 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldloc_0),
+                        CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.GetActionIndexForEntity))
+                    });
+                    break;
+                }
+            }
+            return codes;
+        }
+
+        #endregion
+
+        #region Cancel reload on switching item
+        [HarmonyPatch(typeof(PlayerMoveController), "Update")]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_Update_PlayerMoveController(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            MethodInfo mtd_cancel = AccessTools.Method(typeof(ItemAction), nameof(ItemAction.CancelReload));
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].Calls(mtd_cancel))
+                {
+                    codes.RemoveAt(i - 2);
+                    codes.InsertRange(i - 2, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(PlayerMoveController), "entityPlayerLocal"),
+                        CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.GetActionIndexForEntity))
+                    });
+                    i += 2;
+                }
+            }
+
+            return codes;
         }
         #endregion
     }
@@ -872,7 +1281,8 @@ namespace KFCommonUtilityLib.Harmony
         [HarmonyPrefix]
         private static bool Prefix_ReloadGun(ItemActionData _actionData)
         {
-            _actionData.invData.holdingEntity.emodel?.avatarController?.UpdateInt(AvatarController.itemActionIndexHash, _actionData.indexInEntityOfAction, false);
+            int reloadAnimationIndex = MultiActionManager.GetMetaIndexForActionIndex(_actionData.invData.holdingEntity.entityId, _actionData.indexInEntityOfAction);
+            _actionData.invData.holdingEntity.emodel?.avatarController?.UpdateInt(AvatarController.itemActionIndexHash, reloadAnimationIndex, false);
             _actionData.invData.holdingEntity.MinEventContext.ItemActionData = _actionData;
             return true;
         }
@@ -888,7 +1298,7 @@ namespace KFCommonUtilityLib.Harmony
         {
             return new MethodInfo[]
             {
-                AccessTools.Method(typeof(AnimatorMeleeAttackState), nameof(AnimatorMeleeAttackState.OnStateEnter)),
+                AccessTools.Method(typeof(AnimatorMeleeAttackState), nameof(AnimatorMeleeAttackState.OnStateEnter), new[] {typeof(Animator), typeof(AnimatorStateInfo), typeof(int)}),
                 AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.GetDamageBlock)),
                 AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.GetDamageEntity)),
                 AccessTools.Method(typeof(ItemActionDynamic), nameof(ItemActionDynamic.GetDamageBlock)),
@@ -952,10 +1362,10 @@ namespace KFCommonUtilityLib.Harmony
             var codes = instructions.ToList();
 
             FieldInfo fld_index = AccessTools.Field(typeof(ItemActionData), nameof(ItemActionData.indexInEntityOfAction));
-            for (int i = 0; i < codes.Count; i++)
+            for (int i = 0; i < codes.Count - 1; i++)
             {
                 var code = codes[i];
-                if (code.LoadsField(fld_index) && codes[i + 1].opcode == OpCodes.Brfalse_S || codes[i + 1].opcode == OpCodes.Brfalse)
+                if (code.LoadsField(fld_index) && (codes[i + 1].opcode == OpCodes.Brfalse_S || codes[i + 1].opcode == OpCodes.Brfalse))
                 {
                     codes.InsertRange(i + 1, new[]
                     {

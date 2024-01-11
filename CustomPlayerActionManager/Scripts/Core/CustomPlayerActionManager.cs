@@ -6,7 +6,7 @@ using System.IO;
 public class CustomPlayerActionManager
 {
     private static Dictionary<string, CustomPlayerActionVersionBase> dict_action_sets = new Dictionary<string, CustomPlayerActionVersionBase>();
-    private static readonly string saveName = "/ActionSetSaves.pref";
+    private static readonly string saveName = "ActionSetSaves.pref";
     private static string saveFile;
 
     public static void InitCustomControls()
@@ -21,9 +21,14 @@ public class CustomPlayerActionManager
 
     private static void InitFolderPath()
     {
-        Assembly assembly = Assembly.GetAssembly(typeof(CustomPlayerActionManager));
-        Mod mod = ModManager.GetModForAssembly(assembly);
-        saveFile = mod.Path + saveName;
+        //Assembly assembly = Assembly.GetAssembly(typeof(CustomPlayerActionManager));
+        Mod mod = ModManager.GetMod("CustomPlayerActionManager");
+        string prevSaveFile = Path.Combine(mod.Path, saveName);
+        saveFile = Path.Combine(GameIO.GetUserGameDataDir(), saveName);
+        if (File.Exists(prevSaveFile))
+        {
+            File.Move(prevSaveFile, saveFile);
+        }
     }
 
     private static void LoadCustomActionSets()

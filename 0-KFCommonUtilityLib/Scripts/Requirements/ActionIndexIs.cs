@@ -10,7 +10,7 @@ public class ActionIndexIs : RequirementBase
     protected int index;
     public override bool IsValid(MinEventParams _params)
     {
-        return _params.ItemActionData?.indexInEntityOfAction == index || index == 0;
+        return index == 0 || _params.ItemActionData?.indexInEntityOfAction == index;
     }
 
     public override bool ParamsValid(MinEventParams _params)

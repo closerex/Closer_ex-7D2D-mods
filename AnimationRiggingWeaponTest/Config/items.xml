@@ -31,13 +31,14 @@
 
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="HoldOpen,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="HoldOpen,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
 				<property name="Sound_start" value="Pistol9mm_Fire"/>
 				<property name="Sound_loop" value="Pistol9mm_Fire"/>
 				<property name="Sound_end" value=""/>
 				<property name="Sound_empty" value="Pistol9mm_dryfire"/>
 				<property name="Sound_reload" value=""/>
+				<property name="ToggleActionSound" value="Pistol9mm_Fire"/>
 				<property name="AutoReload" value="false"/>
 				<property name="Particles_muzzle_fire" value="gunfire_pistol"/>
 				<property name="Particles_muzzle_fire_fpv" value="gunfire_pistol_fpv"/>
@@ -54,6 +55,24 @@
 				<property name="ScopeCameraOffset" value="0,0,0"/>
 					<property name="zoomTriggerEffectPullDualsense" value="PistolZoom"/>
 					<property name="zoomTriggerEffectPullXb" value="PistolZoom"/>
+			</property>
+			<property class="Action3">
+				<property name="Class" value="Ranged"/>
+				<property name="ItemActionModules" value="HoldOpen,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
+				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
+				<property name="Sound_start" value="pistol_s_fire"/>
+				<property name="Sound_loop" value="pistol_s_fire"/>
+				<property name="Sound_end" value=""/>
+				<property name="Sound_empty" value="Pistol9mm_dryfire"/>
+				<property name="Sound_reload" value=""/>
+				<property name="AutoReload" value="false"/>
+				<property name="Particles_muzzle_fire" value="gunfire_pistol"/>
+				<property name="Particles_muzzle_fire_fpv" value="gunfire_pistol_fpv"/>
+				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
+					<property name="triggerEffectTriggerPullDualsense" value="PistolTrigger"/>
+					<property name="triggerEffectTriggerPullXbox" value="PistolTrigger"/>
+					<property name="triggerEffectShootDualsense" value="PistolShoot"/>
+					<property name="triggerEffectShootXbox" value="PistolShoot"/>
 			</property>
 			<effect_group name="gunHandgunT1Pistol">
 				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="true">
@@ -115,6 +134,11 @@
 
 				<passive_effect name="DegradationMax" operation="base_set" value="300,400" tier="1,6" tags="perkGunslinger,9mmGun"/>
 				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkGunslinger,9mmGun"/>
+			</effect_group>
+			<effect_group>
+				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="3"/>
+					<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1.5" tags="perkGunslinger"/>
+					<passive_effect name="RoundsPerMinute" operation="perc_add" value="0.5" tags="perkGunslinger"/>
 			</effect_group>
 		</item>
 		

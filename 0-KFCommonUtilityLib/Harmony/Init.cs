@@ -11,7 +11,7 @@ public class CommonUtilityLibInit : IModApi
         ModEvents.GameAwake.RegisterHandler(CustomEffectEnumManager.InitDefault);
         ModEvents.GameAwake.RegisterHandler(DelayLoadModuleManager.DelayLoad);
         ModEvents.GameAwake.RegisterHandler(ItemActionModuleManager.ClearOutputFolder);
-        ModEvents.GameAwake.RegisterHandler(AssemblyLocator.Init);
+        //ModEvents.GameAwake.RegisterHandler(AssemblyLocator.Init);
         ModEvents.GameAwake.RegisterHandler(MultiActionUtils.SetMinEventArrays);
         ModEvents.GameStartDone.RegisterHandler(RegisterKFEnums);
         ModEvents.GameStartDone.RegisterHandler(AnimationRiggingManager.ParseItemIDs);

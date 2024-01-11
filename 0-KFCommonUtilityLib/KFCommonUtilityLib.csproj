@@ -319,6 +319,36 @@
     <None Include="KFAttached\RigAdaptors\Utils\KFExtensions.cs.meta">
       <DependentUpon>KFExtensions.cs</DependentUpon>
     </None>
+    <None Include="KFAttached\FPSPack\Demo\FPSDemoGUI.cs.meta">
+      <DependentUpon>FPSDemoGUI.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\FPSPack\Demo\FPSDemoReactivator.cs.meta">
+      <DependentUpon>FPSDemoReactivator.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\FPSPack\Demo\FPSFireManager.cs.meta">
+      <DependentUpon>FPSFireManager.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\FPSPack\Demo\MouseLock.cs.meta">
+      <DependentUpon>MouseLock.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\FPSPack\FPSLightCurves.cs.meta">
+      <DependentUpon>FPSLightCurves.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\FPSPack\FPSParticleSystemScaler.cs.meta">
+      <DependentUpon>FPSParticleSystemScaler.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\FPSPack\FPSRandomRotateAngle.cs.meta">
+      <DependentUpon>FPSRandomRotateAngle.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\FPSPack\FPSShaderColorGradient.cs.meta">
+      <DependentUpon>FPSShaderColorGradient.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\FPSPack\FPSShaderFloatCurves.cs.meta">
+      <DependentUpon>FPSShaderFloatCurves.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\FPSPack\MaterialType.cs.meta">
+      <DependentUpon>MaterialType.cs</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Harmony\DisplayMetaAsBuffPatch.cs" />
@@ -327,6 +357,16 @@
     <Compile Include="Harmony\MultiActionReversePatches.cs" />
     <Compile Include="Harmony\RecoilPatch.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationProceduralRecoildAbs.cs" />
+    <Compile Include="KFAttached\FPSPack\Demo\FPSDemoGUI.cs" />
+    <Compile Include="KFAttached\FPSPack\Demo\FPSDemoReactivator.cs" />
+    <Compile Include="KFAttached\FPSPack\Demo\FPSFireManager.cs" />
+    <Compile Include="KFAttached\FPSPack\Demo\MouseLock.cs" />
+    <Compile Include="KFAttached\FPSPack\FPSLightCurves.cs" />
+    <Compile Include="KFAttached\FPSPack\FPSParticleSystemScaler.cs" />
+    <Compile Include="KFAttached\FPSPack\FPSRandomRotateAngle.cs" />
+    <Compile Include="KFAttached\FPSPack\FPSShaderColorGradient.cs" />
+    <Compile Include="KFAttached\FPSPack\FPSShaderFloatCurves.cs" />
+    <Compile Include="KFAttached\FPSPack\MaterialType.cs" />
     <Compile Include="KFAttached\KFUtilAttached\ApexWeaponHudControllerBase.cs" />
     <Compile Include="KFAttached\KFUtilAttached\RigActivationBinding.cs" />
     <Compile Include="KFAttached\KFUtilAttached\WeaponLabelControllerBatch.cs" />
@@ -383,6 +423,7 @@
     <Compile Include="Scripts\Attributes\MethodTargetAttribute.cs" />
     <Compile Include="Scripts\Attributes\PatchTargetAttribute.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdReloadDebug.cs" />
+    <Compile Include="Scripts\Input\PlayerActionToggleMode.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleAlternative.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleDisplayAsBuff.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleHoldOpen.cs" />
@@ -439,7 +480,12 @@
     <Compile Include="Scripts\Utilities\SaveTextureToFileUtility.cs" />
     <Compile Include="Scripts\Utilities\EntityInventoryExtension.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\CustomPlayerActionManager\CustomPlayerActionManager.csproj">
+      <Project>{a32d3424-8454-4b87-9554-ab0734819328}</Project>
+      <Name>CustomPlayerActionManager</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <AttachedScriptFolder>KFAttached</AttachedScriptFolder>

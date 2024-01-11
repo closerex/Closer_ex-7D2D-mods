@@ -28,7 +28,7 @@ public class ActionModuleMetaRecharger
         {
             module = _rechargeModule;
             lastUpdateTime = Time.time;
-            if (!_invData.itemValue.HasMetadata(_rechargeModule.rechargeData, TypedMetadataValue.TypeTag.Float))
+            if (!_invData.itemValue.HasMetadata(_rechargeModule.rechargeData))
             {
                 _invData.itemValue.SetMetadata(_rechargeModule.rechargeData, 0, TypedMetadataValue.TypeTag.Float);
             }
