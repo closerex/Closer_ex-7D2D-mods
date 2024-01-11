@@ -105,5 +105,62 @@ namespace KFCommonUtilityLib.Scripts.Utilities
         {
             entity.MinEventContext.ItemActionData = entity.inventory.holdingItemData.actionData[actionIndex];
         }
+
+        public static string GetPropertyOverrideForAction(ItemValue self, string _propertyName, string _originalValue, int actionIndex)
+        {
+            if (self.Modifications.Length == 0 && self.CosmeticMods.Length == 0)
+            {
+                return _originalValue;
+            }
+            string text = "";
+            string itemName = self.ItemClass.GetItemName();
+            for (int i = 0; i < self.Modifications.Length; i++)
+            {
+                ItemValue itemValue = self.Modifications[i];
+                if (itemValue != null)
+                {
+                    ItemClassModifier itemClassModifier = itemValue.ItemClass as ItemClassModifier;
+                    if (itemClassModifier != null && GetPropertyOverrideForMod(itemClassModifier, _propertyName, itemName, ref text, actionIndex))
+                    {
+                        return text;
+                    }
+                }
+            }
+            text = "";
+            for (int j = 0; j < self.CosmeticMods.Length; j++)
+            {
+                ItemValue itemValue2 = self.CosmeticMods[j];
+                if (itemValue2 != null)
+                {
+                    ItemClassModifier itemClassModifier2 = itemValue2.ItemClass as ItemClassModifier;
+                    if (itemClassModifier2 != null && GetPropertyOverrideForMod(itemClassModifier2, _propertyName, itemName, ref text, actionIndex))
+                    {
+                        return text;
+                    }
+                }
+            }
+            return _originalValue;
+        }
+
+        public static bool GetPropertyOverrideForMod(ItemClassModifier mod, string _propertyName, string _itemName, ref string _value, int actionIndex)
+        {
+            string itemNameWithActionIndex = $"{_itemName}_{actionIndex}";
+            if (mod.PropertyOverrides.ContainsKey(itemNameWithActionIndex) && mod.PropertyOverrides[itemNameWithActionIndex].Values.ContainsKey(_propertyName))
+            {
+                _value = mod.PropertyOverrides[itemNameWithActionIndex].Values[_propertyName];
+                return true;
+            }
+            if (mod.PropertyOverrides.ContainsKey(_itemName) && mod.PropertyOverrides[_itemName].Values.ContainsKey(_propertyName))
+            {
+                _value = mod.PropertyOverrides[_itemName].Values[_propertyName];
+                return true;
+            }
+            if (mod.PropertyOverrides.ContainsKey("*") && mod.PropertyOverrides["*"].Values.ContainsKey(_propertyName))
+            {
+                _value = mod.PropertyOverrides["*"].Values[_propertyName];
+                return true;
+            }
+            return false;
+        }
     }
 }

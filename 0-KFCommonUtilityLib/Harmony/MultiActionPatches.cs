@@ -525,7 +525,7 @@ namespace KFCommonUtilityLib.Harmony
             MethodInfo mtd_addcomponent = AccessTools.Method(typeof(GameObject), nameof(GameObject.AddComponent), Array.Empty<Type>());
             MethodInfo mtd_addcomponentprev = mtd_addcomponent.MakeGenericMethod(typeof(ProjectileMoveScript));
             MethodInfo mtd_addcomponentnew = mtd_addcomponent.MakeGenericMethod(typeof(CustomProjectileMoveScript));
-            foreach(var code in instructions)
+            foreach (var code in instructions)
             {
                 if (code.Calls(mtd_addcomponentprev))
                 {
@@ -762,7 +762,7 @@ namespace KFCommonUtilityLib.Harmony
             for (int i = 0; i < codes.Count; i++)
             {
                 var code = codes[i];
-                if(code.LoadsField(fld_actionindex) && codes[i + 2].opcode == OpCodes.Ldstr)
+                if (code.LoadsField(fld_actionindex) && codes[i + 2].opcode == OpCodes.Ldstr)
                 {
                     string property = codes[i + 2].operand.ToString();
                     property = property.Split('.')[1];
@@ -1146,7 +1146,7 @@ namespace KFCommonUtilityLib.Harmony
             if (itemValue.HasMetadata(MultiActionMapping.STR_MULTI_ACTION_INDEX))
             {
                 int mode = (int)itemValue.GetMetadata(MultiActionMapping.STR_MULTI_ACTION_INDEX);
-                if(MultiActionManager.SetModeForEntity(entityId, mode) && ConnectionManager.Instance.IsServer)
+                if (MultiActionManager.SetModeForEntity(entityId, mode) && ConnectionManager.Instance.IsServer)
                 {
                     ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageEntityActionIndex>().Setup(entityId, mode), false, -1, entityId);
                 }
@@ -1409,5 +1409,45 @@ namespace KFCommonUtilityLib.Harmony
             }
         }
     }
+    #endregion
+
+    #region ItemAction property override
+    [HarmonyPatch]
+    public static class ItemActionPropertyOverridePatches
+    {
+        private static IEnumerable<MethodBase> TargetMethods()
+        {
+            return AppDomain.CurrentDomain.GetAssemblies()
+                                          .SelectMany(a => a.GetTypes())
+                                          .Where(t => t.IsSubclassOf(typeof(ItemAction)))
+                                          .Select(t => AccessTools.Method(t, nameof(ItemAction.OnModificationsChanged)))
+                                          .Where(m => m.IsDeclaredMember());
+        }
+
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase __originalMethod)
+        {
+            Log.Out($"Patching property override method {__originalMethod.DeclaringType.Name}.{__originalMethod.Name}");
+            var codes = instructions.ToList();
+            var mtd_override = AccessTools.Method(typeof(ItemValue), nameof(ItemValue.GetPropertyOverride));
+            var mtd_newoverride = AccessTools.Method(typeof(MultiActionUtils), nameof(MultiActionUtils.GetPropertyOverrideForAction));
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].Calls(mtd_override))
+                {
+                    codes[i].opcode = OpCodes.Call;
+                    codes[i].operand = mtd_newoverride;
+                    codes.InsertRange(i, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(ItemAction), nameof(ItemAction.ActionIndex))
+                    });
+                    i += 2;
+                }
+            }
+            return codes;
+        }
+    }
+
     #endregion
 }
