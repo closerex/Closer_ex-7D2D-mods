@@ -1,17 +1,11 @@
 ﻿using GUI_2;
 using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.Singletons;
-using KFCommonUtilityLib.Scripts.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-[TypeTarget(typeof(ItemActionRanged), typeof(AlternativeData))]
+[TypeTarget(typeof(ItemActionAttack), typeof(AlternativeData))]
 public class ActionModuleAlternative
 {
-    [MethodTargetPrefix(nameof(ItemActionRanged.StartHolding))]
+    [MethodTargetPrefix(nameof(ItemActionAttack.StartHolding))]
     private bool Prefix_StartHolding(ItemActionData _data, AlternativeData __customData)
     {
         __customData.Init();
@@ -30,7 +24,7 @@ public class ActionModuleAlternative
     //    return false;
     //}
 
-    [MethodTargetPrefix(nameof(ItemActionRanged.CancelAction))]
+    [MethodTargetPrefix(nameof(ItemActionAttack.CancelAction))]
     private bool Prefix_CancelAction(ItemActionData _actionData, AlternativeData __customData)
     {
         int actionIndex = __customData.mapping.CurActionIndex;
@@ -41,7 +35,7 @@ public class ActionModuleAlternative
         return false;
     }
 
-    [MethodTargetPrefix(nameof(ItemActionRanged.IsStatChanged))]
+    [MethodTargetPrefix(nameof(ItemActionAttack.IsStatChanged))]
     private bool Prefix_IsStatChanged(ref bool __result)
     {
         var mapping = MultiActionManager.GetMappingForEntity(GameManager.Instance.World.GetPrimaryPlayerId());
@@ -57,15 +51,15 @@ public class ActionModuleAlternative
     //}
 
     //todo: change to action specific property
-    [MethodTargetPostfix(nameof(ItemActionRanged.OnModificationsChanged))]
-    private void Postfix_OnModificationChanged(ItemActionData _data, ItemActionRanged __instance, AlternativeData __customData)
+    [MethodTargetPostfix(nameof(ItemActionAttack.OnModificationsChanged))]
+    private void Postfix_OnModificationChanged(ItemActionData _data, ItemActionAttack __instance, AlternativeData __customData)
     {
         __instance.Properties.ParseString("ToggleActionSound", ref __customData.toggleSound);
         __customData.toggleSound = _data.invData.itemValue.GetPropertyOverride("ToggleActionSound", __customData.toggleSound);
         __customData.mapping.toggleSound = __customData.toggleSound;
     }
 
-    [MethodTargetPrefix(nameof(ItemActionRanged.SetupRadial))]
+    [MethodTargetPrefix(nameof(ItemActionAttack.SetupRadial))]
     private bool Prefix_SetupRadial(XUiC_Radial _xuiRadialWindow, EntityPlayerLocal _epl)
     {
         var radialContextItem = new AlternativeRadialContextItem(MultiActionManager.GetMappingForEntity(_epl.entityId), _xuiRadialWindow, _epl);

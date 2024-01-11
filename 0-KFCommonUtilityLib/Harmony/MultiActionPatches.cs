@@ -10,7 +10,6 @@ using System;
 using KFCommonUtilityLib.Scripts.Singletons;
 using KFCommonUtilityLib.Scripts.NetPackages;
 using XMLData.Item;
-using SteelSeries.GameSense;
 
 namespace KFCommonUtilityLib.Harmony
 {
@@ -1262,32 +1261,32 @@ namespace KFCommonUtilityLib.Harmony
         #endregion
     }
 
-    //KEEP
-    #region Ranged Reload
-    [HarmonyPatch]
-    public static class RangedReloadPatches
-    {
-        private static IEnumerable<MethodBase> TargetMethods()
-        {
-            return new MethodInfo[]
-            {
-                AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.ReloadGun)),
-                AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.ReloadGun)),
-                AccessTools.Method(typeof(ItemActionLauncher), nameof(ItemActionLauncher.ReloadGun))
-            };
-        }
+    //Moved to MultiActionFix
+    //#region Ranged Reload
+    //[HarmonyPatch]
+    //public static class RangedReloadPatches
+    //{
+    //    private static IEnumerable<MethodBase> TargetMethods()
+    //    {
+    //        return new MethodInfo[]
+    //        {
+    //            AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.ReloadGun)),
+    //            AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.ReloadGun)),
+    //            AccessTools.Method(typeof(ItemActionLauncher), nameof(ItemActionLauncher.ReloadGun))
+    //        };
+    //    }
 
-        //Why? Ask TFP why they don't just call base.ReloadGun()
-        [HarmonyPrefix]
-        private static bool Prefix_ReloadGun(ItemActionData _actionData)
-        {
-            int reloadAnimationIndex = MultiActionManager.GetMetaIndexForActionIndex(_actionData.invData.holdingEntity.entityId, _actionData.indexInEntityOfAction);
-            _actionData.invData.holdingEntity.emodel?.avatarController?.UpdateInt(AvatarController.itemActionIndexHash, reloadAnimationIndex, false);
-            _actionData.invData.holdingEntity.MinEventContext.ItemActionData = _actionData;
-            return true;
-        }
-    }
-    #endregion
+    //    //Why? Ask TFP why they don't just call base.ReloadGun()
+    //    [HarmonyPrefix]
+    //    private static bool Prefix_ReloadGun(ItemActionData _actionData)
+    //    {
+    //        int reloadAnimationIndex = MultiActionManager.GetMetaIndexForActionIndex(_actionData.invData.holdingEntity.entityId, _actionData.indexInEntityOfAction);
+    //        _actionData.invData.holdingEntity.emodel?.avatarController?.UpdateInt(AvatarController.itemActionIndexHash, reloadAnimationIndex, false);
+    //        _actionData.invData.holdingEntity.MinEventContext.ItemActionData = _actionData;
+    //        return true;
+    //    }
+    //}
+    //#endregion
 
     //KEEP
     #region Melee action tags

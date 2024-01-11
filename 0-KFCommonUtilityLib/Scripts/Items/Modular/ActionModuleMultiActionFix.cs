@@ -1,83 +1,84 @@
 ﻿using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.Singletons;
-using KFCommonUtilityLib.Scripts.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UAI;
-using static ActionModuleAlternative;
 
-[TypeTarget(typeof(ItemActionRanged), typeof(MultiActionData))]
+[TypeTarget(typeof(ItemActionAttack), typeof(MultiActionData))]
 public class ActionModuleMultiActionFix
 {
-    [MethodTargetPrefix(nameof(ItemActionRanged.StartHolding))]
+    [MethodTargetPrefix(nameof(ItemActionAttack.StartHolding))]
     private bool Prefix_StartHolding(ItemActionData _data, out ItemActionData __state)
     {
         SetAndSaveItemActionData(_data, out __state);
         return true;
     }
 
-    [MethodTargetPostfix(nameof(ItemActionRanged.StartHolding))]
+    [MethodTargetPostfix(nameof(ItemActionAttack.StartHolding))]
     private void Postfix_StartHolding(ItemActionData _data, ItemActionData __state)
     {
         RestoreItemActionData(_data, __state);
     }
 
-    [MethodTargetPrefix(nameof(ItemActionRanged.StopHolding))]
+    [MethodTargetPrefix(nameof(ItemActionAttack.StopHolding))]
     private bool Prefix_StopHolding(ItemActionData _data, out ItemActionData __state)
     {
         SetAndSaveItemActionData(_data, out __state);
         return true;
     }
 
-    [MethodTargetPostfix(nameof(ItemActionRanged.StopHolding))]
+    [MethodTargetPostfix(nameof(ItemActionAttack.StopHolding))]
     private void Postfix_StopHolding(ItemActionData _data, ItemActionData __state)
     {
         RestoreItemActionData(_data, __state);
     }
 
-    [MethodTargetPrefix(nameof(ItemActionRanged.ItemActionEffects), typeof(ItemActionLauncher))]
+    [MethodTargetPrefix(nameof(ItemActionAttack.ItemActionEffects), typeof(ItemActionLauncher))]
     private bool Prefix_ItemActionEffects(ItemActionData _actionData, out ItemActionData __state)
     {
         SetAndSaveItemActionData(_actionData, out __state);
         return true;
     }
 
-    [MethodTargetPostfix(nameof(ItemActionRanged.ItemActionEffects), typeof(ItemActionLauncher))]
+    [MethodTargetPostfix(nameof(ItemActionAttack.ItemActionEffects), typeof(ItemActionLauncher))]
     private void Postfix_ItemActionEffects(ItemActionData _actionData, ItemActionData __state)
     {
         RestoreItemActionData(_actionData, __state);
     }
 
-    [MethodTargetPrefix(nameof(ItemActionRanged.CancelAction))]
+    [MethodTargetPrefix(nameof(ItemActionAttack.CancelAction))]
     private bool Prefix_CancelAction(ItemActionData _actionData, out ItemActionData __state)
     {
         SetAndSaveItemActionData(_actionData, out __state);
         return true;
     }
 
-    [MethodTargetPostfix(nameof(ItemActionRanged.CancelAction))]
+    [MethodTargetPostfix(nameof(ItemActionAttack.CancelAction))]
     private void Postfix_CancelAction(ItemActionData _actionData, ItemActionData __state)
     {
         RestoreItemActionData(_actionData, __state);
     }
 
-    [MethodTargetPrefix(nameof(ItemActionRanged.CancelReload))]
+    [MethodTargetPrefix(nameof(ItemActionAttack.CancelReload))]
     private bool Prefix_CancelReload(ItemActionData _actionData, out ItemActionData __state)
     {
         SetAndSaveItemActionData(_actionData, out __state);
         return true;
     }
 
-    [MethodTargetPostfix(nameof(ItemActionRanged.CancelReload))]
+    [MethodTargetPostfix(nameof(ItemActionAttack.CancelReload))]
     private void Postfix_CancelReload(ItemActionData _actionData, ItemActionData __state)
     {
         RestoreItemActionData(_actionData, __state);
     }
 
-    [MethodTargetPrefix(nameof(ItemActionRanged.OnHUD))]
+    [MethodTargetPrefix(nameof(ItemActionAttack.ReloadGun))]
+    private bool Prefix_ReloadGun(ItemActionData _actionData)
+    {
+        int reloadAnimationIndex = MultiActionManager.GetMetaIndexForActionIndex(_actionData.invData.holdingEntity.entityId, _actionData.indexInEntityOfAction);
+        _actionData.invData.holdingEntity.emodel?.avatarController?.UpdateInt(AvatarController.itemActionIndexHash, reloadAnimationIndex, false);
+        _actionData.invData.holdingEntity.MinEventContext.ItemActionData = _actionData;
+        return true;
+    }
+
+    [MethodTargetPrefix(nameof(ItemActionAttack.OnHUD))]
     private bool Prefix_OnHUD(ItemActionData _actionData)
     {
         if (_actionData.indexInEntityOfAction != _actionData.invData.holdingEntity.MinEventContext.ItemActionData.indexInEntityOfAction)
@@ -85,7 +86,7 @@ public class ActionModuleMultiActionFix
         return true;
     }
 
-    [MethodTargetPrefix(nameof(ItemActionRanged.ExecuteAction))]
+    [MethodTargetPrefix(nameof(ItemActionAttack.ExecuteAction), typeof(ItemActionRanged))]
     private bool Prefix_ExecuteAction(ItemActionData _actionData, MultiActionData __customData)
     {
         //when executing action, set last action index so that correct accuracy is used for drawing crosshair
@@ -96,7 +97,7 @@ public class ActionModuleMultiActionFix
         return true;
     }
 
-    [MethodTargetPrefix("updateAccuracy")]
+    [MethodTargetPrefix("updateAccuracy", typeof(ItemActionRanged))]
     private bool Prefix_updateAccuracy(ItemActionData _actionData, MultiActionData __customData)
     {
         //always update custom accuracy
@@ -105,7 +106,7 @@ public class ActionModuleMultiActionFix
         return true;
     }
 
-    [MethodTargetPostfix("updateAccuracy")]
+    [MethodTargetPostfix("updateAccuracy", typeof(ItemActionRanged))]
     private void Postfix_updateAccuracy(ItemActionData _actionData, MultiActionData __customData)
     {
         //retain rangedData accuracy if it's the last executed action
@@ -120,7 +121,7 @@ public class ActionModuleMultiActionFix
         }
     }
 
-    [MethodTargetPostfix("onHoldingEntityFired")]
+    [MethodTargetPostfix("onHoldingEntityFired", typeof(ItemActionRanged))]
     private void Postfix_onHoldingEntityFired(ItemActionData _actionData, MultiActionData __customData)
     {
         //after firing, if it's the last executed action then update custom accuracy
