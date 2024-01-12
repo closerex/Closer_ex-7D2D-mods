@@ -75,9 +75,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
 
         private static class EnumHolder<T> where T : struct, Enum
         {
-            private static readonly int max, min;
-            private static int requestedMin, requestedMax;
-            private static bool requestMin, requestMax;
+            private static int max, min;
             private static readonly TypeCode typecode;
             private static readonly Dictionary<string, T> dict_default_enums = new Dictionary<string, T>();
             private static readonly LinkedList<(int start, int end)> link_default_holes = new LinkedList<(int start, int end)>();
@@ -125,13 +123,11 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             {
                 if (requestMin && requestedMin >= min)
                 {
-                    EnumHolder<T>.requestMin = requestMin;
-                    EnumHolder<T>.requestedMin = requestedMin;
+                    min = requestedMin;
                 }
                 if (requestMax && requestedMax <= max)
                 {
-                    EnumHolder<T>.requestMax = requestMax;
-                    EnumHolder<T>.requestedMax = requestedMax;
+                    max = requestedMax;
                 }
             }
 
@@ -146,7 +142,6 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                     dict_default_enums.Add(enums[i].ToString(), enums[i]);
                 }
                 var values = enums.Select(e => Convert.ToInt32(e)).OrderBy(i => i).ToArray();
-                int min = requestMin ? requestedMin : EnumHolder<T>.min, max = requestMax ? requestedMax : EnumHolder<T>.max;
                 int nextHole = min;
                 foreach (var value in values)
                 {
@@ -191,7 +186,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                 if (!dict_final_enums.TryGetValue(passive, out var value))
                 {
                     if (link_final_holes.Count == 0)
-                        throw new OverflowException($"Enum count exceeds limit {(requestMax ? requestedMax : max)}!");
+                        throw new OverflowException($"Enum count exceeds limit {max}!");
                     (int start, int end) = link_final_holes.First.Value;
                     link_final_holes.RemoveFirst();
                     value = (T)Enum.ToObject(typeof(T), Convert.ChangeType(start, typecode));
