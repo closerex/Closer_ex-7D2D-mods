@@ -2,11 +2,13 @@
 
 public class CustomParticleLoaderBuffAreaInit : IModApi
 {
-    [System.Obsolete]
+    private static bool inited = false;
     public void InitMod(Mod _modInstance)
     {
+        if (inited)
+            return;
+        inited = true;
         Log.Out(" Loading Patch: " + GetType());
-        HarmonyLib.Harmony.DEBUG = true;
         var harmony = new HarmonyLib.Harmony(GetType().ToString());
         harmony.PatchAll(Assembly.GetExecutingAssembly());
     }

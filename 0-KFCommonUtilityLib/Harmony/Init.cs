@@ -4,9 +4,15 @@ using System.Reflection;
 
 public class CommonUtilityLibInit : IModApi
 {
+    private static bool inited = false;
     public void InitMod(Mod _modInstance)
     {
+        if (inited)
+            return;
+        inited = true;
         Log.Out(" Loading Patch: " + GetType());
+        CustomEffectEnumManager.RegisterEnumType<MinEventTypes>();
+        CustomEffectEnumManager.RegisterEnumType<PassiveEffects>();
         ModEvents.GameAwake.RegisterHandler(CommonUtilityPatch.InitShotStates);
         ModEvents.GameAwake.RegisterHandler(CustomEffectEnumManager.InitDefault);
         ModEvents.GameAwake.RegisterHandler(DelayLoadModuleManager.DelayLoad);
@@ -23,19 +29,19 @@ public class CommonUtilityLibInit : IModApi
 
     private static void RegisterKFEnums()
     {
-        CustomEnums.onSelfMagzineDeplete = CustomEffectEnumManager.RegisterOrGetTrigger("onSelfMagzineDeplete");
-        CustomEnums.onReloadAboutToStart = CustomEffectEnumManager.RegisterOrGetTrigger("onReloadAboutToStart");
+        CustomEnums.onSelfMagzineDeplete = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onSelfMagzineDeplete");
+        CustomEnums.onReloadAboutToStart = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onReloadAboutToStart");
 
-        CustomEnums.ReloadSpeedRatioFPV2TPV = CustomEffectEnumManager.RegisterOrGetPassive("ReloadSpeedRatioFPV2TPV");
-        CustomEnums.RecoilSnappiness = CustomEffectEnumManager.RegisterOrGetPassive("RecoilSnappiness");
-        CustomEnums.RecoilReturnSpeed = CustomEffectEnumManager.RegisterOrGetPassive("RecoilReturnSpeed");
-        CustomEnums.ProjectileImpactDamagePercentBlock = CustomEffectEnumManager.RegisterOrGetPassive("ProjectileImpactDamagePercentBlock");
-        CustomEnums.ProjectileImpactDamagePercentEntity = CustomEffectEnumManager.RegisterOrGetPassive("ProjectileImpactDamagePercentEntity");
-        CustomEnums.RechargeDataValue = CustomEffectEnumManager.RegisterOrGetPassive("RechargeDataValue");
-        CustomEnums.RechargeDataDecrease = CustomEffectEnumManager.RegisterOrGetPassive("RechargeDataDecrease");
-        CustomEnums.RechargeDataInterval = CustomEffectEnumManager.RegisterOrGetPassive("RechargeDataInterval");
-        CustomEnums.RechargeDataMaximum = CustomEffectEnumManager.RegisterOrGetPassive("RechargeDataMaximum");
-        CustomEnums.ConsumptionValue = CustomEffectEnumManager.RegisterOrGetPassive("ConsumptionValue");
+        CustomEnums.ReloadSpeedRatioFPV2TPV = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("ReloadSpeedRatioFPV2TPV");
+        CustomEnums.RecoilSnappiness = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RecoilSnappiness");
+        CustomEnums.RecoilReturnSpeed = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RecoilReturnSpeed");
+        CustomEnums.ProjectileImpactDamagePercentBlock = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("ProjectileImpactDamagePercentBlock");
+        CustomEnums.ProjectileImpactDamagePercentEntity = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("ProjectileImpactDamagePercentEntity");
+        CustomEnums.RechargeDataValue = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RechargeDataValue");
+        CustomEnums.RechargeDataDecrease = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RechargeDataDecrease");
+        CustomEnums.RechargeDataInterval = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RechargeDataInterval");
+        CustomEnums.RechargeDataMaximum = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RechargeDataMaximum");
+        CustomEnums.ConsumptionValue = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("ConsumptionValue");
     }
 }
 
