@@ -6,57 +6,204 @@ namespace KFCommonUtilityLib.Scripts.Singletons
 {
     public static class CustomEffectEnumManager
     {
-        private static readonly Dictionary<string, PassiveEffects> dict_default_passive = new Dictionary<string, PassiveEffects>();
-        private static readonly Dictionary<string, MinEventTypes> dict_default_trigger = new Dictionary<string, MinEventTypes>();
-        private static Dictionary<string, PassiveEffects> dict_final_passive = new Dictionary<string, PassiveEffects>();
-        private static Dictionary<string, MinEventTypes> dict_final_trigger = new Dictionary<string, MinEventTypes>();
+        private static event Action OnInitDefault;
+        private static event Action OnInitFinal;
+        private static event Action OnPrintResult;
+
+        //call this in Init()
+        public static void RegisterEnumType<T>(bool requestMin = false, int requestedMin = 0, bool requestMax = false, int requestedMax = int.MaxValue) where T : struct, Enum
+        {
+            if (EnumHolder<T>.Registered)
+                return;
+            EnumHolder<T>.Registered = true;
+            EnumHolder<T>.RequestMinMax(requestMin, requestedMin, requestMax, requestedMax);
+            OnInitDefault += EnumHolder<T>.InitDefault;
+            OnInitFinal += EnumHolder<T>.InitFinal;
+            OnPrintResult += EnumHolder<T>.PrintResult;
+        }
 
         //hooked to GameAwake
         public static void InitDefault()
         {
-            for (PassiveEffects i = 0; i <= PassiveEffects.Count; i++)
-                dict_default_passive.Add(i.ToString(), i);
-            for (MinEventTypes i = 0; i <= MinEventTypes.COUNT; i++)
-                dict_default_trigger.Add(i.ToString(), i);
+            OnInitDefault?.Invoke();
         }
 
         //patched to GameManager.StartGame
         public static void InitFinal()
         {
-            dict_final_passive = new Dictionary<string, PassiveEffects>(dict_default_passive);
-            dict_final_trigger = new Dictionary<string, MinEventTypes>(dict_default_trigger);
+            OnInitFinal?.Invoke();
         }
 
         public static void PrintResults()
         {
-            Log.Out("Passive Effects:\n" + string.Join("\n", dict_final_passive.Select(p => $"passive: {p.Key} value: {p.Value}")));
-            Log.Out("Trigger Effects:\n" + string.Join("\n", dict_final_trigger.Select(p => $"trigger: {p.Key} value: {p.Value}")));
+            OnPrintResult?.Invoke();
         }
 
         //only call these from callbacks hooked to ModEvents.GameStartDone and cache the results for future usage
         //patched to PassiveEffect.ParsePassiveEffect
-        public static PassiveEffects RegisterOrGetPassive(string passive)
+        public static T RegisterOrGetEnum<T>(string name) where T : struct, Enum
         {
-            if (!dict_final_passive.TryGetValue(passive, out var value))
+            if (!EnumHolder<T>.Registered)
             {
-                if (dict_final_passive.Count >= byte.MaxValue)
-                    throw new OverflowException("Passive effect count exceeds limit 255!");
-                value = (PassiveEffects)(byte)dict_final_passive.Count;
-                dict_final_passive.Add(passive, value);
+                throw new Exception($"Enum not registered: {typeof(T).Name}");
             }
-            return value;
+            return EnumHolder<T>.RegisterOrGetEnum(name);
         }
 
-        //patched to MinEventActionBase.ParseXmlAttribute
-        public static MinEventTypes RegisterOrGetTrigger(string trigger)
-        {
-            if (!dict_final_trigger.TryGetValue(trigger, out var value))
-            {
-                value = (MinEventTypes)dict_final_trigger.Count;
-                dict_final_trigger.Add(trigger, value);
-            }
-            return value;
-        }
+        //public static PassiveEffects RegisterOrGetPassive(string passive)
+        //{
+        //    if (!dict_final_passive.TryGetValue(passive, out var value))
+        //    {
+        //        if (dict_final_passive.Count >= byte.MaxValue)
+        //            throw new OverflowException("Passive effect count exceeds limit 255!");
+        //        value = (PassiveEffects)(byte)dict_final_passive.Count;
+        //        dict_final_passive.Add(passive, value);
+        //    }
+        //    return value;
+        //}
 
+        ////patched to MinEventActionBase.ParseXmlAttribute
+        //public static MinEventTypes RegisterOrGetTrigger(string trigger)
+        //{
+        //    if (!dict_final_trigger.TryGetValue(trigger, out var value))
+        //    {
+        //        value = (MinEventTypes)dict_final_trigger.Count;
+        //        dict_final_trigger.Add(trigger, value);
+        //    }
+        //    return value;
+        //}
+
+        private static class EnumHolder<T> where T : struct, Enum
+        {
+            private static readonly int max, min;
+            private static int requestedMin, requestedMax;
+            private static bool requestMin, requestMax;
+            private static readonly TypeCode typecode;
+            private static readonly Dictionary<string, T> dict_default_enums = new Dictionary<string, T>();
+            private static readonly LinkedList<(int start, int end)> link_default_holes = new LinkedList<(int start, int end)>();
+            private static Dictionary<string, T> dict_final_enums = new Dictionary<string, T>();
+            private static LinkedList<(int start, int end)> link_final_holes = new LinkedList<(int start, int end)>();
+            public static bool Registered { get; set; } = false;
+            static EnumHolder()
+            {
+                Type underlying = Enum.GetUnderlyingType(typeof(T));
+                typecode = Type.GetTypeCode(underlying);
+                switch (typecode)
+                {
+                    case TypeCode.Byte:
+                        min = 0;
+                        max = byte.MaxValue;
+                        break;
+                    case TypeCode.SByte:
+                        min = sbyte.MinValue;
+                        max = sbyte.MaxValue;
+                        break;
+                    case TypeCode.Int16:
+                        min = short.MinValue;
+                        max = short.MaxValue;
+                        break;
+                    case TypeCode.UInt16:
+                        min = 0;
+                        max = ushort.MaxValue;
+                        break;
+                    case TypeCode.Int32:
+                    case TypeCode.Int64:
+                        min = int.MinValue;
+                        max = int.MaxValue;
+                        break;
+                    case TypeCode.UInt32:
+                    case TypeCode.UInt64:
+                        min = 0;
+                        max = int.MaxValue;
+                        break;
+                    default:
+                        throw new Exception($"Invalid underlying type for enum {typeof(T).Name}");
+                }
+            }
+
+            public static void RequestMinMax(bool requestMin, int requestedMin, bool requestMax, int requestedMax)
+            {
+                if (requestMin && requestedMin >= min)
+                {
+                    EnumHolder<T>.requestMin = requestMin;
+                    EnumHolder<T>.requestedMin = requestedMin;
+                }
+                if (requestMax && requestedMax <= max)
+                {
+                    EnumHolder<T>.requestMax = requestMax;
+                    EnumHolder<T>.requestedMax = requestedMax;
+                }
+            }
+
+            public static void InitDefault()
+            {
+                dict_default_enums.Clear();
+                link_default_holes.Clear();
+                var total = Enum.GetNames(typeof(T)).Length;
+                var enums = Enum.GetValues(typeof(T)).Cast<T>().ToArray();
+                for (int i = 0; i < total; i++)
+                {
+                    dict_default_enums.Add(enums[i].ToString(), enums[i]);
+                }
+                var values = enums.Select(e => Convert.ToInt32(e)).OrderBy(i => i).ToArray();
+                int min = requestMin ? requestedMin : EnumHolder<T>.min, max = requestMax ? requestedMax : EnumHolder<T>.max;
+                int nextHole = min;
+                foreach (var value in values)
+                {
+                    if (nextHole < value)
+                    {
+                        link_default_holes.AddLast((nextHole, Math.Min(value - 1, max)));
+                        if (value >= max)
+                        {
+                            nextHole = max;
+                            break;
+                        }
+                        nextHole = value + 1;
+                    }
+                    else if (nextHole == value)
+                    {
+                        if (value >= max)
+                        {
+                            break;
+                        }
+                        nextHole++;
+                    }
+                }
+                if (nextHole <= max && values[values.Length - 1] < max)
+                {
+                    link_default_holes.AddLast((nextHole, max));
+                }
+            }
+
+            public static void InitFinal()
+            {
+                dict_final_enums = new Dictionary<string, T>(dict_default_enums);
+                link_final_holes = new LinkedList<(int start, int end)>(link_default_holes);
+            }
+
+            public static void PrintResult()
+            {
+                //Log.Out($"{typeof(T).Name}:\n" + string.Join("\n", dict_final_enums.Select(p => $"name: {p.Key} value: {p.Value}")));
+            }
+
+            public static T RegisterOrGetEnum(string passive)
+            {
+                if (!dict_final_enums.TryGetValue(passive, out var value))
+                {
+                    if (link_final_holes.Count == 0)
+                        throw new OverflowException($"Enum count exceeds limit {(requestMax ? requestedMax : max)}!");
+                    (int start, int end) = link_final_holes.First.Value;
+                    link_final_holes.RemoveFirst();
+                    value = (T)Enum.ToObject(typeof(T), Convert.ChangeType(start, typecode));
+                    dict_final_enums.Add(passive, value);
+                    if (start < end)
+                    {
+                        start++;
+                        link_final_holes.AddFirst((start, end));
+                    }
+                }
+                return value;
+            }
+        }
     }
 }
