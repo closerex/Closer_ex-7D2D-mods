@@ -120,6 +120,12 @@ public class ActionModuleMultiActionFix
             (rangedData.lastAccuracy, __customData.lastAccuracy) = (__customData.lastAccuracy, rangedData.lastAccuracy);
         }
     }
+    [MethodTargetPrefix("onHoldingEntityFired", typeof(ItemActionRanged))]
+    private void Prefix_onHoldingEntityFired(ItemActionData _actionData)
+    {
+        if (!_actionData.invData.holdingEntity.isEntityRemote)
+            _actionData.invData.holdingEntity.emodel.avatarController.UpdateInt(AvatarController.itemActionIndexHash, _actionData.indexInEntityOfAction);
+    }
 
     [MethodTargetPostfix("onHoldingEntityFired", typeof(ItemActionRanged))]
     private void Postfix_onHoldingEntityFired(ItemActionData _actionData, MultiActionData __customData)
@@ -139,8 +145,8 @@ public class ActionModuleMultiActionFix
 
     private static void RestoreItemActionData(ItemActionData _actionData, ItemActionData lastActionData)
     {
-        _actionData.invData.holdingEntity.MinEventContext.ItemActionData = lastActionData;
-        lastActionData = null;
+        if (lastActionData != null)
+            _actionData.invData.holdingEntity.MinEventContext.ItemActionData = lastActionData;
     }
 
     public class MultiActionData

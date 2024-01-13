@@ -9,6 +9,6 @@ public class HoldingActionIndexIs : ActionIndexIs
 {
     public override bool IsValid(MinEventParams _params)
     {
-        return index == 0 || MultiActionManager.GetActionIndexForEntityID(_params.Self?.entityId ?? -1) == index;
+        return MultiActionManager.GetActionIndexForEntityID(_params.Self?.entityId ?? -1) == index;
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KFCommonUtilityLib.Scripts.Singletons;
+using System;
 using UnityEngine;
 using static Inventory;
 
@@ -51,6 +52,14 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 MinEventTypes.onSelfPrimaryActionEnd,
                 MinEventTypes.onSelfPrimaryActionEnd,
             };
+        }
+
+        public static int GetActionIndexForItemValue(this ItemValue self)
+        {
+            object val = self.GetMetadata(MultiActionMapping.STR_MULTI_ACTION_INDEX);
+            if (val is int index)
+                return index;
+            return 0;
         }
 
         public static string GetPropertyName(int index, string prop)

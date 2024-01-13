@@ -655,8 +655,8 @@ namespace KFCommonUtilityLib.Harmony
                 {
                     codes.InsertRange(i + 10, new[]
                     {
-                        new CodeInstruction(OpCodes.Ldarg_1),
-                        CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.GetActionIndexForEntity)),
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetActionIndexForItemValue)),
                         new CodeInstruction(OpCodes.Stloc_S, lbd_index)
                     });
                 }
