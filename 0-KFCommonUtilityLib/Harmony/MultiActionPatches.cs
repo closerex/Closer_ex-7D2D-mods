@@ -279,7 +279,7 @@ namespace KFCommonUtilityLib.Harmony
         #region IsFocusBlockInside?
         [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.IsFocusBlockInside))]
         [HarmonyPrefix]
-        private static bool Prefix_IsFocusBlockInside(ItemClass __instance, ref bool __result)
+        private static bool Prefix_IsFocusBlockInside_ItemClass(ItemClass __instance, ref bool __result)
         {
             __result = __instance.Actions.All(action => action != null && action.IsFocusBlockInside());
             return false;
@@ -545,6 +545,22 @@ namespace KFCommonUtilityLib.Harmony
             var launcherValue = script.itemValueLauncher;
             projectileValue.Activated = (byte)(Mathf.Clamp01(script.actionData.strainPercent) * byte.MaxValue);
             MultiActionUtils.CopyLauncherValueToProjectile(launcherValue, projectileValue, script.actionData.indexInEntityOfAction);
+        }
+
+        //
+        [HarmonyPatch(typeof(ProjectileMoveScript), nameof(ProjectileMoveScript.Fire))]
+        [HarmonyPrefix]
+        private static bool Prefix_Fire_ProjectileParams(ProjectileMoveScript __instance, Vector3 _idealStartPosition, Vector3 _flyDirection, Entity _firingEntity, int _hmOverride, float _radius)
+        {
+            if (_firingEntity is EntityAlive entityAlive)
+                entityAlive.MinEventContext.ItemActionData = __instance.actionData;
+            if (__instance is CustomProjectileMoveScript)
+            {
+                __instance.ProjectileFire(_idealStartPosition, _flyDirection, _firingEntity, _hmOverride, _radius);
+                return false;
+            }
+
+            return true;
         }
         #endregion
 
@@ -1259,6 +1275,63 @@ namespace KFCommonUtilityLib.Harmony
             return codes;
         }
         #endregion
+
+        private static int hash = Animator.StringToHash("WeaponFire");
+        [HarmonyPatch(typeof(Animator), nameof(Animator.SetTrigger), typeof(string))]
+        [HarmonyPostfix]
+        private static void Postfix_test1(string name, Animator __instance)
+        {
+            if (Animator.StringToHash(name) == hash)
+            {
+                Log.Out($"Set weapon fire trigger, action index is {__instance.GetInteger(MultiActionUtils.ExecutingActionIndexHash)}\n" + StackTraceUtility.ExtractStackTrace());
+            }
+        }
+
+        [HarmonyPatch(typeof(Animator), nameof(Animator.SetTrigger), typeof(int))]
+        [HarmonyPostfix]
+        private static void Postfix_test2(int id, Animator __instance)
+        {
+            if (id == hash)
+            {
+                Log.Out($"Set weapon fire trigger, action index is {__instance.GetInteger(MultiActionUtils.ExecutingActionIndexHash)}\n" + StackTraceUtility.ExtractStackTrace());
+            }
+        }
+
+        [HarmonyPatch(typeof(Animator), nameof(Animator.ResetTrigger), typeof(string))]
+        private static void Postfix_test3(string name, Animator __instance)
+        {
+            if (Animator.StringToHash(name) == hash)
+            {
+                Log.Out($"Reset weapon fire trigger, action index is {__instance.GetInteger(MultiActionUtils.ExecutingActionIndexHash)}\n" + StackTraceUtility.ExtractStackTrace());
+            }
+        }
+
+        [HarmonyPatch(typeof(Animator), nameof(Animator.ResetTrigger), typeof(int))]
+        private static void Postfix_test4(int id, Animator __instance)
+        {
+            if (id == hash)
+            {
+                Log.Out($"Reset weapon fire trigger, action index is {__instance.GetInteger(MultiActionUtils.ExecutingActionIndexHash)}\n" + StackTraceUtility.ExtractStackTrace());
+            }
+        }
+
+        [HarmonyPatch(typeof(Animator), nameof(Animator.SetBool), typeof(string), typeof(bool))]
+        private static void Postfix_test5(string name, Animator __instance)
+        {
+            if (Animator.StringToHash(name) == hash)
+            {
+                Log.Out($"Set weapon fire trigger, action index is {__instance.GetInteger(MultiActionUtils.ExecutingActionIndexHash)}\n" + StackTraceUtility.ExtractStackTrace());
+            }
+        }
+
+        [HarmonyPatch(typeof(Animator), nameof(Animator.SetBool), typeof(int), typeof(bool))]
+        private static void Postfix_test6(int id, Animator __instance)
+        {
+            if (id == hash)
+            {
+                Log.Out($"Reset weapon fire trigger, action index is {__instance.GetInteger(MultiActionUtils.ExecutingActionIndexHash)}\n" + StackTraceUtility.ExtractStackTrace());
+            }
+        }
     }
 
     //Moved to MultiActionFix

@@ -112,6 +112,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                     {
                         itemValue.SelectedAmmoTypeIndex = (byte)(int)res;
                     }
+                    entity.emodel?.avatarController?.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, CurActionIndex, false);
                 }
             }
         }
@@ -142,7 +143,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
 
         public int ModeCount => indices.modeCount;
 
-        //while mapping object is changed on StartHolding, it's initialized on createModifierData
+        //mapping object is created on StartHolding
         //we set the curIndex field instead of the property, according to following situations:
         //1. it's a newly created ItemValue, meta and ammo index belongs to action0, no saving is needed;
         //2. it's an existing ItemValue, meta and ammo index is set to its action index, still saving is unnecessary.
@@ -181,6 +182,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                 }
             }
             this.toggleSound = toggleSound;
+            entity.emodel?.avatarController?.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, CurActionIndex, false);
         }
 
         public int GetModeForAction(int actionIndex)

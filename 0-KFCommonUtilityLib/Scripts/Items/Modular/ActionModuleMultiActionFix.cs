@@ -1,5 +1,6 @@
 ﻿using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.Singletons;
+using KFCommonUtilityLib.Scripts.Utilities;
 
 [TypeTarget(typeof(ItemActionAttack), typeof(MultiActionData))]
 public class ActionModuleMultiActionFix
@@ -72,8 +73,8 @@ public class ActionModuleMultiActionFix
     [MethodTargetPrefix(nameof(ItemActionAttack.ReloadGun))]
     private bool Prefix_ReloadGun(ItemActionData _actionData)
     {
-        int reloadAnimationIndex = MultiActionManager.GetMetaIndexForActionIndex(_actionData.invData.holdingEntity.entityId, _actionData.indexInEntityOfAction);
-        _actionData.invData.holdingEntity.emodel?.avatarController?.UpdateInt(AvatarController.itemActionIndexHash, reloadAnimationIndex, false);
+        //int reloadAnimationIndex = MultiActionManager.GetMetaIndexForActionIndex(_actionData.invData.holdingEntity.entityId, _actionData.indexInEntityOfAction);
+        _actionData.invData.holdingEntity.emodel?.avatarController?.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, _actionData.indexInEntityOfAction, false);
         _actionData.invData.holdingEntity.MinEventContext.ItemActionData = _actionData;
         return true;
     }
@@ -97,45 +98,51 @@ public class ActionModuleMultiActionFix
         return true;
     }
 
-    [MethodTargetPrefix("updateAccuracy", typeof(ItemActionRanged))]
-    private bool Prefix_updateAccuracy(ItemActionData _actionData, MultiActionData __customData)
+    //[MethodTargetPrefix("updateAccuracy", typeof(ItemActionRanged))]
+    //private bool Prefix_updateAccuracy(ItemActionData _actionData, MultiActionData __customData)
+    //{
+    //    if (_actionData.invData.holdingEntity is EntityPlayerLocal player && MultiActionManager.GetActionIndexForEntityID(player.entityId) == _actionData.indexInEntityOfAction)
+    //        return true;
+    //    //always update custom accuracy
+    //    ItemActionRanged.ItemActionDataRanged rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
+    //    (rangedData.lastAccuracy, __customData.lastAccuracy) = (__customData.lastAccuracy, rangedData.lastAccuracy);
+    //    return true;
+    //}
+
+    //[MethodTargetPostfix("updateAccuracy", typeof(ItemActionRanged))]
+    //private void Postfix_updateAccuracy(ItemActionData _actionData, MultiActionData __customData)
+    //{
+    //    //retain rangedData accuracy if it's the last executed action
+    //    ItemActionRanged.ItemActionDataRanged rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
+    //    if (_actionData.invData.holdingEntity is EntityPlayerLocal player && MultiActionManager.GetActionIndexForEntityID(player.entityId) == _actionData.indexInEntityOfAction)
+    //    {
+    //        __customData.lastAccuracy = rangedData.lastAccuracy;
+    //    }
+    //    else
+    //    {
+    //        (rangedData.lastAccuracy, __customData.lastAccuracy) = (__customData.lastAccuracy, rangedData.lastAccuracy);
+    //    }
+    //}
+    [MethodTargetPrefix("onHoldingEntityFired", typeof(ItemActionRanged))]
+    private bool Prefix_onHoldingEntityFired(ItemActionData _actionData)
     {
-        //always update custom accuracy
-        ItemActionRanged.ItemActionDataRanged rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
-        (rangedData.lastAccuracy, __customData.lastAccuracy) = (__customData.lastAccuracy, rangedData.lastAccuracy);
+        if (!_actionData.invData.holdingEntity.isEntityRemote)
+        {
+            _actionData.invData.holdingEntity?.emodel?.avatarController.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, _actionData.indexInEntityOfAction);
+            _actionData.invData.holdingEntity?.emodel?.avatarController.CancelEvent("WeaponFire");
+        }
         return true;
     }
 
-    [MethodTargetPostfix("updateAccuracy", typeof(ItemActionRanged))]
-    private void Postfix_updateAccuracy(ItemActionData _actionData, MultiActionData __customData)
-    {
-        //retain rangedData accuracy if it's the last executed action
-        ItemActionRanged.ItemActionDataRanged rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
-        if (_actionData.invData.holdingEntity is EntityPlayerLocal player && MultiActionManager.GetActionIndexForEntityID(player.entityId) == _actionData.indexInEntityOfAction)
-        {
-            __customData.lastAccuracy = rangedData.lastAccuracy;
-        }
-        else
-        {
-            (rangedData.lastAccuracy, __customData.lastAccuracy) = (__customData.lastAccuracy, rangedData.lastAccuracy);
-        }
-    }
-    [MethodTargetPrefix("onHoldingEntityFired", typeof(ItemActionRanged))]
-    private void Prefix_onHoldingEntityFired(ItemActionData _actionData)
-    {
-        if (!_actionData.invData.holdingEntity.isEntityRemote)
-            _actionData.invData.holdingEntity.emodel.avatarController.UpdateInt(AvatarController.itemActionIndexHash, _actionData.indexInEntityOfAction);
-    }
-
-    [MethodTargetPostfix("onHoldingEntityFired", typeof(ItemActionRanged))]
-    private void Postfix_onHoldingEntityFired(ItemActionData _actionData, MultiActionData __customData)
-    {
-        //after firing, if it's the last executed action then update custom accuracy
-        if (_actionData.invData.holdingEntity is EntityPlayerLocal player && MultiActionManager.GetActionIndexForEntityID(player.entityId) == _actionData.indexInEntityOfAction)
-        {
-            __customData.lastAccuracy = ((ItemActionRanged.ItemActionDataRanged)_actionData).lastAccuracy;
-        }
-    }
+    //[MethodTargetPostfix("onHoldingEntityFired", typeof(ItemActionRanged))]
+    //private void Postfix_onHoldingEntityFired(ItemActionData _actionData, MultiActionData __customData)
+    //{
+    //    //after firing, if it's the last executed action then update custom accuracy
+    //    if (_actionData.invData.holdingEntity is EntityPlayerLocal player && MultiActionManager.GetActionIndexForEntityID(player.entityId) == _actionData.indexInEntityOfAction)
+    //    {
+    //        __customData.lastAccuracy = ((ItemActionRanged.ItemActionDataRanged)_actionData).lastAccuracy;
+    //    }
+    //}
 
     private static void SetAndSaveItemActionData(ItemActionData _actionData, out ItemActionData lastActionData)
     {

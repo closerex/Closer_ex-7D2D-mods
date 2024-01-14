@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using UAI;
 using UnityEngine;
+using static FullautoLauncher.Scripts.ProjectileManager.ProjectileParams;
 using static Inventory;
 
 public class FLARCompatibilityPatchInit : IModApi
@@ -36,45 +37,45 @@ public static class FLARPatch
         __instance.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName("ProjectileJoint", _invData.model);
     }
 
-    //projectile damage patch
-    [HarmonyPatch(typeof(ProjectileParams), nameof(ProjectileParams.CheckCollision))]
-    [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_checkCollision_ProjectileMoveScript(IEnumerable<CodeInstruction> instructions)
-    {
-        var codes = instructions.ToList();
-        var mtd_block = AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.GetDamageBlock));
-        var mtd_entity = AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.GetDamageEntity));
+    ////projectile damage patch
+    //[HarmonyPatch(typeof(ProjectileParams), nameof(ProjectileParams.CheckCollision))]
+    //[HarmonyTranspiler]
+    //private static IEnumerable<CodeInstruction> Transpiler_checkCollision_ProjectileMoveScript(IEnumerable<CodeInstruction> instructions)
+    //{
+    //    var codes = instructions.ToList();
+    //    var mtd_block = AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.GetDamageBlock));
+    //    var mtd_entity = AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.GetDamageEntity));
 
-        for (int i = 0; i < codes.Count; i++)
-        {
-            if (codes[i].Calls(mtd_block))
-            {
-                codes.InsertRange(i + 1, new CodeInstruction[]
-                {
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    CodeInstruction.LoadField(typeof(ProjectileParams), nameof(ProjectileParams.info)),
-                    CodeInstruction.LoadField(typeof(ProjectileParams.ItemInfo), nameof(ProjectileParams.ItemInfo.itemValueProjectile)),
-                    new CodeInstruction(OpCodes.Ldarg_1),
-                    CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(CommonUtilityPatch.GetProjectileBlockDamagePerc)),
-                    new CodeInstruction(OpCodes.Mul)
-                });
-            }
-            else if (codes[i].Calls(mtd_entity))
-            {
-                codes.InsertRange(i + 1, new CodeInstruction[]
-                {
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    CodeInstruction.LoadField(typeof(ProjectileParams), nameof(ProjectileParams.info)),
-                    CodeInstruction.LoadField(typeof(ProjectileParams.ItemInfo), nameof(ProjectileParams.ItemInfo.itemValueProjectile)),
-                    new CodeInstruction(OpCodes.Ldarg_1),
-                    CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(CommonUtilityPatch.GetProjectileEntityDamagePerc)),
-                    new CodeInstruction(OpCodes.Mul)
-                });
-            }
-        }
+    //    for (int i = 0; i < codes.Count; i++)
+    //    {
+    //        if (codes[i].Calls(mtd_block))
+    //        {
+    //            codes.InsertRange(i + 1, new CodeInstruction[]
+    //            {
+    //                new CodeInstruction(OpCodes.Ldarg_0),
+    //                CodeInstruction.LoadField(typeof(ProjectileParams), nameof(ProjectileParams.info)),
+    //                CodeInstruction.LoadField(typeof(ProjectileParams.ItemInfo), nameof(ProjectileParams.ItemInfo.itemValueProjectile)),
+    //                new CodeInstruction(OpCodes.Ldarg_1),
+    //                CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(CommonUtilityPatch.GetProjectileBlockDamagePerc)),
+    //                new CodeInstruction(OpCodes.Mul)
+    //            });
+    //        }
+    //        else if (codes[i].Calls(mtd_entity))
+    //        {
+    //            codes.InsertRange(i + 1, new CodeInstruction[]
+    //            {
+    //                new CodeInstruction(OpCodes.Ldarg_0),
+    //                CodeInstruction.LoadField(typeof(ProjectileParams), nameof(ProjectileParams.info)),
+    //                CodeInstruction.LoadField(typeof(ProjectileParams.ItemInfo), nameof(ProjectileParams.ItemInfo.itemValueProjectile)),
+    //                new CodeInstruction(OpCodes.Ldarg_1),
+    //                CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(CommonUtilityPatch.GetProjectileEntityDamagePerc)),
+    //                new CodeInstruction(OpCodes.Mul)
+    //            });
+    //        }
+    //    }
 
-        return codes;
-    }
+    //    return codes;
+    //}
 
     //multi action patch
     [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemActionBetterLauncher.StartHolding))]
@@ -97,6 +98,39 @@ public static class FLARPatch
         var projectileValue = info.itemValueProjectile;
         var launcherValue = info.itemValueLauncher;
         MultiActionUtils.CopyLauncherValueToProjectile(launcherValue, projectileValue, ItemActionDataBetterLauncher.indexInEntityOfAction);
+    }
+
+    [HarmonyPatch(typeof(ProjectileParams), nameof(ProjectileParams.Fire))]
+    [HarmonyPrefix]
+    private static bool Prefix_Fire_ProjectileParams(ItemInfo _info, Entity _firingEntity)
+    {
+        if (_firingEntity is EntityAlive entityAlive)
+            entityAlive.MinEventContext.ItemActionData = _info.actionData;
+        return true;
+    }
+
+    [HarmonyPatch(typeof(ProjectileParams), nameof(ProjectileParams.Fire))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_Fire_ProjectileParams(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        FieldInfo fld_launcher = AccessTools.Field(typeof(ProjectileParams.ItemInfo), nameof(ProjectileParams.ItemInfo.itemValueLauncher));
+        FieldInfo fld_projectile = AccessTools.Field(typeof(ProjectileParams.ItemInfo), nameof(ProjectileParams.ItemInfo.itemValueProjectile));
+        MethodInfo mtd_getvalue = AccessTools.Method(typeof(EffectManager), nameof(EffectManager.GetValue));
+        MethodInfo mtd_getvaluenew = AccessTools.Method(typeof(MultiActionReversePatches), nameof(MultiActionReversePatches.ProjectileGetValue));
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].LoadsField(fld_launcher))
+            {
+                codes[i].operand = fld_projectile;
+            }
+            else if (codes[i].Calls(mtd_getvalue))
+            {
+                codes[i].operand = mtd_getvaluenew;
+            }
+        }
+        return codes;
     }
 
     [HarmonyPatch(typeof(ProjectileParams), nameof(ProjectileParams.CheckCollision))]

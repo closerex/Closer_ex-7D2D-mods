@@ -39,7 +39,7 @@ public class ActionModuleAlternative
     private bool Prefix_IsStatChanged(ref bool __result)
     {
         var mapping = MultiActionManager.GetMappingForEntity(GameManager.Instance.World.GetPrimaryPlayerId());
-        __result = mapping != null && mapping.CheckDisplayMode();
+        __result |= mapping != null && mapping.CheckDisplayMode();
         return false;
     }
 

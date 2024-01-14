@@ -1,16 +1,23 @@
-﻿using System;
+﻿using KFCommonUtilityLib.Scripts.Utilities;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using UnityEngine;
 
 public class ActionIndexIs : RequirementBase
 {
     protected int index;
     public override bool IsValid(MinEventParams _params)
     {
-        return _params.ItemActionData?.indexInEntityOfAction == index;
+        //if (!res)
+        //{
+        //    Log.Out($"Action index is not {index} : {(_params.ItemActionData == null ? "null" : _params.ItemActionData.indexInEntityOfAction.ToString())}\n{StackTraceUtility.ExtractStackTrace()}");
+        //}
+        return (_params.ItemActionData == null && index == 0) || _params.ItemActionData?.indexInEntityOfAction == index;
     }
 
     public override bool ParamsValid(MinEventParams _params)

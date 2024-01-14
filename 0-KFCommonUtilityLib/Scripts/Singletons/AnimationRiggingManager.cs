@@ -219,6 +219,16 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             return true;
         }
 
+        //private static int hash = Animator.StringToHash("WeaponFire");
+        //public static void FpvWeaponFire()
+        //{
+        //    if (fpvTransformRef != null)
+        //    {
+        //        fpvTransformRef.fpvAnimator?.ResetTrigger(hash);
+        //        fpvTransformRef.fpvAnimator?.SetTrigger(hash);
+        //    }
+        //}
+
         public static void SetTrigger(int _pid)
         {
             if (fpvTransformRef != null)

@@ -256,6 +256,14 @@ class AnimationRiggingPatches
         }
     }
 
+    //[HarmonyPatch(typeof(AvatarMultiBodyController), nameof(AvatarMultiBodyController.StartAnimationAttack))]
+    //[HarmonyPostfix]
+    //private static void Postfix_StartAnimationAttack_AvatarMultiBodyController(AvatarMultiBodyController __instance)
+    //{
+    //    if (__instance is AvatarLocalPlayerController)
+    //        AnimationRiggingManager.FpvWeaponFire();
+    //}
+
     [HarmonyPatch(typeof(AvatarLocalPlayerController), nameof(AvatarLocalPlayerController.SetInRightHand))]
     [HarmonyPostfix]
     private static void Postfix_SetInRightHand_AvatarLocalPlayerController(Transform _transform, AvatarLocalPlayerController __instance, bool ___isFPV)

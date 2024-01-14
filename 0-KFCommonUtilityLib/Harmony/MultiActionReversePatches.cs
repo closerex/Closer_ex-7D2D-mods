@@ -3,12 +3,14 @@ using KFCommonUtilityLib.Scripts.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 [HarmonyPatch]
-public class MultiActionReversePatches
+public static class MultiActionReversePatches
 {
     [HarmonyReversePatch]
     [HarmonyPatch(typeof(EffectManager), nameof(EffectManager.GetValue))]
@@ -35,5 +37,36 @@ public class MultiActionReversePatches
 
         _ = Transpiler(null);
         return _originalValue;
+    }
+
+    [HarmonyReversePatch]
+    [HarmonyPatch(typeof(ProjectileMoveScript), nameof(ProjectileMoveScript.Fire))]
+    public static void ProjectileFire(this ProjectileMoveScript __instance, Vector3 _idealStartPosition, Vector3 _flyDirection, Entity _firingEntity, int _hmOverride = 0, float _radius = 0f)
+    {
+        IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            if (instructions == null)
+                return null;
+
+            var codes = instructions.ToList();
+
+            FieldInfo fld_launcher = AccessTools.Field(typeof(ProjectileMoveScript), nameof(ProjectileMoveScript.itemValueLauncher));
+            FieldInfo fld_projectile = AccessTools.Field(typeof(ProjectileMoveScript), nameof(ProjectileMoveScript.itemValueProjectile));
+            MethodInfo mtd_getvalue = AccessTools.Method(typeof(EffectManager), nameof(EffectManager.GetValue));
+            MethodInfo mtd_getvaluenew = AccessTools.Method(typeof(MultiActionReversePatches), nameof(MultiActionReversePatches.ProjectileGetValue));
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].LoadsField(fld_launcher))
+                {
+                    codes[i].operand = fld_projectile;
+                }
+                else if (codes[i].Calls(mtd_getvalue))
+                {
+                    codes[i].operand = mtd_getvaluenew;
+                }
+            }
+            return codes;
+        }
+        _ = Transpiler(null);
     }
 }

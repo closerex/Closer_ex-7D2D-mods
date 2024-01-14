@@ -433,7 +433,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             foreach (var mtd in moduleType.GetMethods(searchFlags))
             {
                 IMethodTarget attr = mtd.GetCustomAttribute<T>();
-                if (attr != null && (attr.PreferredType == null || itemActionType.IsAssignableFrom(attr.PreferredType)))
+                if (attr != null && (attr.PreferredType == null || attr.PreferredType.IsAssignableFrom(itemActionType)))
                 {
                     string id = attr.GetTargetMethodIdentifier();
                     MethodInfo mtdinf_base = AccessTools.Method(itemActionType, attr.TargetMethod, attr.Params);
@@ -449,7 +449,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                     {
                         if (attr.PreferredType == null)
                             continue;
-                        if (itemActionType.IsAssignableFrom(attr.PreferredType) && (pair.prefType == null || attr.PreferredType.IsSubclassOf(pair.prefType)))
+                        if (attr.PreferredType.IsAssignableFrom(itemActionType) && (pair.prefType == null || attr.PreferredType.IsSubclassOf(pair.prefType)))
                         {
                             dict_overrides[id] = new MethodOverrideInfo(mtd, mtdinf_base, mtddef_base, attr.PreferredType);
                         }

@@ -249,7 +249,10 @@ public class CommonUtilityPatch
             //current state, layer 0, offset 0
             anim.PlayInFixedTime(0, 0, 0);
             if (_rangedData.invData.itemValue.Meta == 0)
+            {
                 __instance.emodel.avatarController.CancelEvent(weaponFireHash);
+                Log.Out("Cancel fire event because meta is 0");
+            }
         }
     }
 

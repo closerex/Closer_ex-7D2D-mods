@@ -23,6 +23,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             "AmmoIndex3",
             "AmmoIndex4",
         };
+        public static readonly int ExecutingActionIndexHash = Animator.StringToHash("ExecutingActionIndex");
 
         public static void SetMinEventArrays()
         {

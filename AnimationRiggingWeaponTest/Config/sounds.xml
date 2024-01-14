@@ -49,5 +49,25 @@
 			<AudioClip ClipName="Sounds/Twitch/Silly/hunting_rifle_fire_silly3" AltSound="true"/>
 			<LocalCrouchVolumeScale value="1"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="60"/> <MaxVoicesPerEntity value="30"/> <MaxRepeatRate value="0.001"/>
 		</SoundDataNode>
+		<SoundDataNode name="M16M203_Fire_Gun"> <AudioSource name="Sounds/AudioSource_WeaponFire"/> <NetworkAudioSource name="Sounds/AudioSource_WeaponFire_Network"/>
+			<Noise ID="0" noise="108" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180"/>
+			<AudioClip ClipName="#@modfolder:Resources/M16M203_Sound.unity3d?M16_Single_01"/>
+			<AudioClip ClipName="#@modfolder:Resources/M16M203_Sound.unity3d?M16_Single_02"/>
+			<AudioClip ClipName="#@modfolder:Resources/M16M203_Sound.unity3d?M16_Single_03"/>
+			<AudioClip ClipName="#@modfolder:Resources/M16M203_Sound.unity3d?M16_Single_04"/>
+			<AudioClip ClipName="#@modfolder:Resources/M16M203_Sound.unity3d?M16_Single_05"/>
+			<AudioClip ClipName="#@modfolder:Resources/M16M203_Sound.unity3d?M16_Single_06"/>
+			<AudioClip ClipName="#@modfolder:Resources/M16M203_Sound.unity3d?M16_Single_07"/>
+			<AudioClip ClipName="#@modfolder:Resources/M16M203_Sound.unity3d?M16_Single_08"/>
+			<AudioClip ClipName="Sounds/Twitch/Silly/hunting_rifle_fire_silly1" AltSound="true"/>
+			<AudioClip ClipName="Sounds/Twitch/Silly/hunting_rifle_fire_silly2" AltSound="true"/>
+			<AudioClip ClipName="Sounds/Twitch/Silly/hunting_rifle_fire_silly3" AltSound="true"/>
+			<LocalCrouchVolumeScale value="1"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="60"/> <MaxVoicesPerEntity value="30"/> <MaxRepeatRate value="0.001"/>
+		</SoundDataNode>
+		<SoundDataNode name="M16M203_Fire_Grenade"> <AudioSource name="Sounds/AudioSource_WeaponFire"/> <NetworkAudioSource name="Sounds/AudioSource_WeaponFire_Network"/>
+			<Noise ID="0" noise="108" time="1" muffled_when_crouched="0.8" heat_map_strength="0.2" heat_map_time="120"/>
+			<AudioClip ClipName="#@modfolder:Resources/M16M203_Sound.unity3d?WEP_M32_Shoot_01"/>
+			<LocalCrouchVolumeScale value="1"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="60"/> <MaxVoicesPerEntity value="30"/> <MaxRepeatRate value="0.001"/>
+		</SoundDataNode>
 	</append>
 </configs>
