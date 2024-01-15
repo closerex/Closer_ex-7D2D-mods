@@ -183,6 +183,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             }
             this.toggleSound = toggleSound;
             entity.emodel?.avatarController?.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, CurActionIndex, false);
+            Log.Out($"MultiAction mode {curIndex}, meta {itemValue.Meta}, ammo index {itemValue.SelectedAmmoTypeIndex}\n {StackTraceUtility.ExtractStackTrace()}");
         }
 
         public int GetModeForAction(int actionIndex)

@@ -87,16 +87,16 @@ public class ActionModuleMultiActionFix
         return true;
     }
 
-    [MethodTargetPrefix(nameof(ItemActionAttack.ExecuteAction), typeof(ItemActionRanged))]
-    private bool Prefix_ExecuteAction(ItemActionData _actionData, MultiActionData __customData)
-    {
-        //when executing action, set last action index so that correct accuracy is used for drawing crosshair
-        if (_actionData.invData.holdingEntity is EntityPlayerLocal player)
-        {
-            ((ItemActionRanged.ItemActionDataRanged)_actionData).lastAccuracy = __customData.lastAccuracy;
-        }
-        return true;
-    }
+    //[MethodTargetPrefix(nameof(ItemActionAttack.ExecuteAction), typeof(ItemActionRanged))]
+    //private bool Prefix_ExecuteAction(ItemActionData _actionData, MultiActionData __customData)
+    //{
+    //    //when executing action, set last action index so that correct accuracy is used for drawing crosshair
+    //    if (_actionData.invData.holdingEntity is EntityPlayerLocal player)
+    //    {
+    //        ((ItemActionRanged.ItemActionDataRanged)_actionData).lastAccuracy = __customData.lastAccuracy;
+    //    }
+    //    return true;
+    //}
 
     //[MethodTargetPrefix("updateAccuracy", typeof(ItemActionRanged))]
     //private bool Prefix_updateAccuracy(ItemActionData _actionData, MultiActionData __customData)

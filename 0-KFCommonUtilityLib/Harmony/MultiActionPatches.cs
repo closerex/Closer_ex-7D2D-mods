@@ -550,7 +550,7 @@ namespace KFCommonUtilityLib.Harmony
         //
         [HarmonyPatch(typeof(ProjectileMoveScript), nameof(ProjectileMoveScript.Fire))]
         [HarmonyPrefix]
-        private static bool Prefix_Fire_ProjectileParams(ProjectileMoveScript __instance, Vector3 _idealStartPosition, Vector3 _flyDirection, Entity _firingEntity, int _hmOverride, float _radius)
+        private static bool Prefix_Fire_ProjectileMoveScript(ProjectileMoveScript __instance, Vector3 _idealStartPosition, Vector3 _flyDirection, Entity _firingEntity, int _hmOverride, float _radius)
         {
             if (_firingEntity is EntityAlive entityAlive)
                 entityAlive.MinEventContext.ItemActionData = __instance.actionData;
@@ -671,8 +671,8 @@ namespace KFCommonUtilityLib.Harmony
                 {
                     codes.InsertRange(i + 10, new[]
                     {
-                        new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetActionIndexForItemValue)),
+                        new CodeInstruction(OpCodes.Ldarg_1),
+                        CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.GetActionIndexForEntity)),
                         new CodeInstruction(OpCodes.Stloc_S, lbd_index)
                     });
                 }

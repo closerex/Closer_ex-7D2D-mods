@@ -55,13 +55,13 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             };
         }
 
-        public static int GetActionIndexForItemValue(this ItemValue self)
-        {
-            object val = self.GetMetadata(MultiActionMapping.STR_MULTI_ACTION_INDEX);
-            if (val is int index)
-                return index;
-            return 0;
-        }
+        //public static int GetActionIndexForItemValue(this ItemValue self)
+        //{
+        //    object val = self.GetMetadata(MultiActionMapping.STR_MULTI_ACTION_INDEX);
+        //    if (val is int index)
+        //        return index;
+        //    return 0;
+        //}
 
         public static string GetPropertyName(int index, string prop)
         {
