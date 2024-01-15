@@ -129,7 +129,7 @@ public class ActionModuleMultiActionFix
         if (!_actionData.invData.holdingEntity.isEntityRemote)
         {
             _actionData.invData.holdingEntity?.emodel?.avatarController.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, _actionData.indexInEntityOfAction);
-            _actionData.invData.holdingEntity?.emodel?.avatarController.CancelEvent("WeaponFire");
+            //_actionData.invData.holdingEntity?.emodel?.avatarController.CancelEvent("WeaponFire");
         }
         return true;
     }

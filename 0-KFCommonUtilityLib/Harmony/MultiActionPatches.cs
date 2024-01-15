@@ -703,6 +703,48 @@ namespace KFCommonUtilityLib.Harmony
             __instance.MinEventContext.ItemActionData = __state;
         }
 
+        //for passive value calc
+        [HarmonyPatch(typeof(EntityPlayerLocal), "guiDrawCrosshair")]
+        [HarmonyPrefix]
+        private static bool Prefix_guiDrawCrosshair_EntityPlayerLocal(EntityPlayerLocal __instance)
+        {
+            __instance.MinEventContext.ItemActionData = __instance.inventory?.holdingItemData?.actionData[MultiActionManager.GetActionIndexForEntityID(__instance.entityId)];
+            return true;
+        }
+
+        //draw crosshair for current action
+        [HarmonyPatch(typeof(EntityPlayerLocal), "guiDrawCrosshair")]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_guiDrawCrosshair_EntityPlayerLocal(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            var codes = instructions.ToList();
+
+            LocalBuilder lbd_index = generator.DeclareLocal(typeof(int));
+
+            FieldInfo fld_actiondata = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.actionData));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].opcode == OpCodes.Stloc_1)
+                {
+                    codes.InsertRange(i + 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.GetActionIndexForEntity)),
+                        new CodeInstruction(OpCodes.Stloc_S, lbd_index)
+                    });
+                    i += 3;
+                }
+                else if (codes[i].LoadsField(fld_actiondata) && codes[i + 1].opcode == OpCodes.Ldc_I4_0)
+                {
+                    codes[i + 1].opcode = OpCodes.Ldloc_S;
+                    codes[i + 1].operand = lbd_index;
+                }
+            }
+
+            return codes;
+        }
+
         [HarmonyPatch(typeof(ItemAction), nameof(ItemAction.ExecuteBuffActions))]
         [HarmonyPrefix]
         private static bool Prefix_ExecuteBuffActions_ItemAction(int instigatorId, out (EntityAlive entity, ItemActionData actionData) __state)
