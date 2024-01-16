@@ -27,8 +27,9 @@ namespace KFCommonUtilityLib.Scripts.Singletons
         public readonly int modeCount;
 
         //this should only be called in createModifierData
-        public unsafe MultiActionIndice(ItemAction[] actions)
+        public unsafe MultiActionIndice(ItemClass item)
         {
+            ItemAction[] actions = item.Actions;
             indices[0] = 0;
             metaIndice[0] = 0;
             int last = 1;
@@ -55,6 +56,33 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                 metaIndice[last] = -1;
             }
         }
+
+        public unsafe int GetActionIndexForMode(int mode)
+        {
+            return indices[mode];
+        }
+
+        public unsafe int GetMetaIndexForMode(int mode)
+        {
+            return metaIndice[mode];
+        }
+
+        public int GetModeForAction(int actionIndex)
+        {
+            int mode = -1;
+            for (int i = 0; i < MultiActionIndice.MAX_ACTION_COUNT; i++)
+            {
+                unsafe
+                {
+                    if (indices[i] == actionIndex)
+                    {
+                        mode = i;
+                        break;
+                    }
+                }
+            }
+            return mode;
+        }
     }
 
     //MultiActionMapping instance should be changed on ItemAction.StartHolding, so we only need to send curIndex.
@@ -62,10 +90,24 @@ namespace KFCommonUtilityLib.Scripts.Singletons
     {
         public const string STR_MULTI_ACTION_INDEX = "MultiActionIndex";
         public readonly MultiActionIndice indices;
+        private int slotIndex;
         private int curIndex;
         private int lastDisplayMode = -1;
         public EntityAlive entity;
         public string toggleSound;
+
+        public ItemValue ItemValue
+        {
+            get
+            {
+                var res = entity.inventory.GetItem(slotIndex).itemValue;
+                if (res.IsEmpty())
+                {
+                    return null;
+                }
+                return res;
+            }
+        }
 
         /// <summary>
         /// when set CurIndex from local input, also set manager to dirty to update the index on other clients
@@ -82,64 +124,22 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                     //mostly for CurIndex++, cycle through available indices
                     if (value >= MultiActionIndice.MAX_ACTION_COUNT || indices.indices[value] == -1)
                         value = 0;
-                    //save previous meta and ammo index to metadata
-                    int curMetaIndex = CurMetaIndex;
-                    ItemValue itemValue = entity.inventory.holdingItemItemValue;
-                    itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[curMetaIndex], itemValue.Meta, TypedMetadataValue.TypeTag.Integer);
-                    itemValue.SetMetadata(MultiActionUtils.ActionSelectedAmmoNames[curMetaIndex], (int)itemValue.SelectedAmmoTypeIndex, TypedMetadataValue.TypeTag.Integer);
+
+                    SaveMeta();
 
                     //load current meta and ammo index from metadata
                     curIndex = value;
-                    curMetaIndex = CurMetaIndex;
-                    itemValue.SetMetadata(STR_MULTI_ACTION_INDEX, value, TypedMetadataValue.TypeTag.Integer);
-                    object res = itemValue.GetMetadata(MultiActionUtils.ActionMetaNames[curMetaIndex]);
-                    if (res is false || res is null)
-                    {
-                        itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[curMetaIndex], 0, TypedMetadataValue.TypeTag.Integer);
-                        itemValue.Meta = 0;
-                    }
-                    else
-                    {
-                        itemValue.Meta = (int)res;
-                    }
-                    res = itemValue.GetMetadata(MultiActionUtils.ActionSelectedAmmoNames[curMetaIndex]);
-                    if (res is false || res is null)
-                    {
-                        itemValue.SetMetadata(MultiActionUtils.ActionSelectedAmmoNames[curMetaIndex], 0, TypedMetadataValue.TypeTag.Integer);
-                        itemValue.SelectedAmmoTypeIndex = 0;
-                    }
-                    else
-                    {
-                        itemValue.SelectedAmmoTypeIndex = (byte)(int)res;
-                    }
+                    ReadMeta();
                     entity.emodel?.avatarController?.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, CurActionIndex, false);
                 }
             }
         }
 
         //for ItemClass.Actions access
-        public int CurActionIndex
-        {
-            get
-            {
-                unsafe
-                {
-                    return indices.indices[curIndex];
-                }
-            }
-        }
+        public int CurActionIndex => indices.GetActionIndexForMode(curIndex);
 
         //for meta saving on mode switch only?
-        public int CurMetaIndex
-        {
-            get
-            {
-                unsafe
-                {
-                    return indices.metaIndice[curIndex];
-                }
-            }
-        }
+        public int CurMetaIndex => indices.GetMetaIndexForMode(curIndex);
 
         public int ModeCount => indices.modeCount;
 
@@ -147,11 +147,12 @@ namespace KFCommonUtilityLib.Scripts.Singletons
         //we set the curIndex field instead of the property, according to following situations:
         //1. it's a newly created ItemValue, meta and ammo index belongs to action0, no saving is needed;
         //2. it's an existing ItemValue, meta and ammo index is set to its action index, still saving is unnecessary.
-        public MultiActionMapping(MultiActionIndice indices, EntityAlive entity, string toggleSound)
+        public MultiActionMapping(MultiActionIndice indices, EntityAlive entity, string toggleSound, int slotIndex)
         {
             this.indices = indices;
             this.entity = entity;
-            ItemValue itemValue = entity.inventory.holdingItemItemValue;
+            this.slotIndex = slotIndex;
+            ItemValue itemValue = ItemValue;
             object res = itemValue.GetMetadata(STR_MULTI_ACTION_INDEX);
             if (res is false || res is null)
             {
@@ -161,6 +162,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             else
             {
                 curIndex = (int)res;
+                ReadMeta();
             }
 
             unsafe
@@ -174,10 +176,18 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                     {
                         itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[metaIndex], 0, TypedMetadataValue.TypeTag.Integer);
                     }
+                    else
+                    {
+                        Log.Out($"{MultiActionUtils.ActionMetaNames[metaIndex]}: {itemValue.GetMetadata(MultiActionUtils.ActionMetaNames[metaIndex]).ToString()}");
+                    }
 
                     if (!itemValue.HasMetadata(MultiActionUtils.ActionSelectedAmmoNames[metaIndex]))
                     {
                         itemValue.SetMetadata(MultiActionUtils.ActionSelectedAmmoNames[metaIndex], 0, TypedMetadataValue.TypeTag.Integer);
+                    }
+                    else
+                    {
+                        Log.Out($"{MultiActionUtils.ActionSelectedAmmoNames[metaIndex]}: {itemValue.GetMetadata(MultiActionUtils.ActionSelectedAmmoNames[metaIndex]).ToString()}");
                     }
                 }
             }
@@ -186,21 +196,51 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             Log.Out($"MultiAction mode {curIndex}, meta {itemValue.Meta}, ammo index {itemValue.SelectedAmmoTypeIndex}\n {StackTraceUtility.ExtractStackTrace()}");
         }
 
-        public int GetModeForAction(int actionIndex)
+        public void SaveMeta()
         {
-            int mode = -1;
-            for (int i = 0; i < MultiActionIndice.MAX_ACTION_COUNT; i++)
+            //save previous meta and ammo index to metadata
+            int curMetaIndex = CurMetaIndex;
+            ItemValue itemValue = ItemValue;
+            if (itemValue == null)
+                return;
+            ItemActionAttack itemActionAttack = entity.inventory.holdingItem.Actions[CurActionIndex] as ItemActionAttack;
+            if (itemActionAttack == null)
+                return;
+            itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[curMetaIndex], itemValue.Meta, TypedMetadataValue.TypeTag.Integer);
+            itemValue.SetMetadata(MultiActionUtils.ActionSelectedAmmoNames[curMetaIndex], (int)itemValue.SelectedAmmoTypeIndex, TypedMetadataValue.TypeTag.Integer);
+            if (itemValue.SelectedAmmoTypeIndex > itemActionAttack.MagazineItemNames.Length)
             {
-                unsafe
-                {
-                    if (indices.indices[i] == actionIndex)
-                    {
-                        mode = i;
-                        break;
-                    }
-                }
+                Log.Error($"SAVING META ERROR: AMMO INDEX LARGER THAN AMMO ITEM COUNT!\n{StackTraceUtility.ExtractStackTrace()}");
             }
-            return mode;
+        }
+
+        public void ReadMeta()
+        {
+            int curMetaIndex = CurMetaIndex;
+            ItemValue itemValue = ItemValue;
+            if (itemValue == null)
+                return;
+            itemValue.SetMetadata(STR_MULTI_ACTION_INDEX, curIndex, TypedMetadataValue.TypeTag.Integer);
+            object res = itemValue.GetMetadata(MultiActionUtils.ActionMetaNames[curMetaIndex]);
+            if (res is false || res is null)
+            {
+                itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[curMetaIndex], 0, TypedMetadataValue.TypeTag.Integer);
+                itemValue.Meta = 0;
+            }
+            else
+            {
+                itemValue.Meta = (int)res;
+            }
+            res = itemValue.GetMetadata(MultiActionUtils.ActionSelectedAmmoNames[curMetaIndex]);
+            if (res is false || res is null)
+            {
+                itemValue.SetMetadata(MultiActionUtils.ActionSelectedAmmoNames[curMetaIndex], 0, TypedMetadataValue.TypeTag.Integer);
+                itemValue.SelectedAmmoTypeIndex = 0;
+            }
+            else
+            {
+                itemValue.SelectedAmmoTypeIndex = (byte)(int)res;
+            }
         }
 
         public unsafe int SetupRadial(XUiC_Radial _xuiRadialWindow, EntityPlayerLocal _epl)
@@ -244,11 +284,35 @@ namespace KFCommonUtilityLib.Scripts.Singletons
     {
         //clear on game load
         private static readonly Dictionary<int, MultiActionMapping> dict_mappings = new Dictionary<int, MultiActionMapping>();
+        private static readonly Dictionary<int, MultiActionIndice> dict_indice = new Dictionary<int, MultiActionIndice>();
         //should set to true when:
         //mode switch input received;
         //start holding new multi action weapon.?
         //if true, send local curIndex to other clients in updateSendClientPlayerPositionToServer.
         public static bool LocalModeChanged { get; set; }
+
+        public static void Cleanup()
+        {
+            dict_mappings.Clear();
+            dict_indice.Clear();
+        }
+
+        public static void UpdateLocalMetaSave(int playerID)
+        {
+            if (dict_mappings.TryGetValue(playerID, out MultiActionMapping mapping))
+            {
+                mapping?.SaveMeta();
+            }
+        }
+
+        public static MultiActionIndice GetActionIndiceForItemID(int itemID)
+        {
+            if (dict_indice.TryGetValue(itemID, out MultiActionIndice indice))
+                return indice;
+            indice = new MultiActionIndice(ItemClass.GetForId(itemID));
+            dict_indice[itemID] = indice;
+            return indice;
+        }
 
         public static void ToggleLocalActionIndex(EntityPlayerLocal player)
         {
@@ -314,7 +378,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                 return actionIndex;
             }
 
-            int mode = mapping.GetModeForAction(actionIndex);
+            int mode = mapping.indices.GetModeForAction(actionIndex);
             if (mode > 0)
             {
                 unsafe

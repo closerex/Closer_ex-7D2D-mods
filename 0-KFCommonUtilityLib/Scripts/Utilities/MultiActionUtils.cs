@@ -172,5 +172,83 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             }
             return false;
         }
+
+        public static int GetMode(this ItemValue self)
+        {
+            object mode = self.GetMetadata(MultiActionMapping.STR_MULTI_ACTION_INDEX);
+            if (mode is int)
+            {
+                return (int)mode;
+            }
+            return 0;
+        }
+
+        public static int GetActionIndexByEventParams(EntityAlive entity)
+        {
+            if (entity?.MinEventContext?.ItemActionData == null)
+                return 0;
+            return entity.MinEventContext.ItemActionData.indexInEntityOfAction;
+        }
+
+        public static int GetActionIndexByMetaData(this ItemValue self)
+        {
+            int mode = self.GetMode();
+            MultiActionIndice indice = MultiActionManager.GetActionIndiceForItemID(self.type);
+            return indice.GetActionIndexForMode(mode);
+        }
+
+        public static int GetSelectedAmmoIndexByMode(this ItemValue self, int mode)
+        {
+            MultiActionIndice indice = MultiActionManager.GetActionIndiceForItemID(self.type);
+            int metaIndex = indice.GetMetaIndexForMode(mode);
+            object ammoIndex = self.GetMetadata(ActionSelectedAmmoNames[metaIndex]);
+            if (ammoIndex is int)
+            {
+                return (int)ammoIndex;
+            }
+            return 0;
+        }
+
+        public static int GetMetaByMode(this ItemValue self, int mode)
+        {
+            MultiActionIndice indice = MultiActionManager.GetActionIndiceForItemID(self.type);
+            int metaIndex = indice.GetMetaIndexForMode(mode);
+            object meta = self.GetMetadata(ActionMetaNames[metaIndex]);
+            if (meta is int)
+            {
+                return (int)meta;
+            }
+            return 0;
+        }
+
+        public static int GetSelectedAmmoIndexByActionIndex(this ItemValue self, int actionIndex)
+        {
+            MultiActionIndice indice = MultiActionManager.GetActionIndiceForItemID(self.type);
+            int mode = indice.GetModeForAction(actionIndex);
+            if (mode < 0)
+                return 0;
+            int metaIndex = indice.GetMetaIndexForMode(mode);
+            object ammoIndex = self.GetMetadata(ActionSelectedAmmoNames[metaIndex]);
+            if (ammoIndex is int)
+            {
+                return (int)ammoIndex;
+            }
+            return 0;
+        }
+
+        public static int GetMetaByActionIndex(this ItemValue self, int actionIndex)
+        {
+            MultiActionIndice indice = MultiActionManager.GetActionIndiceForItemID(self.type);
+            int mode = indice.GetModeForAction(actionIndex);
+            if (mode < 0)
+                return 0;
+            int metaIndex = indice.GetMetaIndexForMode(mode);
+            object meta = self.GetMetadata(ActionSelectedAmmoNames[metaIndex]);
+            if (meta is int)
+            {
+                return (int)meta;
+            }
+            return 0;
+        }
     }
 }

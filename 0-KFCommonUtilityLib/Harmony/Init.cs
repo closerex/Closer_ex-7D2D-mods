@@ -21,6 +21,7 @@ public class CommonUtilityLibInit : IModApi
         ModEvents.GameAwake.RegisterHandler(MultiActionUtils.SetMinEventArrays);
         ModEvents.GameStartDone.RegisterHandler(RegisterKFEnums);
         ModEvents.GameStartDone.RegisterHandler(AnimationRiggingManager.ParseItemIDs);
+        ModEvents.GameStartDone.RegisterHandler(MultiActionManager.Cleanup);
         //ModEvents.GameStartDone.RegisterHandler(CustomEffectEnumManager.PrintResults);
         //ModEvents.GameUpdate.RegisterHandler(CommonUtilityPatch.ForceUpdateGC);
         var harmony = new HarmonyLib.Harmony(GetType().ToString());

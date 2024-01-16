@@ -94,7 +94,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                                  itemValueProjectile);
                     if (firingEntity.MinEventContext.Other == null)
                     {
-                        firingEntity.FireEvent(MinEventTypes.onSelfPrimaryActionMissEntity, true);
+                        firingEntity.FireEvent(MinEventTypes.onSelfPrimaryActionMissEntity, false);
                     }
                     firingEntity.FireEvent(MinEventTypes.onProjectileImpact, false);
                     MinEventParams.CachedEventParam.Self = firingEntity;

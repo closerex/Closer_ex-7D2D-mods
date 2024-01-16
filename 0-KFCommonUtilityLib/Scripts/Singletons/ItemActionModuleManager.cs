@@ -374,7 +374,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             }
 
             //Apply Prefixes
-            for (int i = 0; i < moduleTypes.Length; i++)
+            for (int i = moduleTypes.Length - 1; i >= 0; i--)
             {
                 Type moduleType = moduleTypes[i];
                 Dictionary<string, MethodOverrideInfo> dict_targets = GetMethodOverrideTargets<MethodTargetPrefixAttribute>(itemActionType, moduleType, module);

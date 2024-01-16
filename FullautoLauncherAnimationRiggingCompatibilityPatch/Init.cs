@@ -186,7 +186,7 @@ public static class FLARPatch
                                        info.itemValueProjectile);
                 if (entityAlive.MinEventContext.Other == null)
                 {
-                    entityAlive.FireEvent(MinEventTypes.onSelfPrimaryActionMissEntity, true);
+                    entityAlive.FireEvent(MinEventTypes.onSelfPrimaryActionMissEntity, false);
                 }
                 entityAlive.FireEvent(MinEventTypes.onProjectileImpact, false);
                 MinEventParams.CachedEventParam.Self = entityAlive;

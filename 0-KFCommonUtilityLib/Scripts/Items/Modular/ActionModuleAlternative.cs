@@ -43,11 +43,12 @@ public class ActionModuleAlternative
         return false;
     }
 
-    //moved to harmony patch
-    //[MethodTargetPostfix(nameof(ItemActionRanged.StopHolding))]
-    //private void Postfix_StopHolding(ItemActionData _data)
+    //[MethodTargetPostfix(nameof(ItemActionAttack.StopHolding))]
+    //private void Postfix_StopHolding(AlternativeData __customData)
     //{
-    //    MultiActionManager.SetMappingForEntity(_data.invData.holdingEntity.entityId, null);
+    //    //moved to harmony patch
+    //    //MultiActionManager.SetMappingForEntity(_data.invData.holdingEntity.entityId, null);
+    //    __customData.mapping.SaveMeta();
     //}
 
     //todo: change to action specific property
@@ -114,8 +115,8 @@ public class ActionModuleAlternative
                 return;
 
             inited = true;
-            MultiActionIndice indices = new MultiActionIndice(invData.item.Actions);
-            mapping = new MultiActionMapping(indices, invData.holdingEntity, toggleSound);
+            MultiActionIndice indices = MultiActionManager.GetActionIndiceForItemID(invData.item.Id);
+            mapping = new MultiActionMapping(indices, invData.holdingEntity, toggleSound, invData.slotIdx);
         }
     }
 
