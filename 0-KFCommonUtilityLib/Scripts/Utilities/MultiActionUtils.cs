@@ -183,11 +183,16 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             return 0;
         }
 
-        public static int GetActionIndexByEventParams(EntityAlive entity)
+        public static int GetActionIndexByEntityEventParams(EntityAlive entity)
         {
-            if (entity?.MinEventContext?.ItemActionData == null)
+            return GetActionIndexByEventParams(entity?.MinEventContext);
+        }
+
+        public static int GetActionIndexByEventParams(MinEventParams pars)
+        {
+            if (pars?.ItemActionData == null)
                 return 0;
-            return entity.MinEventContext.ItemActionData.indexInEntityOfAction;
+            return pars.ItemActionData.indexInEntityOfAction;
         }
 
         public static int GetActionIndexByMetaData(this ItemValue self)
@@ -249,6 +254,14 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 return (int)meta;
             }
             return 0;
+        }
+
+        public static void SetMinEventParamsByEntityInventory(EntityAlive entity)
+        {
+            if (entity != null && entity.MinEventContext != null)
+            {
+                entity.MinEventContext.ItemActionData = entity.inventory?.holdingItemData?.actionData[MultiActionManager.GetActionIndexForEntityID(entity.entityId)];
+            }
         }
     }
 }

@@ -578,7 +578,7 @@ namespace KFCommonUtilityLib.Harmony
 
         #endregion
 
-        #region EntityAlive.FireEvent patches, set params
+        #region FireEvent patches, set params
         //KEEP
         #region Ranged ExecuteAction FireEvent params
         [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.ExecuteAction))]
@@ -657,8 +657,87 @@ namespace KFCommonUtilityLib.Harmony
         }
         #endregion
 
+        #region Inventory.FireEvent, set current action
+        [HarmonyPatch(typeof(Inventory), nameof(Inventory.FireEvent))]
+        [HarmonyPrefix]
+        private static bool Prefix_FireEvent_Inventory(EntityAlive ___entity, Inventory __instance)
+        {
+            MultiActionUtils.SetMinEventParamsByEntityInventory(___entity);
+            return true;
+        }
+        #endregion
+
+        #region Inventory.syncHeldItem, set current action
+        [HarmonyPatch(typeof(Inventory), "syncHeldItem")]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_syncHeldItem_Inventory(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var mtd_test = AccessTools.Method(typeof(FastTags), nameof(FastTags.Test_AnySet));
+            var fld_itemvalue = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.ItemValue));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].StoresField(fld_itemvalue) && codes[i - 7].Calls(mtd_test))
+                {
+                    codes.InsertRange(i + 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(Inventory), "entity"),
+                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.SetMinEventParamsByEntityInventory))
+                    });
+                    break;
+                }
+            }
+
+            return codes;
+        }
+        #endregion
+
+        #region ItemValue.FireEvent, read current action
+        [HarmonyPatch(typeof(ItemValue), nameof(ItemValue.FireEvent))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_FireEvent_ItemValue(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            var codes = instructions.ToList();
+
+            LocalBuilder lbd_index = generator.DeclareLocal(typeof(int));
+
+            FieldInfo fld_action = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
+            FieldInfo fld_ammoindex = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
+            for (int i = 0; i < codes.Count; i++)
+            {
+                var code = codes[i];
+                if (code.LoadsField(fld_action) && codes[i + 1].opcode == OpCodes.Ldc_I4_0)
+                {
+                    codes[i + 1].opcode = OpCodes.Ldloc_S;
+                    codes[i + 1].operand = lbd_index;
+                    if (codes[i - 9].opcode == OpCodes.Ret)
+                    {
+                        codes.InsertRange(i - 1, new[]
+                        {
+                            new CodeInstruction(OpCodes.Ldarg_2),
+                            CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetActionIndexByEventParams)),
+                            new CodeInstruction(OpCodes.Stloc_S, lbd_index)
+                        });
+                        i += 3;
+                    }
+                }
+                else if (code.LoadsField(fld_ammoindex))
+                {
+                    code.opcode = OpCodes.Call;
+                    code.operand = AccessTools.Method(typeof(MultiActionUtils), nameof(MultiActionUtils.GetSelectedAmmoIndexByActionIndex));
+                    codes.Insert(i, new CodeInstruction(OpCodes.Ldloc_S, lbd_index));
+                    i++;
+                }
+            }
+
+            return codes;
+        }
+        #endregion
+
         //onSelfEquipStop, onSelfHoldingItemCreated, onSelfEquipStart are not available for individual action,
-        //MinEventParams.ItemActionData is set to null in MultiActionFix, does not affect vanilla actions.
 
         //some are already set in update or execute action
 
@@ -684,7 +763,7 @@ namespace KFCommonUtilityLib.Harmony
                     codes.InsertRange(i + 10, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_1),
-                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetActionIndexByEventParams)),
+                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetActionIndexByEntityEventParams)),
                         new CodeInstruction(OpCodes.Stloc_S, lbd_index)
                     });
                 }
@@ -711,7 +790,7 @@ namespace KFCommonUtilityLib.Harmony
         private static bool Prefix_OnHUD_EntityPlayerLocal(EntityPlayerLocal __instance, out ItemActionData __state)
         {
             __state = __instance.MinEventContext.ItemActionData;
-            __instance.MinEventContext.ItemActionData = __instance.inventory?.holdingItemData?.actionData[MultiActionManager.GetActionIndexForEntityID(__instance.entityId)];
+            MultiActionUtils.SetMinEventParamsByEntityInventory(__instance);
             return true;
         }
 
@@ -727,7 +806,7 @@ namespace KFCommonUtilityLib.Harmony
         [HarmonyPrefix]
         private static bool Prefix_guiDrawCrosshair_EntityPlayerLocal(EntityPlayerLocal __instance)
         {
-            __instance.MinEventContext.ItemActionData = __instance.inventory?.holdingItemData?.actionData[MultiActionManager.GetActionIndexForEntityID(__instance.entityId)];
+            MultiActionUtils.SetMinEventParamsByEntityInventory(__instance);
             return true;
         }
 
@@ -774,7 +853,7 @@ namespace KFCommonUtilityLib.Harmony
             {
                 __state.entity = entity;
                 __state.actionData = entity.MinEventContext.ItemActionData;
-                entity.MinEventContext.ItemActionData = entity.inventory?.holdingItemData?.actionData[MultiActionManager.GetActionIndexForEntityID(entity.entityId)];
+                MultiActionUtils.SetMinEventParamsByEntityInventory(entity);
             }
             else
                 return false;
@@ -825,6 +904,57 @@ namespace KFCommonUtilityLib.Harmony
         }
         #endregion
 
+        #region EffectManager.GetValuesAndSources patches, set params
+
+        [HarmonyPatch(typeof(EntityStats), nameof(EntityStats.Update))]
+        [HarmonyPrefix]
+        private static bool Prefix_Update_EntityStats(EntityAlive ___m_entity)
+        {
+            MultiActionUtils.SetMinEventParamsByEntityInventory(___m_entity);
+            return true;
+        }
+
+        //set correct action index for ItemValue
+        [HarmonyPatch(typeof(ItemValue), nameof(ItemValue.GetModifiedValueData))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_GetModifiedValueData_ItemValue(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            var codes = instructions.ToList();
+
+            LocalBuilder lbd_index = generator.DeclareLocal(typeof(int));
+
+            FieldInfo fld_action = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
+            FieldInfo fld_ammoindex = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
+            for (int i = 0; i < codes.Count; i++)
+            {
+                var code = codes[i];
+                if (code.opcode == OpCodes.Stloc_0)
+                {
+                    codes.InsertRange(i + 10, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_3),
+                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetActionIndexByEntityEventParams)),
+                        new CodeInstruction(OpCodes.Stloc_S, lbd_index)
+                    });
+                }
+                else if (code.LoadsField(fld_action) && codes[i + 1].opcode == OpCodes.Ldc_I4_0)
+                {
+                    codes[i + 1].opcode = OpCodes.Ldloc_S;
+                    codes[i + 1].operand = lbd_index;
+                }
+                else if (code.LoadsField(fld_ammoindex))
+                {
+                    code.opcode = OpCodes.Call;
+                    code.operand = AccessTools.Method(typeof(MultiActionUtils), nameof(MultiActionUtils.GetSelectedAmmoIndexByActionIndex));
+                    codes.Insert(i, new CodeInstruction(OpCodes.Ldloc_S, lbd_index));
+                    i++;
+                }
+            }
+
+            return codes;
+        }
+        #endregion
+
         //KEEP
         #region Misc
         //load correct property for melee
@@ -867,21 +997,30 @@ namespace KFCommonUtilityLib.Harmony
             return codes;
         }
 
+        //make sure it's set to current action after for loop
         [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.OnHoldingUpdate))]
         [HarmonyPostfix]
         private static void Postfix_OnHoldingUpdate_ItemClass(ItemInventoryData _data)
         {
-            if(_data.holdingEntity != null && _data.holdingEntity.inventory != null)
-                _data.holdingEntity.MinEventContext.ItemActionData = _data.holdingEntity.inventory.holdingItemData.actionData[MultiActionManager.GetActionIndexForEntityID(_data.holdingEntity.entityId)];
+            MultiActionUtils.SetMinEventParamsByEntityInventory(_data.holdingEntity);
         }
 
-        //make sure it's set to null after stop holding events are triggered
         [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.StopHolding))]
         [HarmonyPostfix]
         private static void Postfix_StopHolding_ItemClass(ItemInventoryData _data)
         {
-            if(_data.holdingEntity != null)
+            if (_data.holdingEntity != null)
+            {
+                MultiActionUtils.SetMinEventParamsByEntityInventory(_data.holdingEntity);
                 MultiActionManager.SetMappingForEntity(_data.holdingEntity.entityId, null);
+            }
+        }
+
+        [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.StartHolding))]
+        [HarmonyPostfix]
+        private static void Postfix_StartHolding_ItemClass(ItemInventoryData _data)
+        {
+            MultiActionUtils.SetMinEventParamsByEntityInventory(_data.holdingEntity);
         }
 
         [HarmonyPatch(typeof(ItemClassesFromXml), "parseItem")]
@@ -1325,6 +1464,14 @@ namespace KFCommonUtilityLib.Harmony
             return codes;
         }
 
+        [HarmonyPatch(typeof(XUiC_Radial), "handleActivatableItemCommand")]
+        [HarmonyPrefix]
+        private static bool Prefix_handleActivatableItemCommand_XUiC_Radial(XUiC_Radial _sender)
+        {
+            EntityPlayerLocal entityPlayer = _sender.xui.playerUI.entityPlayer;
+            MultiActionUtils.SetMinEventParamsByEntityInventory(entityPlayer);
+            return true;
+        }
         #endregion
 
         #region Cancel reload on switching item
@@ -1599,5 +1746,61 @@ namespace KFCommonUtilityLib.Harmony
         }
     }
 
+    #endregion
+
+    #region Remove ammo
+    [HarmonyPatch]
+    public static class RemoveAmmoPatches
+    {
+        private static IEnumerable<MethodBase> TargetMethods()
+        {
+            return new[]
+            {
+                AccessTools.Method(typeof(ItemActionEntryAssemble), nameof(ItemActionEntryAssemble.HandleRemoveAmmo)),
+                AccessTools.Method(typeof(ItemActionEntryScrap), nameof(ItemActionEntryScrap.HandleRemoveAmmo)),
+                AccessTools.Method(typeof(ItemActionEntrySell), nameof(ItemActionEntrySell.HandleRemoveAmmo)),
+            };
+        }
+
+        [HarmonyPrefix]
+        private static bool Prefix(BaseItemActionEntry __instance, ItemStack stack, ref ItemStack __result)
+        {
+            ItemValue itemValue = stack.itemValue;
+            object mode = itemValue.GetMetadata(MultiActionMapping.STR_MULTI_ACTION_INDEX);
+            if (mode is false || mode is null)
+            {
+                return true;
+            }
+            MultiActionIndice indices = MultiActionManager.GetActionIndiceForItemID(itemValue.type);
+            ItemClass item = ItemClass.GetForId(itemValue.type);
+            for (int i = 0; i < MultiActionIndice.MAX_ACTION_COUNT; i++)
+            {
+                int metaIndex = indices.GetMetaIndexForMode(i);
+                if (metaIndex < 0)
+                {
+                    break;
+                }
+
+                int actionIndex = indices.GetActionIndexForMode(i);
+                if (item.Actions[actionIndex] is ItemActionRanged ranged && !(ranged is ItemActionTextureBlock))
+                {
+                    object meta = itemValue.GetMetadata(MultiActionUtils.ActionMetaNames[metaIndex]);
+                    object ammoIndex = itemValue.GetMetadata(MultiActionUtils.ActionSelectedAmmoNames[metaIndex]);
+                    if (meta is int && ammoIndex is int)
+                    {
+                        ItemStack ammoStack = new ItemStack(ItemClass.GetItem(ranged.MagazineItemNames[(int)ammoIndex]), (int)meta);
+                        if (!__instance.ItemController.xui.PlayerInventory.AddItem(ammoStack))
+                        {
+                            __instance.ItemController.xui.PlayerInventory.DropItem(ammoStack);
+                        }
+                        itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[metaIndex], 0, TypedMetadataValue.TypeTag.Integer);
+                    }
+                }
+            }
+            itemValue.Meta = 0;
+            __result = stack;
+            return false;
+        }
+    }
     #endregion
 }
