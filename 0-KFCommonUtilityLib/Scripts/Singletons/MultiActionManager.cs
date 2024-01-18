@@ -395,7 +395,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             return mapping;
         }
 
-        private static float inputCD = 0;
+        internal static float inputCD = 0;
         internal static void UpdateLocalInput(EntityPlayerLocal player, PlayerActionsLocal localActions, bool isUIOpen, float _dt)
         {
             if (inputCD > 0)

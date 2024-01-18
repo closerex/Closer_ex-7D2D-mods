@@ -611,7 +611,7 @@
 				<passive_effect name="RoundsPerMinute" operation="base_set" value="669" tags="perkMachineGunner"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="999" tags="perkMachineGunner"/>
 				<passive_effect name="MagazineSize" operation="base_set" value="30" tags="perkMachineGunner"/>
-				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="0.7" tags="perkMachineGunner"/>
+				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="0.75" tags="perkMachineGunner"/>
 
 				<passive_effect name="SpreadDegreesVertical" operation="base_set" value="2.8" tags="perkMachineGunner"/>
 				<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="2.8" tags="perkMachineGunner"/>
@@ -650,6 +650,7 @@
 				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDemolitionsExpert"/> <!-- tier bonus -->
 				<passive_effect name="BlockDamage" operation="perc_add" value="-.15,.15" tags="perkDemolitionsExpert"/> <!-- random BlockDmg -->
 				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDemolitionsExpert"/> <!-- tier bonus -->
+				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="0.85" tags="perkDemolitionsExpert"/>
 
 				<passive_effect name="RoundsPerMinute" operation="perc_add" value="-.05,.05" tags="perkDemolitionsExpert"/> <!-- random APM -->
 				<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkDemolitionsExpert"/> <!-- random WeaponHandling -->

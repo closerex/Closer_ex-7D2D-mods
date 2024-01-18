@@ -260,8 +260,11 @@ public class CommonUtilityPatch
     [HarmonyPostfix]
     private static void Postfix_ItemActionEffects_ItemActionRanged(ItemActionData _actionData, int _firingState)
     {
-        if(_firingState == 0 && _actionData.invData.holdingEntity is EntityPlayerLocal && !(_actionData.invData.itemValue.ItemClass.Actions[0] is ItemActionCatapult))
+        if (_firingState == 0 && _actionData.invData.holdingEntity is EntityPlayerLocal && !(_actionData.invData.itemValue.ItemClass.Actions[0] is ItemActionCatapult))
+        {
             _actionData.invData.holdingEntity?.emodel.avatarController.CancelEvent(weaponFireHash);
+            //Log.Out("Cancel fire event because firing state is 0\n" + StackTraceUtility.ExtractStackTrace());
+        }
     }
 
     [HarmonyPatch(typeof(GameManager), "gmUpdate")]
@@ -382,26 +385,26 @@ public class CommonUtilityPatch
         return codes;
     }
 
-    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.OnHoldingUpdate))]
-    [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_OnHoldingUpdate_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
-    {
-        var mtd_release = AccessTools.Method(typeof(ItemActionRanged), "triggerReleased");
-        var codes = instructions.ToList();
+    //[HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.OnHoldingUpdate))]
+    //[HarmonyTranspiler]
+    //private static IEnumerable<CodeInstruction> Transpiler_OnHoldingUpdate_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
+    //{
+    //    var mtd_release = AccessTools.Method(typeof(ItemActionRanged), "triggerReleased");
+    //    var codes = instructions.ToList();
 
-        for (int i = 0; i < codes.Count; i++)
-        {
-            if (codes[i].Calls(mtd_release))
-            {
-                codes[i + 1].labels.Clear();
-                codes[i + 1].MoveLabelsFrom(codes[i - 20]);
-                codes.RemoveRange(i - 20, 21);
-                break;
-            }
-        }
+    //    for (int i = 0; i < codes.Count; i++)
+    //    {
+    //        if (codes[i].Calls(mtd_release))
+    //        {
+    //            codes[i + 1].labels.Clear();
+    //            codes[i + 1].MoveLabelsFrom(codes[i - 20]);
+    //            codes.RemoveRange(i - 20, 21);
+    //            break;
+    //        }
+    //    }
 
-        return codes;
-    }
+    //    return codes;
+    //}
 
     [HarmonyPatch(typeof(ItemActionRanged), "triggerReleased")]
     [HarmonyTranspiler]

@@ -58,7 +58,7 @@ public class ActionModuleHoldOpen
     {
         //delay 1 frame before equipping weapon
         if (_data.invData.itemValue.Meta <= 0)
-            ThreadManager.StartCoroutine(DelaySetEmpty(_data, true, 1));
+            ThreadManager.StartCoroutine(DelaySetEmpty(_data, true, 2));
         return true;
     }
 

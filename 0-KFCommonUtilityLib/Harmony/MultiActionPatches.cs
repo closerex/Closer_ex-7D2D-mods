@@ -598,13 +598,15 @@ namespace KFCommonUtilityLib.Harmony
         //why? ask TFP the fuck they are doing
         [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ExecuteAction))]
         [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_ExecuteAction_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
+        private static IEnumerable<CodeInstruction> Transpiler_ExecuteAction_ItemActionRanged(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             var codes = instructions.ToList();
 
             FieldInfo fld_itemactiondata = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.ItemActionData));
             MethodInfo mtd_reloadserver = AccessTools.Method(typeof(IGameManager), nameof(IGameManager.ItemReloadServer));
             FieldInfo fld_gamemanager = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.gameManager));
+            MethodInfo mtd_getkickback = AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.GetKickbackForce));
+            MethodInfo mtd_getmaxammo = AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.GetMaxAmmoCount));
             for (int i = 0; i < codes.Count; i++)
             {
                 var code = codes[i];
@@ -630,6 +632,26 @@ namespace KFCommonUtilityLib.Harmony
                     });
                     codes.RemoveRange(j - 2, 3);
                     i--;
+                }
+                else if (code.Calls(mtd_getmaxammo))
+                {
+                    int j = i + 1;
+                    for (; j < codes.Count; j++)
+                    {
+                        if (codes[j].Calls(mtd_getkickback))
+                        {
+                            break;
+                        }
+                    }
+                    if (j < codes.Count)
+                    {
+                        var jumpto = codes[j - 2];
+                        var label = generator.DefineLabel();
+                        jumpto.labels.Add(label);
+                        codes.Insert(i - 2, new CodeInstruction(OpCodes.Br_S, label));
+                        codes[i - 2].MoveLabelsFrom(codes[i - 1]);
+                        i++;
+                    }
                 }
             }
 
@@ -1501,6 +1523,13 @@ namespace KFCommonUtilityLib.Harmony
         }
         #endregion
 
+
+        //[HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.OnUpdateLive))]
+        //[HarmonyPostfix]
+        //private static void Postfix_Test(EntityPlayerLocal __instance)
+        //{
+        //    __instance.emodel?.avatarController?.TriggerEvent("WeaponFire");
+        //}
         //private static int hash = Animator.StringToHash("WeaponFire");
         //[HarmonyPatch(typeof(Animator), nameof(Animator.SetTrigger), typeof(string))]
         //[HarmonyPostfix]

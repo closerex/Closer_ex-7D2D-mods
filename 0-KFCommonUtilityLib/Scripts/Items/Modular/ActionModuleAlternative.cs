@@ -1,6 +1,9 @@
 ﻿using GUI_2;
 using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.Singletons;
+using KFCommonUtilityLib.Scripts.Utilities;
+using System.Collections;
+using Unity.Mathematics;
 
 [TypeTarget(typeof(ItemActionAttack), typeof(AlternativeData))]
 public class ActionModuleAlternative
@@ -10,7 +13,19 @@ public class ActionModuleAlternative
     {
         __customData.Init();
         MultiActionManager.SetMappingForEntity(_data.invData.holdingEntity.entityId, __customData.mapping);
+        if (_data.invData.holdingEntity is EntityPlayerLocal)
+        {
+            MultiActionManager.inputCD = math.max(0.5f, MultiActionManager.inputCD);
+            ThreadManager.StartCoroutine(DelaySetExecutionIndex(_data.invData.holdingEntity, __customData.mapping));
+        }
         return true;
+    }
+
+    private static IEnumerator DelaySetExecutionIndex(EntityAlive player, MultiActionMapping mapping)
+    {
+        yield return null;
+        yield return null;
+        player?.emodel?.avatarController?.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, mapping.CurActionIndex);
     }
 
     //[MethodTargetPrefix(nameof(ItemActionRanged.CancelReload))]
