@@ -28,19 +28,19 @@ public class ItemActionBetterLauncher : ItemActionRanged
     {
         base.StartHolding(_actionData);
         ItemActionBetterLauncher.ItemActionDataBetterLauncher ItemActionDataBetterLauncher = (ItemActionBetterLauncher.ItemActionDataBetterLauncher)_actionData;
-        ItemValue holdingItemItemValue = _actionData.invData.holdingEntity.inventory.holdingItemItemValue;
-        ItemClass forId = ItemClass.GetForId(ItemClass.GetItem(MagazineItemNames[(int)holdingItemItemValue.SelectedAmmoTypeIndex], false).type);
+        ItemValue launcherValue = ItemActionDataBetterLauncher.invData.itemValue;
+        ItemClass forId = ItemClass.GetForId(ItemClass.GetItem(MagazineItemNames[(int)launcherValue.SelectedAmmoTypeIndex], false).type);
         group = CustomProjectileManager.Get(forId.Name);
-        if (_actionData.invData.itemValue.Meta != 0 && GetMaxAmmoCount(ItemActionDataBetterLauncher) != 0)
+        if (launcherValue.Meta != 0 && GetMaxAmmoCount(ItemActionDataBetterLauncher) != 0)
         {
-            group.Pool(_actionData.invData.itemValue.Meta * (int)EffectManager.GetValue(PassiveEffects.RoundRayCount, ItemActionDataBetterLauncher.invData.itemValue, 1f, ItemActionDataBetterLauncher.invData.holdingEntity, null, default(FastTags), true, true, true, true, 1, true, false));
+            group.Pool(launcherValue.Meta * (int)EffectManager.GetValue(PassiveEffects.RoundRayCount, launcherValue, 1f, ItemActionDataBetterLauncher.invData.holdingEntity, null, default(FastTags), true, true, true, true, 1, true, false));
         }
         ItemActionDataBetterLauncher.info = new ProjectileParams.ItemInfo()
         {
             actionData = ItemActionDataBetterLauncher,
             itemProjectile = forId,
             itemActionProjectile = (ItemActionProjectile)((forId.Actions[0] is ItemActionProjectile) ? forId.Actions[0] : forId.Actions[1]),
-            itemValueLauncher = holdingItemItemValue,
+            itemValueLauncher = launcherValue,
             itemValueProjectile = new ItemValue(forId.Id)
         };
     }

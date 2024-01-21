@@ -6,25 +6,16 @@ using KFCommonUtilityLib.Scripts.Utilities;
 public class ActionModuleMultiActionFix
 {
     [MethodTargetPrefix(nameof(ItemActionAttack.StartHolding))]
-    private bool Prefix_StartHolding(ItemActionData _data, out (ItemActionData actionData, int mode, bool executed) __state)
+    private bool Prefix_StartHolding(ItemActionData _data, out ItemActionData __state)
     {
-        var mapping = MultiActionManager.GetMappingForEntity(_data.invData.holdingEntity.entityId);
-        __state.mode = mapping.CurMode;
-        mapping.CurMode = mapping.indices.GetModeForAction(_data.indexInEntityOfAction);
-        __state.executed = true;
-        SetAndSaveItemActionData(_data, out __state.actionData);
+        SetAndSaveItemActionData(_data, out __state);
         return true;
     }
 
     [MethodTargetPostfix(nameof(ItemActionAttack.StartHolding))]
-    private void Postfix_StartHolding(ItemActionData _data, (ItemActionData actionData, int mode, bool executed) __state)
+    private void Postfix_StartHolding(ItemActionData _data, ItemActionData __state)
     {
-        if (__state.executed)
-        {
-            var mapping = MultiActionManager.GetMappingForEntity(_data.invData.holdingEntity.entityId);
-            mapping.CurMode = __state.mode;
-            RestoreItemActionData(_data, __state.actionData);
-        }
+        RestoreItemActionData(_data, __state);
     }
 
     [MethodTargetPrefix(nameof(ItemActionAttack.StopHolding))]

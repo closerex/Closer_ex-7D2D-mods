@@ -21,10 +21,15 @@ public class CustomPlayerActionManager
 
     private static void InitFolderPath()
     {
-        //Assembly assembly = Assembly.GetAssembly(typeof(CustomPlayerActionManager));
-        Mod mod = ModManager.GetMod("CustomPlayerActionManager");
-        string prevSaveFile = Path.Combine(mod.Path, saveName);
         saveFile = Path.Combine(GameIO.GetUserGameDataDir(), saveName);
+        Assembly assembly = Assembly.GetAssembly(typeof(CustomPlayerActionManager));
+        Mod mod = ModManager.GetModForAssembly(assembly);
+        string prevSaveFile = Path.Combine(mod.Path, saveName);
+        if(!File.Exists(prevSaveFile))
+        {
+            mod = ModManager.GetMod("CustomPlayerActionManager");
+            prevSaveFile = Path.Combine(mod.Path, saveName);
+        }
         if (File.Exists(prevSaveFile))
         {
             File.Move(prevSaveFile, saveFile);

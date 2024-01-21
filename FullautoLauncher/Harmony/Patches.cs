@@ -38,14 +38,13 @@ class ItemActionLauncherProjectilePatch
         list_insert.Add(new CodeInstruction(OpCodes.Ldloc_S, lbd_rps));
         list_insert.Add(new CodeInstruction(OpCodes.Mul));
 
-        for(int i = 0, totali = codes.Count; i < totali; i++)
+        for(int i = 0; i < codes.Count; i++)
         {
             CodeInstruction code = codes[i];
             if(code.opcode == OpCodes.Ldfld && code.LoadsField(fldinfo_meta))
             {
                 codes.InsertRange(i + 1, list_insert);
                 i += list_insert.Count;
-                totali += list_insert.Count;
             }
         }
 

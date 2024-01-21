@@ -687,10 +687,10 @@
 			<property class="Action1">
 				<property name="Class" value="Projectile"/>
 				<property name="CustomProjectileType" value="GameObject,FullautoLauncher"/>
-				<property name="Explosion.ParticleIndex" value="#@modfolder(Kaboomstick):Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$M203HE"/>
-				<property name="Explosion.Duration" value="1"/>
+				<property name="Explosion.ParticleIndex" value="#@modfolder:Resources/M16M203.unity3d?m203_explosion$M203HE"/>
+				<property name="Explosion.Duration" value="4"/>
 				<property name="Explosion.AudioName" value="kaboomstick_explosion"/>
-				<property name="Explosion.RadiusBlocks" value="1"/> <!-- damage radius for blocks -->
+				<property name="Explosion.RadiusBlocks" value="3"/> <!-- damage radius for blocks -->
 				<property name="Explosion.RadiusEntities" value="2"/> <!-- damage radius for entities -->
 				<property name="Explosion.BlastPower" value="35"/>
 				<property name="Explosion.DamageBonus.water" value="0"/>
@@ -731,11 +731,11 @@
 			<property class="Action1">
 				<property name="Class" value="Projectile"/>
 				<property name="CustomProjectileType" value="GameObject,FullautoLauncher"/>
-				<property name="Explosion.ParticleIndex" value="#@modfolder(Kaboomstick):Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$M203Frag"/>
-				<property name="Explosion.Duration" value="1"/>
+				<property name="Explosion.ParticleIndex" value="#@modfolder:Resources/M16M203.unity3d?m203_explosion$M203Frag"/>
+				<property name="Explosion.Duration" value="4"/>
 				<property name="Explosion.AudioName" value="kaboomstick_explosion"/>
 				<property name="Explosion.RadiusBlocks" value="1"/> <!-- damage radius for blocks -->
-				<property name="Explosion.RadiusEntities" value="4"/> <!-- damage radius for entities -->
+				<property name="Explosion.RadiusEntities" value="3"/> <!-- damage radius for entities -->
 				<property name="Explosion.BlastPower" value="20"/>
 				<property name="Explosion.DamageBonus.water" value="0"/>
 				<property name="Explosion.DamageBonus.stone" value=".01"/>

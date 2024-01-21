@@ -119,7 +119,7 @@
 				<property name="Explosion.Duration" value="1"/>
 				<property name="Explosion.AudioName" value="kaboomstick_explosion"/>
 				<property name="Explosion.RadiusBlocks" value="1"/> <!-- damage radius for blocks -->
-				<property name="Explosion.RadiusEntities" value="2"/> <!-- damage radius for entities -->
+				<property name="Explosion.RadiusEntities" value="1"/> <!-- damage radius for entities -->
 				<property name="Explosion.BlastPower" value="35"/>
 				<property name="Explosion.DamageBonus.water" value="0"/>
 				<property name="Gravity" value="-7"/>
@@ -163,7 +163,7 @@
 				<property name="Explosion.Duration" value="1"/>
 				<property name="Explosion.AudioName" value="kaboomstick_explosion"/>
 				<property name="Explosion.RadiusBlocks" value="1"/> <!-- damage radius for blocks -->
-				<property name="Explosion.RadiusEntities" value="4"/> <!-- damage radius for entities -->
+				<property name="Explosion.RadiusEntities" value="1"/> <!-- damage radius for entities -->
 				<property name="Explosion.BlastPower" value="20"/>
 				<property name="Explosion.DamageBonus.water" value="0"/>
 				<property name="Explosion.DamageBonus.stone" value=".01"/>

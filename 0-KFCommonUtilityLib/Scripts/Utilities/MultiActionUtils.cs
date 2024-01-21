@@ -1,5 +1,7 @@
 ﻿using KFCommonUtilityLib.Scripts.Singletons;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using static Inventory;
 
@@ -211,7 +213,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             {
                 return (int)ammoIndex;
             }
-            return 0;
+            return self.SelectedAmmoTypeIndex;
         }
 
         public static int GetMetaByMode(this ItemValue self, int mode)
@@ -223,7 +225,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             {
                 return (int)meta;
             }
-            return 0;
+            return self.Meta;
         }
 
         public static int GetSelectedAmmoIndexByActionIndex(this ItemValue self, int actionIndex)
@@ -231,14 +233,14 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             MultiActionIndice indice = MultiActionManager.GetActionIndiceForItemID(self.type);
             int mode = indice.GetModeForAction(actionIndex);
             if (mode < 0)
-                return 0;
+                return self.SelectedAmmoTypeIndex;
             int metaIndex = indice.GetMetaIndexForMode(mode);
             object ammoIndex = self.GetMetadata(ActionSelectedAmmoNames[metaIndex]);
             if (ammoIndex is int)
             {
                 return (int)ammoIndex;
             }
-            return 0;
+            return self.SelectedAmmoTypeIndex;
         }
 
         public static int GetMetaByActionIndex(this ItemValue self, int actionIndex)
@@ -246,14 +248,15 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             MultiActionIndice indice = MultiActionManager.GetActionIndiceForItemID(self.type);
             int mode = indice.GetModeForAction(actionIndex);
             if (mode < 0)
-                return 0;
+                return self.Meta;
             int metaIndex = indice.GetMetaIndexForMode(mode);
-            object meta = self.GetMetadata(ActionSelectedAmmoNames[metaIndex]);
+            object meta = self.GetMetadata(ActionMetaNames[metaIndex]);
             if (meta is int)
             {
+                //Log.Out($"GetMetaByActionIndex: mode: {mode}, action: {metaIndex}, meta: {(int)meta}\n{StackTraceUtility.ExtractStackTrace()}");
                 return (int)meta;
             }
-            return 0;
+            return self.Meta;
         }
 
         public static void SetMinEventParamsByEntityInventory(EntityAlive entity)
@@ -262,6 +265,42 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             {
                 entity.MinEventContext.ItemActionData = entity.inventory?.holdingItemData?.actionData[MultiActionManager.GetActionIndexForEntityID(entity.entityId)];
             }
+        }
+
+        public static bool MultiActionRemoveAmmoFromItemStack(ItemStack stack, List<ItemStack> result)
+        {
+            ItemValue itemValue = stack.itemValue;
+            object mode = itemValue.GetMetadata(MultiActionMapping.STR_MULTI_ACTION_INDEX);
+            if (mode is false || mode is null)
+            {
+                return false;
+            }
+            MultiActionIndice indices = MultiActionManager.GetActionIndiceForItemID(itemValue.type);
+            ItemClass item = ItemClass.GetForId(itemValue.type);
+            for (int i = 0; i < MultiActionIndice.MAX_ACTION_COUNT; i++)
+            {
+                int metaIndex = indices.GetMetaIndexForMode(i);
+                if (metaIndex < 0)
+                {
+                    break;
+                }
+
+                int actionIndex = indices.GetActionIndexForMode(i);
+                if (item.Actions[actionIndex] is ItemActionRanged ranged && !(ranged is ItemActionTextureBlock))
+                {
+                    object meta = itemValue.GetMetadata(MultiActionUtils.ActionMetaNames[metaIndex]);
+                    object ammoIndex = itemValue.GetMetadata(MultiActionUtils.ActionSelectedAmmoNames[metaIndex]);
+                    if (meta is int && ammoIndex is int && (int)meta > 0)
+                    {
+                        itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[metaIndex], 0, TypedMetadataValue.TypeTag.Integer);
+                        ItemStack ammoStack = new ItemStack(ItemClass.GetItem(ranged.MagazineItemNames[(int)ammoIndex]), (int)meta);
+                        result.Add(ammoStack);
+                        Log.Out($"Remove ammo: metadata {MultiActionUtils.ActionMetaNames[metaIndex]}, meta {(int)meta}, left {itemValue.GetMetadata(MultiActionUtils.ActionMetaNames[metaIndex])}");
+                    }
+                }
+            }
+            itemValue.Meta = 0;
+            return true;
         }
     }
 }

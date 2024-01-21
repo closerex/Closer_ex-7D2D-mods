@@ -176,24 +176,29 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                     {
                         itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[metaIndex], 0, TypedMetadataValue.TypeTag.Integer);
                     }
+#if DEBUG
                     else
                     {
                         Log.Out($"{MultiActionUtils.ActionMetaNames[metaIndex]}: {itemValue.GetMetadata(MultiActionUtils.ActionMetaNames[metaIndex]).ToString()}");
                     }
-
+#endif
                     if (!itemValue.HasMetadata(MultiActionUtils.ActionSelectedAmmoNames[metaIndex]))
                     {
                         itemValue.SetMetadata(MultiActionUtils.ActionSelectedAmmoNames[metaIndex], 0, TypedMetadataValue.TypeTag.Integer);
                     }
+#if DEBUG
                     else
                     {
                         Log.Out($"{MultiActionUtils.ActionSelectedAmmoNames[metaIndex]}: {itemValue.GetMetadata(MultiActionUtils.ActionSelectedAmmoNames[metaIndex]).ToString()}");
                     }
+#endif
                 }
             }
             this.toggleSound = toggleSound;
             entity.emodel?.avatarController?.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, CurActionIndex, false);
+#if DEBUG
             Log.Out($"MultiAction mode {curIndex}, meta {itemValue.Meta}, ammo index {itemValue.SelectedAmmoTypeIndex}\n {StackTraceUtility.ExtractStackTrace()}");
+#endif
         }
 
         public void SaveMeta()
@@ -243,7 +248,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             }
         }
 
-        public unsafe int SetupRadial(XUiC_Radial _xuiRadialWindow, EntityPlayerLocal _epl)
+        public int SetupRadial(XUiC_Radial _xuiRadialWindow, EntityPlayerLocal _epl)
         {
             _xuiRadialWindow.ResetRadialEntries();
             int preSelectedIndex = -1;

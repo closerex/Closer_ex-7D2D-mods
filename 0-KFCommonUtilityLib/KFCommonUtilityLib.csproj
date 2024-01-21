@@ -183,6 +183,12 @@
     <None Include="KFAttached\Animation\MonoBehaviours\AnimationReloadEvents.cs.meta">
       <DependentUpon>AnimationReloadEvents.cs</DependentUpon>
     </None>
+    <None Include="KFAttached\Animation\MonoBehaviours\AnimationFiringEvents.cs.meta">
+      <DependentUpon>AnimationFiringEvents.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\MonoBehaviours\AnimationSmokeParticle.cs.meta">
+      <DependentUpon>AnimationSmokeParticle.cs</DependentUpon>
+    </None>
     <None Include="KFAttached\Animation\MonoBehaviours\RigWeightOverTime.cs.meta">
       <DependentUpon>RigWeightOverTime.cs</DependentUpon>
     </None>
@@ -349,6 +355,9 @@
     <None Include="KFAttached\FPSPack\MaterialType.cs.meta">
       <DependentUpon>MaterialType.cs</DependentUpon>
     </None>
+    <None Include="KFAttached\Animation\DebugScripts\AnimatorActionIndexDebug.cs.meta">
+      <DependentUpon>AnimatorActionIndexDebug.cs</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Harmony\DisplayMetaAsBuffPatch.cs" />
@@ -357,7 +366,9 @@
     <Compile Include="Harmony\MultiActionReversePatches.cs" />
     <Compile Include="Harmony\RecoilPatch.cs" />
     <Compile Include="KFAttached\Animation\DebugScripts\AnimatorActionIndexDebug.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationFiringEvents.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationProceduralRecoildAbs.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationSmokeParticle.cs" />
     <Compile Include="KFAttached\FPSPack\Demo\FPSDemoGUI.cs" />
     <Compile Include="KFAttached\FPSPack\Demo\FPSDemoReactivator.cs" />
     <Compile Include="KFAttached\FPSPack\Demo\FPSFireManager.cs" />

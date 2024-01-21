@@ -79,6 +79,53 @@ public static class FLARPatch
 
     //multi action patch
     [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemActionBetterLauncher.StartHolding))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_StartHolding_ItemActionBetterLauncher(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+    {
+        var codes = instructions.ToList();
+
+        var fld_ammoindex = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
+        var fld_meta = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Meta));
+
+        var lbd_meta = generator.DeclareLocal(typeof(int));
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].opcode == OpCodes.Stloc_1)
+            {
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldloc_1),
+                    new CodeInstruction(OpCodes.Ldarg_1),
+                    CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.indexInEntityOfAction)),
+                    CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetMetaByActionIndex)),
+                    new CodeInstruction(OpCodes.Stloc_S, lbd_meta)
+                });
+                i += 5;
+            }
+            else if (codes[i].LoadsField(fld_ammoindex))
+            {
+                codes[i].opcode = OpCodes.Call;
+                codes[i].operand = AccessTools.Method(typeof(MultiActionUtils), nameof(MultiActionUtils.GetSelectedAmmoIndexByActionIndex));
+                codes.InsertRange(i, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_1),
+                    CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.indexInEntityOfAction))
+                });
+                i += 2;
+            }
+            else if (codes[i].LoadsField(fld_meta))
+            {
+                codes.Insert(i + 1, new CodeInstruction(OpCodes.Ldloc_S, lbd_meta));
+                codes.RemoveRange(i - 1, 2);
+                i--;
+            }
+        }
+
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemActionBetterLauncher.StartHolding))]
     [HarmonyPostfix]
     private static void Postfix_StartHolding_ItemActionBetterLauncher(ItemActionData _actionData)
     {
