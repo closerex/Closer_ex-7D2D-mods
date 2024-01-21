@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using UnityEngine;
+using static AvatarController;
 
 [HarmonyPatch]
 class AnimationRiggingPatches
@@ -235,25 +236,60 @@ class AnimationRiggingPatches
             EntityAlive entity = __instance.Entity;
             float reloadSpeed = EffectManager.GetValue(PassiveEffects.ReloadSpeedMultiplier, entity.inventory.holdingItemItemValue, 1f, entity);
             float reloadSpeedRatio = EffectManager.GetValue(CustomEnums.ReloadSpeedRatioFPV2TPV, entity.inventory.holdingItemItemValue, 1f, entity);
-            float finalMultiplier;
+            float localMultiplier, remoteMultiplier;
             bool isFPV = entity as EntityPlayerLocal != null && (entity as EntityPlayerLocal).emodel.IsFPV;
             bool takeOverReloadTime = AnimationRiggingManager.IsReloadTimeTakeOverItem(entity.inventory.holdingItem.Id);
             if (isFPV && !takeOverReloadTime)
             {
-                finalMultiplier = reloadSpeed / reloadSpeedRatio;
+                localMultiplier = reloadSpeed / reloadSpeedRatio;
             }
             else if (!isFPV && takeOverReloadTime)
             {
-                finalMultiplier = reloadSpeed * reloadSpeedRatio;
+                localMultiplier = reloadSpeed * reloadSpeedRatio;
             }
             else
             {
-                finalMultiplier = reloadSpeed;
+                localMultiplier = reloadSpeed;
+            }
+            if (takeOverReloadTime)
+            {
+                remoteMultiplier = reloadSpeed * reloadSpeedRatio;
+            }
+            else
+            {
+                remoteMultiplier = reloadSpeed;
             }
             if(ConsoleCmdReloadLog.LogInfo)
-                Log.Out($"Set reload multiplier: isFPV {isFPV}, reloadSpeed {reloadSpeed}, reloadSpeedRatio {reloadSpeedRatio}, finalMultiplier {finalMultiplier}");
-            __instance.UpdateFloat(___reloadSpeedHash, finalMultiplier, true);
+                Log.Out($"Set reload multiplier: isFPV {isFPV}, reloadSpeed {reloadSpeed}, reloadSpeedRatio {reloadSpeedRatio}, finalMultiplier {localMultiplier}");
+            __instance.UpdateFloat(___reloadSpeedHash, localMultiplier, false);
+            SetDataFloat(__instance, (AvatarController.DataTypes)___reloadSpeedHash, remoteMultiplier, true);
         }
+    }
+
+    [HarmonyPatch(typeof(AvatarController), nameof(AvatarController.SetDataFloat))]
+    [HarmonyReversePatch(HarmonyReversePatchType.Original)]
+    private static void SetDataFloat(AvatarController __instance, DataTypes _type, float _value, bool _netsync = true)
+    {
+        IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            if (instructions == null)
+                return null;
+
+            var codes = instructions.ToList();
+            codes.RemoveRange(0, 5);
+            codes[0].labels.Clear();
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].LoadsConstant(AnimParamData.ValueTypes.DataFloat))
+                {
+                    codes[i].opcode = OpCodes.Ldc_I4;
+                    codes[i].operand = (int)AnimParamData.ValueTypes.Float;
+                    break;
+                }
+            }
+            return codes;
+        }
+        _ = Transpiler(null);
     }
 
     //[HarmonyPatch(typeof(AvatarMultiBodyController), nameof(AvatarMultiBodyController.StartAnimationAttack))]

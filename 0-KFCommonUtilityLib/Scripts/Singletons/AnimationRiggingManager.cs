@@ -69,6 +69,11 @@ namespace KFCommonUtilityLib.Scripts.Singletons
 
         //public static bool IsRigItem(int itemId) => hash_rig_items.Contains(itemId);
 
+        private readonly static int[] resetHashes = new int[]
+        {
+            Animator.StringToHash("Reload"),
+            Animator.StringToHash("WeaponFire")
+        };
         public static void UpdateLocalPlayerAvatar(AvatarLocalPlayerController controller)
         {
             if (fpvTransformRef != null && (controller.Entity as EntityPlayerLocal).bFirstPersonView)
@@ -82,6 +87,10 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                 //vroid workaround
                 //it seems to use a separate animator for vroid model and does not replace CharacterBody
                 controller.UpdateInt(AvatarController.weaponHoldTypeHash, -1, false);
+                foreach (var hash in resetHashes)
+                {
+                    controller.UpdateBool(hash, false, false);
+                }
                 //controller.FPSArms?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
                 //controller.CharacterBody?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
             }
