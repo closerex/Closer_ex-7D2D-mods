@@ -400,4 +400,11 @@ class AnimationRiggingPatches
     {
         AnimationRiggingManager.SetInt(_pid, _value);
     }
+
+    [HarmonyPatch(typeof(AvatarLocalPlayerController), "_resetTrigger", typeof(int), typeof(bool))] 
+    [HarmonyReversePatch(HarmonyReversePatchType.Original)]
+    public static void VanillaResetTrigger(AvatarLocalPlayerController __instance, int _pid, bool _netsync = true)
+    {
+
+    }
 }

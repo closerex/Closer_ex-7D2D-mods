@@ -89,7 +89,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                 controller.UpdateInt(AvatarController.weaponHoldTypeHash, -1, false);
                 foreach (var hash in resetHashes)
                 {
-                    controller.UpdateBool(hash, false, false);
+                    AnimationRiggingPatches.VanillaResetTrigger(controller, hash, false);
                 }
                 //controller.FPSArms?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
                 //controller.CharacterBody?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
