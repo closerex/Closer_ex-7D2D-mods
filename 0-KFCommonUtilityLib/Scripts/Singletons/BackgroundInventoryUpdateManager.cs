@@ -15,6 +15,11 @@ namespace KFCommonUtilityLib.Scripts.Singletons
     {
         private static readonly Dictionary<int, List<IBackgroundInventoryUpdater>[]> dict_updaters = new Dictionary<int, List<IBackgroundInventoryUpdater>[]>();
 
+        public static void Cleanup()
+        {
+            dict_updaters.Clear();
+        }
+
         public static void RegisterUpdater(EntityAlive entity, int slot, IBackgroundInventoryUpdater updater)
         {
             //do not handle remote entity update
@@ -52,7 +57,7 @@ namespace KFCommonUtilityLib.Scripts.Singletons
 
         public static void Update(EntityAlive entity)
         {
-            if (dict_updaters.TryGetValue(entity.entityId, out var arr_updaters) && arr_updaters != null)
+            if (!entity.isEntityRemote && dict_updaters.TryGetValue(entity.entityId, out var arr_updaters) && arr_updaters != null)
             {
                 Inventory inv = entity.inventory;
                 int slotCount = inv.GetSlotCount();

@@ -360,6 +360,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Harmony\BackgroundInventoryUpdatePatch.cs" />
     <Compile Include="Harmony\DisplayMetaAsBuffPatch.cs" />
     <Compile Include="Harmony\ItemActionModulePatch.cs" />
     <Compile Include="Harmony\MultiActionPatches.cs" />
