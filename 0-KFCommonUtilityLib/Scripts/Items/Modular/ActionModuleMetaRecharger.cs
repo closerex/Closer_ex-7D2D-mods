@@ -24,9 +24,11 @@ public class ActionModuleMetaRecharger
     {
         private ActionModuleMetaRecharger module;
         private float lastUpdateTime;
+        private ItemActionData actionData;
         public MetaRechargerData(ItemInventoryData _invData, int _indexOfAction, ActionModuleMetaRecharger _rechargeModule)
         {
             module = _rechargeModule;
+            actionData = _invData.actionData[_indexOfAction];
             lastUpdateTime = Time.time;
             if (!_invData.itemValue.HasMetadata(_rechargeModule.rechargeData))
             {
@@ -38,6 +40,9 @@ public class ActionModuleMetaRecharger
         public void OnUpdate(ItemInventoryData invData)
         {
             ItemValue itemValue = invData.itemValue;
+            invData.holdingEntity.MinEventContext.ItemInventoryData = invData;
+            invData.holdingEntity.MinEventContext.ItemValue = itemValue;
+            invData.holdingEntity.MinEventContext.ItemActionData = actionData;
             float curTime = Time.time;
             float updateInterval = EffectManager.GetValue(CustomEnums.RechargeDataInterval, itemValue, 0, invData.holdingEntity);
             if (curTime - lastUpdateTime > updateInterval)

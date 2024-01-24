@@ -61,6 +61,9 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             {
                 Inventory inv = entity.inventory;
                 int slotCount = inv.GetSlotCount();
+                var prevInvData = entity.MinEventContext.ItemInventoryData;
+                var prevItemValue = entity.MinEventContext.ItemValue;
+                var prevActionData = entity.MinEventContext.ItemActionData;
                 for (int i = 0; i < slotCount; i++)
                 {
                     if (arr_updaters[i] != null)
@@ -71,6 +74,9 @@ namespace KFCommonUtilityLib.Scripts.Singletons
                         }
                     }
                 }
+                entity.MinEventContext.ItemInventoryData = prevInvData;
+                entity.MinEventContext.ItemActionData = prevActionData;
+                entity.MinEventContext.ItemValue = prevItemValue;
             }
         }
     }
