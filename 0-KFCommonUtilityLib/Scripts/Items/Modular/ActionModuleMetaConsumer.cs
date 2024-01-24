@@ -4,7 +4,7 @@ using KFCommonUtilityLib.Scripts.Utilities;
 using SteelSeries.GameSense;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using UniLinq;
 using System.Text;
 using System.Threading.Tasks;
 using static ItemActionAltMode;
@@ -12,13 +12,26 @@ using static ItemActionAltMode;
 [TypeTarget(typeof(ItemActionRanged))]
 public class ActionModuleMetaConsumer
 {
-    public string consumeData;
+    public string[] consumeDatas;
+    public FastTags[] consumeTags;
+    private float[] consumeStocks;
+    private float[] consumeValues;
 
     [MethodTargetPostfix(nameof(ItemActionRanged.ReadFrom))]
-    private void Postfix_ReadFrom(DynamicProperties _props)
+    private void Postfix_ReadFrom(DynamicProperties _props, ItemAction __instance)
     {
-        consumeData = string.Empty;
+        string consumeData = string.Empty;
         _props.Values.TryGetString("ConsumeData", out consumeData);
+        if (string.IsNullOrEmpty(consumeData))
+        {
+            Log.Error($"No consume data found on item {__instance.item.Name} action {__instance.ActionIndex}");
+            return;
+        }
+
+        consumeDatas = consumeData.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToArray();
+        consumeTags = consumeDatas.Select(s => FastTags.Parse(s)).ToArray();
+        consumeStocks = new float[consumeDatas.Length];
+        consumeValues = new float[consumeDatas.Length];
     }
 
     [MethodTargetPrefix(nameof(ItemActionRanged.ExecuteAction))]
@@ -35,15 +48,24 @@ public class ActionModuleMetaConsumer
                 return true;
             }
 
-            float stock = (float)itemValue.GetMetadata(consumeData);
-            float consumption = EffectManager.GetValue(CustomEnums.ConsumptionValue, itemValue, float.MaxValue, _actionData.invData.holdingEntity);
-            if (stock < consumption)
+            for (int i = 0; i < consumeDatas.Length; i++)
             {
-                holdingEntity.PlayOneShot(___soundEmpty);
-                return false;
+                string consumeData = consumeDatas[i];
+                float stock = (float)itemValue.GetMetadata(consumeData);
+                float consumption = EffectManager.GetValue(CustomEnums.ConsumptionValue, itemValue, float.MaxValue, _actionData.invData.holdingEntity, null, consumeTags[i]);
+                if (stock < consumption)
+                {
+                    holdingEntity.PlayOneShot(___soundEmpty);
+                    return false;
+                }
+                consumeStocks[i] = stock;
+                consumeValues[i] = consumption;
             }
 
-            itemValue.SetMetadata(consumeData, stock - consumption, TypedMetadataValue.TypeTag.Float);
+            for (int i = 0; i < consumeDatas.Length; i++)
+            {
+                itemValue.SetMetadata(consumeDatas[i], consumeStocks[i] - consumeValues[i], TypedMetadataValue.TypeTag.Float);
+            }
         }
         return true;
     }
