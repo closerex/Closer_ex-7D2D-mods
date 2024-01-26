@@ -28,6 +28,10 @@ public class DisplayAsBuffEntityUINotification : BuffEntityUINotification
             }
         }
     }
+
+    public override bool Visible => true;
+
+    public override EnumEntityUINotificationDisplayMode DisplayMode => EnumEntityUINotificationDisplayMode.IconPlusCurrentValue;
 }
 
 [TypeTarget(typeof(ItemActionRanged))]

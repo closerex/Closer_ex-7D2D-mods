@@ -56,7 +56,7 @@ class MinEventActionSetAmmoOnWeaponLabel : MinEventActionRemoteHoldingBase
             meta = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, value, inv.GetHoldingGun().BulletsPerMagazine, _params.Self, null, default(FastTags), true, true, true, true, 1, true);
         string str = usePattern ? string.Join(meta.ToString(), wrap) : meta.ToString();
         //int num = consume_ammo ? meta - 1 : meta;
-        if (isRemoteHolding)
+        if (isRemoteHolding || localOnly)
             NetPackageSyncWeaponLabelText.SetWeaponLabelText(_params.Self, slot, str);
         else if(!_params.Self.isEntityRemote)
             NetPackageSyncWeaponLabelText.NetSyncSetWeaponLabelText(_params.Self, slot, str);

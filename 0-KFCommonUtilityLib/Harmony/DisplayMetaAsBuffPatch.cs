@@ -14,6 +14,11 @@ namespace KFCommonUtilityLib.Harmony
         [HarmonyPrefix]
         private static bool Prefix_GetBuffDisplayInfo_XUiM_PlayerBuffs(EntityUINotification notification, ref string __result)
         {
+            if (notification is DisplayAsBuffEntityUINotification && notification.Buff != null)
+            {
+                __result = notification.CurrentValue.ToString();
+                return false;
+            }
 
             return true;
         }
