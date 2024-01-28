@@ -1,0 +1,32 @@
+<configs>
+	<!-- Scope 2x -->
+	<append xpath="/item_modifiers/item_modifier[@name='modGunScopeSmall']">
+		<item_property_overrides name="gunM16M203">
+			<property name="ScopeCameraOffset" value="0,0,0.015"/>
+			<property name="CrosshairOnAim" value="false"/>
+			<property name="Zoom_overlay" value=""/>
+		</item_property_overrides>
+	</append>
+	<!-- Scope 4x -->
+	<append xpath="/item_modifiers/item_modifier[@name='modGunScopeMedium']">
+		<item_property_overrides name="gunM16M203">
+			<property name="CrosshairOnAim" value="false"/>
+			<property name="ScopeCameraOffset" value="0,0,0.015"/>
+			<property name="CrosshairOnAim" value="false"/>
+			<property name="Zoom_overlay" value=""/>
+		</item_property_overrides>
+	</append>
+
+	<append xpath="/item_modifiers/item_modifier[@name='modGunSoundSuppressorSilencer']">
+		<item_property_overrides name="gunM16M203_0">
+			<property name="Sound_start" value="ak47_s_fire"/>
+			<property name="Sound_end" value="silencefiller"/>
+			<property name="Sound_loop" value="ak47_s_fire"/>
+		</item_property_overrides>
+		<item_property_overrides name="gunM16M203_3">
+			<property name="Sound_start" value="M16M203_Fire_Grenade"/>
+			<property name="Sound_end" value=""/>
+			<property name="Sound_loop" value="M16M203_Fire_Grenade"/>
+		</item_property_overrides>
+	</append>
+</configs>

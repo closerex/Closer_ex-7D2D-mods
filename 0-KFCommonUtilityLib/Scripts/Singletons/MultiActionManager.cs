@@ -3,6 +3,7 @@ using KFCommonUtilityLib.Scripts.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -22,9 +23,9 @@ namespace KFCommonUtilityLib.Scripts.Singletons
     public struct MultiActionIndice
     {
         public const int MAX_ACTION_COUNT = 3;
-        public unsafe fixed int indices[MAX_ACTION_COUNT];
-        public unsafe fixed int metaIndice[MAX_ACTION_COUNT];
-        public readonly int modeCount;
+        public unsafe fixed sbyte indices[MAX_ACTION_COUNT];
+        public unsafe fixed sbyte metaIndice[MAX_ACTION_COUNT];
+        public readonly byte modeCount;
 
         //this should only be called in createModifierData
         public unsafe MultiActionIndice(ItemClass item)
@@ -32,13 +33,13 @@ namespace KFCommonUtilityLib.Scripts.Singletons
             ItemAction[] actions = item.Actions;
             indices[0] = 0;
             metaIndice[0] = 0;
-            int last = 1;
-            for (int i = 3; i < actions.Length && last < MAX_ACTION_COUNT; i++)
+            byte last = 1;
+            for (sbyte i = 3; i < actions.Length && last < MAX_ACTION_COUNT; i++)
             {
                 if (actions[i] != null)
                 {
                     indices[last] = i;
-                    if (actions[i].Properties.Values.TryGetString("ShareMetaWith", out string str) && int.TryParse(str, out int shareWith))
+                    if (actions[i].Properties.Values.TryGetString("ShareMetaWith", out string str) && sbyte.TryParse(str, out sbyte shareWith))
                     {
                         metaIndice[last] = shareWith;
                     }

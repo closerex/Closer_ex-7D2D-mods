@@ -38,6 +38,8 @@
 !VehicleWeaponTest/**
 !ApexDevotion/
 !ApexDevotion/**
+!M16M203
+!M16M203/**
 !ZZCustomPlayerActionManagerSMXPatch/
 !ZZCustomPlayerActionManagerSMXPatch/**
 .unitypackage

@@ -1,0 +1,266 @@
+﻿<configs>
+	<append xpath="/items">
+		<item name="gunM16M203">
+			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,barrelAttachments,smallTopAttachments,mediumTopAttachments,stock,magazine,drumMagazine,firingMode,attFortitude,perkMachineGunner,perkDemolitionsExpert,perkBookAutoWeapons,canHaveCosmetic,attachmentsIncluded,machinegunSkill"/><!-- attachmentsIncluded -->
+			<property name="DisplayType" value="rangedGun"/>
+			<property name="HoldType" value="71"/>
+			<property name="CustomIcon" value="m16m203"/>
+			<property name="Meshfile" value="#@modfolder:Resources/M16M203.unity3d?m16m203.prefab"/>
+			<property name="Material" value="MMachineGunParts"/>
+			<!-- <property name="TintColor" value="102, 102, 51"/> -->
+			<property name="Weight" value="1"/>
+			<property name="CrosshairOnAim" value="false"/> <!-- aimTest -->
+			<property name="CrosshairUpAfterShot" value="false"/> <!-- aimTest -->
+			<property name="RepairTools" value="resourceRepairKit"/>
+			<property name="DegradationBreaksAfter" value="false"/>
+			<property name="SoundJammed" value="weapon_jam"/>
+			<property name="Sound_Sight_In" value="rifle_sight_in"/>
+			<property name="Sound_Sight_Out" value="rifle_sight_out"/>
+			<property name="RepairExpMultiplier" value="10.8"/>
+			<property name="EconomicValue" value="1000"/>
+			<property name="TraderStageTemplate" value="baseTier2"/>
+			<property name="UnlockedBy" value="craftingMachineGuns"/><!-- gunMGT2TacticalARSchematic, -->
+			<property name="ShowQuality" value="true"/>
+			<property name="Group" value="Ammo/Weapons,Ranged Weapons"/>
+			<property name="SoundUnholster" value="weapon_unholster"/>
+			<property name="SoundHolster" value="weapon_holster"/>
+
+			<property class="Action0">
+				<property name="Class" value="Ranged"/>
+				<property name="ItemActionModules" value="HoldOpen,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
+				<property name="Delay" value=".150"/> <!-- obsolete if rounds per minute exists -->
+				<property name="Magazine_items" value="ammo762mmBulletBall,ammo762mmBulletHP,ammo762mmBulletAP"/>
+				<property name="Sound_start" value="M16M203_Fire_Gun"/>
+				<property name="Sound_loop" value="M16M203_Fire_Gun"/>
+				<property name="Sound_empty" value="dryfire"/>
+				<property name="AutoReload" value="false"/>
+				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
+						<property name="triggerEffectTriggerPullDualsense" value="RifleTrigger"/>
+						<property name="triggerEffectTriggerPullXbox" value="PistolTrigger"/>
+						<property name="triggerEffectTriggerShootDualsense" value="MGShoot"/>
+						<property name="triggerEffectTriggerShootXbox" value="PistolShoot"/>
+			</property>
+			<property class="Action1">
+				<property name="Class" value="Zoom"/>
+				<property name="Zoom_max_out" value="55"/>
+				<property name="Zoom_max_in" value="55"/>
+				<property name="ScopeCameraOffset" value="0,0,0"/>
+						<property name="zoomTriggerEffectTriggerPullDualsense" value="RifleZoom"/>
+						<property name="zoomTriggerEffectTriggerPullXbox" value="PistolZoom"/>
+			</property>
+			<property class="Action3">
+				<!-- <property name="Class" value="BetterLauncher,FullautoLauncher"/> -->
+				<property name="Class" value="Launcher"/>
+				<property name="ItemActionModules" value="MultiActionFix,KFCommonUtilityLib"/>
+				<!-- <property name="Class" value="Launcher"/> -->
+				<property name="Magazine_items" value="ammoM203ShellHE,ammoM203ShellFrag"/>
+				<property name="Sound_start" value="M16M203_Fire_Grenade"/>
+				<property name="Sound_loop" value="M16M203_Fire_Grenade"/>
+				<property name="VisibleInMag" value="false"/>
+				<property name="Sound_repeat" value=""/>
+				<property name="Sound_end" value=""/>
+				<property name="Sound_empty" value="dryfire"/>
+				<property name="AutoReload" value="false"/>
+				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
+			</property>
+			<effect_group name="common">
+				<passive_effect name="DegradationMax" operation="base_set" value="400,700" tier="1,6" tags="perkMachineGunner,perkDemolitionsExpert,perkBookAutoWeapons"/>
+				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkMachineGunner,perkDemolitionsExpert,perkBookAutoWeapons"/>
+				<passive_effect name="ModSlots" operation="base_set" value="3,3,3,4,4,4" tier="1,2,3,4,5,6"/>
+				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+			</effect_group>
+			<effect_group name="M16">
+				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="0"/>
+				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="true">
+					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="GTE" value="5"/>
+				</triggered_effect>
+				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="false">
+					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="LT" value="5"/>
+				</triggered_effect>
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="0.815">
+					<requirement name="RoundsInMagazine" operation="LTE" value="0"/>
+					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="LT" value="5"/>
+				</passive_effect>
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="1.156">
+					<requirement name="RoundsInMagazine" operation="LTE" value="0"/>
+					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="GTE" value="5"/>
+				</passive_effect>
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="0.877">
+					<requirement name="RoundsInMagazine" operation="GT" value="0"/>
+					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="LT" value="5"/>
+				</passive_effect>
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="1.153">
+					<requirement name="RoundsInMagazine" operation="GT" value="0"/>
+					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="GTE" value="5"/>
+				</passive_effect>
+				<passive_effect name="MaxRange" operation="base_set" value="90" tags="perkMachineGunner"/>
+				<passive_effect name="DamageFalloffRange" operation="base_set" value="49" tags="perkMachineGunner"/>
+				<passive_effect name="DamageFalloffRange" operation="perc_add" value="-.1,.05" tier="1,6" tags="perkMachineGunner"/> <!-- random effective rng -->
+				<passive_effect name="BlockDamage" operation="base_add" value="-2" tags="perkMachineGunner"/> <!-- damage offset -->
+				<passive_effect name="EntityDamage" operation="base_add" value="6" tags="perkMachineGunner"/> <!-- damage offset -->
+				<passive_effect name="EntityDamage" operation="perc_add" value="-.02,.02" tags="perkMachineGunner"/> <!-- random EntityDmg -->
+				<passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6" tags="perkMachineGunner"/> <!-- tier bonus -->
+				<passive_effect name="BlockDamage" operation="perc_add" value="-.08,.08" tags="perkMachineGunner"/> <!-- random BlockDmg -->
+				<passive_effect name="BlockDamage" operation="perc_add" value=".15,.75" tier="2,6" tags="perkMachineGunner"/> <!-- tier bonus -->
+				<!-- <passive_effect name="DegradationMax" operation="perc_add" value="-.2,.2" tier="1,6" tags="perkMachineGunner"/> --> <!-- random DegMax -->
+				<!-- <passive_effect name="RoundsPerMinute" operation="perc_add" value="-.05,.05" tags="perkMachineGunner"/> --> <!-- random APM -->
+				<!-- <passive_effect name="MagazineSize" operation="perc_add" value="-.122,.122"/> --> <!-- random MagazineSize -->
+				<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkMachineGunner"/> <!-- random WeaponHandling -->
+				<passive_effect name="RoundsPerMinute" operation="base_set" value="669" tags="perkMachineGunner"/>
+				<passive_effect name="BurstRoundCount" operation="base_set" value="999" tags="perkMachineGunner"/>
+				<passive_effect name="MagazineSize" operation="base_set" value="30" tags="perkMachineGunner"/>
+				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="0.75" tags="perkMachineGunner"/>
+
+				<passive_effect name="SpreadDegreesVertical" operation="base_set" value="2.8" tags="perkMachineGunner"/>
+				<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="2.8" tags="perkMachineGunner"/>
+				<passive_effect name="SpreadMultiplierAiming" operation="base_set" value=".22" tags="perkMachineGunner"/>
+				<passive_effect name="SpreadMultiplierCrouching" operation="base_set" value=".8" tags="perkMachineGunner"/>
+				<passive_effect name="SpreadMultiplierWalking" operation="base_set" value="1.5" tags="perkMachineGunner"/>
+				<passive_effect name="SpreadMultiplierRunning" operation="base_set" value="2.2" tags="perkMachineGunner"/>
+
+				<passive_effect name="KickDegreesVerticalMin" operation="base_set" value=".5" tags="perkMachineGunner"/>
+				<passive_effect name="KickDegreesVerticalMax" operation="base_set" value="1" tags="perkMachineGunner"/>
+				<passive_effect name="KickDegreesHorizontalMin" operation="base_set" value="-.5" tags="perkMachineGunner"/>
+				<passive_effect name="KickDegreesHorizontalMax" operation="base_set" value=".5" tags="perkMachineGunner"/>
+
+				<passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="1.9" tags="perkMachineGunner"/>
+				<passive_effect name="WeaponHandling" operation="base_set" value=".7" tags="perkMachineGunner"/> <!-- ak47 -->
+			</effect_group>
+			<effect_group name="M203">
+				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="3"/>
+				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="true">
+					<requirement name="ProgressionLevel" progression_name="perkDemolitionsExpert" operation="GTE" value="5"/>
+				</triggered_effect>
+				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="false">
+					<requirement name="ProgressionLevel" progression_name="perkDemolitionsExpert" operation="LT" value="5"/>
+				</triggered_effect>
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="0.917">
+					<requirement name="ProgressionLevel" progression_name="perkDemolitionsExpert" operation="LT" value="5"/>
+				</passive_effect>
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="1.091">
+					<requirement name="ProgressionLevel" progression_name="perkDemolitionsExpert" operation="GTE" value="5"/>
+				</passive_effect>
+				<passive_effect name="RoundsPerMinute" operation="base_set" value="180" tags="perkDemolitionsExpert"/>
+				<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkDemolitionsExpert"/>
+
+				<passive_effect name="MagazineSize" operation="base_set" value="1" tags="perkDemolitionsExpert"/>
+				<passive_effect name="EntityDamage" operation="perc_add" value="-.15,.15" tags="perkDemolitionsExpert"/> <!-- random EntityDmg -->
+				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDemolitionsExpert"/> <!-- tier bonus -->
+				<passive_effect name="BlockDamage" operation="perc_add" value="-.15,.15" tags="perkDemolitionsExpert"/> <!-- random BlockDmg -->
+				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDemolitionsExpert"/> <!-- tier bonus -->
+				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="0.85" tags="perkDemolitionsExpert"/>
+
+				<passive_effect name="RoundsPerMinute" operation="perc_add" value="-.05,.05" tags="perkDemolitionsExpert"/> <!-- random APM -->
+				<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkDemolitionsExpert"/> <!-- random WeaponHandling -->
+
+				<passive_effect name="SpreadDegreesVertical" operation="base_set" value="2" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="2" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadMultiplierAiming" operation="base_set" value=".1" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadMultiplierCrouching" operation="base_set" value=".2" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadMultiplierWalking" operation="base_set" value="1.5" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadMultiplierRunning" operation="base_set" value="2.2" tags="perkDemolitionsExpert"/>
+
+				<passive_effect name="KickDegreesVerticalMin" operation="base_set" value="4.2" tags="perkDemolitionsExpert"/>
+				<passive_effect name="KickDegreesVerticalMax" operation="base_set" value="4.2" tags="perkDemolitionsExpert"/>
+				<passive_effect name="KickDegreesHorizontalMin" operation="base_set" value="-2.5" tags="perkDemolitionsExpert"/>
+				<passive_effect name="KickDegreesHorizontalMax" operation="base_set" value="2.5" tags="perkDemolitionsExpert"/>
+
+				<passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="2" tags="perkDemolitionsExpert"/>
+				<passive_effect name="WeaponHandling" operation="base_set" value="1.7" tags="perkDemolitionsExpert"/>
+			</effect_group>
+		</item>
+		<item name="ammoM203ShellHE">
+			<property name="CustomIcon" value="m203he"/>
+			<property name="Tags" value="ammo,perkDemolitionsExpert"/>
+			<property name="DisplayType" value="ammoLauncher"/>
+			<property name="HoldType" value="45"/>
+			<property name="Meshfile" value="#@modfolder:Resources/M16M203.unity3d?m16m203_grenade.prefab"/>
+			<property name="HandMeshfile" value="@:Other/Items/Misc/sackPrefab.prefab"/>
+			<property name="DropMeshfile" value="@:Other/Items/Misc/sack_droppedPrefab.prefab"/>
+			<property name="Material" value="Mlead_scrap"/>
+			<property name="Stacknumber" value="15"/> <!-- STK ammo low -->
+			<property name="EconomicValue" value="20"/>
+			<property name="Group" value="Ammo/Weapons,Ammo,Ranged Weapons"/>
+			<property name="UnlockedBy" value="perkDemolitionsExpert"/>
+			<property class="Action1">
+				<property name="Class" value="Projectile"/>
+				<property name="CustomProjectileType" value="GameObject,FullautoLauncher"/>
+				<property name="Explosion.ParticleIndex" value="#@modfolder:Resources/M16M203.unity3d?m203_explosion$M203HE"/>
+				<property name="Explosion.Duration" value="4"/>
+				<property name="Explosion.AudioName" value="kaboomstick_explosion"/>
+				<property name="Explosion.RadiusBlocks" value="3"/> <!-- damage radius for blocks -->
+				<property name="Explosion.RadiusEntities" value="2"/> <!-- damage radius for entities -->
+				<property name="Explosion.BlastPower" value="35"/>
+				<property name="Explosion.DamageBonus.water" value="0"/>
+				<property name="Gravity" value="-7"/>
+				<property name="FlyTime" value=".2"/>
+				<property name="LifeTime" value="5"/>
+			</property>
+			<effect_group name="ammoM203ShellHE" tiered="false">
+				<passive_effect name="BlockDamage" operation="base_set" value="320" tags="perkDemolitionsExpert"/>
+				<passive_effect name="EntityDamage" operation="base_set" value="25" tags="perkDemolitionsExpert"/>
+				<passive_effect name="ProjectileImpactDamagePercentBlock" operation="base_set" value="0" tags="perkDemolitionsExpert"/>
+				<passive_effect name="ProjectileImpactDamagePercentEntity" operation="base_set" value="0" tags="perkDemolitionsExpert"/>
+				<passive_effect name="ProjectileVelocity" operation="base_set" value="80" tags="perkDemolitionsExpert"/>
+				<display_value name="dExRadius" value="2.5"/>
+				<passive_effect name="RoundRayCount" operation="base_set" value="1" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadDegreesVertical" operation="base_set" value="7.5" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="7.5" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadMultiplierAiming" operation="perc_add" value="-.10" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadMultiplierCrouching" operation="perc_add" value="-.05" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadMultiplierWalking" operation="perc_add" value=".15" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadMultiplierRunning" operation="perc_add" value=".3" tags="perkDemolitionsExpert"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="earth"/>
+			</effect_group>
+		</item>
+		<item name="ammoM203ShellFrag">
+			<property name="CustomIcon" value="m203frag"/>
+			<property name="Tags" value="ammo,perkDemolitionsExpert"/>
+			<property name="DisplayType" value="ammoLauncher"/>
+			<property name="HoldType" value="45"/>
+			<property name="Meshfile" value="#@modfolder:Resources/M16M203.unity3d?m16m203_grenade.prefab"/>
+			<property name="HandMeshfile" value="@:Other/Items/Misc/sackPrefab.prefab"/>
+			<property name="DropMeshfile" value="@:Other/Items/Misc/sack_droppedPrefab.prefab"/>
+			<property name="Material" value="Mlead_scrap"/>
+			<property name="Stacknumber" value="15"/> <!-- STK ammo low -->
+			<property name="EconomicValue" value="20"/>
+			<property name="Group" value="Ammo/Weapons,Ammo,Ranged Weapons"/>
+			<property name="UnlockedBy" value="perkDemolitionsExpert"/>
+			<property class="Action1">
+				<property name="Class" value="Projectile"/>
+				<property name="CustomProjectileType" value="GameObject,FullautoLauncher"/>
+				<property name="Explosion.ParticleIndex" value="#@modfolder:Resources/M16M203.unity3d?m203_explosion$M203Frag"/>
+				<property name="Explosion.Duration" value="4"/>
+				<property name="Explosion.AudioName" value="kaboomstick_explosion"/>
+				<property name="Explosion.RadiusBlocks" value="1"/> <!-- damage radius for blocks -->
+				<property name="Explosion.RadiusEntities" value="3"/> <!-- damage radius for entities -->
+				<property name="Explosion.BlastPower" value="20"/>
+				<property name="Explosion.DamageBonus.water" value="0"/>
+				<property name="Explosion.DamageBonus.stone" value=".01"/>
+				<property name="Explosion.DamageBonus.metal" value=".05"/>
+				<property name="Explosion.DamageBonus.earth" value="0"/>
+				<property name="Explosion.DamageBonus.wood" value=".05"/>
+				<property name="Gravity" value="-7"/>
+				<property name="FlyTime" value=".2"/>
+				<property name="LifeTime" value="6"/>
+			</property>
+			<effect_group name="ammoM203ShellFrag" tiered="false">
+				<passive_effect name="BlockDamage" operation="base_set" value="5" tags="perkDemolitionsExpert"/>
+				<passive_effect name="EntityDamage" operation="base_set" value="320" tags="perkDemolitionsExpert"/>
+				<passive_effect name="ProjectileImpactDamagePercentBlock" operation="base_set" value="0" tags="perkDemolitionsExpert"/>
+				<passive_effect name="ProjectileImpactDamagePercentEntity" operation="base_set" value="0" tags="perkDemolitionsExpert"/>
+				<passive_effect name="ProjectileVelocity" operation="base_set" value="80" tags="perkDemolitionsExpert"/>
+				<display_value name="dExRadius" value="2.5"/>
+				<passive_effect name="RoundRayCount" operation="base_set" value="1" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadDegreesVertical" operation="base_set" value="5.5" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="5.5" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadMultiplierAiming" operation="perc_add" value="-.15" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadMultiplierCrouching" operation="perc_add" value="-.08" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadMultiplierWalking" operation="perc_add" value=".15" tags="perkDemolitionsExpert"/>
+				<passive_effect name="SpreadMultiplierRunning" operation="perc_add" value=".3" tags="perkDemolitionsExpert"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="earth"/>
+			</effect_group>
+		</item>
+	</append>
+</configs>

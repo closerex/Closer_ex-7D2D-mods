@@ -187,7 +187,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
 
         public static int GetActionIndexByEntityEventParams(EntityAlive entity)
         {
-            return GetActionIndexByEventParams(entity?.MinEventContext);
+            return GetActionIndexByEventParams(entity?.MinEventContext ?? MinEventParams.CachedEventParam);
         }
 
         public static int GetActionIndexByEventParams(MinEventParams pars)
@@ -301,6 +301,41 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             }
             itemValue.Meta = 0;
             return true;
+        }
+
+        public static readonly ItemActionData[] DummyActionDatas = new ItemActionData[]
+        {
+            new ItemActionData(null, 0),
+            new ItemActionData(null, 3),
+            new ItemActionData(null, 4)
+        };
+
+        public static int GetMultiActionInitialMetaData(this ItemClass itemClass, ItemValue itemValue)
+        {
+            MultiActionIndice indice = MultiActionManager.GetActionIndiceForItemID(itemClass.Id);
+            if (indice.modeCount <= 1)
+            {
+                return itemClass.GetInitialMetadata(itemValue);
+            }
+
+            var prevItemValue = MinEventParams.CachedEventParam.ItemValue;
+            var prevActionData = MinEventParams.CachedEventParam.ItemActionData;
+            MinEventParams.CachedEventParam.ItemValue = itemValue;
+            itemValue.SetMetadata(MultiActionMapping.STR_MULTI_ACTION_INDEX, 0, TypedMetadataValue.TypeTag.Integer);
+            int ret = 0;
+            for (int i = 0; i < indice.modeCount; i++)
+            {
+                MinEventParams.CachedEventParam.ItemActionData = DummyActionDatas[i];
+                int meta = itemClass.Actions[indice.GetActionIndexForMode(i)].GetInitialMeta(itemValue);
+                if(i == 0)
+                {
+                    ret = meta;
+                }
+                itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[indice.GetMetaIndexForMode(i)], meta, TypedMetadataValue.TypeTag.Integer);
+            }
+            MinEventParams.CachedEventParam.ItemValue = prevItemValue;
+            MinEventParams.CachedEventParam.ItemActionData = prevActionData;
+            return ret;
         }
     }
 }

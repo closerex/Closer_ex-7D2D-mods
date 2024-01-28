@@ -40,72 +40,6 @@ namespace KFCommonUtilityLib.Harmony
     {
         #region Run Correct ItemAction
 
-        //#region Passive tags
-        ////maybe use TriggerHasTags instead?
-        //public struct TagsForAll
-        //{
-        //    public FastTags tags;
-        //    public bool matchAllTags;
-        //    public bool invertTagCheck;
-
-        //    public bool IsValid()
-        //    {
-        //        return !tags.IsEmpty || matchAllTags || invertTagCheck;
-        //    }
-        //}
-
-        //[HarmonyPatch(typeof(MinEffectGroup), nameof(MinEffectGroup.ParseXml))]
-        //[HarmonyPrefix]
-        //private static bool Prefix_ParseXml_MinEffectGroup(XElement _element, out TagsForAll __state)
-        //{
-        //    __state = new TagsForAll()
-        //    {
-        //        tags = FastTags.none,
-        //        matchAllTags = false,
-        //        invertTagCheck = false
-        //    };
-        //    string tags = _element.GetAttribute("tags");
-        //    __state.tags = tags != null ? FastTags.Parse(tags) : FastTags.none;
-        //    if (_element.HasAttribute("match_all_tags"))
-        //    {
-        //        __state.matchAllTags = true;
-        //    }
-        //    if (_element.HasAttribute("invert_tag_check"))
-        //    {
-        //        __state.invertTagCheck = true;
-        //    }
-
-        //    return true;
-        //}
-
-
-        //[HarmonyPatch(typeof(MinEffectGroup), nameof(MinEffectGroup.ParseXml))]
-        //[HarmonyPostfix]
-        //private static void Postfix_ParseXml_MinEffectGroup(MinEffectGroup __result, TagsForAll __state)
-        //{
-        //    if (!__state.IsValid() || __result == null || __result.PassiveEffects == null)
-        //        return;
-
-        //    foreach (var passive in __result.PassiveEffects)
-        //    {
-        //        if (!__state.tags.IsEmpty)
-        //        {
-        //            passive.Tags |= __state.tags;
-        //        }
-
-        //        if (__state.matchAllTags)
-        //        {
-        //            passive.MatchAnyTags = false;
-        //        }
-
-        //        if (__state.invertTagCheck)
-        //        {
-        //            passive.InvertTagCheck = true;
-        //        }
-        //    }
-        //}
-        //#endregion
-
         #region Ranged Reload
         //Replace reload action index with animator item action index parameter
         //set MinEventParams.ItemActionData before getting passive value
@@ -1907,6 +1841,41 @@ namespace KFCommonUtilityLib.Harmony
             }
             __result = stack;
             return false;
+        }
+    }
+    #endregion
+
+    #region Generate initial meta
+    [HarmonyPatch]
+    public static class InitialMetaPatches
+    {
+        private static IEnumerable<MethodBase> TargetMethods()
+        {
+            return new MethodInfo[]
+            {
+                AccessTools.Method(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.SetupStartingItems)),
+                AccessTools.Method(typeof(ItemClass), nameof(ItemClass.CreateItemStacks))
+            };
+        }
+
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var mtd_initial = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.GetInitialMetadata));
+            var mtd_initialnew = AccessTools.Method(typeof(MultiActionUtils), nameof(MultiActionUtils.GetMultiActionInitialMetaData));
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].Calls(mtd_initial))
+                {
+                    codes[i].opcode = OpCodes.Call;
+                    codes[i].operand = mtd_initialnew;
+                    break;
+                }
+            }
+
+            return codes;
         }
     }
     #endregion

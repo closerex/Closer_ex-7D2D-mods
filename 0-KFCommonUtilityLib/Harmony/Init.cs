@@ -1,6 +1,7 @@
 ﻿using KFCommonUtilityLib.Scripts.Singletons;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 public class CommonUtilityLibInit : IModApi
 {
@@ -11,6 +12,10 @@ public class CommonUtilityLibInit : IModApi
             return;
         inited = true;
         Log.Out(" Loading Patch: " + GetType());
+        unsafe
+        {
+            Log.Out($"size of MultiActionIndice: {sizeof(MultiActionIndice)} marshal size: {Marshal.SizeOf<MultiActionIndice>()}");
+        }
         CustomEffectEnumManager.RegisterEnumType<MinEventTypes>();
         CustomEffectEnumManager.RegisterEnumType<PassiveEffects>();
         ModEvents.GameAwake.RegisterHandler(CommonUtilityPatch.InitShotStates);
