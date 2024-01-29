@@ -24,7 +24,7 @@ public class CustomPlayerActionManager
         saveFile = Path.Combine(GameIO.GetUserGameDataDir(), saveName);
         Assembly assembly = Assembly.GetAssembly(typeof(CustomPlayerActionManager));
         Mod mod = ModManager.GetModForAssembly(assembly);
-        string prevSaveFile = Path.Combine(mod.Path, saveName);
+        string prevSaveFile = mod != null ? Path.Combine(mod.Path, saveName) : null;
         if(!File.Exists(prevSaveFile))
         {
             mod = ModManager.GetMod("CustomPlayerActionManager");

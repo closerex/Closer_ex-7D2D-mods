@@ -1832,7 +1832,17 @@ namespace KFCommonUtilityLib.Harmony
         private static IEnumerable<MethodBase> TargetMethods()
         {
             return AppDomain.CurrentDomain.GetAssemblies()
-                                          .SelectMany(a => a.GetTypes())
+                                          .SelectMany(a =>
+                                          {
+                                              try
+                                              {
+                                                  return a.GetTypes();
+                                              }
+                                              catch
+                                              {
+                                                  return new Type[0]; 
+                                              }
+                                          })
                                           .Where(t => t.IsSubclassOf(typeof(ItemAction)))
                                           .Select(t => AccessTools.Method(t, nameof(ItemAction.OnModificationsChanged)))
                                           .Where(m => m.IsDeclaredMember());

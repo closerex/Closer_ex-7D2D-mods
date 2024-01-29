@@ -413,6 +413,8 @@
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationResetRigWeightState.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimatorRandomSwitch.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\RigWeightOverTime.cs" />
+    <Compile Include="KFAttached\Render\MagnifyScope.cs" />
+    <Compile Include="KFAttached\Render\MagnifyScopeTargetRef.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="KFAttached\RigAdaptors\Adaptors\BlendConstraintAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\Adaptors\ChainIKConstraintAdaptor.cs" />

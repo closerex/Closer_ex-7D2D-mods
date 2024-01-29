@@ -115,7 +115,8 @@ namespace KFCommonUtilityLib.Scripts.Utilities
 
         public static void SetMinEventParamsActionData(EntityAlive entity, int actionIndex)
         {
-            entity.MinEventContext.ItemActionData = entity.inventory.holdingItemData.actionData[actionIndex];
+            if (actionIndex >= 0 && actionIndex < entity.inventory?.holdingItemData?.actionData?.Count)
+                entity.MinEventContext.ItemActionData = entity.inventory.holdingItemData.actionData[actionIndex];
         }
 
         public static string GetPropertyOverrideForAction(ItemValue self, string _propertyName, string _originalValue, int actionIndex)
