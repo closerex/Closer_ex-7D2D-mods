@@ -1636,6 +1636,44 @@ namespace KFCommonUtilityLib.Harmony
             return codes;
         }
         #endregion
+
+        private static Coroutine switchHoldingItemCo;
+        [HarmonyPatch(typeof(Inventory), nameof(Inventory.ShowHeldItem))]
+        [HarmonyPrefix]
+        private static bool Prefix_ShowHeldItem_Inventory(bool show)
+        {
+            if (show && switchHoldingItemCo != null)
+            {
+                GameManager.Instance.StopCoroutine(switchHoldingItemCo);
+                switchHoldingItemCo = null;
+            }
+            return true;
+        }
+
+        [HarmonyPatch(typeof(Inventory), nameof(Inventory.ShowHeldItem))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_ShowHeldItem_Inventory(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            var codes = instructions.ToList();
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].opcode == OpCodes.Pop)
+                {
+                    var label = generator.DefineLabel();
+                    codes[i].WithLabels(label);
+                    codes.InsertRange(i, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_1),
+                        new CodeInstruction(OpCodes.Brfalse_S, label),
+                        CodeInstruction.StoreField(typeof(MultiActionPatches), nameof(switchHoldingItemCo)),
+                        new CodeInstruction(OpCodes.Ret)
+                    });
+                    break;
+                }
+            }
+            return codes;
+        }
     }
 
     //Moved to MultiActionFix
