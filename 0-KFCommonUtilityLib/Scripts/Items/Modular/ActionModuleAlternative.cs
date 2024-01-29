@@ -28,16 +28,16 @@ public class ActionModuleAlternative
         player?.emodel?.avatarController?.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, mapping.CurActionIndex);
     }
 
-    //[MethodTargetPrefix(nameof(ItemActionRanged.CancelReload))]
-    //private bool Prefix_CancelReload(ItemActionData _actionData, AlternativeData __customData)
-    //{
-    //    int actionIndex = __customData.mapping.CurActionIndex;
-    //    Log.Out($"cancel reload {actionIndex}");
-    //    if(actionIndex == 0)
-    //        return true;
-    //    _actionData.invData.holdingEntity.inventory.holdingItem.Actions[actionIndex].CancelReload(_actionData.invData.holdingEntity.inventory.holdingItemData.actionData[actionIndex]);
-    //    return false;
-    //}
+    [MethodTargetPrefix(nameof(ItemActionRanged.CancelReload))]
+    private bool Prefix_CancelReload(ItemActionData _actionData, AlternativeData __customData)
+    {
+        int actionIndex = __customData.mapping.CurActionIndex;
+        Log.Out($"cancel reload {actionIndex}");
+        if (actionIndex == 0)
+            return true;
+        _actionData.invData.holdingEntity.inventory.holdingItem.Actions[actionIndex].CancelReload(_actionData.invData.holdingEntity.inventory.holdingItemData.actionData[actionIndex]);
+        return false;
+    }
 
     [MethodTargetPrefix(nameof(ItemActionAttack.CancelAction))]
     private bool Prefix_CancelAction(ItemActionData _actionData, AlternativeData __customData)
@@ -78,8 +78,13 @@ public class ActionModuleAlternative
     [MethodTargetPrefix(nameof(ItemActionAttack.SetupRadial))]
     private bool Prefix_SetupRadial(XUiC_Radial _xuiRadialWindow, EntityPlayerLocal _epl)
     {
-        var radialContextItem = new AlternativeRadialContextItem(MultiActionManager.GetMappingForEntity(_epl.entityId), _xuiRadialWindow, _epl);
-        _xuiRadialWindow.SetCommonData(UIUtils.ButtonIcon.FaceButtonEast, new XUiC_Radial.CommandHandlerDelegate(this.handleRadialCommand), radialContextItem, radialContextItem.PreSelectedIndex, false, new XUiC_Radial.RadialStillValidDelegate(this.radialValidTest));
+        var mapping = MultiActionManager.GetMappingForEntity(_epl.entityId);
+        if (mapping != null)
+        {
+            var radialContextItem = new AlternativeRadialContextItem(mapping, _xuiRadialWindow, _epl);
+            _xuiRadialWindow.SetCommonData(UIUtils.ButtonIcon.FaceButtonEast, new XUiC_Radial.CommandHandlerDelegate(this.handleRadialCommand), radialContextItem, radialContextItem.PreSelectedIndex, false, new XUiC_Radial.RadialStillValidDelegate(this.radialValidTest));
+        }
+
         return false;
     }
 
@@ -107,8 +112,8 @@ public class ActionModuleAlternative
         EntityPlayerLocal entityPlayer = _sender.xui.playerUI.entityPlayer;
         if (radialContextItem.mapping == MultiActionManager.GetMappingForEntity(entityPlayer.entityId) && radialContextItem.mapping.CurActionIndex == radialContextItem.ActionIndex)
         {
-            entityPlayer.MinEventContext.ItemActionData = entityPlayer.inventory.holdingItemData.actionData[radialContextItem.ActionIndex];
-            ((ItemActionRanged)entityPlayer.inventory.holdingItem.Actions[radialContextItem.ActionIndex]).SwapSelectedAmmo(entityPlayer, _commandIndex);
+            entityPlayer.MinEventContext.ItemActionData = entityPlayer.inventory.holdingItemData.actionData?[radialContextItem.ActionIndex];
+            (entityPlayer.inventory.holdingItem.Actions?[radialContextItem.ActionIndex] as ItemActionRanged)?.SwapSelectedAmmo(entityPlayer, _commandIndex);
         }
     }
 

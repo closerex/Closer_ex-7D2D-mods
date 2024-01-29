@@ -299,7 +299,7 @@ namespace KFCommonUtilityLib.Harmony
         [HarmonyPrefix]
         private static bool Prefix_GetHoldingGun_Inventory(Inventory __instance, ref ItemActionAttack __result, EntityAlive ___entity)
         {
-            __result = __instance.holdingItem.Actions[MultiActionManager.GetActionIndexForEntity(___entity)] as ItemActionAttack;
+            __result = __instance.holdingItem.Actions[MultiActionManager.GetActionIndexForEntity(___entity)] as ItemActionAttack ?? __instance.holdingItem.Actions[0] as ItemActionAttack;
             return false;
         }
 
@@ -307,7 +307,7 @@ namespace KFCommonUtilityLib.Harmony
         [HarmonyPrefix]
         private static bool Prefix_GetHoldingDynamicMelee_Inventory(Inventory __instance, ref ItemActionDynamic __result, EntityAlive ___entity)
         {
-            __result = __instance.holdingItem.Actions[MultiActionManager.GetActionIndexForEntity(___entity)] as ItemActionDynamic;
+            __result = __instance.holdingItem.Actions[MultiActionManager.GetActionIndexForEntity(___entity)] as ItemActionDynamic ?? __instance.holdingItem.Actions[0] as ItemActionDynamic;
             return false;
         }
 
@@ -1532,19 +1532,35 @@ namespace KFCommonUtilityLib.Harmony
         {
             var codes = instructions.ToList();
 
-            MethodInfo mtd_cancel = AccessTools.Method(typeof(ItemAction), nameof(ItemAction.CancelReload));
+            MethodInfo mtd_cancel = AccessTools.Method(typeof(Inventory), nameof(Inventory.GetHoldingGun));
+            MethodInfo mtd_getprimary = AccessTools.Method(typeof(Inventory), nameof(Inventory.GetHoldingPrimary));
+            FieldInfo fld_reload = AccessTools.Field(typeof(PlayerActionsPermanent), nameof(PlayerActionsPermanent.Reload));
             for (int i = 0; i < codes.Count; i++)
             {
                 if (codes[i].Calls(mtd_cancel))
                 {
-                    codes.RemoveAt(i - 2);
-                    codes.InsertRange(i - 2, new[]
+                    codes[i].operand = mtd_getprimary;
+                    //codes.RemoveAt(i - 2);
+                    //codes.InsertRange(i - 2, new[]
+                    //{
+                    //    new CodeInstruction(OpCodes.Ldarg_0),
+                    //    CodeInstruction.LoadField(typeof(PlayerMoveController), "entityPlayerLocal"),
+                    //    CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.GetActionIndexForEntity))
+                    //});
+                    //i += 2;
+                }
+                else if (codes[i].LoadsField(fld_reload))
+                {
+                    var label = codes[i + 6].operand;
+                    codes.InsertRange(i + 7, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_0),
                         CodeInstruction.LoadField(typeof(PlayerMoveController), "entityPlayerLocal"),
-                        CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.GetActionIndexForEntity))
+                        CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.inventory)),
+                        CodeInstruction.Call(typeof(Inventory), nameof(Inventory.GetIsFinishedSwitchingHeldItem)),
+                        new CodeInstruction(OpCodes.Brfalse, label)
                     });
-                    i += 2;
+                    i += 5;
                 }
             }
 
