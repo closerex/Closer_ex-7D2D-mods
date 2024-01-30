@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace KFCommonUtilityLib.KFAttached.Render
 {
@@ -13,10 +8,26 @@ namespace KFCommonUtilityLib.KFAttached.Render
     {
         [SerializeField]
         private string renderTextureName;
+        //[SerializeField]
+        //private Material postEffectMat;
+
+        //[Range(0f, 3f)]
+        //public float BlurRadius = 1f;
+        //[Range(8, 128)]
+        //public int Iteration = 32;
+        //[Range(1, 10)]
+        //public float RTDownScaling = 2;
+        //private static readonly int GoldenRot = Shader.PropertyToID("_GoldenRot");
+        //private static readonly int Params = Shader.PropertyToID("_Params");
+        //private static readonly int BufferRT1 = Shader.PropertyToID("_BufferRT1");
 #if NotEditor
         private EntityPlayerLocal player;
         private RenderTexture targetTexture;
         private Renderer renderTarget;
+        //private float DownScalingReci;
+
+        //private Vector4 mGoldenRot = new Vector4();
+        
         private void Awake()
         {
             renderTarget = GetComponent<Renderer>();
@@ -31,6 +42,21 @@ namespace KFCommonUtilityLib.KFAttached.Render
                 Destroy(this);
                 return;
             }
+            if (!player.playerCamera.TryGetComponent<MagnifyScopeTargetRef>(out var reference))
+            {
+                reference = player.playerCamera.gameObject.AddComponent<MagnifyScopeTargetRef>();
+            }
+            reference.target = this;
+            //if (!player.playerCamera.TryGetComponent<BokehBlurTargetRef>(out var bokeh))
+            //{
+            //    bokeh = player.playerCamera.gameObject.AddComponent<BokehBlurTargetRef>();
+            //}
+            //bokeh.target = this;
+            //// Precompute rotations
+            //float c = Mathf.Cos(2.39996323f);
+            //float s = Mathf.Sin(2.39996323f);
+            //mGoldenRot.Set(c, s, -s, c);
+            //DownScalingReci = 1 / RTDownScaling;
         }
 
         private void OnEnable()
@@ -38,8 +64,15 @@ namespace KFCommonUtilityLib.KFAttached.Render
             if (!player.playerCamera.TryGetComponent<MagnifyScopeTargetRef>(out var reference))
             {
                 reference = player.playerCamera.gameObject.AddComponent<MagnifyScopeTargetRef>();
+                reference.target = this;
             }
-            reference.target = this;
+            reference.enabled = true;
+            //if (!player.playerCamera.TryGetComponent<BokehBlurTargetRef>(out var bokeh))
+            //{
+            //    bokeh = player.playerCamera.gameObject.AddComponent<BokehBlurTargetRef>();
+            //    bokeh.target = this;
+            //}
+            //bokeh.enabled = true;
         }
 
         private void OnDisable()
@@ -47,8 +80,15 @@ namespace KFCommonUtilityLib.KFAttached.Render
             if (!player.playerCamera.TryGetComponent<MagnifyScopeTargetRef>(out var reference))
             {
                 reference = player.playerCamera.gameObject.AddComponent<MagnifyScopeTargetRef>();
+                reference.target = this;
             }
-            reference.target = null;
+            reference.enabled = false;
+            //if (!player.playerCamera.TryGetComponent<BokehBlurTargetRef>(out var bokeh))
+            //{
+            //    bokeh = player.playerCamera.gameObject.AddComponent<BokehBlurTargetRef>();
+            //    bokeh.target = this;
+            //}
+            //bokeh.enabled = false;
         }
 
         internal void RenderImageCallback(RenderTexture source, RenderTexture destination)
@@ -63,7 +103,25 @@ namespace KFCommonUtilityLib.KFAttached.Render
                 targetTexture = new RenderTexture(source.width, source.height, 24, RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear);
             }
             renderTarget.material.SetTexture(renderTextureName, targetTexture);
-            Graphics.Blit(source, targetTexture);
+            Graphics.CopyTexture(source, targetTexture);
+        }
+
+        internal void BokehBlurCallback(RenderTexture source, RenderTexture destination)
+        {
+            //if (postEffectMat != null)
+            //{
+            //    RenderTextureDescriptor desc = source.descriptor;
+            //    desc.width = (int)(desc.width / RTDownScaling);
+            //    desc.height = (int)(desc.height / RTDownScaling);
+            //    desc.enableRandomWrite = true;
+            //    postEffectMat.SetVector(GoldenRot, mGoldenRot);
+            //    postEffectMat.SetVector(Params, new Vector4(Iteration, BlurRadius, 1f / desc.width, 1f / desc.height));
+            //    RenderTexture postEffectTexture = RenderTexture.GetTemporary(desc);
+            //    Graphics.Blit(source, postEffectTexture, new Vector2(RTDownScaling, RTDownScaling), Vector2.zero);
+            //    Graphics.Blit(postEffectTexture, postEffectTexture, postEffectMat);
+            //    Graphics.Blit(postEffectTexture, destination, new Vector2(DownScalingReci, DownScalingReci), Vector2.zero);
+            //    RenderTexture.ReleaseTemporary(postEffectTexture);
+            //}
         }
 #endif
     }

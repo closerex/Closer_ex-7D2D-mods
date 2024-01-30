@@ -2,6 +2,8 @@
 	<!-- Scope 2x -->
 	<append xpath="/item_modifiers/item_modifier[@name='modGunScopeSmall']">
 		<item_property_overrides name="gunM16M203">
+			<property name="Zoom_max_out" value="54"/>
+			<property name="Zoom_max_in" value="54"/>
 			<property name="ScopeCameraOffset" value="0,0,0.015"/>
 			<property name="CrosshairOnAim" value="false"/>
 			<property name="Zoom_overlay" value=""/>
@@ -10,6 +12,8 @@
 	<!-- Scope 4x -->
 	<append xpath="/item_modifiers/item_modifier[@name='modGunScopeMedium']">
 		<item_property_overrides name="gunM16M203">
+			<property name="Zoom_max_out" value="27"/>
+			<property name="Zoom_max_in" value="27"/>
 			<property name="CrosshairOnAim" value="false"/>
 			<property name="ScopeCameraOffset" value="0,0,0.015"/>
 			<property name="CrosshairOnAim" value="false"/>
