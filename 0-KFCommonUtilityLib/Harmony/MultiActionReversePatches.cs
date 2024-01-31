@@ -29,7 +29,6 @@ public static class MultiActionReversePatches
                 if (code.Calls(mtd_modify) && codes[i - 9].opcode == OpCodes.Ldarg_1)
                 {
                     code.operand = AccessTools.Method(typeof(MultiActionProjectileRewrites), nameof(MultiActionProjectileRewrites.ProjectileValueModifyValue));
-                    break;
                 }
             }
             return codes;
@@ -68,5 +67,47 @@ public static class MultiActionReversePatches
             return codes;
         }
         _ = Transpiler(null);
+    }
+
+    [HarmonyReversePatch]
+    [HarmonyPatch(typeof(ItemActionAttack), nameof(ItemActionAttack.GetDamageEntity))]
+    public static float GetBaseDamageEntity(this ItemActionAttack self, ItemValue _itemValue, EntityAlive _holdingEntity = null, int actionIndex = 0)
+    {
+        IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            if (instructions == null)
+                return null;
+
+            return new[]
+            {
+                new CodeInstruction(OpCodes.Ldarg_0),
+                CodeInstruction.LoadField(typeof(ItemActionAttack), "damageEntity"),
+                new CodeInstruction(OpCodes.Ret)
+            };
+        }
+
+        _ = Transpiler(null);
+        return 0;
+    }
+
+    [HarmonyReversePatch]
+    [HarmonyPatch(typeof(ItemActionAttack), nameof(ItemActionAttack.GetDamageEntity))]
+    public static float GetBaseDamageBlock(this ItemActionAttack self, ItemValue _itemValue, EntityAlive _holdingEntity = null, int actionIndex = 0)
+    {
+        IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            if (instructions == null)
+                return null;
+
+            return new[]
+            {
+                new CodeInstruction(OpCodes.Ldarg_0),
+                CodeInstruction.LoadField(typeof(ItemActionAttack), "damageBlock"),
+                new CodeInstruction(OpCodes.Ret)
+            };
+        }
+
+        _ = Transpiler(null);
+        return 0;
     }
 }

@@ -73,8 +73,8 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                     MultiActionProjectileRewrites.ProjectileHit(Voxel.voxelRayHitInfo,
                                  ProjectileOwnerID,
                                  EnumDamageTypes.Piercing,
-                                 Mathf.Lerp(1f, MultiActionProjectileRewrites.GetProjectileDamageBlock(itemValueProjectile, ItemActionAttack.GetBlockHit(world, Voxel.voxelRayHitInfo), firingEntity, actionData.indexInEntityOfAction), strainPerc),
-                                 Mathf.Lerp(1f, MultiActionProjectileRewrites.GetProjectileDamageEntity(itemValueProjectile, firingEntity, actionData.indexInEntityOfAction), strainPerc),
+                                 Mathf.Lerp(1f, MultiActionProjectileRewrites.GetProjectileDamageBlock(itemActionProjectile, itemValueProjectile, ItemActionAttack.GetBlockHit(world, Voxel.voxelRayHitInfo), firingEntity, actionData.indexInEntityOfAction), strainPerc),
+                                 Mathf.Lerp(1f, MultiActionProjectileRewrites.GetProjectileDamageEntity(itemActionProjectile, itemValueProjectile, firingEntity, actionData.indexInEntityOfAction), strainPerc),
                                  1f,
                                  1f,
                                  MultiActionReversePatches.ProjectileGetValue(PassiveEffects.CriticalChance, itemValueProjectile, itemProjectile.CritChance.Value, firingEntity, null, itemProjectile.ItemTags, true, false),
@@ -637,7 +637,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             return _strength;
         }
 
-        public static float GetProjectileDamageBlock(ItemValue _itemValue, BlockValue _blockValue, EntityAlive _holdingEntity = null, int actionIndex = 0)
+        public static float GetProjectileDamageBlock(this ItemActionAttack self, ItemValue _itemValue, BlockValue _blockValue, EntityAlive _holdingEntity = null, int actionIndex = 0)
         {
             FastTags tmpTag = ((actionIndex != 1) ? ItemActionAttack.PrimaryTag : ItemActionAttack.SecondaryTag);
             ItemClass launcherClass = ItemClass.GetForId(_itemValue.Meta);
@@ -648,10 +648,10 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             }
 
             tmpTag |= _blockValue.Block.Tags;
-            return MultiActionReversePatches.ProjectileGetValue(PassiveEffects.BlockDamage, _itemValue, 0, _holdingEntity, null, tmpTag, true, false) * GetProjectileBlockDamagePerc(_itemValue, _holdingEntity);
+            return MultiActionReversePatches.ProjectileGetValue(PassiveEffects.BlockDamage, _itemValue, self.GetBaseDamageBlock(null), _holdingEntity, null, tmpTag, true, false) * GetProjectileBlockDamagePerc(_itemValue, _holdingEntity);
         }
 
-        public static float GetProjectileDamageEntity(ItemValue _itemValue, EntityAlive _holdingEntity = null, int actionIndex = 0)
+        public static float GetProjectileDamageEntity(this ItemActionAttack self, ItemValue _itemValue, EntityAlive _holdingEntity = null, int actionIndex = 0)
         {
             FastTags tmpTag = ((actionIndex != 1) ? ItemActionAttack.PrimaryTag : ItemActionAttack.SecondaryTag);
             ItemClass launcherClass = ItemClass.GetForId(_itemValue.Meta);
@@ -661,7 +661,11 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 tmpTag |= _holdingEntity.CurrentStanceTag | _holdingEntity.CurrentMovementTag;
             }
 
-            return MultiActionReversePatches.ProjectileGetValue(PassiveEffects.EntityDamage, _itemValue, 0, _holdingEntity, null, tmpTag, true, false) * GetProjectileEntityDamagePerc(_itemValue, _holdingEntity);
+            var res = MultiActionReversePatches.ProjectileGetValue(PassiveEffects.EntityDamage, _itemValue, self.GetBaseDamageEntity(null), _holdingEntity, null, tmpTag, true, false) * GetProjectileEntityDamagePerc(_itemValue, _holdingEntity);
+#if DEBUG
+            Log.Out($"get projectile damage entity for action index {actionIndex}, item {launcherClass.Name}, result {res}");
+#endif
+            return res;
         }
 
         public static float GetProjectileBlockDamagePerc(ItemValue _itemValue, EntityAlive _holdingEntity)
@@ -682,6 +686,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
         {
             if (_originalItemValue != null)
             {
+                Log.Warning($"original item value present: item {_originalItemValue.ItemClass.Name}");
                 return;
             }
             int seed = MinEventParams.CachedEventParam.Seed;
@@ -745,6 +750,10 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                         }
                     }
                 }
+            }
+            else
+            {
+                Log.Warning($"launcher class not found: item id{_projectileItemValue.Meta}");
             }
 
             if (_useMods)
