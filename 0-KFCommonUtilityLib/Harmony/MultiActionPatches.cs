@@ -1674,6 +1674,41 @@ namespace KFCommonUtilityLib.Harmony
             }
             return codes;
         }
+
+        #region ItemAction exclude tags
+        [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.LateInit))]
+        [HarmonyPostfix]
+        private static void Postfix_LateInit_ItemClass(ItemClass __instance)
+        {
+            MultiActionManager.ParseItemActionExcludeTags(__instance);
+        }
+
+        [HarmonyPatch(typeof(EffectManager), nameof(EffectManager.GetValue))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_GetValue_EffectManager(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].IsStarg(5))
+                {
+                    var next = codes[i + 1];
+                    codes.InsertRange(i + 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_1).WithLabels(next.ExtractLabels()),
+                        CodeInstruction.LoadField(typeof(MinEventParams), nameof(MinEventParams.CachedEventParam)),
+                        CodeInstruction.LoadField(typeof(MinEventParams), nameof(MinEventParams.ItemActionData)),
+                        new CodeInstruction(OpCodes.Ldarga_S, 5),
+                        CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.ModifyItemTags))
+                    });
+                    break;
+                }
+            }
+
+            return codes;
+        }
+        #endregion
     }
 
     //Moved to MultiActionFix

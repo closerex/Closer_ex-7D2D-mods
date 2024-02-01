@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using UnityEngine;
 
 namespace KFCommonUtilityLib.Scripts.Singletons
@@ -291,6 +292,8 @@ namespace KFCommonUtilityLib.Scripts.Singletons
         //clear on game load
         private static readonly Dictionary<int, MultiActionMapping> dict_mappings = new Dictionary<int, MultiActionMapping>();
         private static readonly Dictionary<int, MultiActionIndice> dict_indice = new Dictionary<int, MultiActionIndice>();
+        private static readonly Dictionary<int, FastTags[]> dict_item_action_exclude_tags = new Dictionary<int, FastTags[]>();
+
         //should set to true when:
         //mode switch input received;
         //start holding new multi action weapon.?
@@ -301,6 +304,36 @@ namespace KFCommonUtilityLib.Scripts.Singletons
         {
             dict_mappings.Clear();
             dict_indice.Clear();
+            dict_item_action_exclude_tags.Clear();
+        }
+
+        public static void ParseItemActionExcludeTags(ItemClass item)
+        {
+            if (item == null)
+                return;
+            FastTags[] tags = null;
+            for (int i = 0; i < item.Actions.Length; i++)
+            {
+                if (item.Actions[i] != null && item.Actions[i].Properties.Values.TryGetString("ExcludeTags", out string str))
+                {
+                    if (tags == null)
+                    {
+                        tags = new FastTags[ItemClass.cMaxActionNames];
+                        dict_item_action_exclude_tags.Add(item.Id, tags);
+                    }
+                    tags[i] = FastTags.Parse(str);
+                }
+            }
+        }
+
+        public static void ModifyItemTags(ItemValue itemValue, ItemActionData actionData, ref FastTags tags)
+        {
+            if (itemValue == null || actionData == null || !dict_item_action_exclude_tags.TryGetValue(itemValue.type, out var arr_tags))
+            {
+                return;
+            }
+
+            tags.Remove(arr_tags[actionData.indexInEntityOfAction]);
         }
 
         public static void UpdateLocalMetaSave(int playerID)

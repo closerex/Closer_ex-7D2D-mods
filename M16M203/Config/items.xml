@@ -1,7 +1,7 @@
 ﻿<configs>
 	<append xpath="/items">
 		<item name="gunM16M203">
-			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,barrelAttachments,smallTopAttachments,mediumTopAttachments,stock,magazine,drumMagazine,firingMode,attFortitude,perkMachineGunner,perkDemolitionsExpert,perkBookAutoWeapons,canHaveCosmetic,attachmentsIncluded,machinegunSkill"/><!-- attachmentsIncluded -->
+			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,barrelAttachments,smallTopAttachments,mediumTopAttachments,stock,magazine,drumMagazine,firingMode,attPerception,attFortitude,perkMachineGunner,perkDemolitionsExpert,perkBookAutoWeapons,canHaveCosmetic,attachmentsIncluded,machinegunSkill"/><!-- attachmentsIncluded -->
 			<property name="DisplayType" value="rangedGun"/>
 			<property name="HoldType" value="71"/>
 			<property name="CustomIcon" value="m16m203"/>
@@ -61,6 +61,7 @@
 				<property name="Sound_end" value=""/>
 				<property name="Sound_empty" value="dryfire"/>
 				<property name="AutoReload" value="false"/>
+				<property name="ExcludeTags" value="attFortitude,perkMachineGunner,perkBookAutoWeapons,machinegunSkill"/>
 				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
 			</property>
 			<effect_group name="common">
@@ -145,6 +146,7 @@
 				<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkDemolitionsExpert"/>
 
 				<passive_effect name="MagazineSize" operation="base_set" value="1" tags="perkDemolitionsExpert"/>
+				<passive_effect name="MagazineSize" operation="perc_add" value="-.99" tags="perkDemolitionsExpert"/>
 				<passive_effect name="EntityDamage" operation="perc_add" value="-.15,.15" tags="perkDemolitionsExpert"/> <!-- random EntityDmg -->
 				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDemolitionsExpert"/> <!-- tier bonus -->
 				<passive_effect name="BlockDamage" operation="perc_add" value="-.15,.15" tags="perkDemolitionsExpert"/> <!-- random BlockDmg -->

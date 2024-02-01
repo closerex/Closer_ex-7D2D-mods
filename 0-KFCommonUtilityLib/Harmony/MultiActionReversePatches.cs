@@ -12,7 +12,7 @@ using UnityEngine;
 [HarmonyPatch]
 public static class MultiActionReversePatches
 {
-    [HarmonyReversePatch]
+    [HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
     [HarmonyPatch(typeof(EffectManager), nameof(EffectManager.GetValue))]
     public static float ProjectileGetValue(PassiveEffects _passiveEffect, ItemValue _originalItemValue = null, float _originalValue = 0f, EntityAlive _entity = null, Recipe _recipe = null, FastTags tags = default(FastTags), bool calcEquipment = true, bool calcHoldingItem = true, bool calcProgression = true, bool calcBuffs = true, int craftingTier = 1, bool useMods = true, bool _useDurability = false)
     {
