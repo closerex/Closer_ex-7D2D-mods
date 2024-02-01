@@ -15,7 +15,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
 
         private void OnRenderImage(RenderTexture source, RenderTexture destination)
         {
-            if(target != null)
+            if(target)
             {
                 target.RenderImageCallback(source, destination);
             }
