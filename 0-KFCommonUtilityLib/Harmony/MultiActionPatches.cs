@@ -1637,6 +1637,7 @@ namespace KFCommonUtilityLib.Harmony
         }
         #endregion
 
+        #region fast toolbelt item switching issue fix
         private static Coroutine switchHoldingItemCo;
         [HarmonyPatch(typeof(Inventory), nameof(Inventory.ShowHeldItem))]
         [HarmonyPrefix]
@@ -1674,6 +1675,63 @@ namespace KFCommonUtilityLib.Harmony
             }
             return codes;
         }
+        #endregion
+
+        #region item info display fix
+        [HarmonyPatch(typeof(XUiM_ItemStack), nameof(XUiM_ItemStack.GetStatItemValueTextWithModInfo))]
+        [HarmonyPrefix]
+        private static bool Prefix_GetStatItemValueTextWithModInfo_XUiM_ItemStack(ItemStack itemStack)
+        {
+            MultiActionUtils.SetCachedEventParamsDummyAction(itemStack);
+            return true;
+        }
+
+        [HarmonyPatch(typeof(XUiM_ItemStack), nameof(XUiM_ItemStack.GetStatItemValueTextWithModColoring))]
+        [HarmonyPrefix]
+        private static bool Prefix_GetStatItemValueTextWithModColoring_XUiM_ItemStack(ItemStack itemStack)
+        {
+            MultiActionUtils.SetCachedEventParamsDummyAction(itemStack);
+            return true;
+        }
+
+        [HarmonyPatch(typeof(XUiM_ItemStack), nameof(XUiM_ItemStack.GetStatItemValueTextWithCompareInfo))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_GetStatItemValueTextWithCompareInfo_XUiM_ItemStack(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var mtd_getvalue = AccessTools.Method(typeof(EffectManager), nameof(EffectManager.GetValue));
+            var fld_seed = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.Seed));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].Calls(mtd_getvalue))
+                {
+                    codes.InsertRange(i + 2, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_1),
+                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.SetCachedEventParamsDummyAction)),
+                    });
+                    for (int j = i; j >= 0; j--)
+                    {
+                        if (codes[j].StoresField(fld_seed))
+                        {
+                            codes.InsertRange(j + 1, new[]
+                            {
+                                new CodeInstruction(OpCodes.Ldarg_0),
+                                CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.SetCachedEventParamsDummyAction))
+                            });
+                            codes.RemoveRange(j - 8, 9);
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+
+            return codes;
+        }
+        #endregion
 
         #region ItemAction exclude tags
         [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.LateInit))]
@@ -1707,6 +1765,14 @@ namespace KFCommonUtilityLib.Harmony
             }
 
             return codes;
+        }
+
+        [HarmonyPatch(typeof(EffectManager), nameof(EffectManager.GetValuesAndSources))]
+        [HarmonyPrefix]
+        private static bool Prefix_GetValuesAndSources_EffectManager(ItemValue _originalItemValue, EntityAlive _entity, ref FastTags tags)
+        {
+            MultiActionManager.ModifyItemTags(_originalItemValue, _entity?.MinEventContext?.ItemActionData, ref tags);
+            return true;
         }
         #endregion
     }

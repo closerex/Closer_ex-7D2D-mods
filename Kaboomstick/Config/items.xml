@@ -181,7 +181,7 @@
 				<passive_effect name="ProjectileImpactDamagePercentEntity" operation="base_set" value="0" tags="perkDemolitionsExpert"/>
 				<passive_effect name="ProjectileVelocity" operation="base_set" value="80" tags="perkDemolitionsExpert"/>
 				<display_value name="dExRadius" value="2.5"/>
-				<passive_effect name="RoundRayCount" operation="base_set" value="1" tags="perkDemolitionsExpert"/>
+				<passive_effect name="RoundRayCount" operation="base_set" value="8" tags="perkDemolitionsExpert"/>
 				<passive_effect name="SpreadDegreesVertical" operation="base_set" value="5.5" tags="perkDemolitionsExpert"/>
 				<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="5.5" tags="perkDemolitionsExpert"/>
 				<passive_effect name="SpreadMultiplierAiming" operation="perc_add" value="-.15" tags="perkDemolitionsExpert"/>

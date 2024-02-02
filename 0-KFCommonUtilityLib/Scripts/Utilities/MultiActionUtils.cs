@@ -338,5 +338,16 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             MinEventParams.CachedEventParam.ItemActionData = prevActionData;
             return ret;
         }
+
+        public static void SetCachedEventParamsDummyAction(ItemStack itemStack)
+        {
+            ItemClass itemClass = itemStack.itemValue.ItemClass;
+            if (itemClass != null)
+            {
+                MinEventParams.CachedEventParam.ItemActionData = MultiActionUtils.DummyActionDatas[itemStack.itemValue.GetMode()];
+            }
+            MinEventParams.CachedEventParam.ItemValue = itemStack.itemValue;
+            MinEventParams.CachedEventParam.Seed = itemStack.itemValue.Seed;
+        }
     }
 }

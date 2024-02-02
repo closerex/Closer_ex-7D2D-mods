@@ -1,7 +1,7 @@
 ﻿<configs>
 	<append xpath="/items">
 		<item name="gunM16M203">
-			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,barrelAttachments,smallTopAttachments,mediumTopAttachments,stock,magazine,drumMagazine,firingMode,attPerception,attFortitude,perkMachineGunner,perkDemolitionsExpert,perkBookAutoWeapons,canHaveCosmetic,attachmentsIncluded,machinegunSkill"/><!-- attachmentsIncluded -->
+			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,barrelAttachments,smallTopAttachments,mediumTopAttachments,stock,magazine,drumMagazine,firingMode,canHaveCosmetic,attachmentsIncluded,attFortitude,perkMachineGunner,perkBookAutoWeapons,machinegunSkill,attPerception,perkDemolitionsExpert,launcher,explosivesSkill"/><!-- attachmentsIncluded -->
 			<property name="DisplayType" value="rangedGun"/>
 			<property name="HoldType" value="71"/>
 			<property name="CustomIcon" value="m16m203"/>
@@ -34,6 +34,7 @@
 				<property name="Sound_loop" value="M16M203_Fire_Gun"/>
 				<property name="Sound_empty" value="dryfire"/>
 				<property name="AutoReload" value="false"/>
+				<property name="ExcludeTags" value="attPerception,perkDemolitionsExpert,launcher,explosivesSkill"/>
 				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
 						<property name="triggerEffectTriggerPullDualsense" value="RifleTrigger"/>
 						<property name="triggerEffectTriggerPullXbox" value="PistolTrigger"/>
