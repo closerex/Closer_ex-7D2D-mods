@@ -17,6 +17,10 @@
 !FullautoLauncher/**
 !FullautoLauncherAnimationRiggingCompatibilityPatch/
 !FullautoLauncherAnimationRiggingCompatibilityPatch/**
+!SMXMultiActionCompatibilityPatch/
+!SMXMultiActionCompatibilityPatch/**
+!SCoreEntityHitCompatibilityPatch/
+!SCoreEntityHitCompatibilityPatch/**
 !RandomMainmenuBackground/
 !RandomMainmenuBackground/**
 !RandomMainmenuBGM/
@@ -53,3 +57,4 @@
 /AnimationRiggingWeaponTest/DemoScene.unitypackage
 *.unitypackage
 readme.txt
+/0-KFCommonUtilityLib/DynamicFileNesting

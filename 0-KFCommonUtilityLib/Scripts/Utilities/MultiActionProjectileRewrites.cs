@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using KFCommonUtilityLib.Scripts.StaticManagers;
+using System.Collections.Generic;
 using UnityEngine;
-using static InvGameItem;
-using static TypedMetadataValue;
 
 namespace KFCommonUtilityLib.Scripts.Utilities
 {
@@ -648,7 +647,9 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             }
 
             tmpTag |= _blockValue.Block.Tags;
-            return MultiActionReversePatches.ProjectileGetValue(PassiveEffects.BlockDamage, _itemValue, self.GetBaseDamageBlock(null), _holdingEntity, null, tmpTag, true, false) * GetProjectileBlockDamagePerc(_itemValue, _holdingEntity);
+            float value = MultiActionReversePatches.ProjectileGetValue(PassiveEffects.BlockDamage, _itemValue, self.GetBaseDamageBlock(null), _holdingEntity, null, tmpTag, true, false) * GetProjectileBlockDamagePerc(_itemValue, _holdingEntity);
+            //Log.Out($"block damage {value} base damage {self.GetBaseDamageBlock(null)} action index {actionIndex} launcher {launcherClass.Name} projectile {_itemValue.ItemClass.Name}");
+            return value;
         }
 
         public static float GetProjectileDamageEntity(this ItemActionAttack self, ItemValue _itemValue, EntityAlive _holdingEntity = null, int actionIndex = 0)
@@ -760,17 +761,17 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             {
                 for (int i = 0; i < _projectileItemValue.CosmeticMods.Length; i++)
                 {
-                    if (_projectileItemValue.CosmeticMods[i] != null && _projectileItemValue.CosmeticMods[i].ItemClass is ItemClassModifier)
+                    if (_projectileItemValue.CosmeticMods[i] != null && _projectileItemValue.CosmeticMods[i].ItemClass is ItemClassModifier && !MultiActionManager.ShouldExcludeMod(_projectileItemValue.type, _projectileItemValue.CosmeticMods[i].type, actionIndex))
                     {
                         _projectileItemValue.CosmeticMods[i].ModifyValue(_entity, _projectileItemValue, _passiveEffect, ref _originalValue, ref _perc_value, _tags);
                     }
                 }
 
-                for (int j = 0; j < _projectileItemValue.Modifications.Length; j++)
+                for (int i = 0; i < _projectileItemValue.Modifications.Length; i++)
                 {
-                    if (_projectileItemValue.Modifications[j] != null && _projectileItemValue.Modifications[j].ItemClass is ItemClassModifier)
+                    if (_projectileItemValue.Modifications[i] != null && _projectileItemValue.Modifications[i].ItemClass is ItemClassModifier && !MultiActionManager.ShouldExcludeMod(_projectileItemValue.type, _projectileItemValue.Modifications[i].type, actionIndex))
                     {
-                        _projectileItemValue.Modifications[j].ModifyValue(_entity, _projectileItemValue, _passiveEffect, ref _originalValue, ref _perc_value, _tags);
+                        _projectileItemValue.Modifications[i].ModifyValue(_entity, _projectileItemValue, _passiveEffect, ref _originalValue, ref _perc_value, _tags);
                     }
                 }
             }

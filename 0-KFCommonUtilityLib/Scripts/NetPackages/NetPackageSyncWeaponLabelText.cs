@@ -1,6 +1,4 @@
-﻿using KFCommonUtilityLib.Scripts.Singletons;
-
-class NetPackageSyncWeaponLabelText : NetPackage
+﻿class NetPackageSyncWeaponLabelText : NetPackage
 {
     public NetPackageSyncWeaponLabelText Setup(int entityId, int slot, string data)
     {

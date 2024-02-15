@@ -8,7 +8,7 @@ class NetPackageSyncWeaponLabelColor : NetPackage
         this.isText = isText;
         this.color = color;
         this.index0 = index0;
-        if(!isText)
+        if (!isText)
         {
             this.index1 = index1;
             this.nameId = nameId;
@@ -40,7 +40,7 @@ class NetPackageSyncWeaponLabelColor : NetPackage
             return;
         }
 
-        if(SetWeaponLabelColor(holdingEntity, isText, slot0, color, slot1, nameId))
+        if (SetWeaponLabelColor(holdingEntity, isText, slot0, color, slot1, nameId))
         {
             //Log.Out("trying to set weapon label on " + (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer ? "server" : "client") + " color: " + color.ToString() + " entity: " + holdingEntity.entityId + " from net: " + fromNet);
             if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer && SingletonMonoBehaviour<ConnectionManager>.Instance.ClientCount() > 0)
@@ -86,7 +86,7 @@ class NetPackageSyncWeaponLabelColor : NetPackage
         isText = _reader.ReadBoolean();
         color = StreamUtils.ReadColor(_reader);
         index0 = _reader.ReadChar();
-        if(!isText)
+        if (!isText)
         {
             index1 = _reader.ReadChar();
             nameId = _reader.ReadInt32();

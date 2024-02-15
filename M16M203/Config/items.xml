@@ -19,7 +19,7 @@
 			<property name="RepairExpMultiplier" value="10.8"/>
 			<property name="EconomicValue" value="1000"/>
 			<property name="TraderStageTemplate" value="baseTier2"/>
-			<property name="UnlockedBy" value="craftingMachineGuns"/><!-- gunMGT2TacticalARSchematic, -->
+			<property name="UnlockedBy" value="craftingMachineGuns,gunM16M203Schematic"/><!-- gunMGT2TacticalARSchematic, -->
 			<property name="ShowQuality" value="true"/>
 			<property name="Group" value="Ammo/Weapons,Ranged Weapons"/>
 			<property name="SoundUnholster" value="weapon_unholster"/>
@@ -63,6 +63,7 @@
 				<property name="Sound_empty" value="dryfire"/>
 				<property name="AutoReload" value="false"/>
 				<property name="ExcludeTags" value="attFortitude,perkMachineGunner,perkBookAutoWeapons,machinegunSkill"/>
+				<property name="ExcludeMods" value="modGunSoundSuppressorSilencer,modGunDrumMagazineExtender,modGunMagazineExtender"/>
 				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
 			</property>
 			<effect_group name="common">
@@ -147,7 +148,7 @@
 				<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkDemolitionsExpert"/>
 
 				<passive_effect name="MagazineSize" operation="base_set" value="1" tags="perkDemolitionsExpert"/>
-				<passive_effect name="MagazineSize" operation="perc_add" value="-.99" tags="perkDemolitionsExpert"/>
+				<!-- <passive_effect name="MagazineSize" operation="perc_add" value="-.99" tags="perkDemolitionsExpert"/> -->
 				<passive_effect name="EntityDamage" operation="perc_add" value="-.15,.15" tags="perkDemolitionsExpert"/> <!-- random EntityDmg -->
 				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDemolitionsExpert"/> <!-- tier bonus -->
 				<passive_effect name="BlockDamage" operation="perc_add" value="-.15,.15" tags="perkDemolitionsExpert"/> <!-- random BlockDmg -->
@@ -264,6 +265,17 @@
 				<passive_effect name="SpreadMultiplierRunning" operation="perc_add" value=".3" tags="perkDemolitionsExpert"/>
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="earth"/>
 			</effect_group>
+		</item>
+		
+		<item name="gunM16M203Schematic">
+			<property name="Extends" value="schematicMaster"/>
+			<property name="CreativeMode" value="Player"/>
+			<property name="CustomIcon" value="m16m203"/>
+			<property name="Unlocks" value="gunM16M203"/>
+				<effect_group tiered="false">
+					<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="gunM16M203" operation="set" value="1"/>
+					<triggered_effect trigger="onSelfPrimaryActionEnd" action="GiveExp" exp="50"/>
+				</effect_group>
 		</item>
 	</append>
 </configs>

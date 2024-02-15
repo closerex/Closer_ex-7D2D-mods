@@ -1,6 +1,6 @@
 ﻿using GUI_2;
 using KFCommonUtilityLib.Scripts.Attributes;
-using KFCommonUtilityLib.Scripts.Singletons;
+using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System.Collections;
 using Unity.Mathematics;
@@ -8,10 +8,17 @@ using Unity.Mathematics;
 [TypeTarget(typeof(ItemActionAttack), typeof(AlternativeData))]
 public class ActionModuleAlternative
 {
+    internal static ItemValue InventorySetItemTemp;
     [MethodTargetPrefix(nameof(ItemActionAttack.StartHolding))]
     private bool Prefix_StartHolding(ItemActionData _data, AlternativeData __customData)
     {
-        __customData.Init();
+        //__customData.Init();
+        int prevMode = __customData.mapping.CurMode;
+        __customData.UpdateUnlockState(_data.invData.itemValue);
+        if (prevMode != __customData.mapping.CurMode && _data.invData.holdingEntity is EntityPlayerLocal player)
+        {
+            MultiActionManager.FireToggleModeEvent(player, __customData.mapping);
+        }
         MultiActionManager.SetMappingForEntity(_data.invData.holdingEntity.entityId, __customData.mapping);
         if (_data.invData.holdingEntity is EntityPlayerLocal)
         {
@@ -31,6 +38,8 @@ public class ActionModuleAlternative
     [MethodTargetPrefix(nameof(ItemActionRanged.CancelReload))]
     private bool Prefix_CancelReload(ItemActionData _actionData, AlternativeData __customData)
     {
+        if (__customData.mapping == null)
+            return true;
         int actionIndex = __customData.mapping.CurActionIndex;
         Log.Out($"cancel reload {actionIndex}");
         if (actionIndex == 0)
@@ -42,9 +51,11 @@ public class ActionModuleAlternative
     [MethodTargetPrefix(nameof(ItemActionAttack.CancelAction))]
     private bool Prefix_CancelAction(ItemActionData _actionData, AlternativeData __customData)
     {
+        if (__customData.mapping == null)
+            return true;
         int actionIndex = __customData.mapping.CurActionIndex;
         Log.Out($"cancel action {actionIndex}");
-        if(actionIndex == 0)
+        if (actionIndex == 0)
             return true;
         _actionData.invData.holdingEntity.inventory.holdingItem.Actions[actionIndex].CancelAction(_actionData.invData.holdingEntity.inventory.holdingItemData.actionData[actionIndex]);
         return false;
@@ -71,7 +82,7 @@ public class ActionModuleAlternative
     private void Postfix_OnModificationChanged(ItemActionData _data, ItemActionAttack __instance, AlternativeData __customData)
     {
         __instance.Properties.ParseString("ToggleActionSound", ref __customData.toggleSound);
-        __customData.toggleSound = _data.invData.itemValue.GetPropertyOverride("ToggleActionSound", __customData.toggleSound);
+        __customData.toggleSound = _data.invData.itemValue.GetPropertyOverrideForAction("ToggleActionSound", __customData.toggleSound, __instance.ActionIndex);
         __customData.mapping.toggleSound = __customData.toggleSound;
     }
 
@@ -122,21 +133,53 @@ public class ActionModuleAlternative
         public MultiActionMapping mapping;
         public string toggleSound;
         public ItemInventoryData invData;
-        private bool inited = false;
+        //private bool inited = false;
+        private readonly bool[] unlocked = new bool[MultiActionIndice.MAX_ACTION_COUNT];
 
         public AlternativeData(ItemInventoryData invData, int actionIndex, ActionModuleAlternative module)
         {
             this.invData = invData;
+            Init();
         }
 
         public void Init()
         {
-            if(inited)
-                return;
+            //if (inited)
+            //    return;
 
-            inited = true;
+            //inited = true;
             MultiActionIndice indices = MultiActionManager.GetActionIndiceForItemID(invData.item.Id);
-            mapping = new MultiActionMapping(indices, invData.holdingEntity, toggleSound, invData.slotIdx);
+            mapping = new MultiActionMapping(indices, invData.holdingEntity, InventorySetItemTemp, toggleSound, invData.slotIdx, unlocked);
+            UpdateUnlockState(InventorySetItemTemp);
+        }
+
+        public void UpdateUnlockState(ItemValue itemValue)
+        {
+            //if (!inited)
+            //    return;
+            unlocked[0] = true;
+            for (int i = 1; i < mapping.ModeCount; i++)
+            {
+                bool flag = true;
+                int actionIndex = mapping.indices.GetActionIndexForMode(i);
+                ItemAction action = itemValue.ItemClass.Actions[actionIndex];
+                action.Properties.ParseBool("ActionUnlocked", ref flag);
+                if (bool.TryParse(itemValue.GetPropertyOverride($"ActionUnlocked_{actionIndex}", flag.ToString()), out bool overrideFlag))
+                    flag = overrideFlag;
+                unlocked[i] = flag;
+            }
+            //by the time we check unlock state, ItemValue in inventory slot might not be ready yet
+            mapping.SaveMeta(itemValue);
+            mapping.CurMode = mapping.CurMode;
+            mapping.ReadMeta(itemValue);
+        }
+
+        public bool IsActionUnlocked(int actionIndex)
+        {
+            int mode = mapping.indices.GetModeForAction(actionIndex);
+            if (mode >= MultiActionIndice.MAX_ACTION_COUNT || mode < 0)
+                return false;
+            return unlocked[mode];
         }
     }
 
@@ -152,7 +195,7 @@ public class ActionModuleAlternative
         {
             this.mapping = mapping;
             ActionIndex = mapping.CurActionIndex;
-            PreSelectedIndex = mapping.SetupRadial(_xuiRadialWindow, _epl);;
+            PreSelectedIndex = mapping.SetupRadial(_xuiRadialWindow, _epl);
         }
     }
 }

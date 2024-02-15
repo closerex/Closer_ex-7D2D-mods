@@ -18,7 +18,7 @@ public class WeaponLabelControllerDevotion : WeaponLabelControllerBase
     {
         if (controllers == null || index >= controllers.Length || !controllers[index].gameObject.activeSelf)
             return false;
-        
+
         controllers[index].SetText(data);
         return true;
     }

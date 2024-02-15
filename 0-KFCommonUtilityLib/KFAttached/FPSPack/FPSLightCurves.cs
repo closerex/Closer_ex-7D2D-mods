@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 public class FPSLightCurves : MonoBehaviour
 {
@@ -19,7 +18,7 @@ public class FPSLightCurves : MonoBehaviour
     private void OnEnable()
     {
         lightSource.intensity = LightCurve.Evaluate(0);
-        if(firstUpdate)
+        if (firstUpdate)
         {
             firstUpdate = false;
             return;
@@ -37,7 +36,8 @@ public class FPSLightCurves : MonoBehaviour
     private void Update()
     {
         var time = Time.time - startTime;
-        if (canUpdate) {
+        if (canUpdate)
+        {
             var eval = LightCurve.Evaluate(time / GraphTimeMultiplier) * GraphIntensityMultiplier;
             lightSource.intensity = eval;
         }

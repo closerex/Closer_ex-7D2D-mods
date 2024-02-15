@@ -1,16 +1,16 @@
-﻿using HarmonyLib;
+﻿using GameEvent.SequenceActions;
+using HarmonyLib;
+using KFCommonUtilityLib.Scripts.NetPackages;
+using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
-using UnityEngine;
-using UniLinq;
 using System.Xml.Linq;
-using System;
-using KFCommonUtilityLib.Scripts.Singletons;
-using KFCommonUtilityLib.Scripts.NetPackages;
+using UniLinq;
+using UnityEngine;
 using XMLData.Item;
-using GameEvent.SequenceActions;
 
 namespace KFCommonUtilityLib.Harmony
 {
@@ -459,6 +459,30 @@ namespace KFCommonUtilityLib.Harmony
 
             return codes;
         }
+
+        [HarmonyPatch(typeof(ItemActionRanged), "loadNewAmmunition")]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_loadNewAmmunition_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var fld_actiondata = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.actionData));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].LoadsField(fld_actiondata))
+                {
+                    codes.RemoveAt(i + 1);
+                    codes.InsertRange(i + 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_3),
+                        CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.GetActionIndexForEntity))
+                    });
+                    break;
+                }
+            }
+            return codes;
+        }
         #endregion
 
         //KEEP
@@ -591,7 +615,7 @@ namespace KFCommonUtilityLib.Harmony
             {
                 return true;
             }
-            _actionIdx = MultiActionManager.GetActionIndexForEntityID(player.entityId);
+            _actionIdx = MultiActionManager.GetActionIndexForEntity(player);
             player.MinEventContext.ItemActionData = _data.actionData[_actionIdx];
             return true;
         }
@@ -634,26 +658,26 @@ namespace KFCommonUtilityLib.Harmony
                     codes.RemoveRange(j - 2, 3);
                     i--;
                 }
-                else if (code.Calls(mtd_getmaxammo))
-                {
-                    int j = i + 1;
-                    for (; j < codes.Count; j++)
-                    {
-                        if (codes[j].Calls(mtd_getkickback))
-                        {
-                            break;
-                        }
-                    }
-                    if (j < codes.Count)
-                    {
-                        var jumpto = codes[j - 2];
-                        var label = generator.DefineLabel();
-                        jumpto.labels.Add(label);
-                        codes.Insert(i - 2, new CodeInstruction(OpCodes.Br_S, label));
-                        codes[i - 2].MoveLabelsFrom(codes[i - 1]);
-                        i++;
-                    }
-                }
+                //else if (code.Calls(mtd_getmaxammo))
+                //{
+                //    int j = i + 1;
+                //    for (; j < codes.Count; j++)
+                //    {
+                //        if (codes[j].Calls(mtd_getkickback))
+                //        {
+                //            break;
+                //        }
+                //    }
+                //    if (j < codes.Count)
+                //    {
+                //        var jumpto = codes[j - 2];
+                //        var label = generator.DefineLabel();
+                //        jumpto.labels.Add(label);
+                //        codes.Insert(i - 2, new CodeInstruction(OpCodes.Br_S, label));
+                //        codes[i - 2].MoveLabelsFrom(codes[i - 1]);
+                //        i++;
+                //    }
+                //}
             }
 
             return codes;
@@ -729,6 +753,7 @@ namespace KFCommonUtilityLib.Harmony
 
             FieldInfo fld_action = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
             FieldInfo fld_ammoindex = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
+            MethodInfo mtd_fireevent = AccessTools.Method(typeof(ItemValue), nameof(ItemValue.FireEvent));
             for (int i = 0; i < codes.Count; i++)
             {
                 var code = codes[i];
@@ -754,6 +779,32 @@ namespace KFCommonUtilityLib.Harmony
                     codes.Insert(i, new CodeInstruction(OpCodes.Ldloc_S, lbd_index));
                     i++;
                 }
+
+                else if (code.Calls(mtd_fireevent) && codes[i + 1].opcode != OpCodes.Ldloc_0)
+                {
+                    for (int j = i; j >= 0; j--)
+                    {
+                        if (codes[j].opcode == OpCodes.Brfalse_S || codes[j].opcode == OpCodes.Brfalse)
+                        {
+                            var label = codes[j].operand;
+                            codes.InsertRange(j + 1, new[]
+                            {
+                                new CodeInstruction(OpCodes.Ldarg_0),
+                                CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.type)),
+                                new CodeInstruction(OpCodes.Ldarg_0),
+                                new CodeInstruction(OpCodes.Ldfld, codes[j + 2].operand),
+                                new CodeInstruction(codes[j + 3].opcode, codes[j + 3].operand),
+                                new CodeInstruction(OpCodes.Ldelem_Ref),
+                                CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.type)),
+                                new CodeInstruction(OpCodes.Ldloc_S, lbd_index),
+                                CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.ShouldExcludeMod)),
+                                new CodeInstruction(OpCodes.Brtrue_S, label)
+                            });
+                            i += 10;
+                            break;
+                        }
+                    }
+                }
             }
 
             return codes;
@@ -778,12 +829,15 @@ namespace KFCommonUtilityLib.Harmony
 
             FieldInfo fld_action = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
             FieldInfo fld_ammoindex = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
+            FieldInfo fld_mods = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Modifications));
+            FieldInfo fld_cos = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.CosmeticMods));
+            MethodInfo mtd_modify = AccessTools.Method(typeof(ItemValue), nameof(ItemValue.ModifyValue));
             for (int i = 0; i < codes.Count; i++)
             {
                 var code = codes[i];
                 if (code.opcode == OpCodes.Stloc_1)
                 {
-                    codes.InsertRange(i + 10, new[]
+                    codes.InsertRange(i + 1, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_1),
                         CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetActionIndexByEntityEventParams)),
@@ -801,6 +855,31 @@ namespace KFCommonUtilityLib.Harmony
                     code.operand = AccessTools.Method(typeof(MultiActionUtils), nameof(MultiActionUtils.GetSelectedAmmoIndexByActionIndex));
                     codes.Insert(i, new CodeInstruction(OpCodes.Ldloc_S, lbd_index));
                     i++;
+                }
+                else if (code.Calls(mtd_modify))
+                {
+                    for (int j = i; j >= 0; j--)
+                    {
+                        if (codes[j].opcode == OpCodes.Brfalse_S || codes[j].opcode == OpCodes.Brfalse)
+                        {
+                            var label = codes[j].operand;
+                            codes.InsertRange(j + 1, new[]
+                            {
+                                new CodeInstruction(OpCodes.Ldarg_0),
+                                CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.type)),
+                                new CodeInstruction(OpCodes.Ldarg_0),
+                                new CodeInstruction(OpCodes.Ldfld, codes[j + 2].operand),
+                                new CodeInstruction(codes[j + 3].opcode, codes[j + 3].operand),
+                                new CodeInstruction(OpCodes.Ldelem_Ref),
+                                CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.type)),
+                                new CodeInstruction(OpCodes.Ldloc_S, lbd_index),
+                                CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.ShouldExcludeMod)),
+                                new CodeInstruction(OpCodes.Brtrue_S, label)
+                            });
+                            i += 10;
+                            break;
+                        }
+                    }
                 }
             }
 
@@ -948,12 +1027,15 @@ namespace KFCommonUtilityLib.Harmony
 
             FieldInfo fld_action = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
             FieldInfo fld_ammoindex = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
+            FieldInfo fld_mods = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Modifications));
+            FieldInfo fld_cos = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.CosmeticMods));
+            MethodInfo mtd_getvalue = AccessTools.Method(typeof(ItemValue), nameof(ItemValue.GetModifiedValueData));
             for (int i = 0; i < codes.Count; i++)
             {
                 var code = codes[i];
                 if (code.opcode == OpCodes.Stloc_0)
                 {
-                    codes.InsertRange(i + 10, new[]
+                    codes.InsertRange(i + 1, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_3),
                         CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetActionIndexByEntityEventParams)),
@@ -971,6 +1053,31 @@ namespace KFCommonUtilityLib.Harmony
                     code.operand = AccessTools.Method(typeof(MultiActionUtils), nameof(MultiActionUtils.GetSelectedAmmoIndexByActionIndex));
                     codes.Insert(i, new CodeInstruction(OpCodes.Ldloc_S, lbd_index));
                     i++;
+                }
+                else if (code.Calls(mtd_getvalue) && codes[i + 1].opcode != OpCodes.Ldloc_0)
+                {
+                    for (int j = i; j >= 0; j--)
+                    {
+                        if (codes[j].opcode == OpCodes.Brfalse_S || codes[j].opcode == OpCodes.Brfalse)
+                        {
+                            var label = codes[j].operand;
+                            codes.InsertRange(j + 1, new[]
+                            {
+                                new CodeInstruction(OpCodes.Ldarg_0),
+                                CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.type)),
+                                new CodeInstruction(OpCodes.Ldarg_0),
+                                new CodeInstruction(OpCodes.Ldfld, codes[j + 2].operand),
+                                new CodeInstruction(codes[j + 3].opcode, codes[j + 3].operand),
+                                new CodeInstruction(OpCodes.Ldelem_Ref),
+                                CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.type)),
+                                new CodeInstruction(OpCodes.Ldloc_S, lbd_index),
+                                CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.ShouldExcludeMod)),
+                                new CodeInstruction(OpCodes.Brtrue_S, label)
+                            });
+                            i += 10;
+                            break;
+                        }
+                    }
                 }
             }
 
@@ -1612,7 +1719,7 @@ namespace KFCommonUtilityLib.Harmony
 
             var fld_actions = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
 
-            for ( var i = 0; i < codes.Count; i++ )
+            for (var i = 0; i < codes.Count; i++)
             {
                 if (codes[i].LoadsField(fld_actions))
                 {
@@ -1734,11 +1841,19 @@ namespace KFCommonUtilityLib.Harmony
         #endregion
 
         #region ItemAction exclude tags
+        [HarmonyPatch(typeof(GameManager), nameof(GameManager.StartGame))]
+        [HarmonyPrefix]
+        private static bool Prefix_StartGame_GameManager()
+        {
+            MultiActionManager.PreloadCleanup();
+            return true;
+        }
+
         [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.LateInit))]
         [HarmonyPostfix]
         private static void Postfix_LateInit_ItemClass(ItemClass __instance)
         {
-            MultiActionManager.ParseItemActionExcludeTags(__instance);
+            MultiActionManager.ParseItemActionExcludeTagsAndModifiers(__instance);
         }
 
         [HarmonyPatch(typeof(EffectManager), nameof(EffectManager.GetValue))]
@@ -1773,6 +1888,280 @@ namespace KFCommonUtilityLib.Harmony
         {
             MultiActionManager.ModifyItemTags(_originalItemValue, _entity?.MinEventContext?.ItemActionData, ref tags);
             return true;
+        }
+        #endregion
+
+        #region ItemAction exclude modifiers
+        //see Transpiler_ModifyValue_ItemValue
+        //see Transpiler_GetModifiedValueData_ItemValue
+        //see MultiActionProjectileRewrites.ProjectileValueModifyValue
+        //see MultiActionUtils.GetPropertyOverrideForAction
+        //see MultiActionManager.ParseItemActionExcludeTagsAndModifiers
+        #endregion
+
+        #region requirement tags exclude
+        [HarmonyPatch(typeof(TriggerHasTags), nameof(TriggerHasTags.IsValid))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_IsValid_TriggerHasTags(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            var codes = instructions.ToList();
+
+            var lbd_tags = generator.DeclareLocal(typeof(FastTags));
+            FieldInfo fld_tags = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.Tags));
+            bool firstRet = true;
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].opcode == OpCodes.Ret && firstRet)
+                {
+                    firstRet = false;
+                    codes.InsertRange(i + 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_1),
+                        new CodeInstruction(OpCodes.Ldfld, fld_tags),
+                        new CodeInstruction(OpCodes.Stloc_S, lbd_tags),
+                        new CodeInstruction(OpCodes.Ldarg_1),
+                        CodeInstruction.LoadField(typeof(MinEventParams), nameof(MinEventParams.ItemValue)),
+                        new CodeInstruction(OpCodes.Ldarg_1),
+                        CodeInstruction.LoadField(typeof(MinEventParams), nameof(MinEventParams.ItemActionData)),
+                        new CodeInstruction(OpCodes.Ldloca_S, lbd_tags),
+                        CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.ModifyItemTags))
+                    });
+                    i += 9;
+                }
+                else if (codes[i].LoadsField(fld_tags))
+                {
+                    codes[i].opcode = OpCodes.Ldloca_S;
+                    codes[i].operand = lbd_tags;
+                    codes[i].WithLabels(codes[i - 1].ExtractLabels());
+                    codes.RemoveAt(i - 1);
+                    i--;
+                }
+            }
+
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(ItemHasTags), nameof(ItemHasTags.IsValid))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_IsValid_ItemHasTags(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            var codes = instructions.ToList();
+
+            var lbd_tags = generator.DeclareLocal(typeof(FastTags));
+            FieldInfo fld_itemvalue = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.ItemValue));
+            FieldInfo fld_hasalltags = AccessTools.Field(typeof(ItemHasTags), "hasAllTags");
+            MethodInfo prop_itemclass = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.ItemClass));
+            MethodInfo mtd_hasanytags = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.HasAnyTags));
+            MethodInfo mtd_hasalltags = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.HasAllTags));
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].LoadsField(fld_hasalltags))
+                {
+                    codes.InsertRange(i - 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_1),
+                        new CodeInstruction(OpCodes.Ldfld, fld_itemvalue),
+                        new CodeInstruction(OpCodes.Callvirt, prop_itemclass),
+                        CodeInstruction.LoadField(typeof(ItemClass), nameof(ItemClass.ItemTags)),
+                        new CodeInstruction(OpCodes.Stloc_S, lbd_tags),
+                        new CodeInstruction(OpCodes.Ldarg_1),
+                        new CodeInstruction(OpCodes.Ldfld, fld_itemvalue),
+                        new CodeInstruction(OpCodes.Ldarg_1),
+                        CodeInstruction.LoadField(typeof(MinEventParams), nameof(MinEventParams.ItemActionData)),
+                        new CodeInstruction(OpCodes.Ldloca_S, lbd_tags),
+                        CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.ModifyItemTags))
+                    });
+                    i += 11;
+                }
+                else if (codes[i].Calls(mtd_hasanytags))
+                {
+                    codes[i].opcode = OpCodes.Call;
+                    codes[i].operand = AccessTools.Method(typeof(FastTags), nameof(FastTags.Test_AnySet));
+                    var labels = codes[i - 5].ExtractLabels();
+                    codes.RemoveRange(i - 5, 3);
+                    codes.Insert(i - 5, new CodeInstruction(OpCodes.Ldloca_S, lbd_tags).WithLabels(labels));
+                    i -= 2;
+                }
+                else if (codes[i].Calls(mtd_hasalltags))
+                {
+                    codes[i].opcode = OpCodes.Call;
+                    codes[i].operand = AccessTools.Method(typeof(FastTags), nameof(FastTags.Test_AllSet));
+                    var labels = codes[i - 5].ExtractLabels();
+                    codes.RemoveRange(i - 5, 3);
+                    codes.Insert(i - 5, new CodeInstruction(OpCodes.Ldloca_S, lbd_tags).WithLabels(labels));
+                    i -= 2;
+                }
+            }
+            return codes;
+        }
+
+
+        [HarmonyPatch(typeof(HoldingItemHasTags), nameof(ItemHasTags.IsValid))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_IsValid_HoldingItemHasTags(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            var codes = instructions.ToList();
+
+            var lbd_tags = generator.DeclareLocal(typeof(FastTags));
+            FieldInfo fld_itemvalue = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.ItemValue));
+            FieldInfo fld_hasalltags = AccessTools.Field(typeof(HoldingItemHasTags), "hasAllTags");
+            MethodInfo prop_itemclass = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.ItemClass));
+            MethodInfo prop_itemvalue = AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItemItemValue));
+            MethodInfo mtd_hasanytags = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.HasAnyTags));
+            MethodInfo mtd_hasalltags = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.HasAllTags));
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].LoadsField(fld_hasalltags))
+                {
+                    codes.InsertRange(i - 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(HoldingItemHasTags), "target"),
+                        CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.inventory)),
+                        new CodeInstruction(OpCodes.Callvirt, prop_itemvalue),
+                        new CodeInstruction(OpCodes.Callvirt, prop_itemclass),
+                        CodeInstruction.LoadField(typeof(ItemClass), nameof(ItemClass.ItemTags)),
+                        new CodeInstruction(OpCodes.Stloc_S, lbd_tags),
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(HoldingItemHasTags), "target"),
+                        CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.inventory)),
+                        new CodeInstruction(OpCodes.Callvirt, prop_itemvalue),
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(HoldingItemHasTags), "target"),
+                        CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.MinEventContext)),
+                        CodeInstruction.LoadField(typeof(MinEventParams), nameof(MinEventParams.ItemActionData)),
+                        new CodeInstruction(OpCodes.Ldloca_S, lbd_tags),
+                        CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.ModifyItemTags))
+                    });
+                    i += 17;
+                }
+                else if (codes[i].Calls(mtd_hasanytags))
+                {
+                    codes[i].opcode = OpCodes.Call;
+                    codes[i].operand = AccessTools.Method(typeof(FastTags), nameof(FastTags.Test_AnySet));
+                    var labels = codes[i - 6].ExtractLabels();
+                    codes.RemoveRange(i - 6, 4);
+                    codes.Insert(i - 6, new CodeInstruction(OpCodes.Ldloca_S, lbd_tags).WithLabels(labels));
+                    i -= 3;
+                }
+                else if (codes[i].Calls(mtd_hasalltags))
+                {
+                    codes[i].opcode = OpCodes.Call;
+                    codes[i].operand = AccessTools.Method(typeof(FastTags), nameof(FastTags.Test_AllSet));
+                    var labels = codes[i - 6].ExtractLabels();
+                    codes.RemoveRange(i - 6, 4);
+                    codes.Insert(i - 6, new CodeInstruction(OpCodes.Ldloca_S, lbd_tags).WithLabels(labels));
+                    i -= 3;
+                }
+            }
+            return codes;
+        }
+        #endregion
+
+        #region Inventory make ItemValue valid on creating inventory data
+        [HarmonyPatch(typeof(Inventory), nameof(Inventory.SetItem), new[] { typeof(int), typeof(ItemValue), typeof(int), typeof(bool) })]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_SetItem_Inventory(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var mtd_clone = AccessTools.Method(typeof(ItemValue), nameof(ItemValue.Clone));
+            var mtd_create = AccessTools.Method(typeof(Inventory), "createHeldItem");
+            var mtd_invdata = AccessTools.Method(typeof(Inventory), "createInventoryData");
+            for (int i = 0; i < codes.Count; i++)
+            {
+                //if (codes[i].opcode == OpCodes.Ldarg_3 && (codes[i + 1].opcode == OpCodes.Brtrue_S || codes[i + 1].opcode == OpCodes.Brtrue))
+                //{
+                //    var label = codes[i + 4].ExtractLabels();
+                //    codes.InsertRange(i + 4, new[]
+                //    {
+                //        new CodeInstruction(OpCodes.Ldarg_2).WithLabels(label),
+                //        new CodeInstruction(OpCodes.Callvirt, mtd_clone),
+                //        new CodeInstruction(OpCodes.Starg_S, 2)
+                //    });
+                //    i += 7;
+                //}
+                //else 
+                if (codes[i].Calls(mtd_create))
+                {
+                    codes.InsertRange(i + 2, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_2),
+                        CodeInstruction.StoreField(typeof(ActionModuleAlternative), nameof(ActionModuleAlternative.InventorySetItemTemp))
+                    });
+                    i += 4;
+                    for (int j = i; j < codes.Count; j++)
+                    {
+                        if (codes[j].Calls(mtd_invdata))
+                        {
+                            codes.InsertRange(j + 2, new[]
+                            {
+                                new CodeInstruction(OpCodes.Ldnull),
+                                CodeInstruction.StoreField(typeof(ActionModuleAlternative), nameof(ActionModuleAlternative.InventorySetItemTemp))
+                            });
+                            i = j + 4;
+                            break;
+                        }
+                    }
+                    break;
+                }
+                //else if (codes[i].Calls(mtd_clone))
+                //{
+                //    codes.RemoveAt(i);
+                //    break;
+                //}
+            }
+
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(Inventory), nameof(Inventory.ForceHoldingItemUpdate))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_ForceHoldingItemUpdate_Inventory(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var mtd_invdata = AccessTools.Method(typeof(Inventory), "createInventoryData");
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].Calls(mtd_invdata))
+                {
+                    codes.InsertRange(i + 2, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldnull),
+                        CodeInstruction.StoreField(typeof(ActionModuleAlternative), nameof(ActionModuleAlternative.InventorySetItemTemp))
+                    });
+                    codes.InsertRange(i - 8, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldloc_0).WithLabels(codes[i - 8].ExtractLabels()),
+                        CodeInstruction.StoreField(typeof(ActionModuleAlternative), nameof(ActionModuleAlternative.InventorySetItemTemp))
+                    });
+                    break;
+                }
+            }
+
+            return codes;
+        }
+        #endregion
+
+        #region Temporaty fix for hud ammo mismatch
+        [HarmonyPatch(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.Update))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_Update_XUiC_HUDStatBar(IEnumerable<CodeInstruction> instructions)
+        {
+            MethodInfo mtd_getfocus = AccessTools.Method(typeof(Inventory), nameof(Inventory.GetFocusedItemIdx));
+            MethodInfo mtd_getholding = AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItemIdx));
+
+            foreach (var ins in instructions)
+            {
+                if (ins.Calls(mtd_getfocus))
+                {
+                    ins.operand = mtd_getholding;
+                }
+                yield return ins;
+            }
         }
         #endregion
     }
@@ -1941,7 +2330,7 @@ namespace KFCommonUtilityLib.Harmony
                                               }
                                               catch
                                               {
-                                                  return new Type[0]; 
+                                                  return new Type[0];
                                               }
                                           })
                                           .Where(t => t.IsSubclassOf(typeof(ItemAction)))

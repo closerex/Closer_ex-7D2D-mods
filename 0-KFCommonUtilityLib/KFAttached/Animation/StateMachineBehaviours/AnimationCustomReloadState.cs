@@ -1,5 +1,5 @@
 ﻿#if NotEditor
-using KFCommonUtilityLib.Scripts.Singletons;
+using KFCommonUtilityLib.Scripts.StaticManagers;
 #endif
 using UnityEngine;
 
@@ -15,7 +15,7 @@ public class AnimationCustomReloadState : StateMachineBehaviour
         {
             player = animator.GetComponentInParent<EntityPlayerLocal>();
         }
-        int actionIndex = MultiActionManager.GetActionIndexForEntityID(player.entityId);
+        int actionIndex = MultiActionManager.GetActionIndexForEntity(player);
 #if DEBUG
         Log.Out($"start reload {actionIndex}");
 #endif
@@ -37,13 +37,13 @@ public class AnimationCustomReloadState : StateMachineBehaviour
     {
         animator.speed = 1f;
         eventBridge.OnReloadUpdate();
-        if (actionData == null)
-        {
-            return;
-        }
-        actionData.isReloading = false;
-        actionData.isReloadCancelled = false;
-        actionData.isChangingAmmoType = false;
+        //if (actionData == null)
+        //{
+        //    return;
+        //}
+        //actionData.isReloading = false;
+        //actionData.isReloadCancelled = false;
+        //actionData.isChangingAmmoType = false;
 #if DEBUG
         Log.Out($"ANIMATOR STATE EXIT : {actionData.invData.item.Name}");
 #endif
@@ -74,4 +74,4 @@ public class AnimationCustomReloadState : StateMachineBehaviour
     private EntityPlayerLocal player;
     private AnimationReloadEvents eventBridge;
 #endif
-    }
+}

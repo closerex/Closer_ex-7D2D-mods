@@ -1,5 +1,4 @@
-﻿using System.Xml;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
 public class ItemInInventory : RequirementBase
 {
@@ -20,11 +19,11 @@ public class ItemInInventory : RequirementBase
 
     public override bool ParseXAttribute(XAttribute _attribute)
     {
-        if(base.ParseXAttribute(_attribute))
+        if (base.ParseXAttribute(_attribute))
             return true;
 
         string name = _attribute.Name.LocalName;
-        if(name == "item")
+        if (name == "item")
         {
             itemName = _attribute.Value;
             return true;

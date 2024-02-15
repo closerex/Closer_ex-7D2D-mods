@@ -1,9 +1,5 @@
-﻿using KFCommonUtilityLib.Scripts.Singletons;
-using System;
+﻿using KFCommonUtilityLib.Scripts.StaticManagers;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 public class ConsoleCmdReloadDebug : ConsoleCmdAbstract
 {
@@ -25,7 +21,7 @@ public class ConsoleCmdReloadDebug : ConsoleCmdAbstract
 
     protected override string[] getCommands()
     {
-        return new []{ "reloaddebug", "rd" };
+        return new[] { "reloaddebug", "rd" };
     }
 
     protected override string getDescription()

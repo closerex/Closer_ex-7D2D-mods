@@ -1,3 +1,26 @@
 <configs>
-
+    <append xpath="recipes">
+        <recipe name="ammoM203ShellFrag" count="1" craft_time="15" craft_area="workbench">
+            <ingredient name="resourceSpring" count="3"/>
+            <ingredient name="resourceGunPowder" count="30"/>
+            <ingredient name="resourceForgedIron" count="3"/>
+            <ingredient name="resourceBuckshot" count="30"/>
+        </recipe>
+        <recipe name="ammoM203ShellHE" count="1" craft_time="15" craft_area="workbench">
+            <ingredient name="resourceSpring" count="3"/>
+            <ingredient name="resourceGunPowder" count="40"/>
+            <ingredient name="ammoGasCan" count="200"/>
+            <ingredient name="resourceBuckshot" count="10"/>
+            <ingredient name="resourceForgedIron" count="1"/>
+        </recipe>
+        <recipe name="gunM16M203" count="1" craft_time="1200" craft_area="workbench" tags="learnable,perkMachineGunner">
+            <ingredient name="gunMGT1AK47Parts" count="20"/>
+            <ingredient name="resourceForgedSteel" count="100"/>
+            <ingredient name="resourceDuctTape" count="30"/>
+            <ingredient name="resourceSpring" count="50"/>
+            <effect_group>
+                <passive_effect name="CraftingIngredientCount" level="2,6" operation="perc_add" value="1,5" tags="gunMGT1AK47Parts,resourceForgedSteel,resourceDuctTape,resourceSpring"/>
+            </effect_group>
+        </recipe>
+    </append>
 </configs>

@@ -12,7 +12,7 @@ public class WeaponLabelControllerChargeUp : ApexWeaponHudControllerBase
     protected bool isChargeRunning = false;
     internal void StartChargeUp()
     {
-        if(shaderEnabled && (curChargeProc == null || !isChargeRunning))
+        if (shaderEnabled && (curChargeProc == null || !isChargeRunning))
             curChargeProc = StartCoroutine(ChargeUp());
     }
 
@@ -40,7 +40,7 @@ public class WeaponLabelControllerChargeUp : ApexWeaponHudControllerBase
         dataArray.CopyTo(chargeArray, 0);
         int max = dataArray[1];
         chargeArray[1] = (int)curChargeCount;
-        while(chargeArray[1] <= max)
+        while (chargeArray[1] <= max)
         {
             Dispatch(chargeArray);
             if (chargeArray[1] == max)
@@ -50,7 +50,7 @@ public class WeaponLabelControllerChargeUp : ApexWeaponHudControllerBase
             curChargeCount += chargeLeap;
             chargeArray[1] = Mathf.Min((int)curChargeCount, max);
         }
-        isChargeRunning=false;
+        isChargeRunning = false;
         yield break;
     }
 

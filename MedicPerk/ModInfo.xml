@@ -2,8 +2,8 @@
 
 <xml>
 	<Name value="MedicPerk" />
-	<DisplayName value="Medic Perk" />
-	<Description value="Heal your teammates." />
+	<DisplayName value="Medic Weapon Test" />
+	<Description value="Add new weapon." />
 	<Author value="closer_ex" />
 	<Version value="1.0.0" />
 </xml>

@@ -1,6 +1,4 @@
 ﻿using DG.Tweening;
-using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -86,7 +84,7 @@ public class AnimationRandomRecoil : AnimationProceduralRecoildAbs
     {
         target.RotateAroundPivot(pivot, currentRotation);
         target.localPosition += currentPosition;
-        if(!isTweeningIn)
+        if (!isTweeningIn)
         {
             targetRotation = currentRotation;
             targetPosition = currentPosition;

@@ -1,9 +1,7 @@
-﻿using KFCommonUtilityLib.Scripts.Singletons;
+﻿using KFCommonUtilityLib.Scripts.StaticManagers;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Inventory;
 
 namespace KFCommonUtilityLib.Scripts.Utilities
 {
@@ -119,21 +117,21 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 entity.MinEventContext.ItemActionData = entity.inventory.holdingItemData.actionData[actionIndex];
         }
 
-        public static string GetPropertyOverrideForAction(ItemValue self, string _propertyName, string _originalValue, int actionIndex)
+        public static string GetPropertyOverrideForAction(this ItemValue self, string _propertyName, string _originalValue, int actionIndex)
         {
             if (self.Modifications.Length == 0 && self.CosmeticMods.Length == 0)
             {
                 return _originalValue;
             }
             string text = "";
-            string itemName = self.ItemClass.GetItemName();
+            ItemClass item = self.ItemClass;
             for (int i = 0; i < self.Modifications.Length; i++)
             {
                 ItemValue itemValue = self.Modifications[i];
                 if (itemValue != null)
                 {
-                    ItemClassModifier itemClassModifier = itemValue.ItemClass as ItemClassModifier;
-                    if (itemClassModifier != null && GetPropertyOverrideForMod(itemClassModifier, _propertyName, itemName, ref text, actionIndex))
+                    ItemClassModifier mod = itemValue.ItemClass as ItemClassModifier;
+                    if (mod != null && GetPropertyOverrideForMod(mod, _propertyName, item, ref text, actionIndex))
                     {
                         return text;
                     }
@@ -145,8 +143,8 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 ItemValue itemValue2 = self.CosmeticMods[j];
                 if (itemValue2 != null)
                 {
-                    ItemClassModifier itemClassModifier2 = itemValue2.ItemClass as ItemClassModifier;
-                    if (itemClassModifier2 != null && GetPropertyOverrideForMod(itemClassModifier2, _propertyName, itemName, ref text, actionIndex))
+                    ItemClassModifier cos = itemValue2.ItemClass as ItemClassModifier;
+                    if (cos != null && GetPropertyOverrideForMod(cos, _propertyName, item, ref text, actionIndex))
                     {
                         return text;
                     }
@@ -155,8 +153,48 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             return _originalValue;
         }
 
-        public static bool GetPropertyOverrideForMod(ItemClassModifier mod, string _propertyName, string _itemName, ref string _value, int actionIndex)
+        public static IEnumerable<string> GetAllPropertyOverridesForAction(this ItemValue self, string _propertyName, int actionIndex)
         {
+            if (self.Modifications.Length == 0 && self.CosmeticMods.Length == 0)
+            {
+                yield break;
+            }
+
+            string text = "";
+            ItemClass item = self.ItemClass;
+            for (int i = 0; i < self.Modifications.Length; i++)
+            {
+                ItemValue itemValue = self.Modifications[i];
+                if (itemValue != null)
+                {
+                    ItemClassModifier mod = itemValue.ItemClass as ItemClassModifier;
+                    if (mod != null && GetPropertyOverrideForMod(mod, _propertyName, item, ref text, actionIndex))
+                    {
+                        yield return text;
+                    }
+                }
+            }
+            text = "";
+            for (int j = 0; j < self.CosmeticMods.Length; j++)
+            {
+                ItemValue itemValue2 = self.CosmeticMods[j];
+                if (itemValue2 != null)
+                {
+                    ItemClassModifier cos = itemValue2.ItemClass as ItemClassModifier;
+                    if (cos != null && GetPropertyOverrideForMod(cos, _propertyName, item, ref text, actionIndex))
+                    {
+                        yield return text;
+                    }
+                }
+            }
+        }
+
+        public static bool GetPropertyOverrideForMod(ItemClassModifier mod, string _propertyName, ItemClass _item, ref string _value, int actionIndex)
+        {
+            //Log.Out($"Get property override for item {_item.Name} itemID{_item.Id} property {_propertyName} mod {mod.Name} modID {mod.Id} action {actionIndex} should exclude {MultiActionManager.ShouldExcludeMod(_item.Id, mod.Id, actionIndex)}");
+            if (MultiActionManager.ShouldExcludeMod(_item.Id, mod.Id, actionIndex))
+                return false;
+            string _itemName = _item.GetItemName();
             string itemNameWithActionIndex = $"{_itemName}_{actionIndex}";
             if (mod.PropertyOverrides.ContainsKey(itemNameWithActionIndex) && mod.PropertyOverrides[itemNameWithActionIndex].Values.ContainsKey(_propertyName))
             {
@@ -264,7 +302,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
         {
             if (entity != null && entity.MinEventContext != null)
             {
-                entity.MinEventContext.ItemActionData = entity.inventory?.holdingItemData?.actionData[MultiActionManager.GetActionIndexForEntityID(entity.entityId)];
+                entity.MinEventContext.ItemActionData = entity.inventory?.holdingItemData?.actionData[MultiActionManager.GetActionIndexForEntity(entity)];
             }
         }
 
@@ -328,7 +366,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             {
                 MinEventParams.CachedEventParam.ItemActionData = DummyActionDatas[i];
                 int meta = itemClass.Actions[indice.GetActionIndexForMode(i)].GetInitialMeta(itemValue);
-                if(i == 0)
+                if (i == 0)
                 {
                     ret = meta;
                 }

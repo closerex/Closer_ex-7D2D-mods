@@ -1,5 +1,4 @@
-﻿using System.Xml;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
 public class MinEventActionAmmoAccessBase : MinEventActionItemCountRandomBase
 {
@@ -9,13 +8,13 @@ public class MinEventActionAmmoAccessBase : MinEventActionItemCountRandomBase
     private float perc = 1;
     protected override int GetCount(MinEventParams _params)
     {
-        if(!useMag || !(_params.ItemValue.ItemClass.Actions[_params.ItemActionData.indexInEntityOfAction] is ItemActionRanged _ranged))
+        if (!useMag || !(_params.ItemValue.ItemClass.Actions[_params.ItemActionData.indexInEntityOfAction] is ItemActionRanged _ranged))
             return base.GetCount(_params);
 
-        if(!useRounds)
+        if (!useRounds)
             return (int)(_ranged.GetMaxAmmoCount(_params.ItemActionData) * perc);
 
-        if(!revert)
+        if (!revert)
             return (int)((_params.ItemValue.Meta) * perc);
 
         return (int)((_ranged.GetMaxAmmoCount(_params.ItemActionData) - _params.ItemValue.Meta) * perc);
@@ -31,24 +30,24 @@ public class MinEventActionAmmoAccessBase : MinEventActionItemCountRandomBase
         if (base.ParseXmlAttribute(_attribute))
             return true;
 
-        if(_attribute.Name.LocalName == "count" && _attribute.Value.Contains("MagazineSize"))
+        if (_attribute.Name.LocalName == "count" && _attribute.Value.Contains("MagazineSize"))
         {
             useMag = true;
             string str = _attribute.Value;
-            if(str.StartsWith("%"))
+            if (str.StartsWith("%"))
             {
                 useRounds = true;
                 str = str.Substring(1);
             }
 
-            if(str.StartsWith("!"))
+            if (str.StartsWith("!"))
             {
                 revert = true;
                 str = str.Substring(1);
             }
 
             string[] arr = str.Split(new char[] { '*' }, 2, System.StringSplitOptions.RemoveEmptyEntries);
-            if(arr.Length == 2)
+            if (arr.Length == 2)
                 return float.TryParse(arr[1], out perc);
             return true;
         }

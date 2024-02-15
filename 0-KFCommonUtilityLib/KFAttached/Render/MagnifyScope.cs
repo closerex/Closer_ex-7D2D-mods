@@ -32,7 +32,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
         private void Awake()
         {
             renderTarget = GetComponent<Renderer>();
-            if(renderTarget == null)
+            if (renderTarget == null)
             {
                 Destroy(this);
                 return;

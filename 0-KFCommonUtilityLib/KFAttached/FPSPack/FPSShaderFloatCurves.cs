@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class FPSShaderFloatCurves : MonoBehaviour
 {
@@ -47,7 +46,8 @@ public class FPSShaderFloatCurves : MonoBehaviour
     private void Update()
     {
         var time = Time.time - startTime;
-        if (canUpdate) {
+        if (canUpdate)
+        {
             var eval = FloatPropertyCurve.Evaluate(time / GraphTimeMultiplier) * GraphScaleMultiplier;
             matInstance.SetFloat(propertyID, eval);
         }

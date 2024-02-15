@@ -37,10 +37,6 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectCapability Include="DynamicDependentFile" />
-    <ProjectCapability Include="DynamicFileNesting" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="0Harmony">
       <HintPath>..\..\7DaysToDie_Data\Managed\0Harmony.dll</HintPath>
       <Private>False</Private>
@@ -371,6 +367,7 @@
     <Compile Include="Harmony\MultiActionReversePatches.cs" />
     <Compile Include="Harmony\RecoilPatch.cs" />
     <Compile Include="KFAttached\Animation\DebugScripts\AnimatorActionIndexDebug.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationDelayRender.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationFiringEvents.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationProceduralRecoildAbs.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationSmokeParticle.cs" />
@@ -386,6 +383,11 @@
     <Compile Include="KFAttached\FPSPack\MaterialType.cs" />
     <Compile Include="KFAttached\KFUtilAttached\ApexWeaponHudControllerBase.cs" />
     <Compile Include="KFAttached\KFUtilAttached\RigActivationBinding.cs" />
+    <Compile Include="KFAttached\KFUtilAttached\WeaponDataHandlerBase.cs" />
+    <Compile Include="KFAttached\KFUtilAttached\WeaponDataController.cs" />
+    <Compile Include="KFAttached\KFUtilAttached\WeaponDataHandlerCanvasMask.cs" />
+    <Compile Include="KFAttached\KFUtilAttached\WeaponDataHandlerIndicator.cs" />
+    <Compile Include="KFAttached\KFUtilAttached\WeaponDataHandlerTMP.cs" />
     <Compile Include="KFAttached\KFUtilAttached\WeaponLabelControllerBatch.cs" />
     <Compile Include="KFAttached\LeanTween\Framework\LeanAudio.cs" />
     <Compile Include="KFAttached\LeanTween\Framework\LeanSmooth.cs" />
@@ -442,26 +444,38 @@
     <Compile Include="KFAttached\RigAdaptors\Utils\KFExtensions.cs" />
     <Compile Include="Scripts\Attributes\MethodTargetAttribute.cs" />
     <Compile Include="Scripts\Attributes\PatchTargetAttribute.cs" />
+    <Compile Include="Scripts\ConsoleCmd\ConsoleCmdMultiActionItemValueDebug.cs" />
+    <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPrintLocalCache.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdReloadDebug.cs" />
     <Compile Include="Scripts\Input\PlayerActionToggleMode.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleAlternative.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleDisplayAsBuff.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleHoldOpen.cs" />
+    <Compile Include="Scripts\Items\Modular\ActionModuleLocalPassiveCache.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleMetaConsumer.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleMultiActionFix.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleRampUp.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleMetaRecharger.cs" />
+    <Compile Include="Scripts\Items\Modular\ActionModuleTagged.cs" />
+    <Compile Include="Scripts\MinEventActions\MinEventActionModifyCVarWithLocalCache.cs" />
+    <Compile Include="Scripts\MinEventActions\MinEventActionSetMetadataOnWeaponLabel.cs" />
+    <Compile Include="Scripts\MinEventActions\MinEventActionSetPassiveOnWeaponLabel.cs" />
+    <Compile Include="Scripts\MinEventActions\MinEventActionUpdateLocalCache.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageEntityActionIndex.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageFixedReload.cs" />
+    <Compile Include="Scripts\Requirements\ActionHasTags.cs" />
     <Compile Include="Scripts\Requirements\ActionIndexIs.cs" />
     <Compile Include="Scripts\Requirements\HoldingActionIndexIs.cs" />
+    <Compile Include="Scripts\Requirements\IsActionUnlocked.cs" />
+    <Compile Include="Scripts\Requirements\IsInJeep.cs" />
     <Compile Include="Scripts\Requirements\ItemActionIndexIs.cs" />
-    <Compile Include="Scripts\Singletons\AnimationRiggingManager.cs" />
+    <Compile Include="Scripts\Requirements\RandomRollPassive.cs" />
+    <Compile Include="Scripts\StaticManagers\AnimationRiggingManager.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdCalibrateWeapon.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPlayerDebugInfo.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdReloadLog.cs" />
-    <Compile Include="Scripts\Singletons\BackgroundInventoryUpdateManager.cs" />
-    <Compile Include="Scripts\Singletons\CustomEffectEnumManager.cs" />
+    <Compile Include="Scripts\StaticManagers\BackgroundInventoryUpdateManager.cs" />
+    <Compile Include="Scripts\StaticManagers\CustomEffectEnumManager.cs" />
     <Compile Include="Scripts\FbxExporter07.cs" />
     <Compile Include="Scripts\Global\CustomEnums.cs" />
     <Compile Include="Scripts\Items\ItemActionAltMode.cs" />
@@ -492,10 +506,10 @@
     <Compile Include="Scripts\Requirements\RoundsInHoldingItem.cs" />
     <Compile Include="Scripts\Requirements\RoundsInInventory.cs" />
     <Compile Include="Scripts\Requirements\RoundsInMagazineBase.cs" />
-    <Compile Include="Scripts\Singletons\DelayLoadModuleManager.cs" />
-    <Compile Include="Scripts\Singletons\ItemActionModuleManager.cs" />
-    <Compile Include="Scripts\Singletons\MultiActionManager.cs" />
-    <Compile Include="Scripts\Singletons\RecoilManager.cs" />
+    <Compile Include="Scripts\StaticManagers\DelayLoadModuleManager.cs" />
+    <Compile Include="Scripts\StaticManagers\ItemActionModuleManager.cs" />
+    <Compile Include="Scripts\StaticManagers\MultiActionManager.cs" />
+    <Compile Include="Scripts\StaticManagers\RecoilManager.cs" />
     <Compile Include="Scripts\Utilities\MultiActionUtils.cs" />
     <Compile Include="Scripts\Utilities\MultiActionProjectileRewrites.cs" />
     <Compile Include="Scripts\Utilities\SaveTextureToFileUtility.cs" />

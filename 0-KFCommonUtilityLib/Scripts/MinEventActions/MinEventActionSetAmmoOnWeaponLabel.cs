@@ -1,7 +1,6 @@
-﻿using System.Xml;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
-class MinEventActionSetAmmoOnWeaponLabel : MinEventActionRemoteHoldingBase
+public class MinEventActionSetAmmoOnWeaponLabel : MinEventActionRemoteHoldingBase
 {
     private int slot = 0;
     private bool maxAmmo = false;
@@ -58,7 +57,7 @@ class MinEventActionSetAmmoOnWeaponLabel : MinEventActionRemoteHoldingBase
         //int num = consume_ammo ? meta - 1 : meta;
         if (isRemoteHolding || localOnly)
             NetPackageSyncWeaponLabelText.SetWeaponLabelText(_params.Self, slot, str);
-        else if(!_params.Self.isEntityRemote)
+        else if (!_params.Self.isEntityRemote)
             NetPackageSyncWeaponLabelText.NetSyncSetWeaponLabelText(_params.Self, slot, str);
     }
 }

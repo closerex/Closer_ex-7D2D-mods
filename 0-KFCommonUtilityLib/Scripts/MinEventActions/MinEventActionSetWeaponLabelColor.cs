@@ -1,8 +1,7 @@
-﻿using System.Xml;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 using UnityEngine;
 
-class MinEventActionSetWeaponLabelColor : MinEventActionRemoteHoldingBase
+public class MinEventActionSetWeaponLabelColor : MinEventActionRemoteHoldingBase
 {
     private bool isText = true;
     private int slot0 = 0;
@@ -13,11 +12,11 @@ class MinEventActionSetWeaponLabelColor : MinEventActionRemoteHoldingBase
     public override bool ParseXmlAttribute(XAttribute _attribute)
     {
         bool flag = base.ParseXmlAttribute(_attribute);
-        if(!flag)
+        if (!flag)
         {
             string value = _attribute.Value;
             flag = true;
-            switch(_attribute.Name.LocalName)
+            switch (_attribute.Name.LocalName)
             {
                 case "is_text":
                     isText = bool.Parse(value);
@@ -45,7 +44,7 @@ class MinEventActionSetWeaponLabelColor : MinEventActionRemoteHoldingBase
     {
         if (isRemoteHolding || localOnly)
             NetPackageSyncWeaponLabelColor.SetWeaponLabelColor(_params.Self, isText, slot0, color, slot1, nameId);
-        else if(!_params.Self.isEntityRemote)
+        else if (!_params.Self.isEntityRemote)
             NetPackageSyncWeaponLabelColor.NetSyncSetWeaponLabelColor(_params.Self, isText, slot0, color, slot1, nameId);
     }
 }

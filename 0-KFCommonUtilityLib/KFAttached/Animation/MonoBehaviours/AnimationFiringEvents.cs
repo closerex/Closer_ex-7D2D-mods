@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AnimationFiringEvents : MonoBehaviour
@@ -9,7 +7,7 @@ public class AnimationFiringEvents : MonoBehaviour
 
     private void Awake()
     {
-        if(mainParticles == null)
+        if (mainParticles == null)
             return;
         foreach (var ps in mainParticles)
         {

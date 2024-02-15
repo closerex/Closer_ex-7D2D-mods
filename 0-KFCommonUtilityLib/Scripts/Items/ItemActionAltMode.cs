@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Xml;
 using System.Xml.Linq;
 using UnityEngine;
 
@@ -105,13 +104,13 @@ public class ItemActionAltMode : ItemActionHoldOpen
         {
             if (elem.HasAttribute("class") && elem.GetAttribute("class").Contains(_actionIdx.ToString()))
             {
-                for(int i = 0; i < altRequirements.Length; ++i)
+                for (int i = 0; i < altRequirements.Length; ++i)
                 {
                     var requirements = new List<IRequirement>();
                     requirements.AddRange(ExecutionRequirements);
-                    foreach(XElement childElem in elem.Elements())
+                    foreach (XElement childElem in elem.Elements())
                     {
-                        if(childElem.Name.LocalName.Equals("requirements" + i))
+                        if (childElem.Name.LocalName.Equals("requirements" + i))
                         {
                             requirements.AddRange(RequirementBase.ParseRequirements(childElem));
                             break;
@@ -144,7 +143,7 @@ public class ItemActionAltMode : ItemActionHoldOpen
 
     public override void ItemActionEffects(GameManager _gameManager, ItemActionData _actionData, int _firingState, Vector3 _startPos, Vector3 _direction, int _userData = 0)
     {
-        if(_firingState != 0)
+        if (_firingState != 0)
             setAltSound(_actionData);
         base.ItemActionEffects(_gameManager, _actionData, _firingState, _startPos, _direction, _userData);
     }
@@ -159,11 +158,11 @@ public class ItemActionAltMode : ItemActionHoldOpen
         EntityAlive holdingEntity = _data.invData.holdingEntity;
 
         int altIndex = getCurAltIndex(holdingEntity);
-        if(altIndex != _data.modeIndex)
+        if (altIndex != _data.modeIndex)
         {
             if (_data.modeIndex >= 0)
                 setAnimatorBool(holdingEntity, altModeAnimatorBool + (_data.modeIndex + 1).ToString(), false);
-            if(altIndex >= 0)
+            if (altIndex >= 0)
                 setAnimatorBool(holdingEntity, altModeAnimatorBool + (altIndex + 1).ToString(), true);
             _data.modeIndex = altIndex;
         }

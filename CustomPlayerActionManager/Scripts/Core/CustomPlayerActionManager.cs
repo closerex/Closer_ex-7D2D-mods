@@ -28,7 +28,10 @@ public class CustomPlayerActionManager
         if(!File.Exists(prevSaveFile))
         {
             mod = ModManager.GetMod("CustomPlayerActionManager");
-            prevSaveFile = Path.Combine(mod.Path, saveName);
+            if (mod != null)
+            {
+                prevSaveFile = Path.Combine(mod.Path, saveName);
+            }
         }
         if (File.Exists(prevSaveFile))
         {

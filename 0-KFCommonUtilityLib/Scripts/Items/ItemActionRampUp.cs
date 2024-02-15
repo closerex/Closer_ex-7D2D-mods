@@ -1,6 +1,6 @@
-﻿using UnityEngine;
-using Audio;
+﻿using Audio;
 using System;
+using UnityEngine;
 
 public class ItemActionRampUp : ItemActionHoldOpen
 {
@@ -12,7 +12,7 @@ public class ItemActionRampUp : ItemActionHoldOpen
             _rampData.bReleased = false;
             if (!_rampData.prepareStarted)
                 _rampData.invData.gameManager.ItemActionEffectsServer(_rampData.invData.holdingEntity.entityId, _rampData.invData.slotIdx, _rampData.indexInEntityOfAction, 0, Vector3.zero, Vector3.zero, 4);
-            
+
             if (Time.time - _rampData.prepareStartTime < _rampData.prepareTime)
                 return;
         }
@@ -26,7 +26,7 @@ public class ItemActionRampUp : ItemActionHoldOpen
         var entity = _rampData.invData.holdingEntity;
         if (_firingState != 0)
         {
-            if((_userData & 2) > 0)
+            if ((_userData & 2) > 0)
             {
                 Manager.Stop(entity.entityId, _rampData.rampSound);
                 _rampData.rampStarted = true;
@@ -34,11 +34,11 @@ public class ItemActionRampUp : ItemActionHoldOpen
                 Manager.Play(entity, _rampData.rampSound);
             }
         }
-        else if((_userData & 4) > 0)
+        else if ((_userData & 4) > 0)
         {
             //Log.Out("released, try aim charge!" + _userData);
             ResetRamp(_rampData);
-            if(!_rampData.prepareStarted)
+            if (!_rampData.prepareStarted)
             {
                 //Log.Out("released and aim charge!");
                 Manager.Stop(entity.entityId, _rampData.prepareSound);

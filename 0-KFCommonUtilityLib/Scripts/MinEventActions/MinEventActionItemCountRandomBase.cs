@@ -1,5 +1,4 @@
-﻿using System.Xml;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 using UnityEngine;
 public class MinEventActionItemCountRandomBase : MinEventActionBase
 {

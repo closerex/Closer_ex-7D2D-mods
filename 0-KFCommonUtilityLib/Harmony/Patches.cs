@@ -1,110 +1,17 @@
-﻿using Autodesk.Fbx;
-using HarmonyLib;
-using KFCommonUtilityLib.Scripts.Singletons;
+﻿using HarmonyLib;
+using KFCommonUtilityLib.Scripts.StaticManagers;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Xml;
 using System.Xml.Linq;
 using SystemInformation;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 [HarmonyPatch]
 public class CommonUtilityPatch
 {
-    //SCore NPC compatibility
-    public static void FakeAttackOther(Entity entity, EntityAlive attacker, ItemValue damageItemValue, WorldRayHitInfo hitInfo, bool useInventory)
-    {
-        if(attacker is EntityAlive && entity is EntityAlive entityAlive)
-        {
-            MinEventParams context = attacker.MinEventContext;
-            context.Other = entityAlive;
-            context.ItemValue = damageItemValue;
-            context.StartPosition = hitInfo.ray.origin;
-            attacker.FireEvent(MinEventTypes.onSelfAttackedOther, useInventory);
-        }
-    }
-
-    static bool need_postfix = true;
-
-    [HarmonyPatch(typeof(ItemActionAttack), nameof(ItemActionAttack.Hit))]
-    [HarmonyPrefix]
-    private static bool Prefix_Hit_ItemActionAttack(ItemActionAttack.AttackHitInfo _attackDetails)
-    {
-        if(_attackDetails != null)
-        {
-            _attackDetails.hitPosition = Vector3i.zero;
-            _attackDetails.bKilled = false;
-        }
-
-        return true;
-    }
-
-    [HarmonyPatch(typeof(ItemActionAttack), nameof(ItemActionAttack.Hit))]
-    [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_Hit_ItemActionAttack(IEnumerable<CodeInstruction> instructions)
-    {
-        var codes = new List<CodeInstruction>(instructions);
-        MethodInfo mtd_can_damage_entity = AccessTools.Method(typeof(Entity), nameof(Entity.CanDamageEntity));
-
-        for (int i = 0; i < codes.Count; i++)
-        {
-            var code = codes[i];
-            if(code.Calls(mtd_can_damage_entity))
-            {
-                codes.InsertRange(i + 2, new CodeInstruction[]
-                {
-                    new CodeInstruction(OpCodes.Ldc_I4_1),
-                    CodeInstruction.StoreField(typeof(CommonUtilityPatch), nameof(CommonUtilityPatch.need_postfix))
-                });
-                break;
-            }
-        }
-
-        codes.InsertRange(0, new CodeInstruction[]
-        {
-            new CodeInstruction(OpCodes.Ldc_I4_0),
-            CodeInstruction.StoreField(typeof(CommonUtilityPatch), nameof(CommonUtilityPatch.need_postfix))
-        });
-
-        return codes;
-    }
-
-    [HarmonyPatch(typeof(ItemActionAttack), nameof(ItemActionAttack.Hit))]
-    [HarmonyPostfix]
-    private static void Postfix_Hit_ItemActionAttack(WorldRayHitInfo hitInfo, int _attackerEntityId, ItemValue damagingItemValue)
-    {
-        if (!need_postfix)
-        {
-            need_postfix = true;
-            return;
-        }
-
-        if (hitInfo != null && hitInfo.tag != null && hitInfo.tag.StartsWith("E_"))
-        {
-            World _world = GameManager.Instance.World;
-            EntityPlayer attacker = _world.GetEntity(_attackerEntityId) as EntityPlayer;
-            if(attacker != null)
-            {
-                Entity entity = ItemActionAttack.FindHitEntityNoTagCheck(hitInfo, out string str);
-                if (entity != null && entity.entityId != _attackerEntityId)
-                {
-                    bool useInventory = false;
-                    if (damagingItemValue == null)
-                    {
-                        damagingItemValue = attacker.inventory.holdingItemItemValue;
-                    }
-                    useInventory = damagingItemValue.Equals(attacker.inventory.holdingItemItemValue);
-                    FakeAttackOther(entity, attacker, damagingItemValue, hitInfo, useInventory);
-                }
-            }
-        }
-    }
-
     //fix reloading issue and onSelfRangedBurstShot timing
     public static void FakeReload(EntityAlive holdingEntity, ItemActionRanged.ItemActionDataRanged _actionData)
     {
@@ -131,9 +38,9 @@ public class CommonUtilityPatch
     {
         var codes = new List<CodeInstruction>(instructions);
 
-        for(int i = 0; i < codes.Count; ++i)
+        for (int i = 0; i < codes.Count; ++i)
         {
-            if(codes[i].opcode == OpCodes.Ret)
+            if (codes[i].opcode == OpCodes.Ret)
             {
                 codes.InsertRange(i, new CodeInstruction[]
                 {
@@ -160,13 +67,13 @@ public class CommonUtilityPatch
         int take = -1, insert = -1;
         for (int i = 0; i < codes.Count; ++i)
         {
-            if(codes[i].opcode == OpCodes.Ldc_I4_S && codes[i].OperandIs((int)MinEventTypes.onSelfRangedBurstShotStart) && codes[i + 2].Calls(mtd_fire_event))
+            if (codes[i].opcode == OpCodes.Ldc_I4_S && codes[i].OperandIs((int)MinEventTypes.onSelfRangedBurstShotStart) && codes[i + 2].Calls(mtd_fire_event))
                 take = i - 3;
             else if (codes[i].Calls(mtd_get_model_layer))
                 insert = i + 2;
         }
 
-        if(take < insert)
+        if (take < insert)
         {
             var list = codes.GetRange(take, 6);
             codes.InsertRange(insert, list);
@@ -197,7 +104,7 @@ public class CommonUtilityPatch
             "fpvSniperRifle",
             "M60",
             "fpvDoubleBarrelShotgun",
-            "fpvJunkTurret",
+            //"fpvJunkTurret",
             "fpvTacticalAssaultRifle",
             "fpvDesertEagle",
             "fpvAutoShotgun",
@@ -208,7 +115,7 @@ public class CommonUtilityPatch
             "fpvPipeShotgun",
             "fpvLeverActionRifle",
         };
-        foreach(string weapon in weapons)
+        foreach (string weapon in weapons)
         {
             hash_shot_state.Add(Animator.StringToHash(weapon + "Fire"));
             hash_aimshot_state.Add(Animator.StringToHash(weapon + "AimFire"));
@@ -237,17 +144,18 @@ public class CommonUtilityPatch
             short shotState = 0;
             if (hash_shot_state.Contains(curState.shortNameHash))
                 shotState = 1;
-            else if(hash_aimshot_state.Contains(curState.shortNameHash))
+            else if (hash_aimshot_state.Contains(curState.shortNameHash))
                 shotState = 2;
             if (shotState == 0 || (shotState == 1 && aimState) || (shotState == 2 && !aimState))
             {
-                if(shotState > 0)
+                if (shotState > 0)
                     anim.ResetTrigger(weaponFireHash);
                 return;
             }
 
             //current state, layer 0, offset 0
             anim.PlayInFixedTime(0, 0, 0);
+            anim.ResetTrigger(weaponFireHash);
             if (_rangedData.invData.itemValue.Meta == 0)
             {
                 __instance.emodel.avatarController.CancelEvent(weaponFireHash);
@@ -256,16 +164,16 @@ public class CommonUtilityPatch
         }
     }
 
-    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ItemActionEffects))]
-    [HarmonyPostfix]
-    private static void Postfix_ItemActionEffects_ItemActionRanged(ItemActionData _actionData, int _firingState)
-    {
-        if (_firingState == 0 && _actionData.invData.holdingEntity is EntityPlayerLocal && !(_actionData.invData.itemValue.ItemClass.Actions[0] is ItemActionCatapult))
-        {
-            _actionData.invData.holdingEntity?.emodel.avatarController.CancelEvent(weaponFireHash);
-            //Log.Out("Cancel fire event because firing state is 0\n" + StackTraceUtility.ExtractStackTrace());
-        }
-    }
+    //[HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ItemActionEffects))]
+    //[HarmonyPostfix]
+    //private static void Postfix_ItemActionEffects_ItemActionRanged(ItemActionData _actionData, int _firingState)
+    //{
+    //    if (_firingState == 0 && _actionData.invData.holdingEntity is EntityPlayerLocal && !(_actionData.invData.itemValue.ItemClass.Actions[0] is ItemActionCatapult))
+    //    {
+    //        _actionData.invData.holdingEntity?.emodel.avatarController.CancelEvent(weaponFireHash);
+    //        //Log.Out("Cancel fire event because firing state is 0\n" + StackTraceUtility.ExtractStackTrace());
+    //    }
+    //}
 
     [HarmonyPatch(typeof(GameManager), "gmUpdate")]
     [HarmonyTranspiler]
@@ -275,11 +183,11 @@ public class CommonUtilityPatch
         var mtd_unload = AccessTools.Method(typeof(Resources), nameof(Resources.UnloadUnusedAssets));
         var fld_duration = AccessTools.Field(typeof(GameManager), "unloadAssetsDuration");
 
-        for(int i = 0; i < codes.Count; ++i)
+        for (int i = 0; i < codes.Count; ++i)
         {
-            if(codes[i].opcode == OpCodes.Call && codes[i].Calls(mtd_unload))
+            if (codes[i].opcode == OpCodes.Call && codes[i].Calls(mtd_unload))
             {
-                for(int j = i; j >= 0; --j)
+                for (int j = i; j >= 0; --j)
                 {
                     if (codes[j].opcode == OpCodes.Ldfld && codes[j].LoadsField(fld_duration) && codes[j + 1].opcode == OpCodes.Ldc_R4)
                         codes[j + 1].operand = (float)codes[j + 1].operand / 2;
@@ -295,10 +203,10 @@ public class CommonUtilityPatch
     {
         if (GameManager.IsDedicatedServer)
             return;
-        if(GameManager.frameCount % 18000 == 0)
+        if (GameManager.frameCount % 18000 == 0)
         {
             long rss = GetRSS.GetCurrentRSS();
-            if(rss / 1024 / 1024 > 6144)
+            if (rss / 1024 / 1024 > 6144)
             {
                 Log.Out("Memory usage exceeds threshold, now performing garbage collection...");
                 GC.Collect();
@@ -315,7 +223,7 @@ public class CommonUtilityPatch
             return;
         }
         ItemClass item = ItemClass.GetItemClass(itemName);
-        for(int i = 0; i < item.Actions.Length; i++)
+        for (int i = 0; i < item.Actions.Length; i++)
         {
             if (item.Actions[i] is ItemActionAltMode _alt)
                 _alt.ParseAltRequirements(_node, i);
@@ -335,7 +243,7 @@ public class CommonUtilityPatch
     {
         if (!_bReleased && __instance.Actions[_actionIdx] is ItemActionAltMode _alt)
             _alt.SetAltRequirement(_data.actionData[_actionIdx]);
-            
+
         return true;
     }
 
@@ -385,26 +293,26 @@ public class CommonUtilityPatch
         return codes;
     }
 
-    //[HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.OnHoldingUpdate))]
-    //[HarmonyTranspiler]
-    //private static IEnumerable<CodeInstruction> Transpiler_OnHoldingUpdate_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
-    //{
-    //    var mtd_release = AccessTools.Method(typeof(ItemActionRanged), "triggerReleased");
-    //    var codes = instructions.ToList();
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.OnHoldingUpdate))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_OnHoldingUpdate_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
+    {
+        var mtd_release = AccessTools.Method(typeof(ItemActionRanged), "triggerReleased");
+        var codes = instructions.ToList();
 
-    //    for (int i = 0; i < codes.Count; i++)
-    //    {
-    //        if (codes[i].Calls(mtd_release))
-    //        {
-    //            codes[i + 1].labels.Clear();
-    //            codes[i + 1].MoveLabelsFrom(codes[i - 20]);
-    //            codes.RemoveRange(i - 20, 21);
-    //            break;
-    //        }
-    //    }
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_release))
+            {
+                codes[i + 1].labels.Clear();
+                codes[i + 1].MoveLabelsFrom(codes[i - 20]);
+                codes.RemoveRange(i - 20, 21);
+                break;
+            }
+        }
 
-    //    return codes;
-    //}
+        return codes;
+    }
 
     [HarmonyPatch(typeof(ItemActionRanged), "triggerReleased")]
     [HarmonyTranspiler]
@@ -515,7 +423,6 @@ public class CommonUtilityPatch
     {
         return EffectManager.GetValue(CustomEnums.ProjectileImpactDamagePercentEntity, _itemValue, 1, _holdingEntity, null);
     }
-
     //private static bool exported = false;
     //[HarmonyPatch(typeof(EModelUMA), nameof(EModelUMA.onCharacterUpdated))]
     //[HarmonyPostfix]

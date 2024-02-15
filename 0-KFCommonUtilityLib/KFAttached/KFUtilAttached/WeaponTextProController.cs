@@ -1,5 +1,5 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
 [AddComponentMenu("KFAttachments/Weapon Display Controllers/Weapon Text Controller TMP")]
 public class WeaponTextProController : WeaponLabelControllerBase

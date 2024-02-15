@@ -33,7 +33,7 @@ public class RigWeightOverTime : MonoBehaviour
 
     public void OnEnable()
     {
-        if(rigs != null)
+        if (rigs != null)
         {
             SetWeight(1);
         }
@@ -41,7 +41,7 @@ public class RigWeightOverTime : MonoBehaviour
 
     public void OnDisable()
     {
-        if(copair.co != null)
+        if (copair.co != null)
         {
             StopCoroutine(copair.co);
         }
@@ -60,7 +60,7 @@ public class RigWeightOverTime : MonoBehaviour
 
     private IEnumerator UpdateWeight(float time, bool active)
     {
-        if(rigs == null)
+        if (rigs == null)
         {
             yield break;
         }
@@ -72,7 +72,7 @@ public class RigWeightOverTime : MonoBehaviour
         }
 
         float curTime = 0;
-        while(curTime < time)
+        while (curTime < time)
         {
             float ratio = curTime / time;
             float weight = Mathf.Lerp(0, 1, active ? ratio : (1 - ratio));
@@ -86,38 +86,38 @@ public class RigWeightOverTime : MonoBehaviour
 
     public void SetWeight(float weight)
     {
-        foreach(var rig in rigs)
+        foreach (var rig in rigs)
         {
             rig.weight = weight;
         }
     }
 
-//    private void Update()
-//    {
-//        StartCoroutine(UpdateWeight());
-//    }
+    //    private void Update()
+    //    {
+    //        StartCoroutine(UpdateWeight());
+    //    }
 
-//    private IEnumerator UpdateWeight()
-//    {
-//        if(distanceRange == 0 || rigs == null)
-//        {
-//            yield break;
-//        }
-//        yield return new WaitForEndOfFrame();
-//        float distance = Vector3.Distance(source.position, target.position);
-//        float weight = Mathf.Lerp(0, 1, (distanceMax - distance) / distanceRange);
-//        foreach (Rig rig in rigs)
-//        {
-//            rig.weight = Mathf.Lerp(rig.weight, weight, 0.5f);
-//            if(weight > 0 && weight < 1)
-//                Log.Out("ratio: " + ((distanceMax - distance) / distanceRange).ToString() + " weight: " + weight.ToString());
-//        }
+    //    private IEnumerator UpdateWeight()
+    //    {
+    //        if(distanceRange == 0 || rigs == null)
+    //        {
+    //            yield break;
+    //        }
+    //        yield return new WaitForEndOfFrame();
+    //        float distance = Vector3.Distance(source.position, target.position);
+    //        float weight = Mathf.Lerp(0, 1, (distanceMax - distance) / distanceRange);
+    //        foreach (Rig rig in rigs)
+    //        {
+    //            rig.weight = Mathf.Lerp(rig.weight, weight, 0.5f);
+    //            if(weight > 0 && weight < 1)
+    //                Log.Out("ratio: " + ((distanceMax - distance) / distanceRange).ToString() + " weight: " + weight.ToString());
+    //        }
 
-//#if UNITY_EDITOR
-//        if (logDistance)
-//        {
-//            Log.Out(Vector3.Distance(source.position, target.position).ToString());
-//        }
-//#endif
-//    }
+    //#if UNITY_EDITOR
+    //        if (logDistance)
+    //        {
+    //            Log.Out(Vector3.Distance(source.position, target.position).ToString());
+    //        }
+    //#endif
+    //    }
 }

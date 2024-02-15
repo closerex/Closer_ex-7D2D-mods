@@ -17,15 +17,15 @@ public class TransformActivationBinding : MonoBehaviour
         //Log.Out(gameObject.name + " OnEnable!");
         if (bindings != null)
         {
-            foreach(GameObject t in bindings)
-                if(t != null)
+            foreach (GameObject t in bindings)
+                if (t != null)
                     t.SetActive(true);
         }
         if (inverseBindings != null)
         {
             foreach (GameObject t in inverseBindings)
             {
-                if(t != null)
+                if (t != null)
                     t.SetActive(false);
             }
         }
@@ -33,7 +33,7 @@ public class TransformActivationBinding : MonoBehaviour
         {
             foreach (GameObject t in disableOnEnable)
             {
-                if(t != null)
+                if (t != null)
                     t.SetActive(false);
             }
         }

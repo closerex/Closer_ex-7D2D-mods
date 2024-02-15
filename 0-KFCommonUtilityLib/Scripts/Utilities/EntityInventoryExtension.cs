@@ -38,7 +38,7 @@
     public static void TryStackWith(this ItemStack self, ItemStack other)
     {
         int maxStackCount = other.itemValue.ItemClass.Stacknumber.Value;
-        if(self.IsEmpty())
+        if (self.IsEmpty())
         {
             self.itemValue = other.itemValue.Clone();
             self.count = Utils.FastMin(maxStackCount, other.count);
@@ -61,7 +61,7 @@
             slot.TryStackWith(stack);
             if (stack.count == 0)
                 return;
-        }    
+        }
     }
 }
 

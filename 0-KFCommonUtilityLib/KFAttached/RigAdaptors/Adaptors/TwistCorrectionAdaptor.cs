@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using UnityEngine.Animations.Rigging;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 [AddComponentMenu("")]
 public class TwistCorrectionAdaptor : RigAdaptorAbs
@@ -45,6 +45,6 @@ public class TwistCorrectionAdaptor : RigAdaptorAbs
         weight = constraint.weight;
         m_Source = constraint.data.sourceObject.name;
         m_TwistAxis = constraint.data.twistAxis;
-        m_TwistNodes = constraint.data.twistNodes.Select(n => (n.transform.gameObject?.name ?? "" )+ ';' + n.weight.ToString()).ToArray();
+        m_TwistNodes = constraint.data.twistNodes.Select(n => (n.transform.gameObject?.name ?? "") + ';' + n.weight.ToString()).ToArray();
     }
 }

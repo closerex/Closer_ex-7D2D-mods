@@ -1,5 +1,6 @@
 ﻿using Audio;
 using KFCommonUtilityLib.Scripts.Attributes;
+using KFCommonUtilityLib.Scripts.Utilities;
 using System;
 using UnityEngine;
 using static ItemActionRanged;
@@ -73,34 +74,35 @@ public class ActionModuleRampUp
     [MethodTargetPostfix(nameof(ItemActionRanged.OnModificationsChanged))]
     public void Postfix_OnModificationsChanged(ItemActionData _data, RampUpData __customData, ItemActionRanged __instance)
     {
+        int actionIndex = __instance.ActionIndex;
         string originalValue = 1.ToString();
         __instance.Properties.ParseString("RampMultiplier", ref originalValue);
-        __customData.maxMultiplier = Mathf.Max(float.Parse(_data.invData.itemValue.GetPropertyOverride("RampMultiplier", originalValue)), 0);
+        __customData.maxMultiplier = Mathf.Max(float.Parse(_data.invData.itemValue.GetPropertyOverrideForAction("RampMultiplier", originalValue, actionIndex)), 0);
 
         originalValue = 0.ToString();
         __instance.Properties.ParseString("RampTime", ref originalValue);
-        __customData.rampTime = float.Parse(_data.invData.itemValue.GetPropertyOverride("RampTime", originalValue));
+        __customData.rampTime = float.Parse(_data.invData.itemValue.GetPropertyOverrideForAction("RampTime", originalValue, actionIndex));
 
         originalValue = 1.ToString();
         __instance.Properties.ParseString("MinRampShots", ref originalValue);
-        __customData.minRampShots = Mathf.Max(int.Parse(_data.invData.itemValue.GetPropertyOverride("MinRampShots", originalValue)), 1);
+        __customData.minRampShots = Mathf.Max(int.Parse(_data.invData.itemValue.GetPropertyOverrideForAction("MinRampShots", originalValue, actionIndex)), 1);
 
         originalValue = string.Empty;
         __instance.Properties.ParseString("RampStartSound", ref originalValue);
-        __customData.rampSound = _data.invData.itemValue.GetPropertyOverride("RampStartSound", originalValue);
+        __customData.rampSound = _data.invData.itemValue.GetPropertyOverrideForAction("RampStartSound", originalValue, actionIndex);
 
         originalValue = 0.ToString();
         __instance.Properties.ParseString("PrepareTime", ref originalValue);
-        __customData.prepareTime = float.Parse(_data.invData.itemValue.GetPropertyOverride("PrepareTime", originalValue));
+        __customData.prepareTime = float.Parse(_data.invData.itemValue.GetPropertyOverrideForAction("PrepareTime", originalValue, actionIndex));
         __customData.prepareSpeed = float.Parse(originalValue) / __customData.prepareTime;
 
         originalValue = string.Empty;
         __instance.Properties.ParseString("PrepareSound", ref originalValue);
-        __customData.prepareSound = _data.invData.itemValue.GetPropertyOverride("PrepareSound", originalValue);
+        __customData.prepareSound = _data.invData.itemValue.GetPropertyOverrideForAction("PrepareSound", originalValue, actionIndex);
 
         originalValue = false.ToString();
         __instance.Properties.ParseString("PrepareOnAim", ref originalValue);
-        __customData.zoomPrepare = bool.Parse(_data.invData.itemValue.GetPropertyOverride("PrepareOnAim", originalValue));
+        __customData.zoomPrepare = bool.Parse(_data.invData.itemValue.GetPropertyOverrideForAction("PrepareOnAim", originalValue, actionIndex));
     }
 
     [MethodTargetPostfix(nameof(ItemActionRanged.StopHolding))]

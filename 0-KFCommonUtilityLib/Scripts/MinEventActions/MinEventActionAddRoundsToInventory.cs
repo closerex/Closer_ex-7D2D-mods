@@ -6,7 +6,7 @@
     {
         var _ranged = _params.ItemValue.ItemClass.Actions[_params.ItemActionData.indexInEntityOfAction] as ItemActionRanged;
         string ammoName = _ranged.MagazineItemNames[_params.ItemValue.SelectedAmmoTypeIndex];
-        if(!RoundsInInventory.TryGetValue(ammoName, out var ammoValue))
+        if (!RoundsInInventory.TryGetValue(ammoName, out var ammoValue))
             return;
         itemStackCache.itemValue = ammoValue;
         itemStackCache.count = GetCount(_params);

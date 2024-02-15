@@ -1,8 +1,6 @@
 #if NotEditor
-using KFCommonUtilityLib.Scripts.Singletons;
 #endif
 using System;
-using System.Collections;
 using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Animations;
@@ -53,10 +51,12 @@ public class RigTargets : MonoBehaviour
         fpsArms = animator.transform;
         this.fpsArms = fpsArms;
         itemFpv.SetParent(fpsArms.parent, false);
+        itemFpv.SetAsFirstSibling();
         itemFpv.position = Vector3.zero;
         itemFpv.localPosition = Vector3.zero;
         itemFpv.localRotation = Quaternion.identity;
         rig.transform.SetParent(fpsArms, false);
+        rig.transform.SetAsFirstSibling();
         rig.transform.position = Vector3.zero;
         rig.transform.localPosition = Vector3.zero;
         rig.transform.localRotation = Quaternion.identity;

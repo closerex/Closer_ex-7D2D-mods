@@ -1,7 +1,5 @@
 ﻿#if NotEditor
-using KFCommonUtilityLib.Scripts.Utilities;
 #endif
-using System;
 using UnityEngine;
 
 [AddComponentMenu("KFAttachments/Utils/Animation Reload Events")]
@@ -60,8 +58,9 @@ public class AnimationReloadEvents : MonoBehaviour
 #if DEBUG
         Log.Out($"ANIMATION RELOAD EVENT FINISHED : {actionData.invData.item.Name}");
 #endif
+        actionData = null;
 #endif
-        }
+    }
 
 #if NotEditor
     public bool ReloadUpdatedThisFrame => reloadUpdatedThisFrame;
@@ -93,18 +92,15 @@ public class AnimationReloadEvents : MonoBehaviour
     {
         if (player == null)
         {
-            return;
+            player = GetComponentInParent<EntityPlayerLocal>();
         }
         actionData = player.inventory.holdingItemData.actionData[actionIndex] as ItemActionRanged.ItemActionDataRanged;
         actionRanged = (ItemActionRanged)player.inventory.holdingItem.Actions[actionIndex];
-        if (actionData == null)
+        if (actionData == null || actionData.isReloading)
         {
             return;
         }
-        if (actionData.isReloading)
-        {
-            return;
-        }
+
         if (actionData.invData.item.Properties.Values[ItemClass.PropSoundIdle] != null && actionData.invData.holdingEntitySoundID >= 0)
         {
             Audio.Manager.Stop(actionData.invData.holdingEntity.entityId, actionData.invData.item.Properties.Values[ItemClass.PropSoundIdle]);
@@ -134,9 +130,13 @@ public class AnimationReloadEvents : MonoBehaviour
         if (itemActionLauncher != null && itemValue.Meta < magSize)
         {
             ItemValue ammoValue = ItemClass.GetItem(actionRanged.MagazineItemNames[itemValue.SelectedAmmoTypeIndex], false);
+            if (ConsoleCmdReloadLog.LogInfo)
+                Log.Out($"loading ammo {ammoValue.ItemClass.Name}");
             ItemActionLauncher.ItemActionDataLauncher itemActionDataLauncher = actionData as ItemActionLauncher.ItemActionDataLauncher;
             if (itemActionDataLauncher.isChangingAmmoType)
             {
+                if (ConsoleCmdReloadLog.LogInfo)
+                    Log.Out($"is changing ammo type {itemActionDataLauncher.isChangingAmmoType}");
                 itemActionLauncher.DeleteProjectiles(actionData);
                 itemActionDataLauncher.isChangingAmmoType = false;
             }
@@ -213,4 +213,4 @@ public class AnimationReloadEvents : MonoBehaviour
     private ItemActionRanged actionRanged;
 #endif
     private Animator animator;
-    }
+}

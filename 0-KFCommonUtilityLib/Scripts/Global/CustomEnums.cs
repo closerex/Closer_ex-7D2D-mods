@@ -3,6 +3,8 @@
     #region Triggers
     public static MinEventTypes onSelfMagzineDeplete;
     public static MinEventTypes onReloadAboutToStart;
+    public static MinEventTypes onRechargeValueUpdate;
+    public static MinEventTypes onSelfItemSwitchMode;
     #endregion
 
     #region Passives
@@ -16,5 +18,7 @@
     public static PassiveEffects RechargeDataInterval;
     public static PassiveEffects RechargeDataMaximum;
     public static PassiveEffects ConsumptionValue;
+    public static PassiveEffects MedicWeaponHeal;
+    public static PassiveEffects ZedTimeTriggerChance;
     #endregion
 }

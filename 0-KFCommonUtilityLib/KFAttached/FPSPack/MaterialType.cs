@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class MaterialType : MonoBehaviour {
+public class MaterialType : MonoBehaviour
+{
 
     public MaterialTypeEnum TypeOfMaterial = MaterialTypeEnum.Plaster;
 
     [System.Serializable]
-	public enum MaterialTypeEnum
-	{
+    public enum MaterialTypeEnum
+    {
         Plaster,
-	    Metall,
+        Metall,
         Folliage,
         Rock,
         Wood,
@@ -18,5 +18,5 @@ public class MaterialType : MonoBehaviour {
         Dirt,
         Glass,
         Water
-	}
+    }
 }

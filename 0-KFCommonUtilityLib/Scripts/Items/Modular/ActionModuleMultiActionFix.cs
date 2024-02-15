@@ -1,5 +1,4 @@
 ﻿using KFCommonUtilityLib.Scripts.Attributes;
-using KFCommonUtilityLib.Scripts.Singletons;
 using KFCommonUtilityLib.Scripts.Utilities;
 
 [TypeTarget(typeof(ItemActionAttack), typeof(MultiActionData))]

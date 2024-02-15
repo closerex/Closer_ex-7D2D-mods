@@ -1,13 +1,6 @@
 ﻿using KFCommonUtilityLib.Scripts.Attributes;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UAI;
 using UnityEngine;
-using static EventDelegate;
 
 [TypeTarget(typeof(ItemActionRanged))]
 public class ActionModuleHoldOpen
@@ -36,7 +29,7 @@ public class ActionModuleHoldOpen
     [MethodTargetPostfix("getUserData")]
     public void Postfix_getUserData(ItemActionData _actionData, ref int __result)
     {
-         __result |= (_actionData.invData.itemValue.Meta <= 0 ? 1 : 0);
+        __result |= (_actionData.invData.itemValue.Meta <= 0 ? 1 : 0);
     }
 
     [MethodTargetPostfix(nameof(ItemActionRanged.ItemActionEffects))]

@@ -27,10 +27,10 @@
 			<property name="Sound_end" value="silencefiller"/>
 			<property name="Sound_loop" value="ak47_s_fire"/>
 		</item_property_overrides>
-		<item_property_overrides name="gunM16M203_3">
+		<!-- <item_property_overrides name="gunM16M203_3">
 			<property name="Sound_start" value="M16M203_Fire_Grenade"/>
 			<property name="Sound_end" value=""/>
 			<property name="Sound_loop" value="M16M203_Fire_Grenade"/>
-		</item_property_overrides>
+		</item_property_overrides> -->
 	</append>
 </configs>

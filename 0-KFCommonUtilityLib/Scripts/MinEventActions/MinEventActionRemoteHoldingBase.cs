@@ -4,7 +4,7 @@
 //thus we need to handle some holding event for remote players on local player side
 using System.Xml.Linq;
 
-class MinEventActionRemoteHoldingBase : MinEventActionBase
+public class MinEventActionRemoteHoldingBase : MinEventActionBase
 {
     protected bool isRemoteHolding = false;
     protected bool localOnly = true;

@@ -47,7 +47,7 @@
                 if (cvarNoConsumptionTemp.Length > curAltIndex && !string.IsNullOrEmpty(cvarNoConsumptionTemp[curAltIndex]))
                 {
                     float isConsumption0 = holdingEntity.GetCVar(cvarNoConsumptionTemp[curAltIndex]);
-                    if(isConsumption0 > 0)
+                    if (isConsumption0 > 0)
                     {
                         consumption = 0;
                         holdingEntity.SetCVar(cvarNoConsumptionTemp[curAltIndex], --isConsumption0);

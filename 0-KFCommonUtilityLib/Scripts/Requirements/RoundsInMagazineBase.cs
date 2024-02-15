@@ -1,5 +1,4 @@
-﻿using System.Xml;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
 public class RoundsInMagazineBase : RoundsInMagazine
 {
@@ -7,10 +6,10 @@ public class RoundsInMagazineBase : RoundsInMagazine
 
     public override bool ParseXAttribute(XAttribute _attribute)
     {
-        if(base.ParseXAttribute(_attribute))
+        if (base.ParseXAttribute(_attribute))
             return true;
 
-        if(_attribute.Name.LocalName == "rounds_before_shot")
+        if (_attribute.Name.LocalName == "rounds_before_shot")
         {
             roundsBeforeShot = bool.Parse(_attribute.Value);
             return true;

@@ -1,31 +1,67 @@
 ﻿using HarmonyLib;
-using KFCommonUtilityLib.Scripts.Singletons;
-using System;
+using KFCommonUtilityLib.Scripts.StaticManagers;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
+using UniLinq;
 using UnityEngine;
 using static AvatarController;
 
 [HarmonyPatch]
 class AnimationRiggingPatches
 {
-    /// <summary>
-    /// compatibility patch for launcher projectile joint
-    /// </summary>
-    /// <param name="__instance"></param>
-    /// <param name="_invData"></param>
-    [HarmonyPatch(typeof(ItemActionLauncher.ItemActionDataLauncher), MethodType.Constructor, new Type[] { typeof(ItemInventoryData), typeof(int) })]
+    ///// <summary>
+    ///// compatibility patch for launcher projectile joint
+    ///// </summary>
+    ///// <param name="__instance"></param>
+    ///// <param name="_invData"></param>
+    //[HarmonyPatch(typeof(ItemActionLauncher.ItemActionDataLauncher), MethodType.Constructor, new Type[] { typeof(ItemInventoryData), typeof(int) })]
+    //[HarmonyPostfix]
+    //private static void Postfix_ctor_ItemActionDataLauncher(ItemActionLauncher.ItemActionDataLauncher __instance, ItemInventoryData _invData)
+    //{
+    //    __instance.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName("ProjectileJoint", _invData.model);
+    //}
+
+    //[HarmonyPatch(typeof(ItemActionRanged.ItemActionDataRanged), MethodType.Constructor, new Type[] { typeof(ItemInventoryData), typeof(int) })]
+    //[HarmonyPostfix]
+    //private static void Postfix_ctor_ItemActionDataRanged(ItemActionRanged.ItemActionDataRanged __instance, ItemInventoryData _invData)
+    //{
+    //    if (__instance.IsDoubleBarrel)
+    //    {
+    //        __instance.muzzle = AnimationRiggingManager.GetTransformOverrideByName("Muzzle_L", _invData.model);
+    //        __instance.muzzle2 = AnimationRiggingManager.GetTransformOverrideByName("Muzzle_R", _invData.model);
+    //    }
+    //    else
+    //    {
+    //        __instance.muzzle = AnimationRiggingManager.GetTransformOverrideByName("Muzzle", _invData.model);
+    //    }
+    //}
+
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.OnModificationsChanged))]
     [HarmonyPostfix]
-    private static void Postfix_ctor_ItemActionDataLauncher(ItemActionLauncher.ItemActionDataLauncher __instance, ItemInventoryData _invData)
+    private static void Postfix_OnModificationChanged_ItemActionRanged(ItemActionData _data)
     {
-        __instance.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName("ProjectileJoint", _invData.model);
+        ItemActionRanged.ItemActionDataRanged rangedData = (ItemActionRanged.ItemActionDataRanged)_data;
+        if (rangedData.IsDoubleBarrel)
+        {
+            rangedData.muzzle = AnimationRiggingManager.GetTransformOverrideByName("Muzzle_L", rangedData.invData.model);
+            rangedData.muzzle2 = AnimationRiggingManager.GetTransformOverrideByName("Muzzle_R", rangedData.invData.model);
+        }
+        else
+        {
+            rangedData.muzzle = AnimationRiggingManager.GetTransformOverrideByName("Muzzle", rangedData.invData.model);
+        }
+        rangedData.Laser = AnimationRiggingManager.GetTransformOverrideByName("Laser", rangedData.invData.model);
     }
+
+    [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.StartHolding))]
+    [HarmonyPostfix]
+    private static void Postfix_StartHolding_ItemActionLauncher(ItemActionData _actionData)
+    {
+        ItemActionLauncher.ItemActionDataLauncher launcherData = (ItemActionLauncher.ItemActionDataLauncher)_actionData;
+        launcherData.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName("ProjectileJoint", launcherData.invData.model);
+    }
+
 
     /// <summary>
     /// attachment path patch, only apply to MinEventActionSetTransformActive!
@@ -204,7 +240,7 @@ class AnimationRiggingPatches
     [HarmonyPrefix]
     private static bool Prefix_clearSlotByIndex(Inventory __instance, EntityAlive ___entity, int _idx)
     {
-        if(___entity is EntityPlayerLocal)
+        if (___entity is EntityPlayerLocal)
             AnimationRiggingManager.OnClearInventorySlot(__instance, _idx);
         return true;
     }
@@ -234,6 +270,14 @@ class AnimationRiggingPatches
         if (__instance.HeldItemTransform != null && __instance.HeldItemTransform.TryGetComponent<RigTargets>(out var targets))
         {
             EntityAlive entity = __instance.Entity;
+#if DEBUG
+            float x = 1, y = 1;
+            var tags = entity.inventory.holdingItem.ItemTags;
+            var tags_prev = tags;
+            MultiActionManager.ModifyItemTags(entity.inventory.holdingItemItemValue, entity.MinEventContext.ItemActionData, ref tags);
+            entity.Progression.ModifyValue(PassiveEffects.ReloadSpeedMultiplier, ref x, ref y, tags);
+            Log.Out($"item {entity.inventory.holdingItem.Name} action index {entity.MinEventContext.ItemActionData.indexInEntityOfAction} progression base {x} perc {y} has tag {tags.Test_AnySet(FastTags.Parse("perkMachineGunner"))} \ntags prev {tags_prev} \ntags after {tags}");
+#endif
             float reloadSpeed = EffectManager.GetValue(PassiveEffects.ReloadSpeedMultiplier, entity.inventory.holdingItemItemValue, 1f, entity);
             float reloadSpeedRatio = EffectManager.GetValue(CustomEnums.ReloadSpeedRatioFPV2TPV, entity.inventory.holdingItemItemValue, 1f, entity);
             float localMultiplier, remoteMultiplier;
@@ -259,13 +303,20 @@ class AnimationRiggingPatches
             {
                 remoteMultiplier = reloadSpeed;
             }
-            if(ConsoleCmdReloadLog.LogInfo)
-                Log.Out($"Set reload multiplier: isFPV {isFPV}, reloadSpeed {reloadSpeed}, reloadSpeedRatio {reloadSpeedRatio}, finalMultiplier {localMultiplier}");
+            if (ConsoleCmdReloadLog.LogInfo)
+                Log.Out($"Set reload multiplier: isFPV {isFPV}, reloadSpeed {reloadSpeed}, reloadSpeedRatio {reloadSpeedRatio}, finalMultiplier {localMultiplier}, remoteMultiplier {remoteMultiplier}");
             __instance.UpdateFloat(___reloadSpeedHash, localMultiplier, false);
             SetDataFloat(__instance, (AvatarController.DataTypes)___reloadSpeedHash, remoteMultiplier, true);
         }
     }
 
+    /// <summary>
+    /// sets float only on remote clients but not on local client.
+    /// </summary>
+    /// <param name="__instance"></param>
+    /// <param name="_type"></param>
+    /// <param name="_value"></param>
+    /// <param name="_netsync"></param>
     [HarmonyPatch(typeof(AvatarController), nameof(AvatarController.SetDataFloat))]
     [HarmonyReversePatch(HarmonyReversePatchType.Original)]
     private static void SetDataFloat(AvatarController __instance, DataTypes _type, float _value, bool _netsync = true)
@@ -329,7 +380,7 @@ class AnimationRiggingPatches
     private static void Postfix_Start_vp_FPWeapon(vp_FPWeapon __instance)
     {
         var player = __instance.GetComponentInParent<EntityPlayerLocal>();
-        if(player != null)
+        if (player != null)
         {
             foreach (var model in player.inventory.models)
             {
@@ -345,7 +396,7 @@ class AnimationRiggingPatches
     [HarmonyPostfix]
     private static void Postfix_setHoldingItemTransform_Inventory(Transform _t, EntityAlive ___entity)
     {
-        if(_t != null && _t.TryGetComponent<RigTargets>(out var targets))
+        if (_t != null && _t.TryGetComponent<RigTargets>(out var targets))
         {
             targets.SetEnabled(___entity.emodel.IsFPV);
         }

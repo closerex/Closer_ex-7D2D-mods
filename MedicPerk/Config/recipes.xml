@@ -1,8 +1,3 @@
 <configs>
-	<append xpath="/recipes">
-		<recipe name="thrownAmmoMedicGrenade" count="1" craft_area="workbench" craft_time="60" tags="learnable,medicgun">
-			<ingredient name="resourceForgedIron" count="10"/>
-			<ingredient name="medicalFirstAidKit" count="1"/>
-		</recipe>
-	</append>
+
 </configs>

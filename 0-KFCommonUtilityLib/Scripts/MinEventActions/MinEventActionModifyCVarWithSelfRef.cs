@@ -1,5 +1,4 @@
-﻿using System.Xml;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
 class MinEventActionModifyCVarWithSelfRef : MinEventActionModifyCVar
 {
@@ -23,17 +22,18 @@ class MinEventActionModifyCVarWithSelfRef : MinEventActionModifyCVar
         string name = _attribute.Name.LocalName;
         if (name != null)
         {
-            if(name == "value" && _attribute.Value.StartsWith("@"))
+            if (name == "value" && _attribute.Value.StartsWith("@"))
             {
                 this.cvarRef = true;
                 this.refCvarName = _attribute.Value.Substring(1);
                 flag = true;
-            }else if (name == "operation")
+            }
+            else if (name == "operation")
             {
                 this.operation = EnumUtils.Parse<MinEventActionModifyCVarWithSelfRef.OperationTypes>(_attribute.Value, true);
             }
         }
-        
+
         if (!flag)
             flag = base.ParseXmlAttribute(_attribute);
         return flag;
@@ -46,7 +46,7 @@ class MinEventActionModifyCVarWithSelfRef : MinEventActionModifyCVar
 
     public override void Execute(MinEventParams _params)
     {
-        if(this.cvarRef)
+        if (this.cvarRef)
         {
             if (_params.Self.isEntityRemote && !_params.IsLocal)
             {
@@ -77,7 +77,8 @@ class MinEventActionModifyCVarWithSelfRef : MinEventActionModifyCVar
                 }
                 this.targets[i].Buffs.SetCustomVar(this.cvarName, num, (this.targets[i].isEntityRemote && !_params.Self.isEntityRemote) || _params.IsLocal);
             }
-        }else
+        }
+        else
             base.Execute(_params);
     }
 }

@@ -1,5 +1,5 @@
 <configs>
-	<insertAfter xpath="/progression/skills/skill[@name='skillWasteTreasures']">
+	<append xpath="/progression/skills">
 		<skill name="skillTeamplayer" name_key="skillTeamplayerName" desc_key="skillTeamplayerDesc" icon="icon_medic_teamplayer" parent="attIntellect">
 			<!--The Teamplayer-->
 			<effect_group/>
@@ -8,14 +8,14 @@
 			<!--The Survivor-->
 			<effect_group/>
 		</skill>
-	</insertAfter>
-	<insertBefore xpath="/progression/perks/perk[@name='perkFiremansAlmanacHeat']">	
+	</append>
+	<append xpath="/progression/perks">	
 		<perk name="perkMedic" name_key="perkMedicBasicName" desc_key="perkMedicBasicDesc" min_level="1" max_level="6" base_skill_point_cost="5" cost_multiplier_per_level="1" icon="icon_perkmedic" parent="attIntellect">
 			<!--The Medic-->
 			<level_requirements level="1"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="0" desc_key="no req"/></level_requirements>
-			<level_requirements level="2"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="1" desc_key="reqPhysicianLevel04"/></level_requirements>
-			<level_requirements level="3"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="2" desc_key="reqPhysicianLevel04"/></level_requirements>
-			<level_requirements level="4"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="3" desc_key="reqPhysicianLevel04"/></level_requirements>
+			<level_requirements level="2"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="1" desc_key="reqPhysicianLevel01"/></level_requirements>
+			<level_requirements level="3"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="2" desc_key="reqPhysicianLevel02"/></level_requirements>
+			<level_requirements level="4"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="3" desc_key="reqPhysicianLevel03"/></level_requirements>
 			<level_requirements level="5"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="4" desc_key="reqPhysicianLevel04"/></level_requirements>
 			<level_requirements level="6"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="4" desc_key="reqPhysicianLevel04"/></level_requirements>
 			<effect_group>
@@ -27,27 +27,23 @@
 				<effect_description level="6" desc_key="perkMedicBasicLv6Desc" long_desc_key="perkMedicBasicLv6LongDesc"/>
 			</effect_group>
 			<effect_group>
-				<triggered_effect trigger="onPerkLevelChanged" action="AddBuff" buff="buffCheckMedicLv"/>
 				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="5,6" value="1" tags="medicgrenade"/>
+                <passive_effect name="RechargeDataMaximum" operation="perc_add" level="2,6" value=".05,.25" tags="medicWeapon,MedicStock"/>
+                <passive_effect name="ConsumptionValue" operation="perc_subtract" level="2,6" value=".02,.1" tags="medicWeapon,MedicStock"/>
+                <passive_effect name="MedicWeaponHeal" operation="perc_add" level="2,6" value=".05,.25" tags="medicWeapon,MedicStock"/>
+				<triggered_effect trigger="onPerkLevelChanged" action="UpdateLocalCache,KFCommonUtilityLib" passives="MedicWeaponHeal,ZedTimeTriggerChance"/>
 			</effect_group>
 			<effect_group>
-				<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="6"/>
-				<requirement name="IsAlive" target="other"/>
-				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="1"/>
-					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" target_tags="player,npc" buff="buffMedicEliteHealing">
-						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer5" operation="Equals" value="0"/>
-					</triggered_effect>
-					<triggered_effect trigger="onSelfAttackedOther" action="AddBuffToTargetAndSelf,KFCommonUtilityLib" target="other" target_tags="player,npc" buff="buffMedicEliteHealing">
-						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer5" operation="Equals" value="1"/>
-					</triggered_effect>
+				<requirement name="ItemHasTags" tags="medicWeapon"/>
+				    <passive_effect name="ZedTimeTriggerChance" operation="base_set" level="1,6" value="5,30"/>
 			</effect_group>
-			<effect_group>
+			<!-- <effect_group>
 				<requirement name="!HasBuff" buff="buffZedTimeCooldown"/>
-				<requirement name="ItemHasTags" tags="medicgun"/>
-				<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="@$zedTimeTriggerChanceMedic"/>
+				<requirement name="ItemHasTags" tags="medicWeapon"/>
+				<requirement name="RandomRollPassive,KFComkmonUtilityLib" seed_type="Random" min_max="0,100" operation="LTE" passive="ZedTimeTriggerChance" tags="medicWeapon"/>
 					<triggered_effect trigger="onSelfKilledOther" action="AddBuffToTargetAndSelf,KFCommonUtilityLib" target="selfAOE" target_tags="player" buff="buffZedTimeCooldown" range="60"/>
 					<triggered_effect trigger="onSelfKilledOther" action="AddBuff" target="selfAOE" target_tags="enemy" buff="buffZedTime" range="60"/>
-			</effect_group>
+			</effect_group> -->
 		</perk>
 		<perk name="perkMedicTeamplayer1" name_key="perkMedicTeamplayer1Name" desc_key="perkMedicTeamplayer1Desc" max_level="1" icon="icon_tp_symbiotic" parent="skillTeamplayer">
 			<!--Symbiotic Health-->
@@ -72,17 +68,6 @@
 			</level_requirements>
 			<effect_group>
 				<effect_description desc_key="perkMedicTeamplayer2Name" long_desc_key="perkMedicTeamplayer2LongDesc" level="1"/>
-			</effect_group>
-			<effect_group>
-				<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer2" operation="Equals" value="1"/>
-				<requirement name="IsAlive" target="other"/>
-				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="1"/>
-					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" target_tags="player,npc" buff="buffMedicAdrenaline">
-						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer5" operation="Equals" value="0"/>
-					</triggered_effect>
-					<triggered_effect trigger="onSelfAttackedOther" action="AddBuffToTargetAndSelf,KFCommonUtilityLib" target="other" target_tags="player,npc" buff="buffMedicAdrenaline">
-						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer5" operation="Equals" value="1"/>
-					</triggered_effect>
 			</effect_group>
 			<effect_group>
 				<triggered_effect trigger="onPerkLevelChanged" action="DecreaseProgressionLevelAndRefundSP,KFCommonUtilityLib" progression_name="perkMedicSurvivor2" level="0">
@@ -115,17 +100,6 @@
 				<effect_description desc_key="perkMedicTeamplayer4Name" long_desc_key="perkMedicTeamplayer4LongDesc" level="1"/>
 			</effect_group>
 			<effect_group>
-				<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer4" operation="Equals" value="1"/>
-				<requirement name="IsAlive" target="other"/>
-				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="1"/>
-					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" target_tags="player,npc" buff="buffMedicFocus">
-						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer5" operation="Equals" value="0"/>
-					</triggered_effect>
-					<triggered_effect trigger="onSelfAttackedOther" action="AddBuffToTargetAndSelf,KFCommonUtilityLib" target="other" target_tags="player,npc" buff="buffMedicFocus">
-						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer5" operation="Equals" value="1"/>
-					</triggered_effect>
-			</effect_group>
-			<effect_group>
 				<triggered_effect trigger="onPerkLevelChanged" action="DecreaseProgressionLevelAndRefundSP,KFCommonUtilityLib" progression_name="perkMedicSurvivor4" level="0">
 					<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer4" operation="GTE" value="1"/>
 				</triggered_effect>
@@ -139,15 +113,6 @@
 			</level_requirements>
 			<effect_group>
 				<effect_description desc_key="perkMedicTeamplayer5Name" long_desc_key="perkMedicTeamplayer5LongDesc" level="1"/>
-			</effect_group>
-			<effect_group>
-				<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer5" operation="Equals" value="1"/>
-				<requirement name="IsAlive" target="other"/>
-				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="1"/>
-					<triggered_effect trigger="onSelfAttackedOther" action="RemoveBuff" target="other" target_tags="npc,ally" buff="buffInjuryBleeding"/>
-					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" target_tags="npc,ally" buff="buffInjuryAbrasionTreated">
-						<requirement name="HasBuff" target="other" buff="buffInjuryAbrasion"/>
-					</triggered_effect>
 			</effect_group>
 			<effect_group>
 				<triggered_effect trigger="onPerkLevelChanged" action="DecreaseProgressionLevelAndRefundSP,KFCommonUtilityLib" progression_name="perkMedicSurvivor5" level="0">
@@ -188,7 +153,7 @@
 			<effect_group name="damage">
 				<requirement name="CVarCompare" target="other" cvar="medicPoisonStack" operation="GT" value="0"/>
 				<requirement name="ProgressionLevel" progression_name="perkMedicSurvivor2" operation="Equals" value="1"/>
-				<requirement name="ItemHasTags" tags="medicgun"/>
+				<requirement name="ItemHasTags" tags="medicWeapon"/>
 					<passive_effect name="DamageModifier" operation="perc_add" value=".25"/>
 			</effect_group>
 		</perk>
@@ -208,7 +173,7 @@
 			</effect_group>
 			<effect_group>
 				<requirement name="ProgressionLevel" progression_name="perkMedicSurvivor3" operation="GTE" value="1"/>
-				<requirement name="ItemHasTags" tags="medicgun"/>
+				<requirement name="ItemHasTags" tags="medicWeapon"/>
 					<triggered_effect trigger="onSelfKilledOther" action="AddBuff" target="self" buff="buffMedicBoost"/>
 			</effect_group>
 		</perk>
@@ -220,10 +185,8 @@
 			</level_requirements>
 			<effect_group>
 				<requirement name="ProgressionLevel" progression_name="perkMedicSurvivor4" operation="GTE" value="1"/>
-				<requirement name="ItemHasTags" tags="medicgun"/>
-					<passive_effect name="DegradationPerUse" operation="perc_set" value=".5">
-						<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="1"/>
-					</passive_effect>
+				<requirement name="ItemHasTags" tags="medicWeapon"/>
+					<passive_effect name="DegradationPerUse" operation="perc_set" value=".5"/>
 					<passive_effect name="ReloadSpeedMultiplier" operation="perc_add" value=".2"/>
 					<passive_effect name="EntityDamage" operation="perc_add" value="0.2"/>
 			</effect_group>
@@ -246,23 +209,11 @@
 				<effect_description desc_key="perkMedicSurvivor5Name" long_desc_key="perkMedicSurvivor5LongDesc" level="1"/>
 			</effect_group>
 			<effect_group>
-				<requirement name="ProgressionLevel" progression_name="perkMedicSurvivor5" operation="Equals" value="1"/>
-				<requirement name="IsAlive" target="other"/>
-				<requirement name="CVarCompare" cvar="isHealMode" operation="Equals" value="1"/>
-					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" target_tags="enemy" buff="buffInjuryCrippled01">
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="50"/>
-					</triggered_effect>
-					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" target_tags="enemy" buff="buffInjuryKnockdown01">
-						<requirement name="HitLocation" body_parts="Head"/>
-						<requirement name="!HasBuff" target="other" buff="buffInjuryKnockdown01Cooldown"/>
-						<requirement name="HasBuff" target="other" buff="buffZedTime"/>
-					</triggered_effect>
-			</effect_group>
-			<effect_group>
-					<triggered_effect trigger="onSelfKilledOther" action="ModifyCVar" target="self" cvar="$medicBuffConsumptionTemp0" operation="set" value="5">
-						<requirement name="HasBuff" target="other" buff="buffZedTime"/>
-						<requirement name="ItemHasTags" tags="medicgun"/>
-					</triggered_effect>
+                <!-- <requirement name="HasBuff" target="other" buff="buffZedTime"/> -->
+				<requirement name="ProgressionLevel" progression_name="perkMedicSurvivor5" operation="GTE" value="1"/>
+                <requirement name="ItemHasTags" tags="medicWeapon"/>
+                    <triggered_effect trigger="onSelfKilledOther" action="ModifyCVar" target="self" cvar=".medicBuffConsumptionTemp0" operation="set" value="5"/>
+                    <triggered_effect trigger="onSelfKilledOther" action="AddBuff" target="self" buff="buffMedicInfinite"/>
 			</effect_group>
 			<effect_group>
 				<triggered_effect trigger="onPerkLevelChanged" action="DecreaseProgressionLevelAndRefundSP,KFCommonUtilityLib" progression_name="perkMedicTeamplayer5" level="0">
@@ -270,5 +221,6 @@
 				</triggered_effect>
 			</effect_group>
 		</perk>
-	</insertBefore>
+	</append>
+
 </configs>

@@ -1,4 +1,4 @@
-﻿using KFCommonUtilityLib.Scripts.Singletons;
+﻿using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -16,6 +16,9 @@ public class CommonUtilityLibInit : IModApi
         {
             Log.Out($"size of MultiActionIndice: {sizeof(MultiActionIndice)} marshal size: {Marshal.SizeOf<MultiActionIndice>()}");
         }
+        DelayLoadModuleManager.RegisterDelayloadDll("FullautoLauncher", "FullautoLauncherAnimationRiggingCompatibilityPatch");
+        DelayLoadModuleManager.RegisterDelayloadDll("SMXcore", "SMXMultiActionCompatibilityPatch");
+        //DelayLoadModuleManager.RegisterDelayloadDll("SCore", "SCoreEntityHitCompatibilityPatch");
         CustomEffectEnumManager.RegisterEnumType<MinEventTypes>();
         CustomEffectEnumManager.RegisterEnumType<PassiveEffects>();
         ModEvents.GameAwake.RegisterHandler(CommonUtilityPatch.InitShotStates);
@@ -26,7 +29,7 @@ public class CommonUtilityLibInit : IModApi
         ModEvents.GameAwake.RegisterHandler(MultiActionUtils.SetMinEventArrays);
         ModEvents.GameStartDone.RegisterHandler(RegisterKFEnums);
         ModEvents.GameStartDone.RegisterHandler(AnimationRiggingManager.ParseItemIDs);
-        ModEvents.GameStartDone.RegisterHandler(MultiActionManager.Cleanup);
+        ModEvents.GameStartDone.RegisterHandler(MultiActionManager.PostloadCleanup);
         //ModEvents.GameStartDone.RegisterHandler(CustomEffectEnumManager.PrintResults);
         //ModEvents.GameUpdate.RegisterHandler(CommonUtilityPatch.ForceUpdateGC);
         var harmony = new HarmonyLib.Harmony(GetType().ToString());
@@ -37,6 +40,8 @@ public class CommonUtilityLibInit : IModApi
     {
         CustomEnums.onSelfMagzineDeplete = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onSelfMagzineDeplete");
         CustomEnums.onReloadAboutToStart = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onReloadAboutToStart");
+        CustomEnums.onRechargeValueUpdate = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onRechargeValueUpdate");
+        CustomEnums.onSelfItemSwitchMode = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onSelfItemSwitchMode");
 
         CustomEnums.ReloadSpeedRatioFPV2TPV = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("ReloadSpeedRatioFPV2TPV");
         CustomEnums.RecoilSnappiness = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RecoilSnappiness");
@@ -48,6 +53,8 @@ public class CommonUtilityLibInit : IModApi
         CustomEnums.RechargeDataInterval = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RechargeDataInterval");
         CustomEnums.RechargeDataMaximum = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RechargeDataMaximum");
         CustomEnums.ConsumptionValue = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("ConsumptionValue");
+        CustomEnums.MedicWeaponHeal = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("MedicWeaponHeal");
+        CustomEnums.ZedTimeTriggerChance = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("ZedTimeTriggerChance");
     }
 }
 

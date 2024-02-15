@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace KFCommonUtilityLib.Scripts.ConsoleCmd
@@ -13,13 +10,13 @@ namespace KFCommonUtilityLib.Scripts.ConsoleCmd
         {
             EntityPlayerLocal player = GameManager.Instance.World.GetPrimaryPlayer();
             RenderTexture playerCamRT = player.playerCamera.targetTexture;
-            if(playerCamRT != null ) 
+            if (playerCamRT != null)
                 SaveTextureToFileUtility.SaveTextureToFile(playerCamRT, Application.dataPath + playerCamRT.name, playerCamRT.width, playerCamRT.height, SaveTextureToFileUtility.SaveTextureFileFormat.PNG, 95, true, (bool res) => Log.Out(res ? $"player camera rendertexture saved to {Application.dataPath}" : "failed to save player camera render texture!"));
             RenderTexture weaponCamRT = player.weaponCamera.targetTexture;
-            if(weaponCamRT != null )
+            if (weaponCamRT != null)
                 SaveTextureToFileUtility.SaveTextureToFile(weaponCamRT, Application.dataPath + weaponCamRT.name, weaponCamRT.width, weaponCamRT.height, SaveTextureToFileUtility.SaveTextureFileFormat.PNG, 95, true, (bool res) => Log.Out(res ? $"weapon camera rendertexture saved to {Application.dataPath}" : "failed to save weapon camera render texture!"));
             RenderTexture finalCamRT = player.finalCamera.targetTexture;
-            if(finalCamRT != null )
+            if (finalCamRT != null)
                 SaveTextureToFileUtility.SaveTextureToFile(finalCamRT, Application.dataPath + finalCamRT.name, finalCamRT.width, finalCamRT.height, SaveTextureToFileUtility.SaveTextureFileFormat.PNG, 95, true, (bool res) => Log.Out(res ? $"final camera rendertexture saved to {Application.dataPath}" : "failed to save final camera render texture!"));
             Renderer[] renderers = player.gameObject.GetComponentsInChildren<Renderer>();
             Log.Out($"renderers layers: \n{string.Join("\n", renderers.Select(r => r.gameObject.name + " layer:" + r.gameObject.layer))})");

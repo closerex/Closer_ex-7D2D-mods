@@ -20,7 +20,7 @@ public class ConsoleCmdCalibrateWeapon : ConsoleCmdAbstract
         }
 
         flag = Enum.TryParse<TweakType>(_params[1], out var tweakType);
-        if(!flag)
+        if (!flag)
         {
             Log.Error("Only following tweak type are valid: " + String.Join(",", Enum.GetNames(typeof(TweakType))));
             return;
@@ -28,7 +28,7 @@ public class ConsoleCmdCalibrateWeapon : ConsoleCmdAbstract
 
         Transform targetTrans = null;
         var inv = GameManager.Instance.World.GetPrimaryPlayer().inventory;
-        if(calType != CalibrateType.offset)
+        if (calType != CalibrateType.offset)
         {
             var weaponTrans = inv.GetHoldingItemTransform();
             if (weaponTrans == null)
@@ -46,21 +46,22 @@ public class ConsoleCmdCalibrateWeapon : ConsoleCmdAbstract
         }
 
         Vector3 param = Vector3.zero;
-        if(tweakType != TweakType.log)
+        if (tweakType != TweakType.log)
         {
             int parseIndex;
-            if(calType != CalibrateType.offset)
+            if (calType != CalibrateType.offset)
             {
                 parseIndex = 3;
-                if(_params.Count < 4)
+                if (_params.Count < 4)
                 {
                     Log.Error("relative or absolute value is required to calibrate!");
                     return;
                 }
-            }else
+            }
+            else
             {
                 parseIndex = 2;
-                if(_params.Count < 3)
+                if (_params.Count < 3)
                 {
                     Log.Error("offset value is required to calibrate!");
                     return;
@@ -101,7 +102,7 @@ public class ConsoleCmdCalibrateWeapon : ConsoleCmdAbstract
             }
         }
 
-        switch(calType)
+        switch (calType)
         {
             case CalibrateType.pos:
                 targetTrans.localPosition = DoCalibrate(tweakType, targetTrans.localPosition, param);
@@ -132,7 +133,7 @@ public class ConsoleCmdCalibrateWeapon : ConsoleCmdAbstract
     private Vector3 DoCalibrate(TweakType type, Vector3 origin, Vector3 param)
     {
         Vector3 res = origin;
-        switch(type)
+        switch (type)
         {
             case TweakType.abs:
                 res = param;

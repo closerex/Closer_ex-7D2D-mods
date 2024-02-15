@@ -1,13 +1,6 @@
-﻿using Audio;
-using KFCommonUtilityLib.Scripts.Attributes;
-using KFCommonUtilityLib.Scripts.Utilities;
-using SteelSeries.GameSense;
+﻿using KFCommonUtilityLib.Scripts.Attributes;
 using System;
-using System.Collections.Generic;
 using UniLinq;
-using System.Text;
-using System.Threading.Tasks;
-using static ItemActionAltMode;
 
 [TypeTarget(typeof(ItemActionRanged))]
 public class ActionModuleMetaConsumer
@@ -28,7 +21,7 @@ public class ActionModuleMetaConsumer
             return;
         }
 
-        consumeDatas = consumeData.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToArray();
+        consumeDatas = consumeData.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToArray();
         consumeTags = consumeDatas.Select(s => FastTags.Parse(s)).ToArray();
         consumeStocks = new float[consumeDatas.Length];
         consumeValues = new float[consumeDatas.Length];
@@ -43,7 +36,7 @@ public class ActionModuleMetaConsumer
         if (!_bReleased)
         {
             int burstCount = __instance.GetBurstCount(_actionData);
-            if (holdingEntity.inventory.holdingItemItemValue.PercentUsesLeft <= 0f ||(_data.curBurstCount >= burstCount && burstCount != -1) || (!__instance.InfiniteAmmo && itemValue.Meta <= 0))
+            if (holdingEntity.inventory.holdingItemItemValue.PercentUsesLeft <= 0f || (_data.curBurstCount >= burstCount && burstCount != -1) || (!__instance.InfiniteAmmo && itemValue.Meta <= 0))
             {
                 return true;
             }
@@ -55,7 +48,11 @@ public class ActionModuleMetaConsumer
                 float consumption = EffectManager.GetValue(CustomEnums.ConsumptionValue, itemValue, float.MaxValue, _actionData.invData.holdingEntity, null, consumeTags[i]);
                 if (stock < consumption)
                 {
-                    holdingEntity.PlayOneShot(___soundEmpty);
+                    if (!_data.bPressed)
+                    {
+                        holdingEntity.PlayOneShot(___soundEmpty);
+                        _data.bPressed = true;
+                    }
                     return false;
                 }
                 consumeStocks[i] = stock;
@@ -65,6 +62,8 @@ public class ActionModuleMetaConsumer
             for (int i = 0; i < consumeDatas.Length; i++)
             {
                 itemValue.SetMetadata(consumeDatas[i], consumeStocks[i] - consumeValues[i], TypedMetadataValue.TypeTag.Float);
+                holdingEntity.MinEventContext.Tags = consumeTags[i];
+                holdingEntity.FireEvent(CustomEnums.onRechargeValueUpdate, true);
             }
         }
         return true;

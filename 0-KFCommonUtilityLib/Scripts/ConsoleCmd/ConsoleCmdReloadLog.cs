@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 public class ConsoleCmdReloadLog : ConsoleCmdAbstract
 {
@@ -20,7 +16,7 @@ public class ConsoleCmdReloadLog : ConsoleCmdAbstract
 
     protected override string[] getCommands()
     {
-        return new string[] { "reloadlog", "rl" };
+        return new string[] { "reloadlog", "rlog" };
     }
 
     protected override string getDescription()

@@ -1,6 +1,6 @@
-using UnityEngine;
-using TMPro;
 using System;
+using TMPro;
+using UnityEngine;
 
 public class ApexWeaponHudControllerBase : MonoBehaviour
 {
@@ -48,7 +48,7 @@ public class ApexWeaponHudControllerBase : MonoBehaviour
 
     protected virtual void Awake()
     {
-        if(!stateChecked)
+        if (!stateChecked)
         {
             shaderEnabled = SystemInfo.supportsComputeShaders && SystemInfo.graphicsDeviceType != UnityEngine.Rendering.GraphicsDeviceType.Null && !Application.isBatchMode;
             stateChecked = true;

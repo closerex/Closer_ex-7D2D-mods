@@ -1,25 +1,24 @@
 using UnityEngine;
-using System.Collections;
 
 #if UNITY_EDITOR 
 using UnityEditor;
 #endif
 
 [ExecuteInEditMode]
-public class FPSParticleSystemScaler : MonoBehaviour 
+public class FPSParticleSystemScaler : MonoBehaviour
 {
-	public float particlesScale = 1.0f;
-	
-	float oldScale;
-	
-	void Start()
-	{
-		oldScale = particlesScale;
-	}
-	
-	void Update () 
-	{
-		#if UNITY_EDITOR 
+    public float particlesScale = 1.0f;
+
+    float oldScale;
+
+    void Start()
+    {
+        oldScale = particlesScale;
+    }
+
+    void Update()
+    {
+#if UNITY_EDITOR
 		if (Mathf.Abs(oldScale - particlesScale) > 0.0001f && particlesScale > 0)
 		{
 			transform.localScale = new Vector3(particlesScale, particlesScale, particlesScale);
@@ -58,6 +57,6 @@ public class FPSParticleSystemScaler : MonoBehaviour
 			}
 			oldScale = particlesScale;
 		}
-		#endif
-	}
+#endif
+    }
 }

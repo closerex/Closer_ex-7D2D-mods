@@ -69,9 +69,9 @@ public class AnimationRandomSound : MonoBehaviour, ISerializationCallbackReceive
         if (audioSources == null)
             return;
 
-//#if NotEditor
-//        Log.Out($"play random clip {group}, groups: {string.Join("| ", audioSources.Select(g => g.groupName + $"clips: {string.Join(", ", g.clips.Select(c => c.name))}"))}");
-//#endif
+        //#if NotEditor
+        //        Log.Out($"play random clip {group}, groups: {string.Join("| ", audioSources.Select(g => g.groupName + $"clips: {string.Join(", ", g.clips.Select(c => c.name))}"))}");
+        //#endif
         AudioSourceGroup asg = null;
         foreach (var audioSourceGroup in audioSources)
         {
@@ -90,8 +90,8 @@ public class AnimationRandomSound : MonoBehaviour, ISerializationCallbackReceive
         int random = Random.Range(0, asg.clips.Length);
         asg.source.clip = asg.clips[random];
         asg.source.Play();
-//#if NotEditor
-//        Log.Out($"play clip {asg.clips[random].name}");
-//#endif
+        //#if NotEditor
+        //        Log.Out($"play clip {asg.clips[random].name}");
+        //#endif
     }
 }

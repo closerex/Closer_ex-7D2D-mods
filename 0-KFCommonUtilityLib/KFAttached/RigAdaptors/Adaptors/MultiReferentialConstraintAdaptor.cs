@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine.Animations.Rigging;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 [AddComponentMenu("")]
 public class MultiReferentialConstraintAdaptor : RigAdaptorAbs

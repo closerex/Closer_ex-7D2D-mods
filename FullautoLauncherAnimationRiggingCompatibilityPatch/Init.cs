@@ -1,6 +1,6 @@
 ﻿using FullautoLauncher.Scripts.ProjectileManager;
 using HarmonyLib;
-using KFCommonUtilityLib.Scripts.Singletons;
+using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System;
 using System.Collections.Generic;
@@ -30,12 +30,12 @@ public class FLARCompatibilityPatchInit : IModApi
 public static class FLARPatch
 {
     //Animation Rigging patch, find joint transform
-    [HarmonyPatch(typeof(ItemActionBetterLauncher.ItemActionDataBetterLauncher), MethodType.Constructor, new Type[] { typeof(ItemInventoryData), typeof(int) })]
-    [HarmonyPostfix]
-    private static void Postfix_ctor_ItemActionDataBetterLauncher(ItemActionBetterLauncher.ItemActionDataBetterLauncher __instance, ItemInventoryData _invData)
-    {
-        __instance.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName("ProjectileJoint", _invData.model);
-    }
+    //[HarmonyPatch(typeof(ItemActionBetterLauncher.ItemActionDataBetterLauncher), MethodType.Constructor, new Type[] { typeof(ItemInventoryData), typeof(int) })]
+    //[HarmonyPostfix]
+    //private static void Postfix_ctor_ItemActionDataBetterLauncher(ItemActionBetterLauncher.ItemActionDataBetterLauncher __instance, ItemInventoryData _invData)
+    //{
+    //    __instance.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName("ProjectileJoint", _invData.model);
+    //}
 
     ////projectile damage patch
     //[HarmonyPatch(typeof(ProjectileParams), nameof(ProjectileParams.CheckCollision))]
@@ -130,6 +130,7 @@ public static class FLARPatch
     private static void Postfix_StartHolding_ItemActionBetterLauncher(ItemActionData _actionData)
     {
         ItemActionBetterLauncher.ItemActionDataBetterLauncher ItemActionDataBetterLauncher = (ItemActionBetterLauncher.ItemActionDataBetterLauncher)_actionData;
+        ItemActionDataBetterLauncher.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName("ProjectileJoint", ItemActionDataBetterLauncher.invData.model);
         var info = ItemActionDataBetterLauncher.info;
         var projectileValue = info.itemValueProjectile;
         var launcherValue = info.itemValueLauncher;

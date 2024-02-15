@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ItemActionHoldOpen : ItemActionRanged
@@ -52,7 +51,7 @@ public class ItemActionHoldOpen : ItemActionRanged
     {
         base.ItemActionEffects(_gameManager, _actionData, _firingState, _startPos, _direction, _userData);
 
-        if(_firingState != (int)ItemActionFiringState.Off && (_userData & 1) > 0)
+        if (_firingState != (int)ItemActionFiringState.Off && (_userData & 1) > 0)
             setAnimatorBool(_actionData.invData.holdingEntity, emptyAnimatorBool, true);
     }
 
@@ -72,7 +71,7 @@ public class ItemActionHoldOpen : ItemActionRanged
         //lastHoldingEntity = _data.invData.holdingEntity;
         //lastHoldingEntity.inventory.OnToolbeltItemsChangedInternal += OnStartHolding;
         //delay 1 frame before equipping weapon
-        if(_data.invData.itemValue.Meta <= 0)
+        if (_data.invData.itemValue.Meta <= 0)
             ThreadManager.StartCoroutine(DelaySetEmpty(_data, true, 1));
         base.StartHolding(_data);
     }
@@ -117,7 +116,7 @@ public class ItemActionHoldOpen : ItemActionRanged
         }
         yield break;
     }
-    
+
     //public override void OnHoldingUpdate(ItemActionData _actionData)
     //{
     //    base.OnHoldingUpdate(_actionData);
@@ -168,6 +167,6 @@ public class ItemActionHoldOpen : ItemActionRanged
     //    }
     //    */
     //}
-    
+
 }
 
