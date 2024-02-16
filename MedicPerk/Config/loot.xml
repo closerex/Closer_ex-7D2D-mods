@@ -3,13 +3,13 @@
 	<!-- Custom Loot Groups -->
 	<insertAfter xpath="/lootcontainers/lootgroup[@name='empty']">
 		<lootgroup name="groupWeaponsT1_MedicWeapon" count="all" loot_quality_template="QLTemplateT1">
-			<item name="gunMedicPistol"/>
+			<item name="gunMedicPistol" mods="modMedicModule" mod_chance="1" count="1"/>
 		</lootgroup>
 		<lootgroup name="groupWeaponsT2_MedicWeapon" count="all" loot_quality_template="QLTemplateT2">
-			<item name="gunMedicSMG201"/>
+			<item name="gunMedicSMG201" mods="modMedicModule" mod_chance="1" count="1"/>
 		</lootgroup>
 		<lootgroup name="groupWeaponsT3_MedicWeapon" count="all" loot_quality_template="QLTemplateT3">
-			<item name="gunMedicShotgun301"/>
+			<item name="gunMedicShotgun301" mods="modMedicModule" mod_chance="1" count="1"/>
 		</lootgroup>
 	</insertAfter>
 	<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT1_Ranged']">
@@ -23,20 +23,20 @@
 	</append>
 
 	<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsRangedT1']">
-		<item name="gunMedicPistol"/>
+		<item name="gunMedicPistol" mods="modMedicModule" mod_chance="1" count="1"/>
 	</append>
 	<append xpath="/lootcontainers/lootgroup[@name='groupMilitaryFootlocker02']">
-        <item name="gunMedicPistol" loot_prob_template="veryLow"/>
+        <item name="gunMedicPistol" mods="modMedicModule" mod_chance="1" count="1" loot_prob_template="veryLow"/>
 	</append>
 	<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsRangedT2']">
-		<item name="gunMedicSMG201"/>
+		<item name="gunMedicSMG201" mods="modMedicModule" mod_chance="1" count="1"/>
 	</append>
 	<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsRangedT3']">
-		<item name="gunMedicShotgun301"/>
+		<item name="gunMedicShotgun301" mods="modMedicModule" mod_chance="1" count="1"/>
 	</append>
 	<append xpath="/lootcontainers/lootgroup[@name='groupInfestedT5MeleeRanged']">
-		<item name="gunMedicPistol"/>
-		<item name="gunMedicSMG201"/>
-		<item name="gunMedicShotgun301"/>
+		<item name="gunMedicPistol" mods="modMedicModule" mod_chance="1" count="1"/>
+		<item name="gunMedicSMG201" mods="modMedicModule" mod_chance="1" count="1"/>
+		<item name="gunMedicShotgun301" mods="modMedicModule" mod_chance="1" count="1"/>
 	</append>
 </configs>

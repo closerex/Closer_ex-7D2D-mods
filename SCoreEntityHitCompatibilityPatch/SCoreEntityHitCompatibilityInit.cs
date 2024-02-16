@@ -35,7 +35,6 @@ namespace SCoreEntityHitCompatibilityPatch
         [HarmonyPrefix]
         private static bool Prefix_StartGame_GameManager()
         {
-            CustomEffectEnumManager.InitFinal();
             FakeAttackManager.PreloadCleanup();
             return true;
         }

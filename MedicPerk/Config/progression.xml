@@ -85,6 +85,12 @@
 				<effect_description desc_key="perkMedicTeamplayer3Name" long_desc_key="perkMedicTeamplayer3LongDesc" level="1"/>
 			</effect_group>
 			<effect_group>
+				<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer3" operation="Equals" value="1"/>
+				<requirement name="ActionHasTags,KFCommonUtilityLib" tags="medicAction"/>
+				<requirement name="StatComparePercCurrentToMax" stat="Health" operation="GTE" value=".75"/>
+					<passive_effect name="RechargeDataInterval" operation="perc_add" value="-.33" tags="medicWeapon,MedicStock"/>
+			</effect_group>
+			<effect_group>
 				<triggered_effect trigger="onPerkLevelChanged" action="DecreaseProgressionLevelAndRefundSP,KFCommonUtilityLib" progression_name="perkMedicSurvivor3" level="0">
 					<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer3" operation="GTE" value="1"/>
 				</triggered_effect>

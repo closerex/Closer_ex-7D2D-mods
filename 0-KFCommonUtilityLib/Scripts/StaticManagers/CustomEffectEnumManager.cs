@@ -10,7 +10,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         private static event Action OnInitFinal;
         private static event Action OnPrintResult;
 
-        //call this in Init()
+        //call this in InitMod
         public static void RegisterEnumType<T>(bool requestMin = false, int requestedMin = 0, bool requestMax = false, int requestedMax = int.MaxValue) where T : struct, Enum
         {
             if (EnumHolder<T>.Registered)
@@ -28,7 +28,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             OnInitDefault?.Invoke();
         }
 
-        //patched to GameManager.StartGame
+        //patched to GameManager.StartGame prefix
         public static void InitFinal()
         {
             OnInitFinal?.Invoke();
@@ -40,7 +40,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         }
 
         //only call these from callbacks hooked to ModEvents.GameStartDone and cache the results for future usage
-        //patched to PassiveEffect.ParsePassiveEffect
+        //patched to PassiveEffect.ParsePassiveEffect and MinEventActionBase.ParseXmlAttribute
         public static T RegisterOrGetEnum<T>(string name) where T : struct, Enum
         {
             if (!EnumHolder<T>.Registered)

@@ -2,7 +2,7 @@
 using KFCommonUtilityLib.Scripts.Utilities;
 using UniLinq;
 
-[TypeTarget(typeof(ItemAction))]
+[TypeTarget(typeof(ItemAction), typeof(TaggedData))]
 public class ActionModuleTagged
 {
     [MethodTargetPostfix(nameof(ItemAction.OnModificationsChanged))]
@@ -20,5 +20,9 @@ public class ActionModuleTagged
     public class TaggedData
     {
         public FastTags tags;
+        public TaggedData(ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleTagged _module)
+        {
+
+        }
     }
 }
