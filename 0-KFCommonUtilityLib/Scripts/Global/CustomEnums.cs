@@ -13,12 +13,6 @@
     public static PassiveEffects RecoilReturnSpeed;
     public static PassiveEffects ProjectileImpactDamagePercentEntity;
     public static PassiveEffects ProjectileImpactDamagePercentBlock;
-    public static PassiveEffects RechargeDataValue;
-    public static PassiveEffects RechargeDataDecrease;
-    public static PassiveEffects RechargeDataInterval;
-    public static PassiveEffects RechargeDataMaximum;
-    public static PassiveEffects ConsumptionValue;
-    public static PassiveEffects MedicWeaponHeal;
-    public static PassiveEffects ZedTimeTriggerChance;
+    public static PassiveEffects CustomTaggedEffect;
     #endregion
 }

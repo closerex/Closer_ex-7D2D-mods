@@ -3,13 +3,15 @@
 		<item_modifier name="modMedicModule" installable_tags="medicWeapon" modifier_tags="modMedicModule" type="mod">
 			<property name="Extends" value="modGeneralMaster"/>
 			<property name="CustomIcon" value="medic_module"/>
-			<property name="UnlockedBy" value="perkMedic"/>
+			<property name="EconomicValue" value="100"/>
+			<property name="UnlockedBy" value="modMedicModuleSchematic"/>
+			<property name="TraderStageTemplate" value="modsTier1"/>
             <item_property_overrides name="*">
                 <property name="ActionUnlocked_3" value="true"/>
-                <property name="ActionTagsAppend" value="medicAction"/>
+                <property name="ActionTagsAppend" value="medicModuleAction"/>
             </item_property_overrides>
             <effect_group name="Dart mode">
-				<requirement name="ActionHasTags,KFCommonUtilityLib" tags="medicAction"/>
+				<requirement name="ActionHasTags,KFCommonUtilityLib" tags="medicModuleAction"/>
                     <passive_effect name="RoundsPerMinute" operation="base_set" value="600" tags="medicWeapon"/>
                     <passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="medicWeapon"/>
                     <passive_effect name="RoundRayCount" operation="base_set" value="1" tags="medicWeapon"/>
@@ -28,14 +30,14 @@
                     <passive_effect name="KickDegreesVerticalMax" operation="base_set" value="0.001" tags="medicWeapon"/>
                     <passive_effect name="KickDegreesHorizontalMin" operation="base_set" value="-0.001" tags="medicWeapon"/>
                     <passive_effect name="KickDegreesHorizontalMax" operation="base_set" value="0.001" tags="medicWeapon"/>
-                    <passive_effect name="DegradationPerUse" operation="base_set" value="8" tags="medicWeapon"/>
+                    <passive_effect name="DegradationPerUse" operation="base_set" value="4" tags="medicWeapon"/>
 			</effect_group>
 			<effect_group name="healing">
 				<!--healing-->
 				<requirement name="ActionHasTags,KFCommonUtilityLib" tags="medicAction"/>
 				<requirement name="IsAlive" target="other"/>
 				<requirement name="EntityTagCompare" target="other" tags="player,npc"/>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="ModifyCVarWithLocalCache,KFCommonUtilityLib" target="other" cvar="medicHealAmount" operation="add" passive="MedicWeaponHeal"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="ModifyCVarWithLocalCache,KFCommonUtilityLib" target="other" cvar="medicHealAmount" operation="add" cache="MedicWeaponHeal"/>
 					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="ModifyCVar" target="self" cvar="medicHealAmount" operation="add" value="15">
 						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer1" operation="Equals" value="1"/>
 					</triggered_effect>

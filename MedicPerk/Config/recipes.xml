@@ -1,2 +1,73 @@
 <configs>
+
+<append xpath="/recipes">
+
+<recipe name="gunMedicPistol" count="1" craft_area="workbench" tags="learnable,perkMedic">
+	<ingredient name="gunBotRoboticsParts" count="1"/>
+	<ingredient name="resourceForgedSteel" count="5"/>
+	<ingredient name="resourceMechanicalParts" count="4"/>
+	<ingredient name="resourceScrapPolymers" count="5"/>
+	<ingredient name="resourceElectricParts" count="2"/>
+	<effect_group>
+		<passive_effect name="CraftingIngredientCount" level="2,6" operation="perc_add" value="1,5" tags="gunBotRoboticsParts,resourceForgedIron,resourceMechanicalParts,resourceScrapPolymers,resourceElectricParts"/>
+	</effect_group>
+</recipe>
+
+<recipe name="gunMedicSMG201" count="1" craft_area="workbench" tags="learnable,perkMedic">
+	<ingredient name="gunBotRoboticsParts" count="1"/>
+	<ingredient name="resourceForgedSteel" count="5"/>
+	<ingredient name="resourceMechanicalParts" count="4"/>
+	<ingredient name="resourceScrapPolymers" count="5"/>
+	<ingredient name="resourceElectricParts" count="2"/>
+	<effect_group>
+		<passive_effect name="CraftingIngredientCount" level="2,6" operation="perc_add" value="1,5" tags="gunBotRoboticsParts,resourceForgedIron,resourceMechanicalParts,resourceScrapPolymers,resourceElectricParts"/>
+	</effect_group>
+</recipe>
+
+<recipe name="gunMedicShotgun301" count="1" craft_area="workbench" tags="learnable,perkMedic">
+	<ingredient name="gunBotRoboticsParts" count="1"/>
+	<ingredient name="resourceForgedSteel" count="5"/>
+	<ingredient name="resourceMechanicalParts" count="4"/>
+	<ingredient name="resourceScrapPolymers" count="5"/>
+	<ingredient name="resourceElectricParts" count="2"/>
+	<effect_group>
+		<passive_effect name="CraftingIngredientCount" level="2,6" operation="perc_add" value="1,5" tags="gunBotRoboticsParts,resourceForgedIron,resourceMechanicalParts,resourceScrapPolymers,resourceElectricParts"/>
+	</effect_group>
+</recipe>
+
+<recipe name="gunMedicAssaultRifle401" count="1" craft_area="workbench" tags="learnable,perkMedic">
+	<ingredient name="gunBotRoboticsParts" count="1"/>
+	<ingredient name="resourceForgedSteel" count="5"/>
+	<ingredient name="resourceMechanicalParts" count="4"/>
+	<ingredient name="resourceScrapPolymers" count="5"/>
+	<ingredient name="resourceElectricParts" count="2"/>
+	<effect_group>
+		<passive_effect name="CraftingIngredientCount" level="2,6" operation="perc_add" value="1,5" tags="gunBotRoboticsParts,resourceForgedIron,resourceMechanicalParts,resourceScrapPolymers,resourceElectricParts"/>
+	</effect_group>
+</recipe>
+
+<recipe name="modMedicModule" count="1" craft_area="workbench" tags="learnable,workbenchCrafting">
+	<ingredient name="resourceForgedSteel" count="10"/>
+	<ingredient name="resourceScrapPolymers" count="5"/>
+	<ingredient name="medicalBloodBag" count="1"/>
+	<ingredient name="resourceMechanicalParts" count="2"/>
+	<ingredient name="resourceElectricParts" count="2"/>
+</recipe>
+
+<recipe name="resourceMedicGunRepairKit" count="1">
+	<ingredient name="medicalFirstAidBandage" count="1"/>
+	<ingredient name="resourceScrapPolymers" count="1"/>
+	<ingredient name="resourceMechanicalParts" count="1"/>
+	<ingredient name="resourceElectricParts" count="1"/>
+</recipe>
+
+<recipe name="resourceMedicGunRepairKitBundle" count="1" craft_area="workbench" tags="workbenchCrafting">
+	<ingredient name="medicalFirstAidBandage" count="8"/>
+	<ingredient name="resourceScrapPolymers" count="8"/>
+	<ingredient name="resourceMechanicalParts" count="8"/>
+	<ingredient name="resourceElectricParts" count="8"/>
+</recipe>
+
+</append>
+
 </configs>

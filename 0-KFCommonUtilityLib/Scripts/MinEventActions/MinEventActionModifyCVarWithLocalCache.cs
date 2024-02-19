@@ -13,12 +13,12 @@ public class MinEventActionModifyCVarWithLocalCache : MinEventActionModifyCVar
         divide
     }
     OperationTypes operation;
-    PassiveEffects passive;
+    int targetHash;
     private int actionIndex = -1;
     public override bool CanExecute(MinEventTypes _eventType, MinEventParams _params)
     {
         bool flag = !_params.Self.isEntityRemote && (actionIndex < 0 ? _params.ItemActionData : _params.ItemActionData.invData.actionData[actionIndex]) is IModuleContainerFor<ActionModuleLocalPassiveCache.LocalPassiveCacheData> && base.CanExecute(_eventType, _params);
-        Log.Out($"can execute {flag} is remote {_params.Self.isEntityRemote} action index {actionIndex} passive {passive.ToString()} action {(actionIndex < 0 ? _params.ItemActionData : _params.ItemActionData.invData.actionData[actionIndex]).GetType().Name}");
+        //Log.Out($"can execute {flag} is remote {_params.Self.isEntityRemote} action index {actionIndex} cache {targetHash.ToString()} action {(actionIndex < 0 ? _params.ItemActionData : _params.ItemActionData.invData.actionData[actionIndex]).GetType().Name}");
         return flag;
     }
 
@@ -29,8 +29,8 @@ public class MinEventActionModifyCVarWithLocalCache : MinEventActionModifyCVar
             return;
         }
         ActionModuleLocalPassiveCache.LocalPassiveCacheData _data = ((IModuleContainerFor<ActionModuleLocalPassiveCache.LocalPassiveCacheData>)(actionIndex < 0 ? _params.ItemActionData : _params.ItemActionData.invData.actionData[actionIndex])).Instance;
-        float value = _data.GetCachedValue(passive);
-        Log.Out($"passive {passive.ToString()} value {value}");
+        float value = _data.GetCachedValue(targetHash);
+        //Log.Out($"cache {targetHash.ToString()} value {value}");
         for (int i = 0; i < targets.Count; i++)
         {
             float num = targets[i].Buffs.GetCustomVar(cvarName);
@@ -63,9 +63,9 @@ public class MinEventActionModifyCVarWithLocalCache : MinEventActionModifyCVar
         string name = _attribute.Name.LocalName;
         if (name != null)
         {
-            if (name == "passive")
+            if (name == "cache")
             {
-                passive = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>(_attribute.Value);
+                targetHash = _attribute.Value.GetHashCode();
                 flag = true;
             }
             else if (name == "action_index")

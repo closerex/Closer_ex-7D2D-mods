@@ -48,13 +48,8 @@ public class CommonUtilityLibInit : IModApi
         CustomEnums.RecoilReturnSpeed = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RecoilReturnSpeed");
         CustomEnums.ProjectileImpactDamagePercentBlock = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("ProjectileImpactDamagePercentBlock");
         CustomEnums.ProjectileImpactDamagePercentEntity = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("ProjectileImpactDamagePercentEntity");
-        CustomEnums.RechargeDataValue = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RechargeDataValue");
-        CustomEnums.RechargeDataDecrease = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RechargeDataDecrease");
-        CustomEnums.RechargeDataInterval = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RechargeDataInterval");
-        CustomEnums.RechargeDataMaximum = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RechargeDataMaximum");
-        CustomEnums.ConsumptionValue = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("ConsumptionValue");
-        CustomEnums.MedicWeaponHeal = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("MedicWeaponHeal");
-        CustomEnums.ZedTimeTriggerChance = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("ZedTimeTriggerChance");
+
+        CustomEnums.CustomTaggedEffect = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("CustomTaggedEffect");
     }
 }
 

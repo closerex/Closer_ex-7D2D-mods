@@ -4,8 +4,10 @@ using System.Xml.Linq;
 
 public class MinEventActionUpdateLocalCache : MinEventActionBase
 {
-    private PassiveEffects[] passives;
+    private PassiveEffects passive;
+    private FastTags tags;
     private int actionIndex = -1;
+    private int saveAs;
     public override bool CanExecute(MinEventTypes _eventType, MinEventParams _params)
     {
         return !_params.Self.isEntityRemote && (actionIndex < 0 ? _params.ItemActionData : _params.ItemActionData.invData.actionData[actionIndex]) is IModuleContainerFor<ActionModuleLocalPassiveCache.LocalPassiveCacheData> && base.CanExecute(_eventType, _params);
@@ -14,10 +16,8 @@ public class MinEventActionUpdateLocalCache : MinEventActionBase
     public override void Execute(MinEventParams _params)
     {
         ActionModuleLocalPassiveCache.LocalPassiveCacheData _data = ((IModuleContainerFor<ActionModuleLocalPassiveCache.LocalPassiveCacheData>)(actionIndex < 0 ? _params.ItemActionData : _params.ItemActionData.invData.actionData[actionIndex])).Instance;
-        foreach (var passive in passives)
-        {
-            _data.MarkForCache(passive);
-        }
+
+        _data.CachePassive(passive, saveAs, tags);
     }
 
     public override bool ParseXmlAttribute(XAttribute _attribute)
@@ -27,11 +27,17 @@ public class MinEventActionUpdateLocalCache : MinEventActionBase
 
         switch (_attribute.Name.LocalName)
         {
-            case "passives":
-                passives = Array.ConvertAll(_attribute.Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries), s => CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>(s));
+            case "passive":
+                passive = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>(_attribute.Value);
+                return true;
+            case "tags":
+                tags = FastTags.Parse(_attribute.Value);
                 return true;
             case "action_index":
                 actionIndex = int.Parse(_attribute.Value);
+                return true;
+            case "as":
+                saveAs = _attribute.Value.GetHashCode();
                 return true;
         }
 

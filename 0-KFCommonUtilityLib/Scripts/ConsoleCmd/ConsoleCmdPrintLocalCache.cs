@@ -19,9 +19,9 @@ namespace KFCommonUtilityLib.Scripts.ConsoleCmd
             if (player != null && player.inventory.holdingItemData.actionData[index] is IModuleContainerFor<ActionModuleLocalPassiveCache.LocalPassiveCacheData> module)
             {
                 ActionModuleLocalPassiveCache.LocalPassiveCacheData instance = module.Instance;
-                for (int i = 0; i < instance.passives.Length; i++)
+                for (int i = 0; i < instance.cache.Length; i++)
                 {
-                    Log.Out($"passive {instance._cacheModule.passives[i].ToStringCached()} value {instance.passives[i]}");
+                    Log.Out($"cache {instance._cacheModule.nameHashes[i]} value {instance.cache[i]}");
                 }
             }
         }

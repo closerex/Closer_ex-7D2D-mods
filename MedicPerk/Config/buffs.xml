@@ -112,7 +112,9 @@
 			<stack_type value="replace"/>
 			<duration value="10.1"/>
 			<effect_group name="start and end">
-				<passive_effect name="RechargeDataInterval" operation="perc_add" value="-.5" tags="medicWeapon,MedicStock"/>
+				<requirement name="ActionHasTags,KFCommonUtilityLib" tags="medicModuleAction"/>
+					<passive_effect name="CustomTaggedEffect" operation="perc_add" value="-.5" tags="medicWeapon,MedicStock,RechargeDataInterval" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="perc_add" value="-.5" tags="medicWeapon,MedicStock,RechargeDataDecrease" match_all_tags="true"/>
 			</effect_group>
 		</buff>
 		<buff name="buffMedicInfinite" name_key="buffMedicInfiniteName" description_key="buffMedicInfiniteLongDesc" icon="icon_sv_stock" icon_color="255,0,0" icon_blink="true">
@@ -124,7 +126,7 @@
 					<requirement name="CVarCompare" cvar=".medicBuffConsumptionTemp0" operation="LTE" value="0"/>
 				</triggered_effect>
 				<triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" cvar=".medicBuffConsumptionTemp0" operation="set" value="0"/>
-				<passive_effect name="ConsumptionValue" operation="base_set" value="0" tags="medicWeapon,MedicStock">
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="medicWeapon,MedicStock,ConsumptionValue" match_all_tags="true">
 					<requirement name="CVarCompare" cvar=".medicBuffConsumptionTemp0" operation="GT" value="0"/>
 				</passive_effect>
 			</effect_group>

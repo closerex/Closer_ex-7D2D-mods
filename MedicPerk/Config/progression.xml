@@ -1,16 +1,30 @@
 <configs>
-	<append xpath="/progression/skills">
-		<skill name="skillTeamplayer" name_key="skillTeamplayerName" desc_key="skillTeamplayerDesc" icon="icon_medic_teamplayer" parent="attIntellect">
-			<!--The Teamplayer-->
-			<effect_group/>
-		</skill>
-		<skill name="skillSurvivor" name_key="skillSurvivorName" desc_key="skillSurvivorDesc" icon="icon_medic_survivor" parent="attIntellect">
-			<!--The Survivor-->
-			<effect_group/>
-		</skill>
-	</append>
-	<append xpath="/progression/perks">	
-		<perk name="perkMedic" name_key="perkMedicBasicName" desc_key="perkMedicBasicDesc" min_level="1" max_level="6" base_skill_point_cost="5" cost_multiplier_per_level="1" icon="icon_perkmedic" parent="attIntellect">
+
+	<insertBefore xpath="/progression/crafting_skills/crafting_skill[@name='craftingMedical']">
+		<!-- *** MEDIC_GUN_SKILLS -->
+	<crafting_skill name="craftingMedicGuns" max_level="75" parent="attCrafting" name_key="craftingMedicGunsName" desc_key="craftingMedicGunsDesc" long_desc_key="craftingMedicGunsLongDesc" icon="icon_perkmedic">
+
+		<display_entry item="gunMedicPistol" unlock_level="5,10,15,20,25" />
+		<display_entry item="gunMedicSMG201" unlock_level="15,25,35,45,55" />
+		<display_entry item="gunMedicShotgun301" unlock_level="20,30,40,50,60" />
+		<display_entry item="gunMedicAssaultRifle401" unlock_level="40,50,60,70,75" />
+
+		<effect_group>
+			<passive_effect name="RecipeTagUnlocked" operation="base_set" level="5,75" value="1" tags="gunMedicPistol"/>
+			<passive_effect name="RecipeTagUnlocked" operation="base_set" level="15,75" value="1" tags="gunMedicSMG201"/>
+			<passive_effect name="RecipeTagUnlocked" operation="base_set" level="20,75" value="1" tags="gunMedicShotgun301"/>
+			<passive_effect name="RecipeTagUnlocked" operation="base_set" level="40,75" value="1" tags="gunMedicAssaultRifle401"/>
+
+			<passive_effect name="CraftingTier" operation="base_add" level="10,15,20,25,75" value="1,2,3,4,4" tags="gunMedicPistol"/>
+			<passive_effect name="CraftingTier" operation="base_add" level="25,35,45,55,75" value="1,2,3,4,4" tags="gunMedicSMG201"/>
+			<passive_effect name="CraftingTier" operation="base_add" level="30,40,50,60,75" value="1,2,3,4,4" tags="gunMedicShotgun301"/>
+			<passive_effect name="CraftingTier" operation="base_add" level="50,60,70,75" value="1,2,3,4" tags="gunMedicAssaultRifle401"/>
+		</effect_group>
+	</crafting_skill>
+	</insertBefore>
+
+	<insertBefore xpath="/progression/perks/perk[@name='perkElectrocutioner']">	
+		<perk name="perkMedic" parent="skillIntellectCombat" name_key="perkMedicBasicName" desc_key="perkMedicBasicDesc" min_level="1" max_level="6" base_skill_point_cost="5" cost_multiplier_per_level="1" icon="icon_perkmedic">
 			<!--The Medic-->
 			<level_requirements level="1"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="0" desc_key="no req"/></level_requirements>
 			<level_requirements level="2"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="1" desc_key="reqPhysicianLevel01"/></level_requirements>
@@ -28,15 +42,15 @@
 			</effect_group>
 			<effect_group>
 				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="5,6" value="1" tags="medicgrenade"/>
-                <passive_effect name="RechargeDataMaximum" operation="perc_add" level="2,6" value=".05,.25" tags="medicWeapon,MedicStock"/>
-                <passive_effect name="ConsumptionValue" operation="perc_subtract" level="2,6" value=".02,.1" tags="medicWeapon,MedicStock"/>
-                <passive_effect name="MedicWeaponHeal" operation="perc_add" level="2,6" value=".05,.25" tags="medicWeapon,MedicStock"/>
-				<triggered_effect trigger="onPerkLevelChanged" action="UpdateLocalCache,KFCommonUtilityLib" passives="MedicWeaponHeal,ZedTimeTriggerChance"/>
+                <passive_effect name="CustomTaggedEffect" operation="perc_add" level="2,6" value=".05,.25" tags="medicWeapon,MedicStock,RechargeDataMaximum"  match_all_tags="true"/>
+                <passive_effect name="CustomTaggedEffect" operation="perc_subtract" level="2,6" value=".02,.1" tags="medicWeapon,MedicStock,ConsumptionValue" match_all_tags="true"/>
+                <passive_effect name="CustomTaggedEffect" operation="perc_add" level="2,6" value=".05,.25" tags="medicWeapon,MedicWeaponHeal" match_all_tags="true"/>
+				<triggered_effect trigger="onPerkLevelChanged" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal"/>
 			</effect_group>
-			<effect_group>
+			<!-- <effect_group>
 				<requirement name="ItemHasTags" tags="medicWeapon"/>
 				    <passive_effect name="ZedTimeTriggerChance" operation="base_set" level="1,6" value="5,30"/>
-			</effect_group>
+			</effect_group> -->
 			<!-- <effect_group>
 				<requirement name="!HasBuff" buff="buffZedTimeCooldown"/>
 				<requirement name="ItemHasTags" tags="medicWeapon"/>
@@ -44,7 +58,32 @@
 					<triggered_effect trigger="onSelfKilledOther" action="AddBuffToTargetAndSelf,KFCommonUtilityLib" target="selfAOE" target_tags="player" buff="buffZedTimeCooldown" range="60"/>
 					<triggered_effect trigger="onSelfKilledOther" action="AddBuff" target="selfAOE" target_tags="enemy" buff="buffZedTime" range="60"/>
 			</effect_group> -->
+		<effect_group>
+			<!-- Increase the chance to find medic gun crafting skill magazines with each perk rank up to crafting skill 75 -->
+			<passive_effect name="LootProb" operation="perc_add" level="1,6" value="2,10" tags="medicgunsCSM">
+				<requirement name="ProgressionLevel" progression_name="craftingMedicGuns" operation="LT" value="75"/>
+			</passive_effect>
+
+			<!-- Once medic gun crafting skill reaches 75, set the probability bonus of finding medic gun crafting skill magazines to 0 -->
+			<passive_effect name="LootProb" operation="base_set" level="1,6" value="1,1" tags="medicgunsCSM">
+				<requirement name="ProgressionLevel" progression_name="craftingMedicGuns" operation="Equals" value="75"/>
+			</passive_effect>
+		</effect_group>
 		</perk>
+	</insertBefore>
+		
+	<append xpath="/progression/skills">
+		<skill name="skillTeamplayer" name_key="skillTeamplayerName" desc_key="skillTeamplayerDesc" icon="icon_medic_teamplayer" parent="attIntellect">
+			<!--The Teamplayer-->
+			<effect_group/>
+		</skill>
+		<skill name="skillSurvivor" name_key="skillSurvivorName" desc_key="skillSurvivorDesc" icon="icon_medic_survivor" parent="attIntellect">
+			<!--The Survivor-->
+			<effect_group/>
+		</skill>
+	</append>
+	
+	<append xpath="/progression/perks">	
 		<perk name="perkMedicTeamplayer1" name_key="perkMedicTeamplayer1Name" desc_key="perkMedicTeamplayer1Desc" max_level="1" icon="icon_tp_symbiotic" parent="skillTeamplayer">
 			<!--Symbiotic Health-->
 			<!--Healing teammate with medic guns heals yourself 15 hp-->
@@ -88,7 +127,7 @@
 				<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer3" operation="Equals" value="1"/>
 				<requirement name="ActionHasTags,KFCommonUtilityLib" tags="medicAction"/>
 				<requirement name="StatComparePercCurrentToMax" stat="Health" operation="GTE" value=".75"/>
-					<passive_effect name="RechargeDataInterval" operation="perc_add" value="-.33" tags="medicWeapon,MedicStock"/>
+					<passive_effect name="CustomTaggedEffect" operation="perc_add" value="-.33" tags="medicWeapon,MedicStock,RechargeDataInterval" match_all_tags="true"/>
 			</effect_group>
 			<effect_group>
 				<triggered_effect trigger="onPerkLevelChanged" action="DecreaseProgressionLevelAndRefundSP,KFCommonUtilityLib" progression_name="perkMedicSurvivor3" level="0">
@@ -194,7 +233,7 @@
 				<requirement name="ItemHasTags" tags="medicWeapon"/>
 					<passive_effect name="DegradationPerUse" operation="perc_set" value=".5"/>
 					<passive_effect name="ReloadSpeedMultiplier" operation="perc_add" value=".2"/>
-					<passive_effect name="EntityDamage" operation="perc_add" value="0.2"/>
+					<passive_effect name="EntityDamage" operation="perc_add" value="0.3"/>
 			</effect_group>
 			<effect_group>
 				<effect_description desc_key="perkMedicSurvivor4Name" long_desc_key="perkMedicSurvivor4LongDesc" level="1"/>
@@ -218,8 +257,10 @@
                 <!-- <requirement name="HasBuff" target="other" buff="buffZedTime"/> -->
 				<requirement name="ProgressionLevel" progression_name="perkMedicSurvivor5" operation="GTE" value="1"/>
                 <requirement name="ItemHasTags" tags="medicWeapon"/>
-                    <triggered_effect trigger="onSelfKilledOther" action="ModifyCVar" target="self" cvar=".medicBuffConsumptionTemp0" operation="set" value="5"/>
-                    <triggered_effect trigger="onSelfKilledOther" action="AddBuff" target="self" buff="buffMedicInfinite"/>
+                    <!-- <triggered_effect trigger="onSelfKilledOther" action="ModifyCVar" target="self" cvar=".medicBuffConsumptionTemp0" operation="set" value="5"/>
+                    <triggered_effect trigger="onSelfKilledOther" action="AddBuff" target="self" buff="buffMedicInfinite"/> -->
+					<triggered_effect trigger="onSelfKilledOther" action="SetItemMetaFloat" change="15" relative="true" key="MedicStock"/>
+					
 			</effect_group>
 			<effect_group>
 				<triggered_effect trigger="onPerkLevelChanged" action="DecreaseProgressionLevelAndRefundSP,KFCommonUtilityLib" progression_name="perkMedicTeamplayer5" level="0">

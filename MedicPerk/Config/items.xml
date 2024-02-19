@@ -1,8 +1,4 @@
 ﻿<configs>
-	<append xpath="/items/item[@name='medicalFirstAidKit']">
-		<property name="RepairTime" value="4"/>
-		<property name="RepairAmount" value="1000"/>
-	</append>
 	<append xpath="/items/item[@name='drinkJarGrandpasForgettingElixir']/effect_group[@name='Drink Tier Trader']">
 		<triggered_effect trigger="onSelfPrimaryActionEnd" action="SetProgressionLevel" progression_name="perkMedic" level="1"/>
 	</append>
@@ -15,7 +11,7 @@
 			<property name="Meshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_pistol.prefab"/>
 			<property name="Material" value="MHandGunParts"/>
 			<property name="Weight" value="1"/>
-			<property name="RepairTools" value="medicalFirstAidKit"/>
+			<property name="RepairTools" value="resourceMedicGunRepairKit"/>
 			<property name="DegradationBreaksAfter" value="false"/>
 			<property name="SoundJammed" value="weapon_jam"/>
 			<property name="Attachments" value="meleeToolFlashlight02"/>
@@ -31,7 +27,7 @@
 			<property name="LightValue" value=".45"/>
 			<property name="EconomicValue" value="500"/>
 			<property name="TraderStageTemplate" value="baseTier1"/>
-			<property name="UnlockedBy" value="craftingHandguns"/><!-- perkGunslinger,gunHandgunT1PistolSchematic, -->
+			<property name="UnlockedBy" value="craftingMedicGuns"/><!-- perkGunslinger,gunHandgunT1PistolSchematic, -->
 			<property name="ShowQuality" value="true"/>
 			<property name="SoundUnholster" value="weapon_unholster"/>
 			<property name="SoundHolster" value="weapon_holster"/>
@@ -65,12 +61,15 @@
 			<property class="Action3">
 				<property name="Class" value="Ranged"/>
 				<property name="ActionUnlocked" value="false"/>
+				<property name="ActionTags" value="medicAction"/>
 				<property name="ItemActionModules" value="Tagged,KFCommonUtilityLib;HoldOpen,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
-				<property name="CachePassives" value="MedicWeaponHeal,ZedTimeTriggerChance"/>
+				<property name="CachePassives" value="MedicWeaponHeal"/>
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>
+				<property name="ConsumeTags" value="medicWeapon"/>
 				<property name="RechargeData" value="MedicStock"/>
+				<property name="RechargeTags" value="medicWeapon"/>
 				<property name="Sound_start" value="Medic_Dart_silenced"/>
 				<property name="Sound_loop" value="Medic_Dart_silenced"/>
 				<property name="Sound_repeat" value=""/>
@@ -128,7 +127,7 @@
 			</effect_group>
 			<effect_group name="Weapon mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="0"/>
-				<passive_effect name="RoundsPerMinute" operation="base_set" value="342" tags="perkGunslinger"/>
+				<passive_effect name="RoundsPerMinute" operation="base_set" value="256" tags="perkGunslinger"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkGunslinger"/>
 				<passive_effect name="MaxRange" operation="base_set" value="50" tags="perkGunslinger,9mmGun"/>
 				<passive_effect name="DamageFalloffRange" operation="base_set" value="20" tags="perkGunslinger,9mmGun"/>
@@ -165,17 +164,19 @@
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="3"/>
 				<requirement name="IsActionUnlocked,KFCommonUtilityLib" index="3"/>
 
-				<passive_effect name="RechargeDataInterval" operation="base_set" value="0.13" tags="medicWeapon,MedicStock"/>
-				<passive_effect name="RechargeDataValue" operation="base_set" value="1" tags="medicWeapon,MedicStock"/>
-				<passive_effect name="RechargeDataDecrease" operation="base_set" value="3" tags="medicWeapon,MedicStock"/>
-				<passive_effect name="RechargeDataMaximum" operation="base_set" value="100" tags="medicWeapon,MedicStock"/>
-				<passive_effect name="ConsumptionValue" operation="base_set" value="50" tags="medicWeapon,MedicStock"/>
-				<passive_effect name="MedicWeaponHeal" operation="base_set" value="15" tags="medicWeapon"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0.13" tags="medicWeapon,MedicStock,RechargeDataInterval" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDecreaseInterval" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDataValue" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="3" tags="medicWeapon,MedicStock,RechargeDataDecrease" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="100" tags="medicWeapon,MedicStock,RechargeDataMaximum" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="50" tags="medicWeapon,MedicStock,ConsumptionValue" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="15" tags="medicWeapon,MedicWeaponHeal" match_all_tags="true"/>
 				
-				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="RechargeDataMaximum" tags="medicWeapon,MedicStock" pattern="#[passive]" slot="0"/>
-				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="ConsumptionValue" tags="medicWeapon,MedicStock" pattern="$[passive]" slot="0"/>
+				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,RechargeDataMaximum" pattern="#[passive]" slot="0"/>
+				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,ConsumptionValue" pattern="$[passive]" slot="0"/>
 				<triggered_effect trigger="onRechargeValueUpdate" action="SetMetadataOnWeaponLabel,KFCommonUtilityLib" metadata="MedicStock" slot="0"/>
-				<triggered_effect trigger="onSelfItemSwitchMode" action="UpdateLocalCache,KFCommonUtilityLib" passives="MedicWeaponHeal,ZedTimeTriggerChance" action_index="3"/>
+				<triggered_effect trigger="onSelfEquipStart" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
+				<triggered_effect trigger="onSelfItemSwitchMode" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
 			</effect_group>
 		</item>
 
@@ -188,7 +189,7 @@
 			<property name="DropMeshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_smg.prefab"/>
 			<property name="Material" value="MHandGunParts"/>
 			<property name="Weight" value="4"/>
-			<property name="RepairTools" value="medicalFirstAidKit"/>
+			<property name="RepairTools" value="resourceMedicGunRepairKit"/>
 			<property name="DegradationBreaksAfter" value="false"/>
 			<property name="SoundJammed" value="weapon_jam"/>
 			<property name="Attachments" value="meleeToolFlashlight02"/>
@@ -204,7 +205,7 @@
 			<property name="RepairExpMultiplier" value="10.8"/>
 			<property name="LightValue" value=".45"/>
 			<property name="EconomicValue" value="1500"/>
-			<property name="UnlockedBy" value="craftingHandguns"/>
+			<property name="UnlockedBy" value="craftingMedicGuns"/>
 			<property name="TraderStageTemplate" value="baseTier2"/>
 			<!--These are special weapons and need an unlock or NRE crash-->
 			<property name="ShowQuality" value="true"/>
@@ -243,12 +244,15 @@
 			<property class="Action3">
 				<property name="Class" value="Ranged"/>
 				<property name="ActionUnlocked" value="false"/>
+				<property name="ActionTags" value="medicAction"/>
 				<property name="ItemActionModules" value="Tagged,KFCommonUtilityLib;HoldOpen,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
-				<property name="CachePassives" value="MedicWeaponHeal,ZedTimeTriggerChance"/>
+				<property name="CachePassives" value="MedicWeaponHeal"/>
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>
+				<property name="ConsumeTags" value="medicWeapon"/>
 				<property name="RechargeData" value="MedicStock"/>
+				<property name="RechargeTags" value="medicWeapon"/>
 				<property name="Sound_start" value="Medic_Dart_silenced"/>
 				<property name="Sound_loop" value="Medic_Dart_silenced"/>
 				<property name="Sound_repeat" value=""/>
@@ -307,7 +311,7 @@
 			</effect_group>
 			<effect_group name="Weapon mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="0"/>
-				<passive_effect name="RoundsPerMinute" operation="base_set" value="800" tags="perkGunslinger"/>
+				<passive_effect name="RoundsPerMinute" operation="base_set" value="600" tags="perkGunslinger"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="1000" tags="perkGunslinger"/>
 				<passive_effect name="MaxRange" operation="base_set" value="65" tags="perkGunslinger,9mmGun"/>
 				<passive_effect name="DamageFalloffRange" operation="base_set" value="30" tags="perkGunslinger,9mmGun"/>
@@ -345,17 +349,19 @@
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="3"/>
 				<requirement name="IsActionUnlocked,KFCommonUtilityLib" index="3"/>
 
-				<passive_effect name="RechargeDataInterval" operation="base_set" value="0.13" tags="medicWeapon,MedicStock"/>
-				<passive_effect name="RechargeDataValue" operation="base_set" value="1" tags="medicWeapon,MedicStock"/>
-				<passive_effect name="RechargeDataDecrease" operation="base_set" value="3" tags="medicWeapon,MedicStock"/>
-				<passive_effect name="RechargeDataMaximum" operation="base_set" value="100" tags="medicWeapon,MedicStock"/>
-				<passive_effect name="ConsumptionValue" operation="base_set" value="40" tags="medicWeapon,MedicStock"/>
-				<passive_effect name="MedicWeaponHeal" operation="base_set" value="20" tags="medicWeapon"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0.13" tags="medicWeapon,MedicStock,RechargeDataInterval" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDecreaseInterval" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDataValue" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="3" tags="medicWeapon,MedicStock,RechargeDataDecrease" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="100" tags="medicWeapon,MedicStock,RechargeDataMaximum" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="40" tags="medicWeapon,MedicStock,ConsumptionValue" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="15" tags="medicWeapon,MedicWeaponHeal" match_all_tags="true"/>
 				
-				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="RechargeDataMaximum" tags="medicWeapon,MedicStock" pattern="#[passive]" slot="0"/>
-				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="ConsumptionValue" tags="medicWeapon,MedicStock" pattern="$[passive]" slot="0"/>
+				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,RechargeDataMaximum" pattern="#[passive]" slot="0"/>
+				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,ConsumptionValue" pattern="$[passive]" slot="0"/>
 				<triggered_effect trigger="onRechargeValueUpdate" action="SetMetadataOnWeaponLabel,KFCommonUtilityLib" metadata="MedicStock" slot="0"/>
-				<triggered_effect trigger="onSelfItemSwitchMode" action="UpdateLocalCache,KFCommonUtilityLib" passives="MedicWeaponHeal,ZedTimeTriggerChance" action_index="3"/>
+				<triggered_effect trigger="onSelfEquipStart" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
+				<triggered_effect trigger="onSelfItemSwitchMode" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
 			</effect_group>
 		</item>
 
@@ -367,7 +373,7 @@
 			<property name="Meshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_shotgun.prefab"/>
 			<property name="Material" value="MShotgunParts"/>
 			<property name="Weight" value="1"/>
-			<property name="RepairTools" value="medicalFirstAidKit"/>
+			<property name="RepairTools" value="resourceMedicGunRepairKit"/>
 			<property name="DegradationBreaksAfter" value="false"/>
 			<property name="SoundJammed" value="weapon_jam"/>
 			<property name="Attachments" value="meleeToolFlashlight02"/>
@@ -384,7 +390,7 @@
 			<property name="LightValue" value=".45"/>
 			<property name="EconomicValue" value="1500"/>
 			<property name="TraderStageTemplate" value="baseTier3"/>
-			<property name="UnlockedBy" value="craftingShotguns"/><!-- gunShotgunT3AutoShotgunSchematic, -->
+			<property name="UnlockedBy" value="craftingMedicGuns"/><!-- gunShotgunT3AutoShotgunSchematic, -->
 			<property name="ShowQuality" value="true"/>
 			<property name="SoundUnholster" value="weapon_unholster"/>
 			<property name="SoundHolster" value="weapon_holster"/>
@@ -423,12 +429,15 @@
 			<property class="Action3">
 				<property name="Class" value="Ranged"/>
 				<property name="ActionUnlocked" value="false"/>
+				<property name="ActionTags" value="medicAction"/>
 				<property name="ItemActionModules" value="Tagged,KFCommonUtilityLib;HoldOpen,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
-				<property name="CachePassives" value="MedicWeaponHeal,ZedTimeTriggerChance"/>
+				<property name="CachePassives" value="MedicWeaponHeal"/>
 				<property name="Magazine_items" value="ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>
+				<property name="ConsumeTags" value="medicWeapon"/>
 				<property name="RechargeData" value="MedicStock"/>
+				<property name="RechargeTags" value="medicWeapon"/>
 				<property name="Sound_start" value="Medic_Dart_silenced"/>
 				<property name="Sound_loop" value="Medic_Dart_silenced"/>
 				<property name="Sound_repeat" value=""/>
@@ -486,11 +495,11 @@
 			</effect_group>
 			<effect_group name="Weapon mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="0"/>
-				<passive_effect name="RoundsPerMinute" operation="base_set" value="300" tags="perkBoomstick"/>
+				<passive_effect name="RoundsPerMinute" operation="base_set" value="150" tags="perkBoomstick"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="1000" tags="perkBoomstick"/>
 				<passive_effect name="MaxRange" operation="base_set" value="20" tags="perkBoomstick"/>
 				<passive_effect name="DamageFalloffRange" operation="base_set" value="10" tags="perkBoomstick"/>
-				<passive_effect name="EntityDamage" operation="base_add" value="7" tags="perkBoomstick"/> <!-- damage offset -->
+				<passive_effect name="EntityDamage" operation="base_add" value="4" tags="perkBoomstick"/> <!-- damage offset -->
 				<passive_effect name="EntityDamage" operation="perc_add" value="-.3" tags="medicWeapon"/> <!-- medic weapon decrease -->
 				<passive_effect name="EntityDamage" operation="perc_add" value="-.02,.02" tags="perkBoomstick"/> <!-- random EntityDmg -->
 				<passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6" tags="perkBoomstick"/> <!-- tier bonus -->
@@ -520,17 +529,19 @@
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="3"/>
 				<requirement name="IsActionUnlocked,KFCommonUtilityLib" index="3"/>
 
-				<passive_effect name="RechargeDataInterval" operation="base_set" value="0.12" tags="medicWeapon,MedicStock"/>
-				<passive_effect name="RechargeDataValue" operation="base_set" value="1" tags="medicWeapon,MedicStock"/>
-				<passive_effect name="RechargeDataDecrease" operation="base_set" value="3" tags="medicWeapon,MedicStock"/>
-				<passive_effect name="RechargeDataMaximum" operation="base_set" value="100" tags="medicWeapon,MedicStock"/>
-				<passive_effect name="ConsumptionValue" operation="base_set" value="40" tags="medicWeapon,MedicStock"/>
-				<passive_effect name="MedicWeaponHeal" operation="base_set" value="20" tags="medicWeapon"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0.12" tags="medicWeapon,MedicStock,RechargeDataInterval" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDecreaseInterval" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDataValue" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="3" tags="medicWeapon,MedicStock,RechargeDataDecrease" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="100" tags="medicWeapon,MedicStock,RechargeDataMaximum" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="40" tags="medicWeapon,MedicStock,ConsumptionValue" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="20" tags="medicWeapon,MedicWeaponHeal" match_all_tags="true"/>
 				
-				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="RechargeDataMaximum" tags="medicWeapon,MedicStock" pattern="#[passive]" slot="0"/>
-				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="ConsumptionValue" tags="medicWeapon,MedicStock" pattern="$[passive]" slot="0"/>
+				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,RechargeDataMaximum" pattern="#[passive]" slot="0"/>
+				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,ConsumptionValue" pattern="$[passive]" slot="0"/>
 				<triggered_effect trigger="onRechargeValueUpdate" action="SetMetadataOnWeaponLabel,KFCommonUtilityLib" metadata="MedicStock" slot="0"/>
-				<triggered_effect trigger="onSelfItemSwitchMode" action="UpdateLocalCache,KFCommonUtilityLib" passives="MedicWeaponHeal,ZedTimeTriggerChance" action_index="3"/>
+				<triggered_effect trigger="onSelfEquipStart" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
+				<triggered_effect trigger="onSelfItemSwitchMode" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
 			</effect_group>
 		</item>
 		<item name="gunMedicAssaultRifle401">
@@ -543,7 +554,7 @@
 			<property name="Weight" value="1"/>
 			<property name="CrosshairOnAim" value="false"/> <!-- aimTest -->
 			<property name="CrosshairUpAfterShot" value="false"/> <!-- aimTest -->
-			<property name="RepairTools" value="medicalFirstAidKit"/>
+			<property name="RepairTools" value="resourceMedicGunRepairKit"/>
 			<property name="DegradationBreaksAfter" value="false"/>
 			<property name="SoundJammed" value="weapon_jam"/>
 			<property name="Sound_Sight_In" value="rifle_sight_in"/>
@@ -551,7 +562,7 @@
 			<property name="RepairExpMultiplier" value="10.8"/>
 			<property name="EconomicValue" value="2000"/>
 			<property name="TraderStageTemplate" value="baseTier3"/>
-			<property name="UnlockedBy" value="craftingMachineGuns"/><!-- gunMGT2TacticalARSchematic, -->
+			<property name="UnlockedBy" value="craftingMedicGuns"/><!-- gunMGT2TacticalARSchematic, -->
 			<property name="ShowQuality" value="true"/>
 			<property name="Group" value="Ammo/Weapons,Ranged Weapons"/>
 			<property name="SoundUnholster" value="weapon_unholster"/>
@@ -585,12 +596,15 @@
 			<property class="Action3">
 				<property name="Class" value="Ranged"/>
 				<property name="ActionUnlocked" value="false"/>
+				<property name="ActionTags" value="medicAction"/>
 				<property name="ItemActionModules" value="Tagged,KFCommonUtilityLib;HoldOpen,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
-				<property name="CachePassives" value="MedicWeaponHeal,ZedTimeTriggerChance"/>
+				<property name="CachePassives" value="MedicWeaponHeal"/>
 				<property name="Magazine_items" value="ammo762mmBulletBall,ammo762mmBulletHP,ammo762mmBulletAP"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>
+				<property name="ConsumeTags" value="medicWeapon"/>
 				<property name="RechargeData" value="MedicStock"/>
+				<property name="RechargeTags" value="medicWeapon"/>
 				<property name="Sound_start" value="Medic_Dart_silenced"/>
 				<property name="Sound_loop" value="Medic_Dart_silenced"/>
 				<property name="Sound_repeat" value=""/>
@@ -604,7 +618,7 @@
 			</property>
 			<effect_group name="Weapon mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="0"/>
-				<passive_effect name="RoundsPerMinute" operation="base_set" value="750" tags="perkMachineGunner"/>
+				<passive_effect name="RoundsPerMinute" operation="base_set" value="562" tags="perkMachineGunner"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="999" tags="perkMachineGunner"/>
 				<passive_effect name="MaxRange" operation="base_set" value="90" tags="perkMachineGunner,9mmGun"/>
 				<passive_effect name="DamageFalloffRange" operation="base_set" value="50" tags="perkMachineGunner,9mmGun"/>
@@ -687,18 +701,81 @@
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="3"/>
 				<requirement name="IsActionUnlocked,KFCommonUtilityLib" index="3"/>
 
-				<passive_effect name="RechargeDataInterval" operation="base_set" value="0.1" tags="medicWeapon,MedicStock"/>
-				<passive_effect name="RechargeDataValue" operation="base_set" value="1" tags="medicWeapon,MedicStock"/>
-				<passive_effect name="RechargeDataDecrease" operation="base_set" value="3" tags="medicWeapon,MedicStock"/>
-				<passive_effect name="RechargeDataMaximum" operation="base_set" value="100" tags="medicWeapon,MedicStock"/>
-				<passive_effect name="ConsumptionValue" operation="base_set" value="30" tags="medicWeapon,MedicStock"/>
-				<passive_effect name="MedicWeaponHeal" operation="base_set" value="15" tags="medicWeapon"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0.1" tags="medicWeapon,MedicStock,RechargeDataInterval" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDecreaseInterval" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDataValue" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="3" tags="medicWeapon,MedicStock,RechargeDataDecrease" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="100" tags="medicWeapon,MedicStock,RechargeDataMaximum" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="30" tags="medicWeapon,MedicStock,ConsumptionValue" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="15" tags="medicWeapon,MedicWeaponHeal" match_all_tags="true"/>
 				
-				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="RechargeDataMaximum" tags="medicWeapon,MedicStock" pattern="#[passive]" slot="0"/>
-				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="ConsumptionValue" tags="medicWeapon,MedicStock" pattern="$[passive]" slot="0"/>
+				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,RechargeDataMaximum" pattern="#[passive]" slot="0"/>
+				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,ConsumptionValue" pattern="$[passive]" slot="0"/>
 				<triggered_effect trigger="onRechargeValueUpdate" action="SetMetadataOnWeaponLabel,KFCommonUtilityLib" metadata="MedicStock" slot="0"/>
-				<triggered_effect trigger="onSelfItemSwitchMode" action="UpdateLocalCache,KFCommonUtilityLib" passives="MedicWeaponHeal,ZedTimeTriggerChance" action_index="3"/>
+				<triggered_effect trigger="onSelfEquipStart" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
+				<triggered_effect trigger="onSelfItemSwitchMode" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
 			</effect_group>
 		</item>
+		
+<!-- *** Mod_Schematics -->
+<item name="modMedicModuleSchematic">
+	<property name="Extends" value="schematicNoQualityMaster"/>
+	<property name="CreativeMode" value="Player"/>
+	<property name="CustomIcon" value="medic_module"/>
+	<property name="Unlocks" value="modMedicModule"/>
+	<effect_group tiered="false">
+		<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="modMedicModule" operation="set" value="1"/>
+		<triggered_effect trigger="onSelfPrimaryActionEnd" action="GiveExp" exp="50"/>
+	</effect_group>
+</item>
+		
+	<!-- *** Medic_Guns_Skill_Magazine -->
+<item name="medicgunsSkillMagazine">
+	<property name="Extends" value="masterSkillMagazine"/>
+	<property name="Tags" value="medicgunsCSM,csm"/>
+	<property name="CustomIcon" value="bookMedicGunWeekly"/>
+	<property name="DescriptionKey" value="medicgunsSkillMagazineDesc"/>
+	<property name="Unlocks" value="craftingMedicGuns"/>
+	
+	<effect_group tiered="false">
+		<triggered_effect trigger="onSelfPrimaryActionEnd" action="AddProgressionLevel" progression_name="craftingMedicGuns" level="1"/> <!-- level="-1" sets a perk to max level -->
+		<triggered_effect trigger="onSelfPrimaryActionEnd" action="GiveExp" exp="50"/>
+	</effect_group>
+</item>
+
+<item name="resourceMedicGunRepairKit">
+	<property name="HoldType" value="45"/>
+	<property name="Tags" value="junk"/>
+	<property name="Meshfile" value="@:Other/Items/Misc/sackPrefab.prefab"/>
+	<property name="DropMeshfile" value="@:Other/Items/Misc/sack_droppedPrefab.prefab"/>
+	<property name="Material" value="Mmetal"/>
+	<property name="Stacknumber" value="25"/> <!-- STK resourceRepairKit -->
+	<property name="EconomicValue" value="186"/>
+	<property name="RepairTime" value="4"/>
+	<property name="RepairAmount" value="32000"/>
+	<property name="Group" value="Resources"/>
+</item>
+
+<item name="resourceMedicGunRepairKitBundle">
+	<property name="ItemTypeIcon" value="bundle"/>
+	<property name="CustomIcon" value="resourceMedicGunRepairKit"/>
+	<property name="DescriptionKey" value="resourceMedicGunRepairKitBundleDesc"/>
+	<property name="HoldType" value="45"/>
+	<property name="Meshfile" value="@:Other/Items/Misc/sackPrefab.prefab"/>
+	<property name="DropMeshfile" value="@:Other/Items/Misc/sack_droppedPrefab.prefab"/>
+	<property name="Material" value="Mmetal"/>
+	<property name="Stacknumber" value="5"/> <!-- STK ammobundle -->
+	<property name="Weight" value="0"/>
+	<property name="EconomicValue" value="1488"/>
+	<property name="Group" value="Resources"/>
+	<property class="Action0">
+		<property name="Class" value="OpenBundle"/>
+		<property name="Delay" value="0"/>
+		<property name="Sound_start" value="close_garbage"/>
+		<property name="Create_item" value="resourceMedicGunRepairKit"/>
+		<property name="Create_item_count" value="10"/>
+	</property>
+</item>
+		
 	</append>
 </configs>
