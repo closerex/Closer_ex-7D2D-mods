@@ -469,7 +469,6 @@
     <Compile Include="Scripts\Requirements\IsActionUnlocked.cs" />
     <Compile Include="Scripts\Requirements\IsInJeep.cs" />
     <Compile Include="Scripts\Requirements\ItemActionIndexIs.cs" />
-    <Compile Include="Scripts\Requirements\RandomRollPassive.cs" />
     <Compile Include="Scripts\StaticManagers\AnimationRiggingManager.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdCalibrateWeapon.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPlayerDebugInfo.cs" />

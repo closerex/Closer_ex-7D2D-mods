@@ -51,7 +51,7 @@ public class CustomPlayerActionManager
                 if(type.IsSubclassOf(baseType))
                 {
                     var actionSet = Activator.CreateInstance(type) as CustomPlayerActionVersionBase;
-                    dict_action_sets.Add(actionSet.Name, actionSet);
+                    dict_action_sets[actionSet.Name] = actionSet;
                     Log.Out("Found custom player action set: " + actionSet.Name);
                 }
             }

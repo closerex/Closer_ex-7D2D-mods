@@ -42,8 +42,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FullautoLauncherAnimationRi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMXMultiActionCompatibilityPatch", "SMXMultiActionCompatibilityPatch\SMXMultiActionCompatibilityPatch.csproj", "{0FAF279D-CFDD-451F-8522-D2FA7D966141}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCoreEntityHitCompatibilityPatch", "SCoreEntityHitCompatibilityPatch\SCoreEntityHitCompatibilityPatch.csproj", "{94D9FE9A-8FA9-456E-90A8-463E74246C92}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -118,10 +116,6 @@ Global
 		{0FAF279D-CFDD-451F-8522-D2FA7D966141}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0FAF279D-CFDD-451F-8522-D2FA7D966141}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0FAF279D-CFDD-451F-8522-D2FA7D966141}.Release|Any CPU.Build.0 = Release|Any CPU
-		{94D9FE9A-8FA9-456E-90A8-463E74246C92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{94D9FE9A-8FA9-456E-90A8-463E74246C92}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{94D9FE9A-8FA9-456E-90A8-463E74246C92}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{94D9FE9A-8FA9-456E-90A8-463E74246C92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
