@@ -69,7 +69,7 @@ public class ActionModuleLocalPassiveCache
 
         public void CachePassive(PassiveEffects target, int targetHash, FastTags tags)
         {
-            if (_cacheModule.nameHashes == null)
+            if (_cacheModule.nameHashes == null || invData.holdingEntity.isEntityRemote)
                 return;
             int index = Array.IndexOf(_cacheModule.nameHashes, targetHash);
             if (index < 0)

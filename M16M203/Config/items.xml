@@ -50,10 +50,9 @@
 						<property name="zoomTriggerEffectTriggerPullXbox" value="PistolZoom"/>
 			</property>
 			<property class="Action3">
-				<!-- <property name="Class" value="BetterLauncher,FullautoLauncher"/> -->
-				<property name="Class" value="Launcher"/>
-				<property name="ItemActionModules" value="MultiActionFix,KFCommonUtilityLib"/>
+				<property name="Class" value="BetterLauncher,FullautoLauncher"/>
 				<!-- <property name="Class" value="Launcher"/> -->
+				<property name="ItemActionModules" value="MultiActionFix,KFCommonUtilityLib"/>
 				<property name="Magazine_items" value="ammoM203ShellHE,ammoM203ShellFrag"/>
 				<property name="Sound_start" value="M16M203_Fire_Grenade"/>
 				<property name="Sound_loop" value="M16M203_Fire_Grenade"/>
@@ -254,7 +253,7 @@
 				<passive_effect name="EntityDamage" operation="base_set" value="320" tags="perkDemolitionsExpert"/>
 				<passive_effect name="ProjectileImpactDamagePercentBlock" operation="base_set" value="0" tags="perkDemolitionsExpert"/>
 				<passive_effect name="ProjectileImpactDamagePercentEntity" operation="base_set" value="0" tags="perkDemolitionsExpert"/>
-				<passive_effect name="ProjectileVelocity" operation="base_set" value="80" tags="perkDemolitionsExpert"/>
+				<passive_effect name="ProjectileVelocity" operation="base_set" value="5" tags="perkDemolitionsExpert"/>
 				<display_value name="dExRadius" value="2.5"/>
 				<passive_effect name="RoundRayCount" operation="base_set" value="1" tags="perkDemolitionsExpert"/>
 				<passive_effect name="SpreadDegreesVertical" operation="base_set" value="5.5" tags="perkDemolitionsExpert"/>

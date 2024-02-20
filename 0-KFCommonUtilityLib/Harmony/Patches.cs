@@ -388,6 +388,11 @@ public class CommonUtilityPatch
         return codes;
     }
 
+    /// <summary>
+    /// projectile direct hit damage percent
+    /// </summary>
+    /// <param name="instructions"></param>
+    /// <returns></returns>
     [HarmonyPatch(typeof(ProjectileMoveScript), "checkCollision")]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_checkCollision_ProjectileMoveScript(IEnumerable<CodeInstruction> instructions)
@@ -422,6 +427,37 @@ public class CommonUtilityPatch
     public static float GetProjectileEntityDamagePerc(ItemValue _itemValue, EntityAlive _holdingEntity)
     {
         return EffectManager.GetValue(CustomEnums.ProjectileImpactDamagePercentEntity, _itemValue, 1, _holdingEntity, null);
+    }
+
+    /// <summary>
+    /// force tpv crosshair
+    /// </summary>
+    /// <param name="instructions"></param>
+    /// <returns></returns>
+    [HarmonyPatch(typeof(EntityPlayerLocal), "guiDrawCrosshair")]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_guiDrawCrosshair_EntityPlayerLocal(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        FieldInfo fld_debug = AccessTools.Field(typeof(ItemAction), nameof(ItemAction.ShowDistanceDebugInfo));
+
+        for ( int i = 0; i < codes.Count; i++ )
+        {
+            if (codes[i].LoadsField(fld_debug))
+            {
+                var label = codes[i - 1].operand;
+                codes.InsertRange(i, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    CodeInstruction.LoadField(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.bFirstPersonView)),
+                    new CodeInstruction(OpCodes.Brfalse_S, label)
+                });
+                break;
+            }
+        }
+
+        return codes;
     }
     //private static bool exported = false;
     //[HarmonyPatch(typeof(EModelUMA), nameof(EModelUMA.onCharacterUpdated))]

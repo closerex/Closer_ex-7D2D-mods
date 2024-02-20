@@ -31,6 +31,8 @@ public class WeaponDataHandlerCanvasMask : WeaponDataHandlerBase
         {
             curVal = Mathf.Max(float.Parse(text), 0);
         }
+        if (curVal > maxVal)
+            maxVal = curVal;
         float perc = curVal / maxVal;
         Vector4 padding = mask.padding;
         padding.w = mask.rectTransform.rect.height * Mathf.Clamp01(1 - perc);

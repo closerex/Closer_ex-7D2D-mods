@@ -192,6 +192,7 @@ public static class FLARPatch
         if (magnitude < 0.04f)
         {
             __result = false;
+            return false;
         }
         Ray ray = new Ray(__instance.previousPosition, dir);
         __instance.waterCollisionParticles.CheckCollision(ray.origin, ray.direction, magnitude, (entityAlive != null) ? entityAlive.entityId : (-1));
@@ -281,8 +282,10 @@ public static class FLARPatch
             }
             __result = true;
         }
-        __result = false;
-
+        else
+        {
+            __result = false;
+        }
         return false;
     }
 }

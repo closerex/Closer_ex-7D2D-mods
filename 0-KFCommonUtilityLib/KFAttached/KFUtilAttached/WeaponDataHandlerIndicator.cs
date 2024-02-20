@@ -29,14 +29,18 @@ public class WeaponDataHandlerIndicator : WeaponDataHandlerCanvasMask
         if (text.StartsWith("$"))
         {
             level = Mathf.Clamp01(float.Parse(text.Substring(1)) / maxVal);
-            Vector3 pos = indicator.anchoredPosition;
-            pos.y = mask.rectTransform.rect.height * level + offset;
-            indicator.anchoredPosition = pos;
+            SetIndicatorPos();
             //updated = true;
         }
         else
         {
+            float prevMax = maxVal;
             base.SetText(text);
+            if (prevMax != maxVal)
+            {
+                level = prevMax * level / maxVal;
+                SetIndicatorPos();
+            }
         }
         //Log.Out($"Setting text {text} max {maxVal} cur {curVal} level {level} indicator position {indicator.position.y} mask position {mask.padding.w}");
         if (curVal / maxVal < level)
@@ -47,6 +51,13 @@ public class WeaponDataHandlerIndicator : WeaponDataHandlerCanvasMask
         {
             SetColor(normalColor);
         }
+    }
+
+    private void SetIndicatorPos()
+    {
+        Vector3 pos = indicator.anchoredPosition;
+        pos.y = mask.rectTransform.rect.height * level + offset;
+        indicator.anchoredPosition = pos;
     }
 
     //protected override void LateUpdate()
