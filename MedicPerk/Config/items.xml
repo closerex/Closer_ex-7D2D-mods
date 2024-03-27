@@ -63,7 +63,6 @@
 				<property name="ActionUnlocked" value="false"/>
 				<property name="ActionTags" value="medicAction"/>
 				<property name="ItemActionModules" value="Tagged,KFCommonUtilityLib;HoldOpen,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
-				<property name="CachePassives" value="MedicWeaponHeal"/>
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>
@@ -246,7 +245,6 @@
 				<property name="ActionUnlocked" value="false"/>
 				<property name="ActionTags" value="medicAction"/>
 				<property name="ItemActionModules" value="Tagged,KFCommonUtilityLib;HoldOpen,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
-				<property name="CachePassives" value="MedicWeaponHeal"/>
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>
@@ -431,7 +429,6 @@
 				<property name="ActionUnlocked" value="false"/>
 				<property name="ActionTags" value="medicAction"/>
 				<property name="ItemActionModules" value="Tagged,KFCommonUtilityLib;HoldOpen,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
-				<property name="CachePassives" value="MedicWeaponHeal"/>
 				<property name="Magazine_items" value="ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>
@@ -598,7 +595,6 @@
 				<property name="ActionUnlocked" value="false"/>
 				<property name="ActionTags" value="medicAction"/>
 				<property name="ItemActionModules" value="Tagged,KFCommonUtilityLib;HoldOpen,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
-				<property name="CachePassives" value="MedicWeaponHeal"/>
 				<property name="Magazine_items" value="ammo762mmBulletBall,ammo762mmBulletHP,ammo762mmBulletAP"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>

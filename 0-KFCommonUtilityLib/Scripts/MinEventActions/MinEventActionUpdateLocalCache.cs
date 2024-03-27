@@ -8,6 +8,7 @@ public class MinEventActionUpdateLocalCache : MinEventActionBase
     private FastTags tags;
     private int actionIndex = -1;
     private int saveAs;
+    private string saveAsStr;
     public override bool CanExecute(MinEventTypes _eventType, MinEventParams _params)
     {
         return !_params.Self.isEntityRemote && (actionIndex < 0 ? _params.ItemActionData : _params.ItemActionData.invData.actionData[actionIndex]) is IModuleContainerFor<ActionModuleLocalPassiveCache.LocalPassiveCacheData> && base.CanExecute(_eventType, _params);
@@ -17,7 +18,7 @@ public class MinEventActionUpdateLocalCache : MinEventActionBase
     {
         ActionModuleLocalPassiveCache.LocalPassiveCacheData _data = ((IModuleContainerFor<ActionModuleLocalPassiveCache.LocalPassiveCacheData>)(actionIndex < 0 ? _params.ItemActionData : _params.ItemActionData.invData.actionData[actionIndex])).Instance;
 
-        _data.CachePassive(passive, saveAs, tags);
+        _data.CachePassive(passive, saveAs, saveAsStr, tags);
     }
 
     public override bool ParseXmlAttribute(XAttribute _attribute)
@@ -37,6 +38,7 @@ public class MinEventActionUpdateLocalCache : MinEventActionBase
                 actionIndex = int.Parse(_attribute.Value);
                 return true;
             case "as":
+                saveAsStr = _attribute.Value;
                 saveAs = _attribute.Value.GetHashCode();
                 return true;
         }

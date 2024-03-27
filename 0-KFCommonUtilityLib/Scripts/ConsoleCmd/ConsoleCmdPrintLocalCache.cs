@@ -19,16 +19,17 @@ namespace KFCommonUtilityLib.Scripts.ConsoleCmd
             if (player != null && player.inventory.holdingItemData.actionData[index] is IModuleContainerFor<ActionModuleLocalPassiveCache.LocalPassiveCacheData> module)
             {
                 ActionModuleLocalPassiveCache.LocalPassiveCacheData instance = module.Instance;
-                for (int i = 0; i < instance.cache.Length; i++)
+                foreach (int hash in instance)
                 {
-                    Log.Out($"cache {instance._cacheModule.nameHashes[i]} value {instance.cache[i]}");
+                    Log.Out($"cache {instance.GetCachedName(hash)} value {instance.GetCachedValue(hash)}");
+
                 }
             }
         }
 
         protected override string[] getCommands()
         {
-            return new[] { "pc" };
+            return new[] { "plc" };
         }
 
         protected override string getDescription()

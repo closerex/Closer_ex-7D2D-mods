@@ -33,7 +33,7 @@ namespace KFCommonUtilityLib.Scripts.ConsoleCmd
 
         protected override string[] getCommands()
         {
-            return new string[] { "printinfo" };
+            return new string[] { "printpinfo" };
         }
 
         protected override string getDescription()

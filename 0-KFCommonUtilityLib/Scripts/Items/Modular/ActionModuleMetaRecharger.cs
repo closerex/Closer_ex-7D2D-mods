@@ -119,22 +119,32 @@ public class ActionModuleMetaRecharger
                     }
                     float max = EffectManager.GetValue(CustomEnums.CustomTaggedEffect, itemValue, 0, holdingEntity, null, rechargeTag.tagsMaximum);
                     bool modified = false;
-                    if (cur > max && deltaDecreaseTime > decreaseInterval)
+                    if (cur > max)
                     {
-                        //the result updated here won't exceed max so it's set somewhere else, decrease slowly
-                        float dec = EffectManager.GetValue(CustomEnums.CustomTaggedEffect, itemValue, float.MaxValue, holdingEntity, null, rechargeTag.tagsDecrease);
-                        cur = Mathf.Max(cur - dec, max);
-                        lastDecreaseTime = curTime;
-                        modified = true;
-                    }
-                    else if (cur < max && deltaTime > updateInterval)
-                    {
-                        //add up and clamp to max
-                        float add = EffectManager.GetValue(CustomEnums.CustomTaggedEffect, itemValue, 0, holdingEntity, null, rechargeTag.tagsValue);
-                        cur = Mathf.Min(cur + add, max);
+                        if (deltaDecreaseTime > decreaseInterval)
+                        {
+                            //the result updated here won't exceed max so it's set somewhere else, decrease slowly
+                            float dec = EffectManager.GetValue(CustomEnums.CustomTaggedEffect, itemValue, float.MaxValue, holdingEntity, null, rechargeTag.tagsDecrease);
+                            cur = Mathf.Max(cur - dec, max);
+                            lastDecreaseTime = curTime;
+                            modified = true;
+                        }
                         lastUpdateTime = curTime;
-                        modified = true;
                     }
+                    else
+                    {
+                        if (cur < max && deltaTime > updateInterval)
+                        {
+                            //add up and clamp to max
+                            float add = EffectManager.GetValue(CustomEnums.CustomTaggedEffect, itemValue, 0, holdingEntity, null, rechargeTag.tagsValue);
+                            cur = Mathf.Min(cur + add, max);
+                            lastUpdateTime = curTime;
+                            modified = true;
+                        }
+                        //always set lastDecreaseTime if not overcharged, since we don't want overcharged data to decrease right after it's charged
+                        lastDecreaseTime = curTime;
+                    }
+
                     if (modified)
                     {
                         itemValue.SetMetadata(rechargeData, cur, TypedMetadataValue.TypeTag.Float);

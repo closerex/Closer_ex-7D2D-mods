@@ -459,6 +459,17 @@ public class CommonUtilityPatch
 
         return codes;
     }
+
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.OnModificationsChanged))]
+    [HarmonyPostfix]
+    private static void Postfix_OnModificationsChanged_ItemActionRanged(ItemActionData _data)
+    {
+        ItemActionRanged.ItemActionDataRanged itemActionDataRanged = _data as ItemActionRanged.ItemActionDataRanged;
+        if (itemActionDataRanged.SoundStart.Contains("silenced"))
+        {
+            itemActionDataRanged.IsFlashSuppressed = true;
+        }
+    }
     //private static bool exported = false;
     //[HarmonyPatch(typeof(EModelUMA), nameof(EModelUMA.onCharacterUpdated))]
     //[HarmonyPostfix]

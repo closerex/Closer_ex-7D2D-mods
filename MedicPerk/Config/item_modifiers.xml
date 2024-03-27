@@ -102,7 +102,7 @@
 						<requirement name="HasBuff" target="other" buff="buffInjuryCrippled01"/>
 					</triggered_effect>
 			</effect_group>
-			<effect_group name="infinite">
+			<!-- <effect_group name="infinite">
 				<requirement name="ActionHasTags,KFCommonUtilityLib" tags="medicAction"/>
                 <requirement name="HasBuff" target="self" buff="buffMedicInfinite"/>
 					<triggered_effect trigger="onSelfRangedBurstShotStart" action="ModifyCVar" target="self" cvar=".medicBuffConsumptionTemp0" operation="subtract" value="1">
@@ -111,7 +111,7 @@
 					<triggered_effect trigger="onSelfRangedBurstShotStart" action="RemoveBuff" buff="buffMedicInfinite">
 						<requirement name="CVarCompare" cvar=".medicBuffConsumptionTemp0" operation="LTE" value="0"/>
 					</triggered_effect>
-			</effect_group>
+			</effect_group> -->
 		</item_modifier>
     </append>
 </configs>

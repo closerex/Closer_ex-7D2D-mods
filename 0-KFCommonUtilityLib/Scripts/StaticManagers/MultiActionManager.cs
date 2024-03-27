@@ -24,7 +24,6 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         public unsafe fixed sbyte metaIndice[MAX_ACTION_COUNT];
         public readonly byte modeCount;
 
-        //this should only be called in createModifierData
         public unsafe MultiActionIndice(ItemClass item)
         {
             ItemAction[] actions = item.Actions;

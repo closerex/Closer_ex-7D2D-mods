@@ -21,7 +21,7 @@ public class ConsoleCmdReloadDebug : ConsoleCmdAbstract
 
     protected override string[] getCommands()
     {
-        return new[] { "reloaddebug", "rd" };
+        return new[] { "reloaddebug", "rdebug" };
     }
 
     protected override string getDescription()

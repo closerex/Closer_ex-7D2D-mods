@@ -61,13 +61,13 @@ modMedicModule,item_modifiers,mod,,,Medic Mod,,医疗模组
 modMedicModuleDesc,item_modifiers,mod,,,"Can only be installed in Medic Guns. Allows medics to heal other players and benefit from other skills when using Alt Fire Secondary Mode. Causes zombies to lose health, among other things.",,只能安装于医疗武器上。解锁次要模式以发射医疗子弹治疗队友，或者使僵尸中毒。
 modMedicModuleSchematic,item_modifiers,Mod,,,Medic Mod Schematic,,医疗模组配方
 gunMedicPistol,items,Gun,,,HMTech-101 Pistol,,HMTech-101医疗手枪
-gunMedicPistolDesc,items,Gun,,,The HMTech-101 Pistol.\n\nFire mode is semi-auto only. Primary mode shoots 9mm rounds. Secondary mode shoots healing darts to heal team members.\n\nRepair with first aid kit.,,HMTech-101医疗手枪。\n\n射击模式为单发，主要模式发射9mm子弹，次要模式射出医疗子弹治疗队友。\n\n使用医疗包修理。
+gunMedicPistolDesc,items,Gun,,,The HMTech-101 Pistol.\n\nFire mode is semi-auto only. Primary mode shoots 9mm rounds. Secondary mode shoots healing darts to heal team members.\n\nRepair with Medic Gun Repair Kit.,,HMTech-101医疗手枪。\n\n射击模式为单发，主要模式发射9mm子弹，次要模式射出医疗子弹治疗队友。\n\n使用医疗武器修复套件修理。
 gunMedicSMG201,items,Gun,,,"HMTech-201 SMG",,"HMTech-201冲锋枪"
-gunMedicSMG201Desc,items,Gun,,,"The HMTech-201 SMG.\n\nFire mode is semi-auto only. Primary mode shoots 9mm rounds. Secondary mode shoots healing darts to heal team members.\n\nRepair with first aid kit.\n\nYour pistol, beefed up!",,"HMTech-201冲锋枪。\n\n射击模式全自动，主要模式发射9mm子弹，次要模式射出医疗子弹治疗队友。\n\n使用医疗包修理。\n\n。加强版的医疗手枪，让您如虎添翼！"
+gunMedicSMG201Desc,items,Gun,,,"The HMTech-201 SMG.\n\nFire mode is semi-auto only. Primary mode shoots 9mm rounds. Secondary mode shoots healing darts to heal team members.\n\nRepair with Medic Gun Repair Kit.\n\nYour pistol, beefed up!",,"HMTech-201冲锋枪。\n\n射击模式全自动，主要模式发射9mm子弹，次要模式射出医疗子弹治疗队友。\n\n使用医疗武器修复套件修理。\n\n。加强版的医疗手枪，让您如虎添翼！"
 gunMedicShotgun301,items,Gun,,,HMTech-301 SG,,HMTech-301霰弹枪
-gunMedicShotgun301Desc,items,Gun,,,The HMTech-301 Shotgun.\n\nFire mode is full-auto only. Primary mode shoots shotgun ammo. Secondary mode shoots healing dart to heal team members.\n\nRepair with first aid kit.\n\nThe combat shotgun version for the Field Medic.,,HMTech-301霰弹枪。\n\n射击模式仅全自动，主要模式发射霰弹枪子弹，次要模式射出医疗子弹治疗队友。\n\n使用医疗包修理。\n\n医疗手枪的战斗霰弹枪版本。
+gunMedicShotgun301Desc,items,Gun,,,The HMTech-301 Shotgun.\n\nFire mode is full-auto only. Primary mode shoots shotgun ammo. Secondary mode shoots healing dart to heal team members.\n\nRepair with Medic Gun Repair Kit.\n\nThe combat shotgun version for the Field Medic.,,HMTech-301霰弹枪。\n\n射击模式仅全自动，主要模式发射霰弹枪子弹，次要模式射出医疗子弹治疗队友。\n\n使用医疗武器修复套件修理。\n\n医疗手枪的战斗霰弹枪版本。
 gunMedicAssaultRifle401,items,Gun,,,HMTech-401 AR,,HMTech-401突击步枪
-gunMedicAssaultRifle401Desc,items,Gun,,,The HMTech-401 Assault Rifle.\n\nFire mode is full-auto only. Primary mode shoots 7.62mm rounds. Secondary mode shoots healing darts to heal team members.\n\nRepair with first aid kit.\n\nThe full-blown assault rifle version.,,HMTech-401突击步枪。\n\n射击模式仅全自动，主要模式发射7.62mm子弹，次要模式射出医疗子弹治疗队友。\n\n使用医疗包修理\n\n医疗手枪的完全体突击步枪。
+gunMedicAssaultRifle401Desc,items,Gun,,,The HMTech-401 Assault Rifle.\n\nFire mode is full-auto only. Primary mode shoots 7.62mm rounds. Secondary mode shoots healing darts to heal team members.\n\nRepair with Medic Gun Repair Kit.\n\nThe full-blown assault rifle version.,,HMTech-401突击步枪。\n\n射击模式仅全自动，主要模式发射7.62mm子弹，次要模式射出医疗子弹治疗队友。\n\n使用医疗武器修复套件修理\n\n医疗手枪的完全体突击步枪。
 thrownAmmoMedicGrenade,items,Gun,,,Medic Grenade,,医疗手雷
 thrownAmmoMedicGrenadeDesc,items,Gun,,,The Medic Grenade. Emit healing gas on impact, lasting for 15s.,,医疗手雷。撞击时释放医疗气体，持续15秒。
 buffMedicBuffStockName,buffs,Buff,,,Medic Stock,,医疗储备
