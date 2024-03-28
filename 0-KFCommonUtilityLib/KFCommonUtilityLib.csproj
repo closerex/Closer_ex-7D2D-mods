@@ -382,6 +382,7 @@
     <Compile Include="KFAttached\FPSPack\FPSShaderFloatCurves.cs" />
     <Compile Include="KFAttached\FPSPack\MaterialType.cs" />
     <Compile Include="KFAttached\KFUtilAttached\ApexWeaponHudControllerBase.cs" />
+    <Compile Include="KFAttached\KFUtilAttached\MuzzlePositionBinding.cs" />
     <Compile Include="KFAttached\KFUtilAttached\RigActivationBinding.cs" />
     <Compile Include="KFAttached\KFUtilAttached\WeaponDataHandlerBase.cs" />
     <Compile Include="KFAttached\KFUtilAttached\WeaponDataController.cs" />
