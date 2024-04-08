@@ -508,6 +508,7 @@
     <Compile Include="Scripts\Requirements\RoundsInMagazineBase.cs" />
     <Compile Include="Scripts\StaticManagers\DelayLoadModuleManager.cs" />
     <Compile Include="Scripts\StaticManagers\ItemActionModuleManager.cs" />
+    <Compile Include="Scripts\StaticManagers\LocalItemTagsManager.cs" />
     <Compile Include="Scripts\StaticManagers\MultiActionManager.cs" />
     <Compile Include="Scripts\StaticManagers\RecoilManager.cs" />
     <Compile Include="Scripts\Utilities\MultiActionUtils.cs" />

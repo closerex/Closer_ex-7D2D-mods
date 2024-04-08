@@ -460,6 +460,10 @@ public class CommonUtilityPatch
         return codes;
     }
 
+    /// <summary>
+    /// correctly apply muzzle flash silence with modifications
+    /// </summary>
+    /// <param name="_data"></param>
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.OnModificationsChanged))]
     [HarmonyPostfix]
     private static void Postfix_OnModificationsChanged_ItemActionRanged(ItemActionData _data)
@@ -470,6 +474,201 @@ public class CommonUtilityPatch
             itemActionDataRanged.IsFlashSuppressed = true;
         }
     }
+
+    #region item tags modifier
+
+    /// <summary>
+    /// should handle swapping mod
+    /// first check if the mod to install can be installed after current mod is removed
+    /// then check if any other mod requires current mod
+    /// </summary>
+    /// <param name="instructions"></param>
+    /// <param name="generator"></param>
+    /// <returns></returns>
+    [HarmonyPatch(typeof(XUiC_ItemPartStack), "CanSwap")]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_CanSwap_XUiC_ItemPartStack(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+    {
+        var codes = instructions.ToList();
+
+        LocalBuilder lbd_tags = generator.DeclareLocal(typeof(FastTags));
+        MethodInfo mtd_get_item_class = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.ItemClass));
+        MethodInfo mtd_has_any_tags = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.HasAnyTags));
+        MethodInfo mtd_test_any_set = AccessTools.Method(typeof(FastTags), nameof(FastTags.Test_AnySet));
+        FieldInfo fld_mod = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Modifications));
+
+        for (int i = 3; i < codes.Count; i++)
+        {
+            if (codes[i].opcode == OpCodes.Stloc_2)
+            {
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldloc_1),
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    CodeInstruction.LoadField(typeof(XUiC_ItemPartStack), "itemValue"),
+                    CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.GetTagsAsIfNotInstalled)),
+                    new CodeInstruction(OpCodes.Stloc_S, lbd_tags)
+                });
+                i += 5;
+            }
+            else if (codes[i].Calls(mtd_has_any_tags) && codes[i - 3].opcode == OpCodes.Ldloc_2)
+            {
+                codes[i - 3].opcode = OpCodes.Ldloca_S;
+                codes[i - 3].operand = lbd_tags;
+                codes[i].operand = mtd_test_any_set;
+            }
+            //check other mods
+            else if (codes[i].opcode == OpCodes.Conv_I4 && codes[i - 2].LoadsField(fld_mod))
+            {
+                codes.InsertRange(i - 10, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldloca_S, lbd_tags),
+                    new CodeInstruction(OpCodes.Ldloc_1),
+                    CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.Modifications)),
+                    new CodeInstruction(OpCodes.Ldloc_S, 5),
+                    new CodeInstruction(OpCodes.Ldelem_Ref),
+                    new CodeInstruction(OpCodes.Call, mtd_get_item_class),
+                    CodeInstruction.LoadField(typeof(ItemClass), nameof(ItemClass.ItemTags)),
+                    new CodeInstruction(OpCodes.Call, mtd_test_any_set),
+                    new CodeInstruction(OpCodes.Brtrue_S, codes[i - 11].operand)
+                });
+                i += 9;
+            }
+        }
+
+        return codes;
+    }
+
+    /// <summary>
+    /// check if other mods relies on this one
+    /// </summary>
+    /// <param name="__result"></param>
+    /// <param name="__instance"></param>
+    /// <param name="___itemValue"></param>
+    [HarmonyPatch(typeof(XUiC_ItemPartStack), "CanRemove")]
+    [HarmonyPostfix]
+    private static void Postfix_CanRemove_XUiC_ItemPartStack(ref bool __result, XUiC_ItemPartStack __instance, ItemValue ___itemValue)
+    {
+        if (__result)
+        {
+            ItemValue itemValue = __instance.xui.AssembleItem.CurrentItem.itemValue;
+            ItemClass itemClass = itemValue.ItemClass;
+            FastTags tagsAfterRemove = LocalItemTagsManager.GetTagsAsIfNotInstalled(itemValue, ___itemValue);
+            if (tagsAfterRemove.IsEmpty)
+            {
+                __result = false;
+                return;
+            }
+
+            foreach (var mod in itemValue.Modifications)
+            {
+                if (!tagsAfterRemove.Test_AnySet(mod.ItemClass.ItemTags))
+                {
+                    __result = false;
+                    return;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// should update the gear icon?
+    /// </summary>
+    /// <param name="instructions"></param>
+    /// <param name="generator"></param>
+    /// <returns></returns>
+    [HarmonyPatch(typeof(XUiC_ItemStack), "updateLockTypeIcon")]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_updateLockTypeIcon_XUiC_ItemStack(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+    {
+        var codes = instructions.ToList();
+
+        LocalBuilder lbd_tags = generator.DeclareLocal(typeof(FastTags));
+        MethodInfo mtd_has_any_tags = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.HasAnyTags));
+        MethodInfo mtd_test_any_set = AccessTools.Method(typeof(FastTags), nameof(FastTags.Test_AnySet));
+        MethodInfo mtd_get_item_class = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.ItemClass));
+        MethodInfo mtd_get_cur_item = AccessTools.PropertyGetter(typeof(XUiM_AssembleItem), nameof(XUiM_AssembleItem.CurrentItem));
+        MethodInfo mtd_get_xui = AccessTools.PropertyGetter(typeof(XUiController), nameof(XUiController.xui));
+
+        for (int i = 3; i < codes.Count; i++)
+        {
+            //get current tags
+            if (codes[i].opcode == OpCodes.Brfalse_S && codes[i - 1].Calls(mtd_get_cur_item))
+            {
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Call, mtd_get_xui),
+                    CodeInstruction.LoadField(typeof(XUi), nameof(XUi.AssembleItem)),
+                    new CodeInstruction(OpCodes.Callvirt, mtd_get_cur_item),
+                    CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)),
+                    CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.GetTags)),
+                    new CodeInstruction(OpCodes.Stloc_S, lbd_tags)
+                });
+                i += 7;
+            }
+            //do not touch check on the modification item
+            else if (codes[i].Calls(mtd_has_any_tags) && codes[i - 3].Calls(mtd_get_item_class))
+            {
+                codes[i].operand = mtd_test_any_set;
+                codes[i - 8].MoveLabelsTo(codes[i - 2]);
+                codes.RemoveRange(i - 8, 6);
+                codes.Insert(i - 8, new CodeInstruction(OpCodes.Ldloca_S, lbd_tags));
+                i -= 5;
+            }
+        }
+
+        return codes;
+    }
+
+    /// <summary>
+    /// when installing new mod, use modified tags to check for compatibility
+    /// </summary>
+    /// <param name="instructions"></param>
+    /// <param name="generator"></param>
+    /// <returns></returns>
+    [HarmonyPatch(typeof(XUiM_AssembleItem), nameof(XUiM_AssembleItem.AddPartToItem))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_AddPartToItem_XUiM_AssembleItem(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+    {
+        var codes = instructions.ToList();
+
+        LocalBuilder lbd_tags = generator.DeclareLocal(typeof(FastTags));
+        MethodInfo mtd_has_any_tags = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.HasAnyTags));
+        MethodInfo mtd_test_any_set = AccessTools.Method(typeof(FastTags), nameof(FastTags.Test_AnySet));
+        MethodInfo mtd_get_item_class = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.ItemClass));
+        MethodInfo mtd_get_cur_item = AccessTools.PropertyGetter(typeof(XUiM_AssembleItem), nameof(XUiM_AssembleItem.CurrentItem));
+
+        for (int i = 3; i < codes.Count; i++)
+        {
+            //get current tags
+            if (codes[i].opcode == OpCodes.Stloc_0)
+            {
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Call, mtd_get_cur_item),
+                    CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)),
+                    CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.GetTags)),
+                    new CodeInstruction(OpCodes.Stloc_S, lbd_tags)
+                });
+                i += 5;
+            }
+            //do not touch check on the modification item
+            else if (codes[i].Calls(mtd_has_any_tags) && codes[i - 3].Calls(mtd_get_item_class))
+            {
+                codes[i].operand = mtd_test_any_set;
+                codes[i - 6].MoveLabelsTo(codes[i - 2]);
+                codes.RemoveRange(i - 6, 4);
+                codes.Insert(i - 6, new CodeInstruction(OpCodes.Ldloca_S, lbd_tags));
+                i -= 3;
+            }
+        }
+
+        return codes;
+    }
+
+    #endregion
     //private static bool exported = false;
     //[HarmonyPatch(typeof(EModelUMA), nameof(EModelUMA.onCharacterUpdated))]
     //[HarmonyPostfix]

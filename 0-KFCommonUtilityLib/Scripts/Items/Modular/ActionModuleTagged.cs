@@ -12,7 +12,7 @@ public class ActionModuleTagged
         var tags_to_add = _data.invData.itemValue.GetAllPropertyOverridesForAction("ActionTagsAppend", __instance.ActionIndex);
         var tags_to_remove = _data.invData.itemValue.GetAllPropertyOverridesForAction("ActionTagsRemove", __instance.ActionIndex);
         var tags_result = tags.Union(tags_to_add);
-        tags_result = tags_result.Union(tags_result.Except(tags_to_remove));
+        tags_result = tags_result.Except(tags_to_remove);
 
         __customData.tags = tags_result.Any() ? FastTags.Parse(string.Join(",", tags_result)) : FastTags.none;
     }
