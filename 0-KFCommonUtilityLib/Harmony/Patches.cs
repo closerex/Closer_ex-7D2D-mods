@@ -515,6 +515,7 @@ public class CommonUtilityPatch
             {
                 codes[i - 3].opcode = OpCodes.Ldloca_S;
                 codes[i - 3].operand = lbd_tags;
+                codes[i].opcode = OpCodes.Call;
                 codes[i].operand = mtd_test_any_set;
             }
             //check other mods
@@ -562,7 +563,10 @@ public class CommonUtilityPatch
 
             foreach (var mod in itemValue.Modifications)
             {
-                if (!tagsAfterRemove.Test_AnySet(mod.ItemClass.ItemTags))
+                if (mod.IsEmpty())
+                    continue;
+                ItemClassModifier modClass = mod.ItemClass as ItemClassModifier;
+                if (modClass == null || !tagsAfterRemove.Test_AnySet(modClass.InstallableTags) || tagsAfterRemove.Test_AnySet(modClass.DisallowedTags))
                 {
                     __result = false;
                     return;
@@ -593,7 +597,7 @@ public class CommonUtilityPatch
         for (int i = 3; i < codes.Count; i++)
         {
             //get current tags
-            if (codes[i].opcode == OpCodes.Brfalse_S && codes[i - 1].Calls(mtd_get_cur_item))
+            if ((codes[i].opcode == OpCodes.Brfalse_S || codes[i].opcode == OpCodes.Brfalse) && codes[i - 1].Calls(mtd_get_cur_item))
             {
                 codes.InsertRange(i + 1, new[]
                 {
@@ -610,10 +614,12 @@ public class CommonUtilityPatch
             //do not touch check on the modification item
             else if (codes[i].Calls(mtd_has_any_tags) && codes[i - 3].Calls(mtd_get_item_class))
             {
+                codes[i].opcode = OpCodes.Call;
                 codes[i].operand = mtd_test_any_set;
-                codes[i - 8].MoveLabelsTo(codes[i - 2]);
+                var insert = new CodeInstruction(OpCodes.Ldloca_S, lbd_tags);
+                codes[i - 8].MoveLabelsTo(insert);
                 codes.RemoveRange(i - 8, 6);
-                codes.Insert(i - 8, new CodeInstruction(OpCodes.Ldloca_S, lbd_tags));
+                codes.Insert(i - 8, insert);
                 i -= 5;
             }
         }
@@ -657,10 +663,12 @@ public class CommonUtilityPatch
             //do not touch check on the modification item
             else if (codes[i].Calls(mtd_has_any_tags) && codes[i - 3].Calls(mtd_get_item_class))
             {
+                codes[i].opcode = OpCodes.Call;
                 codes[i].operand = mtd_test_any_set;
-                codes[i - 6].MoveLabelsTo(codes[i - 2]);
+                var insert = new CodeInstruction(OpCodes.Ldloca_S, lbd_tags);
+                codes[i - 6].MoveLabelsTo(insert);
                 codes.RemoveRange(i - 6, 4);
-                codes.Insert(i - 6, new CodeInstruction(OpCodes.Ldloca_S, lbd_tags));
+                codes.Insert(i - 6, insert);
                 i -= 3;
             }
         }
