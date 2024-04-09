@@ -38,8 +38,8 @@ public class AnimationDelayRender : MonoBehaviour, ISerializationCallbackReceive
     [SerializeField, HideInInspector]
     private int serializedCount;
 
-    private TransformLocalData[] posBeforeAnimation;
-    private TransformLocalData[] posAfterAnimation;
+    private TransformLocalData[] posTargets;
+    //private TransformLocalData[] posAfterAnimation;
 
     public void OnAfterDeserialize()
     {
@@ -91,8 +91,8 @@ public class AnimationDelayRender : MonoBehaviour, ISerializationCallbackReceive
                 delayTargets.Add(list_targets[i]);
             }
         }
-        posBeforeAnimation = new TransformLocalData[delayTargets.Count];
-        posAfterAnimation = new TransformLocalData[delayTargets.Count];
+        posTargets = new TransformLocalData[delayTargets.Count];
+        //posAfterAnimation = new TransformLocalData[delayTargets.Count];
     }
 
     private void OnEnable()
@@ -100,20 +100,19 @@ public class AnimationDelayRender : MonoBehaviour, ISerializationCallbackReceive
         int i = 0;
         foreach (var target in delayTargets)
         {
-            posAfterAnimation[i] = new TransformLocalData(target.localPosition, target.localRotation, target.localScale);
+            posTargets[i] = new TransformLocalData(target.localPosition, target.localRotation, target.localScale);
             i++;
         }
     }
 
     private void Update()
     {
-        Array.Copy(posAfterAnimation, posBeforeAnimation, posAfterAnimation.Length);
         int i = 0;
         foreach (var target in delayTargets)
         {
-            target.localPosition = posBeforeAnimation[i].localPosition;
-            target.localRotation = posBeforeAnimation[i].localRotation;
-            target.localScale = posBeforeAnimation[i].localScale;
+            target.localPosition = posTargets[i].localPosition;
+            target.localRotation = posTargets[i].localRotation;
+            target.localScale = posTargets[i].localScale;
             i++;
         }
     }
@@ -123,10 +122,11 @@ public class AnimationDelayRender : MonoBehaviour, ISerializationCallbackReceive
         int i = 0;
         foreach (var target in delayTargets)
         {
-            posAfterAnimation[i] = new TransformLocalData(target.localPosition, target.localRotation, target.localScale);
-            target.localPosition = posBeforeAnimation[i].localPosition;
-            target.localRotation = posBeforeAnimation[i].localRotation;
-            target.localScale = posBeforeAnimation[i].localScale;
+            TransformLocalData targetData = new TransformLocalData(target.localPosition, target.localRotation, target.localScale);
+            target.localPosition = posTargets[i].localPosition;
+            target.localRotation = posTargets[i].localRotation;
+            target.localScale = posTargets[i].localScale;
+            posTargets[i] = targetData;
             i++;
         }
     }

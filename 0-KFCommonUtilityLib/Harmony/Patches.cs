@@ -480,7 +480,7 @@ public class CommonUtilityPatch
     /// <summary>
     /// should handle swapping mod
     /// first check if the mod to install can be installed after current mod is removed
-    /// then check if any other mod requires current mod
+    /// then check if any other mod requires or conflicts current mod
     /// </summary>
     /// <param name="instructions"></param>
     /// <param name="generator"></param>
@@ -491,14 +491,17 @@ public class CommonUtilityPatch
     {
         var codes = instructions.ToList();
 
-        LocalBuilder lbd_tags = generator.DeclareLocal(typeof(FastTags));
+        LocalBuilder lbd_tags_if_remove_prev = generator.DeclareLocal(typeof(FastTags));
+        LocalBuilder lbd_tags_if_install_new = generator.DeclareLocal(typeof(FastTags));
         MethodInfo mtd_get_item_class = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.ItemClass));
         MethodInfo mtd_has_any_tags = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.HasAnyTags));
         MethodInfo mtd_test_any_set = AccessTools.Method(typeof(FastTags), nameof(FastTags.Test_AnySet));
         FieldInfo fld_mod = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Modifications));
+        FieldInfo fld_installable_tags = AccessTools.Field(typeof(ItemClassModifier), nameof(ItemClassModifier.InstallableTags));
 
         for (int i = 3; i < codes.Count; i++)
         {
+            //get current tags
             if (codes[i].opcode == OpCodes.Stloc_2)
             {
                 codes.InsertRange(i + 1, new[]
@@ -507,34 +510,204 @@ public class CommonUtilityPatch
                     new CodeInstruction(OpCodes.Ldarg_0),
                     CodeInstruction.LoadField(typeof(XUiC_ItemPartStack), "itemValue"),
                     CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.GetTagsAsIfNotInstalled)),
-                    new CodeInstruction(OpCodes.Stloc_S, lbd_tags)
+                    new CodeInstruction(OpCodes.Stloc_S, lbd_tags_if_remove_prev),
+                    new CodeInstruction(OpCodes.Ldloc_1),
+                    new CodeInstruction(OpCodes.Ldloc_0),
+                    CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.GetTagsAsIfInstalled)),
+                    new CodeInstruction(OpCodes.Stloc_S, lbd_tags_if_install_new)
                 });
-                i += 5;
+                i += 10;
+                Log.Out("mod 1!!!");
             }
+            //replace checking tags
             else if (codes[i].Calls(mtd_has_any_tags) && codes[i - 3].opcode == OpCodes.Ldloc_2)
             {
+                if (codes[i - 1].LoadsField(fld_installable_tags) && (codes[i + 1].opcode == OpCodes.Brtrue || codes[i + 1].opcode == OpCodes.Brtrue_S))
+                {
+                    var lbl_prev = codes[i + 4].ExtractLabels();
+                    var lbl_jump = generator.DefineLabel();
+                    codes[i + 4].WithLabels(lbl_jump);
+                    codes.InsertRange(i + 4, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldloc_1).WithLabels(lbl_prev),
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(XUiC_ItemPartStack), "itemValue"),
+                        new CodeInstruction(OpCodes.Ldloc_0),
+                        CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.CanSwapMod)),
+                        new CodeInstruction(OpCodes.Brtrue, lbl_jump),
+                        new CodeInstruction(OpCodes.Ldc_I4_0),
+                        new CodeInstruction(OpCodes.Ret)
+                    });
+                }
                 codes[i - 3].opcode = OpCodes.Ldloca_S;
-                codes[i - 3].operand = lbd_tags;
+                codes[i - 3].operand = lbd_tags_if_remove_prev;
                 codes[i].opcode = OpCodes.Call;
                 codes[i].operand = mtd_test_any_set;
+                Log.Out("mod 2!!!");
             }
-            //check other mods
-            else if (codes[i].opcode == OpCodes.Conv_I4 && codes[i - 2].LoadsField(fld_mod))
+            ////check other mods
+            //else if (codes[i].opcode == OpCodes.Conv_I4 && codes[i - 2].LoadsField(fld_mod))
+            //{
+            //    //Label lbl_ret = generator.DefineLabel();
+            //    //codes[i - 10].WithLabels(lbl_ret);
+            //    codes.InsertRange(i - 10, new[]
+            //    {
+            //        new CodeInstruction(OpCodes.Ldloc_S, lbd_tags_if_install_new),
+            //        new CodeInstruction(OpCodes.Ldloc_1),
+            //        CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.Modifications)),
+            //        new CodeInstruction(OpCodes.Ldloc_S, 5),
+            //        new CodeInstruction(OpCodes.Ldelem_Ref),
+            //        new CodeInstruction(OpCodes.Call, mtd_get_item_class),
+            //        new CodeInstruction(OpCodes.Isinst, typeof(ItemClassModifier)),
+            //        CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.CanStay)),
+            //        new CodeInstruction(OpCodes.Brtrue, codes[i - 11].operand)
+            //        //CodeInstruction.Call(typeof(ItemValue), nameof(ItemValue.IsEmpty)),
+            //        //new CodeInstruction(OpCodes.Brtrue, codes[i - 11].operand),
+
+            //        //new CodeInstruction(OpCodes.Ldloca_S, lbd_tags_if_install_new),
+            //        //new CodeInstruction(OpCodes.Ldloc_1),
+            //        //CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.Modifications)),
+            //        //new CodeInstruction(OpCodes.Ldloc_S, 5),
+            //        //new CodeInstruction(OpCodes.Ldelem_Ref),
+            //        //new CodeInstruction(OpCodes.Call, mtd_get_item_class),
+            //        //new CodeInstruction(OpCodes.Castclass, typeof(ItemClassModifier)),
+            //        //CodeInstruction.LoadField(typeof(ItemClassModifier), nameof(ItemClassModifier.InstallableTags)),
+            //        //new CodeInstruction(OpCodes.Call, mtd_test_any_set),
+            //        //new CodeInstruction(OpCodes.Brfalse, lbl_ret),
+            //        //new CodeInstruction(OpCodes.Ldloca_S, lbd_tags_if_install_new),
+            //        //new CodeInstruction(OpCodes.Ldloc_1),
+            //        //CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.Modifications)),
+            //        //new CodeInstruction(OpCodes.Ldloc_S, 5),
+            //        //new CodeInstruction(OpCodes.Ldelem_Ref),
+            //        //new CodeInstruction(OpCodes.Call, mtd_get_item_class),
+            //        //new CodeInstruction(OpCodes.Castclass, typeof(ItemClassModifier)),
+            //        //CodeInstruction.LoadField(typeof(ItemClassModifier), nameof(ItemClassModifier.DisallowedTags)),
+            //        //new CodeInstruction(OpCodes.Call, mtd_test_any_set),
+            //        //new CodeInstruction(OpCodes.Brfalse, codes[i - 11].operand)
+            //    });
+            //    i += 9;
+            //    Log.Out("mod 3!!!");
+            //}
+        }
+
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(XUiC_ItemCosmeticStack), "CanSwap")]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_CanSwap_XUiC_ItemCosmeticStack(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+    {
+        var codes = instructions.ToList();
+
+        LocalBuilder lbd_tags_if_remove_prev = generator.DeclareLocal(typeof(FastTags));
+        LocalBuilder lbd_tags_if_install_new = generator.DeclareLocal(typeof(FastTags));
+        LocalBuilder lbd_item_being_assembled = generator.DeclareLocal(typeof(ItemValue));
+        MethodInfo mtd_get_item_class = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.ItemClass));
+        MethodInfo mtd_has_any_tags = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.HasAnyTags));
+        MethodInfo mtd_test_any_set = AccessTools.Method(typeof(FastTags), nameof(FastTags.Test_AnySet));
+        MethodInfo mtd_get_xui = AccessTools.PropertyGetter(typeof(XUiController), nameof(XUiController.xui));
+        MethodInfo mtd_get_cur_item = AccessTools.PropertyGetter(typeof(XUiM_AssembleItem), nameof(XUiM_AssembleItem.CurrentItem));
+        FieldInfo fld_cos = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.CosmeticMods));
+        FieldInfo fld_installable_tags = AccessTools.Field(typeof(ItemClassModifier), nameof(ItemClassModifier.InstallableTags));
+
+        for (int i = 3; i < codes.Count; i++)
+        {
+            //get current tags
+            if ((codes[i].opcode == OpCodes.Brtrue || codes[i].opcode == OpCodes.Brtrue_S) && codes[i - 1].opcode == OpCodes.Ldloc_0)
             {
-                codes.InsertRange(i - 10, new[]
+                codes.InsertRange(i + 3, new[]
                 {
-                    new CodeInstruction(OpCodes.Ldloca_S, lbd_tags),
-                    new CodeInstruction(OpCodes.Ldloc_1),
-                    CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.Modifications)),
-                    new CodeInstruction(OpCodes.Ldloc_S, 5),
-                    new CodeInstruction(OpCodes.Ldelem_Ref),
-                    new CodeInstruction(OpCodes.Call, mtd_get_item_class),
-                    CodeInstruction.LoadField(typeof(ItemClass), nameof(ItemClass.ItemTags)),
-                    new CodeInstruction(OpCodes.Call, mtd_test_any_set),
-                    new CodeInstruction(OpCodes.Brtrue_S, codes[i - 11].operand)
+                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(codes[i + 3]),
+                    new CodeInstruction(OpCodes.Call, mtd_get_xui),
+                    CodeInstruction.LoadField(typeof(XUi), nameof(XUi.AssembleItem)),
+                    new CodeInstruction(OpCodes.Callvirt, mtd_get_cur_item),
+                    CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)),
+                    new CodeInstruction(OpCodes.Stloc_S, lbd_item_being_assembled),
+                    new CodeInstruction(OpCodes.Ldloc_S, lbd_item_being_assembled),
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    CodeInstruction.LoadField(typeof(XUiC_ItemCosmeticStack), "itemValue"),
+                    CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.GetTagsAsIfNotInstalled)),
+                    new CodeInstruction(OpCodes.Stloc_S, lbd_tags_if_remove_prev),
+                    new CodeInstruction(OpCodes.Ldloc_S, lbd_item_being_assembled),
+                    new CodeInstruction(OpCodes.Ldloc_0),
+                    CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.GetTagsAsIfInstalled)),
+                    new CodeInstruction(OpCodes.Stloc_S, lbd_tags_if_install_new)
                 });
-                i += 9;
+                i += 18;
+                Log.Out("cos 1!!!");
             }
+            //replace checking tags
+            else if (codes[i].Calls(mtd_has_any_tags) && codes[i - 3].Calls(mtd_get_item_class))
+            {
+                if (codes[i - 1].LoadsField(fld_installable_tags) && (codes[i + 1].opcode == OpCodes.Brtrue || codes[i + 1].opcode == OpCodes.Brtrue_S))
+                {
+                    var lbl_prev = codes[i + 4].ExtractLabels();
+                    var lbl_jump = generator.DefineLabel();
+                    codes[i + 4].WithLabels(lbl_jump);
+                    codes.InsertRange(i + 4, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldloc_S, lbd_item_being_assembled).WithLabels(lbl_prev),
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(XUiC_ItemPartStack), "itemValue"),
+                        new CodeInstruction(OpCodes.Ldloc_0),
+                        CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.CanSwapMod)),
+                        new CodeInstruction(OpCodes.Brtrue, lbl_jump),
+                        new CodeInstruction(OpCodes.Ldc_I4_0),
+                        new CodeInstruction(OpCodes.Ret)
+                    });
+                }
+                codes[i - 8].MoveLabelsTo(codes[i - 3]);
+                codes[i - 3].opcode = OpCodes.Ldloca_S;
+                codes[i - 3].operand = lbd_tags_if_remove_prev;
+                codes[i].opcode = OpCodes.Call;
+                codes[i].operand = mtd_test_any_set;
+                codes.RemoveRange(i - 8, 5);
+                i -= 5;
+                Log.Out("cos 2!!!");
+            }
+            ////check other mods
+            //else if (codes[i].opcode == OpCodes.Conv_I4 && codes[i - 2].LoadsField(fld_cos))
+            //{
+            //    //Label lbl_ret = generator.DefineLabel();
+            //    //codes[i - 14].WithLabels(lbl_ret);
+            //    codes.InsertRange(i - 14, new[]
+            //    {
+            //        new CodeInstruction(OpCodes.Ldloc_S, lbd_tags_if_install_new),
+            //        new CodeInstruction(OpCodes.Ldloc_S, lbd_item_being_assembled),
+            //        CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.CosmeticMods)),
+            //        new CodeInstruction(OpCodes.Ldloc_S, 4),
+            //        new CodeInstruction(OpCodes.Ldelem_Ref),
+            //        new CodeInstruction(OpCodes.Call, mtd_get_item_class),
+            //        new CodeInstruction(OpCodes.Isinst, typeof(ItemClassModifier)),
+            //        CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.CanStay)),
+            //        new CodeInstruction(OpCodes.Brtrue, codes[i - 15].operand)
+            //        //CodeInstruction.Call(typeof(ItemValue), nameof(ItemValue.IsEmpty)),
+            //        //new CodeInstruction(OpCodes.Brtrue, codes[i - 15].operand),
+
+            //        //new CodeInstruction(OpCodes.Ldloca_S, lbd_tags_if_install_new),
+            //        //new CodeInstruction(OpCodes.Ldloc_S, lbd_item_being_assembled),
+            //        //CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.CosmeticMods)),
+            //        //new CodeInstruction(OpCodes.Ldloc_S, 4),
+            //        //new CodeInstruction(OpCodes.Ldelem_Ref),
+            //        //new CodeInstruction(OpCodes.Call, mtd_get_item_class),
+            //        //new CodeInstruction(OpCodes.Castclass, typeof(ItemClassModifier)),
+            //        //CodeInstruction.LoadField(typeof(ItemClassModifier), nameof(ItemClassModifier.InstallableTags)),
+            //        //new CodeInstruction(OpCodes.Call, mtd_test_any_set),
+            //        //new CodeInstruction(OpCodes.Brfalse, lbl_ret),
+            //        //new CodeInstruction(OpCodes.Ldloca_S, lbd_tags_if_install_new),
+            //        //new CodeInstruction(OpCodes.Ldloc_S, lbd_item_being_assembled),
+            //        //CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.CosmeticMods)),
+            //        //new CodeInstruction(OpCodes.Ldloc_S, 4),
+            //        //new CodeInstruction(OpCodes.Ldelem_Ref),
+            //        //new CodeInstruction(OpCodes.Call, mtd_get_item_class),
+            //        //new CodeInstruction(OpCodes.Castclass, typeof(ItemClassModifier)),
+            //        //CodeInstruction.LoadField(typeof(ItemClassModifier), nameof(ItemClassModifier.DisallowedTags)),
+            //        //new CodeInstruction(OpCodes.Call, mtd_test_any_set),
+            //        //new CodeInstruction(OpCodes.Brfalse, codes[i - 15].operand)
+            //    });
+            //    i += 9;
+            //    Log.Out("cos 3!!!");
+            //}
         }
 
         return codes;
@@ -562,6 +735,35 @@ public class CommonUtilityPatch
             }
 
             foreach (var mod in itemValue.Modifications)
+            {
+                if (mod.IsEmpty())
+                    continue;
+                ItemClassModifier modClass = mod.ItemClass as ItemClassModifier;
+                if (modClass == null || !tagsAfterRemove.Test_AnySet(modClass.InstallableTags) || tagsAfterRemove.Test_AnySet(modClass.DisallowedTags))
+                {
+                    __result = false;
+                    return;
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(XUiC_ItemCosmeticStack), "CanRemove")]
+    [HarmonyPostfix]
+    private static void Postfix_CanRemove_XUiC_ItemCosmeticStack(ref bool __result, XUiC_ItemCosmeticStack __instance, ItemValue ___itemValue)
+    {
+        if (__result)
+        {
+            ItemValue itemValue = __instance.xui.AssembleItem.CurrentItem.itemValue;
+            ItemClass itemClass = itemValue.ItemClass;
+            FastTags tagsAfterRemove = LocalItemTagsManager.GetTagsAsIfNotInstalled(itemValue, ___itemValue);
+            if (tagsAfterRemove.IsEmpty)
+            {
+                __result = false;
+                return;
+            }
+
+            foreach (var mod in itemValue.CosmeticMods)
             {
                 if (mod.IsEmpty())
                     continue;
@@ -639,12 +841,17 @@ public class CommonUtilityPatch
     {
         var codes = instructions.ToList();
 
-        LocalBuilder lbd_tags = generator.DeclareLocal(typeof(FastTags));
+        LocalBuilder lbd_tags_cur = generator.DeclareLocal(typeof(FastTags));
+        LocalBuilder lbd_tags_after_install = generator.DeclareLocal(typeof(FastTags));
         MethodInfo mtd_has_any_tags = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.HasAnyTags));
         MethodInfo mtd_test_any_set = AccessTools.Method(typeof(FastTags), nameof(FastTags.Test_AnySet));
         MethodInfo mtd_get_item_class = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.ItemClass));
         MethodInfo mtd_get_cur_item = AccessTools.PropertyGetter(typeof(XUiM_AssembleItem), nameof(XUiM_AssembleItem.CurrentItem));
-
+        MethodInfo mtd_is_empty = AccessTools.Method(typeof(ItemValue), nameof(ItemValue.IsEmpty));
+        FieldInfo fld_cos = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.CosmeticMods));
+        FieldInfo fld_mod = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Modifications));
+        FieldInfo fld_installable_tags = AccessTools.Field(typeof(ItemClassModifier), nameof(ItemClassModifier.InstallableTags));
+        
         for (int i = 3; i < codes.Count; i++)
         {
             //get current tags
@@ -655,22 +862,91 @@ public class CommonUtilityPatch
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new CodeInstruction(OpCodes.Call, mtd_get_cur_item),
                     CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)),
+                    new CodeInstruction(OpCodes.Dup),
                     CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.GetTags)),
-                    new CodeInstruction(OpCodes.Stloc_S, lbd_tags)
+                    new CodeInstruction(OpCodes.Stloc_S, lbd_tags_cur),
+                    new CodeInstruction(OpCodes.Ldloc_0),
+                    CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.GetTagsAsIfInstalled)),
+                    new CodeInstruction(OpCodes.Stloc_S, lbd_tags_after_install)
                 });
-                i += 5;
+                i += 9;
             }
-            //do not touch check on the modification item
+            //do not touch check on the modification item, check if current mod can be installed
             else if (codes[i].Calls(mtd_has_any_tags) && codes[i - 3].Calls(mtd_get_item_class))
             {
+                if (codes[i - 1].LoadsField(fld_installable_tags))
+                {
+                    codes.InsertRange(i + 2, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        new CodeInstruction(OpCodes.Call, mtd_get_cur_item),
+                        CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)),
+                        new CodeInstruction(OpCodes.Ldloc_0),
+                        CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.CanInstallMod)),
+                        new CodeInstruction(OpCodes.Brfalse, codes[i + 1].operand)
+                    });
+                }
                 codes[i].opcode = OpCodes.Call;
                 codes[i].operand = mtd_test_any_set;
-                var insert = new CodeInstruction(OpCodes.Ldloca_S, lbd_tags);
+                var insert = new CodeInstruction(OpCodes.Ldloca_S, lbd_tags_cur);
                 codes[i - 6].MoveLabelsTo(insert);
                 codes.RemoveRange(i - 6, 4);
                 codes.Insert(i - 6, insert);
                 i -= 3;
             }
+            //check if current mod adds tags that conflicts with other mods
+            //else if ((codes[i].opcode == OpCodes.Brfalse || codes[i].opcode == OpCodes.Brfalse_S) && (codes[i - 1].LoadsField(fld_cos) || codes[i - 1].LoadsField(fld_mod)))
+            //{
+            //    //jump to the end of function
+            //    object lbl_end = codes[i].operand;
+            //    //which array is being checked now, cosmetic or modification?
+            //    object fld_cur = codes[i - 1].operand;
+            //    for (int j = i + 1; j < codes.Count; j++)
+            //    {
+            //        if (codes[j].Calls(mtd_is_empty))
+            //        {
+            //            //before jumping to loop statement, adds an else if
+            //            Label lbl_new = generator.DefineLabel();
+            //            //store the mod class for convenience
+            //            LocalBuilder lbd_mod_class = generator.DeclareLocal(typeof(ItemClassModifier));
+            //            //the loop statement label
+            //            object lbl_old = codes[j + 1].operand;
+            //            codes[j + 1].operand = lbl_new;
+            //            codes.InsertRange(j + 2, new[]
+            //            {
+            //                new CodeInstruction(OpCodes.Ldarg_0).WithLabels(lbl_new),
+            //                new CodeInstruction(OpCodes.Call, mtd_get_cur_item),
+            //                CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)),
+            //                new CodeInstruction(OpCodes.Ldfld, fld_cur),
+            //                new CodeInstruction(codes[j - 2].opcode, codes[j - 2].operand),
+            //                new CodeInstruction(OpCodes.Ldelem_Ref),
+            //                new CodeInstruction(OpCodes.Call, mtd_get_item_class),
+            //                new CodeInstruction(OpCodes.Isinst, typeof(ItemClassModifier)),
+            //                new CodeInstruction(OpCodes.Stloc_S, lbd_mod_class),
+            //                new CodeInstruction(OpCodes.Ldloc_S, lbd_tags_after_install),
+            //                new CodeInstruction(OpCodes.Ldloc_S, lbd_mod_class),
+            //                CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.CanStay)),
+            //                new CodeInstruction(OpCodes.Brfalse, lbl_end),
+            //                //new CodeInstruction(OpCodes.Ldloc_S, lbd_mod_class),
+            //                //new CodeInstruction(OpCodes.Brfalse, lbl_old),
+            //                //new CodeInstruction(OpCodes.Ldloca_S, lbd_tags_after_install),
+            //                //new CodeInstruction(OpCodes.Ldloc_S, lbd_mod_class),
+            //                //CodeInstruction.LoadField(typeof(ItemClassModifier), nameof(ItemClassModifier.InstallableTags)),
+            //                //new CodeInstruction(OpCodes.Call, mtd_test_any_set),
+            //                //new CodeInstruction(OpCodes.Brfalse, lbl_end),
+            //                //new CodeInstruction(OpCodes.Ldloca_S, lbd_tags_after_install),
+            //                //new CodeInstruction(OpCodes.Ldloc_S, lbd_mod_class),
+            //                //CodeInstruction.LoadField(typeof(ItemClassModifier), nameof(ItemClassModifier.DisallowedTags)),
+            //                //new CodeInstruction(OpCodes.Call, mtd_test_any_set),
+            //                //new CodeInstruction(OpCodes.Brtrue, lbl_end),
+            //                new CodeInstruction(OpCodes.Br, lbl_old)
+            //            });
+            //            i = j + 16;
+            //            Log.Out("xuim!!!");
+            //            break;
+            //        }
+            //    }
+            //}
         }
 
         return codes;

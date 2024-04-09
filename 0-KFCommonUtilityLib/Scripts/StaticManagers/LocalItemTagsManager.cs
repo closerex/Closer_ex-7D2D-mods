@@ -13,6 +13,133 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
     /// </summary>
     public static class LocalItemTagsManager
     {
+        public static bool CanInstall(FastTags itemTags, ItemClassModifier modClass)
+        {
+            return modClass != null && (modClass.InstallableTags.IsEmpty || itemTags.Test_AnySet(modClass.InstallableTags)) && (modClass.DisallowedTags.IsEmpty || !itemTags.Test_AnySet(modClass.DisallowedTags));
+        }
+
+        public static bool CanStay(FastTags itemTags, ItemClassModifier modClass)
+        {
+            Log.Out($"mod class is null {modClass is null}");
+            if (modClass != null)
+            {
+                Log.Out($"installable {modClass.InstallableTags.IsEmpty || itemTags.Test_AnySet(modClass.InstallableTags)}, disallowed {modClass.DisallowedTags.IsEmpty || !itemTags.Test_AnySet(modClass.DisallowedTags)}");
+            }
+            return modClass == null || ((modClass.InstallableTags.IsEmpty || itemTags.Test_AnySet(modClass.InstallableTags)) && (modClass.DisallowedTags.IsEmpty || !itemTags.Test_AnySet(modClass.DisallowedTags)));
+        }
+
+        public static bool CanInstallMod(this ItemValue itemValue, ItemClassModifier modToInstall)
+        {
+            if (modToInstall == null)
+            {
+                return false;
+            }
+
+            FastTags tags_after_install = GetTagsAsIfInstalled(itemValue, modToInstall);
+
+            if (itemValue.CosmeticMods != null)
+            {
+                foreach (var cosValue in itemValue.CosmeticMods)
+                {
+                    if (cosValue == null || cosValue.IsEmpty())
+                    {
+                        continue;
+                    }
+
+                    ItemClassModifier cosClass = cosValue.ItemClass as ItemClassModifier;
+                    if (cosClass == null)
+                    {
+                        continue;
+                    }
+
+                    if (!tags_after_install.Test_AnySet(cosClass.InstallableTags) || tags_after_install.Test_AnySet(cosClass.DisallowedTags))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            if (itemValue.Modifications != null)
+            {
+                foreach (var modValue in itemValue.Modifications)
+                {
+                    if (modValue == null || modValue.IsEmpty())
+                    {
+                        continue;
+                    }
+
+                    ItemClassModifier modClass = modValue.ItemClass as ItemClassModifier;
+                    if (modClass == null)
+                    {
+                        continue;
+                    }
+
+                    if (!tags_after_install.Test_AnySet(modClass.InstallableTags) || tags_after_install.Test_AnySet(modClass.DisallowedTags))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        public static bool CanSwapMod(this ItemValue itemValue, ItemValue modToSwap, ItemClassModifier modToInstall)
+        {
+            if (modToInstall == null)
+            {
+                return false;
+            }
+
+            FastTags tags_after_swap = GetTagsAsIfSwapped(itemValue, modToSwap, modToInstall);
+
+            if (itemValue.CosmeticMods != null)
+            {
+                foreach (var cosValue in itemValue.CosmeticMods)
+                {
+                    if (cosValue == null || cosValue.IsEmpty() || cosValue == modToSwap)
+                    {
+                        continue;
+                    }
+
+                    ItemClassModifier cosClass = cosValue.ItemClass as ItemClassModifier;
+                    if (cosClass == null)
+                    {
+                        continue;
+                    }
+
+                    if (!tags_after_swap.Test_AnySet(cosClass.InstallableTags) || tags_after_swap.Test_AnySet(cosClass.DisallowedTags))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            if (itemValue.Modifications != null)
+            {
+                foreach (var modValue in itemValue.Modifications)
+                {
+                    if (modValue == null || modValue.IsEmpty() || modValue == modToSwap)
+                    {
+                        continue;
+                    }
+
+                    ItemClassModifier modClass = modValue.ItemClass as ItemClassModifier;
+                    if (modClass == null)
+                    {
+                        continue;
+                    }
+
+                    if (!tags_after_swap.Test_AnySet(modClass.InstallableTags) || tags_after_swap.Test_AnySet(modClass.DisallowedTags))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
         public static FastTags GetTags(ItemValue itemValue)
         {
             var str = string.Join(",", itemValue.GetPropertyOverrides("ItemTagsAppend"));
@@ -27,6 +154,44 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             var str = string.Join(",", itemValue.GetPropertyOverridesWithoutMod(modValue, "ItemTagsAppend"));
             FastTags tagsToAdd = string.IsNullOrEmpty(str) ? FastTags.none : FastTags.Parse(str);
             str = string.Join(",", itemValue.GetPropertyOverridesWithoutMod(modValue, "ItemTagsRemove"));
+            FastTags tagsToRemove = string.IsNullOrEmpty(str) ? FastTags.none : FastTags.Parse(str);
+            return (itemValue.ItemClass.ItemTags | tagsToAdd).Remove(tagsToRemove);
+        }
+
+        public static FastTags GetTagsAsIfInstalled(ItemValue itemValue, ItemClassModifier modClass)
+        {
+            string itemName = itemValue.ItemClass.GetItemName();
+            string val = "";
+            var str = string.Join(",", itemValue.GetPropertyOverrides("ItemTagsAppend"));
+            if (modClass.GetPropertyOverride("ItemTagsAppend", itemName, ref val))
+            {
+                str = string.Join(",", str, val);
+            }
+            FastTags tagsToAdd = string.IsNullOrEmpty(str) ? FastTags.none : FastTags.Parse(str);
+            str = string.Join(",", itemValue.GetPropertyOverrides("ItemTagsRemove"));
+            if (modClass.GetPropertyOverride("ItemTagsRemove", itemName, ref val))
+            {
+                str = string.Join(",", str, val);
+            }
+            FastTags tagsToRemove = string.IsNullOrEmpty(str) ? FastTags.none : FastTags.Parse(str);
+            return (itemValue.ItemClass.ItemTags | tagsToAdd).Remove(tagsToRemove);
+        }
+
+        public static FastTags GetTagsAsIfSwapped(ItemValue itemValue, ItemValue modValue, ItemClassModifier modClass)
+        {
+            string itemName = itemValue.ItemClass.GetItemName();
+            string val = "";
+            var str = string.Join(",", itemValue.GetPropertyOverridesWithoutMod(modValue, "ItemTagsAppend"));
+            if (modClass.GetPropertyOverride("ItemTagsAppend", itemName, ref val))
+            {
+                str = string.Join(",", str, val);
+            }
+            FastTags tagsToAdd = string.IsNullOrEmpty(str) ? FastTags.none : FastTags.Parse(str);
+            str = string.Join(",", itemValue.GetPropertyOverridesWithoutMod(modValue, "ItemTagsRemove"));
+            if (modClass.GetPropertyOverride("ItemTagsRemove", itemName, ref val))
+            {
+                str = string.Join(",", str, val);
+            }
             FastTags tagsToRemove = string.IsNullOrEmpty(str) ? FastTags.none : FastTags.Parse(str);
             return (itemValue.ItemClass.ItemTags | tagsToAdd).Remove(tagsToRemove);
         }
