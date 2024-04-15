@@ -9,13 +9,13 @@ public class AnimationRandomRecoil : AnimationProceduralRecoildAbs
     [SerializeField] private Transform target;
     [SerializeField] private Transform pivot;
     [Header("Rotation")]
-    [SerializeField] private Vector3 minRotation = new Vector3(-5, -2, -2);
-    [SerializeField] private Vector3 maxRotation = new Vector3(0, 2, 2);
+    //[SerializeField] private Vector3 minRotation = new Vector3(-5, -2, -2);
+    //[SerializeField] private Vector3 maxRotation = new Vector3(0, 2, 2);
     [SerializeField] private Vector3 randomRotationMin = new Vector3(-3, -1, -1);
     [SerializeField] private Vector3 randomRotationMax = new Vector3(-1, 1, 1);
     [Header("Kickback")]
-    [SerializeField] private Vector3 minKickback = new Vector3(0, 0, -0.05f);
-    [SerializeField] private Vector3 maxKickback = new Vector3(0, 0, 0);
+    //[SerializeField] private Vector3 minKickback = new Vector3(0, 0, -0.05f);
+    //[SerializeField] private Vector3 maxKickback = new Vector3(0, 0, 0);
     [SerializeField] private Vector3 randomKickbackMin = new Vector3(0, 0, -0.025f);
     [SerializeField] private Vector3 randomKickbackMax = new Vector3(0, 0, -0.01f);
     [Header("Recoil")]
@@ -30,7 +30,7 @@ public class AnimationRandomRecoil : AnimationProceduralRecoildAbs
     private Vector3 currentRotation = Vector3.zero;
     private Vector3 currentPosition = Vector3.zero;
     private Sequence seq;
-    private bool isTweeningIn = true;
+    //private bool isTweeningIn = true;
 
     private void Awake()
     {
@@ -42,8 +42,8 @@ public class AnimationRandomRecoil : AnimationProceduralRecoildAbs
 
     public override void AddRecoil(Vector3 positionMultiplier, Vector3 rotationMultiplier)
     {
-        targetPosition = math.clamp(targetPosition + Vector3.Scale(KFExtensions.Random(randomKickbackMin, randomKickbackMax), positionMultiplier), minKickback, maxKickback);
-        targetRotation = math.clamp(targetRotation + Vector3.Scale(KFExtensions.Random(randomRotationMin, randomRotationMax), rotationMultiplier), minRotation, maxRotation);
+        targetPosition = Vector3.Scale(KFExtensions.Random(randomKickbackMin, randomKickbackMax), positionMultiplier);
+        targetRotation = Vector3.Scale(KFExtensions.Random(randomRotationMin, randomRotationMax), rotationMultiplier);
         GameObject targetObj = target.gameObject;
         RecreateSeq();
     }
@@ -60,19 +60,21 @@ public class AnimationRandomRecoil : AnimationProceduralRecoildAbs
 
     private void ResetSeq()
     {
-        seq.Rewind(false);
+        seq?.Rewind(false);
         target.localEulerAngles = Vector3.zero;
         target.localPosition = Vector3.zero;
     }
 
     private void RecreateSeq()
     {
+        currentPosition = Vector3.zero;
+        currentRotation = Vector3.zero;
         seq?.Kill(false);
         seq = DOTween.Sequence()
-                     .InsertCallback(0, () => isTweeningIn = true)
+                     //.InsertCallback(0, () => isTweeningIn = true)
                      .Insert(0, DOTween.To(() => currentRotation, (rot) => currentRotation = rot, targetRotation, tweenInDuration).SetEase(Ease.OutCubic))
                      .Insert(0, DOTween.To(() => currentPosition, (pos) => currentPosition = pos, targetPosition, tweenInDuration).SetEase(Ease.OutCubic))
-                     .InsertCallback(tweenInDuration, () => isTweeningIn = false)
+                     //.InsertCallback(tweenInDuration, () => isTweeningIn = false)
                      .Insert(tweenInDuration, DOTween.To(() => currentRotation, (rot) => currentRotation = rot, Vector3.zero, tweenOutDuration).SetEase(Ease.OutElastic, elasticAmplitude, elasticPeriod))
                      .Insert(tweenInDuration, DOTween.To(() => currentPosition, (rot) => currentPosition = rot, Vector3.zero, tweenOutDuration).SetEase(Ease.OutElastic, elasticAmplitude, elasticPeriod))
                      .OnUpdate(UpdateTransform)
@@ -82,12 +84,14 @@ public class AnimationRandomRecoil : AnimationProceduralRecoildAbs
 
     private void UpdateTransform()
     {
+        target.localEulerAngles = Vector3.zero;
+        target.localPosition = Vector3.zero;
         target.RotateAroundPivot(pivot, currentRotation);
-        target.localPosition += currentPosition;
-        if (!isTweeningIn)
-        {
-            targetRotation = currentRotation;
-            targetPosition = currentPosition;
-        }
+        target.localPosition = currentPosition;
+        //if (!isTweeningIn)
+        //{
+        //    targetRotation = currentRotation;
+        //    targetPosition = currentPosition;
+        //}
     }
 }
