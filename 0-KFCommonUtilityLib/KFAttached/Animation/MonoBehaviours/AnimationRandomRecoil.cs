@@ -87,7 +87,7 @@ public class AnimationRandomRecoil : AnimationProceduralRecoildAbs
         target.localEulerAngles = Vector3.zero;
         target.localPosition = Vector3.zero;
         target.RotateAroundPivot(pivot, currentRotation);
-        target.localPosition = currentPosition;
+        target.localPosition += currentPosition;
         //if (!isTweeningIn)
         //{
         //    targetRotation = currentRotation;
