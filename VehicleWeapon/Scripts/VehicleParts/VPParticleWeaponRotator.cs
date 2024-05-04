@@ -21,7 +21,7 @@ public class VPParticleWeaponRotator : VehicleWeaponHitposPreviewRotatorBase
         aimAt.x = -Angle(hitPos, (weapon as VPParticleWeapon).WeaponSystem.transform.position, projectileSpeed, gravity);
         aimAt = (Quaternion.Inverse(transform.rotation) * Quaternion.Euler(aimAt)).eulerAngles;
         targetHorAngle = AngleToLimited(AngleToInferior(aimAt.y), horizontalMinRotation, horizontalMaxRotation);
-        targetVerAngle = AngleToLimited(AngleToInferior(aimAt.x), -verticleMaxRotation, -verticleMinRotation);
+        targetVerAngle = AngleToLimited(AngleToInferior(aimAt.x), -verticalMaxRotation, -verticalMinRotation);
     }
 }
 

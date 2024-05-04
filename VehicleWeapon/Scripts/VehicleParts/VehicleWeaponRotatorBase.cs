@@ -10,11 +10,13 @@ public abstract class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     protected Color indicatorColorOnTarget;
     protected Color indicatorColorAiming;
     protected int indicatorColorProperty;
-    protected float verticleMaxRotation;
-    protected float verticleMinRotation;
-    protected float verticleRotSpeed;
+    protected float verticalMaxRotation;
+    protected float verticalMinRotation;
+    protected float verticalRotSpeed;
     protected float horizontalMaxRotation;
     protected float horizontalMinRotation;
+    protected float verticalOffsetRotation;
+    protected float horizontalOffsetRotation;
     protected float horizontalRotSpeed;
     protected bool syncPlayerRotation = false;
 
@@ -35,6 +37,8 @@ public abstract class VehicleWeaponRotatorBase : VehicleWeaponPartBase
 
     public virtual Transform HorRotTrans { get => horRotTrans; }
     public virtual Transform VerRotTrans { get => verRotTrans; }
+    public float CurHorRot => horRotTrans.localEulerAngles.y + horizontalOffsetRotation;
+    public float CurVerRot => verRotTrans.localEulerAngles.x + verticalOffsetRotation;
     public Transform IndicatorTrans { get => indicatorTrans; }
     public bool OnTarget { get => lastOnTarget; }
 
@@ -58,6 +62,10 @@ public abstract class VehicleWeaponRotatorBase : VehicleWeaponPartBase
             InitIKTarget(AvatarIKGoal.RightHand, rightHandbarTrans);
             rightHandbarInitialRotation = rightHandbarTrans.localRotation;
         }
+        verticalOffsetRotation = 0f;
+        properties.ParseFloat("verticalOffsetRotation", ref verticalOffsetRotation);
+        horizontalOffsetRotation = 0f;
+        properties.ParseFloat("horizontalOffsetRotation", ref horizontalOffsetRotation);
 
         player = GameManager.Instance.World.GetPrimaryPlayer();
     }
@@ -65,20 +73,20 @@ public abstract class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     public override void ApplyModEffect(ItemValue vehicleValue)
     {
         base.ApplyModEffect(vehicleValue);
-        verticleMaxRotation = 45f;
-        properties.ParseFloat("verticleMaxRotation", ref verticleMaxRotation);
-        verticleMaxRotation = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "verticleMaxRotation", verticleMaxRotation.ToString()));
-        verticleMaxRotation = AngleToInferior(verticleMaxRotation);
+        verticalMaxRotation = 45f;
+        properties.ParseFloat("verticleMaxRotation", ref verticalMaxRotation);
+        verticalMaxRotation = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "verticleMaxRotation", verticalMaxRotation.ToString()));
+        verticalMaxRotation = AngleToInferior(verticalMaxRotation);
 
-        verticleMinRotation = 0f;
-        properties.ParseFloat("verticleMinRotation", ref verticleMinRotation);
-        verticleMinRotation = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "verticleMinRotation", verticleMinRotation.ToString()));
-        verticleMinRotation = AngleToInferior(verticleMinRotation);
+        verticalMinRotation = 0f;
+        properties.ParseFloat("verticleMinRotation", ref verticalMinRotation);
+        verticalMinRotation = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "verticleMinRotation", verticalMinRotation.ToString()));
+        verticalMinRotation = AngleToInferior(verticalMinRotation);
 
-        verticleRotSpeed = 360f;
-        properties.ParseFloat("verticleRotationSpeed", ref verticleRotSpeed);
-        verticleRotSpeed = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "verticleRotSpeed", verticleRotSpeed.ToString()));
-        verticleRotSpeed = Mathf.Abs(verticleRotSpeed);
+        verticalRotSpeed = 360f;
+        properties.ParseFloat("verticleRotationSpeed", ref verticalRotSpeed);
+        verticalRotSpeed = float.Parse(vehicleValue.GetVehicleWeaponPropertyOverride(ModName, "verticleRotSpeed", verticalRotSpeed.ToString()));
+        verticalRotSpeed = Mathf.Abs(verticalRotSpeed);
 
         horizontalMaxRotation = 180f;
         properties.ParseFloat("horizontalMaxRotation", ref horizontalMaxRotation);
@@ -146,7 +154,7 @@ public abstract class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     {
         DoRotateTowards(_dt);
 
-        shouldUpdate = (horRotTrans != null && Mathf.Abs(lastHorRot - horRotTrans.localEulerAngles.y) > 1f) || (verRotTrans != null && Mathf.Abs(lastVerRot - verRotTrans.localEulerAngles.x) > 1f);
+        shouldUpdate = (horRotTrans != null && Mathf.Abs(lastHorRot - CurHorRot) > 1f) || (verRotTrans != null && Mathf.Abs(lastVerRot - CurVerRot) > 1f);
 
         bool onTarget = IsOnTarget();
         if (onTarget != lastOnTarget)
@@ -163,7 +171,7 @@ public abstract class VehicleWeaponRotatorBase : VehicleWeaponPartBase
 
     protected internal virtual bool IsOnTarget()
     {
-        return (horRotTrans == null || FuzzyEqualAngle(nextHorRot, AngleToInferior(horRotTrans.localEulerAngles.y), 1f)) && (verRotTrans == null || FuzzyEqualAngle(nextVerRot, AngleToInferior(verRotTrans.localEulerAngles.x), 0.5f));
+        return (horRotTrans == null || FuzzyEqualAngle(nextHorRot, AngleToInferior(CurHorRot), 1f)) && (verRotTrans == null || FuzzyEqualAngle(nextVerRot, AngleToInferior(CurVerRot), 0.5f));
     }
 
     public override void NetSyncWrite(PooledBinaryWriter _bw)
@@ -234,7 +242,7 @@ public abstract class VehicleWeaponRotatorBase : VehicleWeaponPartBase
         if (horRotTrans == null)
             return false;
 
-        float curHorAngle = AngleToInferior(horRotTrans.localEulerAngles.y);
+        float curHorAngle = AngleToInferior(CurHorRot);
         if (forced || !FuzzyEqualAngle(curHorAngle, nextHorRot, 0.01f))
         {
             HorRotateTowards(_dt);
@@ -248,7 +256,7 @@ public abstract class VehicleWeaponRotatorBase : VehicleWeaponPartBase
         if (verRotTrans == null)
             return false;
 
-        float curVerAngle = AngleToInferior(verRotTrans.localEulerAngles.x);
+        float curVerAngle = AngleToInferior(CurVerRot);
         if (forced || !FuzzyEqualAngle(curVerAngle, nextVerRot, 0.01f))
         {
             VerRotateTowards(_dt);
@@ -261,7 +269,7 @@ public abstract class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     {
         //targetHorAngle = AngleToLimited(targetHorAngle, horizontalMinRotation, horizontalMaxRotation);
         float maxRotPerUpdate = horizontalRotSpeed * _dt;
-        float curHorAngle = AngleToInferior(horRotTrans.localEulerAngles.y);
+        float curHorAngle = AngleToInferior(CurHorRot);
         float nextHorAngle;
         if (!fullCircleRotation)
             nextHorAngle = nextHorRot > curHorAngle ? Mathf.Min(curHorAngle + maxRotPerUpdate, nextHorRot) : Mathf.Max(curHorAngle - maxRotPerUpdate, nextHorRot);
@@ -300,7 +308,7 @@ public abstract class VehicleWeaponRotatorBase : VehicleWeaponPartBase
             else
                 nextHorAngle = nextHorRot > curHorAngle ? Mathf.Min(curHorAngle + maxRotPerUpdate, nextHorRot) : Mathf.Max(curHorAngle - maxRotPerUpdate, nextHorRot);
         }
-        horRotTrans.localEulerAngles = new Vector3(horRotTrans.localEulerAngles.x, nextHorAngle, horRotTrans.localEulerAngles.z);
+        horRotTrans.localEulerAngles = new Vector3(horRotTrans.localEulerAngles.x, nextHorAngle - horizontalOffsetRotation, horRotTrans.localEulerAngles.z);
         if(syncPlayerRotation)
         {
             Vector3 proj = Vector3.ProjectOnPlane(player.ModelTransform.forward, transform.up);
@@ -314,10 +322,10 @@ public abstract class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     protected virtual void VerRotateTowards(float _dt)
     {
         //targetVerAngle = AngleToLimited(targetVerAngle, verticleMinRotation, verticleMaxRotation);
-        float maxRotPerUpdate = verticleRotSpeed * _dt;
-        float curVerAngle = AngleToInferior(verRotTrans.localEulerAngles.x);
+        float maxRotPerUpdate = verticalRotSpeed * _dt;
+        float curVerAngle = AngleToInferior(CurVerRot);
         float nextVerAngle = nextVerRot > curVerAngle ? Mathf.Min(curVerAngle + maxRotPerUpdate, nextVerRot) : Mathf.Max(curVerAngle - maxRotPerUpdate, nextVerRot);
-        verRotTrans.localEulerAngles = new Vector3(nextVerAngle, verRotTrans.localEulerAngles.y, verRotTrans.localEulerAngles.z);
+        verRotTrans.localEulerAngles = new Vector3(nextVerAngle - verticalOffsetRotation, verRotTrans.localEulerAngles.y, verRotTrans.localEulerAngles.z);
         if (leftHandbarTrans != null)
             leftHandbarTrans.localRotation = leftHandbarInitialRotation * Quaternion.AngleAxis(-nextVerAngle, verRotTrans.right);
         if (rightHandbarTrans != null)

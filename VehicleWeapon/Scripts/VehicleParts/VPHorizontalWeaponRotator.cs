@@ -22,6 +22,6 @@ public class VPHorizontalWeaponRotator : VehicleWeaponRotatorBase
 
     protected internal override bool IsOnTarget()
     {
-        return (horRotTrans == null || FuzzyEqualAngle(nextHorRot, AngleToInferior(horRotTrans.localEulerAngles.y), 1f)) && (verRotator == null || verRotator.IsOnTarget());
+        return (horRotTrans == null || FuzzyEqualAngle(nextHorRot, AngleToInferior(CurHorRot), 1f)) && (verRotator == null || verRotator.IsOnTarget());
     }
 }

@@ -94,8 +94,8 @@ public abstract class VehicleWeaponHitposPreviewRotatorBase : VehicleWeaponProje
 
     protected override void CalcCurRotation(float _dt)
     {
-        nextHorRot = horRotTrans.localEulerAngles.y;
-        nextVerRot = verRotTrans.localEulerAngles.x;
+        nextHorRot = CurHorRot;
+        nextVerRot = CurVerRot;
 
         if (DoRaycast(out RaycastHit hitInfo))
         {

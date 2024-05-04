@@ -17,11 +17,11 @@ public class VPVerticalWeaponRotator : VehicleWeaponRotatorBase
     {
         Vector3 dir = inputRay.direction;
         Vector3 lookRot = (Quaternion.Inverse(transform.rotation) * Quaternion.LookRotation(dir)).eulerAngles;
-        nextVerRot = AngleToLimited(AngleToInferior(lookRot.x), -verticleMaxRotation, -verticleMinRotation);
+        nextVerRot = AngleToLimited(AngleToInferior(lookRot.x), -verticalMaxRotation, -verticalMinRotation);
     }
 
     protected internal override bool IsOnTarget()
     {
-        return (verRotTrans == null || FuzzyEqualAngle(nextVerRot, AngleToInferior(verRotTrans.localEulerAngles.x), 0.5f)) && (horRotator == null || horRotator.IsOnTarget());
+        return (verRotTrans == null || FuzzyEqualAngle(nextVerRot, AngleToInferior(CurVerRot), 0.5f)) && (horRotator == null || horRotator.IsOnTarget());
     }
 }
