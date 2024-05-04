@@ -178,8 +178,8 @@ public class VPWeaponManager : VehiclePart
         {
             foreach (var weapon in list_weapons[localPlayerSeat])
                 weapon.OnPlayerEnter();
-            CameraOffset = cameraOffsets[localPlayerSeat];
         }
+        CameraOffset = cameraOffsets[localPlayerSeat];
         CurrentInstance = this;
     }
 
