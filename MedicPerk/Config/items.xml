@@ -34,7 +34,7 @@
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="HoldOpen,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
 				<property name="ToggleActionSound" value="Medic_Mode_Switch"/>
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
 				<property name="Sound_start" value="Medic_Pistol_Fire"/>
@@ -62,7 +62,7 @@
 				<property name="Class" value="Ranged"/>
 				<property name="ActionUnlocked" value="false"/>
 				<property name="ActionTags" value="medicAction"/>
-				<property name="ItemActionModules" value="Tagged,KFCommonUtilityLib;HoldOpen,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>
@@ -211,7 +211,7 @@
 
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="HoldOpen,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
 				<property name="ToggleActionSound" value="Medic_Mode_Switch"/>
 				<property name="Delay" value=".150"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
@@ -244,7 +244,7 @@
 				<property name="Class" value="Ranged"/>
 				<property name="ActionUnlocked" value="false"/>
 				<property name="ActionTags" value="medicAction"/>
-				<property name="ItemActionModules" value="Tagged,KFCommonUtilityLib;HoldOpen,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>
@@ -395,7 +395,7 @@
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="HoldOpen,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
 				<property name="ToggleActionSound" value="Medic_Mode_Switch"/>
 				<property name="Delay" value=".8"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug"/>
@@ -428,7 +428,7 @@
 				<property name="Class" value="Ranged"/>
 				<property name="ActionUnlocked" value="false"/>
 				<property name="ActionTags" value="medicAction"/>
-				<property name="ItemActionModules" value="Tagged,KFCommonUtilityLib;HoldOpen,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
 				<property name="Magazine_items" value="ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>
@@ -567,7 +567,7 @@
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="HoldOpen,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
 				<property name="ToggleActionSound" value="Medic_Mode_Switch"/>
 				<property name="Delay" value=".150"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammo762mmBulletBall,ammo762mmBulletHP,ammo762mmBulletAP"/>
@@ -594,7 +594,7 @@
 				<property name="Class" value="Ranged"/>
 				<property name="ActionUnlocked" value="false"/>
 				<property name="ActionTags" value="medicAction"/>
-				<property name="ItemActionModules" value="Tagged,KFCommonUtilityLib;HoldOpen,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
 				<property name="Magazine_items" value="ammo762mmBulletBall,ammo762mmBulletHP,ammo762mmBulletAP"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>

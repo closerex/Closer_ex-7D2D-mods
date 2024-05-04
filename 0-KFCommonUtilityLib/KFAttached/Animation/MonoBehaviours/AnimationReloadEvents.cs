@@ -18,6 +18,7 @@ public class AnimationReloadEvents : MonoBehaviour
 #if NotEditor
         //animator.speed = 1f;
         animator.SetBool("Reload", false);
+        animator.SetBool("IsReloading", false);
         if (actionData == null)
         {
             return;
@@ -55,6 +56,7 @@ public class AnimationReloadEvents : MonoBehaviour
         actionData.invData.holdingEntity.inventory.CallOnToolbeltChangedInternal();
         actionData.isReloadCancelled = false;
         actionData.isChangingAmmoType = false;
+        AnimationAmmoUpdateState.SetAmmoCountForEntity(actionData.invData.holdingEntity);
 #if DEBUG
         Log.Out($"ANIMATION RELOAD EVENT FINISHED : {actionData.invData.item.Name}");
 #endif

@@ -371,6 +371,7 @@
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationFiringEvents.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationProceduralRecoildAbs.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationSmokeParticle.cs" />
+    <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationAmmoUpdateState.cs" />
     <Compile Include="KFAttached\FPSPack\Demo\FPSDemoGUI.cs" />
     <Compile Include="KFAttached\FPSPack\Demo\FPSDemoReactivator.cs" />
     <Compile Include="KFAttached\FPSPack\Demo\FPSFireManager.cs" />

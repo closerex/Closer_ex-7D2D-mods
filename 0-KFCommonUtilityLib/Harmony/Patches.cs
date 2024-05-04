@@ -23,6 +23,11 @@ public class CommonUtilityPatch
         _actionData.isReloading = false;
         _actionData.isReloadCancelled = false;
         holdingEntity.FireEvent(MinEventTypes.onReloadStop);
+
+        if (holdingEntity is EntityPlayerLocal && AnimationRiggingManager.FpvTransformReference != null)
+        {
+            AnimationAmmoUpdateState.SetAmmoCountForEntity(holdingEntity);
+        }
     }
 
     [HarmonyPatch(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.OnStateEnter))]
@@ -473,6 +478,11 @@ public class CommonUtilityPatch
         {
             itemActionDataRanged.IsFlashSuppressed = true;
         }
+
+        //should fix stuck on switching item?
+        itemActionDataRanged.isReloadCancelled = false;
+        itemActionDataRanged.isReloading = false;
+        itemActionDataRanged.isChangingAmmoType = false;
     }
 
     #region item tags modifier
@@ -545,49 +555,6 @@ public class CommonUtilityPatch
                 codes[i].operand = mtd_test_any_set;
                 Log.Out("mod 2!!!");
             }
-            ////check other mods
-            //else if (codes[i].opcode == OpCodes.Conv_I4 && codes[i - 2].LoadsField(fld_mod))
-            //{
-            //    //Label lbl_ret = generator.DefineLabel();
-            //    //codes[i - 10].WithLabels(lbl_ret);
-            //    codes.InsertRange(i - 10, new[]
-            //    {
-            //        new CodeInstruction(OpCodes.Ldloc_S, lbd_tags_if_install_new),
-            //        new CodeInstruction(OpCodes.Ldloc_1),
-            //        CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.Modifications)),
-            //        new CodeInstruction(OpCodes.Ldloc_S, 5),
-            //        new CodeInstruction(OpCodes.Ldelem_Ref),
-            //        new CodeInstruction(OpCodes.Call, mtd_get_item_class),
-            //        new CodeInstruction(OpCodes.Isinst, typeof(ItemClassModifier)),
-            //        CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.CanStay)),
-            //        new CodeInstruction(OpCodes.Brtrue, codes[i - 11].operand)
-            //        //CodeInstruction.Call(typeof(ItemValue), nameof(ItemValue.IsEmpty)),
-            //        //new CodeInstruction(OpCodes.Brtrue, codes[i - 11].operand),
-
-            //        //new CodeInstruction(OpCodes.Ldloca_S, lbd_tags_if_install_new),
-            //        //new CodeInstruction(OpCodes.Ldloc_1),
-            //        //CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.Modifications)),
-            //        //new CodeInstruction(OpCodes.Ldloc_S, 5),
-            //        //new CodeInstruction(OpCodes.Ldelem_Ref),
-            //        //new CodeInstruction(OpCodes.Call, mtd_get_item_class),
-            //        //new CodeInstruction(OpCodes.Castclass, typeof(ItemClassModifier)),
-            //        //CodeInstruction.LoadField(typeof(ItemClassModifier), nameof(ItemClassModifier.InstallableTags)),
-            //        //new CodeInstruction(OpCodes.Call, mtd_test_any_set),
-            //        //new CodeInstruction(OpCodes.Brfalse, lbl_ret),
-            //        //new CodeInstruction(OpCodes.Ldloca_S, lbd_tags_if_install_new),
-            //        //new CodeInstruction(OpCodes.Ldloc_1),
-            //        //CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.Modifications)),
-            //        //new CodeInstruction(OpCodes.Ldloc_S, 5),
-            //        //new CodeInstruction(OpCodes.Ldelem_Ref),
-            //        //new CodeInstruction(OpCodes.Call, mtd_get_item_class),
-            //        //new CodeInstruction(OpCodes.Castclass, typeof(ItemClassModifier)),
-            //        //CodeInstruction.LoadField(typeof(ItemClassModifier), nameof(ItemClassModifier.DisallowedTags)),
-            //        //new CodeInstruction(OpCodes.Call, mtd_test_any_set),
-            //        //new CodeInstruction(OpCodes.Brfalse, codes[i - 11].operand)
-            //    });
-            //    i += 9;
-            //    Log.Out("mod 3!!!");
-            //}
         }
 
         return codes;
@@ -665,49 +632,6 @@ public class CommonUtilityPatch
                 i -= 5;
                 Log.Out("cos 2!!!");
             }
-            ////check other mods
-            //else if (codes[i].opcode == OpCodes.Conv_I4 && codes[i - 2].LoadsField(fld_cos))
-            //{
-            //    //Label lbl_ret = generator.DefineLabel();
-            //    //codes[i - 14].WithLabels(lbl_ret);
-            //    codes.InsertRange(i - 14, new[]
-            //    {
-            //        new CodeInstruction(OpCodes.Ldloc_S, lbd_tags_if_install_new),
-            //        new CodeInstruction(OpCodes.Ldloc_S, lbd_item_being_assembled),
-            //        CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.CosmeticMods)),
-            //        new CodeInstruction(OpCodes.Ldloc_S, 4),
-            //        new CodeInstruction(OpCodes.Ldelem_Ref),
-            //        new CodeInstruction(OpCodes.Call, mtd_get_item_class),
-            //        new CodeInstruction(OpCodes.Isinst, typeof(ItemClassModifier)),
-            //        CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.CanStay)),
-            //        new CodeInstruction(OpCodes.Brtrue, codes[i - 15].operand)
-            //        //CodeInstruction.Call(typeof(ItemValue), nameof(ItemValue.IsEmpty)),
-            //        //new CodeInstruction(OpCodes.Brtrue, codes[i - 15].operand),
-
-            //        //new CodeInstruction(OpCodes.Ldloca_S, lbd_tags_if_install_new),
-            //        //new CodeInstruction(OpCodes.Ldloc_S, lbd_item_being_assembled),
-            //        //CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.CosmeticMods)),
-            //        //new CodeInstruction(OpCodes.Ldloc_S, 4),
-            //        //new CodeInstruction(OpCodes.Ldelem_Ref),
-            //        //new CodeInstruction(OpCodes.Call, mtd_get_item_class),
-            //        //new CodeInstruction(OpCodes.Castclass, typeof(ItemClassModifier)),
-            //        //CodeInstruction.LoadField(typeof(ItemClassModifier), nameof(ItemClassModifier.InstallableTags)),
-            //        //new CodeInstruction(OpCodes.Call, mtd_test_any_set),
-            //        //new CodeInstruction(OpCodes.Brfalse, lbl_ret),
-            //        //new CodeInstruction(OpCodes.Ldloca_S, lbd_tags_if_install_new),
-            //        //new CodeInstruction(OpCodes.Ldloc_S, lbd_item_being_assembled),
-            //        //CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.CosmeticMods)),
-            //        //new CodeInstruction(OpCodes.Ldloc_S, 4),
-            //        //new CodeInstruction(OpCodes.Ldelem_Ref),
-            //        //new CodeInstruction(OpCodes.Call, mtd_get_item_class),
-            //        //new CodeInstruction(OpCodes.Castclass, typeof(ItemClassModifier)),
-            //        //CodeInstruction.LoadField(typeof(ItemClassModifier), nameof(ItemClassModifier.DisallowedTags)),
-            //        //new CodeInstruction(OpCodes.Call, mtd_test_any_set),
-            //        //new CodeInstruction(OpCodes.Brfalse, codes[i - 15].operand)
-            //    });
-            //    i += 9;
-            //    Log.Out("cos 3!!!");
-            //}
         }
 
         return codes;
@@ -894,59 +818,6 @@ public class CommonUtilityPatch
                 codes.Insert(i - 6, insert);
                 i -= 3;
             }
-            //check if current mod adds tags that conflicts with other mods
-            //else if ((codes[i].opcode == OpCodes.Brfalse || codes[i].opcode == OpCodes.Brfalse_S) && (codes[i - 1].LoadsField(fld_cos) || codes[i - 1].LoadsField(fld_mod)))
-            //{
-            //    //jump to the end of function
-            //    object lbl_end = codes[i].operand;
-            //    //which array is being checked now, cosmetic or modification?
-            //    object fld_cur = codes[i - 1].operand;
-            //    for (int j = i + 1; j < codes.Count; j++)
-            //    {
-            //        if (codes[j].Calls(mtd_is_empty))
-            //        {
-            //            //before jumping to loop statement, adds an else if
-            //            Label lbl_new = generator.DefineLabel();
-            //            //store the mod class for convenience
-            //            LocalBuilder lbd_mod_class = generator.DeclareLocal(typeof(ItemClassModifier));
-            //            //the loop statement label
-            //            object lbl_old = codes[j + 1].operand;
-            //            codes[j + 1].operand = lbl_new;
-            //            codes.InsertRange(j + 2, new[]
-            //            {
-            //                new CodeInstruction(OpCodes.Ldarg_0).WithLabels(lbl_new),
-            //                new CodeInstruction(OpCodes.Call, mtd_get_cur_item),
-            //                CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)),
-            //                new CodeInstruction(OpCodes.Ldfld, fld_cur),
-            //                new CodeInstruction(codes[j - 2].opcode, codes[j - 2].operand),
-            //                new CodeInstruction(OpCodes.Ldelem_Ref),
-            //                new CodeInstruction(OpCodes.Call, mtd_get_item_class),
-            //                new CodeInstruction(OpCodes.Isinst, typeof(ItemClassModifier)),
-            //                new CodeInstruction(OpCodes.Stloc_S, lbd_mod_class),
-            //                new CodeInstruction(OpCodes.Ldloc_S, lbd_tags_after_install),
-            //                new CodeInstruction(OpCodes.Ldloc_S, lbd_mod_class),
-            //                CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.CanStay)),
-            //                new CodeInstruction(OpCodes.Brfalse, lbl_end),
-            //                //new CodeInstruction(OpCodes.Ldloc_S, lbd_mod_class),
-            //                //new CodeInstruction(OpCodes.Brfalse, lbl_old),
-            //                //new CodeInstruction(OpCodes.Ldloca_S, lbd_tags_after_install),
-            //                //new CodeInstruction(OpCodes.Ldloc_S, lbd_mod_class),
-            //                //CodeInstruction.LoadField(typeof(ItemClassModifier), nameof(ItemClassModifier.InstallableTags)),
-            //                //new CodeInstruction(OpCodes.Call, mtd_test_any_set),
-            //                //new CodeInstruction(OpCodes.Brfalse, lbl_end),
-            //                //new CodeInstruction(OpCodes.Ldloca_S, lbd_tags_after_install),
-            //                //new CodeInstruction(OpCodes.Ldloc_S, lbd_mod_class),
-            //                //CodeInstruction.LoadField(typeof(ItemClassModifier), nameof(ItemClassModifier.DisallowedTags)),
-            //                //new CodeInstruction(OpCodes.Call, mtd_test_any_set),
-            //                //new CodeInstruction(OpCodes.Brtrue, lbl_end),
-            //                new CodeInstruction(OpCodes.Br, lbl_old)
-            //            });
-            //            i = j + 16;
-            //            Log.Out("xuim!!!");
-            //            break;
-            //        }
-            //    }
-            //}
         }
 
         return codes;

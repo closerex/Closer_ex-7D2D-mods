@@ -11,6 +11,7 @@ public class AnimationCustomReloadState : StateMachineBehaviour
     {
         animator.speed = 1f;
         animator.SetBool("Reload", false);
+        animator.SetBool("IsReloading", true);
         if (player == null)
         {
             player = animator.GetComponentInParent<EntityPlayerLocal>();
