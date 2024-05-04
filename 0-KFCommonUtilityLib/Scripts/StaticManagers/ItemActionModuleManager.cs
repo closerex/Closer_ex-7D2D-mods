@@ -51,7 +51,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
     //    }
     //}
 
-    public interface IModuleContainerFor<T> where T : class
+    public interface IModuleContainerFor<out T> where T : class
     {
         T Instance { get; }
     }

@@ -32,7 +32,8 @@ public class ActionModuleAlternative
     {
         yield return null;
         yield return null;
-        player?.emodel?.avatarController?.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, mapping.CurActionIndex);
+        if (GameManager.Instance.GetGameStateManager().IsGameStarted())
+            player?.emodel?.avatarController?.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, mapping.CurActionIndex);
     }
 
     [MethodTargetPrefix(nameof(ItemActionRanged.CancelReload))]
