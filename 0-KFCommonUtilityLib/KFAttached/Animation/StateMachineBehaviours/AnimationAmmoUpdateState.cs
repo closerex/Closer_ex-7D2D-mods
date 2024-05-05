@@ -37,12 +37,20 @@ public class AnimationAmmoUpdateState : StateMachineBehaviour
                         int metaIndex = metaIndices.GetMetaIndexForMode(i);
                         int meta = entity.inventory.holdingItemItemValue.GetMetaByMode(i);
                         entity.emodel.avatarController.UpdateInt(hash_states[metaIndex], meta);
+                        if (ConsoleCmdReloadLog.LogInfo)
+                        {
+                            Log.Out($"Setting ammoCount{(metaIndex > 0 ? metaIndex.ToString() : "")} to {meta}, stack trace:\n{StackTraceUtility.ExtractStackTrace()}");
+                        }
                         //animator.SetInteger(hash_states[metaIndex], meta);
                     }
                 }
                 else
                 {
                     entity.emodel.avatarController.UpdateInt(hash_states[0], entity.inventory.holdingItemItemValue.Meta);
+                    if (ConsoleCmdReloadLog.LogInfo)
+                    {
+                        Log.Out($"Setting ammoCount to {entity.inventory.holdingItemItemValue.Meta}, stack trace:\n{StackTraceUtility.ExtractStackTrace()}");
+                    }
                     //animator.SetInteger(hash_states[0], entity.inventory.holdingItemItemValue.Meta);
                 }
             }
