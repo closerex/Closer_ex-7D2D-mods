@@ -76,12 +76,12 @@ public class AnimationReloadEvents : MonoBehaviour
     {
         if (actionData != null)
         {
-            if (actionData.isReloading && !reloadUpdatedThisFrame)
-            {
-                Log.Warning("Animator not sending update msg this frame, reloading is cancelled!");
-                actionData.isReloadCancelled = true;
-                OnReloadFinish();
-            }
+            //if (actionData.isReloading && !reloadUpdatedThisFrame)
+            //{
+            //    Log.Warning("Animator not sending update msg this frame, reloading is cancelled!");
+            //    actionData.isReloadCancelled = true;
+            //    OnReloadFinish();
+            //}
         }
         else
         {
