@@ -184,6 +184,7 @@
 				<property name="horizontalMaxRotation" value="100"/>
 				<property name="horizontalMinRotation" value="-100"/>
 				<property name="horizontalRotationSpeed" value="50"/>
+				<property name="invertHorRange" value="true"/>
 				<property name="transform" value="HornWeapon/Cannon/Basement"/>
 				<property name="horRotationTransform" value="HornWeapon/Cannon/Basement/Turret"/>
 			</property>

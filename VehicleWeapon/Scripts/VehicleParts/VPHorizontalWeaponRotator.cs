@@ -17,7 +17,7 @@ public class VPHorizontalWeaponRotator : VehicleWeaponRotatorBase
     {
         Vector3 dir = inputRay.direction;
         Vector3 lookRot = (Quaternion.Inverse(transform.rotation) * Quaternion.LookRotation(dir)).eulerAngles;
-        nextHorRot = AngleToLimited(AngleToInferior(lookRot.y), horizontalMinRotation, horizontalMaxRotation);
+        nextHorRot = AngleToLimited(AngleToInferior(lookRot.y), horizontalMinRotation, horizontalMaxRotation, invertHorizontalRange);
     }
 
     protected internal override bool IsOnTarget()

@@ -15,10 +15,9 @@ public abstract class VehicleWeaponRotatorBase : VehicleWeaponPartBase
     protected float verticalRotSpeed;
     protected float horizontalMaxRotation;
     protected float horizontalMinRotation;
-    protected float verticalOffsetRotation;
-    protected float horizontalOffsetRotation;
     protected float horizontalRotSpeed;
     protected bool syncPlayerRotation = false;
+    protected bool invertHorizontalRange = false;
 
     protected Quaternion leftHandbarInitialRotation;
     protected Quaternion rightHandbarInitialRotation;
@@ -37,8 +36,8 @@ public abstract class VehicleWeaponRotatorBase : VehicleWeaponPartBase
 
     public virtual Transform HorRotTrans { get => horRotTrans; }
     public virtual Transform VerRotTrans { get => verRotTrans; }
-    public float CurHorRot => horRotTrans.localEulerAngles.y + horizontalOffsetRotation;
-    public float CurVerRot => verRotTrans.localEulerAngles.x + verticalOffsetRotation;
+    public float CurHorRot => horRotTrans.localEulerAngles.y;
+    public float CurVerRot => verRotTrans.localEulerAngles.x;
     public Transform IndicatorTrans { get => indicatorTrans; }
     public bool OnTarget { get => lastOnTarget; }
 
@@ -62,10 +61,7 @@ public abstract class VehicleWeaponRotatorBase : VehicleWeaponPartBase
             InitIKTarget(AvatarIKGoal.RightHand, rightHandbarTrans);
             rightHandbarInitialRotation = rightHandbarTrans.localRotation;
         }
-        verticalOffsetRotation = 0f;
-        properties.ParseFloat("verticalOffsetRotation", ref verticalOffsetRotation);
-        horizontalOffsetRotation = 0f;
-        properties.ParseFloat("horizontalOffsetRotation", ref horizontalOffsetRotation);
+        properties.ParseBool("invertHorRange", ref invertHorizontalRange);
 
         player = GameManager.Instance.World.GetPrimaryPlayer();
     }
@@ -272,7 +268,19 @@ public abstract class VehicleWeaponRotatorBase : VehicleWeaponPartBase
         float curHorAngle = AngleToInferior(CurHorRot);
         float nextHorAngle;
         if (!fullCircleRotation)
+        {
+            float nextHorRot = this.nextHorRot;
+            if (invertHorizontalRange)
+            {
+                curHorAngle = AngleToInferior(curHorAngle + 180);
+                nextHorRot = AngleToInferior(nextHorRot + 180);
+            }
             nextHorAngle = nextHorRot > curHorAngle ? Mathf.Min(curHorAngle + maxRotPerUpdate, nextHorRot) : Mathf.Max(curHorAngle - maxRotPerUpdate, nextHorRot);
+            if (invertHorizontalRange)
+            {
+                nextHorAngle = AngleToInferior(nextHorAngle + 180);
+            }
+        }
         else
         {
             if (nextHorRot > 0 && curHorAngle < 0)
@@ -308,7 +316,7 @@ public abstract class VehicleWeaponRotatorBase : VehicleWeaponPartBase
             else
                 nextHorAngle = nextHorRot > curHorAngle ? Mathf.Min(curHorAngle + maxRotPerUpdate, nextHorRot) : Mathf.Max(curHorAngle - maxRotPerUpdate, nextHorRot);
         }
-        horRotTrans.localEulerAngles = new Vector3(horRotTrans.localEulerAngles.x, nextHorAngle - horizontalOffsetRotation, horRotTrans.localEulerAngles.z);
+        horRotTrans.localEulerAngles = new Vector3(horRotTrans.localEulerAngles.x, nextHorAngle, horRotTrans.localEulerAngles.z);
         if(syncPlayerRotation)
         {
             Vector3 proj = Vector3.ProjectOnPlane(player.ModelTransform.forward, transform.up);
@@ -325,7 +333,7 @@ public abstract class VehicleWeaponRotatorBase : VehicleWeaponPartBase
         float maxRotPerUpdate = verticalRotSpeed * _dt;
         float curVerAngle = AngleToInferior(CurVerRot);
         float nextVerAngle = nextVerRot > curVerAngle ? Mathf.Min(curVerAngle + maxRotPerUpdate, nextVerRot) : Mathf.Max(curVerAngle - maxRotPerUpdate, nextVerRot);
-        verRotTrans.localEulerAngles = new Vector3(nextVerAngle - verticalOffsetRotation, verRotTrans.localEulerAngles.y, verRotTrans.localEulerAngles.z);
+        verRotTrans.localEulerAngles = new Vector3(nextVerAngle, verRotTrans.localEulerAngles.y, verRotTrans.localEulerAngles.z);
         if (leftHandbarTrans != null)
             leftHandbarTrans.localRotation = leftHandbarInitialRotation * Quaternion.AngleAxis(-nextVerAngle, verRotTrans.right);
         if (rightHandbarTrans != null)
@@ -358,20 +366,26 @@ public abstract class VehicleWeaponRotatorBase : VehicleWeaponPartBase
             indicatorTrans.GetComponent<Renderer>().material.SetColor(indicatorColorProperty, onTarget ? indicatorColorOnTarget : indicatorColorAiming);
     }
 
-    protected bool FuzzyEqualAngle(float angle1, float angle2, float fuzzy)
+    protected static bool FuzzyEqualAngle(float angle1, float angle2, float fuzzy)
     {
         return Mathf.Abs(angle1 - angle2) <= fuzzy;
     }
 
-    protected float AngleToInferior(float angle)
+    protected static float AngleToInferior(float angle)
     {
         angle %= 360;
-        angle = angle > 180 ? angle - 360 : angle;
+        angle = angle > 180 ? (angle < -180 ? angle + 360 : angle - 360) : angle;
         return angle;
     }
 
-    protected float AngleToLimited(float angle, float min, float max)
+    protected static float AngleToLimited(float angle, float min, float max, bool invert)
     {
+        if (invert)
+        {
+            if (angle <= min || angle >= max)
+                return angle;
+            return Mathf.Abs(angle - min) > Mathf.Abs(angle - max) ? max : min;
+        }
         float res = Mathf.Min(max, Mathf.Max(min, angle));
         return res;
     }

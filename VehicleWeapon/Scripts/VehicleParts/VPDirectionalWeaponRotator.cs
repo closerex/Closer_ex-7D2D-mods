@@ -6,8 +6,8 @@ public class VPDirectionalWeaponRotator : VehicleWeaponRotatorBase
     {
         Vector3 dir = inputRay.direction;
         Vector3 lookRot = (Quaternion.Inverse(transform.rotation) * Quaternion.LookRotation(dir)).eulerAngles;
-        nextHorRot = AngleToLimited(AngleToInferior(lookRot.y), horizontalMinRotation, horizontalMaxRotation);
-        nextVerRot = AngleToLimited(AngleToInferior(lookRot.x), -verticalMaxRotation, -verticalMinRotation);
+        nextHorRot = AngleToLimited(AngleToInferior(lookRot.y), horizontalMinRotation, horizontalMaxRotation, invertHorizontalRange);
+        nextVerRot = AngleToLimited(AngleToInferior(lookRot.x), -verticalMaxRotation, -verticalMinRotation, false);
     }
 }
 
