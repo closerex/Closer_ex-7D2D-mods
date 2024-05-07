@@ -824,6 +824,45 @@ public class CommonUtilityPatch
     }
 
     #endregion
+
+    [HarmonyPatch(typeof(EntityPlayerLocal), "SetMoveState")]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_SetMoveState_EntityPlayerLocal(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        FieldInfo fld_msa = AccessTools.Field(typeof(EntityPlayerLocal), "moveStateAiming");
+
+        for (int i = 0; i < codes.Count - 2; i++)
+        {
+            if (codes[i].LoadsField(fld_msa) && codes[i + 2].opcode == OpCodes.Ldloc_1)
+            {
+                codes[i - 2].MoveLabelsTo(codes[i + 13]);
+                codes.RemoveRange(i - 2, 15);
+                break;
+            }
+        }
+
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(EntityAlive), nameof(EntityAlive.AimingGun), MethodType.Setter)]
+    [HarmonyPrefix]
+    private static bool Prefix_AimingGun_EntityAlive(bool value, EntityAlive __instance)
+    {
+        if (__instance is EntityPlayerLocal && __instance.inventory != null)
+        {
+            bool isAimingGun = __instance.AimingGun;
+            if (value != isAimingGun)
+            {
+                __instance.FireEvent(value ? MinEventTypes.onSelfAimingGunStart : MinEventTypes.onSelfAimingGunStop, true);
+#if DEBUG
+                Log.Out(value ? "START AIMING GUN FIRED" : "STOP AIMING GUN FIRED");
+#endif
+            }
+        }
+        return true;
+    }
     //private static bool exported = false;
     //[HarmonyPatch(typeof(EModelUMA), nameof(EModelUMA.onCharacterUpdated))]
     //[HarmonyPostfix]
