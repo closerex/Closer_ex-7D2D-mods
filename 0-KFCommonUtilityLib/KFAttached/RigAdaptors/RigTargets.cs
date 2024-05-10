@@ -15,21 +15,21 @@ public class RigTargets : MonoBehaviour
     public Rig rig;
     [SerializeField]
     public Transform attachmentReference;
-    //[SerializeField]
-    //public bool takeOverReloadTime = true;
 
     [NonSerialized]
     private Transform fpsArms;
     [NonSerialized]
     private RigLayer rigLayer;
 
-    private float weight;
+    //private float weight;
 
 #if NotEditor
+    private static int UniqueRigID = 0;
     private void Awake()
     {
         itemFpv.gameObject.SetActive(false);
         rig.gameObject.SetActive(false);
+        rig.gameObject.name += $"_UID_{UniqueRigID++}";
         gameObject.AddMissingComponent<AttachmentReference>().attachmentReference = attachmentReference;
     }
 #endif
