@@ -825,6 +825,7 @@ public class CommonUtilityPatch
 
     #endregion
 
+    //change when aiming events are fired
     [HarmonyPatch(typeof(EntityPlayerLocal), "SetMoveState")]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_SetMoveState_EntityPlayerLocal(IEnumerable<CodeInstruction> instructions)
@@ -863,6 +864,7 @@ public class CommonUtilityPatch
         }
         return true;
     }
+
     //private static bool exported = false;
     //[HarmonyPatch(typeof(EModelUMA), nameof(EModelUMA.onCharacterUpdated))]
     //[HarmonyPostfix]
