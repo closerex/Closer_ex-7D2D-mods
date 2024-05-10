@@ -11,8 +11,8 @@
 			<property name="RepairTools" value="resourceRepairKit"/>
 			<property name="DegradationBreaksAfter" value="false"/>
 			<property name="SoundJammed" value="weapon_jam"/>
-			<property name="CrosshairOnAim" value="true"/> <!-- aimTest -->
-			<property name="CrosshairUpAfterShot" value="true"/> <!-- aimTest -->
+			<property name="CrosshairOnAim" value="false"/> <!-- aimTest -->
+			<property name="CrosshairUpAfterShot" value="false"/> <!-- aimTest -->
 			<property name="Sound_Sight_In" value="rifle_sight_in"/>
 			<property name="Sound_Sight_Out" value="rifle_sight_out"/>
 			<property name="Group" value="Ammo/Weapons,Ranged Weapons"/>

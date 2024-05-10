@@ -270,6 +270,7 @@ class AnimationRiggingPatches
         if (__instance.HeldItemTransform != null && __instance.HeldItemTransform.TryGetComponent<RigTargets>(out var targets))
         {
             EntityAlive entity = __instance.Entity;
+            ItemValue holdingItemItemValue = entity.inventory.holdingItemItemValue;
 #if DEBUG
             float x = 1, y = 1;
             var tags = entity.inventory.holdingItem.ItemTags;
@@ -278,33 +279,59 @@ class AnimationRiggingPatches
             entity.Progression.ModifyValue(PassiveEffects.ReloadSpeedMultiplier, ref x, ref y, tags);
             Log.Out($"item {entity.inventory.holdingItem.Name} action index {entity.MinEventContext.ItemActionData.indexInEntityOfAction} progression base {x} perc {y} has tag {tags.Test_AnySet(FastTags.Parse("perkMachineGunner"))} \ntags prev {tags_prev} \ntags after {tags}");
 #endif
-            float reloadSpeed = EffectManager.GetValue(PassiveEffects.ReloadSpeedMultiplier, entity.inventory.holdingItemItemValue, 1f, entity);
-            float reloadSpeedRatio = EffectManager.GetValue(CustomEnums.ReloadSpeedRatioFPV2TPV, entity.inventory.holdingItemItemValue, 1f, entity);
+            float reloadSpeed = EffectManager.GetValue(PassiveEffects.ReloadSpeedMultiplier, holdingItemItemValue, 1f, entity);
+            float reloadSpeedRatio = EffectManager.GetValue(CustomEnums.ReloadSpeedRatioFPV2TPV, holdingItemItemValue, 1f, entity);
+
+            float partialReloadMultiplier = EffectManager.GetValue(CustomEnums.PartialReloadCount, holdingItemItemValue, 0, entity);
+            float partialReloadRatio = 1f;
+            if (partialReloadMultiplier <= 0)
+            {
+                partialReloadMultiplier = 1;
+            }
+            else
+            {
+                int magSize = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, holdingItemItemValue, ((ItemActionRanged)entity.inventory.holdingItem.Actions[MultiActionManager.GetActionIndexForEntity(entity)]).BulletsPerMagazine, entity, null, default, true, true, true, true, 1, true, false);
+                //how many partial reload is required to fill an empty mag
+                partialReloadRatio = Mathf.Ceil(magSize / partialReloadMultiplier);
+                //how many partial reload is required to finish this reload
+                partialReloadMultiplier = Mathf.Ceil((magSize - holdingItemItemValue.Meta) / partialReloadMultiplier);
+                //reload time percentage of this reload
+                partialReloadRatio = partialReloadMultiplier / partialReloadRatio;
+            }
+
             float localMultiplier, remoteMultiplier;
             bool isFPV = entity as EntityPlayerLocal != null && (entity as EntityPlayerLocal).emodel.IsFPV;
-            bool takeOverReloadTime = AnimationRiggingManager.IsReloadTimeTakeOverItem(entity.inventory.holdingItem.Id);
+            bool takeOverReloadTime = AnimationRiggingManager.IsReloadTimeTakeOverItem(holdingItemItemValue.type);
+
             if (isFPV && !takeOverReloadTime)
             {
                 localMultiplier = reloadSpeed / reloadSpeedRatio;
             }
             else if (!isFPV && takeOverReloadTime)
             {
-                localMultiplier = reloadSpeed * reloadSpeedRatio;
+                localMultiplier = reloadSpeed * reloadSpeedRatio / partialReloadMultiplier;
             }
-            else
+            else if(isFPV && takeOverReloadTime)
             {
                 localMultiplier = reloadSpeed;
             }
+            else
+            {
+                localMultiplier = reloadSpeed * partialReloadRatio;
+            }
+
             if (takeOverReloadTime)
             {
-                remoteMultiplier = reloadSpeed * reloadSpeedRatio;
+                remoteMultiplier = reloadSpeed * reloadSpeedRatio / partialReloadMultiplier;
             }
             else
             {
-                remoteMultiplier = reloadSpeed;
+                remoteMultiplier = reloadSpeed * partialReloadRatio;
             }
+
             if (ConsoleCmdReloadLog.LogInfo)
-                Log.Out($"Set reload multiplier: isFPV {isFPV}, reloadSpeed {reloadSpeed}, reloadSpeedRatio {reloadSpeedRatio}, finalMultiplier {localMultiplier}, remoteMultiplier {remoteMultiplier}");
+                Log.Out($"Set reload multiplier: isFPV {isFPV}, reloadSpeed {reloadSpeed}, reloadSpeedRatio {reloadSpeedRatio}, finalMultiplier {localMultiplier}, remoteMultiplier {remoteMultiplier}, partialMultiplier {partialReloadMultiplier}, partialRatio {partialReloadRatio}");
+            
             __instance.UpdateFloat(___reloadSpeedHash, localMultiplier, false);
             SetDataFloat(__instance, (AvatarController.DataTypes)___reloadSpeedHash, remoteMultiplier, true);
         }
@@ -406,7 +433,7 @@ class AnimationRiggingPatches
     [HarmonyPrefix]
     private static bool Prefix_SpawnEntityInWorld_World(Entity _entity)
     {
-        if (_entity != null && _entity is EntityItem _entityItem)
+        if (_entity is EntityItem _entityItem)
         {
             var targets = _entityItem.GetComponentInChildren<RigTargets>(true);
             if (targets != null)

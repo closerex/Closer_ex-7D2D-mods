@@ -1,0 +1,65 @@
+﻿#if NotEditor
+using KFCommonUtilityLib.Scripts.StaticManagers;
+#endif
+using UnityEngine;
+
+public class AnimationMultiStageReloadState : StateMachineBehaviour
+{
+    [SerializeField]
+    private bool speedUpOnCancel;
+    [SerializeField]
+    private bool immediateCancel;
+#if NotEditor
+    private AnimationReloadEvents eventBridge;
+
+    public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        animator.SetBool("Reload", false);
+#if DEBUG
+        Log.Out($"start reload {actionIndex}");
+#endif
+        if (eventBridge == null)
+        {
+            eventBridge = animator.GetComponent<AnimationReloadEvents>();
+        }
+        if (stateInfo.IsTag("ReloadStart"))
+        {
+            animator.speed = 1f;
+            animator.SetBool("IsReloading", true);
+            EntityPlayerLocal player = animator.GetComponentInParent<EntityPlayerLocal>();
+            int actionIndex = MultiActionManager.GetActionIndexForEntity(player);
+            eventBridge.OnReloadStart(actionIndex);
+        }
+
+#if DEBUG
+        Log.Out($"ANIMATOR STATE ENTER : {actionData.invData.item.Name}");
+#endif
+    }
+
+    public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        var actionData = eventBridge.actionData;
+        if (actionData == null)
+        {
+            return;
+        }
+
+        if (actionData.isReloadCancelled && speedUpOnCancel)
+        {
+            Log.Out("Speed up animation!");
+            animator.speed = 30;
+        }
+
+        if (actionData.isReloadCancelled && immediateCancel)
+        {
+            animator.SetBool("IsReloading", false);
+        }
+
+        if (actionData.isReloading && animator.GetBool("IsReloading"))
+        {
+            actionData.invData.holdingEntity.MinEventContext.ItemActionData = actionData;
+            actionData.invData.holdingEntity.FireEvent(MinEventTypes.onReloadUpdate, true);
+        }
+    }
+#endif
+}

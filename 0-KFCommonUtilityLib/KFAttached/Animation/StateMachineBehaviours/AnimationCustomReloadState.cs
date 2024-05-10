@@ -30,14 +30,14 @@ public class AnimationCustomReloadState : StateMachineBehaviour
         Log.Out($"ANIMATOR STATE ENTER : {actionData.invData.item.Name}");
 #endif
         eventBridge.OnReloadStart(actionIndex);
-        eventBridge.OnReloadUpdate();
+        //eventBridge.OnReloadUpdate();
     }
 
     // Token: 0x06000B5C RID: 2908 RVA: 0x000AC3A8 File Offset: 0x000AA5A8
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.speed = 1f;
-        eventBridge.OnReloadUpdate();
+        //eventBridge.OnReloadUpdate();
         //if (actionData == null)
         //{
         //    return;
@@ -52,7 +52,7 @@ public class AnimationCustomReloadState : StateMachineBehaviour
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        eventBridge.OnReloadUpdate();
+        //eventBridge.OnReloadUpdate();
         if (actionData == null)
         {
             return;

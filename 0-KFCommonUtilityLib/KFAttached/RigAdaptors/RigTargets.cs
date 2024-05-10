@@ -68,16 +68,14 @@ public class RigTargets : MonoBehaviour
         var rc = rig.GetComponent<RigConverter>();
         rc.targetRoot = fpsArms;
         rc.Rebind();
-
         animator.UnbindAllStreamHandles();
         animator.UnbindAllSceneHandles();
+
         var rigBuilder = fpsArms.AddMissingComponent<RigBuilder>();
         rigBuilder.layers.RemoveAll(r => r.rig == rig);
-        rigLayer = new RigLayer(rig, enabled);
+        rigLayer = new RigLayer(rig, false);
         rigBuilder.layers.Add(rigLayer);
         rigBuilder.Build();
-        animator.ResolveAllSceneHandles();
-        animator.ResolveAllStreamHandles();
         animator.Rebind();
 
         //animator.Update(0);
@@ -139,7 +137,7 @@ public class RigTargets : MonoBehaviour
         //    rigBuilder.enabled = false;
         itemFpv.gameObject.SetActive(enabled);
         rigLayer.active = enabled;
-        rig.gameObject.SetActive(enabled);
+        //rig.gameObject.SetActive(enabled);
         itemFpv.localPosition = new Vector3(0, 0, enabled ? 0 : -100);
 
         gameObject.SetActive(forceDisableRoot ? false : !enabled);

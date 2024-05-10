@@ -13,6 +13,7 @@
     public static PassiveEffects RecoilReturnSpeed;
     public static PassiveEffects ProjectileImpactDamagePercentEntity;
     public static PassiveEffects ProjectileImpactDamagePercentBlock;
+    public static PassiveEffects PartialReloadCount;
     public static PassiveEffects CustomTaggedEffect;
     #endregion
 }

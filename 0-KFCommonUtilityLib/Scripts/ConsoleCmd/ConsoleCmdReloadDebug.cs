@@ -15,7 +15,7 @@ public class ConsoleCmdReloadDebug : ConsoleCmdAbstract
             Log.Out($"\n" +
                 $"holding item idx: {inv.holdingItemIdx} name: {inv.holdingItem.Name} isReloading: {holdingGunData.isReloading} canReload: {holdingGun.CanReload(holdingGunData)} isReloadCancelled: {holdingGunData.isReloadCancelled}\n" +
                 $"hand item: {((AvatarLocalPlayerController)player.emodel.avatarController).HeldItemTransform.name}\n" +
-                $"rigging item is Idle: {reference.fpvAnimator.GetCurrentAnimatorStateInfo(0).IsName("1stP_Idle")} reload updated this frame: {reference.targets.itemFpv.GetComponentInChildren<AnimationReloadEvents>().ReloadUpdatedThisFrame} animator state: {reference.fpvAnimator.isActiveAndEnabled}");
+                $"rigging item is Idle: {reference.fpvAnimator.GetCurrentAnimatorStateInfo(0).IsName("1stP_Idle")} animator state: {reference.fpvAnimator.isActiveAndEnabled}");
         }
     }
 

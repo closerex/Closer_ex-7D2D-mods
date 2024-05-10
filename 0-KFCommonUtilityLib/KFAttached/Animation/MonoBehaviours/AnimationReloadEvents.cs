@@ -15,15 +15,14 @@ public class AnimationReloadEvents : MonoBehaviour
 
     public void OnReloadFinish()
     {
+        OnReloadAmmo();
+        OnReloadEnd();
+    }
+
+    public void OnReloadAmmo()
+    {
 #if NotEditor
-        //animator.speed = 1f;
-        animator.SetBool("Reload", false);
-        animator.SetBool("IsReloading", false);
-        if (actionData == null)
-        {
-            return;
-        }
-        if (!actionData.isReloading)
+        if (actionData == null || !actionData.isReloading)
         {
 #if DEBUG
             Log.Out($"ANIMATION RELOAD EVENT NOT RELOADING : {actionData.invData.item.Name}");
@@ -32,11 +31,10 @@ public class AnimationReloadEvents : MonoBehaviour
         }
         if (!actionData.isReloadCancelled)
         {
-            EntityAlive holdingEntity = actionData.invData.holdingEntity;
-            holdingEntity.MinEventContext.ItemActionData = actionData;
+            player.MinEventContext.ItemActionData = actionData;
             ItemValue item = ItemClass.GetItem(actionRanged.MagazineItemNames[actionData.invData.itemValue.SelectedAmmoTypeIndex], false);
-            int magSize = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, actionData.invData.itemValue, (float)actionRanged.BulletsPerMagazine, holdingEntity, null, default, true, true, true, true, 1, true, false);
-            actionData.reloadAmount = GetAmmoCountToReload(holdingEntity, item, magSize);
+            int magSize = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, actionData.invData.itemValue, (float)actionRanged.BulletsPerMagazine, player, null, default, true, true, true, true, 1, true, false);
+            actionData.reloadAmount = GetAmmoCountToReload(player, item, magSize);
             if (actionData.reloadAmount > 0)
             {
                 actionData.invData.itemValue.Meta = Utils.FastMin(actionData.invData.itemValue.Meta + actionData.reloadAmount, magSize);
@@ -46,8 +44,21 @@ public class AnimationReloadEvents : MonoBehaviour
                 }
             }
 #if DEBUG
-            Log.Out($"ANIMATION RELOAD EVENT FINISHING : {actionData.invData.item.Name}");
+            Log.Out($"ANIMATION RELOAD EVENT AMMO : {actionData.invData.item.Name}");
 #endif
+        }
+#endif
+    }
+
+    public void OnReloadEnd()
+    {
+#if NotEditor
+        animator.SetBool("Reload", false);
+        animator.SetBool("IsReloading", false);
+        animator.speed = 1f;
+        if (actionData == null || !actionData.isReloading)
+        {
+            return;
         }
         actionData.isReloading = false;
         actionData.invData.holdingEntity.MinEventContext.ItemActionData = actionData;
@@ -64,31 +75,61 @@ public class AnimationReloadEvents : MonoBehaviour
 #endif
     }
 
-#if NotEditor
-    public bool ReloadUpdatedThisFrame => reloadUpdatedThisFrame;
-    private bool reloadUpdatedThisFrame = false;
-    internal void OnReloadUpdate()
+    public void OnPartialReloadEnd()
     {
-        reloadUpdatedThisFrame = true;
+#if NotEditor
+        if (actionData == null)
+        {
+            return;
+        }
+
+        player.MinEventContext.ItemActionData = actionData;
+        ItemValue ammo = ItemClass.GetItem(actionRanged.MagazineItemNames[actionData.invData.itemValue.SelectedAmmoTypeIndex], false);
+        int magSize = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, actionData.invData.itemValue, (float)actionRanged.BulletsPerMagazine, player);
+        int partialReloadCount = (int)EffectManager.GetValue(CustomEnums.PartialReloadCount, actionData.invData.itemValue, 1, player);
+        actionData.reloadAmount = GetPartialReloadCount(player, ammo, magSize, partialReloadCount);
+        if (actionData.reloadAmount > 0)
+        {
+            actionData.invData.itemValue.Meta = Utils.FastMin(actionData.invData.itemValue.Meta + actionData.reloadAmount, magSize);
+            if (actionData.invData.item.Properties.Values[ItemClass.PropSoundIdle] != null)
+            {
+                actionData.invData.holdingEntitySoundID = -1;
+            }
+        }
+
+        if (actionData.isReloadCancelled || actionData.invData.itemValue.Meta >= magSize || player.GetItemCount(ammo) <= 0)
+        {
+            Log.Out("Partial reload finished");
+            animator.SetBool("IsReloading", false);
+        }
+#endif
     }
 
-    private void OnAnimatorMove()
-    {
-        if (actionData != null)
-        {
-            //if (actionData.isReloading && !reloadUpdatedThisFrame)
-            //{
-            //    Log.Warning("Animator not sending update msg this frame, reloading is cancelled!");
-            //    actionData.isReloadCancelled = true;
-            //    OnReloadFinish();
-            //}
-        }
-        else
-        {
-            //Log.Warning("actionData is null!");
-        }
-        reloadUpdatedThisFrame = false;
-    }
+#if NotEditor
+    //public bool ReloadUpdatedThisFrame => reloadUpdatedThisFrame;
+    //private bool reloadUpdatedThisFrame = false;
+    //internal void OnReloadUpdate()
+    //{
+    //    reloadUpdatedThisFrame = true;
+    //}
+
+    //private void OnAnimatorMove()
+    //{
+    //    if (actionData != null)
+    //    {
+    //        //if (actionData.isReloading && !reloadUpdatedThisFrame)
+    //        //{
+    //        //    Log.Warning("Animator not sending update msg this frame, reloading is cancelled!");
+    //        //    actionData.isReloadCancelled = true;
+    //        //    OnReloadFinish();
+    //        //}
+    //    }
+    //    else
+    //    {
+    //        //Log.Warning("actionData is null!");
+    //    }
+    //    reloadUpdatedThisFrame = false;
+    //}
 
     public void OnReloadStart(int actionIndex)
     {
@@ -160,45 +201,77 @@ public class AnimationReloadEvents : MonoBehaviour
 #endif
     }
 
-    private int GetAmmoCountToReload(EntityAlive ea, ItemValue ammo, int modifiedMagazineSize)
+    public int GetAmmoCountToReload(EntityAlive ea, ItemValue ammo, int modifiedMagazineSize)
     {
         int meta = actionData.invData.itemValue.Meta;
+        int target = modifiedMagazineSize - meta;
         if (actionRanged.HasInfiniteAmmo(actionData))
         {
             if (actionRanged.AmmoIsPerMagazine)
             {
                 return modifiedMagazineSize;
             }
-            return modifiedMagazineSize - meta;
+            return target;
         }
-        else if (ea.bag.GetItemCount(ammo, -1, -1, true) > 0)
+
+        int res = 0;
+        if (ea.bag.GetItemCount(ammo, -1, -1, true) > 0)
         {
             if (actionRanged.AmmoIsPerMagazine)
             {
                 return modifiedMagazineSize * ea.bag.DecItem(ammo, 1, false, null);
             }
-            return ea.bag.DecItem(ammo, modifiedMagazineSize - meta, false, null);
+            res = ea.bag.DecItem(ammo, target, false, null);
+            if (res == target)
+            {
+                return res;
+            }
         }
-        else
+
+        if (actionRanged.AmmoIsPerMagazine)
         {
-            if (ea.inventory.GetItemCount(ammo, false, -1, -1, true) <= 0)
-            {
-                return 0;
-            }
-            if (actionRanged.AmmoIsPerMagazine)
-            {
-                return modifiedMagazineSize * ea.inventory.DecItem(ammo, 1, false, null);
-            }
-            return actionData.invData.holdingEntity.inventory.DecItem(ammo, modifiedMagazineSize - meta, false, null);
+            return modifiedMagazineSize * ea.inventory.DecItem(ammo, 1, false, null);
         }
+
+        if (ea.inventory.GetItemCount(ammo, false, -1, -1, true) <= 0)
+        {
+            return res;
+        }
+        return res + actionData.invData.holdingEntity.inventory.DecItem(ammo, target - res, false, null);
     }
 
-    private int GetAmmoCount(EntityAlive ea, ItemValue ammo, int modifiedMagazineSize)
+    public int GetPartialReloadCount(EntityAlive ea, ItemValue ammo, int modifiedMagazineSize, int partialReloadCount)
     {
-        return Mathf.Min(ea.bag.GetItemCount(ammo, -1, -1, true) + ea.inventory.GetItemCount(ammo, false, -1, -1, true), modifiedMagazineSize);
+        int meta = actionData.invData.itemValue.Meta;
+        int target = Mathf.Min(partialReloadCount, modifiedMagazineSize - meta);
+        if (actionRanged.HasInfiniteAmmo(actionData))
+        {
+            return target;
+        }
+
+        int res = 0;
+        if (ea.bag.GetItemCount(ammo) > 0)
+        {
+            res = ea.bag.DecItem(ammo, target);
+            if (res == target)
+            {
+                return res;
+            }
+        }
+
+        if (ea.inventory.GetItemCount(ammo) <= 0)
+        {
+            return res;
+        }
+        return res + actionData.invData.holdingEntity.inventory.DecItem(ammo, target - res);
     }
 
-    private int getProjectileCount(ItemActionData _data)
+    public int GetAmmoCount(EntityAlive ea, ItemValue ammo, int modifiedMagazineSize)
+    {
+        return Mathf.Min(ea.bag.GetItemCount(ammo, -1, -1, true) + ea.inventory.GetItemCount(ammo, false, -1, -1, true) + actionData.invData.itemValue.Meta, modifiedMagazineSize);
+    }
+
+    public int getProjectileCount(ItemActionData _data)
     {
         int rps = 1;
         ItemInventoryData invD = _data != null ? _data.invData : null;
@@ -210,9 +283,9 @@ public class AnimationReloadEvents : MonoBehaviour
         return rps > 0 ? rps : 1;
     }
 
-    private EntityPlayerLocal player;
-    private ItemActionRanged.ItemActionDataRanged actionData;
-    private ItemActionRanged actionRanged;
+    public EntityPlayerLocal player;
+    public ItemActionRanged.ItemActionDataRanged actionData;
+    public ItemActionRanged actionRanged;
 #endif
     private Animator animator;
 }

@@ -372,6 +372,7 @@
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationProceduralRecoildAbs.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationSmokeParticle.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationAmmoUpdateState.cs" />
+    <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationMultiStageReloadState.cs" />
     <Compile Include="KFAttached\FPSPack\Demo\FPSDemoGUI.cs" />
     <Compile Include="KFAttached\FPSPack\Demo\FPSDemoReactivator.cs" />
     <Compile Include="KFAttached\FPSPack\Demo\FPSFireManager.cs" />
@@ -453,6 +454,7 @@
     <Compile Include="Scripts\Items\Modular\ActionModuleAlternative.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleDisplayAsBuff.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleHoldOpen.cs" />
+    <Compile Include="Scripts\Items\Modular\ActionModuleInterruptReload.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleLocalPassiveCache.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleMetaConsumer.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleMultiActionFix.cs" />
