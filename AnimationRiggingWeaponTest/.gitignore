@@ -12,6 +12,7 @@ packages/
 *.suo  
 *.user  
 *.sln.docstates  
+!*.unitypackage
   
 # Build results  
 [Dd]ebug/  

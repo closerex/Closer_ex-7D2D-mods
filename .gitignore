@@ -46,7 +46,6 @@
 !M16M203/**
 !ZZCustomPlayerActionManagerSMXPatch/
 !ZZCustomPlayerActionManagerSMXPatch/**
-.unitypackage
 !.gitignore
 !*/.gitignore
 .gitattributes
@@ -55,6 +54,5 @@
 .fake
 *.unitypackage
 /AnimationRiggingWeaponTest/DemoScene.unitypackage
-*.unitypackage
 readme.txt
 /0-KFCommonUtilityLib/DynamicFileNesting
