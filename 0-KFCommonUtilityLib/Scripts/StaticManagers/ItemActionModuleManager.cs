@@ -447,6 +447,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             generator.Emit(OpCodes.Ldarg_0);
             generator.Emit(OpCodes.Ldfld, flddef_module);
             generator.Emit(OpCodes.Ret);
+            propdef_instance.GetMethod = mtddef_instance_getter;
             typedef_container.Properties.Add(propdef_instance);
         }
 
