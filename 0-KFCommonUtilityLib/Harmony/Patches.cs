@@ -10,7 +10,7 @@ using SystemInformation;
 using UnityEngine;
 
 [HarmonyPatch]
-public class CommonUtilityPatch
+public static class CommonUtilityPatch
 {
     //fix reloading issue and onSelfRangedBurstShot timing
     public static void FakeReload(EntityAlive holdingEntity, ItemActionRanged.ItemActionDataRanged _actionData)
@@ -863,6 +863,111 @@ public class CommonUtilityPatch
             }
         }
         return true;
+    }
+
+    //interrupt reload with firing
+    [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.ExecuteAction))]
+    [HarmonyPrefix]
+    private static bool Prefix_ExecuteAction_ItemClass(ItemClass __instance, int _actionIdx, ItemInventoryData _data, bool _bReleased, PlayerActionsLocal _playerActions)
+    {
+        ItemAction curAction = __instance.Actions[_actionIdx];
+        if (curAction is ItemActionRanged || curAction is ItemActionZoom)
+        {
+            int curActionIndex = MultiActionManager.GetActionIndexForEntity(_data.holdingEntity);
+            var rangedAction = __instance.Actions[curActionIndex];
+            var rangedData = _data.actionData[curActionIndex] as ItemActionRanged.ItemActionDataRanged;
+            if (rangedData != null && rangedData is IModuleContainerFor<ActionModuleInterruptReload.InterruptData> module)
+            {
+                if (!_bReleased && _playerActions != null && ((_playerActions.Primary.WasPressed && _actionIdx == curActionIndex) || (_playerActions.Secondary.WasPressed && curAction is ItemActionZoom)) && rangedData.isReloading && !rangedData.isReloadCancelled && !module.Instance.isInterruptRequested)
+                {
+                    rangedAction.CancelReload(rangedData);
+                    module.Instance.isInterruptRequested = true;
+                    return false;
+                }
+                if (_bReleased)
+                {
+                    module.Instance.isInterruptRequested = false;
+                }
+            }
+        }
+        return true;
+    }
+
+    [HarmonyPatch(typeof(ItemActionZoom), nameof(ItemActionZoom.GetIronSights))]
+    [HarmonyReversePatch(HarmonyReversePatchType.Original)]
+    public static void GetMaxZoom(this ItemActionZoom itemActionZoom, ItemActionData _actionData, out float maxZoom)
+    {
+        IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            if (instructions == null)
+                return null;
+
+            Type type_zoom = typeof(ItemActionZoom).GetNestedType("ItemActionDataZoom", System.Reflection.BindingFlags.NonPublic);
+
+            return new[]
+            {
+                new CodeInstruction(OpCodes.Ldarg_2),
+                new CodeInstruction(OpCodes.Ldarg_1),
+                new CodeInstruction(OpCodes.Castclass, type_zoom),
+                CodeInstruction.LoadField(type_zoom, "MaxZoomOut"),
+                new CodeInstruction(OpCodes.Conv_R4),
+                new CodeInstruction(OpCodes.Stind_R4),
+                new CodeInstruction(OpCodes.Ret)
+            };
+        }
+
+        _ = Transpiler(null);
+    }
+
+    [HarmonyPatch(typeof(ItemActionZoom), nameof(ItemActionZoom.GetIronSights))]
+    [HarmonyReversePatch(HarmonyReversePatchType.Original)]
+    public static void GetMinZoom(this ItemActionZoom itemActionZoom, ItemActionData _actionData, out float minZoom)
+    {
+        IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            if (instructions == null)
+                return null;
+
+            Type type_zoom = typeof(ItemActionZoom).GetNestedType("ItemActionDataZoom", System.Reflection.BindingFlags.NonPublic);
+
+            return new[]
+            {
+                new CodeInstruction(OpCodes.Ldarg_2),
+                new CodeInstruction(OpCodes.Ldarg_1),
+                new CodeInstruction(OpCodes.Castclass, type_zoom),
+                CodeInstruction.LoadField(type_zoom, "MaxZoomIn"),
+                new CodeInstruction(OpCodes.Conv_R4),
+                new CodeInstruction(OpCodes.Stind_R4),
+                new CodeInstruction(OpCodes.Ret)
+            };
+        }
+
+        _ = Transpiler(null);
+    }
+
+    [HarmonyPatch(typeof(ItemActionZoom), nameof(ItemActionZoom.GetIronSights))]
+    [HarmonyReversePatch(HarmonyReversePatchType.Original)]
+    public static void GetCurrentZoom(this ItemActionZoom itemActionZoom, ItemActionData _actionData, out float curZoom)
+    {
+        IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            if (instructions == null)
+                return null;
+
+            Type type_zoom = typeof(ItemActionZoom).GetNestedType("ItemActionDataZoom", System.Reflection.BindingFlags.NonPublic);
+
+            return new[]
+            {
+                new CodeInstruction(OpCodes.Ldarg_2),
+                new CodeInstruction(OpCodes.Ldarg_1),
+                new CodeInstruction(OpCodes.Castclass, type_zoom),
+                CodeInstruction.LoadField(type_zoom, "CurrentZoom"),
+                new CodeInstruction(OpCodes.Stind_R4),
+                new CodeInstruction(OpCodes.Ret)
+            };
+        }
+
+        _ = Transpiler(null);
     }
 
     //private static bool exported = false;
