@@ -18,4 +18,24 @@
 			<property name="CrosshairOnAim" value="false"/>
 		</item_property_overrides>
 	</append>
+	<append xpath="/item_modifiers/item_modifier[@name='modGunScopeSmall']">
+		<item_property_overrides name="gunM4Benelli">
+			<property name="Zoom_max_out" value="50"/>
+			<property name="Zoom_max_in" value="50"/>
+			<property name="ZoomRatio" value="2"/>
+			<property name="CrosshairOnAim" value="false"/>
+			<property name="ScopeCameraOffset" value="-0.0002,-0.0359,-0.05"/>
+			<property name="Zoom_overlay" value=""/>
+		</item_property_overrides>
+	</append>
+	<append xpath="/item_modifiers/item_modifier[@name='modGunScopeMedium']">
+		<item_property_overrides name="gunM4Benelli">
+			<property name="Zoom_max_out" value="38"/>
+			<property name="Zoom_max_in" value="38"/>
+			<property name="ZoomRatio" value="4"/>
+			<property name="CrosshairOnAim" value="false"/>
+			<property name="ScopeCameraOffset" value="-0.0002,-0.0359,-0.05"/>
+			<property name="Zoom_overlay" value=""/>
+		</item_property_overrides>
+	</append>
 </configs>

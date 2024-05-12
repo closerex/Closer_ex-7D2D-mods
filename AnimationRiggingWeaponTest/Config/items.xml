@@ -503,7 +503,7 @@
 		</item>
 
 		<item name="gunM4Benelli">
-			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shotgun,shortRange,barrelAttachments,sideAttachments,smallTopAttachments,noSilencer,stock,bottomAttachments,attStrength,perkBoomstick,modGunShotgunTubeExtenderMagazine,attachmentsIncluded,canHaveCosmetic,shotgunSkill"/>
+			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shotgun,shortRange,barrelAttachments,sideAttachments,smallTopAttachments,mediumTopAttachments,noSilencer,stock,bottomAttachments,attStrength,perkBoomstick,modGunShotgunTubeExtenderMagazine,attachmentsIncluded,canHaveCosmetic,shotgunSkill"/>
 			<property name="DisplayType" value="rangedShotgun"/>
 			<property name="HoldType" value="5"/>
 			<property name="Meshfile" value="#@modfolder:Resources/M4Benelli.unity3d?m4_benelli.prefab"/>
@@ -535,6 +535,7 @@
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
+				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib"/>
 				<property name="Delay" value=".8"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug"/>
 				<property name="Reload_time" value="2.6"/>
@@ -556,7 +557,6 @@
 			</property>
 			<property class="Action1">
 				<property name="Class" value="Zoom"/>
-				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib"/>
 				<property name="Zoom_max_out" value="55"/>
 				<property name="Zoom_max_in" value="55"/>
 				<property name="ScopeCameraOffset" value="0,0,0"/>
@@ -573,7 +573,7 @@
 				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="6.395">
 					<requirement name="ProgressionLevel" progression_name="perkBoomstick" operation="LT" value="5"/>
 				</passive_effect>
-				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="8.974">
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="6.859">
 					<requirement name="ProgressionLevel" progression_name="perkBoomstick" operation="GTE" value="5"/>
 				</passive_effect>
 				<passive_effect name="RoundsPerMinute" operation="base_set" value="178" tags="perkBoomstick"/>

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace KFCommonUtilityLib.KFAttached.Render
 {
@@ -6,9 +7,9 @@ namespace KFCommonUtilityLib.KFAttached.Render
     [RequireComponent(typeof(Renderer))]
     public class MagnifyScope : MonoBehaviour
     {
+#if NotEditor
         [SerializeField]
         private Material postEffectMat;
-
         [Range(0f, 3f)]
         public float BlurRadius = 1f;
         [Range(8, 128)]
@@ -17,18 +18,21 @@ namespace KFCommonUtilityLib.KFAttached.Render
         public float RTDownScaling = 2;
         [Range(0, 1)]
         public float animatedEffectScale = 0f;
-
-        private static readonly int GoldenRot = Shader.PropertyToID("_GoldenRot");
-        private static readonly int Params = Shader.PropertyToID("_Params");
-        private static readonly int BufferRT1 = Shader.PropertyToID("_BufferRT1");
-#if NotEditor
-        private EntityPlayerLocal player;
+#endif
         private RenderTexture targetTexture;
         private Renderer renderTarget;
 
         private float DownScalingReci;
         private Vector4 mGoldenRot = new Vector4();
 
+        private static readonly int GoldenRot = Shader.PropertyToID("_GoldenRot");
+        private static readonly int Params = Shader.PropertyToID("_Params");
+        private static readonly int BufferRT1 = Shader.PropertyToID("_BufferRT1");
+#if NotEditor
+        private EntityPlayerLocal player;
+#else
+        public Camera debugCamera;
+#endif
         private void Awake()
         {
             renderTarget = GetComponent<Renderer>();
@@ -37,6 +41,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
                 Destroy(this);
                 return;
             }
+#if NotEditor
             player = GameManager.Instance?.World?.GetPrimaryPlayer();
             if (player == null)
             {
@@ -47,24 +52,62 @@ namespace KFCommonUtilityLib.KFAttached.Render
             {
                 reference = player.playerCamera.gameObject.AddComponent<MagnifyScopeTargetRef>();
             }
+            float c = Mathf.Cos(2.39996323f);
+            float s = Mathf.Sin(2.39996323f);
+            mGoldenRot.Set(c, s, -s, c);
+            DownScalingReci = 1 / RTDownScaling;
+#else
+            if(debugCamera == null)
+            {
+                Destroy(this);
+                return;
+            }
+            if (debugCamera && !debugCamera.TryGetComponent<MagnifyScopeTargetRef>(out var reference))
+            {
+                reference = debugCamera.gameObject.AddComponent<MagnifyScopeTargetRef>();
+            }
+#endif
             //if (!player.playerCamera.TryGetComponent<BokehBlurTargetRef>(out var bokeh))
             //{
             //    bokeh = player.playerCamera.gameObject.AddComponent<BokehBlurTargetRef>();
             //}
             //bokeh.target = this;
             // Precompute rotations
-            float c = Mathf.Cos(2.39996323f);
-            float s = Mathf.Sin(2.39996323f);
-            mGoldenRot.Set(c, s, -s, c);
-            DownScalingReci = 1 / RTDownScaling;
         }
 
         private void OnEnable()
         {
+#if NotEditor
             if (!player.playerCamera.TryGetComponent<MagnifyScopeTargetRef>(out var reference))
             {
                 reference = player.playerCamera.gameObject.AddComponent<MagnifyScopeTargetRef>();
             }
+            var zoomAction = (ItemActionZoom)player.inventory.holdingItem.Actions[1];
+            var zoomActionData = player.inventory.holdingItemData.actionData[1];
+            float targetScale = StringParsers.ParseFloat(player.inventory.holdingItemItemValue.GetPropertyOverride("ZoomRatio", "0"));
+            if (targetScale > 0)
+            {
+                zoomAction.GetMaxZoom(zoomActionData, out float maxZoom);
+                float refScale = 1 / (Mathf.Tan(Mathf.Deg2Rad * 27.5f) * player.playerCamera.aspect);
+                float maxScale = 1 / (Mathf.Tan(Mathf.Deg2Rad * maxZoom / 2) * player.playerCamera.aspect);
+                float shaderScale = targetScale / (maxScale / refScale);
+                renderTarget.material.SetFloat("_Zoom", shaderScale);
+                Log.Out($"Ref scale {refScale} Max scale {maxScale} Shader scale {shaderScale} Target scale {targetScale}");
+                Log.Out($"Max zoom {maxZoom} aspect {player.playerCamera.aspect}");
+            }
+
+
+#else
+            if(debugCamera == null)
+            {
+                Destroy(this);
+                return;
+            }
+            if (!debugCamera.TryGetComponent<MagnifyScopeTargetRef>(out var reference))
+            {
+                reference = debugCamera.gameObject.AddComponent<MagnifyScopeTargetRef>();
+            }
+#endif
             reference.target = this;
             reference.enabled = true;
             //if (!player.playerCamera.TryGetComponent<BokehBlurTargetRef>(out var bokeh))
@@ -77,10 +120,22 @@ namespace KFCommonUtilityLib.KFAttached.Render
 
         private void OnDisable()
         {
+#if NotEditor
             if (!player.playerCamera.TryGetComponent<MagnifyScopeTargetRef>(out var reference))
             {
                 reference = player.playerCamera.gameObject.AddComponent<MagnifyScopeTargetRef>();
             }
+#else
+            if(debugCamera == null)
+            {
+                Destroy(this);
+                return;
+            }
+            if (!debugCamera.TryGetComponent<MagnifyScopeTargetRef>(out var reference))
+            {
+                reference = debugCamera.gameObject.AddComponent<MagnifyScopeTargetRef>();
+            }
+#endif
             reference.target = null;
             reference.enabled = false;
             //if (!player.playerCamera.TryGetComponent<BokehBlurTargetRef>(out var bokeh))
@@ -145,6 +200,5 @@ namespace KFCommonUtilityLib.KFAttached.Render
             //    RenderTexture.ReleaseTemporary(postEffectTexture);
             //}
         }
-#endif
     }
 }
