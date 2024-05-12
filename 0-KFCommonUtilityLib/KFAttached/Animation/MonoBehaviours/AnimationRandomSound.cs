@@ -88,8 +88,8 @@ public class AnimationRandomSound : MonoBehaviour, ISerializationCallbackReceive
         }
 
         int random = Random.Range(0, asg.clips.Length);
-        asg.source.clip = asg.clips[random];
-        asg.source.Play();
+        //asg.source.clip = asg.clips[random];
+        asg.source.PlayOneShot(asg.clips[random]);
         //#if NotEditor
         //        Log.Out($"play clip {asg.clips[random].name}");
         //#endif
