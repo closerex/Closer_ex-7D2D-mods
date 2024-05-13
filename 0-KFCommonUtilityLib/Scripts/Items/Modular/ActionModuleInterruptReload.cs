@@ -2,7 +2,7 @@
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using UnityEngine;
 
-[TypeTarget(typeof(ItemAction), typeof(ActionModuleInterruptReload.InterruptData))]
+[TypeTarget(typeof(ItemActionRanged), typeof(ActionModuleInterruptReload.InterruptData))]
 public class ActionModuleInterruptReload
 {
     //[MethodTargetPrefix(nameof(ItemActionZoom.ExecuteAction), typeof(ItemActionZoom))]
@@ -28,6 +28,13 @@ public class ActionModuleInterruptReload
     //    }
     //    return true;
     //}
+
+    [MethodTargetPrefix(nameof(ItemActionRanged.StartHolding))]
+    private bool Prefix_StartHolding(InterruptData __customData)
+    {
+        __customData.isInterruptRequested = false;
+        return true;
+    }
 
     public class InterruptData
     {

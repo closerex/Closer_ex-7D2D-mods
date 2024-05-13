@@ -108,8 +108,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
                 reference = debugCamera.gameObject.AddComponent<MagnifyScopeTargetRef>();
             }
 #endif
-            reference.target = this;
-            reference.enabled = true;
+            reference.AddTarget(this);
             //if (!player.playerCamera.TryGetComponent<BokehBlurTargetRef>(out var bokeh))
             //{
             //    bokeh = player.playerCamera.gameObject.AddComponent<BokehBlurTargetRef>();
@@ -136,8 +135,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
                 reference = debugCamera.gameObject.AddComponent<MagnifyScopeTargetRef>();
             }
 #endif
-            reference.target = null;
-            reference.enabled = false;
+            reference.RemoveTarget(this);
             //if (!player.playerCamera.TryGetComponent<BokehBlurTargetRef>(out var bokeh))
             //{
             //    bokeh = player.playerCamera.gameObject.AddComponent<BokehBlurTargetRef>();
