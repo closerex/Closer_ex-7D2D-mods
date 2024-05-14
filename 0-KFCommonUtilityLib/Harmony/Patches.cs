@@ -909,7 +909,7 @@ public static class CommonUtilityPatch
                 new CodeInstruction(OpCodes.Ldarg_2),
                 new CodeInstruction(OpCodes.Ldarg_1),
                 new CodeInstruction(OpCodes.Castclass, type_zoom),
-                CodeInstruction.LoadField(type_zoom, "MaxZoomOut"),
+                CodeInstruction.LoadField(type_zoom, "MaxZoomIn"),
                 new CodeInstruction(OpCodes.Conv_R4),
                 new CodeInstruction(OpCodes.Stind_R4),
                 new CodeInstruction(OpCodes.Ret)
@@ -935,7 +935,7 @@ public static class CommonUtilityPatch
                 new CodeInstruction(OpCodes.Ldarg_2),
                 new CodeInstruction(OpCodes.Ldarg_1),
                 new CodeInstruction(OpCodes.Castclass, type_zoom),
-                CodeInstruction.LoadField(type_zoom, "MaxZoomIn"),
+                CodeInstruction.LoadField(type_zoom, "MaxZoomOut"),
                 new CodeInstruction(OpCodes.Conv_R4),
                 new CodeInstruction(OpCodes.Stind_R4),
                 new CodeInstruction(OpCodes.Ret)
