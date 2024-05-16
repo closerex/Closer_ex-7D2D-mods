@@ -57,7 +57,7 @@ public class IsModificationActivated : RequirementBase
 
         switch (_attribute.Name.LocalName)
         {
-            case "name":
+            case "mod":
                 modName = _attribute.Value;
                 return true;
         }
