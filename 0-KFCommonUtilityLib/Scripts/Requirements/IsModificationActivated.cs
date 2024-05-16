@@ -28,7 +28,7 @@ public class IsModificationActivated : RequirementBase
             {
                 foreach (var mod in _params.ItemValue.Modifications)
                 {
-                    if (mod != null && mod.GetItemOrBlockId() == modId && mod.Activated > 0)
+                    if (mod != null && mod.type == modId && mod.Activated > 0)
                     {
                         return !invert;
                     }
@@ -39,7 +39,7 @@ public class IsModificationActivated : RequirementBase
             {
                 foreach (var cos in _params.ItemValue.CosmeticMods)
                 {
-                    if (cos != null && cos.GetItemOrBlockId() == modId && cos.Activated > 0)
+                    if (cos != null && cos.type == modId && cos.Activated > 0)
                     {
                         return !invert;
                     }
@@ -57,7 +57,7 @@ public class IsModificationActivated : RequirementBase
 
         switch (_attribute.Name.LocalName)
         {
-            case "name":
+            case "mod":
                 modName = _attribute.Value;
                 return true;
         }
