@@ -34,7 +34,7 @@ namespace KFCommonUtilityLib.Scripts.ConsoleCmd
 
         protected override string getDescription()
         {
-            throw new NotImplementedException();
+            return "Show local cache for current holding item.";
         }
     }
 }
