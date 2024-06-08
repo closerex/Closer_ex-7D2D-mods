@@ -82,7 +82,10 @@ namespace KFCommonUtilityLib.KFAttached.Render
             {
                 reference = player.playerCamera.gameObject.AddComponent<MagnifyScopeTargetRef>();
             }
-            var zoomAction = (ItemActionZoom)player.inventory.holdingItem.Actions[1];
+            //inventory holding item is not set when creating model, this might be an issue for items with base scope that has this script attached
+            //workaround taken from alternative action module, which keeps a reference to the ItemValue being set until its custom data is created
+            //afterwards it's set to null so we still need to access holding item when this method is triggered by mods
+            var zoomAction = (ItemActionZoom)((ActionModuleAlternative.InventorySetItemTemp?.ItemClass ?? player.inventory.holdingItem).Actions[1]);
             var zoomActionData = player.inventory.holdingItemData.actionData[1];
             float targetScale = StringParsers.ParseFloat(player.inventory.holdingItemItemValue.GetPropertyOverride("ZoomRatio", "0"));
             if (targetScale > 0)
@@ -95,7 +98,6 @@ namespace KFCommonUtilityLib.KFAttached.Render
                 Log.Out($"Ref scale {refScale} Max scale {maxScale} Shader scale {shaderScale} Target scale {targetScale}");
                 Log.Out($"Max zoom {maxZoom} aspect {player.playerCamera.aspect}");
             }
-
 
 #else
             if(debugCamera == null)

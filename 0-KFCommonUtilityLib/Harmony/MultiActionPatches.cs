@@ -2085,7 +2085,7 @@ namespace KFCommonUtilityLib.Harmony
                 //else 
                 if (codes[i].Calls(mtd_create))
                 {
-                    codes.InsertRange(i + 2, new[]
+                    codes.InsertRange(i -12, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_2),
                         CodeInstruction.StoreField(typeof(ActionModuleAlternative), nameof(ActionModuleAlternative.InventorySetItemTemp))
