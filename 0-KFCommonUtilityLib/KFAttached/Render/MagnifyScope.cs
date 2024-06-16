@@ -42,12 +42,14 @@ namespace KFCommonUtilityLib.KFAttached.Render
                 return;
             }
 #if NotEditor
-            player = GameManager.Instance?.World?.GetPrimaryPlayer();
-            if (player == null)
+            //player = GameManager.Instance?.World?.GetPrimaryPlayer();
+            var entity = GetComponentInParent<EntityPlayerLocal>();
+            if (entity == null)
             {
                 Destroy(this);
                 return;
             }
+            player = entity;
             if (!player.playerCamera.TryGetComponent<MagnifyScopeTargetRef>(out var reference))
             {
                 reference = player.playerCamera.gameObject.AddComponent<MagnifyScopeTargetRef>();
