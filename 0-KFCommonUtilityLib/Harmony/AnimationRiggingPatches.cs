@@ -444,6 +444,77 @@ class AnimationRiggingPatches
         return true;
     }
 
+    ////[HarmonyPatch(typeof(XUiC_CameraWindow), nameof(XUiC_CameraWindow.OnOpen))]
+    ////[HarmonyPrefix]
+    ////private static bool Prefix_OnOpen_XuiC_CameraWindow(XUiC_CameraWindow __instance)
+    ////{
+    ////    AnimationRiggingManager.IsCameraWindowOpen = true;
+    ////    Inventory inventory = __instance.xui.playerUI.localPlayer.entityPlayerLocal.inventory;
+    ////    AnimationRiggingManager.OnClearInventorySlot(inventory, inventory.holdingItemIdx);
+    ////    return true;
+    ////}
+
+    ////[HarmonyPatch(typeof(XUiC_CameraWindow), nameof(XUiC_CameraWindow.OnClose))]
+    ////[HarmonyPrefix]
+    ////private static bool Prefix_OnClose_XuiC_CameraWindow()
+    ////{
+    ////    AnimationRiggingManager.IsCameraWindowOpen = false;
+    ////    return true;
+    ////}
+
+    //[HarmonyPatch(typeof(XUiC_CameraWindow), nameof(XUiC_CameraWindow.OnOpen))]
+    //[HarmonyTranspiler]
+    //private static IEnumerable<CodeInstruction> Transpiler_OnOpen_XuiC_CameraWindow(IEnumerable<CodeInstruction> instructions)
+    //{
+    //    var codes = instructions.ToList();
+
+    //    var mtd_switch = AccessTools.Method(typeof(EntityAlive), nameof(EntityAlive.SwitchModelView));
+    //    for (int i = 0; i < codes.Count; i++)
+    //    {
+    //        if (codes[i].Calls(mtd_switch))
+    //        {
+    //            //codes[i - 1].opcode = OpCodes.Ldc_I4_0;
+    //            //codes[i].opcode = OpCodes.Call;
+    //            //codes[i].operand = AccessTools.Method(typeof(EntityPlayerLocal), "setFirstPersonView");
+    //            //codes.Insert(i, new CodeInstruction(OpCodes.Ldc_I4_1));
+    //            codes.Insert(i - 5, new CodeInstruction(OpCodes.Br_S, codes[i - 6].operand));
+    //            break;
+    //        }
+    //    }
+
+    //    return codes;
+    //}
+
+    //[HarmonyPatch(typeof(XUiC_CameraWindow), nameof(XUiC_CameraWindow.OnClose))]
+    //[HarmonyTranspiler]
+    //private static IEnumerable<CodeInstruction> Transpiler_OnClose_XuiC_CameraWindow(IEnumerable<CodeInstruction> instructions)
+    //{
+    //    var codes = instructions.ToList();
+
+    //    var mtd_switch = AccessTools.Method(typeof(EntityAlive), nameof(EntityAlive.SwitchModelView));
+    //    for (int i = 0; i < codes.Count; i++)
+    //    {
+    //        if (codes[i].Calls(mtd_switch))
+    //        {
+    //            //codes[i - 1].opcode = OpCodes.Ldc_I4_1;
+    //            //codes[i].opcode = OpCodes.Call;
+    //            //codes[i].operand = AccessTools.Method(typeof(EntityPlayerLocal), "setFirstPersonView");
+    //            //codes.Insert(i, new CodeInstruction(OpCodes.Ldc_I4_1));
+    //            codes.RemoveRange(i - 5, 6);
+    //            break;
+    //        }
+    //    }
+
+    //    return codes;
+    //}
+
+    //[HarmonyPatch(typeof(XUiC_CameraWindow), "CreateCamera")]
+    //[HarmonyPostfix]
+    //private static void Postfix_CreateCamera_XUiC_CameraWindow(Camera ___sensorCamera)
+    //{
+    //    ___sensorCamera.cullingMask ^= 1 << 24;
+    //}
+
     [HarmonyPatch(typeof(AvatarLocalPlayerController), "_setTrigger")]
     [HarmonyPostfix]
     private static void Postfix_Avatar_SetTrigger(int _pid)

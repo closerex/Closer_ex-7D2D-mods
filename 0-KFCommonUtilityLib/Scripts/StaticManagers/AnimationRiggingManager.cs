@@ -31,6 +31,8 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         public static bool IsHoldingRiggedWeapon => fpvTransformRef != null;
         public static FpvTransformRef FpvTransformReference => fpvTransformRef;
 
+        internal static bool IsCameraWindowOpen = false;
+
         //private static readonly HashSet<int> hash_rig_items = new HashSet<int>();
         private static FpvTransformRef fpvTransformRef;
         private static readonly HashSet<int> hash_items_take_over_reload_time = new HashSet<int>();
@@ -76,7 +78,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         };
         public static void UpdateLocalPlayerAvatar(AvatarLocalPlayerController controller)
         {
-            if (fpvTransformRef != null && (controller.Entity as EntityPlayerLocal).bFirstPersonView)
+            if (fpvTransformRef != null && (controller.Entity as EntityPlayerLocal).bFirstPersonView && !IsCameraWindowOpen)
             {
                 //workaround for animator bullshit
                 if (!fpvTransformRef.targets.itemFpv.gameObject.activeSelf)
@@ -100,7 +102,13 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         {
             Transform transform = inv.models[slot];
             if (transform != null && transform.TryGetComponent<RigTargets>(out var targets))
+            {
                 targets.Destroy();
+            }
+            if (slot == inv.holdingItemIdx)
+            {
+                fpvTransformRef = null;
+            }
         }
 
         //patched to EntityPlayerLocal.OnHoldingItemChanged
