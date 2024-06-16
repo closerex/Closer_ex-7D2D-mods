@@ -35,7 +35,14 @@ public class CustomPlayerActionManager
         }
         if (File.Exists(prevSaveFile))
         {
-            File.Move(prevSaveFile, saveFile);
+            if (!File.Exists(saveFile))
+            {
+                File.Move(prevSaveFile, saveFile);
+            }
+            else
+            {
+                File.Delete(prevSaveFile);
+            }
         }
     }
 
