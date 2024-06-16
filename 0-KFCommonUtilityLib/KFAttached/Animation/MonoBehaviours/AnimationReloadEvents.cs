@@ -1,5 +1,6 @@
 ﻿#if NotEditor
 #endif
+using System.Collections;
 using UnityEngine;
 
 [AddComponentMenu("KFAttachments/Utils/Animation Reload Events")]
@@ -53,6 +54,7 @@ public class AnimationReloadEvents : MonoBehaviour
     public void OnReloadEnd()
     {
 #if NotEditor
+        StopAllCoroutines();
         animator.SetBool("Reload", false);
         animator.SetBool("IsReloading", false);
         animator.speed = 1f;
@@ -199,6 +201,23 @@ public class AnimationReloadEvents : MonoBehaviour
 #if DEBUG
         Log.Out($"ANIMATION EVENT RELOAD START : {actionData.invData.item.Name}");
 #endif
+    }
+
+    public void DelayForceCancelReload()
+    {
+        StartCoroutine(ForceCancelReloadCo());
+    }
+
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+    }
+
+    private IEnumerator ForceCancelReloadCo()
+    {
+        yield return new WaitForSecondsRealtime(1f);
+        if (actionData != null && actionData.isReloading && actionData.isReloadCancelled)
+            OnReloadEnd();
     }
 
     public int GetAmmoCountToReload(EntityAlive ea, ItemValue ammo, int modifiedMagazineSize)

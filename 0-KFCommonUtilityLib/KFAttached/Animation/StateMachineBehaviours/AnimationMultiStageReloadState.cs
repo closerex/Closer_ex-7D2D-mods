@@ -44,15 +44,20 @@ public class AnimationMultiStageReloadState : StateMachineBehaviour
             return;
         }
 
-        if (actionData.isReloadCancelled && speedUpOnCancel)
+        if (actionData.isReloadCancelled)
         {
-            Log.Out("Speed up animation!");
-            animator.speed = 30;
-        }
+            if (speedUpOnCancel)
+            {
+                Log.Out("Speed up animation!");
+                animator.speed = 30;
+            }
 
-        if (actionData.isReloadCancelled && immediateCancel)
-        {
-            animator.SetBool("IsReloading", false);
+            if (immediateCancel)
+            {
+                animator.SetBool("IsReloading", false);
+            }
+
+            eventBridge.DelayForceCancelReload();
         }
 
         if (actionData.isReloading && animator.GetBool("IsReloading"))

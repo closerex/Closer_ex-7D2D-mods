@@ -60,6 +60,7 @@ public class AnimationCustomReloadState : StateMachineBehaviour
         if (actionData.isReloadCancelled)
         {
             animator.speed = 30f;
+            eventBridge.DelayForceCancelReload();
 #if DEBUG
             Log.Out($"ANIMATOR UPDATE: RELOAD CANCELLED, ANIMATOR SPEED {animator.speed}");
 #endif
