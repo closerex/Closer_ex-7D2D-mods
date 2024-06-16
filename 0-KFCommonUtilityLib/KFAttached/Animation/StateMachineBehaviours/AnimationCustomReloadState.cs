@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class AnimationCustomReloadState : StateMachineBehaviour
 {
+    [SerializeField]
+    private float ForceCancelReloadDelay = 1f;
+    [SerializeField]
+    private bool DoNotForceCancel = false;
 #if NotEditor
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -60,7 +64,11 @@ public class AnimationCustomReloadState : StateMachineBehaviour
         if (actionData.isReloadCancelled)
         {
             animator.speed = 30f;
-            eventBridge.DelayForceCancelReload();
+
+            if (!DoNotForceCancel)
+            {
+                eventBridge.DelayForceCancelReload(ForceCancelReloadDelay);
+            }
 #if DEBUG
             Log.Out($"ANIMATOR UPDATE: RELOAD CANCELLED, ANIMATOR SPEED {animator.speed}");
 #endif

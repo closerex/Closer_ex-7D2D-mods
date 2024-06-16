@@ -9,6 +9,10 @@ public class AnimationMultiStageReloadState : StateMachineBehaviour
     private bool speedUpOnCancel;
     [SerializeField]
     private bool immediateCancel;
+    [SerializeField]
+    private float ForceCancelReloadDelay = 1f;
+    [SerializeField]
+    private bool DoNotForceCancel = false;
 #if NotEditor
     private AnimationReloadEvents eventBridge;
 
@@ -57,7 +61,10 @@ public class AnimationMultiStageReloadState : StateMachineBehaviour
                 animator.SetBool("IsReloading", false);
             }
 
-            eventBridge.DelayForceCancelReload();
+            if (!DoNotForceCancel)
+            {
+                eventBridge.DelayForceCancelReload(ForceCancelReloadDelay);
+            }
         }
 
         if (actionData.isReloading && animator.GetBool("IsReloading"))

@@ -203,9 +203,9 @@ public class AnimationReloadEvents : MonoBehaviour
 #endif
     }
 
-    public void DelayForceCancelReload()
+    public void DelayForceCancelReload(float delay)
     {
-        StartCoroutine(ForceCancelReloadCo());
+        StartCoroutine(ForceCancelReloadCo(delay));
     }
 
     private void OnDisable()
@@ -213,9 +213,9 @@ public class AnimationReloadEvents : MonoBehaviour
         StopAllCoroutines();
     }
 
-    private IEnumerator ForceCancelReloadCo()
+    private IEnumerator ForceCancelReloadCo(float delay)
     {
-        yield return new WaitForSecondsRealtime(1f);
+        yield return new WaitForSecondsRealtime(delay);
         if (actionData != null && actionData.isReloading && actionData.isReloadCancelled)
             OnReloadEnd();
     }
