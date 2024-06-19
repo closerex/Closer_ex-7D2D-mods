@@ -18,6 +18,8 @@ namespace KFCommonUtilityLib.KFAttached.Render
         public float RTDownScaling = 2;
         [Range(0, 1)]
         public float animatedEffectScale = 0f;
+
+        private int itemSlot = -1;
 #endif
         private RenderTexture targetTexture;
         private Renderer renderTarget;
@@ -50,6 +52,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
                 return;
             }
             player = entity;
+            itemSlot = player.inventory.holdingItemIdx;
             if (!player.playerCamera.TryGetComponent<MagnifyScopeTargetRef>(out var reference))
             {
                 reference = player.playerCamera.gameObject.AddComponent<MagnifyScopeTargetRef>();
@@ -87,6 +90,12 @@ namespace KFCommonUtilityLib.KFAttached.Render
             //inventory holding item is not set when creating model, this might be an issue for items with base scope that has this script attached
             //workaround taken from alternative action module, which keeps a reference to the ItemValue being set until its custom data is created
             //afterwards it's set to null so we still need to access holding item when this method is triggered by mods
+            if (itemSlot != player.inventory.holdingItemIdx)
+            {
+                Log.Out($"Expecting holding item idx {itemSlot} but getting {player.inventory.holdingItemIdx}, destroying scope script!");
+                Destroy(this);
+                return;
+            }
             var zoomAction = (ItemActionZoom)((ActionModuleAlternative.InventorySetItemTemp?.ItemClass ?? player.inventory.holdingItem).Actions[1]);
             var zoomActionData = player.inventory.holdingItemData.actionData[1];
             float targetScale = StringParsers.ParseFloat(player.inventory.holdingItemItemValue.GetPropertyOverride("ZoomRatio", "0"));
