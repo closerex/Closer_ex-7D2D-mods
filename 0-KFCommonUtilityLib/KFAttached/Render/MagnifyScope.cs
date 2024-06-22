@@ -92,8 +92,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
             //afterwards it's set to null so we still need to access holding item when this method is triggered by mods
             if (itemSlot != player.inventory.holdingItemIdx)
             {
-                Log.Out($"Expecting holding item idx {itemSlot} but getting {player.inventory.holdingItemIdx}, destroying scope script!");
-                Destroy(this);
+                Log.Out($"Scope shader script: Expecting holding item idx {itemSlot} but getting {player.inventory.holdingItemIdx}!");
                 return;
             }
             var zoomAction = (ItemActionZoom)((ActionModuleAlternative.InventorySetItemTemp?.ItemClass ?? player.inventory.holdingItem).Actions[1]);
