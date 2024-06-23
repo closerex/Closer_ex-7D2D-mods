@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Xml.Linq;
 
 
 namespace VehicleWeaponPatches
@@ -34,7 +35,7 @@ namespace VehicleWeaponPatches
         //    }
         //}
 
-        [HarmonyPatch("DetachEntity")]
+        [HarmonyPatch(nameof(EntityVehicle.DetachEntity))]
         [HarmonyPostfix]
         private static void Postfix_DetachEntity(Entity _entity, EntityVehicle __instance)
         {
@@ -71,20 +72,19 @@ namespace VehicleWeaponPatches
     [HarmonyPatch(typeof(VehicleManager), nameof(VehicleManager.RemoveAllVehiclesFromMap))]
     public class VehicleCleanupPatch
     {
-        private static bool Prefix(VehicleManager __instance, List<EntityVehicle> ___vehiclesActive)
+        private static bool Prefix(VehicleManager __instance)
         {
-            foreach(var entity in ___vehiclesActive)
+            foreach(var entity in __instance.vehiclesActive)
             {
                 var manager = entity.GetVehicle().FindPart(VPWeaponManager.VehicleWeaponManagerName) as VPWeaponManager;
-                if (manager != null)
-                    manager.Cleanup();
+                manager?.Cleanup();
             }
 
             return true;
         }
     }
 
-    [HarmonyPatch(typeof(vp_FPCamera), "Update3rdPerson")]
+    [HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.Update3rdPerson))]
     public class CameraPositionPatch
     {
         private static void Postfix(vp_FPCamera __instance)
@@ -98,26 +98,26 @@ namespace VehicleWeaponPatches
     {
         [HarmonyPatch(nameof(Vehicle.CreateParts))]
         [HarmonyPostfix]
-        private static void Postfix_CreateParts(Vehicle __instance, ItemValue ___itemValue)
+        private static void Postfix_CreateParts(Vehicle __instance)
         {
             if (__instance.FindPart(VPWeaponManager.VehicleWeaponManagerName) is VPWeaponManager manager)
-                manager.ApplyModEffect(___itemValue.Clone());
+                manager.ApplyModEffect(__instance.itemValue.Clone());
         }
 
         [HarmonyPatch(nameof(Vehicle.SetItemValue))]
         [HarmonyPostfix]
-        private static void Postfix_SetItemValue(Vehicle __instance, ItemValue ___itemValue)
+        private static void Postfix_SetItemValue(Vehicle __instance)
         {
             if (__instance.FindPart(VPWeaponManager.VehicleWeaponManagerName) is VPWeaponManager manager)
-                manager.ApplyModEffect(___itemValue.Clone());
+                manager.ApplyModEffect(__instance.itemValue.Clone());
         }
 
         [HarmonyPatch(nameof(Vehicle.SetItemValueMods))]
         [HarmonyPostfix]
-        private static void Postfix_SetItemValueMods(Vehicle __instance, ItemValue ___itemValue)
+        private static void Postfix_SetItemValueMods(Vehicle __instance)
         {
             if (__instance.FindPart(VPWeaponManager.VehicleWeaponManagerName) is VPWeaponManager manager)
-                manager.ApplyModEffect(___itemValue.Clone());
+                manager.ApplyModEffect(__instance.itemValue.Clone());
         }
 
         [HarmonyPatch(nameof(Vehicle.GetIKTargets))]
@@ -140,7 +140,7 @@ namespace VehicleWeaponPatches
         }
     }
 
-    [HarmonyPatch(typeof(PlayerMoveController), "Update")]
+    [HarmonyPatch(typeof(PlayerMoveController), nameof(PlayerMoveController.Update))]
     public class PlayerControllerPatch
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -162,7 +162,7 @@ namespace VehicleWeaponPatches
                             {
                                 new CodeInstruction(OpCodes.Ldarg_0),
                                 CodeInstruction.LoadField(typeof(PlayerMoveController), "entityPlayerLocal"),
-                                CodeInstruction.Call(typeof(PlayerControllerPatch), nameof(PlayerControllerPatch.CheckForSwitchingSeat))
+                                CodeInstruction.Call(typeof(PlayerControllerPatch), nameof(CheckForSwitchingSeat))
                             };
                             insert[0].MoveLabelsFrom(codes[j + 1]);
                             codes.InsertRange(j + 1, insert);
@@ -212,7 +212,7 @@ namespace VehicleWeaponPatches
         }
     }
 
-    [HarmonyPatch(typeof(NGuiWdwInGameHUD), "OnGUI")]
+    [HarmonyPatch(typeof(NGuiWdwInGameHUD), nameof(NGuiWdwInGameHUD.OnGUI))]
     public class GUIPatch
     {
         private static void Postfix()
@@ -221,6 +221,60 @@ namespace VehicleWeaponPatches
             {
                 VPWeaponManager.CurrentInstance.GUIUpdate();
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(MinEffectController), nameof(MinEffectController.ParseXml))]
+    public class VehicleModParsePatch
+    {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var mtd_add = AccessTools.Method(typeof(MinEffectController), nameof(MinEffectController.AddEffectGroup));
+
+            for(int i = 0;i < codes.Count;i++)
+            {
+                if (codes[i].Calls(mtd_add))
+                {
+                    codes.InsertRange(i, new[]
+                    {
+                        new CodeInstruction(OpCodes.Dup),
+                        new CodeInstruction(codes[i - 2].opcode, codes[i - 2].operand),
+                        new CodeInstruction(OpCodes.Ldarg_2),
+                        new CodeInstruction(OpCodes.Ldarg_3),
+                        CodeInstruction.Call(typeof(VehicleModParsePatch), nameof(ParseVehicleWeaponModEffect))
+                    });
+                    i += 5;
+                }
+            }
+
+            return codes;
+        }
+
+        private static void ParseVehicleWeaponModEffect(MinEffectGroup _group, XElement _element, MinEffectController.SourceParentType _type, object _parentPointer)
+        {
+            if (_type == MinEffectController.SourceParentType.ItemModifierClass && _parentPointer is int itemId)
+            {
+                if (_element.HasAttribute("vehicle_weapon"))
+                {
+                    if (!VPWeaponManager.VehicleWeaponModMapping.TryGetValue(itemId, out var list))
+                    {
+                        list = new List<(string vmodName, MinEffectGroup group)>();
+                        VPWeaponManager.VehicleWeaponModMapping[itemId] = list;
+                    }
+                    list.Add((_element.GetAttribute("vehicle_weapon"), _group));
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(GameManager), nameof(GameManager.SaveAndCleanupWorld))]
+    public class VehicleModCleanupPatch
+    {
+        private static void Postfix()
+        {
+            VPWeaponManager.VehicleWeaponModMapping.Clear();
         }
     }
     //[HarmonyPatch(typeof(IKController), nameof(IKController.OnAnimatorIK))]

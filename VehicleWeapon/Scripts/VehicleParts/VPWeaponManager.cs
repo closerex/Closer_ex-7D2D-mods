@@ -15,6 +15,8 @@ public class VPWeaponManager : VehiclePart
     public static Vector3 CameraOffset { get; private set; } = Vector3.zero;
     public static bool ShouldNetSync { get; private set; } = false;
 
+    public static Dictionary<int, List<(string vmodName, MinEffectGroup group)>> VehicleWeaponModMapping { get; } = new Dictionary<int, List<(string, MinEffectGroup)>>();
+
     public override void SetProperties(DynamicProperties _properties)
     {
         base.SetProperties(_properties);
@@ -353,7 +355,7 @@ public class VPWeaponManager : VehiclePart
                 if(ShouldNetSync)
                 {
                     if (ConnectionManager.Instance.IsServer && ConnectionManager.Instance.ClientCount() > 0)
-                        ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageVehicleWeaponManagerDataSync>().Setup(vehicleId, seat, updateData, fireData), false, -1, playerId, playerId, 75);
+                        ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageVehicleWeaponManagerDataSync>().Setup(vehicleId, seat, updateData, fireData), false, -1, playerId, playerId, null, 75);
                     else if (ConnectionManager.Instance.IsClient)
                         ConnectionManager.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageVehicleWeaponManagerDataSync>().Setup(vehicleId, seat, updateData, fireData));
                 }

@@ -1,5 +1,0 @@
-<configs>
-	<insertAfter xpath="//crafting_skill[@name='craftingMachineGuns']/effect_group/passive_effect[@name='CraftingTier' and @tags='gunMGT3M60']">
-        <passive_effect name="CraftingTier" operation="base_add" level="75,80,85,90,95,100" value="1,2,3,4,5,6" tags="gunM16M203"/>
-    </insertAfter>
-</configs>

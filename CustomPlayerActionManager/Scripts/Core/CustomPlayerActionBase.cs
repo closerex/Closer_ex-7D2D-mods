@@ -2,17 +2,17 @@
 
 public class CustomPlayerActionVersionBase : PlayerActionsBase
 {
-    protected override void CreateActions()
+    public override void CreateActions()
     {
         throw new NotImplementedException();
     }
 
-    protected override void CreateDefaultJoystickBindings()
+    public override void CreateDefaultJoystickBindings()
     {
         throw new NotImplementedException();
     }
 
-    protected override void CreateDefaultKeyboardBindings()
+    public override void CreateDefaultKeyboardBindings()
     {
         throw new NotImplementedException();
     }

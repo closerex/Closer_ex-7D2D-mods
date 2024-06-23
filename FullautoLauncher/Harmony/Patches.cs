@@ -21,7 +21,7 @@ class ItemActionLauncherProjectilePatch
         if (invD != null)
         {
             ItemClass item = invD.itemValue != null ? invD.itemValue.ItemClass : null;
-            rps = (int)EffectManager.GetValue(PassiveEffects.RoundRayCount, invD.itemValue, rps, invD.holdingEntity, null, item != null ? item.ItemTags | _data.ActionTags : default(FastTags));
+            rps = (int)EffectManager.GetValue(PassiveEffects.RoundRayCount, invD.itemValue, rps, invD.holdingEntity, null, item != null ? item.ItemTags | _data.ActionTags : default);
         }
         return rps > 0 ? rps : 1;
     }
@@ -34,14 +34,15 @@ class ItemActionLauncherProjectilePatch
 
         LocalBuilder lbd_rps = generator.DeclareLocal(typeof(int));
 
-        var list_insert = new List<CodeInstruction>();
-        list_insert.Add(new CodeInstruction(OpCodes.Ldloc_S, lbd_rps));
-        list_insert.Add(new CodeInstruction(OpCodes.Mul));
-
-        for(int i = 0; i < codes.Count; i++)
+        var list_insert = new List<CodeInstruction>
         {
-            CodeInstruction code = codes[i];
-            if(code.opcode == OpCodes.Ldfld && code.LoadsField(fldinfo_meta))
+            new CodeInstruction(OpCodes.Ldloc_S, lbd_rps),
+            new CodeInstruction(OpCodes.Mul)
+        };
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if ( codes[i].LoadsField(fldinfo_meta))
             {
                 codes.InsertRange(i + 1, list_insert);
                 i += list_insert.Count;
@@ -51,7 +52,7 @@ class ItemActionLauncherProjectilePatch
         codes.InsertRange(0, new CodeInstruction[]
         {
             new CodeInstruction(OpCodes.Ldarg_1),
-            CodeInstruction.Call(typeof(ItemActionLauncherProjectilePatch), nameof(ItemActionLauncherProjectilePatch.getProjectileCount), new Type[] { typeof(ItemActionData) }),
+            CodeInstruction.Call(typeof(ItemActionLauncherProjectilePatch), nameof(getProjectileCount), new Type[] { typeof(ItemActionData) }),
             new CodeInstruction(OpCodes.Stloc_S, lbd_rps)
         });
 
@@ -66,12 +67,12 @@ class ItemActionLauncherProjectilePatch
 
         for(int i = 0, totali = codes.Count; i < totali; i++)
         {
-            if(codes[i].opcode == OpCodes.Callvirt && codes[i].Calls(mtdinfo_gbc))
+            if (codes[i].Calls(mtdinfo_gbc))
             {
                 codes.InsertRange(i + 1, new CodeInstruction[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_2),
-                    CodeInstruction.Call(typeof(ItemActionLauncherProjectilePatch), nameof(ItemActionLauncherProjectilePatch.getProjectileCount), new Type[] { typeof(ItemActionData) })
+                    CodeInstruction.Call(typeof(ItemActionLauncherProjectilePatch), nameof(getProjectileCount), new Type[] { typeof(ItemActionData) })
                 });
                 codes.RemoveRange(i - 2, 3);
                 break;
@@ -81,7 +82,7 @@ class ItemActionLauncherProjectilePatch
         return codes;
     }
 
-    [HarmonyPatch(typeof(ItemActionLauncher), "ConsumeAmmo")]
+    [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.ConsumeAmmo))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_ConsumeAmmo_ItemActionLauncher(IEnumerable<CodeInstruction> instructions)
     {
@@ -89,7 +90,7 @@ class ItemActionLauncherProjectilePatch
         {
             new CodeInstruction(OpCodes.Ldarg_0),
             new CodeInstruction(OpCodes.Ldarg_1),
-            CodeInstruction.Call(typeof(ItemActionRanged), "ConsumeAmmo", new Type[]{ typeof(ItemActionData) }),
+            CodeInstruction.Call(typeof(ItemActionRanged), nameof(ItemActionRanged.ConsumeAmmo), new Type[]{ typeof(ItemActionData) }),
             new CodeInstruction(OpCodes.Ret)
         };
 
@@ -102,7 +103,7 @@ class ItemActionLauncherProjectilePatch
     {
         var codes = new List<CodeInstruction>(instructions);
 
-        for (int i = 0, totali = codes.Count; i < totali; i++)
+        for (int i = 0; i < codes.Count; i++)
         {
             if (codes[i].opcode == OpCodes.Isinst && codes[i].OperandIs(typeof(ItemActionLauncher)))
             {
@@ -124,12 +125,12 @@ class ItemActionLauncherProjectilePatch
 
         for (int i = 0, totali = codes.Count; i < totali; i++)
         {
-            if (codes[i].opcode == OpCodes.Call && codes[i].Calls(mtdinfo_gac))
+            if (codes[i].Calls(mtdinfo_gac))
             {
                 codes.InsertRange(i + 1, new CodeInstruction[]
                 {
                     new CodeInstruction(OpCodes.Ldloc_S, 6),
-                    CodeInstruction.Call(typeof(ItemActionLauncherProjectilePatch), nameof(ItemActionLauncherProjectilePatch.getProjectileCount), new Type[] { typeof(ItemActionData) }),
+                    CodeInstruction.Call(typeof(ItemActionLauncherProjectilePatch), nameof(getProjectileCount), new Type[] { typeof(ItemActionData) }),
                     new CodeInstruction(OpCodes.Stloc_S, lbd_rps),
                     new CodeInstruction(OpCodes.Ldloc_S, lbd_rps),
                     new CodeInstruction(OpCodes.Mul)
@@ -191,7 +192,7 @@ class ItemActionLauncherProjectilePatch
         }
     }
 
-    [HarmonyPatch(typeof(ItemClassesFromXml), "parseItem")]
+    [HarmonyPatch(typeof(ItemClassesFromXml), nameof(ItemClassesFromXml.parseItem))]
     [HarmonyPostfix]
     private static void Postfix_parseItem_ItemClassesFromXml(XElement _node)
     {

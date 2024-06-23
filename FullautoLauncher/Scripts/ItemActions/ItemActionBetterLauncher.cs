@@ -33,7 +33,7 @@ public class ItemActionBetterLauncher : ItemActionRanged
         group = CustomProjectileManager.Get(forId.Name);
         if (launcherValue.Meta != 0 && GetMaxAmmoCount(ItemActionDataBetterLauncher) != 0)
         {
-            group.Pool(launcherValue.Meta * (int)EffectManager.GetValue(PassiveEffects.RoundRayCount, launcherValue, 1f, ItemActionDataBetterLauncher.invData.holdingEntity, null, default(FastTags), true, true, true, true, 1, true, false));
+            group.Pool(launcherValue.Meta * (int)EffectManager.GetValue(PassiveEffects.RoundRayCount, launcherValue, 1f, ItemActionDataBetterLauncher.invData.holdingEntity));
         }
         ItemActionDataBetterLauncher.info = new ProjectileParams.ItemInfo()
         {
@@ -69,7 +69,7 @@ public class ItemActionBetterLauncher : ItemActionRanged
         };
     }
 
-    protected override Vector3 fireShot(int _shotIdx, ItemActionRanged.ItemActionDataRanged _actionData, ref bool hitEntity)
+    public override Vector3 fireShot(int _shotIdx, ItemActionDataRanged _actionData, ref bool hitEntity)
     {
         hitEntity = true;
         return Vector3.zero;
@@ -90,7 +90,7 @@ public class ItemActionBetterLauncher : ItemActionRanged
         ItemActionBetterLauncher.ItemActionDataBetterLauncher ItemActionDataBetterLauncher = (ItemActionBetterLauncher.ItemActionDataBetterLauncher)_actionData;
         ItemValue holdingItemItemValue = _actionData.invData.holdingEntity.inventory.holdingItemItemValue;
         ItemClass forId = ItemClass.GetForId(ItemClass.GetItem(MagazineItemNames[(int)holdingItemItemValue.SelectedAmmoTypeIndex], false).type);
-        int projCount = (int)EffectManager.GetValue(PassiveEffects.RoundRayCount, ItemActionDataBetterLauncher.invData.itemValue, 1f, ItemActionDataBetterLauncher.invData.holdingEntity, null, default(FastTags), true, true, true, true, 1, true, false); ;
+        int projCount = (int)EffectManager.GetValue(PassiveEffects.RoundRayCount, ItemActionDataBetterLauncher.invData.itemValue, 1f, ItemActionDataBetterLauncher.invData.holdingEntity); ;
         if (projCount <= 0)
         {
             return;
@@ -107,7 +107,7 @@ public class ItemActionBetterLauncher : ItemActionRanged
         }
     }
 
-    protected override void getImageActionEffectsStartPosAndDirection(ItemActionData _actionData, out Vector3 _startPos, out Vector3 _direction)
+    public override void getImageActionEffectsStartPosAndDirection(ItemActionData _actionData, out Vector3 _startPos, out Vector3 _direction)
     {
         Ray lookRay = _actionData.invData.holdingEntity.GetLookRay();
         _startPos = lookRay.origin;

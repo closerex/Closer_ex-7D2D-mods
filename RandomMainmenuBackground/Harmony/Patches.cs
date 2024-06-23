@@ -18,7 +18,7 @@ class Patches
         for (int i = 0, totali = codes.Count; i < totali; i++)
         {
             CodeInstruction code = codes[i];
-            if (code.opcode == OpCodes.Callvirt && code.Calls(mtdinfo_fwgbn))
+            if (code.Calls(mtdinfo_fwgbn))
             {
                 codes.InsertRange(i + 6, new CodeInstruction[]
                 {
@@ -82,12 +82,12 @@ class Patches
         __instance.xui.playerUI.windowManager.Close(RandomBackgroundLoader.Cur_logo);
     }
     
-    [HarmonyPatch(typeof(GameManager), "StartGame")]
+    [HarmonyPatch(typeof(GameManager), nameof(GameManager.StartGame))]
     [HarmonyPrefix]
-    private static bool Prefix_StartGame_GameManager(GUIWindowManager ___windowManager)
+    private static bool Prefix_StartGame_GameManager(GameManager __instance)
     {
         if (!GameManager.IsDedicatedServer)
-            ___windowManager.Close(RandomBackgroundLoader.Cur_name);
+            __instance.windowManager.Close(RandomBackgroundLoader.Cur_name);
         return true;
     }
 }

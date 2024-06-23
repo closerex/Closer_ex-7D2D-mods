@@ -38,7 +38,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\..\7DaysToDie_Data\Managed\0Harmony.dll</HintPath>
+      <HintPath>..\0_TFP_Harmony\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
@@ -67,19 +67,19 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Cecil">
-      <HintPath>..\..\7DaysToDie_Data\Managed\Mono.Cecil.dll</HintPath>
+      <HintPath>..\0_TFP_Harmony\Mono.Cecil.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Cecil.Mdb">
-      <HintPath>..\..\7DaysToDie_Data\Managed\Mono.Cecil.Mdb.dll</HintPath>
+      <HintPath>..\0_TFP_Harmony\Mono.Cecil.Mdb.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Cecil.Pdb">
-      <HintPath>..\..\7DaysToDie_Data\Managed\Mono.Cecil.Pdb.dll</HintPath>
+      <HintPath>..\0_TFP_Harmony\Mono.Cecil.Pdb.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Cecil.Rocks">
-      <HintPath>..\..\7DaysToDie_Data\Managed\Mono.Cecil.Rocks.dll</HintPath>
+      <HintPath>..\0_TFP_Harmony\Mono.Cecil.Rocks.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />

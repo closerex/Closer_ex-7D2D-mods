@@ -11,15 +11,18 @@ public static class CustomExplosionManager
     private static HashSet<GameObject> hash_initialized = new HashSet<GameObject>();
     private static List<IExplosionPropertyParser> list_parsers = new List<IExplosionPropertyParser>();
     private static Stack<ExplosionValue> last_init_components = new Stack<ExplosionValue>();
-    public static event Action<PooledBinaryWriter> ClientConnected;
-    public static event Action<ClientInfo> HandleClientInfo;
-    public static event Action CleanUp;
 
+    public static event Action<PooledBinaryWriter> ClientConnected;
+
+    public static event Action<ClientInfo> HandleClientInfo;
+
+    public static event Action CleanUp;
 
     public static ExplosionValue LastInitializedComponent
     {
         get => last_init_components.Count > 0 ? last_init_components.Peek() : null;
     }
+
     public static uint NextExplosionIndex { get; set; } = 0;
 
     internal static void OnCleanUp()
@@ -29,6 +32,7 @@ public static class CustomExplosionManager
         NextExplosionIndex = 0;
         CleanUp?.Invoke();
     }
+
     internal static void OnClientConnected(ClientInfo client)
     {
         var handler = ClientConnected;
@@ -114,7 +118,7 @@ public static class CustomExplosionManager
         //check if asset is loaded
         string path_asset = path + "?" + assetname;
         bool flag = hash_assets.TryGetValue(path_asset, out GameObject obj);
-        if(!flag)
+        if (!flag)
         {
             //load asset
             string path_bundle = ModManager.PatchModPathString(path).TrimStart('#');
@@ -127,7 +131,7 @@ public static class CustomExplosionManager
                 hash_assets.Add(path_asset, obj);
         }
 
-        if(obj == null)
+        if (obj == null)
         {
             Log.Error("Particle not loaded:" + path_asset);
             return false;
@@ -163,7 +167,7 @@ public static class CustomExplosionManager
         //get path to asset
         path = null;
         assetname = null;
-        if(fullpath == null)
+        if (fullpath == null)
         {
             Log.Error("Null fullpath parameter:" + fullpath);
             return false;
@@ -207,7 +211,7 @@ public static class CustomExplosionManager
         }
     }
 
-    public static bool parseParticleData(ref DynamicProperties _props, out ExplosionComponent component)
+    public static bool parseParticleData(DynamicProperties _props, out ExplosionComponent component)
     {
         string str_index = null;
         component = null;
@@ -218,7 +222,7 @@ public static class CustomExplosionManager
             int hashed_index = getHashCode(str_index);
             _props.Values["Explosion.ParticleIndex"] = hashed_index.ToString();
             Log.Out("Hashed index:" + _props.Values["Explosion.ParticleIndex"]);
-            if(!hash_paths.ContainsKey(hashed_index))
+            if (!hash_paths.ContainsKey(hashed_index))
                 hash_paths.Add(hashed_index, str_index);
             bool overwrite = false;
             _props.ParseBool("Explosion.Overwrite", ref overwrite);
@@ -234,7 +238,7 @@ public static class CustomExplosionManager
                 _props.ParseBool("Explosion.IsChunkObserver", ref observe);
                 getTypeListFromString(_props.Values["Explosion.CustomScriptTypes"], out List<Type> list_customtypes);
                 bool flag = LoadParticleEffect(str_index, new ExplosionData(_props), out component, sound_name, duration_audio, list_customtypes);
-                if(flag && component != null)
+                if (flag && component != null)
                 {
                     component.SyncOnConnect = sync;
                     foreach (var parser in list_parsers)
@@ -288,4 +292,3 @@ public static class CustomExplosionManager
         return hash_components.TryGetValue(fullpath, out component);
     }
 }
-

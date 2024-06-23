@@ -1,8 +1,0 @@
-<configs>
-	<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupRangedAll']">
-		<item name="gunDevotionLMG" quality="1,4"/>
-	</append>
-	<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupRangedMods']">
-		<item name="modTurboCharger"/>
-	</append>
-</configs>

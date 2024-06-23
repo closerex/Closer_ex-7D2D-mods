@@ -60,7 +60,7 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
     protected internal List<Action<PooledBinaryWriter, VehicleWeaponBase>> list_update_data_callbacks = new List<Action<PooledBinaryWriter, VehicleWeaponBase>>();
     protected internal List<Action<PooledBinaryWriter, VehicleWeaponBase>> list_fire_data_callbacks = new List<Action<PooledBinaryWriter, VehicleWeaponBase>>();
 
-    protected static FastTags VehicleWeaponTag = FastTags.Parse("vehicleWeapon");
+    protected static FastTags<TagGroup.Global> VehicleWeaponTag = FastTags<TagGroup.Global>.Parse("vehicleWeapon");
 
     public void InvokeUpdateCallbacks(PooledBinaryWriter _bw)
     {
@@ -230,40 +230,40 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
     {
         weapon.effects.EffectGroups.Clear();
         weapon.effects.PassivesIndex.Clear();
-        weapon.effects.EffectGroupXml.Clear();
         weapon.effects.ParentPointer = vehicleValue.GetItemId();
 
         if(vehicleValue.Modifications != null && vehicleValue.Modifications.Length > 0)
             foreach (var mod in vehicleValue.Modifications)
                 if (mod != null && mod.ItemClass is ItemClassModifier)
-                    ParseEffectGroup(mod.ItemClass.Effects, weapon);
+                    ParseEffectGroup(mod.ItemClass.Id, weapon);
 
         if (vehicleValue.CosmeticMods != null && vehicleValue.CosmeticMods.Length > 0)
             foreach (var cos in vehicleValue.CosmeticMods)
                 if (cos != null && cos.ItemClass is ItemClassModifier)
-                    ParseEffectGroup(cos.ItemClass.Effects, weapon);
+                    ParseEffectGroup(cos.ItemClass.Id, weapon);
 
         foreach (var effect in weapon.effects.EffectGroups)
             foreach (var passive in effect.PassiveEffects)
                 Log.Out(passive.Type.ToString() + " " + passive.Modifier.ToString() + " " + passive.Tags);
     }
 
-    protected static void ParseEffectGroup(MinEffectController effects, VehicleWeaponBase weapon)
+    protected static void ParseEffectGroup(int modId, VehicleWeaponBase weapon)
     {
         int i = 0;
-        if (effects == null || effects.EffectGroupXml == null)
-            return;
-        foreach (var element in effects.EffectGroupXml)
+        if (VPWeaponManager.VehicleWeaponModMapping.TryGetValue(modId, out var list))
         {
-            if (element != null && element.HasAttribute("vehicle_weapon") && element.GetAttribute("vehicle_weapon") == weapon.ModName)
+            foreach (var pair in list)
             {
-                weapon.effects.EffectGroups.Add(effects.EffectGroups[i]);
-                weapon.effects.EffectGroupXml.Add(element);
-                weapon.effects.PassivesIndex.UnionWith(effects.EffectGroups[i].PassivesIndex);
-                Log.Out("Adding effect group to " + weapon.ModName);
+                if (pair.vmodName == weapon.ModName)
+                {
+                    weapon.effects.EffectGroups.Add(pair.group);
+                    weapon.effects.PassivesIndex.UnionWith(pair.group.PassivesIndex);
+                    Log.Out("Adding effect group to " + weapon.ModName);
+                }
+                i++;
             }
-            i++;
         }
+
     }
 
     public override void InitPrefabConnections()

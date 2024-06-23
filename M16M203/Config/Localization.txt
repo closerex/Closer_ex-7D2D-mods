@@ -1,5 +1,0 @@
-Key,File,Type,english,schinese
-gunM16M203,items,Gun,M16 M203 Assault Rifle,"M16 M203突击步枪"
-gunM16M203Desc,items,Gun,"For those who can't decide between bullets and explosives.\n\nSwitch to Alt-Fire mode to fire grenades.","专为无法在子弹和爆炸物之间做出选择的人设计。\n\n使用次要模式发射榴弹。"
-ammoM203ShellHE,item,Ammo,M203 Shell HE,M203弹药 高爆
-ammoM203ShellFrag,item,Ammo,M203 Shell Frag,M203弹药 破片

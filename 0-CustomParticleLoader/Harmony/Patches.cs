@@ -2,13 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
 
 [HarmonyPatch(typeof(GameManager))]
-class ExplosionEffectPatch
+internal class ExplosionEffectPatch
 {
     public static void SendCustomExplosionPackage(int _clrIdx, Vector3 _center, Vector3i _blockpos, Quaternion _rotation, ExplosionData _explosionData, int _playerId, ItemValue _itemValueExplosive, List<BlockChangeInfo> _explosionChanges, GameObject result)
     {
@@ -22,9 +21,9 @@ class ExplosionEffectPatch
         public int playerLayer;
     }
 
-    [HarmonyPatch("explode")]
+    [HarmonyPatch(nameof(GameManager.explode))]
     [HarmonyPrefix]
-    private static bool explode_Prefix(GameManager __instance, int _clrIdx, Vector3 _worldPos, Vector3i _blockPos, Quaternion _rotation, ExplosionData _explosionData, int _entityId, ItemValue _itemValueExplosive, out ExplodeState __state)
+    private static bool explode_Prefix(GameManager __instance, int _clrIdx, Vector3 _worldPos, Vector3i _blockPos, Quaternion _rotation, ExplosionData _explosionData, int _entityId, ItemValue _itemValueExplosionSource, out ExplodeState __state)
     {
         __state = new ExplodeState()
         {
@@ -38,7 +37,7 @@ class ExplosionEffectPatch
         {
             //Log.Out("Retrieving particle index:" + index.ToString());
             bool flag = CustomExplosionManager.GetCustomParticleComponents(index, out ExplosionComponent components);
-            if(flag && components != null)
+            if (flag && components != null)
             {
                 //Log.Out("Retrieved particle index:" + index.ToString());
                 //_explosionData = components.BoundExplosionData;
@@ -46,7 +45,7 @@ class ExplosionEffectPatch
                 {
                     Component = components,
                     CurrentExplosionParams = new ExplosionParams(_clrIdx, _worldPos, _blockPos, _rotation, _explosionData, _entityId, CustomExplosionManager.NextExplosionIndex++),
-                    CurrentItemValue = _itemValueExplosive
+                    CurrentItemValue = _itemValueExplosionSource
                 };
                 //Log.Out("params:" + _clrIdx + _blockPos + _playerId + _rotation + _worldPos + _explosionData.ParticleIndex);
                 //Log.Out("params:" + components.CurrentExplosionParams._clrIdx + components.CurrentExplosionParams._blockPos + components.CurrentExplosionParams._playerId + components.CurrentExplosionParams._rotation + components.CurrentExplosionParams._worldPos + components.CurrentExplosionParams._explosionData.ParticleIndex);
@@ -79,11 +78,11 @@ class ExplosionEffectPatch
     private static IEnumerable<CodeInstruction> explode_Transpiler(IEnumerable<CodeInstruction> instructions)
     {
         var codes = new List<CodeInstruction>(instructions);
-        MethodInfo mtd_sendpackage = AccessTools.Method(typeof(ConnectionManager), nameof(ConnectionManager.SendPackage), new Type[] { typeof(NetPackage), typeof(bool), typeof(int), typeof(int), typeof(int), typeof(int) });
+        MethodInfo mtd_sendpackage = AccessTools.Method(typeof(ConnectionManager), nameof(ConnectionManager.SendPackage), new Type[] { typeof(NetPackage), typeof(bool), typeof(int), typeof(int), typeof(int), typeof(Vector3?), typeof(int) });
 
         for (int i = 0, totali = codes.Count; i < totali; i++)
         {
-            if(codes[i].opcode == OpCodes.Callvirt && codes[i].Calls(mtd_sendpackage))
+            if (codes[i].opcode == OpCodes.Callvirt && codes[i].Calls(mtd_sendpackage))
             {
                 codes.InsertRange(i + 1, new CodeInstruction[]
                 {
@@ -95,11 +94,11 @@ class ExplosionEffectPatch
                     new CodeInstruction(OpCodes.Ldarg, 6),
                     new CodeInstruction(OpCodes.Ldarg, 7),
                     new CodeInstruction(OpCodes.Ldarg_0),
-                    CodeInstruction.LoadField(typeof(GameManager), "tempExplPositions"),
-                    new CodeInstruction(OpCodes.Ldloc_S, 4),
-                    CodeInstruction.Call(typeof(ExplosionEffectPatch), nameof(ExplosionEffectPatch.SendCustomExplosionPackage))
+                    CodeInstruction.LoadField(typeof(GameManager), nameof(GameManager.tempExplPositions)),
+                    new CodeInstruction(OpCodes.Ldloc_1),
+                    CodeInstruction.Call(typeof(ExplosionEffectPatch), nameof(SendCustomExplosionPackage))
                 });
-                codes.RemoveRange(i - 23, 24);
+                codes.RemoveRange(i - 26, 27);
                 break;
             }
         }
@@ -107,7 +106,7 @@ class ExplosionEffectPatch
         return codes;
     }
 
-    [HarmonyPatch("explode")]
+    [HarmonyPatch(nameof(GameManager.explode))]
     [HarmonyPostfix]
     private static void explode_Postfix(GameManager __instance, ExplodeState __state)
     {
@@ -128,7 +127,7 @@ class ExplosionEffectPatch
             return;
 
         ExplosionValue components = CustomExplosionManager.LastInitializedComponent;
-        //sorcery uses index over 20 to trigger explosion without particle and spawn visual particle on its own, 
+        //sorcery uses index over 20 to trigger explosion without particle and spawn visual particle on its own,
         //such usage could potentially break the chained explosion stack, thus this additional check is added.
         //invalid explosion component is not pushed to the stack, if index param does not match index on the stack,
         //then the param must be invalid, skip particle creation.
@@ -161,25 +160,24 @@ class ExplosionEffectPatch
     */
 }
 
-[HarmonyPatch(typeof(NetEntityDistribution), nameof(NetEntityDistribution.Add), new Type[] {typeof(Entity)})]
-class ExplosionSyncPatch
+[HarmonyPatch(typeof(NetEntityDistribution), nameof(NetEntityDistribution.Add), new Type[] { typeof(Entity) })]
+internal class ExplosionSyncPatch
 {
     private static void Postfix(Entity _e)
     {
-        if(_e is EntityPlayer)
+        if (_e is EntityPlayer)
             CustomExplosionManager.OnClientConnected(SingletonMonoBehaviour<ConnectionManager>.Instance.Clients.ForEntityId(_e.entityId));
     }
 }
 
-
 [HarmonyPatch]
-class ExplosionParsePatch
+internal class ExplosionParsePatch
 {
     [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.Init))]
     [HarmonyPrefix]
     private static bool Init_ItemClass_Prefix(ItemClass __instance)
     {
-        if(CustomExplosionManager.parseParticleData(ref __instance.Properties, out var component))
+        if (CustomExplosionManager.parseParticleData(__instance.Properties, out var component))
         {
             component.BoundItemClass = __instance;
         }
@@ -190,7 +188,7 @@ class ExplosionParsePatch
     [HarmonyPrefix]
     private static bool ReadFrom_ItemAction_Prefix(ItemAction __instance, ref DynamicProperties _props)
     {
-        if(CustomExplosionManager.parseParticleData(ref _props, out var component))
+        if (CustomExplosionManager.parseParticleData(_props, out var component))
         {
             component.BoundItemClass = __instance.item;
         }
@@ -201,7 +199,7 @@ class ExplosionParsePatch
     [HarmonyPrefix]
     private static bool Init_Block_Prefix(Block __instance)
     {
-        CustomExplosionManager.parseParticleData(ref __instance.Properties, out _);
+        CustomExplosionManager.parseParticleData(__instance.Properties, out _);
         return true;
     }
 
@@ -209,13 +207,13 @@ class ExplosionParsePatch
     [HarmonyPrefix]
     private static bool Init_EntityClass_Prefix(EntityClass __instance)
     {
-        CustomExplosionManager.parseParticleData(ref __instance.Properties, out _);
+        CustomExplosionManager.parseParticleData(__instance.Properties, out _);
         return true;
     }
 }
 
 [HarmonyPatch(typeof(EntityAlive), nameof(EntityAlive.OnEntityDeath))]
-class EntityExplosionPatch
+internal class EntityExplosionPatch
 {
     private static void Postfix(EntityAlive __instance)
     {
@@ -223,19 +221,19 @@ class EntityExplosionPatch
             return;
 
         ref ExplosionData explosion = ref EntityClass.list[__instance.entityClass].explosionData;
-        if(explosion.ParticleIndex > 0)
+        if (explosion.ParticleIndex > 0)
             GameManager.Instance.ExplosionServer(0, __instance.GetPosition(), World.worldToBlockPos(__instance.GetPosition()), Quaternion.identity, explosion, __instance.entityId, 0f, false, null);
     }
 }
 
 [HarmonyPatch(typeof(Explosion), nameof(Explosion.AttackEntites))]
-class ExplosionAttackPatch
+internal class ExplosionAttackPatch
 {
     private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
     {
         var codes = new List<CodeInstruction>(instructions);
 
-        FieldInfo fld_hit_entities = typeof(Explosion).GetField("hitEntities", BindingFlags.NonPublic | BindingFlags.Static);
+        FieldInfo fld_hit_entities = AccessTools.Field(typeof(Explosion), nameof(Explosion.hitEntities));
         Type entityDict = fld_hit_entities.FieldType;
 
         LocalBuilder lbd_entity_dict = generator.DeclareLocal(entityDict);
@@ -246,7 +244,7 @@ class ExplosionAttackPatch
             new CodeInstruction(OpCodes.Stloc_S, lbd_entity_dict)
         });
 
-        for(int i = 0; i < codes.Count; ++i)
+        for (int i = 0; i < codes.Count; ++i)
         {
             if (codes[i].opcode == OpCodes.Ldsfld && codes[i].LoadsField(fld_hit_entities))
             {
@@ -260,7 +258,7 @@ class ExplosionAttackPatch
 }
 
 [HarmonyPatch(typeof(ExplosionData))]
-class ExplosionDataPatch
+internal class ExplosionDataPatch
 {
     [HarmonyPatch(nameof(ExplosionData.Write))]
     [HarmonyPrefix]
@@ -275,7 +273,7 @@ class ExplosionDataPatch
         _bw.Write(__instance.EntityDamage);
         _bw.Write(__instance.BlockTags);
         _bw.Write(__instance.IgnoreHeatMap);
-        if(__instance.damageMultiplier != null)
+        if (__instance.damageMultiplier != null)
         {
             _bw.Write(true);
             __instance.damageMultiplier.Write(_bw);
@@ -291,7 +289,8 @@ class ExplosionDataPatch
             {
                 _bw.Write(__instance.BuffActions[i]);
             }
-        }else
+        }
+        else
         {
             _bw.Write(0);
         }
@@ -303,10 +302,10 @@ class ExplosionDataPatch
     private static bool Prefix_ExplosionData_Read(BinaryReader _br, ref ExplosionData __instance)
     {
         __instance.ParticleIndex = _br.ReadUInt16();
-        __instance.Duration = (float)_br.ReadInt16() * 0.1f;
-        __instance.BlockRadius = (float)_br.ReadInt16() * 0.05f;
-        __instance.EntityRadius = (int)_br.ReadInt16();
-        __instance.BlastPower = (int)_br.ReadInt16();
+        __instance.Duration = _br.ReadInt16() * 0.1f;
+        __instance.BlockRadius = _br.ReadInt16() * 0.05f;
+        __instance.EntityRadius = _br.ReadInt16();
+        __instance.BlastPower = _br.ReadInt16();
         __instance.BlockDamage = _br.ReadSingle();
         __instance.EntityDamage = _br.ReadSingle();
         __instance.BlockTags = _br.ReadString();
@@ -317,7 +316,7 @@ class ExplosionDataPatch
             __instance.damageMultiplier.Read(_br);
         }
 
-        int num = (int)_br.ReadByte();
+        int num = _br.ReadByte();
         if (num > 0)
         {
             __instance.BuffActions = new List<string>();
@@ -335,7 +334,7 @@ class ExplosionDataPatch
 }
 
 [HarmonyPatch(typeof(ItemHasTags), nameof(ItemHasTags.IsValid))]
-class ItemHasTagsPatch : HarmonyPatch
+internal class ItemHasTagsPatch : HarmonyPatch
 {
     private static bool Prefix(MinEventParams _params, ref bool __result)
     {
@@ -350,7 +349,7 @@ class ItemHasTagsPatch : HarmonyPatch
 
 //MinEventParams workarounds
 [HarmonyPatch(typeof(ItemActionRanged), "fireShot")]
-class ItemActionRangedFireShotPatch
+internal class ItemActionRangedFireShotPatch
 {
     private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
@@ -386,7 +385,6 @@ class ItemActionRangedFireShotPatch
         return codes;
     }
 }
-
 
 //[HarmonyPatch(typeof(MinEventActionExplode), nameof(MinEventActionExplode.Execute))]
 //class TempPatch

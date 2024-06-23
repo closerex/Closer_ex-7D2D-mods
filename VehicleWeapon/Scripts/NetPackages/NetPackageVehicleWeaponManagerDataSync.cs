@@ -28,7 +28,7 @@ public class NetPackageVehicleWeaponManagerDataSync : NetPackage
             var manager = entity.GetVehicle().FindPart(VPWeaponManager.VehicleWeaponManagerName) as VPWeaponManager;
             var player = entity.GetAttached(seat);
             if (ConnectionManager.Instance.IsServer && player)
-                ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageVehicleWeaponManagerDataSync>().Setup(entityId, seat, updateData, fireData), false, -1, player.entityId, entityId, 75);
+                ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageVehicleWeaponManagerDataSync>().Setup(entityId, seat, updateData, fireData), false, -1, player.entityId, entityId, null, 75);
             
             using (PooledBinaryReader _br = MemoryPools.poolBinaryReader.AllocSync(true))
             {

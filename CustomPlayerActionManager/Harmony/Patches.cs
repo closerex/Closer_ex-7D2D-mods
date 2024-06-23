@@ -5,7 +5,7 @@ using System.Reflection.Emit;
 [HarmonyPatch]
 public class Patches
 {
-    [HarmonyPatch(typeof(XUiC_OptionsControls), "createControlsEntries")]
+    [HarmonyPatch(typeof(XUiC_OptionsControls), nameof(XUiC_OptionsControls.createControlsEntries))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_createControlsEntries_XUiC_OptionsControls(IEnumerable<CodeInstruction> instructions)
     {
@@ -24,11 +24,11 @@ public class Patches
     }
 
 
-    [HarmonyPatch(typeof(XUiC_OptionsControls), "storeCurrentBindings")]
+    [HarmonyPatch(typeof(XUiC_OptionsControls), nameof(XUiC_OptionsControls.storeCurrentBindings))]
     [HarmonyPostfix]
-    private static void Postfix_storeCurrentBindings_XUiC_OptionsControls(List<string> ___actionBindingsOnOpen)
+    private static void Postfix_storeCurrentBindings_XUiC_OptionsControls(XUiC_OptionsControls __instance)
     {
-        CustomPlayerActionManager.StoreCurrentCustomBindings(___actionBindingsOnOpen);
+        CustomPlayerActionManager.StoreCurrentCustomBindings(__instance.actionBindingsOnOpen);
     }
 
 
@@ -48,13 +48,10 @@ public class Patches
 
         for (int i = 0; i < codes.Count; ++i)
         {
-            if (codes[i].opcode == OpCodes.Call && codes[i].Calls(mtd_save_controls))
+            if (codes[i].Calls(mtd_save_controls))
             {
-                var insert = CodeInstruction.Call(typeof(CustomPlayerActionManager), nameof(CustomPlayerActionManager.ResetCustomControls));
-                var temp = codes[i].operand;
-                codes[i].operand = insert.operand;
-                insert.operand = temp;
-                codes.Insert(++i, insert);
+                codes.Insert(i + 1, CodeInstruction.Call(typeof(CustomPlayerActionManager), nameof(CustomPlayerActionManager.ResetCustomControls)));
+                i++;
             }
         }
 

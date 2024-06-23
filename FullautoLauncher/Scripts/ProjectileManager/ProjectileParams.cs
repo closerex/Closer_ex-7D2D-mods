@@ -36,11 +36,11 @@ namespace FullautoLauncher.Scripts.ProjectileManager
             moveDir = flyDirection;
             previousPosition = currentPosition = _idealStartPosition;
             renderPosition = _realStartPosition;
-            velocity = flyDirection.normalized * EffectManager.GetValue(PassiveEffects.ProjectileVelocity, info.itemValueLauncher, info.itemActionProjectile.Velocity, _firingEntity as EntityAlive, null, default(FastTags), true, true, true, true, 1, true, false);
+            velocity = flyDirection.normalized * EffectManager.GetValue(PassiveEffects.ProjectileVelocity, info.itemValueLauncher, info.itemActionProjectile.Velocity, _firingEntity as EntityAlive);
             hmOverride = _hmOverride;
             radius = _radius;
             waterCollisionParticles.Init(_firingEntity.entityId, info.itemProjectile.MadeOfMaterial.SurfaceCategory, "water", 16);
-            gravity = Vector3.up * EffectManager.GetValue(PassiveEffects.ProjectileGravity, info.itemValueLauncher, info.itemActionProjectile.Gravity, _firingEntity as EntityAlive, null, default(FastTags), true, true, true, true, 1, true, false);
+            gravity = Vector3.up * EffectManager.GetValue(PassiveEffects.ProjectileGravity, info.itemValueLauncher, info.itemActionProjectile.Gravity, _firingEntity as EntityAlive);
             timeShotStarted = Time.time;
         }
 
@@ -110,7 +110,7 @@ namespace FullautoLauncher.Scripts.ProjectileManager
                                          info.itemActionProjectile.GetDamageEntity(info.itemValueLauncher, entityAlive, info.actionData.indexInEntityOfAction),
                                          1f,
                                          1f,
-                                         EffectManager.GetValue(PassiveEffects.CriticalChance, info.itemValueLauncher, info.itemProjectile.CritChance.Value, entityAlive, null, info.itemProjectile.ItemTags, true, true, true, true, 1, true, false),
+                                         EffectManager.GetValue(PassiveEffects.CriticalChance, info.itemValueLauncher, info.itemProjectile.CritChance.Value, entityAlive, null, info.itemProjectile.ItemTags),
                                          ItemAction.GetDismemberChance(info.actionData, Voxel.voxelRayHitInfo),
                                          info.itemProjectile.MadeOfMaterial.SurfaceCategory,
                                          info.itemActionProjectile.GetDamageMultiplier(),
@@ -151,7 +151,7 @@ namespace FullautoLauncher.Scripts.ProjectileManager
                         GameRandom gameRandom = world.GetGameRandom();
                         if (GameUtils.IsBlockOrTerrain(Voxel.voxelRayHitInfo.tag))
                         {
-                            if (gameRandom.RandomFloat < EffectManager.GetValue(PassiveEffects.ProjectileStickChance, info.itemValueLauncher, 0.5f, entityAlive, null, info.itemProjectile.ItemTags | FastTags.Parse(Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory), true, true, true, true, 1, true, false))
+                            if (gameRandom.RandomFloat < EffectManager.GetValue(PassiveEffects.ProjectileStickChance, info.itemValueLauncher, 0.5f, entityAlive, null, info.itemProjectile.ItemTags | FastTags<TagGroup.Global>.Parse(Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory)))
                             {
                                 global::ProjectileManager.AddProjectileItem(null, -1, Voxel.voxelRayHitInfo.hit.pos, dirNorm, info.itemValueProjectile.type);
                             }
@@ -160,7 +160,7 @@ namespace FullautoLauncher.Scripts.ProjectileManager
                                 GameManager.Instance.SpawnParticleEffectServer(new ParticleEffect("impact_metal_on_wood", Voxel.voxelRayHitInfo.hit.pos, Utils.BlockFaceToRotation(Voxel.voxelRayHitInfo.fmcHit.blockFace), 1f, Color.white, string.Format("{0}hit{1}", Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory, info.itemProjectile.MadeOfMaterial.SurfaceCategory), null), entityAlive.entityId, false, false);
                             }
                         }
-                        else if (gameRandom.RandomFloat < EffectManager.GetValue(PassiveEffects.ProjectileStickChance, info.itemValueLauncher, 0.5f, entityAlive, null, info.itemProjectile.ItemTags, true, true, true, true, 1, true, false))
+                        else if (gameRandom.RandomFloat < EffectManager.GetValue(PassiveEffects.ProjectileStickChance, info.itemValueLauncher, 0.5f, entityAlive, null, info.itemProjectile.ItemTags))
                         {
                             int id = global::ProjectileManager.AddProjectileItem(null, -1, Voxel.voxelRayHitInfo.hit.pos, dirNorm, info.itemValueProjectile.type);
                             Utils.SetLayerRecursively(global::ProjectileManager.GetProjectile(id).gameObject, 14, null);

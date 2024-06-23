@@ -6,7 +6,8 @@ public class ExplosionSpawnEntity : MonoBehaviour
 {
     public Entity entity = null;
     public bool canSpawn = false;
-    void Awake()
+
+    private void Awake()
     {
         if (!SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer)
             return;
@@ -24,7 +25,8 @@ public class ExplosionSpawnEntity : MonoBehaviour
                 data.belongsPlayerId = initiator.belongsPlayerId;
             else
                 data.belongsPlayerId = initiator.entityId;
-        }else
+        }
+        else
         {
             data.belongsPlayerId = -1;
             entityId = -1;
@@ -34,14 +36,16 @@ public class ExplosionSpawnEntity : MonoBehaviour
         int classId = 0;
         data.lifetime = _prop.lifetime;
 
-        switch(_prop.spawnType)
+        switch (_prop.spawnType)
         {
             case SpawnEntityProperty.SpawnType.EntityGroup:
                 classId = EntityGroups.GetRandomFromGroup(_prop.spawn, ref classId);
                 break;
+
             case SpawnEntityProperty.SpawnType.EntityClass:
                 classId = EntityClass.FromString(_prop.spawn);
                 break;
+
             case SpawnEntityProperty.SpawnType.EntityItem:
                 classId = EntityClass.itemClass;
                 string itemName = _prop.spawn as string;
@@ -60,7 +64,7 @@ public class ExplosionSpawnEntity : MonoBehaviour
                         spawnCount = 1;
                 }
                 ItemClass itemClass = ItemClass.GetItemClass(itemName);
-                if(itemClass == null)
+                if (itemClass == null)
                 {
                     Log.Error("ExplosionSpawnEntity: item class with name " + itemName + "not found!");
                     return;
@@ -73,8 +77,9 @@ public class ExplosionSpawnEntity : MonoBehaviour
                 else
                     return;
                 break;
+
             case SpawnEntityProperty.SpawnType.LootGroup:
-                if(LootContainer.lootGroups.TryGetValue(_prop.spawn, out var entry))
+                if (LootContainer.lootGroups.TryGetValue(_prop.spawn, out var entry))
                 {
                     EntityPlayer player = null;
                     if (initiator)
@@ -83,10 +88,11 @@ public class ExplosionSpawnEntity : MonoBehaviour
                             player = initiator as EntityPlayer;
                         else
                             player = GameManager.Instance.World.GetClosestPlayer(initiator, -1, false);
-                    } else
+                    }
+                    else
                         player = GameManager.Instance.World.Players.Count > 0 ? GameManager.Instance.World.GetPlayers()[0] : null;
 
-                    if(player == null)
+                    if (player == null)
                     {
                         Log.Error("ExplosionSpawnEntity: no valid player around, abort spawning loot group!");
                         return;
@@ -95,9 +101,10 @@ public class ExplosionSpawnEntity : MonoBehaviour
 
                     classId = EntityClass.itemClass;
                     data.itemStack = SpawnOneLootItemsFromList(entry.items, gameStage, entry.lootQualityTemplate, player);
-                    if(data.itemStack == null)
+                    if (data.itemStack == null)
                         return;
-                }else
+                }
+                else
                 {
                     Log.Error("ExplosionSpawnEntity: no loot group with name " + _prop.spawn + " found!");
                     return;
@@ -113,21 +120,24 @@ public class ExplosionSpawnEntity : MonoBehaviour
         data.spawnByName = string.Empty;
 
         entity = EntityFactory.CreateEntity(data);
-        if(entity)
+        if (entity)
         {
             canSpawn = true;
-            if(entity is EntityPlayer)
+            if (entity is EntityPlayer)
             {
                 Log.Error("ExplosionSpawnEntity: WHY THE HELL ARE YOU SPAWNING A PLAYER?");
                 canSpawn = false;
-            }else if(entity is EntityTurret || entity is EntityDrone)
+            }
+            else if (entity is EntityTurret || entity is EntityDrone)
             {
                 Log.Error("ExplosionSpawnEntity: can not spawn turret or drone because they need an original item value");
                 canSpawn = false;
-            }else if(entity is EntityItem)
+            }
+            else if (entity is EntityItem)
             {
                 entity.isPhysicsMaster = true;
-            }else if(entity is EntityVehicle)
+            }
+            else if (entity is EntityVehicle)
             {
                 Log.Error("ExplosionSpawnEntity: WHY THE HELL ARE YOU SPAWNING A VEHICLE?");
                 canSpawn = false;
@@ -171,7 +181,8 @@ public class ExplosionSpawnEntity : MonoBehaviour
                         }
                     }
                 }
-            }else
+            }
+            else
                 entity.OnEntityUnload();
         }
     }
@@ -220,7 +231,8 @@ public class ExplosionSpawnEntity : MonoBehaviour
             {
                 thresProb += probability / totalProb;
                 flag = (randomFloat <= thresProb);
-            }else
+            }
+            else
                 flag = (UnityEngine.Random.Range(0f, 1f) <= probability);
 
             if (flag)
@@ -251,7 +263,7 @@ public class ExplosionSpawnEntity : MonoBehaviour
         }
         if (player != null)
         {
-            countToSpawn = Math.Min((int)EffectManager.GetValue(PassiveEffects.LootQuantity, player.inventory.holdingItemItemValue, (float)countToSpawn, player, null, lootItemValue.ItemClass.ItemTags, true, true, true, true, 1, true), lootItemValue.ItemClass.Stacknumber.Value);
+            countToSpawn = Math.Min((int)EffectManager.GetValue(PassiveEffects.LootQuantity, player.inventory.holdingItemItemValue, countToSpawn, player, null, lootItemValue.ItemClass.ItemTags), lootItemValue.ItemClass.Stacknumber.Value);
         }
         if (countToSpawn < 1)
         {
@@ -306,11 +318,13 @@ public class ExplosionSpawnEntity : MonoBehaviour
             if (template.parentGroup != null && template.parentGroup.modsToInstall.Length != 0)
             {
                 itemValue = new ItemValue(lootItemValue.type, minQuality, maxQuality, true, template.parentGroup.modsToInstall, template.parentGroup.modChance);
-            }else
+            }
+            else
             {
                 itemValue = new ItemValue(lootItemValue.type, minQuality, maxQuality, true, template.modsToInstall, template.modChance);
             }
-        }else
+        }
+        else
         {
             itemValue = new ItemValue(lootItemValue.type, true);
         }
@@ -335,4 +349,3 @@ public class ExplosionSpawnEntity : MonoBehaviour
         return stack;
     }
 }
-

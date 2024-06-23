@@ -32,7 +32,7 @@ public class VehicleWeaponCrosshair
     public void ParseCrosshair(DynamicProperties props)
     {
         List<CrosshairPart> list_parts = new List<CrosshairPart>();
-        foreach (var prop in props.Values.Dict.Dict)
+        foreach (var prop in props.Values.Dict)
         {
             if (Enum.TryParse<CrosshairPartType>(prop.Value.ToString(), out var type))
             {
@@ -118,7 +118,7 @@ public class VehicleWeaponCrosshair
 public class VPRaycastWeapon : VehicleWeaponBase
 {
     protected ItemValue boundItemValue;
-    protected FastTags tags;
+    protected FastTags<TagGroup.Global> tags;
     protected Transform raycastTrans;
     protected Transform muzzleTrans;
     protected Collider[] ignoreTrans;
@@ -149,9 +149,9 @@ public class VPRaycastWeapon : VehicleWeaponBase
 
     public override bool IsBurstPending => queue_pending_shots.Count > 0;
 
-    private static FastTags headTag = FastTags.Parse("head");
-    private static FastTags armTag = FastTags.Parse("arm");
-    private static FastTags legTag = FastTags.Parse("leg");
+    private static FastTags<TagGroup.Global> headTag = FastTags<TagGroup.Global>.Parse("head");
+    private static FastTags<TagGroup.Global> armTag = FastTags<TagGroup.Global>.Parse("arm");
+    private static FastTags<TagGroup.Global> legTag = FastTags<TagGroup.Global>.Parse("leg");
 
     public override void SetProperties(DynamicProperties _properties)
     {
@@ -429,7 +429,7 @@ public class VPRaycastWeapon : VehicleWeaponBase
                         particleSystem.Clear();
                         particleSystem.Play();
                     }
-                    var temp = flash.gameObject.AddMissingComponent<TemporaryObject>();
+                    var temp = flash.gameObject.GetOrAddComponent<TemporaryObject>();
                     temp.life = 5;
                     temp.Restart();
                     //muzzleFlashManager.Add(flash);
@@ -447,7 +447,7 @@ public class VPRaycastWeapon : VehicleWeaponBase
                         particleSystem.Clear();
                         particleSystem.Play();
                     }
-                    var temp = smoke.gameObject.AddMissingComponent<TemporaryObject>();
+                    var temp = smoke.gameObject.GetOrAddComponent<TemporaryObject>();
                     temp.life = 5;
                     temp.Restart();
                     //muzzleSmokeManager.Add(smoke);
@@ -576,7 +576,7 @@ public class VPRaycastWeapon : VehicleWeaponBase
                             foreach(string buff in buffs)
                             {
                                 BuffClass buffClass = BuffManager.GetBuff(buff);
-                                float chance = GetValue(PassiveEffects.BuffProcChance, 1, FastTags.Parse(buff), true);
+                                float chance = GetValue(PassiveEffects.BuffProcChance, 1, FastTags<TagGroup.Global>.Parse(buff), true);
                                 if(buffClass != null && entityHit.rand.RandomFloat <= chance)
                                     entityHit.Buffs?.AddBuff(buff, player.entityId);
                             }
@@ -617,7 +617,7 @@ public class VPRaycastWeapon : VehicleWeaponBase
 
     protected float GetDismemberChance(WorldRayHitInfo hitInfo)
     {
-        FastTags hitPartTag = default(FastTags);
+        FastTags<TagGroup.Global> hitPartTag = default;
         if (hitInfo.tag == "E_BP_Head")
             hitPartTag = headTag;
         else if (hitInfo.tag.ContainsCaseInsensitive("arm"))
@@ -627,12 +627,12 @@ public class VPRaycastWeapon : VehicleWeaponBase
         return GetValue(PassiveEffects.DismemberChance, 0, hitPartTag);
     }
 
-    protected float GetValue(PassiveEffects passive, float originalValue = 1, FastTags additionalTags = default(FastTags), bool replaceTag = false)
+    protected float GetValue(PassiveEffects passive, float originalValue = 1, FastTags<TagGroup.Global> additionalTags = default, bool replaceTag = false)
     {
         if (GameManager.Instance == null || GameManager.Instance.gameStateManager == null || !GameManager.Instance.gameStateManager.IsGameStarted())
             return originalValue;
         
-        FastTags newTags = replaceTag ? additionalTags : tags | additionalTags;
+        FastTags<TagGroup.Global> newTags = replaceTag ? additionalTags : tags | additionalTags;
         EntityPlayer player = vehicle.entity.GetAttached(seat) as EntityPlayer;
         player.MinEventContext.Seed = boundItemValue.Seed + (int)passive;
         player.MinEventContext.ItemValue = boundItemValue;
