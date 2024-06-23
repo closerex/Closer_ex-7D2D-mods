@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using UnityEngine;
+using static TaskManager;
 
 public enum CrosshairPartType
 {
@@ -141,6 +144,7 @@ public class VPRaycastWeapon : VehicleWeaponBase
         isCriticalHit = false,
         WeaponTypeTag = ItemActionAttack.RangedTag
     };
+    protected bool bSupportHarvesting = false;
     protected Dictionary<string, ItemActionAttack.Bonuses> ToolBonuses = new Dictionary<string, ItemActionAttack.Bonuses>();
     protected AimAssistHelper aimAssist;
     //protected ParticleSystemUpdater muzzleFlashManager = new ParticleSystemUpdater();
@@ -163,6 +167,14 @@ public class VPRaycastWeapon : VehicleWeaponBase
         originLayer = ignoreTrans[0].gameObject.layer;
         aaDebug = false;
         _properties.ParseBool("AADebug", ref aaDebug);
+        _properties.ParseBool("SupportHarvesting", ref bSupportHarvesting);
+        foreach (KeyValuePair<string, object> keyValuePair in _properties.Values.Dict.Dict)
+        {
+            if (keyValuePair.Key.StartsWith("ToolCategory."))
+            {
+                this.ToolBonuses[keyValuePair.Key.Substring("ToolCategory.".Length)] = new ItemActionAttack.Bonuses(StringParsers.ParseFloat(_properties.Values[keyValuePair.Key], 0, -1, NumberStyles.Any), _properties.Params1.ContainsKey(keyValuePair.Key) ? StringParsers.ParseFloat(_properties.Params1[keyValuePair.Key], 0, -1, NumberStyles.Any) : 2f);
+            }
+        }
     }
 
     public override void ApplyModEffect(ItemValue vehicleValue)
@@ -553,6 +565,11 @@ public class VPRaycastWeapon : VehicleWeaponBase
                         boundItemValue.ItemClass.FireEvent(MinEventTypes.onSelfDamagedBlock, player.MinEventContext);
                         effects.FireEvent(MinEventTypes.onSelfDamagedBlock, player.MinEventContext);
                     }
+
+                    if (bSupportHarvesting)
+                    {
+                        HarvestOnAttack(ToolBonuses);
+                    }
                 }else if(targetAlive && entityHit != null)
                 {
                     player.MinEventContext.ItemValue = boundItemValue;
@@ -705,6 +722,162 @@ public class VPRaycastWeapon : VehicleWeaponBase
         //    canvas.planeDistance = Camera.main.nearClipPlane + 1;
         //    Log.Out($"plane distance{Camera.main.nearClipPlane}x{Camera.main.farClipPlane}");
         //}
+    }
+
+    protected void HarvestOnAttack(Dictionary<string, ItemActionAttack.Bonuses> ToolBonuses)
+    {
+        if (GameManager.Instance.World.IsEditor() || player == null || attackDetails == null || attackDetails.itemsToDrop == null)
+        {
+            return;
+        }
+        Block block = attackDetails.blockBeingDamaged.Block;
+        if (block.RepairItemsMeshDamage != null)
+        {
+            BlockValue blockBeingDamaged = attackDetails.blockBeingDamaged;
+            blockBeingDamaged.damage += attackDetails.damageGiven;
+            attackDetails.bKilled = blockBeingDamaged.damage < block.MaxDamage && block.shape.UseRepairDamageState(blockBeingDamaged);
+        }
+        if (attackDetails.bKilled)
+        {
+            if (!attackDetails.itemsToDrop.ContainsKey(EnumDropEvent.Destroy))
+            {
+                if (!attackDetails.blockBeingDamaged.isair && attackDetails.bBlockHit)
+                {
+                    ItemValue itemValue = attackDetails.blockBeingDamaged.ToItemValue();
+                    int num = 1;
+                    collectHarvestedItem(itemValue, num, 1f, false);
+                }
+            }
+            else
+            {
+                List<Block.SItemDropProb> list = attackDetails.itemsToDrop[EnumDropEvent.Destroy];
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (attackDetails.bBlockHit && list[i].name.Equals("[recipe]"))
+                    {
+                        List<Recipe> recipes = CraftingManager.GetRecipes(attackDetails.blockBeingDamaged.Block.GetBlockName());
+                        if (recipes.Count > 0)
+                        {
+                            for (int j = 0; j < recipes[0].ingredients.Count; j++)
+                            {
+                                if (recipes[0].ingredients[j].count / 2 > 0)
+                                {
+                                    collectHarvestedItem(recipes[0].ingredients[j].itemValue, recipes[0].ingredients[j].count / 2, 1f, false);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        float num2 = 1f;
+                        if (list[i].toolCategory != null)
+                        {
+                            num2 = 0f;
+                            if (ToolBonuses != null && ToolBonuses.ContainsKey(list[i].toolCategory))
+                            {
+                                num2 = ToolBonuses[list[i].toolCategory].Tool;
+                            }
+                        }
+                        num2 = EffectManager.GetValue(PassiveEffects.HarvestCount, boundItemValue, num2, player, null, FastTags.Parse(list[i].tag));
+                        ItemValue itemValue2 = (list[i].name.Equals("*") ? attackDetails.blockBeingDamaged.ToItemValue() : new ItemValue(ItemClass.GetItem(list[i].name, false).type, false));
+                        if (itemValue2.type != 0 && ItemClass.list[itemValue2.type] != null && (list[i].prob > 0.999f || player.rand.RandomFloat <= list[i].prob))
+                        {
+                            int num3 = (int)((float)player.rand.RandomRange(list[i].minCount, list[i].maxCount + 1) * num2);
+                            if (num3 > 0)
+                            {
+                                collectHarvestedItem(itemValue2, num3, 1f, false);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (attackDetails.bBlockHit)
+        {
+            player.MinEventContext.BlockValue = attackDetails.blockBeingDamaged;
+            player.FireEvent(MinEventTypes.onSelfHarvestBlock, true);
+        }
+        else
+        {
+            player.MinEventContext.Other = attackDetails.entityHit as EntityAlive;
+            player.FireEvent(MinEventTypes.onSelfHarvestOther, true);
+        }
+        if (attackDetails.itemsToDrop.ContainsKey(EnumDropEvent.Harvest))
+        {
+            List<Block.SItemDropProb> list2 = attackDetails.itemsToDrop[EnumDropEvent.Harvest];
+            for (int k = 0; k < list2.Count; k++)
+            {
+                float num4 = 0f;
+                if (list2[k].toolCategory != null)
+                {
+                    num4 = 0f;
+                    if (ToolBonuses != null && ToolBonuses.ContainsKey(list2[k].toolCategory))
+                    {
+                        num4 = ToolBonuses[list2[k].toolCategory].Tool;
+                    }
+                }
+                ItemValue itemValue3 = (list2[k].name.Equals("*") ? attackDetails.blockBeingDamaged.ToItemValue() : new ItemValue(ItemClass.GetItem(list2[k].name, false).type, false));
+                if (itemValue3.type != 0 && ItemClass.list[itemValue3.type] != null)
+                {
+                    num4 = EffectManager.GetValue(PassiveEffects.HarvestCount, boundItemValue, num4, player, null, FastTags.Parse(list2[k].tag));
+                    int num5 = (int)((float)player.rand.RandomRange(list2[k].minCount, list2[k].maxCount + 1) * num4);
+                    int num6 = num5 - num5 / 3;
+                    if (num6 > 0)
+                    {
+                        collectHarvestedItem(itemValue3, num6, list2[k].prob, true);
+                    }
+                    if (attackDetails.bKilled)
+                    {
+                        num6 = num5 / 3;
+                        float num7 = list2[k].prob;
+                        float resourceScale = list2[k].resourceScale;
+                        if (resourceScale > 0f && resourceScale < 1f)
+                        {
+                            num7 /= resourceScale;
+                            num6 = (int)((float)num6 * resourceScale);
+                            if (num6 < 1)
+                            {
+                                num6++;
+                            }
+                        }
+                        if (num6 > 0)
+                        {
+                            collectHarvestedItem(itemValue3, num6, num7, false);
+                        }
+                    }
+                }
+            }
+        }
+        attackDetails.blockBeingDamaged = BlockValue.Air;
+    }
+
+    protected void collectHarvestedItem(ItemValue _iv, int _count, float _prob, bool _bScaleCountOnDamage = true)
+    {
+        if (_bScaleCountOnDamage)
+        {
+            float num = (float)attackDetails.damageMax / (float)_count;
+            int num2 = (int)((Utils.FastMin(attackDetails.damageTotalOfTarget, (float)attackDetails.damageMax) - (float)attackDetails.damageGiven) / num + 0.5f);
+            int num3 = Mathf.Min((int)(attackDetails.damageTotalOfTarget / num + 0.5f), _count);
+            int num4 = _count;
+            _count = num3 - num2;
+            if (attackDetails.damageTotalOfTarget > (float)attackDetails.damageMax)
+            {
+                _count = Mathf.Min(_count, num4);
+            }
+        }
+        if (player.rand.RandomFloat <= _prob && _count > 0)
+        {
+            ItemStack itemStack = new ItemStack(_iv, _count);
+            LocalPlayerUI uiforPlayer = LocalPlayerUI.GetUIForPlayer(player);
+            XUiM_PlayerInventory playerInventory = uiforPlayer.xui.PlayerInventory;
+            //1.0
+            //QuestEventManager.Current.HarvestedItem(invData.itemValue, itemStack, attackDetails.blockBeingDamaged);
+            if (!playerInventory.AddItem(itemStack))
+            {
+                GameManager.Instance.ItemDropServer(new ItemStack(_iv, itemStack.count), GameManager.Instance.World.GetPrimaryPlayer().GetDropPosition(), new Vector3(0.5f, 0.5f, 0.5f), GameManager.Instance.World.GetPrimaryPlayerId(), 60f, false);
+            }
+            uiforPlayer.entityPlayer.Progression.AddLevelExp((int)(itemStack.itemValue.ItemClass.MadeOfMaterial.Experience * (float)_count), "_xpFromHarvesting", Progression.XPTypes.Harvesting);
+        }
     }
 }
 
