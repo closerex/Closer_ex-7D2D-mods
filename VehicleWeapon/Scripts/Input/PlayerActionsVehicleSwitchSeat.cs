@@ -74,7 +74,7 @@ public class PlayerActionsVehicleExtra : CustomPlayerActionVersionBase
         permaActions.AddUniConflict(this);
     }
 
-    protected override void CreateActions()
+    public override void CreateActions()
     {
         ActivateSlot1 = CreatePlayerAction("ActivateSlot1");
         ActivateSlot1.UserData = new PlayerActionData.ActionUserData("inpActVehicleWeaponActivateSlot1Name", "inpActVehicleWeaponActivateSlotDesc", PlayerActionVehicleWeaponData.GroupVehicleWeapon, PlayerActionData.EAppliesToInputType.Both, true);
@@ -99,14 +99,14 @@ public class PlayerActionsVehicleExtra : CustomPlayerActionVersionBase
         HoldSwitchSeat = CreatePlayerAction("HoldSwitchSeat");
         HoldSwitchSeat.UserData = new PlayerActionData.ActionUserData("inpActVehicleHoldSwitchSeatName", null, PlayerActionData.GroupVehicle, PlayerActionData.EAppliesToInputType.KbdMouseOnly, true);
     }
-    protected override void CreateDefaultJoystickBindings()
+    public override void CreateDefaultJoystickBindings()
     {
         ActivateSlot1.AddDefaultBinding(InputControlType.DPadUp);
         ActivateSlot2.AddDefaultBinding(InputControlType.DPadRight);
         ActivateSlot3.AddDefaultBinding(InputControlType.DPadDown);
     }
 
-    protected override void CreateDefaultKeyboardBindings()
+    public override void CreateDefaultKeyboardBindings()
     {
         ActivateSlot1.AddDefaultBinding(new Key[] { Key.Key1 });
         ActivateSlot2.AddDefaultBinding(new Key[] { Key.Key2 });

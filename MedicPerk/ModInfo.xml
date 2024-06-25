@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xml>
+	<Name value="MedicPerk" />
+	<DisplayName value="Medic Weapon Test" />
+	<Description value="Add new weapon." />
+	<Author value="closer_ex" />
+	<Version value="1.0.1" />
+</xml>

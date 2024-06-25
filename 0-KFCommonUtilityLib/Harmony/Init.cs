@@ -21,8 +21,11 @@ public class CommonUtilityLibInit : IModApi
         //DelayLoadModuleManager.RegisterDelayloadDll("SCore", "SCoreEntityHitCompatibilityPatch");
         CustomEffectEnumManager.RegisterEnumType<MinEventTypes>();
         CustomEffectEnumManager.RegisterEnumType<PassiveEffects>();
+        //FUCK YOU TFP
+        CustomEffectEnumManager.InitDefault();
+        CustomEffectEnumManager.InitFinal();
         ModEvents.GameAwake.RegisterHandler(CommonUtilityPatch.InitShotStates);
-        ModEvents.GameAwake.RegisterHandler(CustomEffectEnumManager.InitDefault);
+        //ModEvents.GameAwake.RegisterHandler(CustomEffectEnumManager.InitDefault);
         ModEvents.GameAwake.RegisterHandler(DelayLoadModuleManager.DelayLoad);
         ModEvents.GameAwake.RegisterHandler(ItemActionModuleManager.ClearOutputFolder);
         //ModEvents.GameAwake.RegisterHandler(AssemblyLocator.Init);

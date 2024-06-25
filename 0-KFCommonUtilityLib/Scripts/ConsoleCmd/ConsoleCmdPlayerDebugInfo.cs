@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 
 namespace KFCommonUtilityLib.Scripts.ConsoleCmd
@@ -29,6 +30,23 @@ namespace KFCommonUtilityLib.Scripts.ConsoleCmd
             {
                 Log.Out($"animator transform {animator.name} values: {animator.transform.localPosition}/{animator.transform.localEulerAngles}");
             }
+            Log.Out("PRINTING PLAYER HIERARCHY:");
+            Log.Out(PrintTransform(player.RootTransform));
+
+            Transform fpsArm = ((AvatarLocalPlayerController)player.emodel.avatarController).FPSArms.animator.transform;
+            Log.Out($"FPS ARM:\n parent{fpsArm.parent.name}");
+            Log.Out(PrintTransform(fpsArm));
+        }
+
+        private static string PrintTransform(Transform parent, string str = "", int indent = 0)
+        {
+            str += "".PadLeft(indent * 4) + parent.name + "\n";
+            indent++;
+            foreach (Transform child in parent)
+            {
+                str = PrintTransform(child, str, indent);
+            }
+            return str;
         }
 
         public override string[] getCommands()

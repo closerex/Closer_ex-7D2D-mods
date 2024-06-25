@@ -947,14 +947,14 @@ public static class CommonUtilityPatch
     }
 
     //private static bool exported = false;
-    //[HarmonyPatch(typeof(EModelUMA), nameof(EModelUMA.onCharacterUpdated))]
+    //[HarmonyPatch(typeof(EModelSDCS), nameof(EModelSDCS.createModel))]
     //[HarmonyPostfix]
-    //private static void Postfix_test(Entity ___entity)
+    //private static void Postfix_test(EModelSDCS __instance)
     //{
     //    if (!exported)
     //    {
     //        exported = true;
-    //        var objects = new[] { ___entity.RootTransform.gameObject.GetComponentsInChildren<Animator>()[1] };
+    //        var objects = new[] { __instance.entity.RootTransform.gameObject.GetComponentsInChildren<Animator>()[1] };
     //        Log.Out($"exporting objs: {objects.Length} avatar {objects[0].avatar.name} is human {objects[0].avatar.isHuman}");
     //        FbxExporter07.OnExport(objects, @"E:\Unity Projects\AnimationPlayground\Assets\ExportedProject\example_skinned_mesh_with_bones.fbx");
     //        Application.Quit();

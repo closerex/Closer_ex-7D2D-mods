@@ -25,7 +25,7 @@ public class PlayerActionsVehicleWeapon : CustomPlayerActionVersionBase
         PlayerActionsVehicleExtra.Instance.AddBiConflict(this);
     }
 
-    protected override void CreateActions()
+    public override void CreateActions()
     {
         HoldToggleActivated = CreatePlayerAction("HoldToggleActivated");
         HoldToggleActivated.UserData = new PlayerActionData.ActionUserData("inpActVehicleWeaponHoldToggleActivatedName", null, PlayerActionVehicleWeaponData.GroupVehicleWeapon, PlayerActionData.EAppliesToInputType.Both, true);
@@ -36,13 +36,13 @@ public class PlayerActionsVehicleWeapon : CustomPlayerActionVersionBase
         //Test1.UserData = new PlayerActionData.ActionUserData("inpActTest1", null, PlayerActionVehicleWeaponData.GroupVehicleWeapon, PlayerActionData.EAppliesToInputType.KbdMouseOnly, true);
     }
 
-    protected override void CreateDefaultJoystickBindings()
+    public override void CreateDefaultJoystickBindings()
     {
         HoldToggleActivated.AddDefaultBinding(InputControlType.LeftStickButton);
         FireShot.AddDefaultBinding(InputControlType.DPadRight);
     }
 
-    protected override void CreateDefaultKeyboardBindings()
+    public override void CreateDefaultKeyboardBindings()
     {
         HoldToggleActivated.AddDefaultBinding(new Key[] { Key.LeftControl });
         FireShot.AddDefaultBinding(new Key[] { Key.G });

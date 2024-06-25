@@ -96,6 +96,7 @@ public class RigTargets : MonoBehaviour
             GameObject.Destroy(itemFpv.gameObject);
             GameObject.Destroy(rig.gameObject);
             Component.Destroy(this);
+            Log.Out("destroying rig no fpsarm"); ;
             return;
         }
         Stopwatch sw = new Stopwatch();
