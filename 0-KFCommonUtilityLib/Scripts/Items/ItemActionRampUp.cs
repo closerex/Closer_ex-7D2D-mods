@@ -56,7 +56,7 @@ public class ItemActionRampUp : ItemActionHoldOpen
         }
     }
 
-    protected override int getUserData(ItemActionData _actionData)
+    public override int getUserData(ItemActionData _actionData)
     {
         var _rampData = _actionData as ItemActionDataRampUp;
         return base.getUserData(_actionData) | (Convert.ToInt32(_rampData.curBurstCount == _rampData.minRampShots) << 1) | (Convert.ToInt32(_rampData.zoomPrepare && _rampData.invData.holdingEntity.AimingGun) << 2);

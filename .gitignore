@@ -48,6 +48,7 @@
 !ZZCustomPlayerActionManagerSMXPatch/**
 !.gitignore
 !*/.gitignore
+*/.vs/**
 .gitattributes
 .editorconfig
 *.zip

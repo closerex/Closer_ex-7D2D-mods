@@ -47,7 +47,7 @@ class RecoilPatch
         return codes;
     }
 
-    [HarmonyPatch(typeof(PlayerMoveController), "Update")]
+    [HarmonyPatch(typeof(PlayerMoveController), nameof(PlayerMoveController.Update))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_Update_PlayerMoveController(IEnumerable<CodeInstruction> instructions)
     {

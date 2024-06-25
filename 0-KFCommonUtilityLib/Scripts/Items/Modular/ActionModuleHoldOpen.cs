@@ -12,7 +12,7 @@ public class ActionModuleHoldOpen
     private void Postfix_ReadFrom(DynamicProperties _props, ItemActionRanged __instance)
     {
         int metaIndex = __instance.ActionIndex;
-        if (_props.Values.TryGetString("ShareMetaWith", out string str) && int.TryParse(str, out metaIndex))
+        if (_props.Values.TryGetValue("ShareMetaWith", out string str) && int.TryParse(str, out metaIndex))
         {
 
         }

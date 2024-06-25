@@ -30,7 +30,7 @@ public class RigTargets : MonoBehaviour
         itemFpv.gameObject.SetActive(false);
         rig.gameObject.SetActive(false);
         rig.gameObject.name += $"_UID_{UniqueRigID++}";
-        gameObject.AddMissingComponent<AttachmentReference>().attachmentReference = attachmentReference;
+        gameObject.GetOrAddComponent<AttachmentReference>().attachmentReference = attachmentReference;
     }
 #endif
 

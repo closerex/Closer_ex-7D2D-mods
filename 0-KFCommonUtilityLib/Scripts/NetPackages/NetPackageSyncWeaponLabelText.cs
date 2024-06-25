@@ -54,7 +54,7 @@
                 int allButAttachedToEntityId = holdingEntity.entityId;
                 if (holdingEntity.AttachedMainEntity)
                     allButAttachedToEntityId = holdingEntity.AttachedMainEntity.entityId;
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageSyncWeaponLabelText>().Setup(holdingEntity.entityId, slot, data), false, -1, allButAttachedToEntityId, allButAttachedToEntityId, 15);
+                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageSyncWeaponLabelText>().Setup(holdingEntity.entityId, slot, data), false, -1, allButAttachedToEntityId, allButAttachedToEntityId, null, 15);
             }
             else if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsClient && !fromNet)
                 SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageSyncWeaponLabelText>().Setup(holdingEntity.entityId, slot, data));

@@ -19,12 +19,12 @@ public class ConsoleCmdReloadDebug : ConsoleCmdAbstract
         }
     }
 
-    protected override string[] getCommands()
+    public override string[] getCommands()
     {
         return new[] { "reloaddebug", "rdebug" };
     }
 
-    protected override string getDescription()
+    public override string getDescription()
     {
         return "Troubleshooting reload related issues.";
     }

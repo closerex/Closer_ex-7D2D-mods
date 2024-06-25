@@ -11,7 +11,7 @@ public static class MultiActionReversePatches
 {
     [HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
     [HarmonyPatch(typeof(EffectManager), nameof(EffectManager.GetValue))]
-    public static float ProjectileGetValue(PassiveEffects _passiveEffect, ItemValue _originalItemValue = null, float _originalValue = 0f, EntityAlive _entity = null, Recipe _recipe = null, FastTags tags = default(FastTags), bool calcEquipment = true, bool calcHoldingItem = true, bool calcProgression = true, bool calcBuffs = true, int craftingTier = 1, bool useMods = true, bool _useDurability = false)
+    public static float ProjectileGetValue(PassiveEffects _passiveEffect, ItemValue _originalItemValue = null, float _originalValue = 0f, EntityAlive _entity = null, Recipe _recipe = null, FastTags<TagGroup.Global> tags = default(FastTags<TagGroup.Global>), bool calcEquipment = true, bool calcHoldingItem = true, bool calcProgression = true, bool calcBuffs = true, bool calcChallenges = true, int craftingTier = 1, bool useMods = true, bool _useDurability = false)
     {
         IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
@@ -49,7 +49,7 @@ public static class MultiActionReversePatches
             FieldInfo fld_launcher = AccessTools.Field(typeof(ProjectileMoveScript), nameof(ProjectileMoveScript.itemValueLauncher));
             FieldInfo fld_projectile = AccessTools.Field(typeof(ProjectileMoveScript), nameof(ProjectileMoveScript.itemValueProjectile));
             MethodInfo mtd_getvalue = AccessTools.Method(typeof(EffectManager), nameof(EffectManager.GetValue));
-            MethodInfo mtd_getvaluenew = AccessTools.Method(typeof(MultiActionReversePatches), nameof(MultiActionReversePatches.ProjectileGetValue));
+            MethodInfo mtd_getvaluenew = AccessTools.Method(typeof(MultiActionReversePatches), nameof(ProjectileGetValue));
             for (int i = 0; i < codes.Count; i++)
             {
                 if (codes[i].LoadsField(fld_launcher))
@@ -64,47 +64,5 @@ public static class MultiActionReversePatches
             return codes;
         }
         _ = Transpiler(null);
-    }
-
-    [HarmonyReversePatch]
-    [HarmonyPatch(typeof(ItemActionAttack), nameof(ItemActionAttack.GetDamageEntity))]
-    public static float GetBaseDamageEntity(this ItemActionAttack self, ItemValue _itemValue, EntityAlive _holdingEntity = null, int actionIndex = 0)
-    {
-        IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            if (instructions == null)
-                return null;
-
-            return new[]
-            {
-                new CodeInstruction(OpCodes.Ldarg_0),
-                CodeInstruction.LoadField(typeof(ItemActionAttack), "damageEntity"),
-                new CodeInstruction(OpCodes.Ret)
-            };
-        }
-
-        _ = Transpiler(null);
-        return 0;
-    }
-
-    [HarmonyReversePatch]
-    [HarmonyPatch(typeof(ItemActionAttack), nameof(ItemActionAttack.GetDamageEntity))]
-    public static float GetBaseDamageBlock(this ItemActionAttack self, ItemValue _itemValue, EntityAlive _holdingEntity = null, int actionIndex = 0)
-    {
-        IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            if (instructions == null)
-                return null;
-
-            return new[]
-            {
-                new CodeInstruction(OpCodes.Ldarg_0),
-                CodeInstruction.LoadField(typeof(ItemActionAttack), "damageBlock"),
-                new CodeInstruction(OpCodes.Ret)
-            };
-        }
-
-        _ = Transpiler(null);
-        return 0;
     }
 }

@@ -3,16 +3,6 @@ using System.Xml.Linq;
 
 public class MinEventActionModifyCVarWithLocalCache : MinEventActionModifyCVar
 {
-    private enum OperationTypes
-    {
-        set,
-        setvalue,
-        add,
-        subtract,
-        multiply,
-        divide
-    }
-    OperationTypes operation;
     int targetHash;
     private int actionIndex = -1;
     public override bool CanExecute(MinEventTypes _eventType, MinEventParams _params)
@@ -72,10 +62,6 @@ public class MinEventActionModifyCVarWithLocalCache : MinEventActionModifyCVar
             {
                 actionIndex = int.Parse(_attribute.Value);
                 flag = true;
-            }
-            else if (name == "operation")
-            {
-                operation = EnumUtils.Parse<OperationTypes>(_attribute.Value, true);
             }
         }
 

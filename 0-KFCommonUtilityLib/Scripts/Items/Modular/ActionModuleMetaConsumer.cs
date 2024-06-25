@@ -6,18 +6,18 @@ using UniLinq;
 public class ActionModuleMetaConsumer
 {
     public string[] consumeDatas;
-    public FastTags[] consumeTags;
+    public FastTags<TagGroup.Global>[] consumeTags;
     private float[] consumeStocks;
     private float[] consumeValues;
-    private static FastTags TagsConsumption = FastTags.Parse("ConsumptionValue");
+    private static FastTags<TagGroup.Global> TagsConsumption = FastTags<TagGroup.Global>.Parse("ConsumptionValue");
 
     [MethodTargetPostfix(nameof(ItemActionRanged.ReadFrom))]
     private void Postfix_ReadFrom(DynamicProperties _props, ItemAction __instance)
     {
         string consumeData = string.Empty;
-        _props.Values.TryGetString("ConsumeData", out consumeData);
-        _props.Values.TryGetString("ConsumeTags", out string tags);
-        FastTags commonTags = string.IsNullOrEmpty(tags) ? FastTags.none : FastTags.Parse(tags);
+        _props.Values.TryGetValue("ConsumeData", out consumeData);
+        _props.Values.TryGetValue("ConsumeTags", out string tags);
+        FastTags<TagGroup.Global> commonTags = string.IsNullOrEmpty(tags) ? FastTags<TagGroup.Global>.none : FastTags<TagGroup.Global>.Parse(tags);
         if (string.IsNullOrEmpty(consumeData))
         {
             Log.Error($"No consume data found on item {__instance.item.Name} action {__instance.ActionIndex}");
@@ -25,13 +25,13 @@ public class ActionModuleMetaConsumer
         }
 
         consumeDatas = consumeData.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToArray();
-        consumeTags = consumeDatas.Select(s => FastTags.Parse(s) | commonTags | TagsConsumption).ToArray();
+        consumeTags = consumeDatas.Select(s => FastTags<TagGroup.Global>.Parse(s) | commonTags | TagsConsumption).ToArray();
         consumeStocks = new float[consumeDatas.Length];
         consumeValues = new float[consumeDatas.Length];
     }
 
     [MethodTargetPrefix(nameof(ItemActionRanged.ExecuteAction))]
-    private bool Prefix_ExecuteAction(ItemActionData _actionData, bool _bReleased, ItemActionRanged __instance, string ___soundEmpty)
+    private bool Prefix_ExecuteAction(ItemActionData _actionData, bool _bReleased, ItemActionRanged __instance)
     {
         ItemActionRanged.ItemActionDataRanged _data = _actionData as ItemActionRanged.ItemActionDataRanged;
         EntityAlive holdingEntity = _actionData.invData.holdingEntity;
@@ -53,7 +53,7 @@ public class ActionModuleMetaConsumer
                 {
                     if (!_data.bPressed)
                     {
-                        holdingEntity.PlayOneShot(___soundEmpty);
+                        holdingEntity.PlayOneShot(__instance.soundEmpty);
                         _data.bPressed = true;
                     }
                     return false;

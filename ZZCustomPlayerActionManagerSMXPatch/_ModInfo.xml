@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xml>
+	<ModInfo>
+		<Name value="Custom Player Action Manager SMX ui patch" />
+		<Description value="compatibility patch with SMX's new option control." />
+		<Author value="closer_ex" />
+		<Version value="1.0.1" />
+	</ModInfo>
+</xml>

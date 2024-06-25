@@ -27,12 +27,12 @@ namespace KFCommonUtilityLib.Scripts.ConsoleCmd
             }
         }
 
-        protected override string[] getCommands()
+        public override string[] getCommands()
         {
             return new[] { "plc" };
         }
 
-        protected override string getDescription()
+        public override string getDescription()
         {
             return "Show local cache for current holding item.";
         }

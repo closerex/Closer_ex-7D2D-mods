@@ -91,7 +91,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 controller.UpdateInt(AvatarController.weaponHoldTypeHash, -1, false);
                 foreach (var hash in resetHashes)
                 {
-                    AnimationRiggingPatches.VanillaResetTrigger(controller, hash, false);
+                    controller._resetTrigger(hash, false);
                 }
                 //controller.FPSArms?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
                 //controller.CharacterBody?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
@@ -118,7 +118,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             Transform transform = inv.models[inv.holdingItemIdx];
             fpvTransformRef = null;
             if (transform != null && transform.TryGetComponent(out RigTargets targets))
-                fpvTransformRef = new FpvTransformRef(targets, inv.holdingItemData.item.ItemTags.Test_Bit(FastTags.GetBit("dBarrel")));
+                fpvTransformRef = new FpvTransformRef(targets, inv.holdingItemData.item.ItemTags.Test_Bit(FastTags<TagGroup.Global>.GetBit("dBarrel")));
         }
 
         public static Transform GetAttachmentReferenceOverrideTransform(Transform transform, string transformPath, Entity entity)
@@ -194,15 +194,13 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                         particle.Clear();
                         particle.Play();
                     }
-                    var temp = fire.gameObject.AddMissingComponent<TemporaryObject>();
+                    var temp = fire.gameObject.GetOrAddComponent<TemporaryObject>();
                     temp.life = 5;
                     temp.Restart();
                     if (fire.TryGetComponent<LODGroup>(out var lod))
                         lod.enabled = false;
                     //Log.Out($"barrel position: {fire.transform.parent.parent.position}/{fire.transform.parent.parent.localPosition}, muzzle position: {fire.transform.parent.position}/{fire.transform.parent.localPosition}, particle position: {fire.transform.position}");
                     //Log.Out($"particles: {string.Join("\n", fire.GetComponentsInChildren<ParticleSystem>().Select(ps => ps.name + " active: " + ps.gameObject.activeInHierarchy + " layer: " + ps.gameObject.layer + " position: " + ps.transform.position))}");
-                    if (fire.GetComponentsInChildren<ParticleSystem>().Length != 0)
-                        itemActionDataRanged.particlesFire.Add(fire);
                 }
             }
             if (particlesMuzzleSmoke != null && fpvTransformRef.muzzle != null)
@@ -225,12 +223,11 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                         particle.Clear();
                         particle.Play();
                     }
-                    var temp = smoke.gameObject.AddMissingComponent<TemporaryObject>();
+                    var temp = smoke.gameObject.GetOrAddComponent<TemporaryObject>();
                     temp.life = 5;
                     temp.Restart();
                     if (smoke.TryGetComponent<LODGroup>(out var lod))
                         lod.enabled = false;
-                    itemActionDataRanged.particlesSmoke.Add(smoke);
                 }
             }
             return true;

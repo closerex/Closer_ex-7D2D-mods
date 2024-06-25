@@ -13,12 +13,12 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
     /// </summary>
     public static class LocalItemTagsManager
     {
-        public static bool CanInstall(FastTags itemTags, ItemClassModifier modClass)
+        public static bool CanInstall(FastTags<TagGroup.Global> itemTags, ItemClassModifier modClass)
         {
             return modClass != null && (modClass.InstallableTags.IsEmpty || itemTags.Test_AnySet(modClass.InstallableTags)) && (modClass.DisallowedTags.IsEmpty || !itemTags.Test_AnySet(modClass.DisallowedTags));
         }
 
-        public static bool CanStay(FastTags itemTags, ItemClassModifier modClass)
+        public static bool CanStay(FastTags<TagGroup.Global> itemTags, ItemClassModifier modClass)
         {
             Log.Out($"mod class is null {modClass is null}");
             if (modClass != null)
@@ -35,7 +35,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 return false;
             }
 
-            FastTags tags_after_install = GetTagsAsIfInstalled(itemValue, modToInstall);
+            FastTags<TagGroup.Global> tags_after_install = GetTagsAsIfInstalled(itemValue, modToInstall);
 
             if (itemValue.CosmeticMods != null)
             {
@@ -91,7 +91,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 return false;
             }
 
-            FastTags tags_after_swap = GetTagsAsIfSwapped(itemValue, modToSwap, modToInstall);
+            FastTags<TagGroup.Global> tags_after_swap = GetTagsAsIfSwapped(itemValue, modToSwap, modToInstall);
 
             if (itemValue.CosmeticMods != null)
             {
@@ -140,25 +140,25 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             return true;
         }
 
-        public static FastTags GetTags(ItemValue itemValue)
+        public static FastTags<TagGroup.Global> GetTags(ItemValue itemValue)
         {
             var str = string.Join(",", itemValue.GetPropertyOverrides("ItemTagsAppend"));
-            FastTags tagsToAdd = string.IsNullOrEmpty(str) ? FastTags.none : FastTags.Parse(str);
+            FastTags<TagGroup.Global> tagsToAdd = string.IsNullOrEmpty(str) ? FastTags<TagGroup.Global>.none : FastTags<TagGroup.Global>.Parse(str);
             str = string.Join(",", itemValue.GetPropertyOverrides("ItemTagsRemove"));
-            FastTags tagsToRemove = string.IsNullOrEmpty(str) ? FastTags.none : FastTags.Parse(str);
+            FastTags<TagGroup.Global> tagsToRemove = string.IsNullOrEmpty(str) ? FastTags<TagGroup.Global>.none : FastTags<TagGroup.Global>.Parse(str);
             return (itemValue.ItemClass.ItemTags | tagsToAdd).Remove(tagsToRemove);
         }
 
-        public static FastTags GetTagsAsIfNotInstalled(ItemValue itemValue, ItemValue modValue)
+        public static FastTags<TagGroup.Global> GetTagsAsIfNotInstalled(ItemValue itemValue, ItemValue modValue)
         {
             var str = string.Join(",", itemValue.GetPropertyOverridesWithoutMod(modValue, "ItemTagsAppend"));
-            FastTags tagsToAdd = string.IsNullOrEmpty(str) ? FastTags.none : FastTags.Parse(str);
+            FastTags<TagGroup.Global> tagsToAdd = string.IsNullOrEmpty(str) ? FastTags<TagGroup.Global>.none : FastTags<TagGroup.Global>.Parse(str);
             str = string.Join(",", itemValue.GetPropertyOverridesWithoutMod(modValue, "ItemTagsRemove"));
-            FastTags tagsToRemove = string.IsNullOrEmpty(str) ? FastTags.none : FastTags.Parse(str);
+            FastTags<TagGroup.Global> tagsToRemove = string.IsNullOrEmpty(str) ? FastTags<TagGroup.Global>.none : FastTags<TagGroup.Global>.Parse(str);
             return (itemValue.ItemClass.ItemTags | tagsToAdd).Remove(tagsToRemove);
         }
 
-        public static FastTags GetTagsAsIfInstalled(ItemValue itemValue, ItemClassModifier modClass)
+        public static FastTags<TagGroup.Global> GetTagsAsIfInstalled(ItemValue itemValue, ItemClassModifier modClass)
         {
             string itemName = itemValue.ItemClass.GetItemName();
             string val = "";
@@ -167,17 +167,17 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             {
                 str = string.Join(",", str, val);
             }
-            FastTags tagsToAdd = string.IsNullOrEmpty(str) ? FastTags.none : FastTags.Parse(str);
+            FastTags<TagGroup.Global> tagsToAdd = string.IsNullOrEmpty(str) ? FastTags<TagGroup.Global>.none : FastTags<TagGroup.Global>.Parse(str);
             str = string.Join(",", itemValue.GetPropertyOverrides("ItemTagsRemove"));
             if (modClass.GetPropertyOverride("ItemTagsRemove", itemName, ref val))
             {
                 str = string.Join(",", str, val);
             }
-            FastTags tagsToRemove = string.IsNullOrEmpty(str) ? FastTags.none : FastTags.Parse(str);
+            FastTags<TagGroup.Global> tagsToRemove = string.IsNullOrEmpty(str) ? FastTags<TagGroup.Global>.none : FastTags<TagGroup.Global>.Parse(str);
             return (itemValue.ItemClass.ItemTags | tagsToAdd).Remove(tagsToRemove);
         }
 
-        public static FastTags GetTagsAsIfSwapped(ItemValue itemValue, ItemValue modValue, ItemClassModifier modClass)
+        public static FastTags<TagGroup.Global> GetTagsAsIfSwapped(ItemValue itemValue, ItemValue modValue, ItemClassModifier modClass)
         {
             string itemName = itemValue.ItemClass.GetItemName();
             string val = "";
@@ -186,13 +186,13 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             {
                 str = string.Join(",", str, val);
             }
-            FastTags tagsToAdd = string.IsNullOrEmpty(str) ? FastTags.none : FastTags.Parse(str);
+            FastTags<TagGroup.Global> tagsToAdd = string.IsNullOrEmpty(str) ? FastTags<TagGroup.Global>.none : FastTags<TagGroup.Global>.Parse(str);
             str = string.Join(",", itemValue.GetPropertyOverridesWithoutMod(modValue, "ItemTagsRemove"));
             if (modClass.GetPropertyOverride("ItemTagsRemove", itemName, ref val))
             {
                 str = string.Join(",", str, val);
             }
-            FastTags tagsToRemove = string.IsNullOrEmpty(str) ? FastTags.none : FastTags.Parse(str);
+            FastTags<TagGroup.Global> tagsToRemove = string.IsNullOrEmpty(str) ? FastTags<TagGroup.Global>.none : FastTags<TagGroup.Global>.Parse(str);
             return (itemValue.ItemClass.ItemTags | tagsToAdd).Remove(tagsToRemove);
         }
 

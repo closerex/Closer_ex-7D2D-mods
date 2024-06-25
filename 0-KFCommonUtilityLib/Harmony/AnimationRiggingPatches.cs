@@ -5,7 +5,6 @@ using System.Reflection.Emit;
 using System.Xml.Linq;
 using UniLinq;
 using UnityEngine;
-using static AvatarController;
 
 [HarmonyPatch]
 class AnimationRiggingPatches
@@ -136,7 +135,7 @@ class AnimationRiggingPatches
         }
     }
 
-    [HarmonyPatch(typeof(ItemClassesFromXml), "parseItem")]
+    [HarmonyPatch(typeof(ItemClassesFromXml), nameof(ItemClassesFromXml.parseItem))]
     [HarmonyPostfix]
     private static void Postfix_parseItem_ItemClassesFromXml(XElement _node)
     {
@@ -153,13 +152,13 @@ class AnimationRiggingPatches
         }
     }
 
-    [HarmonyPatch(typeof(Inventory), "createHeldItem")]
+    [HarmonyPatch(typeof(Inventory), nameof(Inventory.createHeldItem))]
     [HarmonyPostfix]
-    private static void Postfix_createHeldItem_Inventory(EntityAlive ___entity, Transform __result)
+    private static void Postfix_createHeldItem_Inventory(Inventory __instance, Transform __result)
     {
         if (__result != null && __result.TryGetComponent<RigTargets>(out var targets))
         {
-            if (GameManager.IsDedicatedServer || !(___entity is EntityPlayerLocal player))
+            if (GameManager.IsDedicatedServer || !(__instance.entity is EntityPlayerLocal player))
             {
                 targets.Destroy();
             }
@@ -174,9 +173,9 @@ class AnimationRiggingPatches
 
     [HarmonyPatch(typeof(Inventory), nameof(Inventory.ForceHoldingItemUpdate))]
     [HarmonyPrefix]
-    private static bool Prefix_ForceHoldingItemUpdate(Inventory __instance, EntityAlive ___entity)
+    private static bool Prefix_ForceHoldingItemUpdate(Inventory __instance)
     {
-        if (___entity is EntityPlayerLocal)
+        if (__instance.entity is EntityPlayerLocal)
             AnimationRiggingManager.OnClearInventorySlot(__instance, __instance.holdingItemIdx);
         return true;
     }
@@ -189,22 +188,22 @@ class AnimationRiggingPatches
 
         for (int i = 0; i < codes.Count; i++)
         {
-            if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 4)
+            if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 7)
             {
                 codes.InsertRange(i + 1, new[]
                 {
-                    new CodeInstruction(OpCodes.Ldloc_S, 4),
+                    new CodeInstruction(OpCodes.Ldloc_S, 7),
                     new CodeInstruction(OpCodes.Ldarg_2),
                     new CodeInstruction(OpCodes.Ldarg_0),
-                    new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ItemActionAttack), "particlesMuzzleFire")),
+                    new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.particlesMuzzleFire))),
                     new CodeInstruction(OpCodes.Ldarg_0),
-                    new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ItemActionAttack), "particlesMuzzleFireFpv")),
+                    new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.particlesMuzzleFireFpv))),
                     new CodeInstruction(OpCodes.Ldarg_0),
-                    new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ItemActionAttack), "particlesMuzzleSmoke")),
+                    new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.particlesMuzzleSmoke))),
                     new CodeInstruction(OpCodes.Ldarg_0),
-                    new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ItemActionAttack), "particlesMuzzleSmokeFpv")),
+                    new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.particlesMuzzleSmokeFpv))),
                     new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(AnimationRiggingManager), nameof(AnimationRiggingManager.SpawnFpvParticles))),
-                    new CodeInstruction(OpCodes.Brtrue_S, codes[i - 9].operand)
+                    new CodeInstruction(OpCodes.Brtrue_S, codes[i - 8].operand)
                 });
                 break;
             }
@@ -236,16 +235,16 @@ class AnimationRiggingPatches
         return codes;
     }
 
-    [HarmonyPatch(typeof(Inventory), "clearSlotByIndex")]
+    [HarmonyPatch(typeof(Inventory), nameof(Inventory.clearSlotByIndex))]
     [HarmonyPrefix]
-    private static bool Prefix_clearSlotByIndex(Inventory __instance, EntityAlive ___entity, int _idx)
+    private static bool Prefix_clearSlotByIndex(Inventory __instance, int _idx)
     {
-        if (___entity is EntityPlayerLocal)
+        if (__instance.entity is EntityPlayerLocal)
             AnimationRiggingManager.OnClearInventorySlot(__instance, _idx);
         return true;
     }
 
-    [HarmonyPatch(typeof(AvatarMultiBodyController), "Update")]
+    [HarmonyPatch(typeof(AvatarMultiBodyController), nameof(AvatarMultiBodyController.Update))]
     [HarmonyPostfix]
     private static void Postfix_Update_AvatarMultiBodyController(AvatarMultiBodyController __instance)
     {
@@ -265,7 +264,7 @@ class AnimationRiggingPatches
 
     [HarmonyPatch(typeof(AvatarMultiBodyController), nameof(AvatarMultiBodyController.StartAnimationReloading))]
     [HarmonyPostfix]
-    private static void Postfix_StartAnimationReloading_AvatarMultibodyController(AvatarMultiBodyController __instance, int ___reloadSpeedHash)
+    private static void Postfix_StartAnimationReloading_AvatarMultibodyController(AvatarMultiBodyController __instance)
     {
         if (__instance.HeldItemTransform != null && __instance.HeldItemTransform.TryGetComponent<RigTargets>(out var targets))
         {
@@ -290,7 +289,7 @@ class AnimationRiggingPatches
             }
             else
             {
-                int magSize = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, holdingItemItemValue, ((ItemActionRanged)entity.inventory.holdingItem.Actions[MultiActionManager.GetActionIndexForEntity(entity)]).BulletsPerMagazine, entity, null, default, true, true, true, true, 1, true, false);
+                int magSize = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, holdingItemItemValue, ((ItemActionRanged)entity.inventory.holdingItem.Actions[MultiActionManager.GetActionIndexForEntity(entity)]).BulletsPerMagazine, entity);
                 //how many partial reload is required to fill an empty mag
                 partialReloadRatio = Mathf.Ceil(magSize / partialReloadMultiplier);
                 //how many partial reload is required to finish this reload
@@ -332,8 +331,8 @@ class AnimationRiggingPatches
             if (ConsoleCmdReloadLog.LogInfo)
                 Log.Out($"Set reload multiplier: isFPV {isFPV}, reloadSpeed {reloadSpeed}, reloadSpeedRatio {reloadSpeedRatio}, finalMultiplier {localMultiplier}, remoteMultiplier {remoteMultiplier}, partialMultiplier {partialReloadMultiplier}, partialRatio {partialReloadRatio}");
             
-            __instance.UpdateFloat(___reloadSpeedHash, localMultiplier, false);
-            SetDataFloat(__instance, (AvatarController.DataTypes)___reloadSpeedHash, remoteMultiplier, true);
+            __instance.UpdateFloat(AvatarController.reloadSpeedHash, localMultiplier, false);
+            SetDataFloat(__instance, (AvatarController.DataTypes)AvatarController.reloadSpeedHash, remoteMultiplier, true);
         }
     }
 
@@ -346,7 +345,7 @@ class AnimationRiggingPatches
     /// <param name="_netsync"></param>
     [HarmonyPatch(typeof(AvatarController), nameof(AvatarController.SetDataFloat))]
     [HarmonyReversePatch(HarmonyReversePatchType.Original)]
-    private static void SetDataFloat(AvatarController __instance, DataTypes _type, float _value, bool _netsync = true)
+    private static void SetDataFloat(AvatarController __instance, AvatarController.DataTypes _type, float _value, bool _netsync = true)
     {
         IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
@@ -380,29 +379,29 @@ class AnimationRiggingPatches
 
     [HarmonyPatch(typeof(AvatarLocalPlayerController), nameof(AvatarLocalPlayerController.SetInRightHand))]
     [HarmonyPostfix]
-    private static void Postfix_SetInRightHand_AvatarLocalPlayerController(Transform _transform, AvatarLocalPlayerController __instance, bool ___isFPV)
+    private static void Postfix_SetInRightHand_AvatarLocalPlayerController(Transform _transform, AvatarLocalPlayerController __instance)
     {
         if (_transform != null && _transform.TryGetComponent<RigTargets>(out var targets))
         {
-            targets.SetEnabled(___isFPV);
+            targets.SetEnabled(__instance.isFPV);
             _transform.SetParent(__instance.CharacterBody.Parts.RightHandT, false);
             _transform.localPosition = Vector3.zero;
             _transform.localRotation = Quaternion.identity;
         }
     }
 
-    [HarmonyPatch(typeof(Inventory), "setHoldingItemTransfrom")]
+    [HarmonyPatch(typeof(Inventory), nameof(Inventory.setHoldingItemTransfrom))]
     [HarmonyPrefix]
-    private static bool Prefix_setHoldingItemTransform_Inventory(Transform ___lastdrawnHoldingItemTransform)
+    private static bool Prefix_setHoldingItemTransform_Inventory(Inventory __instance)
     {
-        if (___lastdrawnHoldingItemTransform != null && ___lastdrawnHoldingItemTransform.TryGetComponent<RigTargets>(out var targets))
+        if (__instance.lastdrawnHoldingItemTransform != null && __instance.lastdrawnHoldingItemTransform.TryGetComponent<RigTargets>(out var targets))
         {
             targets.SetEnabled(false, true);
         }
         return true;
     }
 
-    [HarmonyPatch(typeof(vp_FPWeapon), "Start")]
+    [HarmonyPatch(typeof(vp_FPWeapon), nameof(vp_FPWeapon.Start))]
     [HarmonyPostfix]
     private static void Postfix_Start_vp_FPWeapon(vp_FPWeapon __instance)
     {
@@ -419,13 +418,13 @@ class AnimationRiggingPatches
         }
     }
 
-    [HarmonyPatch(typeof(Inventory), "setHoldingItemTransfrom")]
+    [HarmonyPatch(typeof(Inventory), nameof(Inventory.setHoldingItemTransfrom))]
     [HarmonyPostfix]
-    private static void Postfix_setHoldingItemTransform_Inventory(Transform _t, EntityAlive ___entity)
+    private static void Postfix_setHoldingItemTransform_Inventory(Transform _t, Inventory __instance)
     {
         if (_t != null && _t.TryGetComponent<RigTargets>(out var targets))
         {
-            targets.SetEnabled(___entity.emodel.IsFPV);
+            targets.SetEnabled(__instance.entity.emodel.IsFPV);
         }
     }
 
@@ -462,98 +461,95 @@ class AnimationRiggingPatches
     //    return true;
     //}
 
-    [HarmonyPatch(typeof(XUiC_CameraWindow), nameof(XUiC_CameraWindow.OnOpen))]
-    [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_OnOpen_XuiC_CameraWindow(IEnumerable<CodeInstruction> instructions)
-    {
-        var codes = instructions.ToList();
+    /// <summary>
+    /// Changed in A22?
+    /// </summary>
+    /// <param name="___sensorCamera"></param>
+    //[HarmonyPatch(typeof(XUiC_CameraWindow), nameof(XUiC_CameraWindow.OnOpen))]
+    //[HarmonyTranspiler]
+    //private static IEnumerable<CodeInstruction> Transpiler_OnOpen_XuiC_CameraWindow(IEnumerable<CodeInstruction> instructions)
+    //{
+    //    var codes = instructions.ToList();
 
-        var mtd_switch = AccessTools.Method(typeof(EntityAlive), nameof(EntityAlive.SwitchModelView));
-        for (int i = 0; i < codes.Count; i++)
-        {
-            if (codes[i].Calls(mtd_switch))
-            {
-                //codes[i - 1].opcode = OpCodes.Ldc_I4_0;
-                //codes[i].opcode = OpCodes.Call;
-                //codes[i].operand = AccessTools.Method(typeof(EntityPlayerLocal), "setFirstPersonView");
-                //codes.Insert(i, new CodeInstruction(OpCodes.Ldc_I4_1));
-                codes.Insert(i - 5, new CodeInstruction(OpCodes.Br_S, codes[i - 6].operand));
-                break;
-            }
-        }
+    //    var mtd_switch = AccessTools.Method(typeof(EntityAlive), nameof(EntityAlive.switchModelView));
+    //    for (int i = 0; i < codes.Count; i++)
+    //    {
+    //        if (codes[i].Calls(mtd_switch))
+    //        {
+    //            //codes[i - 1].opcode = OpCodes.Ldc_I4_0;
+    //            //codes[i].opcode = OpCodes.Call;
+    //            //codes[i].operand = AccessTools.Method(typeof(EntityPlayerLocal), "setFirstPersonView");
+    //            //codes.Insert(i, new CodeInstruction(OpCodes.Ldc_I4_1));
+    //            codes.Insert(i - 5, new CodeInstruction(OpCodes.Br_S, codes[i - 6].operand));
+    //            break;
+    //        }
+    //    }
 
-        return codes;
-    }
+    //    return codes;
+    //}
 
-    [HarmonyPatch(typeof(XUiC_CameraWindow), nameof(XUiC_CameraWindow.OnClose))]
-    [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_OnClose_XuiC_CameraWindow(IEnumerable<CodeInstruction> instructions)
-    {
-        var codes = instructions.ToList();
+    //[HarmonyPatch(typeof(XUiC_CameraWindow), nameof(XUiC_CameraWindow.OnClose))]
+    //[HarmonyTranspiler]
+    //private static IEnumerable<CodeInstruction> Transpiler_OnClose_XuiC_CameraWindow(IEnumerable<CodeInstruction> instructions)
+    //{
+    //    var codes = instructions.ToList();
 
-        var mtd_switch = AccessTools.Method(typeof(EntityAlive), nameof(EntityAlive.SwitchModelView));
-        for (int i = 0; i < codes.Count; i++)
-        {
-            if (codes[i].Calls(mtd_switch))
-            {
-                //codes[i - 1].opcode = OpCodes.Ldc_I4_1;
-                //codes[i].opcode = OpCodes.Call;
-                //codes[i].operand = AccessTools.Method(typeof(EntityPlayerLocal), "setFirstPersonView");
-                //codes.Insert(i, new CodeInstruction(OpCodes.Ldc_I4_1));
-                codes.RemoveRange(i - 5, 6);
-                break;
-            }
-        }
+    //    var mtd_switch = AccessTools.Method(typeof(EntityAlive), nameof(EntityAlive.switchModelView));
+    //    for (int i = 0; i < codes.Count; i++)
+    //    {
+    //        if (codes[i].Calls(mtd_switch))
+    //        {
+    //            //codes[i - 1].opcode = OpCodes.Ldc_I4_1;
+    //            //codes[i].opcode = OpCodes.Call;
+    //            //codes[i].operand = AccessTools.Method(typeof(EntityPlayerLocal), "setFirstPersonView");
+    //            //codes.Insert(i, new CodeInstruction(OpCodes.Ldc_I4_1));
+    //            codes.RemoveRange(i - 5, 6);
+    //            break;
+    //        }
+    //    }
 
-        return codes;
-    }
+    //    return codes;
+    //}
 
-    [HarmonyPatch(typeof(XUiC_CameraWindow), "CreateCamera")]
-    [HarmonyPostfix]
-    private static void Postfix_CreateCamera_XUiC_CameraWindow(Camera ___sensorCamera)
-    {
-        ___sensorCamera.cullingMask &= ~(1 << 24 | 1 << 10);
-    }
+    //[HarmonyPatch(typeof(XUiC_CameraWindow), "CreateCamera")]
+    //[HarmonyPostfix]
+    //private static void Postfix_CreateCamera_XUiC_CameraWindow(Camera ___sensorCamera)
+    //{
+    //    ___sensorCamera.cullingMask &= ~(1 << 24 | 1 << 10);
+    //}
 
-    [HarmonyPatch(typeof(AvatarLocalPlayerController), "_setTrigger")]
+    [HarmonyPatch(typeof(AvatarLocalPlayerController), nameof(AvatarLocalPlayerController._setTrigger))]
     [HarmonyPostfix]
     private static void Postfix_Avatar_SetTrigger(int _pid)
     {
         AnimationRiggingManager.SetTrigger(_pid);
     }
 
-    [HarmonyPatch(typeof(AvatarLocalPlayerController), "_resetTrigger")]
+    [HarmonyPatch(typeof(AvatarLocalPlayerController), nameof(AvatarLocalPlayerController._resetTrigger))]
     [HarmonyPostfix]
     private static void Postfix_Avatar_ResetTrigger(int _pid)
     {
         AnimationRiggingManager.ResetTrigger(_pid);
     }
 
-    [HarmonyPatch(typeof(AvatarLocalPlayerController), "_setFloat")]
+    [HarmonyPatch(typeof(AvatarLocalPlayerController), nameof(AvatarLocalPlayerController._setFloat))]
     [HarmonyPostfix]
     private static void Postfix_Avatar_SetFloat(int _pid, float _value)
     {
         AnimationRiggingManager.SetFloat(_pid, _value);
     }
 
-    [HarmonyPatch(typeof(AvatarLocalPlayerController), "_setBool")]
+    [HarmonyPatch(typeof(AvatarLocalPlayerController), nameof(AvatarLocalPlayerController._setBool))]
     [HarmonyPostfix]
     private static void Postfix_Avatar_SetBool(int _pid, bool _value)
     {
         AnimationRiggingManager.SetBool(_pid, _value);
     }
 
-    [HarmonyPatch(typeof(AvatarLocalPlayerController), "_setInt")]
+    [HarmonyPatch(typeof(AvatarLocalPlayerController), nameof(AvatarLocalPlayerController._setInt))]
     [HarmonyPostfix]
     private static void Postfix_Avatar_SetInt(int _pid, int _value)
     {
         AnimationRiggingManager.SetInt(_pid, _value);
-    }
-
-    [HarmonyPatch(typeof(AvatarLocalPlayerController), "_resetTrigger", typeof(int), typeof(bool))]
-    [HarmonyReversePatch(HarmonyReversePatchType.Original)]
-    public static void VanillaResetTrigger(AvatarLocalPlayerController __instance, int _pid, bool _netsync = true)
-    {
-
     }
 }

@@ -137,7 +137,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             for (int i = 0; i < item.Actions.Length; i++)
             {
                 ItemAction itemAction = item.Actions[i];
-                if (itemAction != null && itemAction.Properties.Values.TryGetString("ItemActionModules", out string str_modules))
+                if (itemAction != null && itemAction.Properties.Values.TryGetValue("ItemActionModules", out string str_modules))
                 {
                     string[] modules = str_modules.Split(';');
                     Type[] moduleTypes = modules.Select(s => ReflectionHelpers.GetTypeWithPrefix("ActionModule", s.Trim())).ToArray();
@@ -495,7 +495,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 }
                 else
                 {
-                    Log.Out($"No override target found or preferred type not match on {mtd.Name}");
+                    //Log.Out($"No override target found or preferred type not match on {mtd.Name}");
                 }
             }
             return dict_overrides;

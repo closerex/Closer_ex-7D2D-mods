@@ -14,12 +14,12 @@ public class ConsoleCmdReloadLog : ConsoleCmdAbstract
         Log.Out($"Log Reload Info: {LogInfo}");
     }
 
-    protected override string[] getCommands()
+    public override string[] getCommands()
     {
         return new string[] { "reloadlog", "rlog" };
     }
 
-    protected override string getDescription()
+    public override string getDescription()
     {
         return "Print reload animation length and multiplier.";
     }

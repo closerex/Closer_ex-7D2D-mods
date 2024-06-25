@@ -115,12 +115,12 @@ namespace KFCommonUtilityLib.Harmony
                     codes.InsertRange(i, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), "actionData"),
+                        CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.actionData)),
                         CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
                         CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity)),
                         CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.MinEventContext)),
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), "actionData"),
+                        CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.actionData)),
                         CodeInstruction.StoreField(typeof(MinEventParams), nameof(MinEventParams.ItemActionData))
                     });
                     break;
@@ -297,17 +297,17 @@ namespace KFCommonUtilityLib.Harmony
         #region inventory related
         [HarmonyPatch(typeof(Inventory), nameof(Inventory.GetHoldingGun))]
         [HarmonyPrefix]
-        private static bool Prefix_GetHoldingGun_Inventory(Inventory __instance, ref ItemActionAttack __result, EntityAlive ___entity)
+        private static bool Prefix_GetHoldingGun_Inventory(Inventory __instance, ref ItemActionAttack __result)
         {
-            __result = __instance.holdingItem.Actions[MultiActionManager.GetActionIndexForEntity(___entity)] as ItemActionAttack ?? __instance.holdingItem.Actions[0] as ItemActionAttack;
+            __result = __instance.holdingItem.Actions[MultiActionManager.GetActionIndexForEntity(__instance.entity)] as ItemActionAttack ?? __instance.holdingItem.Actions[0] as ItemActionAttack;
             return false;
         }
 
         [HarmonyPatch(typeof(Inventory), nameof(Inventory.GetHoldingDynamicMelee))]
         [HarmonyPrefix]
-        private static bool Prefix_GetHoldingDynamicMelee_Inventory(Inventory __instance, ref ItemActionDynamic __result, EntityAlive ___entity)
+        private static bool Prefix_GetHoldingDynamicMelee_Inventory(Inventory __instance, ref ItemActionDynamic __result)
         {
-            __result = __instance.holdingItem.Actions[MultiActionManager.GetActionIndexForEntity(___entity)] as ItemActionDynamic ?? __instance.holdingItem.Actions[0] as ItemActionDynamic;
+            __result = __instance.holdingItem.Actions[MultiActionManager.GetActionIndexForEntity(__instance.entity)] as ItemActionDynamic ?? __instance.holdingItem.Actions[0] as ItemActionDynamic;
             return false;
         }
 
@@ -460,7 +460,7 @@ namespace KFCommonUtilityLib.Harmony
             return codes;
         }
 
-        [HarmonyPatch(typeof(ItemActionRanged), "loadNewAmmunition")]
+        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.loadNewAmmunition))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_loadNewAmmunition_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
         {
@@ -707,21 +707,21 @@ namespace KFCommonUtilityLib.Harmony
         #region Inventory.FireEvent, set current action
         [HarmonyPatch(typeof(Inventory), nameof(Inventory.FireEvent))]
         [HarmonyPrefix]
-        private static bool Prefix_FireEvent_Inventory(EntityAlive ___entity, Inventory __instance)
+        private static bool Prefix_FireEvent_Inventory(Inventory __instance)
         {
-            MultiActionUtils.SetMinEventParamsByEntityInventory(___entity);
+            MultiActionUtils.SetMinEventParamsByEntityInventory(__instance.entity);
             return true;
         }
         #endregion
 
         #region Inventory.syncHeldItem, set current action
-        [HarmonyPatch(typeof(Inventory), "syncHeldItem")]
+        [HarmonyPatch(typeof(Inventory), nameof(Inventory.syncHeldItem))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_syncHeldItem_Inventory(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
 
-            var mtd_test = AccessTools.Method(typeof(FastTags), nameof(FastTags.Test_AnySet));
+            var mtd_test = AccessTools.Method(typeof(FastTags<TagGroup.Global>), nameof(FastTags<TagGroup.Global>.Test_AnySet));
             var fld_itemvalue = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.ItemValue));
 
             for (int i = 0; i < codes.Count; i++)
@@ -731,7 +731,7 @@ namespace KFCommonUtilityLib.Harmony
                     codes.InsertRange(i + 1, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(Inventory), "entity"),
+                        CodeInstruction.LoadField(typeof(Inventory), nameof(Inventory.entity)),
                         CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.SetMinEventParamsByEntityInventory))
                     });
                     break;
@@ -779,7 +779,7 @@ namespace KFCommonUtilityLib.Harmony
                     codes.Insert(i, new CodeInstruction(OpCodes.Ldloc_S, lbd_index));
                     i++;
                 }
-
+                //action exclude mods
                 else if (code.Calls(mtd_fireevent) && codes[i + 1].opcode != OpCodes.Ldloc_0)
                 {
                     for (int j = i; j >= 0; j--)
@@ -904,7 +904,7 @@ namespace KFCommonUtilityLib.Harmony
         }
 
         //for passive value calc
-        [HarmonyPatch(typeof(EntityPlayerLocal), "guiDrawCrosshair")]
+        [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.guiDrawCrosshair))]
         [HarmonyPrefix]
         private static bool Prefix_guiDrawCrosshair_EntityPlayerLocal(EntityPlayerLocal __instance)
         {
@@ -913,7 +913,7 @@ namespace KFCommonUtilityLib.Harmony
         }
 
         //draw crosshair for current action
-        [HarmonyPatch(typeof(EntityPlayerLocal), "guiDrawCrosshair")]
+        [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.guiDrawCrosshair))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_guiDrawCrosshair_EntityPlayerLocal(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
@@ -989,7 +989,7 @@ namespace KFCommonUtilityLib.Harmony
             _actionData.invData.holdingEntity.MinEventContext.ItemActionData = __state;
         }
 
-        [HarmonyPatch(typeof(ItemActionLauncher), "ClampAmmoCount")]
+        [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.ClampAmmoCount))]
         [HarmonyPrefix]
         private static bool Prefix_ClampAmmoCount_ItemActionLauncher(ItemActionLauncher.ItemActionDataLauncher actionData, out ItemActionData __state)
         {
@@ -998,7 +998,7 @@ namespace KFCommonUtilityLib.Harmony
             return true;
         }
 
-        [HarmonyPatch(typeof(ItemActionLauncher), "ClampAmmoCount")]
+        [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.ClampAmmoCount))]
         [HarmonyPostfix]
         private static void Postfix_ClampAmmoCount_ItemActionLauncher(ItemActionLauncher.ItemActionDataLauncher actionData, ItemActionData __state)
         {
@@ -1010,9 +1010,9 @@ namespace KFCommonUtilityLib.Harmony
 
         [HarmonyPatch(typeof(EntityStats), nameof(EntityStats.Update))]
         [HarmonyPrefix]
-        private static bool Prefix_Update_EntityStats(EntityAlive ___m_entity)
+        private static bool Prefix_Update_EntityStats(EntityStats __instance)
         {
-            MultiActionUtils.SetMinEventParamsByEntityInventory(___m_entity);
+            MultiActionUtils.SetMinEventParamsByEntityInventory(__instance.m_entity);
             return true;
         }
 
@@ -1093,7 +1093,7 @@ namespace KFCommonUtilityLib.Harmony
         private static IEnumerable<CodeInstruction> Transpiler_OnStateEnter_AnimatorMeleeAttackState(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
-            var fld_actionindex = AccessTools.Field(typeof(AnimatorMeleeAttackState), "actionIndex");
+            var fld_actionindex = AccessTools.Field(typeof(AnimatorMeleeAttackState), nameof(AnimatorMeleeAttackState.actionIndex));
             MethodInfo mtd_getvalue = AccessTools.Method(typeof(EffectManager), nameof(EffectManager.GetValue));
             for (int i = 0; i < codes.Count; i++)
             {
@@ -1153,300 +1153,329 @@ namespace KFCommonUtilityLib.Harmony
             MultiActionUtils.SetMinEventParamsByEntityInventory(_data.holdingEntity);
         }
 
-        [HarmonyPatch(typeof(ItemClassesFromXml), "parseItem")]
-        [HarmonyPrefix]
-        private static bool Prefix_parseItem_ItemClassesFromXml(XElement _node)
+        //should be fixed in Harmony 2.12.0.0
+        //[HarmonyPatch(typeof(ItemClassesFromXml), nameof(ItemClassesFromXml.parseItem))]
+        //[HarmonyPrefix]
+        //private static bool Prefix_parseItem_ItemClassesFromXml(XElement _node)
+        //{
+        //    DynamicProperties dynamicProperties = new DynamicProperties();
+        //    string attribute = _node.GetAttribute("name");
+        //    if (attribute.Length == 0)
+        //    {
+        //        throw new Exception("Attribute 'name' missing on item");
+        //    }
+        //    //here
+        //    List<IRequirement>[] array = new List<IRequirement>[ItemClass.cMaxActionNames];
+        //    for (int i = 0; i < array.Length; i++)
+        //    {
+        //        array[i] = new List<IRequirement>();
+        //    }
+
+        //    foreach (XElement item in _node.Elements("property"))
+        //    {
+        //        dynamicProperties.Add(item);
+        //        string attribute2 = item.GetAttribute("class");
+        //        if (attribute2.StartsWith("Action"))
+        //        {
+        //            int num = attribute2[attribute2.Length - 1] - '0';
+        //            array[num].AddRange(RequirementBase.ParseRequirements(item));
+        //        }
+        //    }
+
+        //    if (dynamicProperties.Values.ContainsKey("Extends"))
+        //    {
+        //        string text = dynamicProperties.Values["Extends"];
+        //        ItemClass itemClass = ItemClass.GetItemClass(text);
+        //        if (itemClass == null)
+        //        {
+        //            throw new Exception($"Extends item {text} is not specified for item {attribute}'");
+        //        }
+
+        //        HashSet<string> hashSet = new HashSet<string> { Block.PropCreativeMode };
+        //        if (dynamicProperties.Params1.ContainsKey("Extends"))
+        //        {
+        //            string[] array2 = dynamicProperties.Params1["Extends"].Split(new[] { ',' }, StringSplitOptions.None);
+        //            foreach (string text2 in array2)
+        //            {
+        //                hashSet.Add(text2.Trim());
+        //            }
+        //        }
+
+        //        DynamicProperties dynamicProperties2 = new DynamicProperties();
+        //        dynamicProperties2.CopyFrom(itemClass.Properties, hashSet);
+        //        dynamicProperties2.CopyFrom(dynamicProperties);
+        //        dynamicProperties = dynamicProperties2;
+        //    }
+
+        //    ItemClass itemClass2;
+        //    if (dynamicProperties.Values.ContainsKey("Class"))
+        //    {
+        //        string text3 = dynamicProperties.Values["Class"];
+        //        if (!text3.Contains(","))
+        //        {
+        //            text3 += ",Assembly-CSharp";
+        //        }
+        //        try
+        //        {
+        //            itemClass2 = (ItemClass)Activator.CreateInstance(Type.GetType(text3));
+        //        }
+        //        catch (Exception)
+        //        {
+        //            throw new Exception("No item class '" + text3 + " found!");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        itemClass2 = new ItemClass();
+        //    }
+
+        //    itemClass2.Properties = dynamicProperties;
+        //    if (dynamicProperties.Params1.ContainsKey("Extends"))
+        //    {
+        //        string text4 = dynamicProperties.Values["Extends"];
+        //        if (ItemClass.GetItemClass(text4) == null)
+        //        {
+        //            throw new Exception($"Extends item {text4} is not specified for item {attribute}'");
+        //        }
+        //    }
+
+        //    itemClass2.Effects = MinEffectController.ParseXml(_node, null, MinEffectController.SourceParentType.ItemClass, itemClass2.Id);
+        //    itemClass2.SetName(attribute);
+        //    itemClass2.setLocalizedItemName(Localization.Get(attribute));
+        //    if (dynamicProperties.Values.ContainsKey("Stacknumber"))
+        //    {
+        //        itemClass2.Stacknumber = new DataItem<int>(int.Parse(dynamicProperties.Values["Stacknumber"]));
+        //    }
+        //    else
+        //    {
+        //        itemClass2.Stacknumber = new DataItem<int>(500);
+        //    }
+
+        //    if (dynamicProperties.Values.ContainsKey("Canhold"))
+        //    {
+        //        itemClass2.SetCanHold(StringParsers.ParseBool(dynamicProperties.Values["Canhold"]));
+        //    }
+
+        //    if (dynamicProperties.Values.ContainsKey("Candrop"))
+        //    {
+        //        itemClass2.SetCanDrop(StringParsers.ParseBool(dynamicProperties.Values["Candrop"]));
+        //    }
+
+        //    if (!dynamicProperties.Values.ContainsKey("Material"))
+        //    {
+        //        throw new Exception("Attribute 'material' missing on item '" + attribute + "'");
+        //    }
+
+        //    itemClass2.MadeOfMaterial = MaterialBlock.fromString(dynamicProperties.Values["Material"]);
+        //    if (itemClass2.MadeOfMaterial == null)
+        //    {
+        //        throw new Exception("Attribute 'material' '" + dynamicProperties.Values["Material"] + "' refers to not existing material in item '" + attribute + "'");
+        //    }
+
+        //    if (!dynamicProperties.Values.ContainsKey("Meshfile") && itemClass2.CanHold())
+        //    {
+        //        throw new Exception("Attribute 'Meshfile' missing on item '" + attribute + "'");
+        //    }
+
+        //    itemClass2.MeshFile = dynamicProperties.Values["Meshfile"];
+        //    DataLoader.PreloadBundle(itemClass2.MeshFile);
+        //    StringParsers.TryParseFloat(dynamicProperties.Values["StickyOffset"], out itemClass2.StickyOffset);
+        //    StringParsers.TryParseFloat(dynamicProperties.Values["StickyColliderRadius"], out itemClass2.StickyColliderRadius);
+        //    StringParsers.TryParseSInt32(dynamicProperties.Values["StickyColliderUp"], out itemClass2.StickyColliderUp);
+        //    StringParsers.TryParseFloat(dynamicProperties.Values["StickyColliderLength"], out itemClass2.StickyColliderLength);
+        //    itemClass2.StickyMaterial = dynamicProperties.Values["StickyMaterial"];
+        //    if (dynamicProperties.Values.ContainsKey("ImageEffectOnActive"))
+        //    {
+        //        itemClass2.ImageEffectOnActive = new DataItem<string>(dynamicProperties.Values["ImageEffectOnActive"]);
+        //    }
+
+        //    if (dynamicProperties.Values.ContainsKey("Active"))
+        //    {
+        //        itemClass2.Active = new DataItem<bool>(_startValue: false);
+        //    }
+
+        //    if (dynamicProperties.Values.ContainsKey(ItemClass.PropIsSticky))
+        //    {
+        //        itemClass2.IsSticky = StringParsers.ParseBool(dynamicProperties.Values[ItemClass.PropIsSticky]);
+        //    }
+
+        //    if (dynamicProperties.Values.ContainsKey("DropMeshfile") && itemClass2.CanHold())
+        //    {
+        //        itemClass2.DropMeshFile = dynamicProperties.Values["DropMeshfile"];
+        //        DataLoader.PreloadBundle(itemClass2.DropMeshFile);
+        //    }
+
+        //    if (dynamicProperties.Values.ContainsKey("HandMeshfile") && itemClass2.CanHold())
+        //    {
+        //        itemClass2.HandMeshFile = dynamicProperties.Values["HandMeshfile"];
+        //        DataLoader.PreloadBundle(itemClass2.HandMeshFile);
+        //    }
+
+        //    if (dynamicProperties.Values.ContainsKey("HoldType"))
+        //    {
+        //        string s = dynamicProperties.Values["HoldType"];
+        //        int result = 0;
+        //        if (!int.TryParse(s, out result))
+        //        {
+        //            throw new Exception("Cannot parse attribute hold_type for item '" + attribute + "'");
+        //        }
+
+        //        itemClass2.HoldType = new DataItem<int>(result);
+        //    }
+
+        //    if (dynamicProperties.Values.ContainsKey("RepairTools"))
+        //    {
+        //        string[] array3 = dynamicProperties.Values["RepairTools"].Replace(" ", "").Split(new[] { ',' }, StringSplitOptions.None);
+        //        DataItem<string>[] array4 = new DataItem<string>[array3.Length];
+        //        for (int k = 0; k < array3.Length; k++)
+        //        {
+        //            array4[k] = new DataItem<string>(array3[k]);
+        //        }
+
+        //        itemClass2.RepairTools = new ItemData.DataItemArrayRepairTools(array4);
+        //    }
+
+        //    if (dynamicProperties.Values.ContainsKey("RepairAmount"))
+        //    {
+        //        int result2 = 0;
+        //        int.TryParse(dynamicProperties.Values["RepairAmount"], out result2);
+        //        itemClass2.RepairAmount = new DataItem<int>(result2);
+        //    }
+
+        //    if (dynamicProperties.Values.ContainsKey("RepairTime"))
+        //    {
+        //        float _result = 0f;
+        //        StringParsers.TryParseFloat(dynamicProperties.Values["RepairTime"], out _result);
+        //        itemClass2.RepairTime = new DataItem<float>(_result);
+        //    }
+        //    else if (itemClass2.RepairAmount != null)
+        //    {
+        //        itemClass2.RepairTime = new DataItem<float>(1f);
+        //    }
+
+        //    if (dynamicProperties.Values.ContainsKey("Degradation"))
+        //    {
+        //        itemClass2.MaxUseTimes = new DataItem<int>(int.Parse(dynamicProperties.Values["Degradation"]));
+        //    }
+        //    else
+        //    {
+        //        itemClass2.MaxUseTimes = new DataItem<int>(0);
+        //        itemClass2.MaxUseTimesBreaksAfter = new DataItem<bool>(_startValue: false);
+        //    }
+
+        //    if (dynamicProperties.Values.ContainsKey("DegradationBreaksAfter"))
+        //    {
+        //        itemClass2.MaxUseTimesBreaksAfter = new DataItem<bool>(StringParsers.ParseBool(dynamicProperties.Values["DegradationBreaksAfter"]));
+        //    }
+        //    else if (dynamicProperties.Values.ContainsKey("Degradation"))
+        //    {
+        //        itemClass2.MaxUseTimesBreaksAfter = new DataItem<bool>(_startValue: true);
+        //    }
+
+        //    if (dynamicProperties.Values.ContainsKey("EconomicValue"))
+        //    {
+        //        itemClass2.EconomicValue = StringParsers.ParseFloat(dynamicProperties.Values["EconomicValue"]);
+        //    }
+
+        //    if (dynamicProperties.Classes.ContainsKey("Preview"))
+        //    {
+        //        DynamicProperties dynamicProperties3 = dynamicProperties.Classes["Preview"];
+        //        itemClass2.Preview = new PreviewData();
+        //        if (dynamicProperties3.Values.ContainsKey("Zoom"))
+        //        {
+        //            itemClass2.Preview.Zoom = new DataItem<int>(int.Parse(dynamicProperties3.Values["Zoom"]));
+        //        }
+
+        //        if (dynamicProperties3.Values.ContainsKey("Pos"))
+        //        {
+        //            itemClass2.Preview.Pos = new DataItem<Vector2>(StringParsers.ParseVector2(dynamicProperties3.Values["Pos"]));
+        //        }
+        //        else
+        //        {
+        //            itemClass2.Preview.Pos = new DataItem<Vector2>(Vector2.zero);
+        //        }
+
+        //        if (dynamicProperties3.Values.ContainsKey("Rot"))
+        //        {
+        //            itemClass2.Preview.Rot = new DataItem<Vector3>(StringParsers.ParseVector3(dynamicProperties3.Values["Rot"]));
+        //        }
+        //        else
+        //        {
+        //            itemClass2.Preview.Rot = new DataItem<Vector3>(Vector3.zero);
+        //        }
+        //    }
+
+        //    for (int l = 0; l < itemClass2.Actions.Length; l++)
+        //    {
+        //        string text5 = ItemClass.itemActionNames[l];
+        //        if (dynamicProperties.Classes.ContainsKey(text5))
+        //        {
+        //            if (!dynamicProperties.Values.ContainsKey(text5 + ".Class"))
+        //            {
+        //                throw new Exception("No class attribute found on " + text5 + " in item with '" + attribute + "'");
+        //            }
+
+        //            string text6 = dynamicProperties.Values[text5 + ".Class"];
+        //            ItemAction itemAction;
+        //            try
+        //            {
+        //                itemAction = (ItemAction)Activator.CreateInstance(ReflectionHelpers.GetTypeWithPrefix("ItemAction", text6));
+        //            }
+        //            catch (Exception)
+        //            {
+        //                throw new Exception("ItemAction class '" + text6 + " could not be instantiated");
+        //            }
+
+        //            itemAction.item = itemClass2;
+        //            itemAction.ActionIndex = l;
+        //            itemAction.ReadFrom(dynamicProperties.Classes[text5]);
+        //            if (array[l].Count > 0)
+        //            {
+        //                itemAction.ExecutionRequirements = array[l];
+        //            }
+
+        //            itemClass2.Actions[l] = itemAction;
+        //        }
+        //    }
+
+        //    itemClass2.Init();
+        //    return false;
+        //}
+
+        /// <summary>
+        /// fix requirement array count
+        /// </summary>
+        /// <param name="instructions"></param>
+        /// <returns></returns>
+        [HarmonyPatch(typeof(ItemClassesFromXml), nameof(ItemClassesFromXml.parseItem))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_parseItem_ItemClassesFromXml(IEnumerable<CodeInstruction> instructions)
         {
-            DynamicProperties dynamicProperties = new DynamicProperties();
-            string attribute = _node.GetAttribute("name");
-            if (attribute.Length == 0)
+            bool isLastInsThrow = false;
+            foreach (var code in instructions)
             {
-                throw new Exception("Attribute 'name' missing on item");
-            }
-
-            List<IRequirement>[] array = new List<IRequirement>[ItemClass.cMaxActionNames];
-            for (int i = 0; i < array.Length; i++)
-            {
-                array[i] = new List<IRequirement>();
-            }
-
-            foreach (XElement item in _node.Elements("property"))
-            {
-                dynamicProperties.Add(item);
-                string attribute2 = item.GetAttribute("class");
-                if (attribute2.StartsWith("Action"))
+                if (isLastInsThrow)
                 {
-                    int num = attribute2[attribute2.Length - 1] - 48;
-                    array[num].AddRange(RequirementBase.ParseRequirements(item));
-                }
-            }
-
-            if (dynamicProperties.Values.ContainsKey("Extends"))
-            {
-                string text = dynamicProperties.Values["Extends"];
-                ItemClass itemClass = ItemClass.GetItemClass(text);
-                if (itemClass == null)
-                {
-                    throw new Exception($"Extends item {text} is not specified for item {attribute}'");
-                }
-
-                HashSet<string> hashSet = new HashSet<string> { Block.PropCreativeMode };
-                if (dynamicProperties.Params1.ContainsKey("Extends"))
-                {
-                    string[] array2 = dynamicProperties.Params1["Extends"].Split(new[] { ',' }, StringSplitOptions.None);
-                    foreach (string text2 in array2)
+                    isLastInsThrow = false;
+                    if (code.opcode == OpCodes.Ldc_I4_3)
                     {
-                        hashSet.Add(text2.Trim());
+                        code.opcode = OpCodes.Ldc_I4_5;
                     }
                 }
-
-                DynamicProperties dynamicProperties2 = new DynamicProperties();
-                dynamicProperties2.CopyFrom(itemClass.Properties, hashSet);
-                dynamicProperties2.CopyFrom(dynamicProperties);
-                dynamicProperties = dynamicProperties2;
-            }
-
-            ItemClass itemClass2;
-            if (dynamicProperties.Values.ContainsKey("Class"))
-            {
-                string text3 = dynamicProperties.Values["Class"];
-                if (!text3.Contains(","))
+                if (code.opcode == OpCodes.Throw)
                 {
-                    text3 += ",Assembly-CSharp";
+                    isLastInsThrow = true;
                 }
-                try
-                {
-                    itemClass2 = (ItemClass)Activator.CreateInstance(Type.GetType(text3));
-                }
-                catch (Exception)
-                {
-                    throw new Exception("No item class '" + text3 + " found!");
-                }
+                yield return code;
             }
-            else
-            {
-                itemClass2 = new ItemClass();
-            }
-
-            itemClass2.Properties = dynamicProperties;
-            if (dynamicProperties.Params1.ContainsKey("Extends"))
-            {
-                string text4 = dynamicProperties.Values["Extends"];
-                if (ItemClass.GetItemClass(text4) == null)
-                {
-                    throw new Exception($"Extends item {text4} is not specified for item {attribute}'");
-                }
-            }
-
-            itemClass2.Effects = MinEffectController.ParseXml(_node, null, MinEffectController.SourceParentType.ItemClass, itemClass2.Id);
-            itemClass2.SetName(attribute);
-            itemClass2.setLocalizedItemName(Localization.Get(attribute));
-            if (dynamicProperties.Values.ContainsKey("Stacknumber"))
-            {
-                itemClass2.Stacknumber = new DataItem<int>(int.Parse(dynamicProperties.Values["Stacknumber"]));
-            }
-            else
-            {
-                itemClass2.Stacknumber = new DataItem<int>(500);
-            }
-
-            if (dynamicProperties.Values.ContainsKey("Canhold"))
-            {
-                itemClass2.SetCanHold(StringParsers.ParseBool(dynamicProperties.Values["Canhold"]));
-            }
-
-            if (dynamicProperties.Values.ContainsKey("Candrop"))
-            {
-                itemClass2.SetCanDrop(StringParsers.ParseBool(dynamicProperties.Values["Candrop"]));
-            }
-
-            if (!dynamicProperties.Values.ContainsKey("Material"))
-            {
-                throw new Exception("Attribute 'material' missing on item '" + attribute + "'");
-            }
-
-            itemClass2.MadeOfMaterial = MaterialBlock.fromString(dynamicProperties.Values["Material"]);
-            if (itemClass2.MadeOfMaterial == null)
-            {
-                throw new Exception("Attribute 'material' '" + dynamicProperties.Values["Material"] + "' refers to not existing material in item '" + attribute + "'");
-            }
-
-            if (!dynamicProperties.Values.ContainsKey("Meshfile") && itemClass2.CanHold())
-            {
-                throw new Exception("Attribute 'Meshfile' missing on item '" + attribute + "'");
-            }
-
-            itemClass2.MeshFile = dynamicProperties.Values["Meshfile"];
-            DataLoader.PreloadBundle(itemClass2.MeshFile);
-            StringParsers.TryParseFloat(dynamicProperties.Values["StickyOffset"], out itemClass2.StickyOffset);
-            StringParsers.TryParseFloat(dynamicProperties.Values["StickyColliderRadius"], out itemClass2.StickyColliderRadius);
-            StringParsers.TryParseSInt32(dynamicProperties.Values["StickyColliderUp"], out itemClass2.StickyColliderUp);
-            StringParsers.TryParseFloat(dynamicProperties.Values["StickyColliderLength"], out itemClass2.StickyColliderLength);
-            itemClass2.StickyMaterial = dynamicProperties.Values["StickyMaterial"];
-            if (dynamicProperties.Values.ContainsKey("ImageEffectOnActive"))
-            {
-                itemClass2.ImageEffectOnActive = new DataItem<string>(dynamicProperties.Values["ImageEffectOnActive"]);
-            }
-
-            if (dynamicProperties.Values.ContainsKey("Active"))
-            {
-                itemClass2.Active = new DataItem<bool>(_startValue: false);
-            }
-
-            if (dynamicProperties.Values.ContainsKey(ItemClass.PropIsSticky))
-            {
-                itemClass2.IsSticky = StringParsers.ParseBool(dynamicProperties.Values[ItemClass.PropIsSticky]);
-            }
-
-            if (dynamicProperties.Values.ContainsKey("DropMeshfile") && itemClass2.CanHold())
-            {
-                itemClass2.DropMeshFile = dynamicProperties.Values["DropMeshfile"];
-                DataLoader.PreloadBundle(itemClass2.DropMeshFile);
-            }
-
-            if (dynamicProperties.Values.ContainsKey("HandMeshfile") && itemClass2.CanHold())
-            {
-                itemClass2.HandMeshFile = dynamicProperties.Values["HandMeshfile"];
-                DataLoader.PreloadBundle(itemClass2.HandMeshFile);
-            }
-
-            if (dynamicProperties.Values.ContainsKey("HoldType"))
-            {
-                string s = dynamicProperties.Values["HoldType"];
-                int result = 0;
-                if (!int.TryParse(s, out result))
-                {
-                    throw new Exception("Cannot parse attribute hold_type for item '" + attribute + "'");
-                }
-
-                itemClass2.HoldType = new DataItem<int>(result);
-            }
-
-            if (dynamicProperties.Values.ContainsKey("RepairTools"))
-            {
-                string[] array3 = dynamicProperties.Values["RepairTools"].Replace(" ", "").Split(new[] { ',' }, StringSplitOptions.None);
-                DataItem<string>[] array4 = new DataItem<string>[array3.Length];
-                for (int k = 0; k < array3.Length; k++)
-                {
-                    array4[k] = new DataItem<string>(array3[k]);
-                }
-
-                itemClass2.RepairTools = new ItemData.DataItemArrayRepairTools(array4);
-            }
-
-            if (dynamicProperties.Values.ContainsKey("RepairAmount"))
-            {
-                int result2 = 0;
-                int.TryParse(dynamicProperties.Values["RepairAmount"], out result2);
-                itemClass2.RepairAmount = new DataItem<int>(result2);
-            }
-
-            if (dynamicProperties.Values.ContainsKey("RepairTime"))
-            {
-                float _result = 0f;
-                StringParsers.TryParseFloat(dynamicProperties.Values["RepairTime"], out _result);
-                itemClass2.RepairTime = new DataItem<float>(_result);
-            }
-            else if (itemClass2.RepairAmount != null)
-            {
-                itemClass2.RepairTime = new DataItem<float>(1f);
-            }
-
-            if (dynamicProperties.Values.ContainsKey("Degradation"))
-            {
-                itemClass2.MaxUseTimes = new DataItem<int>(int.Parse(dynamicProperties.Values["Degradation"]));
-            }
-            else
-            {
-                itemClass2.MaxUseTimes = new DataItem<int>(0);
-                itemClass2.MaxUseTimesBreaksAfter = new DataItem<bool>(_startValue: false);
-            }
-
-            if (dynamicProperties.Values.ContainsKey("DegradationBreaksAfter"))
-            {
-                itemClass2.MaxUseTimesBreaksAfter = new DataItem<bool>(StringParsers.ParseBool(dynamicProperties.Values["DegradationBreaksAfter"]));
-            }
-            else if (dynamicProperties.Values.ContainsKey("Degradation"))
-            {
-                itemClass2.MaxUseTimesBreaksAfter = new DataItem<bool>(_startValue: true);
-            }
-
-            if (dynamicProperties.Values.ContainsKey("EconomicValue"))
-            {
-                itemClass2.EconomicValue = StringParsers.ParseFloat(dynamicProperties.Values["EconomicValue"]);
-            }
-
-            if (dynamicProperties.Classes.ContainsKey("Preview"))
-            {
-                DynamicProperties dynamicProperties3 = dynamicProperties.Classes["Preview"];
-                itemClass2.Preview = new PreviewData();
-                if (dynamicProperties3.Values.ContainsKey("Zoom"))
-                {
-                    itemClass2.Preview.Zoom = new DataItem<int>(int.Parse(dynamicProperties3.Values["Zoom"]));
-                }
-
-                if (dynamicProperties3.Values.ContainsKey("Pos"))
-                {
-                    itemClass2.Preview.Pos = new DataItem<Vector2>(StringParsers.ParseVector2(dynamicProperties3.Values["Pos"]));
-                }
-                else
-                {
-                    itemClass2.Preview.Pos = new DataItem<Vector2>(Vector2.zero);
-                }
-
-                if (dynamicProperties3.Values.ContainsKey("Rot"))
-                {
-                    itemClass2.Preview.Rot = new DataItem<Vector3>(StringParsers.ParseVector3(dynamicProperties3.Values["Rot"]));
-                }
-                else
-                {
-                    itemClass2.Preview.Rot = new DataItem<Vector3>(Vector3.zero);
-                }
-            }
-
-            for (int l = 0; l < itemClass2.Actions.Length; l++)
-            {
-                string text5 = ItemClass.itemActionNames[l];
-                if (dynamicProperties.Classes.ContainsKey(text5))
-                {
-                    if (!dynamicProperties.Values.ContainsKey(text5 + ".Class"))
-                    {
-                        throw new Exception("No class attribute found on " + text5 + " in item with '" + attribute + "'");
-                    }
-
-                    string text6 = dynamicProperties.Values[text5 + ".Class"];
-                    ItemAction itemAction;
-                    try
-                    {
-                        itemAction = (ItemAction)Activator.CreateInstance(ReflectionHelpers.GetTypeWithPrefix("ItemAction", text6));
-                    }
-                    catch (Exception)
-                    {
-                        throw new Exception("ItemAction class '" + text6 + " could not be instantiated");
-                    }
-
-                    itemAction.item = itemClass2;
-                    itemAction.ActionIndex = l;
-                    itemAction.ReadFrom(dynamicProperties.Classes[text5]);
-                    if (array[l].Count > 0)
-                    {
-                        itemAction.ExecutionRequirements = array[l];
-                    }
-
-                    itemClass2.Actions[l] = itemAction;
-                }
-            }
-
-            itemClass2.Init();
-            return false;
         }
 
-        [HarmonyPatch(typeof(Inventory), "onInventoryChanged")]
+        [HarmonyPatch(typeof(Inventory), nameof(Inventory.onInventoryChanged))]
         [HarmonyPostfix]
-        private static void Postfix_onInventoryChanged_Inventory(EntityAlive ___entity)
+        private static void Postfix_onInventoryChanged_Inventory(Inventory __instance)
         {
-            if (___entity != null)
-                MultiActionManager.UpdateLocalMetaSave(___entity.entityId);
+            if (__instance.entity != null)
+                MultiActionManager.UpdateLocalMetaSave(__instance.entity.entityId);
         }
         #endregion
 
@@ -1458,34 +1487,34 @@ namespace KFCommonUtilityLib.Harmony
         {
             var codes = instructions.ToList();
 
-            var fld_entityid = AccessTools.Field(typeof(NetPackagePlayerStats), "entityId");
-            var fld_itemstack = AccessTools.Field(typeof(NetPackagePlayerStats), "holdingItemStack");
+            var fld_entityid = AccessTools.Field(typeof(NetPackagePlayerStats), nameof(NetPackagePlayerStats.entityId));
+            var fld_itemstack = AccessTools.Field(typeof(NetPackagePlayerStats), nameof(NetPackagePlayerStats.holdingItemStack));
             codes.InsertRange(codes.Count - 1, new[]
             {
                 new CodeInstruction(OpCodes.Ldarg_0),
                 new CodeInstruction(OpCodes.Ldfld, fld_entityid),
                 new CodeInstruction(OpCodes.Ldarg_0),
                 new CodeInstruction(OpCodes.Ldfld, fld_itemstack),
-                CodeInstruction.Call(typeof(MultiActionPatches), nameof(MultiActionPatches.CheckItemValueMode))
+                CodeInstruction.Call(typeof(MultiActionPatches), nameof(CheckItemValueMode))
             });
 
             return codes;
         }
-        [HarmonyPatch(typeof(NetPackageHoldingItem), nameof(NetPackagePlayerStats.ProcessPackage))]
+        [HarmonyPatch(typeof(NetPackageHoldingItem), nameof(NetPackageHoldingItem.ProcessPackage))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_ProcessPackage_NetPackageHoldingItem(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
 
-            var fld_entityid = AccessTools.Field(typeof(NetPackagePlayerStats), "entityId");
-            var fld_itemstack = AccessTools.Field(typeof(NetPackagePlayerStats), "holdingItemStack");
+            var fld_entityid = AccessTools.Field(typeof(NetPackagePlayerStats), nameof(NetPackageHoldingItem.entityId));
+            var fld_itemstack = AccessTools.Field(typeof(NetPackagePlayerStats), nameof(NetPackageHoldingItem.holdingItemStack));
             codes.InsertRange(codes.Count - 1, new[]
             {
                 new CodeInstruction(OpCodes.Ldarg_0),
                 new CodeInstruction(OpCodes.Ldfld, fld_entityid),
                 new CodeInstruction(OpCodes.Ldarg_0),
                 new CodeInstruction(OpCodes.Ldfld, fld_itemstack),
-                CodeInstruction.Call(typeof(MultiActionPatches), nameof(MultiActionPatches.CheckItemValueMode))
+                CodeInstruction.Call(typeof(MultiActionPatches), nameof(CheckItemValueMode))
             });
 
             return codes;
@@ -1504,14 +1533,14 @@ namespace KFCommonUtilityLib.Harmony
             }
         }
 
-        [HarmonyPatch(typeof(GameManager), "UpdateTick")]
+        [HarmonyPatch(typeof(GameManager), nameof(GameManager.UpdateTick))]
         [HarmonyPostfix]
-        private static void Postfix_UpdateTick_GameManager(World ___m_World)
+        private static void Postfix_UpdateTick_GameManager(GameManager __instance)
         {
-            if (MultiActionManager.LocalModeChanged)
+            if (MultiActionManager.LocalModeChanged && __instance.m_World != null)
             {
                 MultiActionManager.LocalModeChanged = false;
-                int playerID = ___m_World.GetPrimaryPlayerId();
+                int playerID = __instance.m_World.GetPrimaryPlayerId();
                 if (ConnectionManager.Instance.IsClient)
                 {
                     ConnectionManager.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageEntityActionIndex>().Setup(playerID, MultiActionManager.GetModeForEntity(playerID)));
@@ -1525,22 +1554,27 @@ namespace KFCommonUtilityLib.Harmony
         #endregion
 
         #region Input Handling
-        [HarmonyPatch(typeof(PlayerMoveController), "Update")]
+        [HarmonyPatch(typeof(PlayerMoveController), nameof(PlayerMoveController.Update))]
         [HarmonyPrefix]
-        private static bool Prefix_Update_PlayerMoveController(EntityPlayerLocal ___entityPlayerLocal, GameManager ___gameManager, GUIWindowManager ___windowManager, PlayerMoveController __instance)
+        private static bool Prefix_Update_PlayerMoveController(PlayerMoveController __instance)
         {
-            if (DroneManager.Debug_LocalControl || !___gameManager.gameStateManager.IsGameStarted() || GameStats.GetInt(EnumGameStats.GameState) != 1)
+            if (DroneManager.Debug_LocalControl || !__instance.gameManager.gameStateManager.IsGameStarted() || GameStats.GetInt(EnumGameStats.GameState) != 1)
                 return true;
 
-            bool isUIOpen = ___windowManager.IsCursorWindowOpen() || ___windowManager.IsInputActive() || ___windowManager.IsModalWindowOpen();
+            bool isUIOpen = __instance.windowManager.IsCursorWindowOpen() || __instance.windowManager.IsInputActive() || __instance.windowManager.IsModalWindowOpen();
 
-            MultiActionManager.UpdateLocalInput(___entityPlayerLocal, __instance.playerInput, isUIOpen, Time.deltaTime);
+            MultiActionManager.UpdateLocalInput(__instance.entityPlayerLocal, __instance.playerInput, isUIOpen, Time.deltaTime);
 
             return true;
         }
         #endregion
 
         #region HUD display
+        /// <summary>
+        /// redirect check to alternative action module
+        /// </summary>
+        /// <param name="instructions"></param>
+        /// <returns></returns>
         [HarmonyPatch(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.HasChanged))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_HasChanged_XUiC_HUDStatBar(IEnumerable<CodeInstruction> instructions)
@@ -1561,7 +1595,7 @@ namespace KFCommonUtilityLib.Harmony
             return codes;
         }
 
-        [HarmonyPatch(typeof(XUiC_HUDStatBar), "SetupActiveItemEntry")]
+        [HarmonyPatch(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.SetupActiveItemEntry))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_SetupActiveItemEntry_XUiC_HUDStatBar(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
@@ -1595,7 +1629,7 @@ namespace KFCommonUtilityLib.Harmony
             return codes;
         }
 
-        [HarmonyPatch(typeof(XUiC_Radial), "handleActivatableItemCommand")]
+        [HarmonyPatch(typeof(XUiC_Radial), nameof(XUiC_Radial.handleActivatableItemCommand))]
         [HarmonyPrefix]
         private static bool Prefix_handleActivatableItemCommand_XUiC_Radial(XUiC_Radial _sender)
         {
@@ -1620,7 +1654,7 @@ namespace KFCommonUtilityLib.Harmony
                     codes.InsertRange(i + 1, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(XUiC_ItemInfoWindow), "itemStack"),
+                        CodeInstruction.LoadField(typeof(XUiC_ItemInfoWindow), nameof(XUiC_ItemInfoWindow.itemStack)),
                         CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)),
                         CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetActionIndexByMetaData))
                     });
@@ -1633,7 +1667,7 @@ namespace KFCommonUtilityLib.Harmony
         #endregion
 
         #region Cancel reload on switching item
-        [HarmonyPatch(typeof(PlayerMoveController), "Update")]
+        [HarmonyPatch(typeof(PlayerMoveController), nameof(PlayerMoveController.Update))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_Update_PlayerMoveController(IEnumerable<CodeInstruction> instructions)
         {
@@ -1662,7 +1696,7 @@ namespace KFCommonUtilityLib.Harmony
                     codes.InsertRange(i + 7, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(PlayerMoveController), "entityPlayerLocal"),
+                        CodeInstruction.LoadField(typeof(PlayerMoveController), nameof(PlayerMoveController.entityPlayerLocal)),
                         CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.inventory)),
                         CodeInstruction.Call(typeof(Inventory), nameof(Inventory.GetIsFinishedSwitchingHeldItem)),
                         new CodeInstruction(OpCodes.Brfalse, label)
@@ -1690,10 +1724,9 @@ namespace KFCommonUtilityLib.Harmony
                 if (codes[i].LoadsField(fld_ammonames) && (codes[i + 1].opcode == OpCodes.Brfalse_S || codes[i + 1].opcode == OpCodes.Brfalse))
                 {
                     var jumpto = codes[i + 1].operand;
-                    var labels = codes[i - 1].ExtractLabels();
                     codes.InsertRange(i - 1, new[]
                     {
-                        new CodeInstruction(OpCodes.Ldarg_1),
+                        new CodeInstruction(OpCodes.Ldarg_1).WithLabels(codes[i - 1].ExtractLabels()),
                         CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.indexInEntityOfAction)),
                         new CodeInstruction(OpCodes.Ldarg_1),
                         CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
@@ -1701,7 +1734,6 @@ namespace KFCommonUtilityLib.Harmony
                         CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.GetActionIndexForEntity)),
                         new CodeInstruction(OpCodes.Bne_Un_S, jumpto)
                     });
-                    codes[i - 1].WithLabels(labels);
                     break;
                 }
             }
@@ -1711,7 +1743,7 @@ namespace KFCommonUtilityLib.Harmony
         #endregion
 
         #region GameEvent
-        [HarmonyPatch(typeof(ActionUnloadItems), "HandleItemStackChange")]
+        [HarmonyPatch(typeof(ActionUnloadItems), nameof(ActionUnloadItems.HandleItemStackChange))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_HandleItemStackChange_ActionUnloadItems(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
@@ -1730,7 +1762,7 @@ namespace KFCommonUtilityLib.Harmony
                         new CodeInstruction(OpCodes.Ldarg_1),
                         new CodeInstruction(OpCodes.Ldind_Ref),
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(ActionUnloadItems), "ItemStacks"),
+                        CodeInstruction.LoadField(typeof(ActionUnloadItems), nameof(ActionUnloadItems.ItemStacks)),
                         CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.MultiActionRemoveAmmoFromItemStack)),
                         new CodeInstruction(OpCodes.Brfalse_S, label),
                         new CodeInstruction(OpCodes.Ldc_I4_1),
@@ -1856,6 +1888,11 @@ namespace KFCommonUtilityLib.Harmony
             MultiActionManager.ParseItemActionExcludeTagsAndModifiers(__instance);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="instructions"></param>
+        /// <returns></returns>
         [HarmonyPatch(typeof(EffectManager), nameof(EffectManager.GetValue))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_GetValue_EffectManager(IEnumerable<CodeInstruction> instructions)
@@ -1866,10 +1903,9 @@ namespace KFCommonUtilityLib.Harmony
             {
                 if (codes[i].IsStarg(5))
                 {
-                    var next = codes[i + 1];
                     codes.InsertRange(i + 1, new[]
                     {
-                        new CodeInstruction(OpCodes.Ldarg_1).WithLabels(next.ExtractLabels()),
+                        new CodeInstruction(OpCodes.Ldarg_1).WithLabels(codes[i + 1].ExtractLabels()),
                         CodeInstruction.LoadField(typeof(MinEventParams), nameof(MinEventParams.CachedEventParam)),
                         CodeInstruction.LoadField(typeof(MinEventParams), nameof(MinEventParams.ItemActionData)),
                         new CodeInstruction(OpCodes.Ldarga_S, 5),
@@ -1884,7 +1920,7 @@ namespace KFCommonUtilityLib.Harmony
 
         [HarmonyPatch(typeof(EffectManager), nameof(EffectManager.GetValuesAndSources))]
         [HarmonyPrefix]
-        private static bool Prefix_GetValuesAndSources_EffectManager(ItemValue _originalItemValue, EntityAlive _entity, ref FastTags tags)
+        private static bool Prefix_GetValuesAndSources_EffectManager(ItemValue _originalItemValue, EntityAlive _entity, ref FastTags<TagGroup.Global> tags)
         {
             MultiActionManager.ModifyItemTags(_originalItemValue, _entity?.MinEventContext?.ItemActionData, ref tags);
             return true;
@@ -1906,7 +1942,7 @@ namespace KFCommonUtilityLib.Harmony
         {
             var codes = instructions.ToList();
 
-            var lbd_tags = generator.DeclareLocal(typeof(FastTags));
+            var lbd_tags = generator.DeclareLocal(typeof(FastTags<TagGroup.Global>));
             FieldInfo fld_tags = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.Tags));
             bool firstRet = true;
 
@@ -1948,9 +1984,9 @@ namespace KFCommonUtilityLib.Harmony
         {
             var codes = instructions.ToList();
 
-            var lbd_tags = generator.DeclareLocal(typeof(FastTags));
+            var lbd_tags = generator.DeclareLocal(typeof(FastTags<TagGroup.Global>));
             FieldInfo fld_itemvalue = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.ItemValue));
-            FieldInfo fld_hasalltags = AccessTools.Field(typeof(ItemHasTags), "hasAllTags");
+            FieldInfo fld_hasalltags = AccessTools.Field(typeof(ItemHasTags), nameof(ItemHasTags.hasAllTags));
             MethodInfo prop_itemclass = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.ItemClass));
             MethodInfo mtd_hasanytags = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.HasAnyTags));
             MethodInfo mtd_hasalltags = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.HasAllTags));
@@ -1977,7 +2013,7 @@ namespace KFCommonUtilityLib.Harmony
                 else if (codes[i].Calls(mtd_hasanytags))
                 {
                     codes[i].opcode = OpCodes.Call;
-                    codes[i].operand = AccessTools.Method(typeof(FastTags), nameof(FastTags.Test_AnySet));
+                    codes[i].operand = AccessTools.Method(typeof(FastTags<TagGroup.Global>), nameof(FastTags<TagGroup.Global>.Test_AnySet));
                     var labels = codes[i - 5].ExtractLabels();
                     codes.RemoveRange(i - 5, 3);
                     codes.Insert(i - 5, new CodeInstruction(OpCodes.Ldloca_S, lbd_tags).WithLabels(labels));
@@ -1986,7 +2022,7 @@ namespace KFCommonUtilityLib.Harmony
                 else if (codes[i].Calls(mtd_hasalltags))
                 {
                     codes[i].opcode = OpCodes.Call;
-                    codes[i].operand = AccessTools.Method(typeof(FastTags), nameof(FastTags.Test_AllSet));
+                    codes[i].operand = AccessTools.Method(typeof(FastTags<TagGroup.Global>), nameof(FastTags<TagGroup.Global>.Test_AllSet));
                     var labels = codes[i - 5].ExtractLabels();
                     codes.RemoveRange(i - 5, 3);
                     codes.Insert(i - 5, new CodeInstruction(OpCodes.Ldloca_S, lbd_tags).WithLabels(labels));
@@ -2003,9 +2039,9 @@ namespace KFCommonUtilityLib.Harmony
         {
             var codes = instructions.ToList();
 
-            var lbd_tags = generator.DeclareLocal(typeof(FastTags));
+            var lbd_tags = generator.DeclareLocal(typeof(FastTags<TagGroup.Global>));
             FieldInfo fld_itemvalue = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.ItemValue));
-            FieldInfo fld_hasalltags = AccessTools.Field(typeof(HoldingItemHasTags), "hasAllTags");
+            FieldInfo fld_hasalltags = AccessTools.Field(typeof(HoldingItemHasTags), nameof(HoldingItemHasTags.hasAllTags));
             MethodInfo prop_itemclass = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.ItemClass));
             MethodInfo prop_itemvalue = AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItemItemValue));
             MethodInfo mtd_hasanytags = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.HasAnyTags));
@@ -2017,18 +2053,18 @@ namespace KFCommonUtilityLib.Harmony
                     codes.InsertRange(i - 1, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(HoldingItemHasTags), "target"),
+                        CodeInstruction.LoadField(typeof(HoldingItemHasTags), nameof(HoldingItemHasTags.target)),
                         CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.inventory)),
                         new CodeInstruction(OpCodes.Callvirt, prop_itemvalue),
                         new CodeInstruction(OpCodes.Callvirt, prop_itemclass),
                         CodeInstruction.LoadField(typeof(ItemClass), nameof(ItemClass.ItemTags)),
                         new CodeInstruction(OpCodes.Stloc_S, lbd_tags),
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(HoldingItemHasTags), "target"),
+                        CodeInstruction.LoadField(typeof(HoldingItemHasTags), nameof(HoldingItemHasTags.target)),
                         CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.inventory)),
                         new CodeInstruction(OpCodes.Callvirt, prop_itemvalue),
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(HoldingItemHasTags), "target"),
+                        CodeInstruction.LoadField(typeof(HoldingItemHasTags), nameof(HoldingItemHasTags.target)),
                         CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.MinEventContext)),
                         CodeInstruction.LoadField(typeof(MinEventParams), nameof(MinEventParams.ItemActionData)),
                         new CodeInstruction(OpCodes.Ldloca_S, lbd_tags),
@@ -2039,7 +2075,7 @@ namespace KFCommonUtilityLib.Harmony
                 else if (codes[i].Calls(mtd_hasanytags))
                 {
                     codes[i].opcode = OpCodes.Call;
-                    codes[i].operand = AccessTools.Method(typeof(FastTags), nameof(FastTags.Test_AnySet));
+                    codes[i].operand = AccessTools.Method(typeof(FastTags<TagGroup.Global>), nameof(FastTags<TagGroup.Global>.Test_AnySet));
                     var labels = codes[i - 6].ExtractLabels();
                     codes.RemoveRange(i - 6, 4);
                     codes.Insert(i - 6, new CodeInstruction(OpCodes.Ldloca_S, lbd_tags).WithLabels(labels));
@@ -2048,7 +2084,7 @@ namespace KFCommonUtilityLib.Harmony
                 else if (codes[i].Calls(mtd_hasalltags))
                 {
                     codes[i].opcode = OpCodes.Call;
-                    codes[i].operand = AccessTools.Method(typeof(FastTags), nameof(FastTags.Test_AllSet));
+                    codes[i].operand = AccessTools.Method(typeof(FastTags<TagGroup.Global>), nameof(FastTags<TagGroup.Global>.Test_AllSet));
                     var labels = codes[i - 6].ExtractLabels();
                     codes.RemoveRange(i - 6, 4);
                     codes.Insert(i - 6, new CodeInstruction(OpCodes.Ldloca_S, lbd_tags).WithLabels(labels));
@@ -2067,8 +2103,8 @@ namespace KFCommonUtilityLib.Harmony
             var codes = instructions.ToList();
 
             var mtd_clone = AccessTools.Method(typeof(ItemValue), nameof(ItemValue.Clone));
-            var mtd_create = AccessTools.Method(typeof(Inventory), "createHeldItem");
-            var mtd_invdata = AccessTools.Method(typeof(Inventory), "createInventoryData");
+            var mtd_create = AccessTools.Method(typeof(Inventory), nameof(Inventory.createHeldItem));
+            var mtd_invdata = AccessTools.Method(typeof(Inventory), nameof(Inventory.createInventoryData));
             for (int i = 0; i < codes.Count; i++)
             {
                 //if (codes[i].opcode == OpCodes.Ldarg_3 && (codes[i + 1].opcode == OpCodes.Brtrue_S || codes[i + 1].opcode == OpCodes.Brtrue))
@@ -2085,7 +2121,7 @@ namespace KFCommonUtilityLib.Harmony
                 //else 
                 if (codes[i].Calls(mtd_create))
                 {
-                    codes.InsertRange(i -12, new[]
+                    codes.InsertRange(i - 12, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_2),
                         CodeInstruction.StoreField(typeof(ActionModuleAlternative), nameof(ActionModuleAlternative.InventorySetItemTemp))
@@ -2122,7 +2158,7 @@ namespace KFCommonUtilityLib.Harmony
         {
             var codes = instructions.ToList();
 
-            var mtd_invdata = AccessTools.Method(typeof(Inventory), "createInventoryData");
+            var mtd_invdata = AccessTools.Method(typeof(Inventory), nameof(Inventory.createInventoryData));
 
             for (int i = 0; i < codes.Count; i++)
             {
@@ -2247,14 +2283,14 @@ namespace KFCommonUtilityLib.Harmony
             {
                 AccessTools.Method(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.Raycast)),
                 AccessTools.Method(typeof(ItemActionDynamic), nameof(ItemActionDynamic.GetExecuteActionGrazeTarget)),
-                AccessTools.Method(typeof(ItemActionDynamic), "hitTarget"),
-                AccessTools.Method(typeof(ItemActionDynamicMelee), "canStartAttack"),
+                AccessTools.Method(typeof(ItemActionDynamic), nameof(ItemActionDynamic.hitTarget)),
+                AccessTools.Method(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.canStartAttack)),
                 AccessTools.Method(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.OnHoldingUpdate)),
                 AccessTools.Method(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.SetAttackFinished)),
                 AccessTools.Method(typeof(ItemActionMelee), nameof(ItemActionMelee.OnHoldingUpdate)),
                 AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.ExecuteAction)),
-                AccessTools.Method(typeof(ItemActionRanged), "fireShot"),
-                AccessTools.Method(typeof(ItemActionThrownWeapon), "throwAway"),
+                AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.fireShot)),
+                AccessTools.Method(typeof(ItemActionThrownWeapon), nameof(ItemActionThrownWeapon.throwAway)),
                 AccessTools.Method(typeof(ItemActionUseOther), nameof(ItemActionUseOther.ExecuteAction)),
 
             };

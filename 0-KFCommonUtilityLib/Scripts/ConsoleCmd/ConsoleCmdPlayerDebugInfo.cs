@@ -31,12 +31,12 @@ namespace KFCommonUtilityLib.Scripts.ConsoleCmd
             }
         }
 
-        protected override string[] getCommands()
+        public override string[] getCommands()
         {
             return new string[] { "printpinfo" };
         }
 
-        protected override string getDescription()
+        public override string getDescription()
         {
             return "print player debug info.";
         }

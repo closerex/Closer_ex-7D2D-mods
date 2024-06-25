@@ -48,7 +48,7 @@ class NetPackageSyncWeaponLabelColor : NetPackage
                 int allButAttachedToEntityId = holdingEntity.entityId;
                 if (holdingEntity && holdingEntity.AttachedMainEntity)
                     allButAttachedToEntityId = holdingEntity.AttachedMainEntity.entityId;
-                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageSyncWeaponLabelColor>().Setup(holdingEntity.entityId, isText, color, slot0, slot1, nameId), false, -1, allButAttachedToEntityId, allButAttachedToEntityId, 15);
+                SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageSyncWeaponLabelColor>().Setup(holdingEntity.entityId, isText, color, slot0, slot1, nameId), false, -1, allButAttachedToEntityId, allButAttachedToEntityId, null, 15);
             }
             else if (SingletonMonoBehaviour<ConnectionManager>.Instance.IsClient && !fromNet)
                 SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageSyncWeaponLabelColor>().Setup(holdingEntity.entityId, isText, color, slot0, slot1, nameId));

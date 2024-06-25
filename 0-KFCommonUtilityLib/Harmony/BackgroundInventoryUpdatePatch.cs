@@ -6,11 +6,11 @@ namespace KFCommonUtilityLib.Harmony
     [HarmonyPatch]
     public class BackgroundInventoryUpdatePatch
     {
-        [HarmonyPatch(typeof(Inventory), "clearSlotByIndex")]
+        [HarmonyPatch(typeof(Inventory), nameof(Inventory.clearSlotByIndex))]
         [HarmonyPostfix]
-        private static void Postfix_clearSlotByIndex_Inventory(EntityAlive ___entity, int _idx)
+        private static void Postfix_clearSlotByIndex_Inventory(Inventory __instance, int _idx)
         {
-            BackgroundInventoryUpdateManager.UnregisterUpdater(___entity, _idx);
+            BackgroundInventoryUpdateManager.UnregisterUpdater(__instance.entity, _idx);
         }
 
         [HarmonyPatch(typeof(EntityAlive), nameof(EntityAlive.OnEntityDeath))]
@@ -22,9 +22,9 @@ namespace KFCommonUtilityLib.Harmony
 
         [HarmonyPatch(typeof(Inventory), nameof(Inventory.OnUpdate))]
         [HarmonyPostfix]
-        private static void Postfix_OnUpdate_Inventory(EntityAlive ___entity)
+        private static void Postfix_OnUpdate_Inventory(Inventory __instance)
         {
-            BackgroundInventoryUpdateManager.Update(___entity);
+            BackgroundInventoryUpdateManager.Update(__instance.entity);
         }
 
         [HarmonyPatch(typeof(GameManager), nameof(GameManager.SaveAndCleanupWorld))]

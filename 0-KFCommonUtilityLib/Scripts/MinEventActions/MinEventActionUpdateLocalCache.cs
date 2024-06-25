@@ -5,7 +5,7 @@ using System.Xml.Linq;
 public class MinEventActionUpdateLocalCache : MinEventActionBase
 {
     private PassiveEffects passive;
-    private FastTags tags;
+    private FastTags<TagGroup.Global> tags;
     private int actionIndex = -1;
     private int saveAs;
     private string saveAsStr;
@@ -32,7 +32,7 @@ public class MinEventActionUpdateLocalCache : MinEventActionBase
                 passive = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>(_attribute.Value);
                 return true;
             case "tags":
-                tags = FastTags.Parse(_attribute.Value);
+                tags = FastTags<TagGroup.Global>.Parse(_attribute.Value);
                 return true;
             case "action_index":
                 actionIndex = int.Parse(_attribute.Value);

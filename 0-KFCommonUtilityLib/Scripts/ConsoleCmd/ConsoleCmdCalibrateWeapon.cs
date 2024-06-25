@@ -114,18 +114,13 @@ public class ConsoleCmdCalibrateWeapon : ConsoleCmdAbstract
                 targetTrans.localScale = DoCalibrate(tweakType, targetTrans.localScale, param);
                 break;
             case CalibrateType.offset:
-                var zoomAction = Convert.ChangeType(inv.holdingItemData.actionData[1], typeof(ItemActionZoom).GetNestedType("ItemActionDataZoom", System.Reflection.BindingFlags.NonPublic));
-                if (zoomAction == null)
+                //var zoomAction = Convert.ChangeType(inv.holdingItemData.actionData[1], typeof(ItemActionZoom).GetNestedType("ItemActionDataZoom", System.Reflection.BindingFlags.NonPublic));
+                if (!(inv.holdingItemData.actionData[1] is ItemActionZoom.ItemActionDataZoom zoomAction))
                 {
                     Log.Error("holding item can not aim!");
                     return;
                 }
-
-                var field = zoomAction.GetType().GetField("ScopeCameraOffset");
-                if (field != null)
-                    field.SetValue(zoomAction, DoCalibrate(tweakType, (Vector3)field.GetValue(zoomAction), param));
-                else
-                    Log.Error("field not found!");
+                zoomAction.ScopeCameraOffset = DoCalibrate(tweakType, zoomAction.ScopeCameraOffset, param);
                 break;
         }
     }
@@ -148,17 +143,17 @@ public class ConsoleCmdCalibrateWeapon : ConsoleCmdAbstract
         return res;
     }
 
-    protected override string[] getCommands()
+    public override string[] getCommands()
     {
         return new string[] { "calibrate", "calib" };
     }
 
-    protected override string getDescription()
+    public override string getDescription()
     {
         return "adjust weapon transform rotation, position, scale, scope offset in game and print current value for xml editing purpose.";
     }
 
-    public override bool IsExecuteOnClient { get => true; }
+    public override bool IsExecuteOnClient => true;
 
     private enum CalibrateType
     {

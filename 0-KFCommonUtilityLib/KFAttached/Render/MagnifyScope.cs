@@ -96,11 +96,11 @@ namespace KFCommonUtilityLib.KFAttached.Render
                 return;
             }
             var zoomAction = (ItemActionZoom)((ActionModuleAlternative.InventorySetItemTemp?.ItemClass ?? player.inventory.holdingItem).Actions[1]);
-            var zoomActionData = player.inventory.holdingItemData.actionData[1];
+            var zoomActionData = (ItemActionZoom.ItemActionDataZoom)player.inventory.holdingItemData.actionData[1];
             float targetScale = StringParsers.ParseFloat(player.inventory.holdingItemItemValue.GetPropertyOverride("ZoomRatio", "0"));
             if (targetScale > 0)
             {
-                zoomAction.GetMaxZoom(zoomActionData, out float maxZoom);
+                float maxZoom = zoomActionData.MaxZoomIn;
                 float refScale = 1 / (Mathf.Tan(Mathf.Deg2Rad * 27.5f) * player.playerCamera.aspect);
                 float maxScale = 1 / (Mathf.Tan(Mathf.Deg2Rad * maxZoom / 2) * player.playerCamera.aspect);
                 float shaderScale = targetScale / (maxScale / refScale);

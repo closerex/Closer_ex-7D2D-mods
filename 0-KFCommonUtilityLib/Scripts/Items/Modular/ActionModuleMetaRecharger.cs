@@ -9,21 +9,21 @@ public class ActionModuleMetaRecharger
 {
     public struct RechargeTags
     {
-        public FastTags tagsOriginal;
-        public FastTags tagsInterval;
-        public FastTags tagsMaximum;
-        public FastTags tagsValue;
-        public FastTags tagsDecrease;
-        public FastTags tagsDecreaseInterval;
+        public FastTags<TagGroup.Global> tagsOriginal;
+        public FastTags<TagGroup.Global> tagsInterval;
+        public FastTags<TagGroup.Global> tagsMaximum;
+        public FastTags<TagGroup.Global> tagsValue;
+        public FastTags<TagGroup.Global> tagsDecrease;
+        public FastTags<TagGroup.Global> tagsDecreaseInterval;
     }
 
     public string[] rechargeDatas;
     public RechargeTags[] rechargeTags;
-    private static FastTags TagsInterval = FastTags.Parse("RechargeDataInterval");
-    private static FastTags TagsMaximum = FastTags.Parse("RechargeDataMaximum");
-    private static FastTags TagsValue = FastTags.Parse("RechargeDataValue");
-    private static FastTags TagsDecrease = FastTags.Parse("RechargeDataDecrease");
-    private static FastTags TagsDecreaseInterval = FastTags.Parse("RechargeDecreaseInterval");
+    private static readonly FastTags<TagGroup.Global> TagsInterval = FastTags<TagGroup.Global>.Parse("RechargeDataInterval");
+    private static readonly FastTags<TagGroup.Global> TagsMaximum = FastTags<TagGroup.Global>.Parse("RechargeDataMaximum");
+    private static readonly FastTags<TagGroup.Global> TagsValue = FastTags<TagGroup.Global>.Parse("RechargeDataValue");
+    private static readonly FastTags<TagGroup.Global> TagsDecrease = FastTags<TagGroup.Global>.Parse("RechargeDataDecrease");
+    private static readonly FastTags<TagGroup.Global> TagsDecreaseInterval = FastTags<TagGroup.Global>.Parse("RechargeDecreaseInterval");
 
     [MethodTargetPostfix(nameof(ItemActionRanged.ReadFrom))]
     private void Postfix_ReadFrom(DynamicProperties _props, ItemAction __instance)
@@ -31,9 +31,9 @@ public class ActionModuleMetaRecharger
         rechargeDatas = null;
         rechargeTags = null;
         string rechargeData = string.Empty;
-        _props.Values.TryGetString("RechargeData", out rechargeData);
-        _props.Values.TryGetString("RechargeTags", out string tags);
-        FastTags commonTags = string.IsNullOrEmpty(tags) ? FastTags.none : FastTags.Parse(tags);
+        _props.Values.TryGetValue("RechargeData", out rechargeData);
+        _props.Values.TryGetValue("RechargeTags", out string tags);
+        FastTags<TagGroup.Global> commonTags = string.IsNullOrEmpty(tags) ? FastTags<TagGroup.Global>.none : FastTags<TagGroup.Global>.Parse(tags);
         if (string.IsNullOrEmpty(rechargeData))
         {
             Log.Error($"No recharge data found on item {__instance.item.Name} action {__instance.ActionIndex}");
@@ -42,7 +42,7 @@ public class ActionModuleMetaRecharger
         rechargeDatas = rechargeData.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToArray();
         rechargeTags = rechargeDatas.Select(s =>
         {
-            var _tags = FastTags.Parse(s) | commonTags;
+            var _tags = FastTags<TagGroup.Global>.Parse(s) | commonTags;
             return new RechargeTags
             {
                 tagsOriginal = _tags,

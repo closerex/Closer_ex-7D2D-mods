@@ -34,7 +34,7 @@ public class AnimationReloadEvents : MonoBehaviour
         {
             player.MinEventContext.ItemActionData = actionData;
             ItemValue item = ItemClass.GetItem(actionRanged.MagazineItemNames[actionData.invData.itemValue.SelectedAmmoTypeIndex], false);
-            int magSize = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, actionData.invData.itemValue, (float)actionRanged.BulletsPerMagazine, player, null, default, true, true, true, true, 1, true, false);
+            int magSize = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, actionData.invData.itemValue, actionRanged.BulletsPerMagazine, player);
             actionData.reloadAmount = GetAmmoCountToReload(player, item, magSize);
             if (actionData.reloadAmount > 0)
             {
@@ -170,7 +170,7 @@ public class AnimationReloadEvents : MonoBehaviour
 
         ItemValue itemValue = actionData.invData.itemValue;
         actionData.invData.holdingEntity.MinEventContext.ItemActionData = actionData;
-        int magSize = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, itemValue, actionRanged.BulletsPerMagazine, actionData.invData.holdingEntity, null, default, true, true, true, true, 1, true, false);
+        int magSize = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, itemValue, actionRanged.BulletsPerMagazine, actionData.invData.holdingEntity);
         ItemActionLauncher itemActionLauncher = actionRanged as ItemActionLauncher;
         if (itemActionLauncher != null && itemValue.Meta < magSize)
         {

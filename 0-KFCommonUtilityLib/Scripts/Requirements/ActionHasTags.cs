@@ -3,7 +3,7 @@ using System.Xml.Linq;
 
 public class ActionHasTags : TargetedCompareRequirementBase
 {
-    private FastTags actionTags;
+    private FastTags<TagGroup.Global> actionTags;
 
     private bool hasAllTags;
 
@@ -36,7 +36,7 @@ public class ActionHasTags : TargetedCompareRequirementBase
             string localName = _attribute.Name.LocalName;
             if (localName == "tags")
             {
-                actionTags = FastTags.Parse(_attribute.Value);
+                actionTags = FastTags<TagGroup.Global>.Parse(_attribute.Value);
                 return true;
             }
 

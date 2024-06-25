@@ -2,7 +2,7 @@
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using UnityEngine;
 
-[TypeTarget(typeof(ItemActionRanged), typeof(ActionModuleInterruptReload.InterruptData))]
+[TypeTarget(typeof(ItemActionRanged), typeof(InterruptData))]
 public class ActionModuleInterruptReload
 {
     //[MethodTargetPrefix(nameof(ItemActionZoom.ExecuteAction), typeof(ItemActionZoom))]

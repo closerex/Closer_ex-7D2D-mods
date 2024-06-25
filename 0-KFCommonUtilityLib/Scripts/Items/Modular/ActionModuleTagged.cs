@@ -14,12 +14,12 @@ public class ActionModuleTagged
         var tags_result = tags.Union(tags_to_add);
         tags_result = tags_result.Except(tags_to_remove);
 
-        __customData.tags = tags_result.Any() ? FastTags.Parse(string.Join(",", tags_result)) : FastTags.none;
+        __customData.tags = tags_result.Any() ? FastTags<TagGroup.Global>.Parse(string.Join(",", tags_result)) : FastTags<TagGroup.Global>.none;
     }
 
     public class TaggedData
     {
-        public FastTags tags;
+        public FastTags<TagGroup.Global> tags;
         public TaggedData(ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleTagged _module)
         {
 

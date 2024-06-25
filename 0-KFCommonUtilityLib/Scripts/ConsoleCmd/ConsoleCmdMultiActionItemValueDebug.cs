@@ -44,12 +44,12 @@ namespace KFCommonUtilityLib.Scripts.ConsoleCmd
             }
         }
 
-        protected override string[] getCommands()
+        public override string[] getCommands()
         {
             return new string[] { "maivd" };
         }
 
-        protected override string getDescription()
+        public override string getDescription()
         {
             return "Debug ItemValue metadata and stuff.";
         }

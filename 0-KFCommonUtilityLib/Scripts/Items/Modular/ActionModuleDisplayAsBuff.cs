@@ -45,10 +45,10 @@ public class ActionModuleDisplayAsBuff
     private void Postfix_ReadFrom(DynamicProperties _props)
     {
         notification = new DisplayAsBuffEntityUINotification();
-        _props.Values.TryGetString("DisplayType", out string str);
+        _props.Values.TryGetValue("DisplayType", out string str);
         EnumUtils.TryParse(str, out notification.displayType, true);
-        _props.Values.TryGetString("DisplayData", out notification.displayData);
-        _props.Values.TryGetString("DisplayBuff", out str);
+        _props.Values.TryGetValue("DisplayData", out notification.displayData);
+        _props.Values.TryGetValue("DisplayBuff", out str);
         BuffClass buffClass = BuffManager.GetBuff(str);
         BuffValue buff = new BuffValue(buffClass.Name, -1, buffClass);
         notification.SetBuff(buff);

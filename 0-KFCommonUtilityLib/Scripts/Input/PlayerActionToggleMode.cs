@@ -17,18 +17,18 @@ public class PlayerActionToggleMode : CustomPlayerActionVersionBase
         permaActions.AddUniConflict(this);
     }
 
-    protected override void CreateActions()
+    public override void CreateActions()
     {
         Toggle = CreatePlayerAction("ToggleMode");
         Toggle.UserData = new PlayerActionData.ActionUserData("inpActToggleWeaponModeName", "inpActToggleWeaponModeDesc", PlayerActionData.GroupPlayerControl);
     }
 
-    protected override void CreateDefaultJoystickBindings()
+    public override void CreateDefaultJoystickBindings()
     {
 
     }
 
-    protected override void CreateDefaultKeyboardBindings()
+    public override void CreateDefaultKeyboardBindings()
     {
         Toggle.AddDefaultBinding(new Key[] { Key.X });
     }

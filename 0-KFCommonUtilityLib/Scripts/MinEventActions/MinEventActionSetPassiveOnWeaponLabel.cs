@@ -8,7 +8,7 @@ public class MinEventActionSetPassiveOnWeaponLabel : MinEventActionRemoteHolding
     private string[] wrap;
     private bool usePattern = false;
     private PassiveEffects passive;
-    private FastTags tags;
+    private FastTags<TagGroup.Global> tags;
 
     public override bool ParseXmlAttribute(XAttribute _attribute)
     {
@@ -31,7 +31,7 @@ public class MinEventActionSetPassiveOnWeaponLabel : MinEventActionRemoteHolding
                     passive = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>(_attribute.Value);
                     break;
                 case "tags":
-                    tags = FastTags.Parse(_attribute.Value);
+                    tags = FastTags<TagGroup.Global>.Parse(_attribute.Value);
                     break;
                 default:
                     flag = false;

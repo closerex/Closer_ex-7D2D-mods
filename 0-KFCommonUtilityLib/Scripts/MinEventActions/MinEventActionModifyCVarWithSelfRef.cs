@@ -2,43 +2,6 @@
 
 class MinEventActionModifyCVarWithSelfRef : MinEventActionModifyCVar
 {
-    private enum OperationTypes
-    {
-        set,
-        setvalue,
-        add,
-        subtract,
-        multiply,
-        divide
-    }
-    bool cvarRef = false;
-    string refCvarName;
-    float value;
-    OperationTypes operation;
-
-    public override bool ParseXmlAttribute(XAttribute _attribute)
-    {
-        bool flag = false;
-        string name = _attribute.Name.LocalName;
-        if (name != null)
-        {
-            if (name == "value" && _attribute.Value.StartsWith("@"))
-            {
-                this.cvarRef = true;
-                this.refCvarName = _attribute.Value.Substring(1);
-                flag = true;
-            }
-            else if (name == "operation")
-            {
-                this.operation = EnumUtils.Parse<MinEventActionModifyCVarWithSelfRef.OperationTypes>(_attribute.Value, true);
-            }
-        }
-
-        if (!flag)
-            flag = base.ParseXmlAttribute(_attribute);
-        return flag;
-    }
-
     public override bool CanExecute(MinEventTypes _eventType, MinEventParams _params)
     {
         return base.CanExecute(_eventType, _params);
@@ -46,36 +9,36 @@ class MinEventActionModifyCVarWithSelfRef : MinEventActionModifyCVar
 
     public override void Execute(MinEventParams _params)
     {
-        if (this.cvarRef)
+        if (cvarRef)
         {
             if (_params.Self.isEntityRemote && !_params.IsLocal)
             {
                 return;
             }
-            this.value = _params.Self.Buffs.GetCustomVar(this.refCvarName);
-            for (int i = 0; i < this.targets.Count; i++)
+            value = _params.Self.Buffs.GetCustomVar(refCvarName);
+            for (int i = 0; i < targets.Count; i++)
             {
-                float num = this.targets[i].Buffs.GetCustomVar(this.cvarName);
-                switch (this.operation)
+                float num = targets[i].Buffs.GetCustomVar(cvarName);
+                switch (operation)
                 {
-                    case MinEventActionModifyCVarWithSelfRef.OperationTypes.set:
-                    case MinEventActionModifyCVarWithSelfRef.OperationTypes.setvalue:
-                        num = this.value;
+                    case OperationTypes.set:
+                    case OperationTypes.setvalue:
+                        num = value;
                         break;
-                    case MinEventActionModifyCVarWithSelfRef.OperationTypes.add:
-                        num += this.value;
+                    case OperationTypes.add:
+                        num += value;
                         break;
-                    case MinEventActionModifyCVarWithSelfRef.OperationTypes.subtract:
-                        num -= this.value;
+                    case OperationTypes.subtract:
+                        num -= value;
                         break;
-                    case MinEventActionModifyCVarWithSelfRef.OperationTypes.multiply:
-                        num *= this.value;
+                    case OperationTypes.multiply:
+                        num *= value;
                         break;
-                    case MinEventActionModifyCVarWithSelfRef.OperationTypes.divide:
-                        num /= ((this.value == 0f) ? 0.0001f : this.value);
+                    case OperationTypes.divide:
+                        num /= ((value == 0f) ? 0.0001f : value);
                         break;
                 }
-                this.targets[i].Buffs.SetCustomVar(this.cvarName, num, (this.targets[i].isEntityRemote && !_params.Self.isEntityRemote) || _params.IsLocal);
+                targets[i].Buffs.SetCustomVar(cvarName, num, (targets[i].isEntityRemote && !_params.Self.isEntityRemote) || _params.IsLocal);
             }
         }
         else

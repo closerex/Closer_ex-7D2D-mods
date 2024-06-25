@@ -16,7 +16,7 @@ public class ItemActionBetterLauncher : ItemActionRanged
     private IProjectileItemGroup group;
     public override ItemActionData CreateModifierData(ItemInventoryData _invData, int _indexInEntityOfAction)
     {
-        return new ItemActionBetterLauncher.ItemActionDataBetterLauncher(_invData, _indexInEntityOfAction);
+        return new ItemActionDataBetterLauncher(_invData, _indexInEntityOfAction);
     }
 
     public override void ReadFrom(DynamicProperties _props)
@@ -27,9 +27,9 @@ public class ItemActionBetterLauncher : ItemActionRanged
     public override void StartHolding(ItemActionData _actionData)
     {
         base.StartHolding(_actionData);
-        ItemActionBetterLauncher.ItemActionDataBetterLauncher ItemActionDataBetterLauncher = (ItemActionBetterLauncher.ItemActionDataBetterLauncher)_actionData;
+        ItemActionDataBetterLauncher ItemActionDataBetterLauncher = (ItemActionDataBetterLauncher)_actionData;
         ItemValue launcherValue = ItemActionDataBetterLauncher.invData.itemValue;
-        ItemClass forId = ItemClass.GetForId(ItemClass.GetItem(MagazineItemNames[(int)launcherValue.SelectedAmmoTypeIndex], false).type);
+        ItemClass forId = ItemClass.GetForId(ItemClass.GetItem(MagazineItemNames[launcherValue.SelectedAmmoTypeIndex], false).type);
         group = CustomProjectileManager.Get(forId.Name);
         if (launcherValue.Meta != 0 && GetMaxAmmoCount(ItemActionDataBetterLauncher) != 0)
         {
@@ -57,7 +57,7 @@ public class ItemActionBetterLauncher : ItemActionRanged
         base.SwapAmmoType(_entity, _ammoItemId);
         ItemActionDataBetterLauncher ItemActionDataBetterLauncher = (ItemActionDataBetterLauncher)_entity.inventory.holdingItemData.actionData[ActionIndex];
         ItemValue itemValue = ItemActionDataBetterLauncher.invData.itemValue;
-        ItemClass forId = ItemClass.GetForId(ItemClass.GetItem(MagazineItemNames[(int)itemValue.SelectedAmmoTypeIndex], false).type);
+        ItemClass forId = ItemClass.GetForId(ItemClass.GetItem(MagazineItemNames[itemValue.SelectedAmmoTypeIndex], false).type);
         group = CustomProjectileManager.Get(forId.Name);
         ItemActionDataBetterLauncher.info = new ProjectileParams.ItemInfo()
         {
@@ -87,9 +87,9 @@ public class ItemActionBetterLauncher : ItemActionRanged
         {
             return;
         }
-        ItemActionBetterLauncher.ItemActionDataBetterLauncher ItemActionDataBetterLauncher = (ItemActionBetterLauncher.ItemActionDataBetterLauncher)_actionData;
+        ItemActionDataBetterLauncher ItemActionDataBetterLauncher = (ItemActionDataBetterLauncher)_actionData;
         ItemValue holdingItemItemValue = _actionData.invData.holdingEntity.inventory.holdingItemItemValue;
-        ItemClass forId = ItemClass.GetForId(ItemClass.GetItem(MagazineItemNames[(int)holdingItemItemValue.SelectedAmmoTypeIndex], false).type);
+        ItemClass forId = ItemClass.GetForId(ItemClass.GetItem(MagazineItemNames[holdingItemItemValue.SelectedAmmoTypeIndex], false).type);
         int projCount = (int)EffectManager.GetValue(PassiveEffects.RoundRayCount, ItemActionDataBetterLauncher.invData.itemValue, 1f, ItemActionDataBetterLauncher.invData.holdingEntity); ;
         if (projCount <= 0)
         {
@@ -114,12 +114,12 @@ public class ItemActionBetterLauncher : ItemActionRanged
         _direction = lookRay.direction;//getDirectionOffset(ItemActionDataBetterLauncher, lookRay.direction, 0);
     }
 
-    public class ItemActionDataBetterLauncher : ItemActionRanged.ItemActionDataRanged
+    public class ItemActionDataBetterLauncher : ItemActionDataRanged
     {
         public ItemActionDataBetterLauncher(ItemInventoryData _invData, int _indexInEntityOfAction)
             : base(_invData, _indexInEntityOfAction)
         {
-            this.projectileJoint = ((_invData.model != null) ? _invData.model.FindInChilds("ProjectileJoint", false) : null);
+            projectileJoint = (_invData.model?.FindInChilds("ProjectileJoint", false));
         }
 
         public Transform projectileJoint;

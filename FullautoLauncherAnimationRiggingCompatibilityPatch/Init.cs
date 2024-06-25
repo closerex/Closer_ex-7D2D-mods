@@ -2,15 +2,11 @@
 using HarmonyLib;
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using UAI;
 using UnityEngine;
-using static FullautoLauncher.Scripts.ProjectileManager.ProjectileParams;
-using static Inventory;
 
 public class FLARCompatibilityPatchInit : IModApi
 {
@@ -21,7 +17,7 @@ public class FLARCompatibilityPatchInit : IModApi
             return;
         inited = true;
         Log.Out(" Loading Patch: " + GetType());
-        var harmony = new HarmonyLib.Harmony(GetType().ToString());
+        var harmony = new Harmony(GetType().ToString());
         harmony.PatchAll(Assembly.GetExecutingAssembly());
     }
 }
@@ -150,7 +146,7 @@ public static class FLARPatch
 
     [HarmonyPatch(typeof(ProjectileParams), nameof(ProjectileParams.Fire))]
     [HarmonyPrefix]
-    private static bool Prefix_Fire_ProjectileParams(ItemInfo _info, Entity _firingEntity)
+    private static bool Prefix_Fire_ProjectileParams(ProjectileParams.ItemInfo _info, Entity _firingEntity)
     {
         if (_firingEntity is EntityAlive entityAlive)
             entityAlive.MinEventContext.ItemActionData = _info.actionData;
@@ -260,7 +256,7 @@ public static class FLARPatch
                     GameRandom gameRandom = world.GetGameRandom();
                     if (GameUtils.IsBlockOrTerrain(Voxel.voxelRayHitInfo.tag))
                     {
-                        if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, info.itemValueProjectile, 0.5f, entityAlive, null, info.itemProjectile.ItemTags | FastTags.Parse(Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory), true, false))
+                        if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, info.itemValueProjectile, 0.5f, entityAlive, null, info.itemProjectile.ItemTags | FastTags<TagGroup.Global>.Parse(Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory), true, false))
                         {
                             ProjectileManager.AddProjectileItem(null, -1, Voxel.voxelRayHitInfo.hit.pos, dir.normalized, info.itemValueProjectile.type);
                         }

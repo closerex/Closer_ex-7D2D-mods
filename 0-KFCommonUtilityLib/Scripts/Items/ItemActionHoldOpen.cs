@@ -42,7 +42,7 @@ public class ItemActionHoldOpen : ItemActionRanged
         //}
     }
 
-    protected override int getUserData(ItemActionData _actionData)
+    public override int getUserData(ItemActionData _actionData)
     {
         return _actionData.invData.itemValue.Meta <= 0 ? 1 : 0;
     }
@@ -86,7 +86,7 @@ public class ItemActionHoldOpen : ItemActionRanged
     //    lastHoldingEntity = null;
     //}
 
-    protected override void ConsumeAmmo(ItemActionData _actionData)
+    public override void ConsumeAmmo(ItemActionData _actionData)
     {
         base.ConsumeAmmo(_actionData);
         if (_actionData.invData.itemValue.Meta == 0)

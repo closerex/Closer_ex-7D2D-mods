@@ -82,7 +82,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 SingletonMonoBehaviour<ConnectionManager>.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageFixedReload>().Setup(entityId, actionIndex), false);
                 return;
             }
-            SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageFixedReload>().Setup(entityId, actionIndex), false, -1, entityId, -1, -1);
+            SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageFixedReload>().Setup(entityId, actionIndex), false, -1, entityId);
         }
 
         public static void FixedItemReloadClient(int entityId, int actionIndex)
@@ -130,8 +130,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 ItemValue itemValue = self.Modifications[i];
                 if (itemValue != null)
                 {
-                    ItemClassModifier mod = itemValue.ItemClass as ItemClassModifier;
-                    if (mod != null && GetPropertyOverrideForMod(mod, _propertyName, item, ref text, actionIndex))
+                    if (itemValue.ItemClass is ItemClassModifier mod && GetPropertyOverrideForMod(mod, _propertyName, item, ref text, actionIndex))
                     {
                         return text;
                     }
@@ -143,8 +142,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 ItemValue itemValue2 = self.CosmeticMods[j];
                 if (itemValue2 != null)
                 {
-                    ItemClassModifier cos = itemValue2.ItemClass as ItemClassModifier;
-                    if (cos != null && GetPropertyOverrideForMod(cos, _propertyName, item, ref text, actionIndex))
+                    if (itemValue2.ItemClass is ItemClassModifier cos && GetPropertyOverrideForMod(cos, _propertyName, item, ref text, actionIndex))
                     {
                         return text;
                     }
@@ -167,8 +165,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 ItemValue itemValue = self.Modifications[i];
                 if (itemValue != null)
                 {
-                    ItemClassModifier mod = itemValue.ItemClass as ItemClassModifier;
-                    if (mod != null && GetPropertyOverrideForMod(mod, _propertyName, item, ref text, actionIndex))
+                    if (itemValue.ItemClass is ItemClassModifier mod && GetPropertyOverrideForMod(mod, _propertyName, item, ref text, actionIndex))
                     {
                         yield return text;
                     }
@@ -180,8 +177,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 ItemValue itemValue2 = self.CosmeticMods[j];
                 if (itemValue2 != null)
                 {
-                    ItemClassModifier cos = itemValue2.ItemClass as ItemClassModifier;
-                    if (cos != null && GetPropertyOverrideForMod(cos, _propertyName, item, ref text, actionIndex))
+                    if (itemValue2.ItemClass is ItemClassModifier cos && GetPropertyOverrideForMod(cos, _propertyName, item, ref text, actionIndex))
                     {
                         yield return text;
                     }
@@ -217,9 +213,9 @@ namespace KFCommonUtilityLib.Scripts.Utilities
         public static int GetMode(this ItemValue self)
         {
             object mode = self.GetMetadata(MultiActionMapping.STR_MULTI_ACTION_INDEX);
-            if (mode is int)
+            if (mode is int v)
             {
-                return (int)mode;
+                return v;
             }
             return 0;
         }

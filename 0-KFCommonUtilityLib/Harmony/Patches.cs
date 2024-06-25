@@ -31,13 +31,6 @@ public static class CommonUtilityPatch
         }
     }
 
-    [HarmonyPatch(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.OnStateEnter))]
-    [HarmonyPostfix]
-    private static void Postfix_OnStateEnter_AnimatorRangedReloadState(ItemActionRanged.ItemActionDataRanged ___actionData, ItemActionRanged ___actionRanged)
-    {
-        //___actionData.invData.holdingEntity.emodel.avatarController.UpdateBool(AvatarController.isAimingHash, false, false);
-    }
-
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SwapAmmoType))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_SwapAmmoType_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
@@ -52,7 +45,7 @@ public static class CommonUtilityPatch
                 {
                     new CodeInstruction(OpCodes.Ldarg_1),
                     new CodeInstruction(OpCodes.Ldloc_0),
-                    CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(CommonUtilityPatch.FakeReload))
+                    CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(FakeReload))
                 });
                 break;
             }
@@ -181,46 +174,47 @@ public static class CommonUtilityPatch
     //    }
     //}
 
-    [HarmonyPatch(typeof(GameManager), "gmUpdate")]
-    [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_gmUpdate_GameManager(IEnumerable<CodeInstruction> instructions)
-    {
-        var codes = new List<CodeInstruction>(instructions);
-        var mtd_unload = AccessTools.Method(typeof(Resources), nameof(Resources.UnloadUnusedAssets));
-        var fld_duration = AccessTools.Field(typeof(GameManager), "unloadAssetsDuration");
+    //[HarmonyPatch(typeof(GameManager), "gmUpdate")]
+    //[HarmonyTranspiler]
+    //private static IEnumerable<CodeInstruction> Transpiler_gmUpdate_GameManager(IEnumerable<CodeInstruction> instructions)
+    //{
+    //    var codes = new List<CodeInstruction>(instructions);
+    //    var mtd_unload = AccessTools.Method(typeof(Resources), nameof(Resources.UnloadUnusedAssets));
+    //    var fld_duration = AccessTools.Field(typeof(GameManager), "unloadAssetsDuration");
 
-        for (int i = 0; i < codes.Count; ++i)
-        {
-            if (codes[i].opcode == OpCodes.Call && codes[i].Calls(mtd_unload))
-            {
-                for (int j = i; j >= 0; --j)
-                {
-                    if (codes[j].opcode == OpCodes.Ldfld && codes[j].LoadsField(fld_duration) && codes[j + 1].opcode == OpCodes.Ldc_R4)
-                        codes[j + 1].operand = (float)codes[j + 1].operand / 2;
-                }
-                break;
-            }
-        }
+    //    for (int i = 0; i < codes.Count; ++i)
+    //    {
+    //        if (codes[i].opcode == OpCodes.Call && codes[i].Calls(mtd_unload))
+    //        {
+    //            for (int j = i; j >= 0; --j)
+    //            {
+    //                if (codes[j].opcode == OpCodes.Ldfld && codes[j].LoadsField(fld_duration) && codes[j + 1].opcode == OpCodes.Ldc_R4)
+    //                    codes[j + 1].operand = (float)codes[j + 1].operand / 2;
+    //            }
+    //            break;
+    //        }
+    //    }
 
-        return codes;
-    }
+    //    return codes;
+    //}
 
-    internal static void ForceUpdateGC()
-    {
-        if (GameManager.IsDedicatedServer)
-            return;
-        if (GameManager.frameCount % 18000 == 0)
-        {
-            long rss = GetRSS.GetCurrentRSS();
-            if (rss / 1024 / 1024 > 6144)
-            {
-                Log.Out("Memory usage exceeds threshold, now performing garbage collection...");
-                GC.Collect();
-            }
-        }
-    }
+    //internal static void ForceUpdateGC()
+    //{
+    //    if (GameManager.IsDedicatedServer)
+    //        return;
+    //    if (GameManager.frameCount % 18000 == 0)
+    //    {
+    //        long rss = GetRSS.GetCurrentRSS();
+    //        if (rss / 1024 / 1024 > 6144)
+    //        {
+    //            Log.Out("Memory usage exceeds threshold, now performing garbage collection...");
+    //            GC.Collect();
+    //        }
+    //    }
+    //}
 
     //altmode workarounds
+    //deprecated by action module
     private static void ParseAltRequirements(XElement _node)
     {
         string itemName = _node.GetAttribute("name");
@@ -236,7 +230,7 @@ public static class CommonUtilityPatch
         }
     }
 
-    [HarmonyPatch(typeof(ItemClassesFromXml), "parseItem")]
+    [HarmonyPatch(typeof(ItemClassesFromXml), nameof(ItemClassesFromXml.parseItem))]
     [HarmonyPostfix]
     private static void Postfix_parseItem_ItemClassesFromXml(XElement _node)
     {
@@ -263,7 +257,7 @@ public static class CommonUtilityPatch
     }
 
     //MinEventParams workarounds
-    [HarmonyPatch(typeof(ItemActionRanged), "fireShot")]
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.fireShot))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_fireShot_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
     {
@@ -303,7 +297,7 @@ public static class CommonUtilityPatch
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_OnHoldingUpdate_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
     {
-        var mtd_release = AccessTools.Method(typeof(ItemActionRanged), "triggerReleased");
+        var mtd_release = AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.triggerReleased));
         var codes = instructions.ToList();
 
         for (int i = 0; i < codes.Count; i++)
@@ -320,12 +314,12 @@ public static class CommonUtilityPatch
         return codes;
     }
 
-    [HarmonyPatch(typeof(ItemActionRanged), "triggerReleased")]
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.triggerReleased))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_triggerReleased_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
     {
         var mtd_effect = AccessTools.Method(typeof(IGameManager), nameof(IGameManager.ItemActionEffectsServer));
-        var mtd_data = AccessTools.Method(typeof(ItemActionRanged), "getUserData");
+        var mtd_data = AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.getUserData));
         var codes = instructions.ToList();
 
         for (int i = 0; i < codes.Count; i++)
@@ -399,7 +393,7 @@ public static class CommonUtilityPatch
     /// </summary>
     /// <param name="instructions"></param>
     /// <returns></returns>
-    [HarmonyPatch(typeof(ProjectileMoveScript), "checkCollision")]
+    [HarmonyPatch(typeof(ProjectileMoveScript), nameof(ProjectileMoveScript.checkCollision))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_checkCollision_ProjectileMoveScript(IEnumerable<CodeInstruction> instructions)
     {
@@ -416,7 +410,7 @@ public static class CommonUtilityPatch
                     new CodeInstruction(OpCodes.Ldarg_0),
                     CodeInstruction.LoadField(typeof(ProjectileMoveScript), nameof(ProjectileMoveScript.itemValueProjectile)),
                     new CodeInstruction(OpCodes.Ldloc_S, 4),
-                    CodeInstruction.Call(typeof(CommonUtilityPatch), codes[i - 3].Calls(mtd_block) ? nameof(CommonUtilityPatch.GetProjectileBlockDamagePerc) : nameof(CommonUtilityPatch.GetProjectileEntityDamagePerc)),
+                    CodeInstruction.Call(typeof(CommonUtilityPatch), codes[i - 3].Calls(mtd_block) ? nameof(GetProjectileBlockDamagePerc) : nameof(GetProjectileEntityDamagePerc)),
                     new CodeInstruction(OpCodes.Mul)
                 });
             }
@@ -440,7 +434,7 @@ public static class CommonUtilityPatch
     /// </summary>
     /// <param name="instructions"></param>
     /// <returns></returns>
-    [HarmonyPatch(typeof(EntityPlayerLocal), "guiDrawCrosshair")]
+    [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.guiDrawCrosshair))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_guiDrawCrosshair_EntityPlayerLocal(IEnumerable<CodeInstruction> instructions)
     {
@@ -496,17 +490,17 @@ public static class CommonUtilityPatch
     /// <param name="instructions"></param>
     /// <param name="generator"></param>
     /// <returns></returns>
-    [HarmonyPatch(typeof(XUiC_ItemPartStack), "CanSwap")]
+    [HarmonyPatch(typeof(XUiC_ItemPartStack), nameof(XUiC_ItemPartStack.CanSwap))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_CanSwap_XUiC_ItemPartStack(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
     {
         var codes = instructions.ToList();
 
-        LocalBuilder lbd_tags_if_remove_prev = generator.DeclareLocal(typeof(FastTags));
-        LocalBuilder lbd_tags_if_install_new = generator.DeclareLocal(typeof(FastTags));
+        LocalBuilder lbd_tags_if_remove_prev = generator.DeclareLocal(typeof(FastTags<TagGroup.Global>));
+        LocalBuilder lbd_tags_if_install_new = generator.DeclareLocal(typeof(FastTags<TagGroup.Global>));
         MethodInfo mtd_get_item_class = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.ItemClass));
         MethodInfo mtd_has_any_tags = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.HasAnyTags));
-        MethodInfo mtd_test_any_set = AccessTools.Method(typeof(FastTags), nameof(FastTags.Test_AnySet));
+        MethodInfo mtd_test_any_set = AccessTools.Method(typeof(FastTags<TagGroup.Global>), nameof(FastTags<TagGroup.Global>.Test_AnySet));
         FieldInfo fld_mod = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Modifications));
         FieldInfo fld_installable_tags = AccessTools.Field(typeof(ItemClassModifier), nameof(ItemClassModifier.InstallableTags));
 
@@ -561,18 +555,18 @@ public static class CommonUtilityPatch
         return codes;
     }
 
-    [HarmonyPatch(typeof(XUiC_ItemCosmeticStack), "CanSwap")]
+    [HarmonyPatch(typeof(XUiC_ItemCosmeticStack), nameof(XUiC_ItemCosmeticStack.CanSwap))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_CanSwap_XUiC_ItemCosmeticStack(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
     {
         var codes = instructions.ToList();
 
-        LocalBuilder lbd_tags_if_remove_prev = generator.DeclareLocal(typeof(FastTags));
-        LocalBuilder lbd_tags_if_install_new = generator.DeclareLocal(typeof(FastTags));
+        LocalBuilder lbd_tags_if_remove_prev = generator.DeclareLocal(typeof(FastTags<TagGroup.Global>));
+        LocalBuilder lbd_tags_if_install_new = generator.DeclareLocal(typeof(FastTags<TagGroup.Global>));
         LocalBuilder lbd_item_being_assembled = generator.DeclareLocal(typeof(ItemValue));
         MethodInfo mtd_get_item_class = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.ItemClass));
         MethodInfo mtd_has_any_tags = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.HasAnyTags));
-        MethodInfo mtd_test_any_set = AccessTools.Method(typeof(FastTags), nameof(FastTags.Test_AnySet));
+        MethodInfo mtd_test_any_set = AccessTools.Method(typeof(FastTags<TagGroup.Global>), nameof(FastTags<TagGroup.Global>.Test_AnySet));
         MethodInfo mtd_get_xui = AccessTools.PropertyGetter(typeof(XUiController), nameof(XUiController.xui));
         MethodInfo mtd_get_cur_item = AccessTools.PropertyGetter(typeof(XUiM_AssembleItem), nameof(XUiM_AssembleItem.CurrentItem));
         FieldInfo fld_cos = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.CosmeticMods));
@@ -646,13 +640,13 @@ public static class CommonUtilityPatch
     /// <param name="___itemValue"></param>
     [HarmonyPatch(typeof(XUiC_ItemPartStack), "CanRemove")]
     [HarmonyPostfix]
-    private static void Postfix_CanRemove_XUiC_ItemPartStack(ref bool __result, XUiC_ItemPartStack __instance, ItemValue ___itemValue)
+    private static void Postfix_CanRemove_XUiC_ItemPartStack(ref bool __result, XUiC_ItemPartStack __instance)
     {
         if (__result)
         {
             ItemValue itemValue = __instance.xui.AssembleItem.CurrentItem.itemValue;
             ItemClass itemClass = itemValue.ItemClass;
-            FastTags tagsAfterRemove = LocalItemTagsManager.GetTagsAsIfNotInstalled(itemValue, ___itemValue);
+            FastTags<TagGroup.Global> tagsAfterRemove = LocalItemTagsManager.GetTagsAsIfNotInstalled(itemValue, __instance.itemValue);
             if (tagsAfterRemove.IsEmpty)
             {
                 __result = false;
@@ -675,13 +669,13 @@ public static class CommonUtilityPatch
 
     [HarmonyPatch(typeof(XUiC_ItemCosmeticStack), "CanRemove")]
     [HarmonyPostfix]
-    private static void Postfix_CanRemove_XUiC_ItemCosmeticStack(ref bool __result, XUiC_ItemCosmeticStack __instance, ItemValue ___itemValue)
+    private static void Postfix_CanRemove_XUiC_ItemCosmeticStack(ref bool __result, XUiC_ItemCosmeticStack __instance)
     {
         if (__result)
         {
             ItemValue itemValue = __instance.xui.AssembleItem.CurrentItem.itemValue;
             ItemClass itemClass = itemValue.ItemClass;
-            FastTags tagsAfterRemove = LocalItemTagsManager.GetTagsAsIfNotInstalled(itemValue, ___itemValue);
+            FastTags<TagGroup.Global> tagsAfterRemove = LocalItemTagsManager.GetTagsAsIfNotInstalled(itemValue, __instance.itemValue);
             if (tagsAfterRemove.IsEmpty)
             {
                 __result = false;
@@ -708,15 +702,15 @@ public static class CommonUtilityPatch
     /// <param name="instructions"></param>
     /// <param name="generator"></param>
     /// <returns></returns>
-    [HarmonyPatch(typeof(XUiC_ItemStack), "updateLockTypeIcon")]
+    [HarmonyPatch(typeof(XUiC_ItemStack), nameof(XUiC_ItemStack.updateLockTypeIcon))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_updateLockTypeIcon_XUiC_ItemStack(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
     {
         var codes = instructions.ToList();
 
-        LocalBuilder lbd_tags = generator.DeclareLocal(typeof(FastTags));
+        LocalBuilder lbd_tags = generator.DeclareLocal(typeof(FastTags<TagGroup.Global>));
         MethodInfo mtd_has_any_tags = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.HasAnyTags));
-        MethodInfo mtd_test_any_set = AccessTools.Method(typeof(FastTags), nameof(FastTags.Test_AnySet));
+        MethodInfo mtd_test_any_set = AccessTools.Method(typeof(FastTags<TagGroup.Global>), nameof(FastTags<TagGroup.Global>.Test_AnySet));
         MethodInfo mtd_get_item_class = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.ItemClass));
         MethodInfo mtd_get_cur_item = AccessTools.PropertyGetter(typeof(XUiM_AssembleItem), nameof(XUiM_AssembleItem.CurrentItem));
         MethodInfo mtd_get_xui = AccessTools.PropertyGetter(typeof(XUiController), nameof(XUiController.xui));
@@ -766,10 +760,10 @@ public static class CommonUtilityPatch
     {
         var codes = instructions.ToList();
 
-        LocalBuilder lbd_tags_cur = generator.DeclareLocal(typeof(FastTags));
-        LocalBuilder lbd_tags_after_install = generator.DeclareLocal(typeof(FastTags));
+        LocalBuilder lbd_tags_cur = generator.DeclareLocal(typeof(FastTags<TagGroup.Global>));
+        LocalBuilder lbd_tags_after_install = generator.DeclareLocal(typeof(FastTags<TagGroup.Global>));
         MethodInfo mtd_has_any_tags = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.HasAnyTags));
-        MethodInfo mtd_test_any_set = AccessTools.Method(typeof(FastTags), nameof(FastTags.Test_AnySet));
+        MethodInfo mtd_test_any_set = AccessTools.Method(typeof(FastTags<TagGroup.Global>), nameof(FastTags<TagGroup.Global>.Test_AnySet));
         MethodInfo mtd_get_item_class = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.ItemClass));
         MethodInfo mtd_get_cur_item = AccessTools.PropertyGetter(typeof(XUiM_AssembleItem), nameof(XUiM_AssembleItem.CurrentItem));
         MethodInfo mtd_is_empty = AccessTools.Method(typeof(ItemValue), nameof(ItemValue.IsEmpty));
@@ -827,13 +821,13 @@ public static class CommonUtilityPatch
     #endregion
 
     //change when aiming events are fired
-    [HarmonyPatch(typeof(EntityPlayerLocal), "SetMoveState")]
+    [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.SetMoveState))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_SetMoveState_EntityPlayerLocal(IEnumerable<CodeInstruction> instructions)
     {
         var codes = instructions.ToList();
 
-        FieldInfo fld_msa = AccessTools.Field(typeof(EntityPlayerLocal), "moveStateAiming");
+        FieldInfo fld_msa = AccessTools.Field(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.moveStateAiming));
 
         for (int i = 0; i < codes.Count - 2; i++)
         {
@@ -950,83 +944,6 @@ public static class CommonUtilityPatch
             }
         }
         return codes;
-    }
-
-    [HarmonyPatch(typeof(ItemActionZoom), nameof(ItemActionZoom.GetIronSights))]
-    [HarmonyReversePatch(HarmonyReversePatchType.Original)]
-    public static void GetMaxZoom(this ItemActionZoom itemActionZoom, ItemActionData _actionData, out float maxZoom)
-    {
-        IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            if (instructions == null)
-                return null;
-
-            Type type_zoom = typeof(ItemActionZoom).GetNestedType("ItemActionDataZoom", System.Reflection.BindingFlags.NonPublic);
-
-            return new[]
-            {
-                new CodeInstruction(OpCodes.Ldarg_2),
-                new CodeInstruction(OpCodes.Ldarg_1),
-                new CodeInstruction(OpCodes.Castclass, type_zoom),
-                CodeInstruction.LoadField(type_zoom, "MaxZoomIn"),
-                new CodeInstruction(OpCodes.Conv_R4),
-                new CodeInstruction(OpCodes.Stind_R4),
-                new CodeInstruction(OpCodes.Ret)
-            };
-        }
-
-        _ = Transpiler(null);
-    }
-
-    [HarmonyPatch(typeof(ItemActionZoom), nameof(ItemActionZoom.GetIronSights))]
-    [HarmonyReversePatch(HarmonyReversePatchType.Original)]
-    public static void GetMinZoom(this ItemActionZoom itemActionZoom, ItemActionData _actionData, out float minZoom)
-    {
-        IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            if (instructions == null)
-                return null;
-
-            Type type_zoom = typeof(ItemActionZoom).GetNestedType("ItemActionDataZoom", System.Reflection.BindingFlags.NonPublic);
-
-            return new[]
-            {
-                new CodeInstruction(OpCodes.Ldarg_2),
-                new CodeInstruction(OpCodes.Ldarg_1),
-                new CodeInstruction(OpCodes.Castclass, type_zoom),
-                CodeInstruction.LoadField(type_zoom, "MaxZoomOut"),
-                new CodeInstruction(OpCodes.Conv_R4),
-                new CodeInstruction(OpCodes.Stind_R4),
-                new CodeInstruction(OpCodes.Ret)
-            };
-        }
-
-        _ = Transpiler(null);
-    }
-
-    [HarmonyPatch(typeof(ItemActionZoom), nameof(ItemActionZoom.GetIronSights))]
-    [HarmonyReversePatch(HarmonyReversePatchType.Original)]
-    public static void GetCurrentZoom(this ItemActionZoom itemActionZoom, ItemActionData _actionData, out float curZoom)
-    {
-        IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            if (instructions == null)
-                return null;
-
-            Type type_zoom = typeof(ItemActionZoom).GetNestedType("ItemActionDataZoom", System.Reflection.BindingFlags.NonPublic);
-
-            return new[]
-            {
-                new CodeInstruction(OpCodes.Ldarg_2),
-                new CodeInstruction(OpCodes.Ldarg_1),
-                new CodeInstruction(OpCodes.Castclass, type_zoom),
-                CodeInstruction.LoadField(type_zoom, "CurrentZoom"),
-                new CodeInstruction(OpCodes.Stind_R4),
-                new CodeInstruction(OpCodes.Ret)
-            };
-        }
-
-        _ = Transpiler(null);
     }
 
     //private static bool exported = false;

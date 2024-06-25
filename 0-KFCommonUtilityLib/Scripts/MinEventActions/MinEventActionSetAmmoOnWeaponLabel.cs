@@ -52,7 +52,7 @@ public class MinEventActionSetAmmoOnWeaponLabel : MinEventActionRemoteHoldingBas
         if (!maxAmmo)
             meta = value.Meta;
         else
-            meta = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, value, inv.GetHoldingGun().BulletsPerMagazine, _params.Self, null, default(FastTags), true, true, true, true, 1, true);
+            meta = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, value, inv.GetHoldingGun().BulletsPerMagazine, _params.Self);
         string str = usePattern ? string.Join(meta.ToString(), wrap) : meta.ToString();
         //int num = consume_ammo ? meta - 1 : meta;
         if (isRemoteHolding || localOnly)

@@ -35,7 +35,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 if (actions[i] != null)
                 {
                     indices[last] = i;
-                    if (actions[i].Properties.Values.TryGetString("ShareMetaWith", out string str) && sbyte.TryParse(str, out sbyte shareWith))
+                    if (actions[i].Properties.Values.TryGetValue("ShareMetaWith", out string str) && sbyte.TryParse(str, out sbyte shareWith))
                     {
                         metaIndice[last] = shareWith;
                     }
@@ -308,7 +308,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         //clear on game load
         private static readonly Dictionary<int, MultiActionMapping> dict_mappings = new Dictionary<int, MultiActionMapping>();
         private static readonly Dictionary<int, MultiActionIndice> dict_indice = new Dictionary<int, MultiActionIndice>();
-        private static readonly Dictionary<int, FastTags[]> dict_item_action_exclude_tags = new Dictionary<int, FastTags[]>();
+        private static readonly Dictionary<int, FastTags<TagGroup.Global>[]> dict_item_action_exclude_tags = new Dictionary<int, FastTags<TagGroup.Global>[]>();
         private static readonly Dictionary<int, int[][]> dict_item_action_exclude_mod = new Dictionary<int, int[][]>();
 
         //should set to true when:
@@ -333,22 +333,22 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         {
             if (item == null)
                 return;
-            FastTags[] tags = null;
+            FastTags<TagGroup.Global>[] tags = null;
             int[][] mods = null;
             for (int i = 0; i < item.Actions.Length; i++)
             {
                 if (item.Actions[i] != null)
                 {
-                    if (item.Actions[i].Properties.Values.TryGetString("ExcludeTags", out string str))
+                    if (item.Actions[i].Properties.Values.TryGetValue("ExcludeTags", out string str))
                     {
                         if (tags == null)
                         {
-                            tags = new FastTags[ItemClass.cMaxActionNames];
+                            tags = new FastTags<TagGroup.Global>[ItemClass.cMaxActionNames];
                             dict_item_action_exclude_tags.Add(item.Id, tags);
                         }
-                        tags[i] = FastTags.Parse(str);
+                        tags[i] = FastTags<TagGroup.Global>.Parse(str);
                     }
-                    if (item.Actions[i].Properties.Values.TryGetString("ExcludeMods", out str))
+                    if (item.Actions[i].Properties.Values.TryGetValue("ExcludeMods", out str))
                     {
                         if (mods == null)
                         {
@@ -367,7 +367,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             }
         }
 
-        public static void ModifyItemTags(ItemValue itemValue, ItemActionData actionData, ref FastTags tags)
+        public static void ModifyItemTags(ItemValue itemValue, ItemActionData actionData, ref FastTags<TagGroup.Global> tags)
         {
             if (itemValue == null || actionData == null || !dict_item_action_exclude_tags.TryGetValue(itemValue.type, out var arr_tags))
             {

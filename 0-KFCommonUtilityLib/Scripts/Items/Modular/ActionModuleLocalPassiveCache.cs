@@ -71,7 +71,7 @@ public class ActionModuleLocalPassiveCache
             //}
         }
 
-        public void CachePassive(PassiveEffects target, int targetHash, string targetStr, FastTags tags)
+        public void CachePassive(PassiveEffects target, int targetHash, string targetStr, FastTags<TagGroup.Global> tags)
         {
             if (invData.holdingEntity.isEntityRemote)
                 return;
