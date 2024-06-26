@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UniLinq;
 using UnityEngine;
 
 namespace KFCommonUtilityLib.Scripts.StaticManagers
@@ -37,6 +38,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         private static FpvTransformRef fpvTransformRef;
         private static readonly HashSet<int> hash_items_take_over_reload_time = new HashSet<int>();
         private static readonly HashSet<string> hash_items_parse_later = new HashSet<string>();
+        private static readonly HashSet<string> hash_rig_names = new HashSet<string>();
 
         //patched to item xml parsing
         //public static void AddRigItem(int itemId) => hash_rig_items.Add(itemId);
@@ -47,11 +49,32 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             fpvTransformRef = null;
             hash_items_parse_later.Clear();
             hash_items_take_over_reload_time.Clear();
+            hash_rig_names.Clear();
         }
 
         public static void AddReloadTimeTakeOverItem(string name)
         {
             hash_items_parse_later.Add(name);
+        }
+
+        public static void AddRigExcludeName(string name)
+        {
+            hash_rig_names.Add(name);
+        }
+
+        public static void RemoveRigExcludeName(string name)
+        {
+            hash_rig_names.Remove(name);
+        }
+
+        public static bool ShouldExcludeRig(string name)
+        {
+            return hash_rig_names.Contains(name);
+        }
+
+        public static string[] GetExcludeRigs()
+        {
+            return hash_rig_names.ToArray();
         }
 
         public static void ParseItemIDs()
@@ -91,7 +114,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 controller.UpdateInt(AvatarController.weaponHoldTypeHash, -1, false);
                 foreach (var hash in resetHashes)
                 {
-                    controller._resetTrigger(hash, false);
+                    AnimationRiggingPatches.VanillaResetTrigger(controller, hash, false);
                 }
                 //controller.FPSArms?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
                 //controller.CharacterBody?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
@@ -246,31 +269,46 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         public static void SetTrigger(int _pid)
         {
             if (fpvTransformRef != null)
+            {
                 fpvTransformRef.fpvAnimator?.SetTrigger(_pid);
+                //Log.Out($"setting trigger {_pid}");
+            }
         }
 
         public static void ResetTrigger(int _pid)
         {
             if (fpvTransformRef != null)
+            {
                 fpvTransformRef.fpvAnimator?.ResetTrigger(_pid);
+                //Log.Out($"resetting trigger {_pid}");
+            }
         }
 
         public static void SetFloat(int _pid, float _value)
         {
             if (fpvTransformRef != null)
+            {
                 fpvTransformRef.fpvAnimator?.SetFloat(_pid, _value);
+                //Log.Out($"setting float {_pid}");
+            }
         }
 
         public static void SetBool(int _pid, bool _value)
         {
             if (fpvTransformRef != null)
+            {
                 fpvTransformRef.fpvAnimator?.SetBool(_pid, _value);
+                //Log.Out($"setting bool {_pid}");
+            }
         }
 
         public static void SetInt(int _pid, int _value)
         {
             if (fpvTransformRef != null)
+            {
                 fpvTransformRef.fpvAnimator?.SetInteger(_pid, _value);
+                //Log.Out($"setting int {_pid}");
+            }
         }
     }
 }

@@ -19,9 +19,6 @@ public class AnimationMultiStageReloadState : StateMachineBehaviour
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.SetBool("Reload", false);
-#if DEBUG
-        Log.Out($"start reload {actionIndex}");
-#endif
         if (eventBridge == null)
         {
             eventBridge = animator.GetComponent<AnimationReloadEvents>();
@@ -33,11 +30,10 @@ public class AnimationMultiStageReloadState : StateMachineBehaviour
             EntityPlayerLocal player = animator.GetComponentInParent<EntityPlayerLocal>();
             int actionIndex = MultiActionManager.GetActionIndexForEntity(player);
             eventBridge.OnReloadStart(actionIndex);
-        }
-
 #if DEBUG
-        Log.Out($"ANIMATOR STATE ENTER : {actionData.invData.item.Name}");
+            Log.Out($"start reload {actionIndex}");
 #endif
+        }
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

@@ -1,4 +1,5 @@
 #if NotEditor
+using KFCommonUtilityLib.Scripts.StaticManagers;
 #endif
 using System;
 using System.Diagnostics;
@@ -30,6 +31,7 @@ public class RigTargets : MonoBehaviour
         itemFpv.gameObject.SetActive(false);
         rig.gameObject.SetActive(false);
         rig.gameObject.name += $"_UID_{UniqueRigID++}";
+        AnimationRiggingManager.AddRigExcludeName(rig.gameObject.name);
         gameObject.GetOrAddComponent<AttachmentReference>().attachmentReference = attachmentReference;
     }
 #endif
@@ -90,6 +92,9 @@ public class RigTargets : MonoBehaviour
 
     public void Destroy()
     {
+#if NotEditor
+        AnimationRiggingManager.RemoveRigExcludeName(rig.gameObject.name);
+#endif
         if (fpsArms == null)
         {
             attachmentReference?.SetParent(transform);

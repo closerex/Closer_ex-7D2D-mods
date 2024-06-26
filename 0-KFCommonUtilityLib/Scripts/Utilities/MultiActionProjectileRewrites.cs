@@ -591,7 +591,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             }
 
             tmpTag |= _blockValue.Block.Tags;
-            float value = MultiActionReversePatches.ProjectileGetValue(PassiveEffects.BlockDamage, _itemValue, self.damageBlock, _holdingEntity, null, tmpTag, true, false) * GetProjectileBlockDamagePerc(_itemValue, _holdingEntity);
+            float value = MultiActionReversePatches.ProjectileGetValue(PassiveEffects.BlockDamage, _itemValue, self.damageBlock, _holdingEntity, null, tmpTag, true, false)/* * GetProjectileBlockDamagePerc(_itemValue, _holdingEntity)*/;
             //Log.Out($"block damage {value} base damage {self.GetBaseDamageBlock(null)} action index {actionIndex} launcher {launcherClass.Name} projectile {_itemValue.ItemClass.Name}");
             return value;
         }
@@ -606,26 +606,26 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 tmpTag |= _holdingEntity.CurrentStanceTag | _holdingEntity.CurrentMovementTag;
             }
 
-            var res = MultiActionReversePatches.ProjectileGetValue(PassiveEffects.EntityDamage, _itemValue, self.damageEntity, _holdingEntity, null, tmpTag, true, false) * GetProjectileEntityDamagePerc(_itemValue, _holdingEntity);
+            var res = MultiActionReversePatches.ProjectileGetValue(PassiveEffects.EntityDamage, _itemValue, self.damageEntity, _holdingEntity, null, tmpTag, true, false)/* * GetProjectileEntityDamagePerc(_itemValue, _holdingEntity)*/;
 #if DEBUG
             Log.Out($"get projectile damage entity for action index {actionIndex}, item {launcherClass.Name}, result {res}");
 #endif
             return res;
         }
 
-        public static float GetProjectileBlockDamagePerc(ItemValue _itemValue, EntityAlive _holdingEntity)
-        {
-            float value = MultiActionReversePatches.ProjectileGetValue(CustomEnums.ProjectileImpactDamagePercentBlock, _itemValue, 1, _holdingEntity, null);
-            //Log.Out("Block damage perc: " +  value);
-            return value;
-        }
+        //public static float GetProjectileBlockDamagePerc(ItemValue _itemValue, EntityAlive _holdingEntity)
+        //{
+        //    float value = MultiActionReversePatches.ProjectileGetValue(CustomEnums.ProjectileImpactDamagePercentBlock, _itemValue, 1, _holdingEntity, null);
+        //    //Log.Out("Block damage perc: " +  value);
+        //    return value;
+        //}
 
-        public static float GetProjectileEntityDamagePerc(ItemValue _itemValue, EntityAlive _holdingEntity)
-        {
-            float value = MultiActionReversePatches.ProjectileGetValue(CustomEnums.ProjectileImpactDamagePercentEntity, _itemValue, 1, _holdingEntity, null);
-            //Log.Out("Entity damage perc: " +  value);
-            return value;
-        }
+        //public static float GetProjectileEntityDamagePerc(ItemValue _itemValue, EntityAlive _holdingEntity)
+        //{
+        //    float value = MultiActionReversePatches.ProjectileGetValue(CustomEnums.ProjectileImpactDamagePercentEntity, _itemValue, 1, _holdingEntity, null);
+        //    //Log.Out("Entity damage perc: " +  value);
+        //    return value;
+        //}
 
         public static void ProjectileValueModifyValue(this ItemValue _projectileItemValue, EntityAlive _entity, ItemValue _originalItemValue, PassiveEffects _passiveEffect, ref float _originalValue, ref float _perc_value, FastTags<TagGroup.Global> _tags, bool _useMods = true, bool _useDurability = false)
         {

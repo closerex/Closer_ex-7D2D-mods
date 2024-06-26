@@ -5,6 +5,7 @@ using System.Reflection.Emit;
 using System.Xml.Linq;
 using UniLinq;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 [HarmonyPatch]
 class AnimationRiggingPatches
@@ -270,14 +271,14 @@ class AnimationRiggingPatches
         {
             EntityAlive entity = __instance.Entity;
             ItemValue holdingItemItemValue = entity.inventory.holdingItemItemValue;
-#if DEBUG
-            float x = 1, y = 1;
-            var tags = entity.inventory.holdingItem.ItemTags;
-            var tags_prev = tags;
-            MultiActionManager.ModifyItemTags(entity.inventory.holdingItemItemValue, entity.MinEventContext.ItemActionData, ref tags);
-            entity.Progression.ModifyValue(PassiveEffects.ReloadSpeedMultiplier, ref x, ref y, tags);
-            Log.Out($"item {entity.inventory.holdingItem.Name} action index {entity.MinEventContext.ItemActionData.indexInEntityOfAction} progression base {x} perc {y} has tag {tags.Test_AnySet(FastTags.Parse("perkMachineGunner"))} \ntags prev {tags_prev} \ntags after {tags}");
-#endif
+//#if DEBUG
+//            float x = 1, y = 1;
+//            var tags = entity.inventory.holdingItem.ItemTags;
+//            var tags_prev = tags;
+//            MultiActionManager.ModifyItemTags(entity.inventory.holdingItemItemValue, entity.MinEventContext.ItemActionData, ref tags);
+//            entity.Progression.ModifyValue(PassiveEffects.ReloadSpeedMultiplier, ref x, ref y, tags);
+//            Log.Out($"item {entity.inventory.holdingItem.Name} action index {entity.MinEventContext.ItemActionData.indexInEntityOfAction} progression base {x} perc {y} has tag {tags.Test_AnySet(FastTags.Parse("perkMachineGunner"))} \ntags prev {tags_prev} \ntags after {tags}");
+//#endif
             float reloadSpeed = EffectManager.GetValue(PassiveEffects.ReloadSpeedMultiplier, holdingItemItemValue, 1f, entity);
             float reloadSpeedRatio = EffectManager.GetValue(CustomEnums.ReloadSpeedRatioFPV2TPV, holdingItemItemValue, 1f, entity);
 
@@ -443,6 +444,44 @@ class AnimationRiggingPatches
         return true;
     }
 
+    [HarmonyPatch(typeof(SDCSUtils), nameof(SDCSUtils.cleanupEquipment))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_cleanupEquipment_SDCSUtils(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var mtd_removeat = AccessTools.Method(typeof(List<RigLayer>), nameof(List<RigLayer>.RemoveAt));
+        var mtd_destroy = AccessTools.Method(typeof(GameUtils), nameof(GameUtils.DestroyAllChildrenBut), new[] {typeof(Transform), typeof(List<string>)});
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_removeat))
+            {
+                codes.InsertRange(i - 2, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldloc_2),
+                    new CodeInstruction(OpCodes.Ldloc_3),
+                    CodeInstruction.Call(typeof(List<RigLayer>), "get_Item"),
+                    CodeInstruction.Call(typeof(RigLayer), "get_name"),
+                    CodeInstruction.Call(typeof(AnimationRiggingManager), nameof(AnimationRiggingManager.ShouldExcludeRig)),
+                    new CodeInstruction(OpCodes.Brtrue_S, codes[i - 3].operand)
+                });
+                i += 6;
+            }
+            else if (codes[i].Calls(mtd_destroy))
+            {
+                codes.InsertRange(i, new[]
+                {
+                    new CodeInstruction(OpCodes.Dup),
+                    CodeInstruction.Call(typeof(AnimationRiggingManager), nameof(AnimationRiggingManager.GetExcludeRigs)),
+                    CodeInstruction.Call(typeof(List<string>), nameof(List<string>.AddRange)),
+                });
+                i += 3;
+            }
+        }
+
+        return codes;
+    }
+
     //[HarmonyPatch(typeof(XUiC_CameraWindow), nameof(XUiC_CameraWindow.OnOpen))]
     //[HarmonyPrefix]
     //private static bool Prefix_OnOpen_XuiC_CameraWindow(XUiC_CameraWindow __instance)
@@ -551,5 +590,12 @@ class AnimationRiggingPatches
     private static void Postfix_Avatar_SetInt(int _pid, int _value)
     {
         AnimationRiggingManager.SetInt(_pid, _value);
+    }
+
+    [HarmonyPatch(typeof(AvatarLocalPlayerController), "_resetTrigger", typeof(int), typeof(bool))]
+    [HarmonyReversePatch(HarmonyReversePatchType.Original)]
+    public static void VanillaResetTrigger(AvatarLocalPlayerController __instance, int _pid, bool _netsync = true)
+    {
+
     }
 }

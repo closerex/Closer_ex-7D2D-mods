@@ -190,7 +190,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
 #if DEBUG
                     else
                     {
-                        Log.Out($"{MultiActionUtils.ActionMetaNames[metaIndex]}: {itemValue.GetMetadata(MultiActionUtils.ActionMetaNames[metaIndex]).ToString()}");
+                        Log.Out($"{MultiActionUtils.ActionMetaNames[metaIndex]}: {itemValueTemp.GetMetadata(MultiActionUtils.ActionMetaNames[metaIndex]).ToString()}");
                     }
 #endif
                     if (!itemValueTemp.HasMetadata(MultiActionUtils.ActionSelectedAmmoNames[metaIndex]))
@@ -200,7 +200,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
 #if DEBUG
                     else
                     {
-                        Log.Out($"{MultiActionUtils.ActionSelectedAmmoNames[metaIndex]}: {itemValue.GetMetadata(MultiActionUtils.ActionSelectedAmmoNames[metaIndex]).ToString()}");
+                        Log.Out($"{MultiActionUtils.ActionSelectedAmmoNames[metaIndex]}: {itemValueTemp.GetMetadata(MultiActionUtils.ActionSelectedAmmoNames[metaIndex]).ToString()}");
                     }
 #endif
                 }
@@ -208,7 +208,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             this.toggleSound = toggleSound;
             entity.emodel?.avatarController?.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, CurActionIndex, false);
 #if DEBUG
-            Log.Out($"MultiAction mode {curIndex}, meta {itemValue.Meta}, ammo index {itemValue.SelectedAmmoTypeIndex}\n {StackTraceUtility.ExtractStackTrace()}");
+            Log.Out($"MultiAction mode {curIndex}, meta {itemValueTemp.Meta}, ammo index {itemValueTemp.SelectedAmmoTypeIndex}\n {StackTraceUtility.ExtractStackTrace()}");
 #endif
         }
 

@@ -63,11 +63,13 @@ public class AnimationReloadEvents : MonoBehaviour
             return;
         }
         actionData.isReloading = false;
+        actionData.isWeaponReloading = false;
         actionData.invData.holdingEntity.MinEventContext.ItemActionData = actionData;
         actionData.invData.holdingEntity.FireEvent(MinEventTypes.onReloadStop, true);
         actionData.invData.holdingEntity.OnReloadEnd();
         actionData.invData.holdingEntity.inventory.CallOnToolbeltChangedInternal();
         actionData.isReloadCancelled = false;
+        actionData.isWeaponReloadCancelled = false;
         actionData.isChangingAmmoType = false;
         AnimationAmmoUpdateState.SetAmmoCountForEntity(actionData.invData.holdingEntity);
 #if DEBUG
@@ -197,6 +199,7 @@ public class AnimationReloadEvents : MonoBehaviour
             }
         }
         actionData.isReloading = true;
+        actionData.isWeaponReloading = true;
         actionData.invData.holdingEntity.FireEvent(MinEventTypes.onReloadStart, true);
 #if DEBUG
         Log.Out($"ANIMATION EVENT RELOAD START : {actionData.invData.item.Name}");
@@ -216,7 +219,7 @@ public class AnimationReloadEvents : MonoBehaviour
     private IEnumerator ForceCancelReloadCo(float delay)
     {
         yield return new WaitForSecondsRealtime(delay);
-        if (actionData != null && actionData.isReloading && actionData.isReloadCancelled)
+        if (actionData != null && (actionData.isReloading || actionData.isWeaponReloading) && (actionData.isReloadCancelled || actionData.isWeaponReloadCancelled))
             OnReloadEnd();
     }
 

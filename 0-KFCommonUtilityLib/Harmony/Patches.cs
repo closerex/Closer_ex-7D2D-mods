@@ -19,10 +19,13 @@ public static class CommonUtilityPatch
         if (!holdingEntity)
             return;
         _actionData.isReloading = true;
+        _actionData.isWeaponReloading = true;
         holdingEntity.MinEventContext.ItemActionData = _actionData;
         holdingEntity.FireEvent(MinEventTypes.onReloadStart, true);
         _actionData.isReloading = false;
+        _actionData.isWeaponReloading = false;
         _actionData.isReloadCancelled = false;
+        _actionData.isWeaponReloadCancelled = false;
         holdingEntity.FireEvent(MinEventTypes.onReloadStop);
 
         if (holdingEntity is EntityPlayerLocal && AnimationRiggingManager.FpvTransformReference != null)
@@ -390,44 +393,45 @@ public static class CommonUtilityPatch
 
     /// <summary>
     /// projectile direct hit damage percent
+    /// removed due to new explosion damage passives
     /// </summary>
     /// <param name="instructions"></param>
     /// <returns></returns>
-    [HarmonyPatch(typeof(ProjectileMoveScript), nameof(ProjectileMoveScript.checkCollision))]
-    [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_checkCollision_ProjectileMoveScript(IEnumerable<CodeInstruction> instructions)
-    {
-        var codes = instructions.ToList();
-        var fld_strain = AccessTools.Field(typeof(ItemActionLauncher.ItemActionDataLauncher), nameof(ItemActionLauncher.ItemActionDataLauncher.strainPercent));
-        var mtd_block = AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.GetDamageBlock));
+    //[HarmonyPatch(typeof(ProjectileMoveScript), nameof(ProjectileMoveScript.checkCollision))]
+    //[HarmonyTranspiler]
+    //private static IEnumerable<CodeInstruction> Transpiler_checkCollision_ProjectileMoveScript(IEnumerable<CodeInstruction> instructions)
+    //{
+    //    var codes = instructions.ToList();
+    //    var fld_strain = AccessTools.Field(typeof(ItemActionLauncher.ItemActionDataLauncher), nameof(ItemActionLauncher.ItemActionDataLauncher.strainPercent));
+    //    var mtd_block = AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.GetDamageBlock));
 
-        for (int i = 0; i < codes.Count; i++)
-        {
-            if (codes[i].LoadsField(fld_strain))
-            {
-                codes.InsertRange(i + 1, new CodeInstruction[]
-                {
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    CodeInstruction.LoadField(typeof(ProjectileMoveScript), nameof(ProjectileMoveScript.itemValueProjectile)),
-                    new CodeInstruction(OpCodes.Ldloc_S, 4),
-                    CodeInstruction.Call(typeof(CommonUtilityPatch), codes[i - 3].Calls(mtd_block) ? nameof(GetProjectileBlockDamagePerc) : nameof(GetProjectileEntityDamagePerc)),
-                    new CodeInstruction(OpCodes.Mul)
-                });
-            }
-        }
+    //    for (int i = 0; i < codes.Count; i++)
+    //    {
+    //        if (codes[i].LoadsField(fld_strain))
+    //        {
+    //            codes.InsertRange(i + 1, new CodeInstruction[]
+    //            {
+    //                new CodeInstruction(OpCodes.Ldarg_0),
+    //                CodeInstruction.LoadField(typeof(ProjectileMoveScript), nameof(ProjectileMoveScript.itemValueProjectile)),
+    //                new CodeInstruction(OpCodes.Ldloc_S, 4),
+    //                CodeInstruction.Call(typeof(CommonUtilityPatch), codes[i - 3].Calls(mtd_block) ? nameof(GetProjectileBlockDamagePerc) : nameof(GetProjectileEntityDamagePerc)),
+    //                new CodeInstruction(OpCodes.Mul)
+    //            });
+    //        }
+    //    }
 
-        return codes;
-    }
+    //    return codes;
+    //}
 
-    public static float GetProjectileBlockDamagePerc(ItemValue _itemValue, EntityAlive _holdingEntity)
-    {
-        return EffectManager.GetValue(CustomEnums.ProjectileImpactDamagePercentBlock, _itemValue, 1, _holdingEntity, null);
-    }
+    //public static float GetProjectileBlockDamagePerc(ItemValue _itemValue, EntityAlive _holdingEntity)
+    //{
+    //    return EffectManager.GetValue(CustomEnums.ProjectileImpactDamagePercentBlock, _itemValue, 1, _holdingEntity, null);
+    //}
 
-    public static float GetProjectileEntityDamagePerc(ItemValue _itemValue, EntityAlive _holdingEntity)
-    {
-        return EffectManager.GetValue(CustomEnums.ProjectileImpactDamagePercentEntity, _itemValue, 1, _holdingEntity, null);
-    }
+    //public static float GetProjectileEntityDamagePerc(ItemValue _itemValue, EntityAlive _holdingEntity)
+    //{
+    //    return EffectManager.GetValue(CustomEnums.ProjectileImpactDamagePercentEntity, _itemValue, 1, _holdingEntity, null);
+    //}
 
     /// <summary>
     /// force tpv crosshair
@@ -476,7 +480,9 @@ public static class CommonUtilityPatch
 
         //should fix stuck on switching item?
         itemActionDataRanged.isReloadCancelled = false;
+        itemActionDataRanged.isWeaponReloadCancelled = false;
         itemActionDataRanged.isReloading = false;
+        itemActionDataRanged.isWeaponReloading = false;
         itemActionDataRanged.isChangingAmmoType = false;
     }
 

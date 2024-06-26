@@ -75,12 +75,12 @@
 				<passive_effect name="MagazineSize" operation="base_set" value="2" tags="perkDemolitionsExpert"/>
 				 <!-- <passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkDemolitionsExpert"/>2.3s -->
 				<passive_effect name="ModSlots" operation="base_set" value="1,1,2,2,3,4" tier="1,2,3,4,5,6"/>
-				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="ExplosionEntityDamage,ExplosionBlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
-				<passive_effect name="EntityDamage" operation="perc_add" value="-.15,.15" tags="perkDemolitionsExpert"/> <!-- random EntityDmg -->
-				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDemolitionsExpert"/> <!-- tier bonus -->
-				<passive_effect name="BlockDamage" operation="perc_add" value="-.15,.15" tags="perkDemolitionsExpert"/> <!-- random BlockDmg -->
-				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDemolitionsExpert"/> <!-- tier bonus -->
+				<passive_effect name="ExplosionEntityDamage" operation="perc_add" value="-.15,.15" tags="perkDemolitionsExpert"/> <!-- random EntityDmg -->
+				<passive_effect name="ExplosionEntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDemolitionsExpert"/> <!-- tier bonus -->
+				<passive_effect name="ExplosionBlockDamage" operation="perc_add" value="-.15,.15" tags="perkDemolitionsExpert"/> <!-- random BlockDmg -->
+				<passive_effect name="ExplosionBlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDemolitionsExpert"/> <!-- tier bonus -->
 
 				<passive_effect name="DegradationMax" operation="perc_add" value="-.2,.2" tags="perkDemolitionsExpert"/> <!-- random DegMax -->
 				<passive_effect name="RoundsPerMinute" operation="perc_add" value="-.05,.05" tags="perkDemolitionsExpert"/> <!-- random APM -->
@@ -127,10 +127,8 @@
 				<property name="LifeTime" value="5"/>
 			</property>
 			<effect_group name="ammoKaboomstickShellHE" tiered="false">
-				<passive_effect name="BlockDamage" operation="base_set" value="220" tags="perkDemolitionsExpert"/>
-				<passive_effect name="EntityDamage" operation="base_set" value="50" tags="perkDemolitionsExpert"/>
-				<passive_effect name="ProjectileImpactDamagePercentBlock" operation="base_set" value="0" tags="perkDemolitionsExpert"/>
-				<passive_effect name="ProjectileImpactDamagePercentEntity" operation="base_set" value="0" tags="perkDemolitionsExpert"/>
+				<passive_effect name="ExplosionBlockDamage" operation="base_set" value="220" tags="perkDemolitionsExpert"/>
+				<passive_effect name="ExplosionEntityDamage" operation="base_set" value="50" tags="perkDemolitionsExpert"/>
 				<passive_effect name="ProjectileVelocity" operation="base_set" value="80" tags="perkDemolitionsExpert"/>
 				<display_value name="dExRadius" value="2.5"/>
 				<passive_effect name="RoundRayCount" operation="base_set" value="8" tags="perkDemolitionsExpert"/>
@@ -175,8 +173,8 @@
 				<property name="LifeTime" value="6"/>
 			</property>
 			<effect_group name="ammoKaboomstickShellFrag" tiered="false">
-				<passive_effect name="BlockDamage" operation="base_set" value="5" tags="perkDemolitionsExpert"/>
-				<passive_effect name="EntityDamage" operation="base_set" value="120" tags="perkDemolitionsExpert"/>
+				<passive_effect name="ExplosionBlockDamage" operation="base_set" value="5" tags="perkDemolitionsExpert"/>
+				<passive_effect name="ExplosionEntityDamage" operation="base_set" value="120" tags="perkDemolitionsExpert"/>
 				<passive_effect name="ProjectileImpactDamagePercentBlock" operation="base_set" value="0" tags="perkDemolitionsExpert"/>
 				<passive_effect name="ProjectileImpactDamagePercentEntity" operation="base_set" value="0" tags="perkDemolitionsExpert"/>
 				<passive_effect name="ProjectileVelocity" operation="base_set" value="80" tags="perkDemolitionsExpert"/>

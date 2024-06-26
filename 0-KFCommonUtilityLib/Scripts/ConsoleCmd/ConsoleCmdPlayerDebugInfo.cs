@@ -40,7 +40,7 @@ namespace KFCommonUtilityLib.Scripts.ConsoleCmd
 
         private static string PrintTransform(Transform parent, string str = "", int indent = 0)
         {
-            str += "".PadLeft(indent * 4) + parent.name + "\n";
+            str += "".PadLeft(indent * 4) + $"{parent.name}/pos:{parent.transform.localPosition}/rot:{parent.localEulerAngles}" + "\n";
             indent++;
             foreach (Transform child in parent)
             {
