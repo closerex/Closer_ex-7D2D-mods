@@ -24,7 +24,7 @@
 
 			<property class="Action0">
 				<property name="Class" value="BetterLauncher,FullautoLauncher"/>
-				<property name="ItemActionModules" value="HoldOpen,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib"/>
 				<!-- <property name="Class" value="Launcher"/> -->
 				<property name="Delay" value=".2"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammoKaboomstickShellHE,ammoKaboomstickShellFrag"/>
@@ -175,8 +175,6 @@
 			<effect_group name="ammoKaboomstickShellFrag" tiered="false">
 				<passive_effect name="ExplosionBlockDamage" operation="base_set" value="5" tags="perkDemolitionsExpert"/>
 				<passive_effect name="ExplosionEntityDamage" operation="base_set" value="120" tags="perkDemolitionsExpert"/>
-				<passive_effect name="ProjectileImpactDamagePercentBlock" operation="base_set" value="0" tags="perkDemolitionsExpert"/>
-				<passive_effect name="ProjectileImpactDamagePercentEntity" operation="base_set" value="0" tags="perkDemolitionsExpert"/>
 				<passive_effect name="ProjectileVelocity" operation="base_set" value="80" tags="perkDemolitionsExpert"/>
 				<display_value name="dExRadius" value="2.5"/>
 				<passive_effect name="RoundRayCount" operation="base_set" value="8" tags="perkDemolitionsExpert"/>

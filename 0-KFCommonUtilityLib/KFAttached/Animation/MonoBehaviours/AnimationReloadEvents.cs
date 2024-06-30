@@ -101,7 +101,7 @@ public class AnimationReloadEvents : MonoBehaviour
             }
         }
 
-        if (actionData.isReloadCancelled || actionData.invData.itemValue.Meta >= magSize || player.GetItemCount(ammo) <= 0)
+        if (actionData.isReloadCancelled || actionData.isWeaponReloadCancelled || actionData.invData.itemValue.Meta >= magSize || player.GetItemCount(ammo) <= 0)
         {
             Log.Out("Partial reload finished");
             animator.SetBool("IsReloading", false);
@@ -206,14 +206,18 @@ public class AnimationReloadEvents : MonoBehaviour
 #endif
     }
 
+    private Coroutine cancelReloadCo = null;
+
     public void DelayForceCancelReload(float delay)
     {
-        StartCoroutine(ForceCancelReloadCo(delay));
+        if (cancelReloadCo == null)
+            cancelReloadCo = StartCoroutine(ForceCancelReloadCo(delay));
     }
 
     private void OnDisable()
     {
         StopAllCoroutines();
+        cancelReloadCo = null;
     }
 
     private IEnumerator ForceCancelReloadCo(float delay)
@@ -221,6 +225,7 @@ public class AnimationReloadEvents : MonoBehaviour
         yield return new WaitForSecondsRealtime(delay);
         if (actionData != null && (actionData.isReloading || actionData.isWeaponReloading) && (actionData.isReloadCancelled || actionData.isWeaponReloadCancelled))
             OnReloadEnd();
+        cancelReloadCo = null;
     }
 
     public int GetAmmoCountToReload(EntityAlive ea, ItemValue ammo, int modifiedMagazineSize)

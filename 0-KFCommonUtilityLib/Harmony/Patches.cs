@@ -879,7 +879,7 @@ public static class CommonUtilityPatch
             var rangedData = _data.actionData[curActionIndex] as ItemActionRanged.ItemActionDataRanged;
             if (rangedData != null && rangedData is IModuleContainerFor<ActionModuleInterruptReload.InterruptData> module)
             {
-                if (!_bReleased && _playerActions != null && ((EntityPlayerLocal)_data.holdingEntity).bFirstPersonView && ((_playerActions.Primary.WasPressed && _actionIdx == curActionIndex) || (_playerActions.Secondary.WasPressed && curAction is ItemActionZoom)) && rangedData.isReloading && !rangedData.isReloadCancelled && !module.Instance.isInterruptRequested)
+                if (!_bReleased && _playerActions != null && ((EntityPlayerLocal)_data.holdingEntity).bFirstPersonView && ((_playerActions.Primary.WasPressed && _actionIdx == curActionIndex) || (_playerActions.Secondary.WasPressed && curAction is ItemActionZoom)) && rangedData.isReloading && !rangedData.isReloadCancelled && !rangedData.isWeaponReloadCancelled && !module.Instance.isInterruptRequested)
                 {
                     rangedAction.CancelReload(rangedData);
                     module.Instance.isInterruptRequested = true;
@@ -951,6 +951,7 @@ public static class CommonUtilityPatch
         }
         return codes;
     }
+
 
     //private static bool exported = false;
     //[HarmonyPatch(typeof(EModelSDCS), nameof(EModelSDCS.createModel))]

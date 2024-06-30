@@ -145,6 +145,10 @@ public class RigTargets : MonoBehaviour
         rigLayer.active = enabled;
         //rig.gameObject.SetActive(enabled);
         itemFpv.localPosition = new Vector3(0, 0, enabled ? 0 : -100);
+        if (enabled)
+        {
+            itemFpv.GetComponentInChildren<Animator>().Update(0);
+        }
 
         gameObject.SetActive(forceDisableRoot ? false : !enabled);
     }

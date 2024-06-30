@@ -44,6 +44,46 @@ public class RigConverter : MonoBehaviour
         Save();
     }
 
+    [ContextMenu("Fix A22 Constraints")]
+    private void Fix()
+    {
+        Rebind();
+        foreach (var constraint in GetComponentsInChildren<IRigConstraint>())
+        {
+            string name = constraint.component.transform.name;
+            if (char.IsDigit(name[^1]))
+            {
+                if (name.Contains("ArmRollCorrections") && constraint.component is MultiRotationConstraint mrcArm)
+                {
+                    int index = int.Parse(name.Substring(name.Length - 1, 1));
+                    var source = mrcArm.data.sourceObjects;
+                    source.SetWeight(0, index * 0.25f);
+                    mrcArm.data.sourceObjects = source;
+                    mrcArm.data.constrainedXAxis = true;
+                    mrcArm.data.constrainedYAxis = false;
+                    mrcArm.data.constrainedZAxis = false;
+                }
+                else if (name.Contains("FingerTarget") && name.Length == 13 && constraint.component is TwoBoneIKConstraint tbc)
+                {
+                    int index = int.Parse(name.Substring(name.Length - 1, 1));
+                    string targetNameBase = tbc.data.root.transform.name;
+                    targetNameBase = targetNameBase[..^1];
+                    tbc.data.root = targetRoot.FindInAllChilds($"{targetNameBase}1");
+                    tbc.data.mid = targetRoot.FindInAllChilds($"{targetNameBase}{(index == 5 ? 3 : 2)}");
+                    tbc.data.tip = targetRoot.FindInAllChilds($"{targetNameBase}4");
+                }
+                else if (name.Contains("FingerTargetRollCorrection") && constraint.component is MultiRotationConstraint mrcFinger)
+                {
+                    int index = int.Parse(name.Substring(name.Length - 1, 1));
+                    mrcFinger.data.constrainedXAxis = true;
+                    mrcFinger.data.constrainedYAxis = false;
+                    mrcFinger.data.constrainedZAxis = index == 1;
+                }                
+            }
+        }
+        Convert();
+    }
+
     private void Save()
     {
         var root = GetComponentInParent<RigTargets>(true).gameObject;

@@ -126,6 +126,7 @@ public class ActionModuleRampUp
         }
         return true;
     }
+
     [MethodTargetPostfix(nameof(ItemActionRanged.ReloadGun))]
     public void ReloadGun(RampUpData __customData, ItemActionData _actionData)
     {

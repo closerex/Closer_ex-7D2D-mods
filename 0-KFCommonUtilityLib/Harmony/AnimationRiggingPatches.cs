@@ -482,6 +482,33 @@ class AnimationRiggingPatches
         return codes;
     }
 
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SwapSelectedAmmo))]
+    [HarmonyPrefix]
+    private static bool Prefix_SwapSelectedAmmo_ItemActionRanged(ItemActionRanged __instance, EntityAlive _entity, int _ammoIndex)
+    {
+        if (_ammoIndex == (int)_entity.inventory.holdingItemItemValue.SelectedAmmoTypeIndex && __instance is IModuleContainerFor<ActionModuleInspectable> inspectable && _entity is EntityPlayerLocal player)
+        {
+            ItemActionRanged.ItemActionDataRanged _actionData = _entity.inventory.holdingItemData.actionData[__instance.ActionIndex] as ItemActionRanged.ItemActionDataRanged;
+            if (!_entity.MovementRunning && !_entity.AimingGun && !player.bLerpCameraFlag && _actionData != null && !_entity.inventory.holdingItem.IsActionRunning(_entity.inventory.holdingItemData) && !__instance.CanReload(_actionData) && (_entity.inventory.holdingItemItemValue.Meta > 0 || inspectable.Instance.allowEmptyInspect))
+            {
+                _entity.emodel.avatarController._setTrigger("weaponInspect", false);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ExecuteAction))]
+    [HarmonyPostfix]
+    private static void Postfix_ExecuteAction_ItemActionRanged(ItemActionRanged __instance, ItemActionData _actionData)
+    {
+        if (_actionData is ItemActionRanged.ItemActionDataRanged rangedData)
+        {
+            int burstCount = __instance.GetBurstCount(_actionData);
+            _actionData.invData.holdingEntity.emodel.avatarController._setBool("TriggerPulled", rangedData.bPressed && rangedData.curBurstCount < burstCount, false);
+        }
+    }
+
     //[HarmonyPatch(typeof(XUiC_CameraWindow), nameof(XUiC_CameraWindow.OnOpen))]
     //[HarmonyPrefix]
     //private static bool Prefix_OnOpen_XuiC_CameraWindow(XUiC_CameraWindow __instance)

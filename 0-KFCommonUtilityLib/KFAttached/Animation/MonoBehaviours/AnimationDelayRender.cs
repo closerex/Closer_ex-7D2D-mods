@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [AddComponentMenu("KFAttachments/Utils/Animation Delay Render")]
@@ -29,7 +30,7 @@ public class AnimationDelayRender : MonoBehaviour, ISerializationCallbackReceive
     [SerializeField]
     private List<TransformTargets> delayTargetsEditor;
     [NonSerialized]
-    private HashSet<Transform> delayTargets;
+    private Transform[] delayTargets;
 
     [SerializeField, HideInInspector]
     private List<Transform> list_targets;
@@ -75,7 +76,7 @@ public class AnimationDelayRender : MonoBehaviour, ISerializationCallbackReceive
         }
 #endif
 
-        delayTargets = new HashSet<Transform>();
+        var delayTargetsSet = new HashSet<Transform>();
         for (int i = 0; i < serializedCount; i++)
         {
             if (list_include_children[i])
@@ -83,15 +84,16 @@ public class AnimationDelayRender : MonoBehaviour, ISerializationCallbackReceive
                 var targets = list_targets[i].GetComponentsInChildren<Transform>();
                 foreach (var target in targets)
                 {
-                    delayTargets.Add(target);
+                    delayTargetsSet.Add(target);
                 }
             }
             else
             {
-                delayTargets.Add(list_targets[i]);
+                delayTargetsSet.Add(list_targets[i]);
             }
         }
-        posTargets = new TransformLocalData[delayTargets.Count];
+        delayTargets = delayTargetsSet.ToArray();
+        posTargets = new TransformLocalData[delayTargets.Length];
         //posAfterAnimation = new TransformLocalData[delayTargets.Count];
     }
 
