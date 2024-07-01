@@ -12,30 +12,28 @@ using UnityEngine;
 public class MinEventActionOverrideZoomFOV : MinEventActionBase
 {
     private int fov = 0;
-    private static Type zoomDataType = typeof(ItemActionZoom).GetNestedType("ItemActionDataZoom", System.Reflection.BindingFlags.NonPublic);
-    private static FieldInfo fldZoomInProgress = AccessTools.Field(zoomDataType, "bZoomInProgress");
-    private static FieldInfo fldTimeZoomStarted = AccessTools.Field(zoomDataType, "timeZoomStarted");
-    private static FieldInfo fldCurrentZoom = AccessTools.Field(zoomDataType, "CurrentZoom");
-    private static FieldInfo fldMaxZoomOut = AccessTools.Field(zoomDataType, "MaxZoomOut");
-    private static FieldInfo fldMaxZoomIn = AccessTools.Field(zoomDataType, "MaxZoomIn");
-    private static FieldInfo fldEndLerpFov = AccessTools.Field(typeof(EntityPlayerLocal), "lerpCameraEndFOV");
-    private static MethodInfo mtdUpdateCameraPosition = AccessTools.Method(typeof(EntityAlive), "updateCameraPosition");
+    //private static Type zoomDataType = typeof(ItemActionZoom).GetNestedType("ItemActionDataZoom", System.Reflection.BindingFlags.NonPublic);
+    //private static FieldInfo fldZoomInProgress = AccessTools.Field(zoomDataType, "bZoomInProgress");
+    //private static FieldInfo fldTimeZoomStarted = AccessTools.Field(zoomDataType, "timeZoomStarted");
+    //private static FieldInfo fldCurrentZoom = AccessTools.Field(zoomDataType, "CurrentZoom");
+    //private static FieldInfo fldMaxZoomOut = AccessTools.Field(zoomDataType, "MaxZoomOut");
+    //private static FieldInfo fldMaxZoomIn = AccessTools.Field(zoomDataType, "MaxZoomIn");
+    //private static FieldInfo fldEndLerpFov = AccessTools.Field(typeof(EntityPlayerLocal), "lerpCameraEndFOV");
+    //private static MethodInfo mtdUpdateCameraPosition = AccessTools.Method(typeof(EntityAlive), "updateCameraPosition");
 
     public override bool CanExecute(MinEventTypes _eventType, MinEventParams _params)
     {
         if (!base.CanExecute(_eventType, _params))
             return false;
 
-        return _params.Self is EntityPlayerLocal player && player?.inventory != null && player.inventory.holdingItemData?.item.Actions[1] is ItemActionZoom;
+        return _params.Self is EntityPlayerLocal player && player?.inventory != null && player.inventory.holdingItemData?.actionData[1] is ItemActionZoom.ItemActionDataZoom;
     }
 
     public override void Execute(MinEventParams _params)
     {
         base.Execute(_params);
         var target = (EntityPlayerLocal)_params.Self;
-        var zoomAction = target.inventory.holdingItem.Actions[1] as ItemActionZoom;
-        var zoomActionData = (ItemActionData)Convert.ChangeType(target.inventory.holdingItemData.actionData[1], zoomDataType);
-        bool zoomInProgress = (bool)fldZoomInProgress.GetValue(zoomActionData);
+        var zoomActionData = (ItemActionZoom.ItemActionDataZoom)target.inventory.holdingItemData.actionData[1];
         int targetFov = fov;
         int targetMax = fov;
         int targetMin = fov;
@@ -63,9 +61,9 @@ public class MinEventActionOverrideZoomFOV : MinEventActionBase
             targetFov = targetMax;
         }
 
-        fldMaxZoomIn.SetValue(zoomActionData, targetMin);
-        fldMaxZoomOut.SetValue(zoomActionData, targetMax);
-        fldCurrentZoom.SetValue(zoomActionData, targetFov);
+        zoomActionData.MaxZoomIn = targetMin;
+        zoomActionData.MaxZoomOut = targetMax;
+        zoomActionData.CurrentZoom = targetFov;
         //Log.Out($"setting zoom override max {targetMax} min {targetMin} cur {targetFov}");
         //if is aiming, lerp towards the final result
         if (target.AimingGun)
@@ -73,14 +71,14 @@ public class MinEventActionOverrideZoomFOV : MinEventActionBase
             //if lerp not in progress, start lerp
             if (!target.bLerpCameraFlag)
             {
-                fldZoomInProgress.SetValue(zoomActionData, true);
-                fldTimeZoomStarted.SetValue(zoomActionData, Time.time);
-                mtdUpdateCameraPosition.Invoke(target, new object[] { true });
+                zoomActionData.bZoomInProgress = true;
+                zoomActionData.timeZoomStarted = Time.time;
+                target.updateCameraPosition(true);
             }
             //if already in progress, set end value
             else
             {
-                fldEndLerpFov.SetValue(target, (float)targetFov);
+                target.lerpCameraEndFOV = targetFov;
             }
 
             //Log.Out($"begin lerp camera");
