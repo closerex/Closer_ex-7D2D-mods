@@ -423,6 +423,7 @@
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationResetRigWeightState.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimatorRandomSwitch.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\RigWeightOverTime.cs" />
+    <Compile Include="KFAttached\Misc\ItemAnimatorUpdate.cs" />
     <Compile Include="KFAttached\Render\BokehBlurTargetRef.cs" />
     <Compile Include="KFAttached\Render\MagnifyScope.cs" />
     <Compile Include="KFAttached\Render\MagnifyScopeTargetRef.cs" />

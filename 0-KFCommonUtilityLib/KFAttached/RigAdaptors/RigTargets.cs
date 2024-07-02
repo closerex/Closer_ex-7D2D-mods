@@ -22,6 +22,8 @@ public class RigTargets : MonoBehaviour
     [NonSerialized]
     private RigLayer rigLayer;
 
+    private Animator itemAnimator;
+
     //private float weight;
 
 #if NotEditor
@@ -29,6 +31,9 @@ public class RigTargets : MonoBehaviour
     private void Awake()
     {
         itemFpv.gameObject.SetActive(false);
+        itemAnimator = itemFpv.GetComponentInChildren<Animator>(true);
+        itemAnimator.enabled = false;
+        itemAnimator.gameObject.AddComponent<ItemAnimatorUpdate>();
         rig.gameObject.SetActive(false);
         rig.gameObject.name += $"_UID_{UniqueRigID++}";
         AnimationRiggingManager.AddRigExcludeName(rig.gameObject.name);
@@ -46,7 +51,11 @@ public class RigTargets : MonoBehaviour
         Stopwatch sw = new Stopwatch();
         sw.Start();
 
-        var itemAnimator = itemFpv.GetComponentInChildren<Animator>();
+        var delayRenderer = itemAnimator.GetComponent<AnimationDelayRender>();
+        if (delayRenderer)
+        {
+            Destroy(delayRenderer);
+        }
         //itemAnimator.keepAnimatorStateOnDisable = true;
 
         var animator = fpsArms.GetComponentInChildren<Animator>();
@@ -147,7 +156,7 @@ public class RigTargets : MonoBehaviour
         itemFpv.localPosition = new Vector3(0, 0, enabled ? 0 : -100);
         if (enabled)
         {
-            itemFpv.GetComponentInChildren<Animator>().Update(0);
+            itemAnimator.Update(0);
         }
 
         gameObject.SetActive(forceDisableRoot ? false : !enabled);

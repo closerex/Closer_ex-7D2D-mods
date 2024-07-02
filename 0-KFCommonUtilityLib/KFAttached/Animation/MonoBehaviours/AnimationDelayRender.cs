@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[Obsolete("This script is no longer needed.")]
 [AddComponentMenu("KFAttachments/Utils/Animation Delay Render")]
 public class AnimationDelayRender : MonoBehaviour, ISerializationCallbackReceiver
 {
