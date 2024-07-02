@@ -11,6 +11,18 @@ public class TransformActivationBinding : MonoBehaviour
     private GameObject[] enableOnDisable;
     [SerializeField]
     private GameObject[] disableOnEnable;
+    [SerializeField]
+    private GameObject[] enableOnEnable;
+    [SerializeField]
+    private GameObject[] disableOnDisable;
+    [SerializeField]
+    private string[] animatorParamBindings;
+    private Animator animator;
+
+    private void Awake()
+    {
+        animator = GetComponentInParent<RigTargets>().itemFpv.GetComponentInChildren<Animator>();
+    }
 
     private void OnEnable()
     {
@@ -18,8 +30,10 @@ public class TransformActivationBinding : MonoBehaviour
         if (bindings != null)
         {
             foreach (GameObject t in bindings)
+            {
                 if (t != null)
                     t.SetActive(true);
+            }
         }
         if (inverseBindings != null)
         {
@@ -35,6 +49,24 @@ public class TransformActivationBinding : MonoBehaviour
             {
                 if (t != null)
                     t.SetActive(false);
+            }
+        }
+        if (enableOnEnable != null)
+        {
+            foreach (GameObject t in enableOnEnable)
+            {
+                if (t != null)
+                    t.SetActive(true);
+            }
+        }
+        if (animatorParamBindings != null && animator != null)
+        {
+            foreach (string str in animatorParamBindings)
+            {
+                if (str != null)
+                {
+                    animator.SetBool(str, true);
+                }
             }
         }
     }
@@ -62,6 +94,24 @@ public class TransformActivationBinding : MonoBehaviour
             {
                 if (t != null)
                     t.SetActive(true);
+            }
+        }
+        if (disableOnDisable != null)
+        {
+            foreach (GameObject t in disableOnDisable)
+            {
+                if (t != null)
+                    t.SetActive(true);
+            }
+        }
+        if (animatorParamBindings != null && animator != null)
+        {
+            foreach (string str in animatorParamBindings)
+            {
+                if (str != null)
+                {
+                    animator.SetBool(str, false);
+                }
             }
         }
     }
