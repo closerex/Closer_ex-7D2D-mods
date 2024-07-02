@@ -28,18 +28,20 @@ public class RigTargets : MonoBehaviour
 
 #if NotEditor
     private static int UniqueRigID = 0;
+#endif
     private void Awake()
     {
-        itemFpv.gameObject.SetActive(false);
         itemAnimator = itemFpv.GetComponentInChildren<Animator>(true);
         itemAnimator.enabled = false;
         itemAnimator.gameObject.AddComponent<ItemAnimatorUpdate>();
+#if NotEditor
+        itemFpv.gameObject.SetActive(false);
         rig.gameObject.SetActive(false);
         rig.gameObject.name += $"_UID_{UniqueRigID++}";
         AnimationRiggingManager.AddRigExcludeName(rig.gameObject.name);
         gameObject.GetOrAddComponent<AttachmentReference>().attachmentReference = attachmentReference;
-    }
 #endif
+    }
 
     public void Init(Transform fpsArms)
     {
