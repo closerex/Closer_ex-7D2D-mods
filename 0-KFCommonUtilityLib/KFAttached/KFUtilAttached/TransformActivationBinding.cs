@@ -17,12 +17,7 @@ public class TransformActivationBinding : MonoBehaviour
     private GameObject[] disableOnDisable;
     [SerializeField]
     private string[] animatorParamBindings;
-    private Animator animator;
-
-    private void Awake()
-    {
-        animator = GetComponentInParent<RigTargets>().itemFpv.GetComponentInChildren<Animator>();
-    }
+    internal Animator animator;
 
     private void OnEnable()
     {

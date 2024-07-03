@@ -648,9 +648,8 @@ public static class CommonUtilityPatch
     [HarmonyPostfix]
     private static void Postfix_CanRemove_XUiC_ItemPartStack(ref bool __result, XUiC_ItemPartStack __instance)
     {
-        if (__result)
+        if (__result && __instance.xui?.AssembleItem?.CurrentItem?.itemValue is ItemValue itemValue)
         {
-            ItemValue itemValue = __instance.xui.AssembleItem.CurrentItem.itemValue;
             ItemClass itemClass = itemValue.ItemClass;
             FastTags<TagGroup.Global> tagsAfterRemove = LocalItemTagsManager.GetTagsAsIfNotInstalled(itemValue, __instance.itemValue);
             if (tagsAfterRemove.IsEmpty)
@@ -677,9 +676,8 @@ public static class CommonUtilityPatch
     [HarmonyPostfix]
     private static void Postfix_CanRemove_XUiC_ItemCosmeticStack(ref bool __result, XUiC_ItemCosmeticStack __instance)
     {
-        if (__result)
+        if (__result && __instance.xui?.AssembleItem?.CurrentItem?.itemValue is ItemValue itemValue)
         {
-            ItemValue itemValue = __instance.xui.AssembleItem.CurrentItem.itemValue;
             ItemClass itemClass = itemValue.ItemClass;
             FastTags<TagGroup.Global> tagsAfterRemove = LocalItemTagsManager.GetTagsAsIfNotInstalled(itemValue, __instance.itemValue);
             if (tagsAfterRemove.IsEmpty)
@@ -952,7 +950,37 @@ public static class CommonUtilityPatch
         return codes;
     }
 
+    //[HarmonyPatch(typeof(Inventory), nameof(Inventory.updateHoldingItem))]
+    //[HarmonyTranspiler]
+    //private static IEnumerable<CodeInstruction> Transpiler_updateHoldingItem_Inventory(IEnumerable<CodeInstruction> instructions)
+    //{
+    //    var codes = instructions.ToList();
 
+    //    var mtd_setholdingtrans = AccessTools.Method(typeof(Inventory), nameof(Inventory.setHoldingItemTransfrom));
+    //    var mtd_showrighthand = AccessTools.Method(typeof(Inventory), nameof(Inventory.ShowRightHand));
+    //    int insert = -1, take = -1;
+
+    //    for (int i = 0; i < codes.Count; i++)
+    //    {
+    //        if (codes[i].Calls(mtd_showrighthand))
+    //        {
+    //            insert = i + 1;
+    //        }
+    //        else if (codes[i].Calls(mtd_setholdingtrans))
+    //        {
+    //            take = i - 6;
+    //        }
+    //    }
+
+    //    if (take > insert)
+    //    {
+    //        var list_take = codes.GetRange(take, 7);
+    //        codes.RemoveRange(take, 7);
+    //        codes.InsertRange(insert, list_take);
+    //    }
+
+    //    return codes;
+    //}
     //private static bool exported = false;
     //[HarmonyPatch(typeof(EModelSDCS), nameof(EModelSDCS.createModel))]
     //[HarmonyPostfix]

@@ -32,9 +32,13 @@ public class RigTargets : MonoBehaviour
     private void Awake()
     {
         itemAnimator = itemFpv.GetComponentInChildren<Animator>(true);
+        foreach (var bindings in GetComponentsInChildren<TransformActivationBinding>(true))
+        {
+            bindings.animator = itemAnimator;
+        }
+#if NotEditor
         itemAnimator.enabled = false;
         itemAnimator.gameObject.AddComponent<ItemAnimatorUpdate>();
-#if NotEditor
         itemFpv.gameObject.SetActive(false);
         rig.gameObject.SetActive(false);
         rig.gameObject.name += $"_UID_{UniqueRigID++}";

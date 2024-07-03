@@ -50,7 +50,7 @@ public class ActionModuleDisplayAsBuff
         _props.Values.TryGetValue("DisplayData", out notification.displayData);
         _props.Values.TryGetValue("DisplayBuff", out str);
         BuffClass buffClass = BuffManager.GetBuff(str);
-        BuffValue buff = new BuffValue(buffClass.Name, -1, buffClass);
+        BuffValue buff = new BuffValue(buffClass.Name, Vector3i.zero, -1, buffClass);
         notification.SetBuff(buff);
     }
 
