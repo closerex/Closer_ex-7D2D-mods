@@ -39,7 +39,8 @@ public class MultiAimConstraintAdaptor : RigAdaptorAbs
         constraint.data.aimAxis = m_AimAxis;
         constraint.data.upAxis = m_UpAxis;
         constraint.data.worldUpType = m_WorldUpType;
-        constraint.data.worldUpObject = targetRoot.FindInAllChilds(m_WorldUpObject);
+        if (!string.IsNullOrEmpty(m_WorldUpObject))
+            constraint.data.worldUpObject = targetRoot.FindInAllChilds(m_WorldUpObject);
         constraint.data.worldUpAxis = m_WorldUpAxis;
         constraint.data.maintainOffset = m_MaintainOffset;
         constraint.data.constrainedXAxis = m_ConstrainedAxes.x;
@@ -58,7 +59,8 @@ public class MultiAimConstraintAdaptor : RigAdaptorAbs
         m_AimAxis = constraint.data.aimAxis;
         m_UpAxis = constraint.data.upAxis;
         m_WorldUpType = constraint.data.worldUpType;
-        m_WorldUpObject = constraint.data.worldUpObject?.name;
+        if ((m_WorldUpType == MultiAimConstraintData.WorldUpType.ObjectUp || m_WorldUpType == MultiAimConstraintData.WorldUpType.ObjectRotationUp) && constraint.data.worldUpObject)
+            m_WorldUpObject = constraint.data.worldUpObject.name;
         m_WorldUpAxis = constraint.data.worldUpAxis;
         m_MaintainOffset = constraint.data.maintainOffset;
         m_ConstrainedAxes = new Vector3Bool(constraint.data.constrainedXAxis, constraint.data.constrainedYAxis, constraint.data.constrainedZAxis);
