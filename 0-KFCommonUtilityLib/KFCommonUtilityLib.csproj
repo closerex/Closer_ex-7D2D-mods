@@ -449,6 +449,7 @@
     <Compile Include="KFAttached\RigAdaptors\Utils\KFExtensions.cs" />
     <Compile Include="Scripts\Attributes\MethodTargetAttribute.cs" />
     <Compile Include="Scripts\Attributes\PatchTargetAttribute.cs" />
+    <Compile Include="Scripts\ConsoleCmd\ConsoleCmdListParticleScripts.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdMultiActionItemValueDebug.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPrintLocalCache.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdReloadDebug.cs" />

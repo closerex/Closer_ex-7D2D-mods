@@ -48,7 +48,7 @@ internal class ExplosionAreaBuffTick : ExplosionDamageArea
                 }
                 for (int i = 0; i < this.BuffActions.Count; i++)
                 {
-                    entityAlive.Buffs.AddBuff(this.BuffActions[i], InitiatorEntityId, true, false, false);
+                    entityAlive.Buffs.AddBuff(this.BuffActions[i], InitiatorEntityId, true, false, -1);
                     if (player != null && entityAlive.entityId != InitiatorEntityId)
                     {
                         MinEventParams data = player.MinEventContext;

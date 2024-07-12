@@ -19,7 +19,7 @@ public class RigConverter : MonoBehaviour
         {
             var adaptorName = constraint.GetType().Name + "Adaptor,KFCommonUtilityLib";
             var adaptorType = Type.GetType(adaptorName);
-            var adaptor = ((object)constraint as MonoBehaviour).transform.AddMissingComponent(adaptorType) as RigAdaptorAbs;
+            var adaptor = (RigAdaptorAbs)constraint.component.transform.AddMissingComponent(adaptorType);
             adaptor.ReadRigData();
             adaptor.hideFlags = HideFlags.NotEditable;
             EditorUtility.SetDirty(adaptor);
@@ -130,6 +130,10 @@ public class RigConverter : MonoBehaviour
                 newConstraint.transform.position = trans.position;
                 EditorUtility.CopySerialized(tbik, newConstraint.AddComponent<TwoBoneIKConstraint>());
                 DestroyImmediate(tbik);
+                if (trans.GetComponent<TwoBoneIKConstraintAdaptor>() is TwoBoneIKConstraintAdaptor adaptor)
+                {
+                    DestroyImmediate(adaptor);
+                }
 
                 string targetNameBase = tbik.data.root.transform.name[..^1];
                 bool isLeft = targetNameBase.StartsWith("Left");
@@ -156,6 +160,125 @@ public class RigConverter : MonoBehaviour
             }
         }
         Convert();
+    }
+
+    public void CreateEmpty()
+    {
+        CreateEmptyForSide("Left");
+        CreateEmptyForSide("Right");
+    }
+
+    private static string[] PhalangeBoneNames = new[]
+    {
+        "Thumb",
+        "Index",
+        "Middle",
+        "Pinky",
+        "Ring"
+    };
+
+    private void CreateEmptyForSide(string side)
+    {
+        WeightedTransformArray sourceObjects = new();
+
+        Transform shoulderReposition = new GameObject($"{side}ShoulderReposition").transform;
+        shoulderReposition.parent = transform;
+        MultiPositionConstraint shoulderRepositionConstraint = shoulderReposition.gameObject.AddComponent<MultiPositionConstraint>();
+        shoulderRepositionConstraint.data.constrainedObject = targetRoot.FindInAllChilds($"{side}Shoulder");
+        shoulderRepositionConstraint.data.constrainedXAxis = shoulderRepositionConstraint.data.constrainedYAxis = shoulderRepositionConstraint.data.constrainedZAxis = true;
+
+        Transform armRollCorrection = new GameObject($"{side}ArmRollCorrections").transform;
+        armRollCorrection.parent = transform;
+        for (int i = 1; i <= 4; i++)
+        {
+            Transform child = new GameObject($"{armRollCorrection.name}{i}").transform;
+            child.parent = armRollCorrection;
+            MultiRotationConstraint armRollCorrectionConstraint = child.gameObject.AddComponent<MultiRotationConstraint>();
+            armRollCorrectionConstraint.data.constrainedObject = targetRoot.FindInAllChilds($"{side}ForeArmRoll{i}");
+            armRollCorrectionConstraint.data.constrainedXAxis = true;
+            armRollCorrectionConstraint.data.constrainedYAxis = false;
+            armRollCorrectionConstraint.data.constrainedZAxis = false;
+            sourceObjects.Add(new WeightedTransform(null, i * .25f));
+            armRollCorrectionConstraint.data.sourceObjects = sourceObjects;
+            sourceObjects.Clear();
+        }
+        
+        Transform armTarget = new GameObject($"{side}ArmTarget").transform;
+        armTarget.parent = transform;
+        TwoBoneIKConstraint armTargetConstraint = armTarget.gameObject.AddComponent<TwoBoneIKConstraint>();
+        armTargetConstraint.data.root = targetRoot.FindInAllChilds($"{side}Arm");
+        armTargetConstraint.data.mid = targetRoot.FindInAllChilds($"{side}ForeArm");
+        armTargetConstraint.data.tip = targetRoot.FindInAllChilds($"{side}Hand");
+
+        bool isLeft = side == "Left";
+        Transform handTargets = new GameObject($"{side}HandTargets").transform;
+        handTargets.parent = transform;
+        for (int i = 1; i <= 4; i++)
+        {
+            string fingerTargetName = $"FingerTarget{i}";
+            Transform fingerTargetParent = new GameObject(fingerTargetName).transform;
+            fingerTargetParent.parent = handTargets;
+
+            Transform metacarpalAiming = new GameObject($"MetacarpalAiming{i}").transform;
+            metacarpalAiming.parent = fingerTargetParent;
+            MultiAimConstraint metacarpalAimingConstraint = metacarpalAiming.gameObject.AddComponent<MultiAimConstraint>();
+            metacarpalAimingConstraint.data.constrainedObject = targetRoot.FindInAllChilds($"{side}Hand{PhalangeBoneNames[i]}0");
+            metacarpalAimingConstraint.data.aimAxis = isLeft ? MultiAimConstraintData.Axis.X_NEG : MultiAimConstraintData.Axis.X;
+            metacarpalAimingConstraint.data.upAxis = isLeft ? MultiAimConstraintData.Axis.Y : MultiAimConstraintData.Axis.Y_NEG;
+            metacarpalAimingConstraint.data.worldUpType = MultiAimConstraintData.WorldUpType.None;
+            metacarpalAimingConstraint.data.constrainedXAxis = false;
+            metacarpalAimingConstraint.data.constrainedYAxis = false;
+            metacarpalAimingConstraint.data.constrainedZAxis = true;
+
+            Transform fingerTarget = new GameObject(fingerTargetName).transform;
+            fingerTarget.parent = fingerTargetParent;
+            TwoBoneIKConstraint fingerTargetConstraint = fingerTarget.gameObject.AddComponent<TwoBoneIKConstraint>();
+            fingerTargetConstraint.data.root = targetRoot.FindInAllChilds($"{side}Hand{PhalangeBoneNames[i]}1");
+            fingerTargetConstraint.data.mid = targetRoot.FindInAllChilds($"{side}Hand{PhalangeBoneNames[i]}2");
+            fingerTargetConstraint.data.tip = targetRoot.FindInAllChilds($"{side}Hand{PhalangeBoneNames[i]}4");
+        }
+
+        Transform thumbTargetParent = new GameObject("FingerTarget5").transform;
+        thumbTargetParent.parent = handTargets;
+
+        Transform thumbTargetRollCorrection1 = new GameObject("FingerTargetRollCorrection1").transform;
+        thumbTargetRollCorrection1.parent = thumbTargetParent;
+        MultiRotationConstraint thumbTargetRollCorrectionConstraint = thumbTargetRollCorrection1.gameObject.AddComponent<MultiRotationConstraint>();
+        thumbTargetRollCorrectionConstraint.data.constrainedObject = targetRoot.FindInAllChilds($"{side}HandThumb1");
+        thumbTargetRollCorrectionConstraint.data.constrainedXAxis = thumbTargetRollCorrectionConstraint.data.constrainedYAxis = thumbTargetRollCorrectionConstraint.data.constrainedZAxis = true;
+        sourceObjects.Add(new WeightedTransform(null, .5f));
+        thumbTargetRollCorrectionConstraint.data.sourceObjects = sourceObjects;
+        sourceObjects.Clear();
+        
+        Transform thumbTargetRollCorrection2 = new GameObject("FingerTargetRollCorrection2").transform;
+        thumbTargetRollCorrection2.parent = thumbTargetParent;
+        thumbTargetRollCorrectionConstraint = thumbTargetRollCorrection2.gameObject.AddComponent<MultiRotationConstraint>();
+        thumbTargetRollCorrectionConstraint.data.constrainedObject = targetRoot.FindInAllChilds($"{side}HandThumb2");
+        thumbTargetRollCorrectionConstraint.data.constrainedXAxis = true;
+        thumbTargetRollCorrectionConstraint.data.constrainedYAxis = false;
+        thumbTargetRollCorrectionConstraint.data.constrainedZAxis = false;
+        sourceObjects.Add(new WeightedTransform(null, .3f));
+        thumbTargetRollCorrectionConstraint.data.sourceObjects = sourceObjects;
+        sourceObjects.Clear();
+        
+        Transform thumbTargetRollCorrection3 = new GameObject("FingerTargetRollCorrection3").transform;
+        thumbTargetRollCorrection3.parent = thumbTargetParent;
+        thumbTargetRollCorrectionConstraint = thumbTargetRollCorrection3.gameObject.AddComponent<MultiRotationConstraint>();
+        thumbTargetRollCorrectionConstraint.data.constrainedObject = targetRoot.FindInAllChilds($"{side}HandThumb3");
+        thumbTargetRollCorrectionConstraint.data.constrainedXAxis = true;
+        thumbTargetRollCorrectionConstraint.data.constrainedYAxis = false;
+        thumbTargetRollCorrectionConstraint.data.constrainedZAxis = false;
+        sourceObjects.Add(new WeightedTransform(null, .2f));
+        thumbTargetRollCorrectionConstraint.data.sourceObjects = sourceObjects;
+        sourceObjects.Clear();
+
+        Transform thumbTarget = new GameObject("FingerTarget5").transform;
+        thumbTarget.parent = thumbTargetParent;
+        TwoBoneIKConstraint thumbTargetConstraint = thumbTarget.gameObject.AddComponent<TwoBoneIKConstraint>();
+        thumbTargetConstraint.data.root = targetRoot.FindInAllChilds($"{side}HandThumb1");
+        thumbTargetConstraint.data.mid = targetRoot.FindInAllChilds($"{side}HandThumb3");
+        thumbTargetConstraint.data.tip = targetRoot.FindInAllChilds($"{side}HandThumb4");
+        thumbTargetConstraint.data.targetRotationWeight = 0;
     }
 
     private void Save()

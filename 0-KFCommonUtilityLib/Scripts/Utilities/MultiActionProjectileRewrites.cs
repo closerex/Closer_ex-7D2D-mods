@@ -488,7 +488,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                                     float bufProcChance = MultiActionReversePatches.ProjectileGetValue(PassiveEffects.BuffProcChance, null, 1f, attackerEntity, null, FastTags<TagGroup.Global>.Parse(buff.Name), true, false);
                                     if (hitEntityAlive.rand.RandomFloat <= bufProcChance)
                                     {
-                                        hitEntityAlive.Buffs.AddBuff(_buffActions[i], attackerEntity.entityId, true, false, false, -1f);
+                                        hitEntityAlive.Buffs.AddBuff(_buffActions[i], attackerEntity.entityId, true, false, -1f);
                                     }
                                 }
                             }
