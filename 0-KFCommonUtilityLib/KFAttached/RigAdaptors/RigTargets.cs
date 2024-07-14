@@ -38,6 +38,7 @@ public class RigTargets : MonoBehaviour
         }
 #if NotEditor
         itemAnimator.enabled = false;
+        //itemAnimator.playableGraph.SetTimeUpdateMode(UnityEngine.Playables.DirectorUpdateMode.Manual);
         itemAnimator.gameObject.AddComponent<ItemAnimatorUpdate>();
         itemFpv.gameObject.SetActive(false);
         rig.gameObject.SetActive(false);
@@ -162,7 +163,8 @@ public class RigTargets : MonoBehaviour
         itemFpv.localPosition = new Vector3(0, 0, enabled ? 0 : -100);
         if (enabled)
         {
-            itemAnimator.Update(0);
+            //itemAnimator.playableGraph.Evaluate(Time.deltaTime);
+            itemAnimator.Update(Time.deltaTime);
         }
 
         gameObject.SetActive(forceDisableRoot ? false : !enabled);

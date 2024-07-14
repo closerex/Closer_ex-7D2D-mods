@@ -17,6 +17,7 @@ internal class ItemAnimatorUpdate : MonoBehaviour
 
     private void Update()
     {
+        //animator.playableGraph.Evaluate(Time.deltaTime);
         animator.Update(Time.deltaTime);
     }
 }

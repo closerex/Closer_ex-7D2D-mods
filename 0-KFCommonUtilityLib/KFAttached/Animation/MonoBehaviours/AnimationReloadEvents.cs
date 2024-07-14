@@ -44,6 +44,7 @@ public class AnimationReloadEvents : MonoBehaviour
                     actionData.invData.holdingEntitySoundID = -1;
                 }
             }
+            AnimationAmmoUpdateState.SetAmmoCountForEntity(actionData.invData.holdingEntity);
 #if DEBUG
             Log.Out($"ANIMATION RELOAD EVENT AMMO : {actionData.invData.item.Name}");
 #endif
@@ -71,7 +72,6 @@ public class AnimationReloadEvents : MonoBehaviour
         actionData.isReloadCancelled = false;
         actionData.isWeaponReloadCancelled = false;
         actionData.isChangingAmmoType = false;
-        AnimationAmmoUpdateState.SetAmmoCountForEntity(actionData.invData.holdingEntity);
 #if DEBUG
         Log.Out($"ANIMATION RELOAD EVENT FINISHED : {actionData.invData.item.Name}");
 #endif
@@ -100,6 +100,7 @@ public class AnimationReloadEvents : MonoBehaviour
                 actionData.invData.holdingEntitySoundID = -1;
             }
         }
+        AnimationAmmoUpdateState.SetAmmoCountForEntity(actionData.invData.holdingEntity);
 
         if (actionData.isReloadCancelled || actionData.isWeaponReloadCancelled || actionData.invData.itemValue.Meta >= magSize || player.GetItemCount(ammo) <= 0)
         {
