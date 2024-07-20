@@ -1,6 +1,6 @@
 <configs>
 	<insertAfter xpath="/lootcontainers/lootgroup[@name='empty']">
-		<lootgroup name="groupWeapons_ExplT2" count="2" loot_quality_template="QLTemplateT2">
+		<lootgroup name="groupWeapons_ExplT2" count="all" loot_quality_template="QLTemplateT2">
 			<item name="gunKaboomstick" count="1"/>
 		</lootgroup>
 		<lootgroup name="groupKBSammoSmall" count="2">

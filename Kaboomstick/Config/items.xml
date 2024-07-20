@@ -2,7 +2,7 @@
 	<append xpath="/items">
 		<item name="gunKaboomstick">
 			<property name="CustomIcon" value="UI_WeaponSelect_HRG_Kaboomstick"/>
-			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,launcher,attPerception,dBarrel,perkDemolitionsExpert,canHaveCosmetic,noSilencer"/>
+			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,launcher,attPerception,dBarrel,perkDemolitionsExpert,canHaveCosmetic,noSilencer,kaboomstick"/>
 			<property name="DisplayType" value="rangedShotgunNoMag"/>
 			<property name="HoldType" value="56"/>
 			<property name="Meshfile" value="#@modfolder:Resources/Kaboomstick_prefab.unity3d?kaboomstick_m.prefab"/>
@@ -71,7 +71,6 @@
 				</passive_effect>
 				<passive_effect name="RoundsPerMinute" operation="base_set" value="1000" tags="perkDemolitionsExpert"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkDemolitionsExpert"/>
-
 				<passive_effect name="MagazineSize" operation="base_set" value="2" tags="perkDemolitionsExpert"/>
 				 <!-- <passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkDemolitionsExpert"/>2.3s -->
 				<passive_effect name="ModSlots" operation="base_set" value="1,1,2,2,3,4" tier="1,2,3,4,5,6"/>
