@@ -4,6 +4,8 @@ using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System.Collections;
 using Unity.Mathematics;
+using UnityEngine;
+using static ActionModuleTagged;
 
 [TypeTarget(typeof(ItemActionAttack), typeof(AlternativeData))]
 public class ActionModuleAlternative
@@ -23,8 +25,9 @@ public class ActionModuleAlternative
         if (_data.invData.holdingEntity is EntityPlayerLocal)
         {
             MultiActionManager.inputCD = math.max(0.5f, MultiActionManager.inputCD);
-            ThreadManager.StartCoroutine(DelaySetExecutionIndex(_data.invData.holdingEntity, __customData.mapping));
+            //ThreadManager.StartCoroutine(DelaySetExecutionIndex(_data.invData.holdingEntity, __customData.mapping));
         }
+        __customData.OverrideMuzzleTransform(__customData.mapping.CurMode);
         return true;
     }
 
@@ -136,11 +139,35 @@ public class ActionModuleAlternative
         public ItemInventoryData invData;
         //private bool inited = false;
         private readonly bool[] unlocked = new bool[MultiActionIndice.MAX_ACTION_COUNT];
+        public Transform[] altMuzzleTrans = new Transform[MultiActionIndice.MAX_ACTION_COUNT];
+        public Transform[] altMuzzleTransDBarrel = new Transform[MultiActionIndice.MAX_ACTION_COUNT];
 
         public AlternativeData(ItemInventoryData invData, int actionIndex, ActionModuleAlternative module)
         {
             this.invData = invData;
             Init();
+            for (int i = 0; i < MultiActionIndice.MAX_ACTION_COUNT; i++)
+            {
+                int curActionIndex = mapping.indices.GetActionIndexForMode(i);
+                if (curActionIndex < 0)
+                {
+                    break;
+                }
+                var rangedData = invData.actionData[curActionIndex] as ItemActionRanged.ItemActionDataRanged;
+                if (rangedData != null)
+                {
+                    if (rangedData.IsDoubleBarrel)
+                    {
+                        altMuzzleTrans[i] = AnimationRiggingManager.GetTransformOverrideByName($"Muzzle_L{curActionIndex}", rangedData.invData.model) ?? rangedData.muzzle;
+                        altMuzzleTransDBarrel[i] = AnimationRiggingManager.GetTransformOverrideByName($"Muzzle_R{curActionIndex}", rangedData.invData.model) ?? rangedData.muzzle2;
+                    }
+                    else
+                    {
+                        altMuzzleTrans[i] = AnimationRiggingManager.GetTransformOverrideByName($"Muzzle{curActionIndex}", rangedData.invData.model) ?? rangedData.muzzle;
+                    }
+                }
+
+            }
         }
 
         public void Init()
@@ -150,7 +177,7 @@ public class ActionModuleAlternative
 
             //inited = true;
             MultiActionIndice indices = MultiActionManager.GetActionIndiceForItemID(invData.item.Id);
-            mapping = new MultiActionMapping(indices, invData.holdingEntity, InventorySetItemTemp, toggleSound, invData.slotIdx, unlocked);
+            mapping = new MultiActionMapping(this, indices, invData.holdingEntity, InventorySetItemTemp, toggleSound, invData.slotIdx, unlocked);
             UpdateUnlockState(InventorySetItemTemp);
         }
 
@@ -181,6 +208,24 @@ public class ActionModuleAlternative
             if (mode >= MultiActionIndice.MAX_ACTION_COUNT || mode < 0)
                 return false;
             return unlocked[mode];
+        }
+
+        public void OverrideMuzzleTransform(int mode)
+        {
+            var rangedData = invData.actionData[mapping.indices.GetActionIndexForMode(mode)] as ItemActionRanged.ItemActionDataRanged;
+            if (rangedData != null)
+            {
+                if (rangedData.IsDoubleBarrel)
+                {
+                    rangedData.muzzle = altMuzzleTrans[mode];
+                    rangedData.muzzle2 = altMuzzleTransDBarrel[mode];
+                }
+                else
+                {
+                    rangedData.muzzle = altMuzzleTrans[mode];
+                }
+            }
+
         }
     }
 

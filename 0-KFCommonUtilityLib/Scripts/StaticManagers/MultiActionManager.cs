@@ -91,6 +91,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         private int curIndex;
         private int lastDisplayMode = -1;
         private readonly bool[] unlocked;
+        private ActionModuleAlternative.AlternativeData altData;
         public EntityAlive entity;
         public string toggleSound;
 
@@ -142,6 +143,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                     curIndex = value;
                     ReadMeta();
                     entity.emodel?.avatarController?.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, CurActionIndex, false);
+                    altData.OverrideMuzzleTransform(curIndex);
                 }
             }
         }
@@ -158,8 +160,9 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         //we set the curIndex field instead of the property, according to following situations:
         //1. it's a newly created ItemValue, meta and ammo index belongs to action0, no saving is needed;
         //2. it's an existing ItemValue, meta and ammo index is set to its action index, still saving is unnecessary.
-        internal MultiActionMapping(MultiActionIndice indices, EntityAlive entity, ItemValue itemValueTemp, string toggleSound, int slotIndex, bool[] unlocked)
+        internal MultiActionMapping(ActionModuleAlternative.AlternativeData altData, MultiActionIndice indices, EntityAlive entity, ItemValue itemValueTemp, string toggleSound, int slotIndex, bool[] unlocked)
         {
+            this.altData = altData;
             this.indices = indices;
             this.entity = entity;
             this.slotIndex = slotIndex;

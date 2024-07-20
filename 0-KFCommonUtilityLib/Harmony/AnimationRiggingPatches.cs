@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using KFCommonUtilityLib.Scripts.StaticManagers;
+using KFCommonUtilityLib.Scripts.Utilities;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Xml.Linq;
@@ -252,6 +253,11 @@ class AnimationRiggingPatches
         if (__instance is AvatarLocalPlayerController avatarLocalPlayer)
         {
             AnimationRiggingManager.UpdateLocalPlayerAvatar(avatarLocalPlayer);
+            var mapping = MultiActionManager.GetMappingForEntity(__instance.entity.entityId);
+            if (mapping != null)
+            {
+                avatarLocalPlayer.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, mapping.CurActionIndex, true);
+            }
         }
     }
 
@@ -391,7 +397,7 @@ class AnimationRiggingPatches
         }
     }
 
-    [HarmonyPatch(typeof(Inventory), nameof(Inventory.setHoldingItemTransfrom))]
+    [HarmonyPatch(typeof(Inventory), nameof(Inventory.setHoldingItemTransform))]
     [HarmonyPrefix]
     private static bool Prefix_setHoldingItemTransform_Inventory(Inventory __instance)
     {
@@ -419,7 +425,7 @@ class AnimationRiggingPatches
         }
     }
 
-    [HarmonyPatch(typeof(Inventory), nameof(Inventory.setHoldingItemTransfrom))]
+    [HarmonyPatch(typeof(Inventory), nameof(Inventory.setHoldingItemTransform))]
     [HarmonyPostfix]
     private static void Postfix_setHoldingItemTransform_Inventory(Transform _t, Inventory __instance)
     {
