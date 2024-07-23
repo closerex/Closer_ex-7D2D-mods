@@ -54,16 +54,7 @@ public class TransformActivationBinding : MonoBehaviour
                     t.SetActive(true);
             }
         }
-        if (animatorParamBindings != null && animator != null)
-        {
-            foreach (string str in animatorParamBindings)
-            {
-                if (str != null)
-                {
-                    animator.SetBool(str, true);
-                }
-            }
-        }
+        UpdateBool(true);
     }
 
     private void OnDisable()
@@ -99,13 +90,18 @@ public class TransformActivationBinding : MonoBehaviour
                     t.SetActive(true);
             }
         }
+        UpdateBool(false);
+    }
+
+    internal void UpdateBool(bool enabled)
+    {
         if (animatorParamBindings != null && animator != null)
         {
             foreach (string str in animatorParamBindings)
             {
                 if (str != null)
                 {
-                    animator.SetBool(str, false);
+                    animator.SetBool(str, enabled);
                 }
             }
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 public class AnimationInspectFix : MonoBehaviour
 {
@@ -33,4 +34,20 @@ public class AnimationInspectFix : MonoBehaviour
             animator.ResetTrigger(inspectHash);
         }
     }
+
+    //private void LateUpdate()
+    //{
+    //    Rig rig = GetComponentInChildren<Rig>(true);
+    //    if (rig)
+    //    {
+    //        if (rig.weight > 0)
+    //        {
+    //            rig.weight -= 0.01f;
+    //        }
+    //        if (rig.weight <= 0)
+    //        {
+    //            rig.weight = 1;
+    //        }
+    //    }
+    //}
 }

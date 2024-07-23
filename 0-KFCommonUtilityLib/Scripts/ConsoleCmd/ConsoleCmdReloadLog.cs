@@ -8,6 +8,8 @@ public class ConsoleCmdReloadLog : ConsoleCmdAbstract
 
     public override bool AllowedInMainMenu => false;
 
+    public override int DefaultPermissionLevel => 1000;
+
     public override void Execute(List<string> _params, CommandSenderInfo _senderInfo)
     {
         LogInfo = !LogInfo;

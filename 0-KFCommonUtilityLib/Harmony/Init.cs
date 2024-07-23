@@ -31,7 +31,8 @@ public class CommonUtilityLibInit : IModApi
         //ModEvents.GameAwake.RegisterHandler(AssemblyLocator.Init);
         ModEvents.GameAwake.RegisterHandler(MultiActionUtils.SetMinEventArrays);
         ModEvents.GameStartDone.RegisterHandler(RegisterKFEnums);
-        ModEvents.GameStartDone.RegisterHandler(AnimationRiggingManager.ParseItemIDs);
+        //DOES NOT WORK ON MULTIPLAYER? Patch to ItemClass.LateInitAll
+        //ModEvents.GameStartDone.RegisterHandler(AnimationRiggingManager.ParseItemIDs);
         ModEvents.GameStartDone.RegisterHandler(MultiActionManager.PostloadCleanup);
         //ModEvents.GameStartDone.RegisterHandler(CustomEffectEnumManager.PrintResults);
         //ModEvents.GameUpdate.RegisterHandler(CommonUtilityPatch.ForceUpdateGC);

@@ -27,6 +27,7 @@ public class ActionModuleAlternative
             MultiActionManager.inputCD = math.max(0.5f, MultiActionManager.inputCD);
             //ThreadManager.StartCoroutine(DelaySetExecutionIndex(_data.invData.holdingEntity, __customData.mapping));
         }
+        __customData.UpdateMuzzleTransformOverride();
         __customData.OverrideMuzzleTransform(__customData.mapping.CurMode);
         return true;
     }
@@ -146,6 +147,11 @@ public class ActionModuleAlternative
         {
             this.invData = invData;
             Init();
+
+        }
+
+        public void UpdateMuzzleTransformOverride()
+        {
             for (int i = 0; i < MultiActionIndice.MAX_ACTION_COUNT; i++)
             {
                 int curActionIndex = mapping.indices.GetActionIndexForMode(i);
@@ -166,7 +172,6 @@ public class ActionModuleAlternative
                         altMuzzleTrans[i] = AnimationRiggingManager.GetTransformOverrideByName($"Muzzle{curActionIndex}", rangedData.invData.model) ?? rangedData.muzzle;
                     }
                 }
-
             }
         }
 

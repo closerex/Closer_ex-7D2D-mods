@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Xml.Linq;
@@ -9,7 +10,7 @@ using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
 [HarmonyPatch]
-class AnimationRiggingPatches
+static class AnimationRiggingPatches
 {
     ///// <summary>
     ///// compatibility patch for launcher projectile joint
@@ -513,6 +514,38 @@ class AnimationRiggingPatches
             int burstCount = __instance.GetBurstCount(_actionData);
             _actionData.invData.holdingEntity.emodel.avatarController._setBool("TriggerPulled", rangedData.bPressed && rangedData.curBurstCount < burstCount, false);
         }
+    }
+
+    [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.LateInitAll))]
+    [HarmonyPostfix]
+    private static void Postfix_LateInitAll_ItemClass()
+    {
+        AnimationRiggingManager.ParseItemIDs();
+    }
+
+    [HarmonyPatch(typeof(Animator), nameof(Animator.Rebind), new Type[0])]
+    [HarmonyReversePatch(HarmonyReversePatchType.Original)]
+    public static void RebindNoDefault(this Animator __instance)
+    {
+        IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            if (instructions == null)
+            {
+                yield break;
+            }
+            foreach (var ins in instructions)
+            {
+                if (ins.opcode == OpCodes.Ldc_I4_1)
+                {
+                    yield return new CodeInstruction(OpCodes.Ldc_I4_0);
+                }
+                else
+                {
+                    yield return ins;
+                }
+            }
+        }
+        _ = Transpiler(null);
     }
 
     //[HarmonyPatch(typeof(XUiC_CameraWindow), nameof(XUiC_CameraWindow.OnOpen))]

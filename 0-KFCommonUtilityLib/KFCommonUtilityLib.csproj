@@ -374,6 +374,7 @@
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationAmmoUpdateState.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationInspectFix.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationMultiStageReloadState.cs" />
+    <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationRigLayerController.cs" />
     <Compile Include="KFAttached\FPSPack\Demo\FPSDemoGUI.cs" />
     <Compile Include="KFAttached\FPSPack\Demo\FPSDemoReactivator.cs" />
     <Compile Include="KFAttached\FPSPack\Demo\FPSFireManager.cs" />

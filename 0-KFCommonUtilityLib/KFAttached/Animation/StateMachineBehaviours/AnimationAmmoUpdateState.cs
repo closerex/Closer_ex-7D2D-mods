@@ -15,10 +15,23 @@ public class AnimationAmmoUpdateState : StateMachineBehaviour
         Animator.StringToHash("ammoCount3"),
         Animator.StringToHash("ammoCount4")
     };
+    private int slot = -1;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         var player = GameManager.Instance.World?.GetPrimaryPlayer();
+        if (player)
+        {
+            if (slot < 0)
+            {
+                slot = player.inventory.holdingItemIdx;
+            }
+            else if (slot != player.inventory.holdingItemIdx)
+            {
+                Log.Warning($"trying to set ammo for slot {slot} while holding slot {player.inventory.holdingItemIdx}!");
+                return;
+            }
+        }
         SetAmmoCountForEntity(player);
     }
 

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 public class ConsoleCmdReloadDebug : ConsoleCmdAbstract
 {
+    public override int DefaultPermissionLevel => 1000;
+
     public override void Execute(List<string> _params, CommandSenderInfo _senderInfo)
     {
         EntityPlayerLocal player = GameManager.Instance?.World?.GetPrimaryPlayer();
