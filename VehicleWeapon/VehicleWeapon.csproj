@@ -127,6 +127,8 @@
     <Compile Include="Scripts\VehicleParts\VehicleWeaponBase.cs" />
     <Compile Include="Scripts\VehicleParts\VehicleWeaponRotatorBase.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="ModInfo.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -79,7 +79,7 @@
     <Compile Include="Scripts\ProjectileManager\ProjectileParams.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ModInfo.xml" />
+    <None Include="ModInfo.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
