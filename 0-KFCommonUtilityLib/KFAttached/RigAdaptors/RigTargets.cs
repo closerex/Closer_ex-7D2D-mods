@@ -33,6 +33,12 @@ public class RigTargets : MonoBehaviour
 #endif
     private PlayableGraph m_ControllerGraph;
     private AnimatorControllerPlayable m_ControllerPlayable;
+#if !NotEditor
+    [SerializeField]
+    private bool manualUpdate;
+#else
+    private bool manualUpdate = true;
+#endif
     private void Awake()
     {
         itemAnimator = itemFpv.GetComponentInChildren<Animator>(true);
@@ -42,7 +48,10 @@ public class RigTargets : MonoBehaviour
             bindings.animator = itemAnimator;
         }
         itemAnimatorController = itemAnimator.runtimeAnimatorController;
-        itemAnimator.runtimeAnimatorController = null;
+        if (manualUpdate)
+        {
+            itemAnimator.runtimeAnimatorController = null;
+        }
 #if NotEditor
         rig.gameObject.name += $"_UID_{UniqueRigID++}";
         AnimationRiggingManager.AddRigExcludeName(rig.gameObject.name);
@@ -207,7 +216,7 @@ public class RigTargets : MonoBehaviour
         itemFpv.localPosition = new Vector3(0, 0, enabled ? 0 : -100);
 #if NotEditor
 #endif
-        if (enabled)
+        if (enabled && manualUpdate)
         {
             //so it seems there's no direct way to reset this animator playable controller
             //I have no choice but rebuild the whole graph again and pass the animator param bindings to the animator again
