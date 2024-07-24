@@ -46,7 +46,8 @@ public class ActionModuleAlternative
         if (__customData.mapping == null)
             return true;
         int actionIndex = __customData.mapping.CurActionIndex;
-        Log.Out($"cancel reload {actionIndex}");
+        if (ConsoleCmdReloadLog.LogInfo)
+            Log.Out($"cancel reload {actionIndex}");
         if (actionIndex == 0)
             return true;
         _actionData.invData.holdingEntity.inventory.holdingItem.Actions[actionIndex].CancelReload(_actionData.invData.holdingEntity.inventory.holdingItemData.actionData[actionIndex]);
@@ -59,7 +60,8 @@ public class ActionModuleAlternative
         if (__customData.mapping == null)
             return true;
         int actionIndex = __customData.mapping.CurActionIndex;
-        Log.Out($"cancel action {actionIndex}");
+        if (ConsoleCmdReloadLog.LogInfo)
+            Log.Out($"cancel action {actionIndex}");
         if (actionIndex == 0)
             return true;
         _actionData.invData.holdingEntity.inventory.holdingItem.Actions[actionIndex].CancelAction(_actionData.invData.holdingEntity.inventory.holdingItemData.actionData[actionIndex]);

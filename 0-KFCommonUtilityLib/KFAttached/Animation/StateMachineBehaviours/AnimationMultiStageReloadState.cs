@@ -13,7 +13,7 @@ public class AnimationMultiStageReloadState : StateMachineBehaviour
     private float ForceCancelReloadDelay = 1f;
     [SerializeField]
     private bool DoNotForceCancel = false;
-#if NotEditor
+
     private AnimationReloadEvents eventBridge;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -27,15 +27,18 @@ public class AnimationMultiStageReloadState : StateMachineBehaviour
         {
             animator.speed = 1f;
             animator.SetBool("IsReloading", true);
+#if NotEditor
             EntityPlayerLocal player = animator.GetComponentInParent<EntityPlayerLocal>();
             int actionIndex = MultiActionManager.GetActionIndexForEntity(player);
             eventBridge.OnReloadStart(actionIndex);
 #if DEBUG
             Log.Out($"start reload {actionIndex}");
 #endif
+#endif
         }
     }
 
+#if NotEditor
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         var actionData = eventBridge.actionData;

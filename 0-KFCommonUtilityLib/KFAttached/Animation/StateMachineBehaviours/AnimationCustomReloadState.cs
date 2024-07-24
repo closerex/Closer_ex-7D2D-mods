@@ -9,13 +9,13 @@ public class AnimationCustomReloadState : StateMachineBehaviour
     private float ForceCancelReloadDelay = 1f;
     [SerializeField]
     private bool DoNotForceCancel = false;
-#if NotEditor
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.speed = 1f;
         animator.SetBool("Reload", false);
         animator.SetBool("IsReloading", true);
+#if NotEditor
         if (player == null)
         {
             player = animator.GetComponentInParent<EntityPlayerLocal>();
@@ -35,6 +35,7 @@ public class AnimationCustomReloadState : StateMachineBehaviour
 #endif
         eventBridge.OnReloadStart(actionIndex);
         //eventBridge.OnReloadUpdate();
+#endif
     }
 
     // Token: 0x06000B5C RID: 2908 RVA: 0x000AC3A8 File Offset: 0x000AA5A8
@@ -49,11 +50,12 @@ public class AnimationCustomReloadState : StateMachineBehaviour
         //actionData.isReloading = false;
         //actionData.isReloadCancelled = false;
         //actionData.isChangingAmmoType = false;
-#if DEBUG
+#if DEBUG && NotEditor
         Log.Out($"ANIMATOR STATE EXIT : {actionData.invData.item.Name}");
 #endif
     }
 
+#if NotEditor
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         //eventBridge.OnReloadUpdate();

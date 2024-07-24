@@ -54,11 +54,11 @@ public class AnimationReloadEvents : MonoBehaviour
 
     public void OnReloadEnd()
     {
-#if NotEditor
         StopAllCoroutines();
         animator.SetBool("Reload", false);
         animator.SetBool("IsReloading", false);
         animator.speed = 1f;
+#if NotEditor
         if (actionData == null || !actionData.isReloading)
         {
             return;
