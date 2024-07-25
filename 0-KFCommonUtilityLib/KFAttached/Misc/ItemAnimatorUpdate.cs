@@ -11,22 +11,21 @@ using UnityEngine.Playables;
 [DisallowMultipleComponent]
 internal class ItemAnimatorUpdate : MonoBehaviour
 {
-    //private Animator animator;
+    private Animator animator;
     private RigBuilder weaponRB;
     internal PlayableGraph graph;
 
     private void Awake()
     {
-        //animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
         TryGetComponent<RigBuilder>(out weaponRB);
     }
 
     private void Update()
     {
         //animator.playableGraph.Evaluate(Time.deltaTime);
-        //animator.Update(Time.deltaTime);
-        graph.Evaluate(Time.deltaTime);
+        animator.Update(Time.deltaTime);
+        //graph.Evaluate(Time.deltaTime);
         //weaponRB?.Evaluate(Time.deltaTime);
-        weaponRB?.SyncLayers();
     }
 }

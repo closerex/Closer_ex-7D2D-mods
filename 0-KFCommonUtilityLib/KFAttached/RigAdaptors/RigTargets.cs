@@ -1,13 +1,10 @@
 #if NotEditor
 using KFCommonUtilityLib.Scripts.StaticManagers;
 #endif
-using System;
 using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Animations.Rigging;
-using UnityEngine.Experimental.Animations;
-using UnityEngine.Playables;
 
 [AddComponentMenu("KFAttachments/RigAdaptors/Rig Targets")]
 public class RigTargets : MonoBehaviour
@@ -31,8 +28,8 @@ public class RigTargets : MonoBehaviour
 #if NotEditor
     private static int UniqueRigID = 0;
 #endif
-    private PlayableGraph m_ControllerGraph;
-    private AnimatorControllerPlayable m_ControllerPlayable;
+    //private PlayableGraph m_ControllerGraph;
+    //private AnimatorControllerPlayable m_ControllerPlayable;
 #if !NotEditor
     [SerializeField]
     private bool manualUpdate;
@@ -48,10 +45,11 @@ public class RigTargets : MonoBehaviour
             bindings.animator = itemAnimator;
         }
         itemAnimatorController = itemAnimator.runtimeAnimatorController;
-        if (manualUpdate)
-        {
-            itemAnimator.runtimeAnimatorController = null;
-        }
+        //if (manualUpdate)
+        //{
+        //    //itemAnimator.runtimeAnimatorController = null;
+        //    RebuildPlayableGraph();
+        //}
 #if NotEditor
         rig.gameObject.name += $"_UID_{UniqueRigID++}";
         AnimationRiggingManager.AddRigExcludeName(rig.gameObject.name);
@@ -66,39 +64,36 @@ public class RigTargets : MonoBehaviour
 #endif
     private void RebuildPlayableGraph()
     {
-        if (m_ControllerGraph.IsValid())
-        {
-            m_ControllerGraph.Destroy();
-        }
-        m_ControllerGraph = PlayableGraph.Create();
-        m_ControllerGraph.SetTimeUpdateMode(DirectorUpdateMode.Manual);
-
-        m_ControllerPlayable = AnimatorControllerPlayable.Create(m_ControllerGraph, itemAnimatorController);
-        var output = AnimationPlayableOutput.Create(m_ControllerGraph, "output", itemAnimator);
-        output.SetSourcePlayable(m_ControllerPlayable);
-
-        //itemAnimator.UnbindAllStreamHandles();
-        //itemAnimator.UnbindAllSceneHandles();
-        if (itemAnimator.TryGetComponent<RigBuilder>(out weaponRB))
-        {
-            weaponRB.enabled = false;
-            weaponRB.Build(m_ControllerGraph);
-            //weaponRB.graph.SetTimeUpdateMode(DirectorUpdateMode.Manual);
-            //((AnimationPlayableOutput)weaponRB.graph.GetOutputByType<AnimationPlayableOutput>(0)).SetSortingOrder(2);
-            //for (int i = 1; i < weaponRB.graph.GetOutputCount(); i++)
-            //{
-            //    ((AnimationPlayableOutput)weaponRB.graph.GetOutputByType<AnimationPlayableOutput>(i)).SetSortingOrder(1);
-            //}
-        }
-        //for (int i = 0; i < itemAnimator.playableGraph.GetOutputCount(); i++)
+        //if (m_ControllerGraph.IsValid())
         //{
-        //    ((AnimationPlayableOutput)itemAnimator.playableGraph.GetOutputByType<AnimationPlayableOutput>(i)).SetSortingOrder(3);
+        //    m_ControllerGraph.Destroy();
         //}
-        //itemAnimator.Rebind();
+        //m_ControllerGraph = PlayableGraph.Create();
+        //m_ControllerGraph.SetTimeUpdateMode(DirectorUpdateMode.Manual);
+
+        //m_ControllerPlayable = AnimatorControllerPlayable.Create(m_ControllerGraph, itemAnimatorController);
+        //var output = AnimationPlayableOutput.Create(m_ControllerGraph, "output", itemAnimator);
+        //output.SetSourcePlayable(m_ControllerPlayable);
+
+        //if (itemAnimator.TryGetComponent<RigBuilder>(out weaponRB))
+        //{
+        //    weaponRB.enabled = false;
+        //    weaponRB.Build(m_ControllerGraph);
+
+        //}
+
+        //itemAnimator.transform.AddMissingComponent<ItemAnimatorUpdate>().graph = m_ControllerGraph;
+        //m_ControllerPlayable.Play();
+
+        //if (itemAnimator.TryGetComponent<RigBuilder>(out weaponRB))
+        //{
+        //    weaponRB.enabled = false;
+        //    weaponRB.Build();
+        //}
         //itemAnimator.enabled = false;
-        //itemAnimator.playableGraph.SetTimeUpdateMode(UnityEngine.Playables.DirectorUpdateMode.Manual);
-        itemAnimator.transform.AddMissingComponent<ItemAnimatorUpdate>().graph = m_ControllerGraph;
-        m_ControllerPlayable.Play();
+        itemAnimator.speed = 0;
+        itemAnimator.transform.AddMissingComponent<ItemAnimatorUpdate>();
+
     }
 
     public void Init(Transform fpsArms)
@@ -111,14 +106,13 @@ public class RigTargets : MonoBehaviour
         Stopwatch sw = new Stopwatch();
         sw.Start();
 
-        var delayRenderer = itemAnimator.GetComponent<AnimationDelayRender>();
-        if (delayRenderer)
+        if (itemAnimator.TryGetComponent<AnimationDelayRender>(out var delayRenderer))
         {
             Destroy(delayRenderer);
         }
-
         var animator = fpsArms.GetComponentInChildren<Animator>();
         fpsArms = animator.transform;
+        //fpsArms.AddMissingComponent<PlayerRigLateUpdate>();
         this.fpsArms = fpsArms;
         itemFpv.SetParent(fpsArms.parent, false);
         itemFpv.SetAsFirstSibling();
@@ -138,15 +132,12 @@ public class RigTargets : MonoBehaviour
         var rc = rig.GetComponent<RigConverter>();
         rc.targetRoot = fpsArms;
         rc.Rebind();
-        animator.UnbindAllStreamHandles();
-        animator.UnbindAllSceneHandles();
 
         var rigBuilder = fpsArms.AddMissingComponent<RigBuilder>();
         rigBuilder.layers.RemoveAll(r => r.rig == rig);
         rigLayer = new RigLayer(rig, false);
         rigBuilder.layers.Add(rigLayer);
-        rigBuilder.Build();
-        animator.Rebind();
+        RebuildRig(animator, rigBuilder);
         //((AnimationPlayableOutput)animator.playableGraph.GetOutputByType<AnimationPlayableOutput>(0)).SetSortingOrder(0);
 
         //animator.Update(0);
@@ -164,10 +155,10 @@ public class RigTargets : MonoBehaviour
 #if NotEditor
         AnimationRiggingManager.RemoveRigExcludeName(rig.gameObject.name);
 #endif
-        if (m_ControllerGraph.IsValid())
-        {
-            m_ControllerGraph.Destroy();
-        }
+        //if (m_ControllerGraph.IsValid())
+        //{
+        //    m_ControllerGraph.Destroy();
+        //}
         if (fpsArms == null)
         {
             attachmentReference?.SetParent(transform);
@@ -180,13 +171,10 @@ public class RigTargets : MonoBehaviour
         Stopwatch sw = new Stopwatch();
         sw.Start();
         var animator = fpsArms.GetComponent<Animator>();
-        animator.UnbindAllStreamHandles();
-        animator.UnbindAllSceneHandles();
 
         var rigBuilder = fpsArms.AddMissingComponent<RigBuilder>();
         rigBuilder.layers.Remove(rigLayer);
-        rigBuilder.Build();
-        animator.Rebind();
+        RebuildRig(animator, rigBuilder);
 
         rig.transform.SetParent(transform, false);
         itemFpv.SetParent(transform, false);
@@ -213,27 +201,47 @@ public class RigTargets : MonoBehaviour
         itemFpv.gameObject.SetActive(enabled);
         rigLayer.active = enabled;
 
-        itemFpv.localPosition = new Vector3(0, 0, enabled ? 0 : -100);
-#if NotEditor
-#endif
-        if (enabled && manualUpdate)
-        {
-            //so it seems there's no direct way to reset this animator playable controller
-            //I have no choice but rebuild the whole graph again and pass the animator param bindings to the animator again
-            //luckily this does not introduce much overhead
-            RebuildPlayableGraph();
-            foreach (var binding in attachmentReference.GetComponentsInChildren<TransformActivationBinding>(true))
-            {
-                binding.UpdateBool(binding.gameObject.activeSelf);
-            }
-            m_ControllerGraph.Evaluate(Time.deltaTime);
-            weaponRB?.SyncLayers();
-        }
-        else
-        {
+        itemFpv.localPosition = Vector3.zero;
 
+        if (enabled)
+        {
+#if NotEditor
+            if (!itemAnimator.TryGetComponent<AnimationDelayRender>(out var delayRenderer))
+            {
+                delayRenderer = itemAnimator.gameObject.AddComponent<AnimationDelayRender>();
+                //delayRenderer.InitializeTarget(itemAnimator.transform);
+            }
+#endif
         }
+        //if (enabled && manualUpdate)
+        //{
+        //    //so it seems there's no direct way to reset this animator playable controller
+        //    //I have no choice but rebuild the whole graph again and pass the animator param bindings to the animator again
+        //    //luckily this does not introduce much overhead
+        //    //RebuildPlayableGraph();
+        //    //foreach (var binding in attachmentReference.GetComponentsInChildren<TransformActivationBinding>(true))
+        //    //{
+        //    //    binding.UpdateBool(binding.gameObject.activeSelf);
+        //    //}
+        //    itemAnimator.Update(Time.deltaTime);
+        //    //m_ControllerGraph.Evaluate(Time.deltaTime);
+        //    //weaponRB?.Evaluate(Time.deltaTime);
+        //}
+        //else
+        //{
+
+        //}
         gameObject.SetActive(forceDisableRoot ? false : !enabled);
+    }
+
+    public static void RebuildRig(Animator animator, RigBuilder rigBuilder)
+    {
+        animator.UnbindAllStreamHandles();
+        animator.UnbindAllSceneHandles();
+        //rigBuilder.enabled = false;
+        rigBuilder.Build();
+        //rigBuilder.graph.SetTimeUpdateMode(DirectorUpdateMode.Manual);
+        animator.Rebind();
     }
 
 #if NotEditor

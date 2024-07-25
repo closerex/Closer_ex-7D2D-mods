@@ -243,10 +243,13 @@ namespace KFCommonUtilityLib.Scripts.Utilities
         {
             MultiActionIndice indice = MultiActionManager.GetActionIndiceForItemID(self.type);
             int metaIndex = indice.GetMetaIndexForMode(mode);
-            object ammoIndex = self.GetMetadata(ActionSelectedAmmoNames[metaIndex]);
-            if (ammoIndex is int)
+            if (metaIndex >= 0)
             {
-                return (int)ammoIndex;
+                object ammoIndex = self.GetMetadata(ActionSelectedAmmoNames[metaIndex]);
+                if (ammoIndex is int)
+                {
+                    return (int)ammoIndex;
+                }
             }
             return self.SelectedAmmoTypeIndex;
         }
@@ -255,10 +258,13 @@ namespace KFCommonUtilityLib.Scripts.Utilities
         {
             MultiActionIndice indice = MultiActionManager.GetActionIndiceForItemID(self.type);
             int metaIndex = indice.GetMetaIndexForMode(mode);
-            object meta = self.GetMetadata(ActionMetaNames[metaIndex]);
-            if (meta is int)
+            if (metaIndex >= 0)
             {
-                return (int)meta;
+                object meta = self.GetMetadata(ActionMetaNames[metaIndex]);
+                if (meta is int)
+                {
+                    return (int)meta;
+                }
             }
             return self.Meta;
         }
@@ -270,10 +276,13 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             if (mode < 0)
                 return self.SelectedAmmoTypeIndex;
             int metaIndex = indice.GetMetaIndexForMode(mode);
-            object ammoIndex = self.GetMetadata(ActionSelectedAmmoNames[metaIndex]);
-            if (ammoIndex is int)
+            if (metaIndex >= 0)
             {
-                return (int)ammoIndex;
+                object ammoIndex = self.GetMetadata(ActionSelectedAmmoNames[metaIndex]);
+                if (ammoIndex is int)
+                {
+                    return (int)ammoIndex;
+                }
             }
             return self.SelectedAmmoTypeIndex;
         }
@@ -285,12 +294,16 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             if (mode < 0)
                 return self.Meta;
             int metaIndex = indice.GetMetaIndexForMode(mode);
-            object meta = self.GetMetadata(ActionMetaNames[metaIndex]);
-            if (meta is int)
+            if (metaIndex >= 0)
             {
-                //Log.Out($"GetMetaByActionIndex: mode: {mode}, action: {metaIndex}, meta: {(int)meta}\n{StackTraceUtility.ExtractStackTrace()}");
-                return (int)meta;
+                object meta = self.GetMetadata(ActionMetaNames[metaIndex]);
+                if (meta is int)
+                {
+                    //Log.Out($"GetMetaByActionIndex: mode: {mode}, action: {metaIndex}, meta: {(int)meta}\n{StackTraceUtility.ExtractStackTrace()}");
+                    return (int)meta;
+                }
             }
+
             return self.Meta;
         }
 

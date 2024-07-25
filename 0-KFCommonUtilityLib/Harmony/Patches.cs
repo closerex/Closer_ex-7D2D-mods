@@ -30,7 +30,7 @@ public static class CommonUtilityPatch
 
         if (holdingEntity is EntityPlayerLocal && AnimationRiggingManager.FpvTransformReference != null)
         {
-            AnimationAmmoUpdateState.SetAmmoCountForEntity(holdingEntity);
+            AnimationAmmoUpdateState.SetAmmoCountForEntity(holdingEntity, holdingEntity.inventory.holdingItemIdx);
         }
     }
 

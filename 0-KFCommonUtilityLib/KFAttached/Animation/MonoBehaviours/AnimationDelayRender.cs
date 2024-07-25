@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+#if NotEditor
+using UniLinq;
+#else
 using System.Linq;
+#endif
 using UnityEngine;
 
-[Obsolete("This script is no longer needed.")]
-[AddComponentMenu("KFAttachments/Utils/Animation Delay Render")]
-public class AnimationDelayRender : MonoBehaviour, ISerializationCallbackReceiver
+[AddComponentMenu("")]
+public class AnimationDelayRender : MonoBehaviour
 {
     [Serializable]
     public class TransformTargets
@@ -28,40 +31,40 @@ public class AnimationDelayRender : MonoBehaviour, ISerializationCallbackReceive
         }
     }
 
-    [SerializeField]
-    private List<TransformTargets> delayTargetsEditor;
+    //[SerializeField]
+    //private List<TransformTargets> delayTargetsEditor;
     [NonSerialized]
     private Transform[] delayTargets;
 
-    [SerializeField, HideInInspector]
-    private List<Transform> list_targets;
-    [SerializeField, HideInInspector]
-    private List<bool> list_include_children;
-    [SerializeField, HideInInspector]
-    private int serializedCount;
+    //[SerializeField, HideInInspector]
+    //private List<Transform> list_targets;
+    //[SerializeField, HideInInspector]
+    //private List<bool> list_include_children;
+    //[SerializeField, HideInInspector]
+    //private int serializedCount;
 
     private TransformLocalData[] posTargets;
     //private TransformLocalData[] posAfterAnimation;
 
-    public void OnAfterDeserialize()
-    {
-    }
+    //public void OnAfterDeserialize()
+    //{
+    //}
 
-    public void OnBeforeSerialize()
-    {
-        if (delayTargetsEditor != null && delayTargetsEditor.Count > 0)
-        {
-            serializedCount = 0;
-            list_targets = new List<Transform>();
-            list_include_children = new List<bool>();
-            for (int i = 0; i < delayTargetsEditor.Count; i++)
-            {
-                list_targets.Add(delayTargetsEditor[i].target);
-                list_include_children.Add(delayTargetsEditor[i].includeChildren);
-                serializedCount++;
-            }
-        }
-    }
+    //public void OnBeforeSerialize()
+    //{
+    //    if (delayTargetsEditor != null && delayTargetsEditor.Count > 0)
+    //    {
+    //        serializedCount = 0;
+    //        list_targets = new List<Transform>();
+    //        list_include_children = new List<bool>();
+    //        for (int i = 0; i < delayTargetsEditor.Count; i++)
+    //        {
+    //            list_targets.Add(delayTargetsEditor[i].target);
+    //            list_include_children.Add(delayTargetsEditor[i].includeChildren);
+    //            serializedCount++;
+    //        }
+    //    }
+    //}
 #if NotEditor
     private EntityPlayerLocal player;
 #endif
@@ -77,60 +80,92 @@ public class AnimationDelayRender : MonoBehaviour, ISerializationCallbackReceive
         }
 #endif
 
+        //var delayTargetsSet = new HashSet<Transform>();
+        //for (int i = 0; i < serializedCount; i++)
+        //{
+        //    if (list_include_children[i])
+        //    {
+        //        var targets = list_targets[i].GetComponentsInChildren<Transform>();
+        //        foreach (var target in targets)
+        //        {
+        //            delayTargetsSet.Add(target);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        delayTargetsSet.Add(list_targets[i]);
+        //    }
+        //}
+        //delayTargets = delayTargetsSet.ToArray();
+        //posTargets = new TransformLocalData[delayTargets.Length];
+        //posAfterAnimation = new TransformLocalData[delayTargets.Count];
+    }
+
+    internal void InitializeTarget(Transform target)
+    {
         var delayTargetsSet = new HashSet<Transform>();
-        for (int i = 0; i < serializedCount; i++)
+        foreach (Transform child in target.GetComponentsInChildren<Transform>(true).Skip(1))
         {
-            if (list_include_children[i])
-            {
-                var targets = list_targets[i].GetComponentsInChildren<Transform>();
-                foreach (var target in targets)
-                {
-                    delayTargetsSet.Add(target);
-                }
-            }
-            else
-            {
-                delayTargetsSet.Add(list_targets[i]);
-            }
+            delayTargetsSet.Add(child);
         }
         delayTargets = delayTargetsSet.ToArray();
         posTargets = new TransformLocalData[delayTargets.Length];
-        //posAfterAnimation = new TransformLocalData[delayTargets.Count];
     }
 
     private void OnEnable()
     {
-        int i = 0;
-        foreach (var target in delayTargets)
+        InitializeTarget(transform);
+        GetComponent<Animator>().PlayInFixedTime(0, 0, Time.deltaTime);
+        for (int i = 0; i < delayTargets.Length; i++)
         {
-            posTargets[i] = new TransformLocalData(target.localPosition, target.localRotation, target.localScale);
-            i++;
+            Transform target = delayTargets[i];
+            if (target)
+            {
+                posTargets[i] = new TransformLocalData(target.localPosition, target.localRotation, target.localScale);
+            }
+            else
+            {
+                delayTargets[i] = null;
+            }
         }
+        Log.Out($"Delay render target count: {delayTargets.Length}");
     }
 
     private void Update()
     {
-        int i = 0;
-        foreach (var target in delayTargets)
+        for (int i = 0; i < delayTargets.Length; i++)
         {
-            target.localPosition = posTargets[i].localPosition;
-            target.localRotation = posTargets[i].localRotation;
-            target.localScale = posTargets[i].localScale;
-            i++;
+            Transform target = delayTargets[i];
+            if (target)
+            {
+                target.localPosition = posTargets[i].localPosition;
+                target.localRotation = posTargets[i].localRotation;
+                target.localScale = posTargets[i].localScale;
+            }
+            else
+            {
+                delayTargets[i] = null;
+            }
         }
     }
 
     private void LateUpdate()
     {
-        int i = 0;
-        foreach (var target in delayTargets)
+        for (int i = 0; i < delayTargets.Length; i++)
         {
-            TransformLocalData targetData = new TransformLocalData(target.localPosition, target.localRotation, target.localScale);
-            target.localPosition = posTargets[i].localPosition;
-            target.localRotation = posTargets[i].localRotation;
-            target.localScale = posTargets[i].localScale;
-            posTargets[i] = targetData;
-            i++;
+            Transform target = delayTargets[i];
+            if (target)
+            {
+                TransformLocalData targetData = new TransformLocalData(target.localPosition, target.localRotation, target.localScale);
+                target.localPosition = posTargets[i].localPosition;
+                target.localRotation = posTargets[i].localRotation;
+                target.localScale = posTargets[i].localScale;
+                posTargets[i] = targetData;
+            }
+            else
+            {
+                delayTargets[i] = null;
+            }
         }
     }
 }

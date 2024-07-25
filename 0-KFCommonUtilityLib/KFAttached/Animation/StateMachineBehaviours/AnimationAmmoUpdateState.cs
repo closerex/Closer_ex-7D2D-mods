@@ -23,15 +23,16 @@ public class AnimationAmmoUpdateState : StateMachineBehaviour
         var player = animator.GetComponentInParent<EntityAlive>();
         if(slotGuard.IsValid(player))
         {
-            SetAmmoCountForEntity(player);
+            SetAmmoCountForEntity(player, slotGuard.Slot);
         }
     }
 
-    public static void SetAmmoCountForEntity(EntityAlive entity)
+    public static void SetAmmoCountForEntity(EntityAlive entity, int slot)
     {
         if (entity)
         {
-            if (entity.inventory?.holdingItemData?.actionData != null)
+            var invData = entity.inventory?.slots?[slot];
+            if (invData?.actionData != null)
             {
                 var mapping = MultiActionManager.GetMappingForEntity(entity.entityId);
                 if (mapping != null)
@@ -40,7 +41,7 @@ public class AnimationAmmoUpdateState : StateMachineBehaviour
                     for (int i = 0; i < mapping.ModeCount; i++)
                     {
                         int metaIndex = metaIndices.GetMetaIndexForMode(i);
-                        int meta = entity.inventory.holdingItemItemValue.GetMetaByMode(i);
+                        int meta = invData.itemValue.GetMetaByMode(i);
                         entity.emodel.avatarController.UpdateInt(hash_states[metaIndex], meta);
                         if (ConsoleCmdReloadLog.LogInfo)
                         {
@@ -51,10 +52,10 @@ public class AnimationAmmoUpdateState : StateMachineBehaviour
                 }
                 else
                 {
-                    entity.emodel.avatarController.UpdateInt(hash_states[0], entity.inventory.holdingItemItemValue.Meta);
+                    entity.emodel.avatarController.UpdateInt(hash_states[0], invData.itemValue.Meta);
                     if (ConsoleCmdReloadLog.LogInfo)
                     {
-                        Log.Out($"Setting ammoCount to {entity.inventory.holdingItemItemValue.Meta}, stack trace:\n{StackTraceUtility.ExtractStackTrace()}");
+                        Log.Out($"Setting ammoCount to {invData.itemValue.Meta}, stack trace:\n{StackTraceUtility.ExtractStackTrace()}");
                     }
                     //animator.SetInteger(hash_states[0], entity.inventory.holdingItemItemValue.Meta);
                 }
