@@ -67,6 +67,8 @@ public class AnimationDelayRender : MonoBehaviour
     //}
 #if NotEditor
     private EntityPlayerLocal player;
+    //private int frameCount;
+    //private Vector3 originalPosition;
 #endif
 
     private void Awake()
@@ -114,8 +116,11 @@ public class AnimationDelayRender : MonoBehaviour
 
     private void OnEnable()
     {
+        //frameCount = 0;
         InitializeTarget(transform);
-        GetComponent<Animator>().PlayInFixedTime(0, 0, Time.deltaTime);
+        //originalPosition = transform.localPosition;
+        //transform.position -= new Vector3(0, 100, 0);
+        //GetComponent<Animator>().PlayInFixedTime(0, 0, Time.deltaTime);
         for (int i = 0; i < delayTargets.Length; i++)
         {
             Transform target = delayTargets[i];
@@ -129,6 +134,11 @@ public class AnimationDelayRender : MonoBehaviour
             }
         }
         Log.Out($"Delay render target count: {delayTargets.Length}");
+    }
+
+    private void OnDisable()
+    {
+        //transform.localPosition = originalPosition;
     }
 
     private void Update()
@@ -151,6 +161,10 @@ public class AnimationDelayRender : MonoBehaviour
 
     private void LateUpdate()
     {
+        //if (frameCount++ == 2)
+        //{
+        //    transform.localPosition = originalPosition;
+        //}
         for (int i = 0; i < delayTargets.Length; i++)
         {
             Transform target = delayTargets[i];

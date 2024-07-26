@@ -201,8 +201,6 @@ public class RigTargets : MonoBehaviour
         itemFpv.gameObject.SetActive(enabled);
         rigLayer.active = enabled;
 
-        itemFpv.localPosition = Vector3.zero;
-
         if (enabled)
         {
 #if NotEditor

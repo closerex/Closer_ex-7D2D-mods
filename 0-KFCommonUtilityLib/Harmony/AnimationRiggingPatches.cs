@@ -2,6 +2,7 @@
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Xml.Linq;
@@ -426,6 +427,8 @@ static class AnimationRiggingPatches
         }
     }
 
+
+    private static Coroutine delayShowWeaponCo;
     [HarmonyPatch(typeof(Inventory), nameof(Inventory.setHoldingItemTransform))]
     [HarmonyPostfix]
     private static void Postfix_setHoldingItemTransform_Inventory(Transform _t, Inventory __instance)
@@ -434,6 +437,36 @@ static class AnimationRiggingPatches
         {
             targets.SetEnabled(__instance.entity.emodel.IsFPV);
         }
+
+    }
+
+    [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.ShowWeaponCamera))]
+    [HarmonyPostfix]
+    private static void Postfix_ShowWeaponCamera_EntityPlayerLocal(EntityPlayerLocal __instance, bool show)
+    {
+        if (__instance.bFirstPersonView)
+        {
+            __instance.weaponCamera.cullingMask &= ~(1 << 10);
+            if (delayShowWeaponCo != null)
+            {
+                ThreadManager.StopCoroutine(delayShowWeaponCo);
+            }
+            if (show)
+            {
+                delayShowWeaponCo = ThreadManager.StartCoroutine(DelayShowWeapon(__instance.weaponCamera));
+            }
+        }
+    }
+
+    private static IEnumerator DelayShowWeapon(Camera camera)
+    {
+        yield return null;
+        yield return null;
+        if (camera)
+        {
+            camera.cullingMask |= 1 << 10;
+        }
+        yield break;
     }
 
     [HarmonyPatch(typeof(World), nameof(World.SpawnEntityInWorld))]
