@@ -44,7 +44,6 @@ public class AnimationReloadEvents : MonoBehaviour
                     actionData.invData.holdingEntitySoundID = -1;
                 }
             }
-            AnimationAmmoUpdateState.SetAmmoCountForEntity(actionData.invData.holdingEntity, actionData.invData.slotIdx);
 #if DEBUG
             Log.Out($"ANIMATION RELOAD EVENT AMMO : {actionData.invData.item.Name}");
 #endif
@@ -69,6 +68,7 @@ public class AnimationReloadEvents : MonoBehaviour
         actionData.invData.holdingEntity.FireEvent(MinEventTypes.onReloadStop, true);
         actionData.invData.holdingEntity.OnReloadEnd();
         actionData.invData.holdingEntity.inventory.CallOnToolbeltChangedInternal();
+        AnimationAmmoUpdateState.SetAmmoCountForEntity(actionData.invData.holdingEntity, actionData.invData.slotIdx);
         actionData.isReloadCancelled = false;
         actionData.isWeaponReloadCancelled = false;
         actionData.isChangingAmmoType = false;
