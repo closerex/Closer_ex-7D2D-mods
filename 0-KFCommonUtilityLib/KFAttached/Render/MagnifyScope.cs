@@ -97,7 +97,12 @@ namespace KFCommonUtilityLib.KFAttached.Render
             }
             var zoomAction = (ItemActionZoom)((ActionModuleAlternative.InventorySetItemTemp?.ItemClass ?? player.inventory.holdingItem).Actions[1]);
             var zoomActionData = (ItemActionZoom.ItemActionDataZoom)player.inventory.holdingItemData.actionData[1];
-            float targetScale = StringParsers.ParseFloat(player.inventory.holdingItemItemValue.GetPropertyOverride("ZoomRatio", "0"));
+            string originalRatio = zoomAction.Properties.GetString("ZoomRatio");
+            if (string.IsNullOrEmpty(originalRatio))
+            {
+                originalRatio = "0";
+            }
+            float targetScale = StringParsers.ParseFloat(player.inventory.holdingItemItemValue.GetPropertyOverride("ZoomRatio", originalRatio));
             if (targetScale > 0)
             {
                 float maxZoom = zoomActionData.MaxZoomIn;
