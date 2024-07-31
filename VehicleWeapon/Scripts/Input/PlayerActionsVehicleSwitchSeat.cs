@@ -122,5 +122,6 @@ public class PlayerActionsVehicleExtra : CustomPlayerActionVersionBase
     }
 
     public static PlayerActionsVehicleExtra Instance { get; private set; }
+    public override ControllerActionType ControllerActionDisplay => ControllerActionType.Vehicle;
 }
 

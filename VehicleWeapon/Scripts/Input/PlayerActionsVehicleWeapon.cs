@@ -50,5 +50,6 @@ public class PlayerActionsVehicleWeapon : CustomPlayerActionVersionBase
     }
 
     public static PlayerActionsVehicleWeapon Instance { get; private set; }
+    public override ControllerActionType ControllerActionDisplay => ControllerActionType.Vehicle;
 }
 
