@@ -54,7 +54,7 @@ static class AnimationRiggingPatches
         {
             rangedData.muzzle = AnimationRiggingManager.GetTransformOverrideByName("Muzzle", rangedData.invData.model);
         }
-        rangedData.Laser = AnimationRiggingManager.GetTransformOverrideByName("Laser", rangedData.invData.model);
+        rangedData.Laser = AnimationRiggingManager.GetTransformOverrideByName("laser", rangedData.invData.model);
     }
 
     [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.StartHolding))]
@@ -460,8 +460,7 @@ static class AnimationRiggingPatches
 
     private static IEnumerator DelayShowWeapon(Camera camera)
     {
-        yield return null;
-        yield return null;
+        yield return new WaitForSecondsRealtime(0.1f);
         if (camera)
         {
             camera.cullingMask |= 1 << 10;
