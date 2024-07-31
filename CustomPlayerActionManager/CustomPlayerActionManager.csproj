@@ -23,12 +23,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>portable</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>.\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
@@ -59,11 +60,15 @@
   <ItemGroup>
     <Compile Include="Harmony\Init.cs" />
     <Compile Include="Harmony\Patches.cs" />
+    <Compile Include="Harmony\ReversePatches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripts\Core\CustomPlayerActionBase.cs" />
     <Compile Include="Scripts\Core\CustomPlayerActionManager.cs" />
     <Compile Include="Scripts\Utilities\ActionSetUserDataExtension.cs" />
+    <Compile Include="Scripts\XUi\XUiC_OptionsControlsCLS.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="ModInfo.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

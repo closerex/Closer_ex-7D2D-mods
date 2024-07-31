@@ -2,21 +2,57 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
+using InControl;
 
 public class CustomPlayerActionManager
 {
     private static Dictionary<string, CustomPlayerActionVersionBase> dict_action_sets = new Dictionary<string, CustomPlayerActionVersionBase>();
     private static readonly string saveName = "ActionSetSaves.pref";
     private static string saveFile;
+    private static bool inited;
+    internal static int[] arr_row_counts_control, arr_row_counts_controller;
+
+    internal static void ResizeGrid(SortedDictionary<PlayerActionData.ActionTab, SortedDictionary<PlayerActionData.ActionGroup, List<PlayerAction>>> sdict_all_action_sets)
+    {
+        Log.Out($"Recalculating options controls grid size...");
+        arr_row_counts_control = new int[sdict_all_action_sets.Count];
+        int i = 0;
+        foreach (var pair in sdict_all_action_sets)
+        {
+            var dict = pair.Value;
+            int rowCount = 0;
+            foreach (var list in dict.Values)
+            {
+                rowCount += (list.Count + 1) / 2 + 1;
+            }
+            arr_row_counts_control[i++] = rowCount;
+            Log.Out($"Size of tab {i} rows is set to {rowCount}");
+        }
+    }
+
+    internal static void ResizeControllerGrid(Dictionary<string, List<PlayerAction>> dictionary)
+    {
+        Log.Out($"Recalculating options controller grid size...");
+        arr_row_counts_controller = new int[dictionary.Count];
+        int i = 0;
+        foreach (var pair in dictionary)
+        {
+            arr_row_counts_controller[i] = (pair.Value.Count + 1) / 2;
+            Log.Out($"Size of tab {pair.Key} rows is set to {arr_row_counts_controller[i]}");
+            i++;
+        }
+    }
 
     public static void InitCustomControls()
     {
-        if (GameManager.IsDedicatedServer)
+        if (GameManager.IsDedicatedServer || inited)
             return;
+        Log.Out("Initiating custom controls...");
         InitFolderPath();
         LoadCustomActionSets();
         LoadCustomControlSaves();
         SaveCustomControls();
+        inited = true;
     }
 
     private static void InitFolderPath()
@@ -155,6 +191,30 @@ public class CustomPlayerActionManager
         result.AddRange(origin);
         result.AddRange(dict_action_sets.Values);
         return result.ToArray();
+    }
+
+    public static void CreateControllerActions(Dictionary<string, List<PlayerAction>> dictionary)
+    {
+        foreach (var actionSet in dict_action_sets.Values)
+        {
+            switch (actionSet.ControllerActionDisplay)
+            {
+                case CustomPlayerActionVersionBase.ControllerActionType.OnFoot:
+                    foreach (var action in actionSet.Actions)
+                    {
+                        dictionary["inpTabPlayerOnFoot"].Add(action);
+                    }
+                    break;
+                case CustomPlayerActionVersionBase.ControllerActionType.Vehicle:
+                    foreach (var action in actionSet.Actions)
+                    {
+                        dictionary["inpTabVehicle"].Add(action);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     public static void StoreCurrentCustomBindings(List<string> origin)

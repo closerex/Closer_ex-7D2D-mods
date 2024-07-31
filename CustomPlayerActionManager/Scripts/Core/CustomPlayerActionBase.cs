@@ -1,20 +1,12 @@
 ﻿using System;
 
-public class CustomPlayerActionVersionBase : PlayerActionsBase
+public abstract class CustomPlayerActionVersionBase : PlayerActionsBase
 {
-    public override void CreateActions()
+    public enum ControllerActionType
     {
-        throw new NotImplementedException();
-    }
-
-    public override void CreateDefaultJoystickBindings()
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void CreateDefaultKeyboardBindings()
-    {
-        throw new NotImplementedException();
+        None,
+        OnFoot,
+        Vehicle
     }
 
     public virtual void InitActionSetRelations()
@@ -22,4 +14,5 @@ public class CustomPlayerActionVersionBase : PlayerActionsBase
 
     }
     public int Version { get; protected set; } = 1;
+    public virtual ControllerActionType ControllerActionDisplay { get; } = ControllerActionType.None;
 }
