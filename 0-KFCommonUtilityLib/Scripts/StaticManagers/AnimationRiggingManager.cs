@@ -10,22 +10,29 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         {
             public Animator fpvAnimator;
             public RigTargets targets;
-            public Transform muzzle;
-            public Transform muzzle2;
-            public bool isDoubleBarrel;
+            public ItemInventoryData invData;
+            //public Transform muzzle;
+            //public Transform muzzle2;
+            //public bool isDoubleBarrel;
 
-            public FpvTransformRef(RigTargets targets, bool isDoubleBarrel)
+            public FpvTransformRef(RigTargets targets, ItemInventoryData invData)
             {
                 this.targets = targets;
-                this.isDoubleBarrel = isDoubleBarrel;
+                this.invData = invData;
+                //this.isDoubleBarrel = isDoubleBarrel;
                 fpvAnimator = targets.itemFpv.GetComponentInChildren<Animator>();
-                if (isDoubleBarrel)
-                {
-                    muzzle = targets.itemFpv.transform.FindInChildren("Muzzle_L");
-                    muzzle2 = targets.itemFpv.transform.FindInChildren("Muzzle_R");
-                }
-                else
-                    muzzle = targets.itemFpv.transform.FindInChilds("Muzzle");
+                //if (isDoubleBarrel)
+                //{
+                //    muzzle = targets.itemFpv.transform.FindInChildren("Muzzle_L");
+                //    muzzle2 = targets.itemFpv.transform.FindInChildren("Muzzle_R");
+                //}
+                //else
+                //    muzzle = targets.itemFpv.transform.FindInChilds("Muzzle");
+            }
+
+            public bool IsRanged(out ItemActionRanged.ItemActionDataRanged rangedData)
+            {
+                return (rangedData = fpvTransformRef.invData.actionData[MultiActionManager.GetActionIndexForEntity(GameManager.Instance.World.GetPrimaryPlayer())] as ItemActionRanged.ItemActionDataRanged) != null;
             }
         }
 
@@ -141,7 +148,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             Transform transform = inv.models[inv.holdingItemIdx];
             fpvTransformRef = null;
             if (transform != null && transform.TryGetComponent(out RigTargets targets))
-                fpvTransformRef = new FpvTransformRef(targets, inv.holdingItemData.item.ItemTags.Test_Bit(FastTags<TagGroup.Global>.GetBit("dBarrel")));
+                fpvTransformRef = new FpvTransformRef(targets, inv.holdingItemData);
         }
 
         public static Transform GetAttachmentReferenceOverrideTransform(Transform transform, string transformPath, Entity entity)
@@ -168,14 +175,22 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         {
             if (!isLocalFpv || fpvTransformRef == null)
                 return muzzle;
-            return fpvTransformRef.muzzle;
+            if (fpvTransformRef.IsRanged(out var rangedData))
+            {
+                return rangedData.muzzle;
+            }
+            return muzzle;
         }
 
         public static Transform GetMuzzle2OverrideFPV(Transform muzzle2, bool isLocalFpv)
         {
             if (!isLocalFpv || fpvTransformRef == null)
                 return muzzle2;
-            return fpvTransformRef.muzzle2;
+            if (fpvTransformRef.IsRanged(out var rangedData))
+            {
+                return rangedData.muzzle2;
+            }
+            return muzzle2;
         }
 
         public static Transform GetTransformOverrideByName(string name, Transform itemModel)
@@ -196,63 +211,67 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 return false;
             var itemActionDataRanged = _actionData as ItemActionRanged.ItemActionDataRanged;
             EntityPlayerLocal player = GameManager.Instance.World.GetPrimaryPlayer();
-            if (particlesMuzzleFire != null && fpvTransformRef.muzzle != null)
+            if (itemActionDataRanged.muzzle != null)
             {
-                Transform fire = GameManager.Instance.SpawnParticleEffectClientForceCreation(new ParticleEffect(particlesMuzzleFireFpv != null ? particlesMuzzleFireFpv : particlesMuzzleFire, Vector3.zero, 1f, Color.clear, null, null, false), player.entityId, true);
-                if (fire != null)
+                if (particlesMuzzleFire != null)
                 {
-                    fire.transform.localPosition = Vector3.zero;
-                    //fire.transform.localEulerAngles = Vector3.zero;
-                    if (fpvTransformRef.isDoubleBarrel && itemActionDataRanged.invData.itemValue.Meta == 0)
-                        fire.transform.SetParent(fpvTransformRef.muzzle2, false);
-                    else
-                        fire.transform.SetParent(fpvTransformRef.muzzle, false);
-                    Utils.SetLayerRecursively(fire.gameObject, 10, null);
-                    //fire.transform.localPosition = Vector3.zero;
-                    //fire.transform.localEulerAngles = Vector3.zero;
-                    //fire.transform.localScale = Vector3.one;
-                    foreach (var particle in fire.GetComponentsInChildren<ParticleSystem>())
+                    Transform fire = GameManager.Instance.SpawnParticleEffectClientForceCreation(new ParticleEffect(particlesMuzzleFireFpv != null ? particlesMuzzleFireFpv : particlesMuzzleFire, Vector3.zero, 1f, Color.clear, null, null, false), player.entityId, true);
+                    if (fire != null)
                     {
-                        particle.gameObject.SetActive(true);
-                        particle.Clear();
-                        particle.Play();
+                        fire.transform.localPosition = Vector3.zero;
+                        //fire.transform.localEulerAngles = Vector3.zero;
+                        if (itemActionDataRanged.IsDoubleBarrel && itemActionDataRanged.invData.itemValue.Meta == 0)
+                            fire.transform.SetParent(itemActionDataRanged.muzzle2, false);
+                        else
+                            fire.transform.SetParent(itemActionDataRanged.muzzle, false);
+                        Utils.SetLayerRecursively(fire.gameObject, 10, null);
+                        //fire.transform.localPosition = Vector3.zero;
+                        //fire.transform.localEulerAngles = Vector3.zero;
+                        //fire.transform.localScale = Vector3.one;
+                        foreach (var particle in fire.GetComponentsInChildren<ParticleSystem>())
+                        {
+                            particle.gameObject.SetActive(true);
+                            particle.Clear();
+                            particle.Play();
+                        }
+                        var temp = fire.gameObject.GetOrAddComponent<TemporaryObject>();
+                        temp.life = 5;
+                        temp.Restart();
+                        if (fire.TryGetComponent<LODGroup>(out var lod))
+                            lod.enabled = false;
+                        //Log.Out($"barrel position: {fire.transform.parent.parent.position}/{fire.transform.parent.parent.localPosition}, muzzle position: {fire.transform.parent.position}/{fire.transform.parent.localPosition}, particle position: {fire.transform.position}");
+                        //Log.Out($"particles: {string.Join("\n", fire.GetComponentsInChildren<ParticleSystem>().Select(ps => ps.name + " active: " + ps.gameObject.activeInHierarchy + " layer: " + ps.gameObject.layer + " position: " + ps.transform.position))}");
                     }
-                    var temp = fire.gameObject.GetOrAddComponent<TemporaryObject>();
-                    temp.life = 5;
-                    temp.Restart();
-                    if (fire.TryGetComponent<LODGroup>(out var lod))
-                        lod.enabled = false;
-                    //Log.Out($"barrel position: {fire.transform.parent.parent.position}/{fire.transform.parent.parent.localPosition}, muzzle position: {fire.transform.parent.position}/{fire.transform.parent.localPosition}, particle position: {fire.transform.position}");
-                    //Log.Out($"particles: {string.Join("\n", fire.GetComponentsInChildren<ParticleSystem>().Select(ps => ps.name + " active: " + ps.gameObject.activeInHierarchy + " layer: " + ps.gameObject.layer + " position: " + ps.transform.position))}");
+                }
+                if (particlesMuzzleSmoke != null && itemActionDataRanged.muzzle != null)
+                {
+                    float num = GameManager.Instance.World.GetLightBrightness(World.worldToBlockPos(itemActionDataRanged.muzzle.transform.position)) / 2f;
+                    Color clear = Color.clear;
+                    Transform smoke = GameManager.Instance.SpawnParticleEffectClientForceCreation(new ParticleEffect(particlesMuzzleSmokeFpv != null ? particlesMuzzleSmokeFpv : particlesMuzzleSmoke, Vector3.zero, num, clear, null, null, false), player.entityId, true);
+                    if (smoke != null)
+                    {
+                        smoke.transform.localPosition = Vector3.zero;
+                        //smoke.transform.localEulerAngles = Vector3.zero;
+                        smoke.gameObject.layer = 10;
+                        smoke.transform.SetParent(itemActionDataRanged.muzzle, false);
+                        //smoke.transform.localPosition = Vector3.zero;
+                        //smoke.transform.localEulerAngles = Vector3.zero;
+                        //smoke.transform.localScale = Vector3.one;
+                        foreach (var particle in smoke.GetComponentsInChildren<ParticleSystem>())
+                        {
+                            particle.gameObject.SetActive(true);
+                            particle.Clear();
+                            particle.Play();
+                        }
+                        var temp = smoke.gameObject.GetOrAddComponent<TemporaryObject>();
+                        temp.life = 5;
+                        temp.Restart();
+                        if (smoke.TryGetComponent<LODGroup>(out var lod))
+                            lod.enabled = false;
+                    }
                 }
             }
-            if (particlesMuzzleSmoke != null && fpvTransformRef.muzzle != null)
-            {
-                float num = GameManager.Instance.World.GetLightBrightness(World.worldToBlockPos(fpvTransformRef.muzzle.transform.position)) / 2f;
-                Color clear = Color.clear;
-                Transform smoke = GameManager.Instance.SpawnParticleEffectClientForceCreation(new ParticleEffect(particlesMuzzleSmokeFpv != null ? particlesMuzzleSmokeFpv : particlesMuzzleSmoke, Vector3.zero, num, clear, null, null, false), player.entityId, true);
-                if (smoke != null)
-                {
-                    smoke.transform.localPosition = Vector3.zero;
-                    //smoke.transform.localEulerAngles = Vector3.zero;
-                    smoke.gameObject.layer = 10;
-                    smoke.transform.SetParent(fpvTransformRef.muzzle, false);
-                    //smoke.transform.localPosition = Vector3.zero;
-                    //smoke.transform.localEulerAngles = Vector3.zero;
-                    //smoke.transform.localScale = Vector3.one;
-                    foreach (var particle in smoke.GetComponentsInChildren<ParticleSystem>())
-                    {
-                        particle.gameObject.SetActive(true);
-                        particle.Clear();
-                        particle.Play();
-                    }
-                    var temp = smoke.gameObject.GetOrAddComponent<TemporaryObject>();
-                    temp.life = 5;
-                    temp.Restart();
-                    if (smoke.TryGetComponent<LODGroup>(out var lod))
-                        lod.enabled = false;
-                }
-            }
+
             return true;
         }
 

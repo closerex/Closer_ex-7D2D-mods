@@ -27,9 +27,14 @@ public class ActionModuleAlternative
             MultiActionManager.inputCD = math.max(0.5f, MultiActionManager.inputCD);
             //ThreadManager.StartCoroutine(DelaySetExecutionIndex(_data.invData.holdingEntity, __customData.mapping));
         }
+        return true;
+    }
+
+    [MethodTargetPostfix(nameof(ItemActionAttack.StartHolding))]
+    private void Postfix_StartHolding(AlternativeData __customData)
+    {
         __customData.UpdateMuzzleTransformOverride();
         __customData.OverrideMuzzleTransform(__customData.mapping.CurMode);
-        return true;
     }
 
     private static IEnumerator DelaySetExecutionIndex(EntityAlive player, MultiActionMapping mapping)
@@ -232,7 +237,9 @@ public class ActionModuleAlternative
                     rangedData.muzzle = altMuzzleTrans[mode];
                 }
             }
-
+#if DEBUG
+            Log.Out($"setting muzzle transform for action {rangedData.indexInEntityOfAction} to {rangedData.muzzle.name}\n{StackTraceUtility.ExtractStackTrace()}");
+#endif
         }
     }
 
