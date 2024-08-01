@@ -2,6 +2,7 @@
 using KFCommonUtilityLib.Scripts.Utilities;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using UnityEngine;
 
 public class CommonUtilityLibInit : IModApi
 {
@@ -16,6 +17,7 @@ public class CommonUtilityLibInit : IModApi
         {
             Log.Out($"size of MultiActionIndice: {sizeof(MultiActionIndice)} marshal size: {Marshal.SizeOf<MultiActionIndice>()}");
         }
+        QualitySettings.streamingMipmapsMemoryBudget = 0;
         DelayLoadModuleManager.RegisterDelayloadDll("FullautoLauncher", "FullautoLauncherAnimationRiggingCompatibilityPatch");
         DelayLoadModuleManager.RegisterDelayloadDll("SMXcore", "SMXMultiActionCompatibilityPatch");
         //DelayLoadModuleManager.RegisterDelayloadDll("SCore", "SCoreEntityHitCompatibilityPatch");

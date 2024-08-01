@@ -2,8 +2,10 @@
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System;
+using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml.Linq;
 using UniLinq;
@@ -437,6 +439,24 @@ static class AnimationRiggingPatches
         {
             targets.SetEnabled(__instance.entity.emodel.IsFPV);
         }
+    }
+
+    [HarmonyPatch(typeof(Inventory), nameof(Inventory.SetItem), new[] {typeof(int), typeof(ItemValue), typeof(int), typeof(bool)})]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_SetItem_Inventory(IEnumerable<CodeInstruction> instructions)
+    {
+        MethodInfo mtd_update = AccessTools.Method(typeof(Inventory), nameof(Inventory.updateHoldingItem));
+        foreach (var code in instructions)
+        {
+            yield return code;
+            if (code.Calls(mtd_update))
+            {
+                yield return new CodeInstruction(OpCodes.Ldarg_0);
+                yield return new CodeInstruction(OpCodes.Ldc_I4_1);
+                yield return new CodeInstruction(OpCodes.Ldc_R4, 0f);
+                yield return CodeInstruction.Call(typeof(Inventory), nameof(Inventory.ShowHeldItem));
+            }
+        }
 
     }
 
@@ -460,7 +480,8 @@ static class AnimationRiggingPatches
 
     private static IEnumerator DelayShowWeapon(Camera camera)
     {
-        yield return new WaitForSecondsRealtime(0.1f);
+        yield return null;
+        yield return null;
         if (camera)
         {
             camera.cullingMask |= 1 << 10;
