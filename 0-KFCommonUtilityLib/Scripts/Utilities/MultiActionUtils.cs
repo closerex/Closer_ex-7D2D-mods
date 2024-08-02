@@ -202,6 +202,12 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 _value = mod.PropertyOverrides[_itemName].Values[_propertyName];
                 return true;
             }
+            itemNameWithActionIndex = $"*_{actionIndex}";
+            if (mod.PropertyOverrides.ContainsKey(itemNameWithActionIndex) && mod.PropertyOverrides[itemNameWithActionIndex].Values.ContainsKey(_propertyName))
+            {
+                _value = mod.PropertyOverrides[itemNameWithActionIndex].Values[_propertyName];
+                return true;
+            }
             if (mod.PropertyOverrides.ContainsKey("*") && mod.PropertyOverrides["*"].Values.ContainsKey(_propertyName))
             {
                 _value = mod.PropertyOverrides["*"].Values[_propertyName];
