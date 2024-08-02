@@ -45,6 +45,11 @@ public class ItemActionBetterLauncher : ItemActionRanged
         };
     }
 
+    public override void OnModificationsChanged(ItemActionData _data)
+    {
+        base.OnModificationsChanged(_data);
+    }
+
     public override void StopHolding(ItemActionData _data)
     {
         base.StopHolding(_data);

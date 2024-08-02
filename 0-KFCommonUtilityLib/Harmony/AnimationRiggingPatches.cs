@@ -57,14 +57,12 @@ static class AnimationRiggingPatches
             rangedData.muzzle = AnimationRiggingManager.GetTransformOverrideByName("Muzzle", rangedData.invData.model);
         }
         rangedData.Laser = AnimationRiggingManager.GetTransformOverrideByName("laser", rangedData.invData.model);
-    }
 
-    [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.StartHolding))]
-    [HarmonyPostfix]
-    private static void Postfix_StartHolding_ItemActionLauncher(ItemActionData _actionData)
-    {
-        ItemActionLauncher.ItemActionDataLauncher launcherData = (ItemActionLauncher.ItemActionDataLauncher)_actionData;
-        launcherData.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName("ProjectileJoint", launcherData.invData.model);
+        ItemActionLauncher.ItemActionDataLauncher launcherData = _data as ItemActionLauncher.ItemActionDataLauncher;
+        if (launcherData != null)
+        {
+            launcherData.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName("ProjectileJoint", launcherData.invData.model);
+        }
     }
 
 

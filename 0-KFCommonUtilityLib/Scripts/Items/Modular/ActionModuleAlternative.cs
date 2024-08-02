@@ -30,12 +30,12 @@ public class ActionModuleAlternative
         return true;
     }
 
-    [MethodTargetPostfix(nameof(ItemActionAttack.StartHolding))]
-    private void Postfix_StartHolding(AlternativeData __customData)
-    {
-        __customData.UpdateMuzzleTransformOverride();
-        __customData.OverrideMuzzleTransform(__customData.mapping.CurMode);
-    }
+    //[MethodTargetPostfix(nameof(ItemActionAttack.StartHolding))]
+    //private void Postfix_StartHolding(AlternativeData __customData)
+    //{
+    //    __customData.UpdateMuzzleTransformOverride();
+    //    __customData.OverrideMuzzleTransform(__customData.mapping.CurMode);
+    //}
 
     private static IEnumerator DelaySetExecutionIndex(EntityAlive player, MultiActionMapping mapping)
     {
@@ -105,7 +105,7 @@ public class ActionModuleAlternative
         if (mapping != null)
         {
             var radialContextItem = new AlternativeRadialContextItem(mapping, _xuiRadialWindow, _epl);
-            _xuiRadialWindow.SetCommonData(UIUtils.ButtonIcon.FaceButtonEast, new XUiC_Radial.CommandHandlerDelegate(this.handleRadialCommand), radialContextItem, radialContextItem.PreSelectedIndex, false, new XUiC_Radial.RadialStillValidDelegate(this.radialValidTest));
+            _xuiRadialWindow.SetCommonData(UIUtils.ButtonIcon.FaceButtonEast, handleRadialCommand, radialContextItem, radialContextItem.PreSelectedIndex, false, radialValidTest);
         }
 
         return false;
@@ -147,8 +147,8 @@ public class ActionModuleAlternative
         public ItemInventoryData invData;
         //private bool inited = false;
         private readonly bool[] unlocked = new bool[MultiActionIndice.MAX_ACTION_COUNT];
-        public Transform[] altMuzzleTrans = new Transform[MultiActionIndice.MAX_ACTION_COUNT];
-        public Transform[] altMuzzleTransDBarrel = new Transform[MultiActionIndice.MAX_ACTION_COUNT];
+        //public Transform[] altMuzzleTrans = new Transform[MultiActionIndice.MAX_ACTION_COUNT];
+        //public Transform[] altMuzzleTransDBarrel = new Transform[MultiActionIndice.MAX_ACTION_COUNT];
 
         public AlternativeData(ItemInventoryData invData, int actionIndex, ActionModuleAlternative module)
         {
@@ -157,30 +157,30 @@ public class ActionModuleAlternative
 
         }
 
-        public void UpdateMuzzleTransformOverride()
-        {
-            for (int i = 0; i < MultiActionIndice.MAX_ACTION_COUNT; i++)
-            {
-                int curActionIndex = mapping.indices.GetActionIndexForMode(i);
-                if (curActionIndex < 0)
-                {
-                    break;
-                }
-                var rangedData = invData.actionData[curActionIndex] as ItemActionRanged.ItemActionDataRanged;
-                if (rangedData != null)
-                {
-                    if (rangedData.IsDoubleBarrel)
-                    {
-                        altMuzzleTrans[i] = AnimationRiggingManager.GetTransformOverrideByName($"Muzzle_L{curActionIndex}", rangedData.invData.model) ?? rangedData.muzzle;
-                        altMuzzleTransDBarrel[i] = AnimationRiggingManager.GetTransformOverrideByName($"Muzzle_R{curActionIndex}", rangedData.invData.model) ?? rangedData.muzzle2;
-                    }
-                    else
-                    {
-                        altMuzzleTrans[i] = AnimationRiggingManager.GetTransformOverrideByName($"Muzzle{curActionIndex}", rangedData.invData.model) ?? rangedData.muzzle;
-                    }
-                }
-            }
-        }
+        //public void UpdateMuzzleTransformOverride()
+        //{
+        //    for (int i = 0; i < MultiActionIndice.MAX_ACTION_COUNT; i++)
+        //    {
+        //        int curActionIndex = mapping.indices.GetActionIndexForMode(i);
+        //        if (curActionIndex < 0)
+        //        {
+        //            break;
+        //        }
+        //        var rangedData = invData.actionData[curActionIndex] as ItemActionRanged.ItemActionDataRanged;
+        //        if (rangedData != null)
+        //        {
+        //            if (rangedData.IsDoubleBarrel)
+        //            {
+        //                altMuzzleTrans[i] = AnimationRiggingManager.GetTransformOverrideByName($"Muzzle_L{curActionIndex}", rangedData.invData.model) ?? rangedData.muzzle;
+        //                altMuzzleTransDBarrel[i] = AnimationRiggingManager.GetTransformOverrideByName($"Muzzle_R{curActionIndex}", rangedData.invData.model) ?? rangedData.muzzle2;
+        //            }
+        //            else
+        //            {
+        //                altMuzzleTrans[i] = AnimationRiggingManager.GetTransformOverrideByName($"Muzzle{curActionIndex}", rangedData.invData.model) ?? rangedData.muzzle;
+        //            }
+        //        }
+        //    }
+        //}
 
         public void Init()
         {
@@ -222,25 +222,25 @@ public class ActionModuleAlternative
             return unlocked[mode];
         }
 
-        public void OverrideMuzzleTransform(int mode)
-        {
-            var rangedData = invData.actionData[mapping.indices.GetActionIndexForMode(mode)] as ItemActionRanged.ItemActionDataRanged;
-            if (rangedData != null)
-            {
-                if (rangedData.IsDoubleBarrel)
-                {
-                    rangedData.muzzle = altMuzzleTrans[mode];
-                    rangedData.muzzle2 = altMuzzleTransDBarrel[mode];
-                }
-                else
-                {
-                    rangedData.muzzle = altMuzzleTrans[mode];
-                }
-            }
-#if DEBUG
-            Log.Out($"setting muzzle transform for action {rangedData.indexInEntityOfAction} to {rangedData.muzzle.name}\n{StackTraceUtility.ExtractStackTrace()}");
-#endif
-        }
+//        public void OverrideMuzzleTransform(int mode)
+//        {
+//            var rangedData = invData.actionData[mapping.indices.GetActionIndexForMode(mode)] as ItemActionRanged.ItemActionDataRanged;
+//            if (rangedData != null)
+//            {
+//                if (rangedData.IsDoubleBarrel)
+//                {
+//                    rangedData.muzzle = altMuzzleTrans[mode];
+//                    rangedData.muzzle2 = altMuzzleTransDBarrel[mode];
+//                }
+//                else
+//                {
+//                    rangedData.muzzle = altMuzzleTrans[mode];
+//                }
+//            }
+//#if DEBUG
+//            Log.Out($"setting muzzle transform for action {rangedData.indexInEntityOfAction} to {rangedData.muzzle.name}\n{StackTraceUtility.ExtractStackTrace()}");
+//#endif
+//        }
     }
 
     //todo: don't setup for every mode, and use reload animation from shared action

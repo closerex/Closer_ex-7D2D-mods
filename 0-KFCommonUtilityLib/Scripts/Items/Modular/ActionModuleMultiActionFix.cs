@@ -1,4 +1,5 @@
 ﻿using KFCommonUtilityLib.Scripts.Attributes;
+using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 
 [TypeTarget(typeof(ItemActionAttack), typeof(MultiActionData))]
@@ -15,6 +16,39 @@ public class ActionModuleMultiActionFix
     private void Postfix_StartHolding(ItemActionData _data, ItemActionData __state)
     {
         RestoreItemActionData(_data, __state);
+    }
+
+    [MethodTargetPostfix(nameof(ItemAction.OnModificationsChanged), typeof(ItemActionRanged))]
+    private void Postfix_OnModificationChanged_ItemActionRanged(ItemActionData _data)
+    {
+        var rangedData = _data as ItemActionRanged.ItemActionDataRanged;
+        if (rangedData != null)
+        {
+            string muzzleName;
+            if (rangedData.IsDoubleBarrel)
+            {
+                muzzleName = _data.invData.itemValue.GetPropertyOverrideForAction($"Muzzle_L_Name", $"Muzzle_L{_data.indexInEntityOfAction}", _data.indexInEntityOfAction);
+                rangedData.muzzle = AnimationRiggingManager.GetTransformOverrideByName(muzzleName, rangedData.invData.model) ?? rangedData.muzzle;
+                muzzleName = _data.invData.itemValue.GetPropertyOverrideForAction($"Muzzle_R_Name", $"Muzzle_R{_data.indexInEntityOfAction}", _data.indexInEntityOfAction);
+                rangedData.muzzle2 = AnimationRiggingManager.GetTransformOverrideByName(muzzleName, rangedData.invData.model) ?? rangedData.muzzle2;
+            }
+            else
+            {
+                muzzleName = _data.invData.itemValue.GetPropertyOverrideForAction($"Muzzle_Name", $"Muzzle{_data.indexInEntityOfAction}", _data.indexInEntityOfAction);
+                rangedData.muzzle = AnimationRiggingManager.GetTransformOverrideByName(muzzleName, rangedData.invData.model) ?? rangedData.muzzle;
+            }
+        }
+    }
+
+    [MethodTargetPostfix(nameof(ItemAction.OnModificationsChanged), typeof(ItemActionLauncher))]
+    private void Postfix_OnModificationChanged_ItemActionLauncher(ItemActionData _data)
+    {
+        Postfix_OnModificationChanged_ItemActionRanged(_data);
+        if (_data is ItemActionLauncher.ItemActionDataLauncher launcherData)
+        {
+            string jointName = _data.invData.itemValue.GetPropertyOverrideForAction($"ProjectileJoint_Name", $"ProjectileJoint{_data.indexInEntityOfAction}", _data.indexInEntityOfAction);
+            launcherData.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName(jointName, launcherData.invData.model) ?? launcherData.projectileJoint;
+        }
     }
 
     [MethodTargetPrefix(nameof(ItemActionAttack.StopHolding))]

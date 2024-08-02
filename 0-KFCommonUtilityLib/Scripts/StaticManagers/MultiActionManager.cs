@@ -143,7 +143,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                     curIndex = value;
                     ReadMeta();
                     entity.emodel?.avatarController?.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, CurActionIndex, false);
-                    altData.OverrideMuzzleTransform(curIndex);
+                    //altData.OverrideMuzzleTransform(curIndex);
                 }
             }
         }

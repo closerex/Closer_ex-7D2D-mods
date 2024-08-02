@@ -1,4 +1,5 @@
 ﻿using Audio;
+using KFCommonUtilityLib.Scripts.Utilities;
 using System;
 using UnityEngine;
 
@@ -135,32 +136,32 @@ public class ItemActionRampUp : ItemActionHoldOpen
         var _rampData = _data as ItemActionDataRampUp;
         string originalValue = 1.ToString();
         Properties.ParseString("RampMultiplier", ref originalValue);
-        _rampData.maxMultiplier = Mathf.Max(float.Parse(_rampData.invData.itemValue.GetPropertyOverride("RampMultiplier", originalValue)), 0);
+        _rampData.maxMultiplier = Mathf.Max(float.Parse(_rampData.invData.itemValue.GetPropertyOverrideForAction("RampMultiplier", originalValue, _data.indexInEntityOfAction)), 0);
 
         originalValue = 0.ToString();
         Properties.ParseString("RampTime", ref originalValue);
-        _rampData.rampTime = float.Parse(_rampData.invData.itemValue.GetPropertyOverride("RampTime", originalValue));
+        _rampData.rampTime = float.Parse(_rampData.invData.itemValue.GetPropertyOverrideForAction("RampTime", originalValue, _data.indexInEntityOfAction));
 
         originalValue = 1.ToString();
         Properties.ParseString("MinRampShots", ref originalValue);
-        _rampData.minRampShots = Mathf.Max(int.Parse(_rampData.invData.itemValue.GetPropertyOverride("MinRampShots", originalValue)), 1);
+        _rampData.minRampShots = Mathf.Max(int.Parse(_rampData.invData.itemValue.GetPropertyOverrideForAction("MinRampShots", originalValue, _data.indexInEntityOfAction)), 1);
 
         originalValue = string.Empty;
         Properties.ParseString("RampStartSound", ref originalValue);
-        _rampData.rampSound = _rampData.invData.itemValue.GetPropertyOverride("RampStartSound", originalValue);
+        _rampData.rampSound = _rampData.invData.itemValue.GetPropertyOverrideForAction("RampStartSound", originalValue, _data.indexInEntityOfAction);
 
         originalValue = 0.ToString();
         Properties.ParseString("PrepareTime", ref originalValue);
-        _rampData.prepareTime = float.Parse(_rampData.invData.itemValue.GetPropertyOverride("PrepareTime", originalValue));
+        _rampData.prepareTime = float.Parse(_rampData.invData.itemValue.GetPropertyOverrideForAction("PrepareTime", originalValue, _data.indexInEntityOfAction));
         _rampData.prepareSpeed = float.Parse(originalValue) / _rampData.prepareTime;
 
         originalValue = string.Empty;
         Properties.ParseString("PrepareSound", ref originalValue);
-        _rampData.prepareSound = _rampData.invData.itemValue.GetPropertyOverride("PrepareSound", originalValue);
+        _rampData.prepareSound = _rampData.invData.itemValue.GetPropertyOverrideForAction("PrepareSound", originalValue, _data.indexInEntityOfAction);
 
         originalValue = false.ToString();
         Properties.ParseString("PrepareOnAim", ref originalValue);
-        _rampData.zoomPrepare = bool.Parse(_rampData.invData.itemValue.GetPropertyOverride("PrepareOnAim", originalValue));
+        _rampData.zoomPrepare = bool.Parse(_rampData.invData.itemValue.GetPropertyOverrideForAction("PrepareOnAim", originalValue, _data.indexInEntityOfAction));
     }
 
     public class ItemActionDataRampUp : ItemActionDataRanged

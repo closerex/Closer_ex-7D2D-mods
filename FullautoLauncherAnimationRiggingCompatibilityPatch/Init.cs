@@ -126,11 +126,29 @@ public static class FLARPatch
     private static void Postfix_StartHolding_ItemActionBetterLauncher(ItemActionData _actionData)
     {
         ItemActionBetterLauncher.ItemActionDataBetterLauncher ItemActionDataBetterLauncher = (ItemActionBetterLauncher.ItemActionDataBetterLauncher)_actionData;
-        ItemActionDataBetterLauncher.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName("ProjectileJoint", ItemActionDataBetterLauncher.invData.model);
         var info = ItemActionDataBetterLauncher.info;
         var projectileValue = info.itemValueProjectile;
         var launcherValue = info.itemValueLauncher;
         MultiActionUtils.CopyLauncherValueToProjectile(launcherValue, projectileValue, _actionData.indexInEntityOfAction);
+    }
+
+    [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemActionBetterLauncher.OnModificationsChanged))]
+    [HarmonyPostfix]
+    private static void Postfix_OnModificationsChanged_ItemActionBetterLauncher(ItemActionData _data)
+    {
+        ItemActionBetterLauncher.ItemActionDataBetterLauncher ItemActionDataBetterLauncher = (ItemActionBetterLauncher.ItemActionDataBetterLauncher)_data;
+        ItemActionDataBetterLauncher.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName("ProjectileJoint", ItemActionDataBetterLauncher.invData.model);
+    }
+
+    [HarmonyPatch(typeof(ActionModuleMultiActionFix), "Postfix_OnModificationChanged_ItemActionRanged")]
+    [HarmonyPostfix]
+    private static void Postfix_OnModificationChanged_ActionModuleMultiActionFix(ItemActionData _data)
+    {
+        if (_data is ItemActionBetterLauncher.ItemActionDataBetterLauncher launcherData)
+        {
+            string jointName = _data.invData.itemValue.GetPropertyOverrideForAction($"ProjectileJoint_Name", $"ProjectileJoint{_data.indexInEntityOfAction}", _data.indexInEntityOfAction);
+            launcherData.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName(jointName, launcherData.invData.model) ?? launcherData.projectileJoint;
+        }
     }
 
     [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemActionBetterLauncher.SwapAmmoType))]
