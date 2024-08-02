@@ -146,7 +146,8 @@ public static class FLARPatch
     {
         if (_data is ItemActionBetterLauncher.ItemActionDataBetterLauncher launcherData)
         {
-            string jointName = _data.invData.itemValue.GetPropertyOverrideForAction($"ProjectileJoint_Name", $"ProjectileJoint{_data.indexInEntityOfAction}", _data.indexInEntityOfAction);
+            string indexExtension = (_data.indexInEntityOfAction > 0 ? _data.indexInEntityOfAction.ToString() : "");
+            string jointName = _data.invData.itemValue.GetPropertyOverrideForAction($"ProjectileJoint_Name", $"ProjectileJoint{indexExtension}", _data.indexInEntityOfAction);
             launcherData.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName(jointName, launcherData.invData.model) ?? launcherData.projectileJoint;
         }
     }

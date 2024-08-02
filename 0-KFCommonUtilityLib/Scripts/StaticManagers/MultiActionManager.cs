@@ -267,10 +267,11 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             _xuiRadialWindow.ResetRadialEntries();
             int preSelectedIndex = -1;
             string[] magazineItemNames = ((ItemActionAttack)_epl.inventory.holdingItem.Actions[CurActionIndex]).MagazineItemNames;
+            bool[] disableStates = CommonUtilityPatch.GetUnusableItemEntries(magazineItemNames, _epl);
             for (int i = 0; i < magazineItemNames.Length; i++)
             {
                 ItemClass ammoClass = ItemClass.GetItemClass(magazineItemNames[i], false);
-                if (ammoClass != null && (!_epl.isHeadUnderwater || ammoClass.UsableUnderwater))
+                if (ammoClass != null && (!_epl.isHeadUnderwater || ammoClass.UsableUnderwater) && !disableStates[i])
                 {
                     int ammoCount = _xuiRadialWindow.xui.PlayerInventory.GetItemCount(ammoClass.Id);
                     bool isCurrentUsing = _epl.inventory.holdingItemItemValue.SelectedAmmoTypeIndex == i;

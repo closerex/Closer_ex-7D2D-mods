@@ -1,6 +1,7 @@
 ﻿using Audio;
 using HarmonyLib;
 using KFCommonUtilityLib.Scripts.StaticManagers;
+using KFCommonUtilityLib.Scripts.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -948,6 +949,100 @@ public static class CommonUtilityPatch
             }
         }
         return codes;
+    }
+
+    [HarmonyPatch(typeof(ItemActionAttack), nameof(ItemActionAttack.SetupRadial))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_SetupRadial_ItemActionAttack(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+    {
+        var codes = instructions.ToList();
+
+        var fld_usable = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.UsableUnderwater));
+
+        var lbd_states = generator.DeclareLocal(typeof(bool[]));
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].opcode == OpCodes.Stloc_0)
+            {
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldloc_0),
+                    new CodeInstruction(OpCodes.Ldarg_2),
+                    CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(CommonUtilityPatch.GetUnusableItemEntries)),
+                    new CodeInstruction(OpCodes.Stloc_S, lbd_states)
+                });
+                i += 4;
+            }
+            else if (codes[i].LoadsField(fld_usable))
+            {
+                codes.InsertRange(i + 2, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldloc_S, lbd_states).WithLabels(codes[i + 2].ExtractLabels()),
+                    new CodeInstruction(OpCodes.Ldloc_2),
+                    new CodeInstruction(OpCodes.Ldelem_U1),
+                    new CodeInstruction(OpCodes.Brtrue_S, codes[i + 1].operand)
+                });
+                break;
+            }
+        }
+
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.StartHolding))]
+    [HarmonyPostfix]
+    private static void Postfix_StartHolding_ItemActionRanged(ItemActionData _data, ItemActionRanged __instance)
+    {
+        if (_data.invData.holdingEntity is EntityPlayerLocal player)
+        {
+            var arr_disabled_ammo = GetUnusableItemEntries(__instance.MagazineItemNames, player);
+            var itemValue = _data.invData.itemValue;
+            int cur_index = itemValue.GetSelectedAmmoIndexByActionIndex(_data.indexInEntityOfAction);
+            if (arr_disabled_ammo[cur_index])
+            {
+                int first_enabled_index = Mathf.Max(Array.IndexOf(arr_disabled_ammo, false), 0);
+
+                var mapping = MultiActionManager.GetMappingForEntity(player.entityId);
+                if (mapping != null)
+                {
+                    if (_data.indexInEntityOfAction == mapping.CurMetaIndex)
+                    {
+                        itemValue.SelectedAmmoTypeIndex = (byte)first_enabled_index;
+                    }
+                    else
+                    {
+                        itemValue.SetMetadata(MultiActionUtils.ActionSelectedAmmoNames[mapping.CurMetaIndex], first_enabled_index, TypedMetadataValue.TypeTag.Integer);
+                    }
+                    _data.invData.holdingEntity.inventory.CallOnToolbeltChangedInternal();
+                }
+                else
+                {
+                    itemValue.SelectedAmmoTypeIndex = (byte)(first_enabled_index);
+                }
+            }
+        }
+    }
+
+    public static bool[] GetUnusableItemEntries(string[] ammoNames, EntityPlayerLocal player)
+    {
+        string str_disabled_ammo_names = player.inventory.holdingItemItemValue.GetPropertyOverrideForAction("DisableAmmo", "", MultiActionManager.GetActionIndexForEntity(player));
+        //Log.Out($"checking disabled ammo: {str_disabled_ammo_names}\n{StackTraceUtility.ExtractStackTrace()}");
+        bool[] arr_disable_states = new bool[ammoNames.Length];
+        if(!string.IsNullOrEmpty(str_disabled_ammo_names))
+        {
+            string[] arr_disabled_ammo_names = str_disabled_ammo_names.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var name in arr_disabled_ammo_names)
+            {
+                int index = Array.IndexOf(ammoNames, name.Trim());
+                if (index >= 0)
+                {
+                    arr_disable_states[index] = true;
+                    Log.Out($"ammo {ammoNames[index]} is disabled");
+                }
+            }
+        }
+        return arr_disable_states;
     }
 
     //[HarmonyPatch(typeof(Inventory), nameof(Inventory.updateHoldingItem))]

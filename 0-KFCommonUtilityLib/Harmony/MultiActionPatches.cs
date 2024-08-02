@@ -1667,18 +1667,20 @@ namespace KFCommonUtilityLib.Harmony
         #endregion
 
         #region Cancel reload on switching item
+        //redirect these calls to action 0 and handle them in alternative module
+        //may change in the future
         [HarmonyPatch(typeof(PlayerMoveController), nameof(PlayerMoveController.Update))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_Update_PlayerMoveController(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
 
-            MethodInfo mtd_cancel = AccessTools.Method(typeof(Inventory), nameof(Inventory.GetHoldingGun));
+            MethodInfo mtd_getgun = AccessTools.Method(typeof(Inventory), nameof(Inventory.GetHoldingGun));
             MethodInfo mtd_getprimary = AccessTools.Method(typeof(Inventory), nameof(Inventory.GetHoldingPrimary));
             FieldInfo fld_reload = AccessTools.Field(typeof(PlayerActionsPermanent), nameof(PlayerActionsPermanent.Reload));
             for (int i = 0; i < codes.Count; i++)
             {
-                if (codes[i].Calls(mtd_cancel))
+                if (codes[i].Calls(mtd_getgun))
                 {
                     codes[i].operand = mtd_getprimary;
                     //codes.RemoveAt(i - 2);

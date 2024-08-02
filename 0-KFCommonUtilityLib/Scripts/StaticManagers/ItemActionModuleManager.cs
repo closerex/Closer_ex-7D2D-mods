@@ -140,11 +140,13 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 if (itemAction != null && itemAction.Properties.Values.TryGetValue("ItemActionModules", out string str_modules))
                 {
                     string[] modules = str_modules.Split(';');
-                    Type[] moduleTypes = modules.Select(s => ReflectionHelpers.GetTypeWithPrefix("ActionModule", s.Trim())).ToArray();
-                    string typename = CreateTypeName(itemAction.GetType(), moduleTypes);
+                    Type itemActionType = itemAction.GetType();
+                    Type[] moduleTypes = modules.Select(s => ReflectionHelpers.GetTypeWithPrefix("ActionModule", s.Trim()))
+                                                .Where(t => t.GetCustomAttribute<TypeTargetAttribute>().BaseType.IsAssignableFrom(itemActionType)).ToArray();
+                    string typename = CreateTypeName(itemActionType, moduleTypes);
                     Log.Out(typename);
                     if (!TryFindType(typename, out _) && !TryFindInCur(typename, out _))
-                        PatchType(itemAction.GetType(), moduleTypes);
+                        PatchType(itemActionType, moduleTypes);
                     if (!dict_replacement_mapping.TryGetValue(item.Name, out var list))
                     {
                         list = new List<(string typename, int indexOfAction)>();
@@ -243,6 +245,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                     mtdinf_create_data = type_itemActionBase.GetMethod(nameof(ItemAction.CreateModifierData), BindingFlags.Public | BindingFlags.Instance);
                     if (mtdinf_create_data != null)
                         break;
+                    mtdinf_create_data = mtdinf_create_data.GetBaseDefinition();
                 }
             }
 
@@ -369,7 +372,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 {
                     MethodDefinition mtddef_root = module.ImportReference(pair.Value.mtdinf_base.GetBaseDefinition()).Resolve();
                     MethodDefinition mtddef_target = module.ImportReference(pair.Value.mtdinf_target).Resolve();
-                    MethodPatchInfo mtdpinf_derived = GetOrCreateOverride(dict_overrides, pair.Key, pair.Value.mtddef_base, module);
+                    MethodPatchInfo mtdpinf_derived = GetOrCreateOverride(dict_overrides, pair.Key, pair.Value.mtdref_base, module);
                     MethodDefinition mtddef_derived = mtdpinf_derived.Method;
 
                     if (!dict_all_states.TryGetValue(pair.Key, out var dict_states))
@@ -400,7 +403,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 {
                     MethodDefinition mtddef_root = module.ImportReference(pair.Value.mtdinf_base.GetBaseDefinition()).Resolve();
                     MethodDefinition mtddef_target = module.ImportReference(pair.Value.mtdinf_target).Resolve();
-                    MethodPatchInfo mtdpinf_derived = GetOrCreateOverride(dict_overrides, pair.Key, pair.Value.mtddef_base, module);
+                    MethodPatchInfo mtdpinf_derived = GetOrCreateOverride(dict_overrides, pair.Key, pair.Value.mtdref_base, module);
                     MethodDefinition mtddef_derived = mtdpinf_derived.Method;
                     dict_all_states.TryGetValue(pair.Key, out var dict_states);
                     var list_inst_pars = MatchArguments(mtddef_root, mtdpinf_derived, mtddef_target, arr_flddef_modules[i], arr_flddef_data[i], module, itemActionType, typedef_newActionData, false, dict_states, moduleID);
@@ -476,7 +479,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                         continue;
                     }
 
-                    MethodDefinition mtddef_base = module.ImportReference(mtdinf_base).Resolve();
+                    MethodReference mtdref_base = module.ImportReference(mtdinf_base);
                     //Find preferred patch
                     if (dict_overrides.TryGetValue(id, out var pair))
                     {
@@ -484,14 +487,14 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                             continue;
                         if (attr.PreferredType.IsAssignableFrom(itemActionType) && (pair.prefType == null || attr.PreferredType.IsSubclassOf(pair.prefType)))
                         {
-                            dict_overrides[id] = new MethodOverrideInfo(mtd, mtdinf_base, mtddef_base, attr.PreferredType);
+                            dict_overrides[id] = new MethodOverrideInfo(mtd, mtdinf_base, mtdref_base, attr.PreferredType);
                         }
                     }
                     else
                     {
-                        dict_overrides[id] = new MethodOverrideInfo(mtd, mtdinf_base, mtddef_base, attr.PreferredType);
+                        dict_overrides[id] = new MethodOverrideInfo(mtd, mtdinf_base, mtdref_base, attr.PreferredType);
                     }
-                    Log.Out($"Add method override: {id}");
+                    Log.Out($"Add method override: {id} for {mtdref_base.FullName}/{mtdinf_base.Name}, action type: {itemActionType.Name}");
                 }
                 else
                 {
@@ -506,10 +509,10 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         /// </summary>
         /// <param name="dict_overrides"></param>
         /// <param name="id"></param>
-        /// <param name="mtddef_base"></param>
+        /// <param name="mtdref_base"></param>
         /// <param name="module"></param>
         /// <returns></returns>
-        private static MethodPatchInfo GetOrCreateOverride(Dictionary<string, MethodPatchInfo> dict_overrides, string id, MethodDefinition mtddef_base, ModuleDefinition module)
+        private static MethodPatchInfo GetOrCreateOverride(Dictionary<string, MethodPatchInfo> dict_overrides, string id, MethodReference mtdref_base, ModuleDefinition module)
         {
             //if (mtddef_base.FullName == "CreateModifierData")
             //    throw new MethodAccessException($"YOU SHOULD NOT MANUALLY MODIFY CreateModifierData!");
@@ -518,10 +521,10 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 return mtdpinf_derived;
             }
             //when overriding, retain attributes of base but make sure to remove the 'new' keyword which presents if you are overriding the root method
-            MethodDefinition mtddef_derived = new MethodDefinition(mtddef_base.Name, (mtddef_base.Attributes | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot) & ~MethodAttributes.NewSlot, module.ImportReference(mtddef_base.ReturnType));
+            MethodDefinition mtddef_derived = new MethodDefinition(mtdref_base.Name, (mtdref_base.Resolve().Attributes | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot) & ~MethodAttributes.NewSlot, module.ImportReference(mtdref_base.ReturnType));
 
-            Log.Out($"Create method override: {id}");
-            foreach (var par in mtddef_base.Parameters)
+            Log.Out($"Create method override: {id} for {mtdref_base.FullName}");
+            foreach (var par in mtdref_base.Parameters)
             {
                 ParameterDefinition pardef = new ParameterDefinition(par.Name, par.Attributes, module.ImportReference(par.ParameterType));
                 if (par.HasConstant)
@@ -534,7 +537,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             bool hasReturnVal = mtddef_derived.ReturnType.MetadataType != MetadataType.Void;
             if (hasReturnVal)
             {
-                mtddef_derived.Body.Variables.Add(new VariableDefinition(module.ImportReference(mtddef_base.ReturnType)));
+                mtddef_derived.Body.Variables.Add(new VariableDefinition(module.ImportReference(mtdref_base.ReturnType)));
             }
             var il = mtddef_derived.Body.GetILProcessor();
             if (hasReturnVal)
@@ -553,7 +556,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 var par = mtddef_derived.Parameters[i];
                 il.Emit(par.ParameterType.IsByReference ? OpCodes.Ldarga_S : OpCodes.Ldarg_S, par);
             }
-            il.Emit(OpCodes.Call, module.ImportReference(mtddef_base));
+            il.Emit(OpCodes.Call, module.ImportReference(mtdref_base));
             if (hasReturnVal)
             {
                 il.Emit(OpCodes.Stloc_S, mtddef_derived.Body.Variables[1]);
@@ -813,14 +816,14 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
     {
         public MethodInfo mtdinf_target;
         public MethodInfo mtdinf_base;
-        public MethodDefinition mtddef_base;
+        public MethodReference mtdref_base;
         public Type prefType;
 
-        public MethodOverrideInfo(MethodInfo mtdinf_target, MethodInfo mtdinf_base, MethodDefinition mtddef_base, Type prefType)
+        public MethodOverrideInfo(MethodInfo mtdinf_target, MethodInfo mtdinf_base, MethodReference mtddef_base, Type prefType)
         {
             this.mtdinf_target = mtdinf_target;
             this.mtdinf_base = mtdinf_base;
-            this.mtddef_base = mtddef_base;
+            this.mtdref_base = mtddef_base;
             this.prefType = prefType;
         }
     }

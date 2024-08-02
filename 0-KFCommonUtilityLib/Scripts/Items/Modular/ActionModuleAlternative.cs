@@ -105,7 +105,7 @@ public class ActionModuleAlternative
         if (mapping != null)
         {
             var radialContextItem = new AlternativeRadialContextItem(mapping, _xuiRadialWindow, _epl);
-            _xuiRadialWindow.SetCommonData(UIUtils.ButtonIcon.FaceButtonEast, handleRadialCommand, radialContextItem, radialContextItem.PreSelectedIndex, false, radialValidTest);
+            _xuiRadialWindow.SetCommonData(UIUtils.GetButtonIconForAction(_epl.playerInput.Reload), handleRadialCommand, radialContextItem, radialContextItem.PreSelectedIndex, false, radialValidTest);
         }
 
         return false;

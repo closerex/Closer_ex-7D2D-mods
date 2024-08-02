@@ -1,4 +1,5 @@
-﻿using KFCommonUtilityLib.Scripts.StaticManagers;
+﻿using HarmonyLib;
+using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -16,6 +17,7 @@ public class CommonUtilityLibInit : IModApi
         unsafe
         {
             Log.Out($"size of MultiActionIndice: {sizeof(MultiActionIndice)} marshal size: {Marshal.SizeOf<MultiActionIndice>()}");
+            Log.Out($"{AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.StartHolding)).FullDescription()}");
         }
         QualitySettings.streamingMipmapsMemoryBudget = 0;
         DelayLoadModuleManager.RegisterDelayloadDll("FullautoLauncher", "FullautoLauncherAnimationRiggingCompatibilityPatch");
