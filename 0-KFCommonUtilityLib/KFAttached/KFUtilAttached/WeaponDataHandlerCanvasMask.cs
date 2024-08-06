@@ -15,7 +15,7 @@ public class WeaponDataHandlerCanvasMask : WeaponDataHandlerBase
     //{
     //    LayoutRebuilder.MarkLayoutForRebuild(mask.rectTransform);
     //}
-
+    
     public override void SetColor(Color color)
     {
         image.color = color;

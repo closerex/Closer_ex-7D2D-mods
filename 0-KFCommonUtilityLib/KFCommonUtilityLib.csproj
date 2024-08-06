@@ -110,6 +110,10 @@
       <HintPath>..\..\7DaysToDie_Data\Managed\Unity.Postprocessing.Runtime.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Unity.Profiling.Core">
+      <HintPath>..\..\7DaysToDie_Data\Managed\Unity.Profiling.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>..\..\7DaysToDie_Data\Managed\Unity.TextMeshPro.dll</HintPath>
       <Private>False</Private>
@@ -368,6 +372,7 @@
     <Compile Include="Harmony\RecoilPatch.cs" />
     <Compile Include="KFAttached\Animation\DebugScripts\AnimatorActionIndexDebug.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationDelayRender.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationDelayRenderReference.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationFiringEvents.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationProceduralRecoildAbs.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationSmokeParticle.cs" />

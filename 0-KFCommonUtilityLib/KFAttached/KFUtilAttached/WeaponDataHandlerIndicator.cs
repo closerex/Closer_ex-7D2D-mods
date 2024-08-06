@@ -6,9 +6,9 @@ public class WeaponDataHandlerIndicator : WeaponDataHandlerCanvasMask
     protected RectTransform indicator;
     [SerializeField]
     protected float offset;
-    [SerializeField]
+    [SerializeField, ColorUsage(true, true)]
     protected Color normalColor;
-    [SerializeField]
+    [SerializeField, ColorUsage(true, true)]
     protected Color warningColor;
 
     protected float level = 0;

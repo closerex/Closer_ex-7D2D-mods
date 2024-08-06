@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 #if NotEditor
 using UniLinq;
@@ -6,10 +7,14 @@ using UniLinq;
 using System.Linq;
 #endif
 using UnityEngine;
+using UnityEngine.Jobs;
+using Unity.Collections;
+using Unity.Jobs;
 
 [AddComponentMenu("")]
 public class AnimationDelayRender : MonoBehaviour
 {
+#if NotEditor
     [Serializable]
     public class TransformTargets
     {
@@ -31,45 +36,42 @@ public class AnimationDelayRender : MonoBehaviour
         }
     }
 
-    //[SerializeField]
-    //private List<TransformTargets> delayTargetsEditor;
+    private struct TransformRestoreJobs : IJobParallelForTransform
+    {
+        public NativeArray<TransformLocalData> data;
+        public void Execute(int index, TransformAccess transform)
+        {
+            if (transform.isValid)
+            {
+                transform.SetLocalPositionAndRotation(data[index].localPosition, data[index].localRotation);
+                transform.localScale = data[index].localScale;
+            }
+        }
+    }
+
+    private struct TransformRestoreAndSaveJobs : IJobParallelForTransform
+    {
+        public NativeArray<TransformLocalData> data;
+        public void Execute(int index, TransformAccess transform)
+        {
+            if (transform.isValid)
+            {
+                TransformLocalData targetData = new TransformLocalData(transform.localPosition, transform.localRotation, transform.localScale);
+                transform.SetLocalPositionAndRotation(data[index].localPosition, data[index].localRotation);
+                transform.localScale = data[index].localScale;
+                data[index] = targetData;
+            }
+        }
+    }
     [NonSerialized]
     private Transform[] delayTargets;
 
-    //[SerializeField, HideInInspector]
-    //private List<Transform> list_targets;
-    //[SerializeField, HideInInspector]
-    //private List<bool> list_include_children;
-    //[SerializeField, HideInInspector]
-    //private int serializedCount;
-
     private TransformLocalData[] posTargets;
-    //private TransformLocalData[] posAfterAnimation;
-
-    //public void OnAfterDeserialize()
-    //{
-    //}
-
-    //public void OnBeforeSerialize()
-    //{
-    //    if (delayTargetsEditor != null && delayTargetsEditor.Count > 0)
-    //    {
-    //        serializedCount = 0;
-    //        list_targets = new List<Transform>();
-    //        list_include_children = new List<bool>();
-    //        for (int i = 0; i < delayTargetsEditor.Count; i++)
-    //        {
-    //            list_targets.Add(delayTargetsEditor[i].target);
-    //            list_include_children.Add(delayTargetsEditor[i].includeChildren);
-    //            serializedCount++;
-    //        }
-    //    }
-    //}
-#if NotEditor
     private EntityPlayerLocal player;
-    //private int frameCount;
-    //private Vector3 originalPosition;
-#endif
+
+    private NativeArray<TransformLocalData> data;
+    TransformAccessArray transArr;
+    private JobHandle restoreJob, restoreAndSaveJob;
 
     private void Awake()
     {
@@ -81,105 +83,126 @@ public class AnimationDelayRender : MonoBehaviour
             return;
         }
 #endif
-
-        //var delayTargetsSet = new HashSet<Transform>();
-        //for (int i = 0; i < serializedCount; i++)
-        //{
-        //    if (list_include_children[i])
-        //    {
-        //        var targets = list_targets[i].GetComponentsInChildren<Transform>();
-        //        foreach (var target in targets)
-        //        {
-        //            delayTargetsSet.Add(target);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        delayTargetsSet.Add(list_targets[i]);
-        //    }
-        //}
-        //delayTargets = delayTargetsSet.ToArray();
-        //posTargets = new TransformLocalData[delayTargets.Length];
-        //posAfterAnimation = new TransformLocalData[delayTargets.Count];
     }
 
-    internal void InitializeTarget(Transform target)
+    internal void InitializeTarget()
     {
         var delayTargetsSet = new HashSet<Transform>();
-        foreach (Transform child in target.GetComponentsInChildren<Transform>(true).Skip(1))
+        foreach (Transform child in transform.GetComponentsInChildren<Transform>(true).Skip(1))
         {
             delayTargetsSet.Add(child);
         }
         delayTargets = delayTargetsSet.ToArray();
         posTargets = new TransformLocalData[delayTargets.Length];
-    }
-
-    private void OnEnable()
-    {
-        //frameCount = 0;
-        InitializeTarget(transform);
-        //originalPosition = transform.localPosition;
-        //transform.position -= new Vector3(0, 100, 0);
-        //GetComponent<Animator>().PlayInFixedTime(0, 0, Time.deltaTime);
+        ClearNative();
+        data = new NativeArray<TransformLocalData>(delayTargets.Length, Allocator.Persistent, NativeArrayOptions.ClearMemory);
+        transArr = new TransformAccessArray(delayTargets);
         for (int i = 0; i < delayTargets.Length; i++)
         {
             Transform target = delayTargets[i];
             if (target)
             {
-                posTargets[i] = new TransformLocalData(target.localPosition, target.localRotation, target.localScale);
-            }
-            else
-            {
-                delayTargets[i] = null;
+                data[i] = new TransformLocalData(target.localPosition, target.localRotation, target.localScale);
             }
         }
+    }
+
+    private void OnEnable()
+    {
+        InitializeTarget();
+        player.weaponCamera?.gameObject.GetOrAddComponent<AnimationDelayRenderReference>().targets.Add(this);
+        var preAnimatorUpdateJob = new TransformRestoreJobs
+        {
+            data = data
+        };
+        restoreJob = preAnimatorUpdateJob.Schedule(transArr);
+        StartCoroutine(EndOfFrameCo());
         Log.Out($"Delay render target count: {delayTargets.Length}");
     }
 
     private void OnDisable()
     {
-        //transform.localPosition = originalPosition;
+        ClearNative();
+        player.weaponCamera?.gameObject.GetOrAddComponent<AnimationDelayRenderReference>().targets.Remove(this);
+        StopAllCoroutines();
+    }
+
+    private void OnDestroy()
+    {
+        ClearNative();
+        player.weaponCamera?.gameObject.GetOrAddComponent<AnimationDelayRenderReference>().targets.Remove(this);
+        StopAllCoroutines();
     }
 
     private void Update()
     {
-        for (int i = 0; i < delayTargets.Length; i++)
-        {
-            Transform target = delayTargets[i];
-            if (target)
-            {
-                target.localPosition = posTargets[i].localPosition;
-                target.localRotation = posTargets[i].localRotation;
-                target.localScale = posTargets[i].localScale;
-            }
-            else
-            {
-                delayTargets[i] = null;
-            }
-        }
+        //for (int i = 0; i < delayTargets.Length; i++)
+        //{
+        //    Transform target = delayTargets[i];
+        //    if (target)
+        //    {
+        //        target.localPosition = posTargets[i].localPosition;
+        //        target.localRotation = posTargets[i].localRotation;
+        //        target.localScale = posTargets[i].localScale;
+        //    }
+        //    else
+        //    {
+        //        delayTargets[i] = null;
+        //    }
+        //}
+        restoreJob.Complete();
     }
 
     private void LateUpdate()
     {
-        //if (frameCount++ == 2)
-        //{
-        //    transform.localPosition = originalPosition;
-        //}
-        for (int i = 0; i < delayTargets.Length; i++)
+        var postAnimationUpdateJob = new TransformRestoreAndSaveJobs
         {
-            Transform target = delayTargets[i];
-            if (target)
-            {
-                TransformLocalData targetData = new TransformLocalData(target.localPosition, target.localRotation, target.localScale);
-                target.localPosition = posTargets[i].localPosition;
-                target.localRotation = posTargets[i].localRotation;
-                target.localScale = posTargets[i].localScale;
-                posTargets[i] = targetData;
-            }
-            else
-            {
-                delayTargets[i] = null;
-            }
+            data = data
+        };
+        restoreAndSaveJob = postAnimationUpdateJob.Schedule(transArr);
+        //for (int i = 0; i < delayTargets.Length; i++)
+        //{
+        //    Transform target = delayTargets[i];
+        //    if (target)
+        //    {
+        //        TransformLocalData targetData = new TransformLocalData(target.localPosition, target.localRotation, target.localScale);
+        //        target.localPosition = posTargets[i].localPosition;
+        //        target.localRotation = posTargets[i].localRotation;
+        //        target.localScale = posTargets[i].localScale;
+        //        posTargets[i] = targetData;
+        //    }
+        //    else
+        //    {
+        //        delayTargets[i] = null;
+        //    }
+        //}
+    }
+
+    internal void PreCullCallback()
+    {
+        restoreAndSaveJob.Complete();
+    }
+
+    private IEnumerator EndOfFrameCo()
+    {
+        while (true)
+        {
+            yield return new WaitForEndOfFrame();
+            var eofUpdateJob = new TransformRestoreJobs { data = data };
+            restoreJob = eofUpdateJob.Schedule(transArr);
         }
     }
+
+    private void ClearNative()
+    {
+        if (data.IsCreated)
+        {
+            data.Dispose();
+        }
+        if (transArr.isCreated)
+        {
+            transArr.Dispose();
+        }
+    }
+#endif
 }

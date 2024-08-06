@@ -380,10 +380,16 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             for (int i = 0; i < indice.modeCount; i++)
             {
                 MinEventParams.CachedEventParam.ItemActionData = DummyActionDatas[i];
-                int meta = itemClass.Actions[indice.GetActionIndexForMode(i)].GetInitialMeta(itemValue);
+
+                ItemAction itemAction = itemClass.Actions[indice.GetActionIndexForMode(i)];
+                int meta = itemAction.GetInitialMeta(itemValue);
                 if (i == 0)
                 {
                     ret = meta;
+                }
+                else if (itemAction.Properties.Contains("ActionUnlocked") && !itemAction.Properties.GetBool("ActionUnlocked"))
+                {
+                    meta = 0;
                 }
                 itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[indice.GetMetaIndexForMode(i)], meta, TypedMetadataValue.TypeTag.Integer);
             }

@@ -19,7 +19,7 @@ public class CommonUtilityLibInit : IModApi
             Log.Out($"size of MultiActionIndice: {sizeof(MultiActionIndice)} marshal size: {Marshal.SizeOf<MultiActionIndice>()}");
             Log.Out($"{AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.StartHolding)).FullDescription()}");
         }
-        QualitySettings.streamingMipmapsMemoryBudget = 0;
+        QualitySettings.streamingMipmapsMemoryBudget = 4096;
         DelayLoadModuleManager.RegisterDelayloadDll("FullautoLauncher", "FullautoLauncherAnimationRiggingCompatibilityPatch");
         DelayLoadModuleManager.RegisterDelayloadDll("SMXcore", "SMXMultiActionCompatibilityPatch");
         //DelayLoadModuleManager.RegisterDelayloadDll("SCore", "SCoreEntityHitCompatibilityPatch");
