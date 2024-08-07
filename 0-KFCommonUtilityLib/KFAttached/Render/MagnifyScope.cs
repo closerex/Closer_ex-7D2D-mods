@@ -46,7 +46,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
 #if NotEditor
             //player = GameManager.Instance?.World?.GetPrimaryPlayer();
             var entity = GetComponentInParent<EntityPlayerLocal>();
-            if (entity == null)
+            if (!entity)
             {
                 Destroy(this);
                 return;

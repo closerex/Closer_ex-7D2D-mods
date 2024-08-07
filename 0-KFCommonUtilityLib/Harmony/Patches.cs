@@ -980,7 +980,7 @@ public static class CommonUtilityPatch
                 {
                     new CodeInstruction(OpCodes.Ldloc_S, lbd_states).WithLabels(codes[i + 2].ExtractLabels()),
                     new CodeInstruction(OpCodes.Ldloc_2),
-                    new CodeInstruction(OpCodes.Ldelem_U1),
+                    CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(CommonUtilityPatch.IsAmmoDisabled)),
                     new CodeInstruction(OpCodes.Brtrue_S, codes[i + 1].operand)
                 });
                 break;
@@ -997,6 +997,10 @@ public static class CommonUtilityPatch
         if (_data.invData.holdingEntity is EntityPlayerLocal player)
         {
             var arr_disabled_ammo = GetUnusableItemEntries(__instance.MagazineItemNames, player);
+            if (arr_disabled_ammo == null)
+            {
+                return;
+            }
             var itemValue = _data.invData.itemValue;
             int cur_index = itemValue.GetSelectedAmmoIndexByActionIndex(_data.indexInEntityOfAction);
             if (arr_disabled_ammo[cur_index])
@@ -1026,6 +1030,10 @@ public static class CommonUtilityPatch
 
     public static bool[] GetUnusableItemEntries(string[] ammoNames, EntityPlayerLocal player)
     {
+        if (ammoNames == null)
+        {
+            return null;
+        }
         string str_disabled_ammo_names = player.inventory.holdingItemItemValue.GetPropertyOverrideForAction("DisableAmmo", "", MultiActionManager.GetActionIndexForEntity(player));
         //Log.Out($"checking disabled ammo: {str_disabled_ammo_names}\n{StackTraceUtility.ExtractStackTrace()}");
         bool[] arr_disable_states = new bool[ammoNames.Length];
@@ -1043,6 +1051,15 @@ public static class CommonUtilityPatch
             }
         }
         return arr_disable_states;
+    }
+
+    private static bool IsAmmoDisabled(bool[] ammoStates, int index)
+    {
+        if (ammoStates == null || ammoStates.Length <= index)
+        {
+            return false;
+        }
+        return ammoStates[index];
     }
 
     //[HarmonyPatch(typeof(Inventory), nameof(Inventory.updateHoldingItem))]
