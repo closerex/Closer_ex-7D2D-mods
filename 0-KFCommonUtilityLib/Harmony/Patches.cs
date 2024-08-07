@@ -969,6 +969,7 @@ public static class CommonUtilityPatch
                 {
                     new CodeInstruction(OpCodes.Ldloc_0),
                     new CodeInstruction(OpCodes.Ldarg_2),
+                    new CodeInstruction(OpCodes.Ldc_I4_M1),
                     CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(CommonUtilityPatch.GetUnusableItemEntries)),
                     new CodeInstruction(OpCodes.Stloc_S, lbd_states)
                 });
@@ -996,7 +997,7 @@ public static class CommonUtilityPatch
     {
         if (_data.invData.holdingEntity is EntityPlayerLocal player)
         {
-            var arr_disabled_ammo = GetUnusableItemEntries(__instance.MagazineItemNames, player);
+            var arr_disabled_ammo = GetUnusableItemEntries(__instance.MagazineItemNames, player, _data.indexInEntityOfAction);
             if (arr_disabled_ammo == null)
             {
                 return;
@@ -1016,7 +1017,7 @@ public static class CommonUtilityPatch
                     }
                     else
                     {
-                        itemValue.SetMetadata(MultiActionUtils.ActionSelectedAmmoNames[mapping.CurMetaIndex], first_enabled_index, TypedMetadataValue.TypeTag.Integer);
+                        itemValue.SetMetadata(MultiActionUtils.ActionSelectedAmmoNames[mapping.indices.GetMetaIndexForActionIndex(_data.indexInEntityOfAction)], first_enabled_index, TypedMetadataValue.TypeTag.Integer);
                     }
                     _data.invData.holdingEntity.inventory.CallOnToolbeltChangedInternal();
                 }
@@ -1028,13 +1029,17 @@ public static class CommonUtilityPatch
         }
     }
 
-    public static bool[] GetUnusableItemEntries(string[] ammoNames, EntityPlayerLocal player)
+    public static bool[] GetUnusableItemEntries(string[] ammoNames, EntityPlayerLocal player, int actionIndex = -1)
     {
         if (ammoNames == null)
         {
             return null;
         }
-        string str_disabled_ammo_names = player.inventory.holdingItemItemValue.GetPropertyOverrideForAction("DisableAmmo", "", MultiActionManager.GetActionIndexForEntity(player));
+        if (actionIndex < 0)
+        {
+            actionIndex = MultiActionManager.GetActionIndexForEntity(player);
+        }
+        string str_disabled_ammo_names = player.inventory.holdingItemItemValue.GetPropertyOverrideForAction("DisableAmmo", "", actionIndex);
         //Log.Out($"checking disabled ammo: {str_disabled_ammo_names}\n{StackTraceUtility.ExtractStackTrace()}");
         bool[] arr_disable_states = new bool[ammoNames.Length];
         if(!string.IsNullOrEmpty(str_disabled_ammo_names))

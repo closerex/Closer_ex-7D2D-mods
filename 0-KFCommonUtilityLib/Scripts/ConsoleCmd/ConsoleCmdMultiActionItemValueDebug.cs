@@ -12,9 +12,6 @@ namespace KFCommonUtilityLib.Scripts.ConsoleCmd
 
         public override bool AllowedInMainMenu => false;
 
-        private static FieldInfo fld_metadata = AccessTools.Field(typeof(ItemValue), "Metadata");
-        private static FieldInfo fld_metatag = AccessTools.Field(typeof(TypedMetadataValue), "typeTag");
-
         public override void Execute(List<string> _params, CommandSenderInfo _senderInfo)
         {
             EntityPlayerLocal player = GameManager.Instance.World?.GetPrimaryPlayer();
@@ -23,7 +20,7 @@ namespace KFCommonUtilityLib.Scripts.ConsoleCmd
                 ItemValue itemValue = player.inventory.holdingItemItemValue;
                 if (itemValue != null && itemValue.ItemClass != null)
                 {
-                    var metadata = fld_metadata.GetValue(itemValue) as Dictionary<string, TypedMetadataValue>;
+                    var metadata = itemValue.Metadata;
                     if (metadata != null)
                     {
                         Log.Out("Logging metadata...");
@@ -31,7 +28,7 @@ namespace KFCommonUtilityLib.Scripts.ConsoleCmd
                         {
                             if (pair.Value != null)
                             {
-                                Log.Out($"key: {pair.Key}, type: {fld_metatag.GetValue(pair.Value).ToString()}, value: {pair.Value.GetValue()}");
+                                Log.Out($"key: {pair.Key}, type: {pair.Value.typeTag.ToString()}, value: {pair.Value.GetValue()}");
                             }
                         }
                     }

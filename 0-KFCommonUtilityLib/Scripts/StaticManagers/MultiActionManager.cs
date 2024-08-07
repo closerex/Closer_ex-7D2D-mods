@@ -64,6 +64,11 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             return metaIndice[mode];
         }
 
+        public unsafe int GetMetaIndexForActionIndex(int actionIndex)
+        {
+            return metaIndice[GetModeForAction(actionIndex)];
+        }
+
         public int GetModeForAction(int actionIndex)
         {
             int mode = -1;
@@ -267,7 +272,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             _xuiRadialWindow.ResetRadialEntries();
             int preSelectedIndex = -1;
             string[] magazineItemNames = ((ItemActionAttack)_epl.inventory.holdingItem.Actions[CurActionIndex]).MagazineItemNames;
-            bool[] disableStates = CommonUtilityPatch.GetUnusableItemEntries(magazineItemNames, _epl);
+            bool[] disableStates = CommonUtilityPatch.GetUnusableItemEntries(magazineItemNames, _epl, CurActionIndex);
             for (int i = 0; i < magazineItemNames.Length; i++)
             {
                 ItemClass ammoClass = ItemClass.GetItemClass(magazineItemNames[i], false);
