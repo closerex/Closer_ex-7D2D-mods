@@ -9,11 +9,13 @@ using UnityEngine.Animations.Rigging;
 public class AnimationInspectFix : MonoBehaviour
 {
     [SerializeField]
-    private string inspectTransName = "Inspect";
+    private string inspectName = "Inspect";
     [SerializeField]
     private int layer = 0;
     [SerializeField, Range(0, 1)]
     private float finishTime = 1;
+    [SerializeField]
+    private bool useStateTag = false;
     private static int inspectHash = Animator.StringToHash("weaponInspect");
     private Animator animator;
 
@@ -28,10 +30,21 @@ public class AnimationInspectFix : MonoBehaviour
 
     private void Update()
     {
-        var info = animator.GetAnimatorTransitionInfo(layer);
-        if (info.IsUserName(inspectTransName) && info.normalizedTime < finishTime)
+        if (useStateTag)
         {
-            animator.ResetTrigger(inspectHash);
+            var stateInfo = animator.GetCurrentAnimatorStateInfo(layer);
+            if (stateInfo.IsTag(inspectName))
+            {
+                animator.ResetTrigger(inspectHash);
+            }
+        }
+        else
+        {
+            var transInfo = animator.GetAnimatorTransitionInfo(layer);
+            if (transInfo.IsUserName(inspectName) && transInfo.normalizedTime < finishTime)
+            {
+                animator.ResetTrigger(inspectHash);
+            }
         }
     }
 

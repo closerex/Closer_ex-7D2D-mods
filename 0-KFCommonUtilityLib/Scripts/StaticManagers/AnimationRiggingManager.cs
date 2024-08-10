@@ -171,6 +171,26 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             return GameUtils.FindDeepChild(transform, transformPath);
         }
 
+        public static Transform GetAttachmentReferenceOverrideTransformActive(Transform transform, string transformPath, Entity entity)
+        {
+            if (transform == null || entity == null || !(entity is EntityAlive entityAlive) || entityAlive.inventory == null)
+                return null;
+
+            //Log.Out("TRYING TO REDIRECT TRANSFORM REFERENCE: " + transform.name + " CHILD: " + transformPath);
+            var targets = entityAlive.inventory.GetHoldingItemTransform()?.GetComponent<AttachmentReference>();
+            if (targets != null && targets.attachmentReference != null)
+            {
+                var redirected = GameUtils.FindDeepChildActive(targets.attachmentReference, transform.name) ?? targets.attachmentReference;
+                //Log.Out("REDIRECTING TRANSFORM REFERENCE TO " + redirected.name);
+                var find = GameUtils.FindDeepChildActive(redirected, transformPath);
+                if (find != null)
+                    //Log.Out("FOUND REDIRECTED CHILD: " +  find.name + " PARENT: " + find.parent.name);
+                    return find;
+            }
+
+            return GameUtils.FindDeepChildActive(transform, transformPath);
+        }
+
         public static Transform GetMuzzleOverrideFPV(Transform muzzle, bool isLocalFpv)
         {
             if (!isLocalFpv || fpvTransformRef == null)
@@ -193,15 +213,27 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             return muzzle2;
         }
 
-        public static Transform GetTransformOverrideByName(string name, Transform itemModel)
+        public static Transform GetTransformOverrideByName(Transform itemModel, string name, bool onlyActive = false)
         {
             if (itemModel == null)
                 return null;
             var player = GameManager.Instance.World.GetPrimaryPlayer();
             if (player == null || !itemModel.TryGetComponent<RigTargets>(out var targets))
-                return itemModel.FindInAllChilds(name, false);
+            {
+                if (string.IsNullOrEmpty(name))
+                    return itemModel;
+                return onlyActive ? GameUtils.FindDeepChildActive(itemModel, name) : GameUtils.FindDeepChild(itemModel, name);
+            }
 
-            return (player.bFirstPersonView ? targets.itemFpv : itemModel).FindInAllChilds(name, false);
+            Transform targetRoot = (player.bFirstPersonView ? targets.itemFpv : itemModel);
+            if (string.IsNullOrEmpty(name))
+                return targetRoot;
+            return onlyActive ? GameUtils.FindDeepChildActive(targetRoot, name) : GameUtils.FindDeepChild(targetRoot, name);
+        }
+
+        public static Transform GetAddPartTransformOverride(Transform itemModel, string name, bool onlyActive = false)
+        {
+            return GetTransformOverrideByName(itemModel, name, onlyActive) ?? itemModel;
         }
 
         //patched to ItemActionRanged.ItemActionEffect

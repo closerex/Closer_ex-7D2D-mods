@@ -8,7 +8,6 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml.Linq;
-using SystemInformation;
 using UnityEngine;
 
 [HarmonyPatch]
@@ -389,6 +388,38 @@ public static class CommonUtilityPatch
             }
         }
 
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.OnHoldingUpdate))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_OnHoldingUpdate_ItemActionDynamicMelee(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Is(OpCodes.Ldc_R4, 0.1f))
+            {
+                codes.RemoveRange(i, 2);
+                break;
+            }
+        }
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.canStartAttack))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_canStartAttack_ItemActionDynamicMelee(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Is(OpCodes.Ldc_R4, 0.1f))
+            {
+                codes.RemoveRange(i, 2);
+                break;
+            }
+        }
         return codes;
     }
 

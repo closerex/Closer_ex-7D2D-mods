@@ -49,19 +49,19 @@ static class AnimationRiggingPatches
         ItemActionRanged.ItemActionDataRanged rangedData = (ItemActionRanged.ItemActionDataRanged)_data;
         if (rangedData.IsDoubleBarrel)
         {
-            rangedData.muzzle = AnimationRiggingManager.GetTransformOverrideByName("Muzzle_L", rangedData.invData.model);
-            rangedData.muzzle2 = AnimationRiggingManager.GetTransformOverrideByName("Muzzle_R", rangedData.invData.model);
+            rangedData.muzzle = AnimationRiggingManager.GetTransformOverrideByName(rangedData.invData.model, "Muzzle_L");
+            rangedData.muzzle2 = AnimationRiggingManager.GetTransformOverrideByName(rangedData.invData.model, "Muzzle_R");
         }
         else
         {
-            rangedData.muzzle = AnimationRiggingManager.GetTransformOverrideByName("Muzzle", rangedData.invData.model);
+            rangedData.muzzle = AnimationRiggingManager.GetTransformOverrideByName(rangedData.invData.model, "Muzzle");
         }
-        rangedData.Laser = AnimationRiggingManager.GetTransformOverrideByName("laser", rangedData.invData.model);
+        rangedData.Laser = AnimationRiggingManager.GetTransformOverrideByName(rangedData.invData.model, "laser");
 
         ItemActionLauncher.ItemActionDataLauncher launcherData = _data as ItemActionLauncher.ItemActionDataLauncher;
         if (launcherData != null)
         {
-            launcherData.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName("ProjectileJoint", launcherData.invData.model);
+            launcherData.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName(launcherData.invData.model, "ProjectileJoint");
         }
     }
 
@@ -92,7 +92,90 @@ static class AnimationRiggingPatches
             }
         }
 
+        return codes;
+    }
 
+    [HarmonyPatch(typeof(MinEventActionSetTransformChildrenActive), nameof(MinEventActionSetTransformChildrenActive.Execute))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_Execute_MinEventActionSetTransformChildrenActive(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+        var mtd_find = AccessTools.Method(typeof(GameUtils), nameof(GameUtils.FindDeepChildActive));
+        var fld_trans = AccessTools.Field(typeof(MinEventActionSetTransformChildrenActive), nameof(MinEventActionSetTransformChildrenActive.transformPath));
+        for (int i = 1; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_find) && codes[i - 1].LoadsField(fld_trans))
+            {
+                codes.RemoveAt(i);
+                codes.InsertRange(i, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_1),
+                    CodeInstruction.LoadField(typeof(MinEventParams), nameof(MinEventParams.Self)),
+                    CodeInstruction.Call(typeof(AnimationRiggingManager), nameof(AnimationRiggingManager.GetAttachmentReferenceOverrideTransformActive))
+                });
+                break;
+            }
+        }
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(MinEventActionAddPart), nameof(MinEventActionAddPart.Execute))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_Execute_MinEventActionAddPart(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+        var mtd_idx = AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItemIdx));
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_idx))
+            {
+                codes.InsertRange(i + 2, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    CodeInstruction.LoadField(typeof(MinEventActionAddPart),nameof(MinEventActionAddPart.partName)),
+                    new CodeInstruction(OpCodes.Ldc_I4_1),
+                    CodeInstruction.Call(typeof(AnimationRiggingManager), nameof(AnimationRiggingManager.GetAddPartTransformOverride))
+                });
+                break;
+            }
+        }
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(MinEventActionAttachPrefabToHeldItem), nameof(MinEventActionAttachPrefabToHeldItem.Execute))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_Execute_MinEventActionAttachPrefabToHeldItem(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+        var mtd_find = AccessTools.Method(typeof(GameUtils), nameof(GameUtils.FindDeepChild));
+        var fld_trans = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.Transform));
+        for (int i = 1; i < codes.Count; i++)
+        {
+            if (codes[i].opcode == OpCodes.Stloc_0)
+            {
+                if (codes[i - 1].Calls(mtd_find))
+                {
+                    codes.InsertRange(i, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldc_I4_0),
+                        CodeInstruction.Call(typeof(AnimationRiggingManager), nameof(AnimationRiggingManager.GetAddPartTransformOverride))
+                    });
+                    codes.RemoveAt(i - 1);
+                    i += 1;
+                }
+                else if (codes[i - 1].LoadsField(fld_trans))
+                {
+                    codes.InsertRange(i, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(MinEventActionAttachPrefabToHeldItem), nameof(MinEventActionAttachPrefabToHeldItem.parent_transform)),
+                        new CodeInstruction(OpCodes.Ldc_I4_0),
+                        CodeInstruction.Call(typeof(AnimationRiggingManager), nameof(AnimationRiggingManager.GetAddPartTransformOverride))
+                    });
+                    i += 4;
+                }
+            }
+        }
         return codes;
     }
 
@@ -598,6 +681,20 @@ static class AnimationRiggingPatches
         }
         _ = Transpiler(null);
     }
+
+    //[HarmonyPatch(typeof(ItemActionDynamic), nameof(ItemActionDynamic.GetExecuteActionGrazeTarget))]
+    //[HarmonyPostfix]
+    //private static void Postfix_Test2(WorldRayHitInfo[] __result)
+    //{
+    //    Log.Out($"World ray info count: {__result.Length}");
+    //}
+
+    //[HarmonyPatch(typeof(ItemActionDynamic), nameof(ItemActionDynamic.hitTarget))]
+    //[HarmonyPostfix]
+    //private static void Postfix_hittest(ItemActionData _actionData, WorldRayHitInfo hitInfo, bool _isGrazingHit = false)
+    //{
+    //    Log.Out($"HIT TARGET! IsGrazing: {_isGrazingHit}\n{StackTraceUtility.ExtractStackTrace()}");
+    //}
 
     //[HarmonyPatch(typeof(XUiC_CameraWindow), nameof(XUiC_CameraWindow.OnOpen))]
     //[HarmonyPrefix]

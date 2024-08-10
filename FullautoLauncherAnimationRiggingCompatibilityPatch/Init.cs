@@ -137,7 +137,7 @@ public static class FLARPatch
     private static void Postfix_OnModificationsChanged_ItemActionBetterLauncher(ItemActionData _data)
     {
         ItemActionBetterLauncher.ItemActionDataBetterLauncher ItemActionDataBetterLauncher = (ItemActionBetterLauncher.ItemActionDataBetterLauncher)_data;
-        ItemActionDataBetterLauncher.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName("ProjectileJoint", ItemActionDataBetterLauncher.invData.model);
+        ItemActionDataBetterLauncher.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName(ItemActionDataBetterLauncher.invData.model, "ProjectileJoint");
     }
 
     [HarmonyPatch(typeof(ActionModuleMultiActionFix), "Postfix_OnModificationChanged_ItemActionRanged")]
@@ -148,7 +148,7 @@ public static class FLARPatch
         {
             string indexExtension = (_data.indexInEntityOfAction > 0 ? _data.indexInEntityOfAction.ToString() : "");
             string jointName = _data.invData.itemValue.GetPropertyOverrideForAction($"ProjectileJoint_Name", $"ProjectileJoint{indexExtension}", _data.indexInEntityOfAction);
-            launcherData.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName(jointName, launcherData.invData.model) ?? launcherData.projectileJoint;
+            launcherData.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName(launcherData.invData.model, jointName) ?? launcherData.projectileJoint;
         }
     }
 

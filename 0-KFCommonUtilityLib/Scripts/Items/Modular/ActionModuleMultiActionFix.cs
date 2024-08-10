@@ -29,14 +29,14 @@ public class ActionModuleMultiActionFix
             if (rangedData.IsDoubleBarrel)
             {
                 muzzleName = _data.invData.itemValue.GetPropertyOverrideForAction($"Muzzle_L_Name", $"Muzzle_L{indexExtension}", _data.indexInEntityOfAction);
-                rangedData.muzzle = AnimationRiggingManager.GetTransformOverrideByName(muzzleName, rangedData.invData.model) ?? rangedData.muzzle;
+                rangedData.muzzle = AnimationRiggingManager.GetTransformOverrideByName(rangedData.invData.model, muzzleName) ?? rangedData.muzzle;
                 muzzleName = _data.invData.itemValue.GetPropertyOverrideForAction($"Muzzle_R_Name", $"Muzzle_R{indexExtension}", _data.indexInEntityOfAction);
-                rangedData.muzzle2 = AnimationRiggingManager.GetTransformOverrideByName(muzzleName, rangedData.invData.model) ?? rangedData.muzzle2;
+                rangedData.muzzle2 = AnimationRiggingManager.GetTransformOverrideByName(rangedData.invData.model, muzzleName) ?? rangedData.muzzle2;
             }
             else
             {
                 muzzleName = _data.invData.itemValue.GetPropertyOverrideForAction($"Muzzle_Name", $"Muzzle{indexExtension}", _data.indexInEntityOfAction);
-                rangedData.muzzle = AnimationRiggingManager.GetTransformOverrideByName(muzzleName, rangedData.invData.model) ?? rangedData.muzzle;
+                rangedData.muzzle = AnimationRiggingManager.GetTransformOverrideByName(rangedData.invData.model, muzzleName) ?? rangedData.muzzle;
             }
         }
     }
@@ -49,7 +49,7 @@ public class ActionModuleMultiActionFix
         {
             string indexExtension = (_data.indexInEntityOfAction > 0 ? _data.indexInEntityOfAction.ToString() : "");
             string jointName = _data.invData.itemValue.GetPropertyOverrideForAction($"ProjectileJoint_Name", $"ProjectileJoint{indexExtension}", _data.indexInEntityOfAction);
-            launcherData.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName(jointName, launcherData.invData.model) ?? launcherData.projectileJoint;
+            launcherData.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName(launcherData.invData.model, jointName) ?? launcherData.projectileJoint;
         }
     }
 

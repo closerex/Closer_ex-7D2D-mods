@@ -4,8 +4,6 @@ using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System.Collections;
 using Unity.Mathematics;
-using UnityEngine;
-using static ActionModuleTagged;
 
 [TypeTarget(typeof(ItemActionAttack), typeof(AlternativeData))]
 public class ActionModuleAlternative

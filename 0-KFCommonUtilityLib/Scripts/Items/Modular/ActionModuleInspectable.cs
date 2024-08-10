@@ -15,4 +15,14 @@ public class ActionModuleInspectable
     {
         allowEmptyInspect = _props.GetBool("allowEmptyInspect");
     }
+
+    [MethodTargetPostfix(nameof(ItemAction.CancelAction), typeof(ItemActionDynamic))]
+    private void Postfix_CancelAction_ItemActionDynamic(ItemActionDynamic.ItemActionDynamicData _actionData)
+    {
+        var entity = _actionData.invData.holdingEntity;
+        if (!entity.MovementRunning && _actionData != null && !entity.inventory.holdingItem.IsActionRunning(entity.inventory.holdingItemData))
+        {
+            entity.emodel.avatarController._setTrigger("weaponInspect", false);
+        }
+    }
 }
