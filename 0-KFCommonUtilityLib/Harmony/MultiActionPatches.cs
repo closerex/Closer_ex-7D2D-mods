@@ -1760,11 +1760,12 @@ namespace KFCommonUtilityLib.Harmony
         */
 
         [HarmonyPatch(typeof(Inventory), nameof(Inventory.onInventoryChanged))]
-        [HarmonyPostfix]
-        private static void Postfix_onInventoryChanged_Inventory(Inventory __instance)
+        [HarmonyPrefix]
+        private static bool Prefix_onInventoryChanged_Inventory(Inventory __instance)
         {
             if (__instance.entity != null)
                 MultiActionManager.UpdateLocalMetaSave(__instance.entity.entityId);
+            return true;
         }
         #endregion
 

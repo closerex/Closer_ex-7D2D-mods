@@ -30,7 +30,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
     public void OnBeforeSerialize()
     {
         var context = AnimatorController.FindStateMachineBehaviourContext(this);
-        if (context != null)
+        if (context != null && context.Length > 0)
         {
             var state = context[0].animatorObject as AnimatorState;
             if (state != null)
