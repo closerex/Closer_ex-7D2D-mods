@@ -188,7 +188,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
         public static bool GetPropertyOverrideForMod(ItemClassModifier mod, string _propertyName, ItemClass _item, ref string _value, int actionIndex)
         {
             //Log.Out($"Get property override for item {_item.Name} itemID{_item.Id} property {_propertyName} mod {mod.Name} modID {mod.Id} action {actionIndex} should exclude {MultiActionManager.ShouldExcludeMod(_item.Id, mod.Id, actionIndex)}");
-            if (MultiActionManager.ShouldExcludeMod(_item.Id, mod.Id, actionIndex))
+            if (MultiActionManager.ShouldExcludeProperty(_item.Id, mod.Id, actionIndex))
                 return false;
             string _itemName = _item.GetItemName();
             string itemNameWithActionIndex = $"{_itemName}_{actionIndex}";

@@ -1,4 +1,5 @@
-﻿using KFCommonUtilityLib.Scripts.Utilities;
+﻿using KFCommonUtilityLib.Scripts.ConsoleCmd;
+using KFCommonUtilityLib.Scripts.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -236,6 +237,11 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             {
                 Log.Error($"SAVING META ERROR: AMMO INDEX LARGER THAN AMMO ITEM COUNT!\n{StackTraceUtility.ExtractStackTrace()}");
             }
+            if (ConsoleCmdReloadLog.LogInfo)
+            {
+                ConsoleCmdMultiActionItemValueDebug.LogMeta(itemValue);
+                Log.Out($"Save Meta stacktrace:\n{StackTraceUtility.ExtractStackTrace()}");
+            }
         }
 
         public void ReadMeta(ItemValue _itemValue = null)
@@ -264,6 +270,11 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             else
             {
                 itemValue.SelectedAmmoTypeIndex = (byte)(int)res;
+            }
+            if (ConsoleCmdReloadLog.LogInfo)
+            {
+                ConsoleCmdMultiActionItemValueDebug.LogMeta(itemValue);
+                Log.Out($"Read Meta stacktrace:\n{StackTraceUtility.ExtractStackTrace()}");
             }
         }
 
@@ -318,7 +329,9 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         private static readonly Dictionary<int, MultiActionMapping> dict_mappings = new Dictionary<int, MultiActionMapping>();
         private static readonly Dictionary<int, MultiActionIndice> dict_indice = new Dictionary<int, MultiActionIndice>();
         private static readonly Dictionary<int, FastTags<TagGroup.Global>[]> dict_item_action_exclude_tags = new Dictionary<int, FastTags<TagGroup.Global>[]>();
-        private static readonly Dictionary<int, int[][]> dict_item_action_exclude_mod = new Dictionary<int, int[][]>();
+        private static readonly Dictionary<int, int[][]> dict_item_action_exclude_mod_property = new Dictionary<int, int[][]>();
+        private static readonly Dictionary<int, int[][]> dict_item_action_exclude_mod_passive = new Dictionary<int, int[][]>();
+        private static readonly Dictionary<int, int[][]> dict_item_action_exclude_mod_trigger = new Dictionary<int, int[][]>();
 
         //should set to true when:
         //mode switch input received;
@@ -335,7 +348,9 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         public static void PreloadCleanup()
         {
             dict_item_action_exclude_tags.Clear();
-            dict_item_action_exclude_mod.Clear();
+            dict_item_action_exclude_mod_property.Clear();
+            dict_item_action_exclude_mod_passive.Clear();
+            dict_item_action_exclude_mod_trigger.Clear();
         }
 
         public static void ParseItemActionExcludeTagsAndModifiers(ItemClass item)
@@ -362,7 +377,37 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                         if (mods == null)
                         {
                             mods = new int[ItemClass.cMaxActionNames][];
-                            dict_item_action_exclude_mod.Add(item.Id, mods);
+                            dict_item_action_exclude_mod_property.Add(item.Id, mods);
+                        }
+                        mods[i] = str.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                     .Where(s => !string.IsNullOrEmpty(s))
+                                     .Select(s => ItemClass.GetItemClass(s, false))
+                                     .Where(_item => _item != null)
+                                     .Select(_item => _item.Id)
+                                     .ToArray();
+                        //Log.Out($"EXCLUDE MODS FROM ITEM {item.Name} ITEMID {item.Id} ACTION {i} : {string.Join(" ", mods[i])}");
+                    }
+                    if (item.Actions[i].Properties.Values.TryGetValue("ExcludePassives", out str))
+                    {
+                        if (mods == null)
+                        {
+                            mods = new int[ItemClass.cMaxActionNames][];
+                            dict_item_action_exclude_mod_passive.Add(item.Id, mods);
+                        }
+                        mods[i] = str.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                     .Where(s => !string.IsNullOrEmpty(s))
+                                     .Select(s => ItemClass.GetItemClass(s, false))
+                                     .Where(_item => _item != null)
+                                     .Select(_item => _item.Id)
+                                     .ToArray();
+                        //Log.Out($"EXCLUDE MODS FROM ITEM {item.Name} ITEMID {item.Id} ACTION {i} : {string.Join(" ", mods[i])}");
+                    }
+                    if (item.Actions[i].Properties.Values.TryGetValue("ExcludeTriggers", out str))
+                    {
+                        if (mods == null)
+                        {
+                            mods = new int[ItemClass.cMaxActionNames][];
+                            dict_item_action_exclude_mod_trigger.Add(item.Id, mods);
                         }
                         mods[i] = str.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                                      .Where(s => !string.IsNullOrEmpty(s))
@@ -386,9 +431,19 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             tags = tags.Remove(arr_tags[actionData.indexInEntityOfAction]);
         }
 
-        public static bool ShouldExcludeMod(int itemId, int modId, int actionIndex)
+        public static bool ShouldExcludeProperty(int itemId, int modId, int actionIndex)
         {
-            return dict_item_action_exclude_mod.TryGetValue(itemId, out var arr_exclude) && arr_exclude[actionIndex] != null && Array.IndexOf(arr_exclude[actionIndex], modId) >= 0;
+            return dict_item_action_exclude_mod_property.TryGetValue(itemId, out var arr_exclude) && arr_exclude[actionIndex] != null && Array.IndexOf(arr_exclude[actionIndex], modId) >= 0;
+        }
+
+        public static bool ShouldExcludePassive(int itemId, int modId, int actionIndex)
+        {
+            return dict_item_action_exclude_mod_passive.TryGetValue(itemId, out var arr_exclude) && arr_exclude[actionIndex] != null && Array.IndexOf(arr_exclude[actionIndex], modId) >= 0;
+        }
+
+        public static bool ShouldExcludeTrigger(int itemId, int modId, int actionIndex)
+        {
+            return dict_item_action_exclude_mod_trigger.TryGetValue(itemId, out var arr_exclude) && arr_exclude[actionIndex] != null && Array.IndexOf(arr_exclude[actionIndex], modId) >= 0;
         }
 
         public static void UpdateLocalMetaSave(int playerID)

@@ -7,10 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Xml.Linq;
 using UniLinq;
 using UnityEngine;
-using XMLData.Item;
 
 namespace KFCommonUtilityLib.Harmony
 {
@@ -797,7 +795,7 @@ namespace KFCommonUtilityLib.Harmony
                                 new CodeInstruction(OpCodes.Ldelem_Ref),
                                 CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.type)),
                                 new CodeInstruction(OpCodes.Ldloc_S, lbd_index),
-                                CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.ShouldExcludeMod)),
+                                CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.ShouldExcludeTrigger)),
                                 new CodeInstruction(OpCodes.Brtrue_S, label)
                             });
                             i += 10;
@@ -873,7 +871,7 @@ namespace KFCommonUtilityLib.Harmony
                                 new CodeInstruction(OpCodes.Ldelem_Ref),
                                 CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.type)),
                                 new CodeInstruction(OpCodes.Ldloc_S, lbd_index),
-                                CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.ShouldExcludeMod)),
+                                CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.ShouldExcludePassive)),
                                 new CodeInstruction(OpCodes.Brtrue_S, label)
                             });
                             i += 10;
@@ -1071,7 +1069,7 @@ namespace KFCommonUtilityLib.Harmony
                                 new CodeInstruction(OpCodes.Ldelem_Ref),
                                 CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.type)),
                                 new CodeInstruction(OpCodes.Ldloc_S, lbd_index),
-                                CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.ShouldExcludeMod)),
+                                CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.ShouldExcludePassive)),
                                 new CodeInstruction(OpCodes.Brtrue_S, label)
                             });
                             i += 10;
@@ -1469,6 +1467,297 @@ namespace KFCommonUtilityLib.Harmony
                 yield return code;
             }
         }
+
+        /*
+        [HarmonyPatch(typeof(ItemClassesFromXml), nameof(ItemClassesFromXml.parseItem))]
+        [HarmonyPrefix]
+        private static bool Prefix_parseItem_ItemClassesFromXml(XElement _node)
+        {
+            //throw new Exception("Exception thrown from here!");
+            DynamicProperties dynamicProperties = new DynamicProperties();
+            string attribute = _node.GetAttribute("name");
+            if (attribute.Length == 0)
+            {
+                throw new Exception("Attribute 'name' missing on item");
+            }
+            //Log.Out($"Parsing item {attribute}...");
+            List<IRequirement>[] array = new List<IRequirement>[5];
+            for (int i = 0; i < array.Length; i++)
+            {
+                array[i] = new List<IRequirement>();
+            }
+
+            foreach (XElement item in _node.Elements("property"))
+            {
+                dynamicProperties.Add(item);
+                string attribute2 = item.GetAttribute("class");
+                if (attribute2.StartsWith("Action"))
+                {
+                    int num = attribute2[attribute2.Length - 1] - 48;
+                    array[num].AddRange(RequirementBase.ParseRequirements(item));
+                }
+            }
+
+            if (dynamicProperties.Values.ContainsKey("Extends"))
+            {
+                string text = dynamicProperties.Values["Extends"];
+                ItemClass itemClass = ItemClass.GetItemClass(text);
+                if (itemClass == null)
+                {
+                    throw new Exception($"Extends item {text} is not specified for item {attribute}'");
+                }
+
+                HashSet<string> hashSet = new HashSet<string> { Block.PropCreativeMode };
+                if (dynamicProperties.Params1.ContainsKey("Extends"))
+                {
+                    string[] array2 = dynamicProperties.Params1["Extends"].Split(',');
+                    foreach (string text2 in array2)
+                    {
+                        hashSet.Add(text2.Trim());
+                    }
+                }
+
+                DynamicProperties dynamicProperties2 = new DynamicProperties();
+                dynamicProperties2.CopyFrom(itemClass.Properties, hashSet);
+                dynamicProperties2.CopyFrom(dynamicProperties);
+                dynamicProperties = dynamicProperties2;
+            }
+
+            ItemClass itemClass2;
+            if (dynamicProperties.Values.ContainsKey("Class"))
+            {
+                string text3 = dynamicProperties.Values["Class"];
+                if (!text3.Contains(","))
+                {
+                    text3 += ",Assembly-CSharp";
+                }
+                try
+                {
+                    itemClass2 = (ItemClass)Activator.CreateInstance(Type.GetType(text3));
+                }
+                catch (Exception)
+                {
+                    throw new Exception("No item class '" + text3 + "' found!");
+                }
+            }
+            else
+            {
+                itemClass2 = new ItemClass();
+            }
+
+            itemClass2.Properties = dynamicProperties;
+            if (dynamicProperties.Params1.ContainsKey("Extends"))
+            {
+                string text4 = dynamicProperties.Values["Extends"];
+                if (ItemClass.GetItemClass(text4) == null)
+                {
+                    throw new Exception($"Extends item {text4} is not specified for item {attribute}'");
+                }
+            }
+
+            itemClass2.Effects = MinEffectController.ParseXml(_node, null, MinEffectController.SourceParentType.ItemClass, itemClass2.Id);
+            itemClass2.SetName(attribute);
+            itemClass2.setLocalizedItemName(Localization.Get(attribute));
+            if (dynamicProperties.Values.ContainsKey("Stacknumber"))
+            {
+                itemClass2.Stacknumber = new DataItem<int>(int.Parse(dynamicProperties.Values["Stacknumber"]));
+            }
+            else
+            {
+                itemClass2.Stacknumber = new DataItem<int>(500);
+            }
+
+            if (dynamicProperties.Values.ContainsKey("Canhold"))
+            {
+                itemClass2.SetCanHold(StringParsers.ParseBool(dynamicProperties.Values["Canhold"]));
+            }
+
+            if (dynamicProperties.Values.ContainsKey("Candrop"))
+            {
+                itemClass2.SetCanDrop(StringParsers.ParseBool(dynamicProperties.Values["Candrop"]));
+            }
+
+            if (!dynamicProperties.Values.ContainsKey("Material"))
+            {
+                throw new Exception("Attribute 'material' missing on item '" + attribute + "'");
+            }
+
+            itemClass2.MadeOfMaterial = MaterialBlock.fromString(dynamicProperties.Values["Material"]);
+            if (itemClass2.MadeOfMaterial == null)
+            {
+                throw new Exception("Attribute 'material' '" + dynamicProperties.Values["Material"] + "' refers to not existing material in item '" + attribute + "'");
+            }
+
+            if (!dynamicProperties.Values.ContainsKey("Meshfile") && itemClass2.CanHold())
+            {
+                throw new Exception("Attribute 'Meshfile' missing on item '" + attribute + "'");
+            }
+
+            itemClass2.MeshFile = dynamicProperties.Values["Meshfile"];
+            DataLoader.PreloadBundle(itemClass2.MeshFile);
+            StringParsers.TryParseFloat(dynamicProperties.Values["StickyOffset"], out itemClass2.StickyOffset);
+            StringParsers.TryParseFloat(dynamicProperties.Values["StickyColliderRadius"], out itemClass2.StickyColliderRadius);
+            StringParsers.TryParseSInt32(dynamicProperties.Values["StickyColliderUp"], out itemClass2.StickyColliderUp);
+            StringParsers.TryParseFloat(dynamicProperties.Values["StickyColliderLength"], out itemClass2.StickyColliderLength);
+            itemClass2.StickyMaterial = dynamicProperties.Values["StickyMaterial"];
+            if (dynamicProperties.Values.ContainsKey("ImageEffectOnActive"))
+            {
+                itemClass2.ImageEffectOnActive = new DataItem<string>(dynamicProperties.Values["ImageEffectOnActive"]);
+            }
+
+            if (dynamicProperties.Values.ContainsKey("Active"))
+            {
+                itemClass2.Active = new DataItem<bool>(_startValue: false);
+            }
+
+            if (dynamicProperties.Values.ContainsKey(ItemClass.PropIsSticky))
+            {
+                itemClass2.IsSticky = StringParsers.ParseBool(dynamicProperties.Values[ItemClass.PropIsSticky]);
+            }
+
+            if (dynamicProperties.Values.ContainsKey("DropMeshfile") && itemClass2.CanHold())
+            {
+                itemClass2.DropMeshFile = dynamicProperties.Values["DropMeshfile"];
+                DataLoader.PreloadBundle(itemClass2.DropMeshFile);
+            }
+
+            if (dynamicProperties.Values.ContainsKey("HandMeshfile") && itemClass2.CanHold())
+            {
+                itemClass2.HandMeshFile = dynamicProperties.Values["HandMeshfile"];
+                DataLoader.PreloadBundle(itemClass2.HandMeshFile);
+            }
+
+            if (dynamicProperties.Values.ContainsKey("HoldType"))
+            {
+                string s = dynamicProperties.Values["HoldType"];
+                int result = 0;
+                if (!int.TryParse(s, out result))
+                {
+                    throw new Exception("Cannot parse attribute hold_type for item '" + attribute + "'");
+                }
+
+                itemClass2.HoldType = new DataItem<int>(result);
+            }
+
+            if (dynamicProperties.Values.ContainsKey("RepairTools"))
+            {
+                string[] array3 = dynamicProperties.Values["RepairTools"].Replace(" ", "").Split(',');
+                DataItem<string>[] array4 = new DataItem<string>[array3.Length];
+                for (int k = 0; k < array3.Length; k++)
+                {
+                    array4[k] = new DataItem<string>(array3[k]);
+                }
+
+                itemClass2.RepairTools = new ItemData.DataItemArrayRepairTools(array4);
+            }
+
+            if (dynamicProperties.Values.ContainsKey("RepairAmount"))
+            {
+                int result2 = 0;
+                int.TryParse(dynamicProperties.Values["RepairAmount"], out result2);
+                itemClass2.RepairAmount = new DataItem<int>(result2);
+            }
+
+            if (dynamicProperties.Values.ContainsKey("RepairTime"))
+            {
+                float _result = 0f;
+                StringParsers.TryParseFloat(dynamicProperties.Values["RepairTime"], out _result);
+                itemClass2.RepairTime = new DataItem<float>(_result);
+            }
+            else if (itemClass2.RepairAmount != null)
+            {
+                itemClass2.RepairTime = new DataItem<float>(1f);
+            }
+
+            if (dynamicProperties.Values.ContainsKey("Degradation"))
+            {
+                itemClass2.MaxUseTimes = new DataItem<int>(int.Parse(dynamicProperties.Values["Degradation"]));
+            }
+            else
+            {
+                itemClass2.MaxUseTimes = new DataItem<int>(0);
+                itemClass2.MaxUseTimesBreaksAfter = new DataItem<bool>(_startValue: false);
+            }
+
+            if (dynamicProperties.Values.ContainsKey("DegradationBreaksAfter"))
+            {
+                itemClass2.MaxUseTimesBreaksAfter = new DataItem<bool>(StringParsers.ParseBool(dynamicProperties.Values["DegradationBreaksAfter"]));
+            }
+            else if (dynamicProperties.Values.ContainsKey("Degradation"))
+            {
+                itemClass2.MaxUseTimesBreaksAfter = new DataItem<bool>(_startValue: true);
+            }
+
+            if (dynamicProperties.Values.ContainsKey("EconomicValue"))
+            {
+                itemClass2.EconomicValue = StringParsers.ParseFloat(dynamicProperties.Values["EconomicValue"]);
+            }
+
+            if (dynamicProperties.Classes.ContainsKey("Preview"))
+            {
+                DynamicProperties dynamicProperties3 = dynamicProperties.Classes["Preview"];
+                itemClass2.Preview = new PreviewData();
+                if (dynamicProperties3.Values.ContainsKey("Zoom"))
+                {
+                    itemClass2.Preview.Zoom = new DataItem<int>(int.Parse(dynamicProperties3.Values["Zoom"]));
+                }
+
+                if (dynamicProperties3.Values.ContainsKey("Pos"))
+                {
+                    itemClass2.Preview.Pos = new DataItem<Vector2>(StringParsers.ParseVector2(dynamicProperties3.Values["Pos"]));
+                }
+                else
+                {
+                    itemClass2.Preview.Pos = new DataItem<Vector2>(Vector2.zero);
+                }
+
+                if (dynamicProperties3.Values.ContainsKey("Rot"))
+                {
+                    itemClass2.Preview.Rot = new DataItem<Vector3>(StringParsers.ParseVector3(dynamicProperties3.Values["Rot"]));
+                }
+                else
+                {
+                    itemClass2.Preview.Rot = new DataItem<Vector3>(Vector3.zero);
+                }
+            }
+
+            for (int l = 0; l < itemClass2.Actions.Length; l++)
+            {
+                string text5 = ItemClass.itemActionNames[l];
+                if (dynamicProperties.Classes.ContainsKey(text5))
+                {
+                    if (!dynamicProperties.Values.ContainsKey(text5 + ".Class"))
+                    {
+                        throw new Exception("No class attribute found on " + text5 + " in item with '" + attribute + "'");
+                    }
+
+                    string text6 = dynamicProperties.Values[text5 + ".Class"];
+                    ItemAction itemAction;
+                    try
+                    {
+                        itemAction = (ItemAction)Activator.CreateInstance(ReflectionHelpers.GetTypeWithPrefix("ItemAction", text6));
+                    }
+                    catch (Exception)
+                    {
+                        throw new Exception("ItemAction class '" + text6 + " could not be instantiated");
+                    }
+
+                    itemAction.item = itemClass2;
+                    itemAction.ActionIndex = l;
+                    itemAction.ReadFrom(dynamicProperties.Classes[text5]);
+                    if (array[l].Count > 0)
+                    {
+                        itemAction.ExecutionRequirements = array[l];
+                    }
+
+                    itemClass2.Actions[l] = itemAction;
+                }
+            }
+
+            itemClass2.Init();
+            return false;
+        }
+        */
 
         [HarmonyPatch(typeof(Inventory), nameof(Inventory.onInventoryChanged))]
         [HarmonyPostfix]

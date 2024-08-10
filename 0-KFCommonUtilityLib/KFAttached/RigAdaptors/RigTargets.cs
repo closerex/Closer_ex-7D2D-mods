@@ -39,7 +39,9 @@ public class RigTargets : MonoBehaviour
     private void Awake()
     {
         itemAnimator = itemFpv.GetComponentInChildren<Animator>(true);
+#if NotEditor
         itemAnimator.writeDefaultValuesOnDisable = true;
+#endif
         foreach (var bindings in GetComponentsInChildren<TransformActivationBinding>(true))
         {
             bindings.animator = itemAnimator;

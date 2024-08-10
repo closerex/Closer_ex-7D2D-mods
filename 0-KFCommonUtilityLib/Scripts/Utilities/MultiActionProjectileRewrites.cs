@@ -705,7 +705,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             {
                 for (int i = 0; i < _projectileItemValue.CosmeticMods.Length; i++)
                 {
-                    if (_projectileItemValue.CosmeticMods[i] != null && _projectileItemValue.CosmeticMods[i].ItemClass is ItemClassModifier && !MultiActionManager.ShouldExcludeMod(_projectileItemValue.type, _projectileItemValue.CosmeticMods[i].type, actionIndex))
+                    if (_projectileItemValue.CosmeticMods[i] != null && _projectileItemValue.CosmeticMods[i].ItemClass is ItemClassModifier && !MultiActionManager.ShouldExcludePassive(_projectileItemValue.type, _projectileItemValue.CosmeticMods[i].type, actionIndex))
                     {
                         _projectileItemValue.CosmeticMods[i].ModifyValue(_entity, _projectileItemValue, _passiveEffect, ref _originalValue, ref _perc_value, _tags);
                     }
@@ -713,7 +713,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
 
                 for (int i = 0; i < _projectileItemValue.Modifications.Length; i++)
                 {
-                    if (_projectileItemValue.Modifications[i] != null && _projectileItemValue.Modifications[i].ItemClass is ItemClassModifier && !MultiActionManager.ShouldExcludeMod(_projectileItemValue.type, _projectileItemValue.Modifications[i].type, actionIndex))
+                    if (_projectileItemValue.Modifications[i] != null && _projectileItemValue.Modifications[i].ItemClass is ItemClassModifier && !MultiActionManager.ShouldExcludePassive(_projectileItemValue.type, _projectileItemValue.Modifications[i].type, actionIndex))
                     {
                         _projectileItemValue.Modifications[i].ModifyValue(_entity, _projectileItemValue, _passiveEffect, ref _originalValue, ref _perc_value, _tags);
                     }

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
 public class PlayerRigLateUpdate : MonoBehaviour
 {
+#if NotEditor
     private Animator animator;
     private RigBuilder rigBuilder;
     private void Awake()
@@ -31,4 +27,5 @@ public class PlayerRigLateUpdate : MonoBehaviour
     {
         RigTargets.RebuildRig(animator, rigBuilder);
     }
+#endif
 }

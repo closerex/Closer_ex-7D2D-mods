@@ -11,6 +11,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
 #endif
 {
     public float RaycastTime = 0.3f;
+    public float CustomGrazeCastTime = 0.3f;
     public float CustomGrazeCastDuration = 0f;
     public float ImpactDuration = 0.01f;
     [Range(0.01f, 1f)]
@@ -51,6 +52,8 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
 #if NotEditor
     private readonly int AttackSpeedHash = Animator.StringToHash("MeleeAttackSpeed");
     private float calculatedRaycastTime;
+    private float calculatedGrazeTime;
+    private float calculatedGrazeDuration;
     private float calculatedImpactDuration;
     private float calculatedImpactPlaybackSpeed;
     private bool hasFired;
@@ -123,23 +126,28 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         if (originalMeleeAttackSpeed != 0f)
         {
             calculatedRaycastTime = RaycastTime / originalMeleeAttackSpeed;
+            calculatedGrazeTime = CustomGrazeCastTime / originalMeleeAttackSpeed;
+            calculatedGrazeDuration = CustomGrazeCastDuration / originalMeleeAttackSpeed;
             calculatedImpactDuration = ImpactDuration / originalMeleeAttackSpeed;
             calculatedImpactPlaybackSpeed = ImpactPlaybackSpeed * originalMeleeAttackSpeed;
         }
         else
         {
             calculatedRaycastTime = 0.001f;
+            calculatedGrazeTime = 0.001f;
+            calculatedGrazeDuration = 0.001f;
             calculatedImpactDuration = 0.001f;
             calculatedImpactPlaybackSpeed = 0.001f;
         }
         Log.Out($"original: raycast time {RaycastTime} impact duration {ImpactDuration} impact playback speed {ImpactPlaybackSpeed} clip length {length}/{stateInfo.length}");
         Log.Out($"calculated: raycast time {calculatedRaycastTime} impact duration {calculatedImpactDuration} impact playback speed {calculatedImpactPlaybackSpeed} speed multiplier {originalMeleeAttackSpeed}");
         GameManager.Instance.StartCoroutine(impactStart(animator, layerIndex, length));
+        GameManager.Instance.StartCoroutine(customGrazeStart(length));
     }
 
     private IEnumerator impactStart(Animator animator, int layer, float length)
     {
-        yield return new WaitForSeconds(Mathf.Max(calculatedRaycastTime - Time.deltaTime * 2, 0));
+        yield return new WaitForSeconds(Mathf.Max(calculatedRaycastTime, 0));
         if (!hasFired)
         {
             hasFired = true;
@@ -152,7 +160,6 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
                     {
                         GameManager.Instance.StartCoroutine(impactStop(animator, layer, length));
                     }
-                    GameManager.Instance.StartCoroutine(customGraze(itemActionDynamicMeleeData, Mathf.Min(CustomGrazeCastDuration, length - RaycastTime)));
                 }
             }
         }
@@ -162,9 +169,9 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
     private IEnumerator impactStop(Animator animator, int layer, float length)
     {
         //playingImpact = true;
+        //animator.Play(0, layer, Mathf.Min(1f, calculatedRaycastTime * attackDurationNormalized / length));
         animator.SetFloat(AttackSpeedHash, calculatedImpactPlaybackSpeed);
         speedMultiplierToKeep = calculatedImpactPlaybackSpeed;
-        animator.PlayInFixedTime(0, layer, Mathf.Min(1f, calculatedRaycastTime));
         Log.Out("Impact start!");
         yield return new WaitForSeconds(calculatedImpactDuration);
         Log.Out("Impact stop!");
@@ -174,10 +181,24 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         yield break;
     }
 
-    private IEnumerator customGraze(ItemActionDynamicMelee.ItemActionDynamicMeleeData data, float duration)
+    private IEnumerator customGrazeStart(float length)
     {
-        Log.Out($"Custom graze duration: {duration} original {CustomGrazeCastDuration}");
-        if (duration <= 0f)
+        Log.Out($"Custom graze time: {calculatedGrazeTime} original {CustomGrazeCastTime}");
+        yield return new WaitForSeconds(calculatedGrazeTime);
+        if (entity != null && !entity.isEntityRemote && actionIndex >= 0)
+        {
+            ItemActionDynamicMelee.ItemActionDynamicMeleeData itemActionDynamicMeleeData = entity.inventory.holdingItemData.actionData[actionIndex] as ItemActionDynamicMelee.ItemActionDynamicMeleeData;
+            if (itemActionDynamicMeleeData != null)
+            {
+                GameManager.Instance.StartCoroutine(customGrazeUpdate(itemActionDynamicMeleeData));
+            }
+        }
+    }
+
+    private IEnumerator customGrazeUpdate(ItemActionDynamicMelee.ItemActionDynamicMeleeData data)
+    {
+        Log.Out($"Custom graze duration: {calculatedGrazeDuration} original {CustomGrazeCastDuration}");
+        if (calculatedGrazeDuration <= 0f)
         {
             yield break;
         }
@@ -199,7 +220,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             action.SwingAngle = originalSwingAngle;
             action.SwingDegrees = originalSwingDegrees;
             yield return null;
-            normalizedTime = (Time.time - grazeStart) / duration;
+            normalizedTime = (Time.time - grazeStart) / calculatedGrazeDuration;
         }
         yield break;
     }
