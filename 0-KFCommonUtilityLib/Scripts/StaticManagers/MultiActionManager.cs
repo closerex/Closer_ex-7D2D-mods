@@ -358,7 +358,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             if (item == null)
                 return;
             FastTags<TagGroup.Global>[] tags = null;
-            int[][] mods = null;
+            int[][] properties = null, passives = null, triggers = null;
             for (int i = 0; i < item.Actions.Length; i++)
             {
                 if (item.Actions[i] != null)
@@ -374,48 +374,48 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                     }
                     if (item.Actions[i].Properties.Values.TryGetValue("ExcludeMods", out str))
                     {
-                        if (mods == null)
+                        if (properties == null)
                         {
-                            mods = new int[ItemClass.cMaxActionNames][];
-                            dict_item_action_exclude_mod_property.Add(item.Id, mods);
+                            properties = new int[ItemClass.cMaxActionNames][];
+                            dict_item_action_exclude_mod_property.Add(item.Id, properties);
                         }
-                        mods[i] = str.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                        properties[i] = str.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                                      .Where(s => !string.IsNullOrEmpty(s))
                                      .Select(s => ItemClass.GetItemClass(s, false))
                                      .Where(_item => _item != null)
                                      .Select(_item => _item.Id)
                                      .ToArray();
-                        //Log.Out($"EXCLUDE MODS FROM ITEM {item.Name} ITEMID {item.Id} ACTION {i} : {string.Join(" ", mods[i])}");
+                        //Log.Out($"EXCLUDE PROPERTIES FROM ITEM {item.Name} ITEMID {item.Id} ACTION {i} : {string.Join(" ", properties[i])}");
                     }
                     if (item.Actions[i].Properties.Values.TryGetValue("ExcludePassives", out str))
                     {
-                        if (mods == null)
+                        if (passives == null)
                         {
-                            mods = new int[ItemClass.cMaxActionNames][];
-                            dict_item_action_exclude_mod_passive.Add(item.Id, mods);
+                            passives = new int[ItemClass.cMaxActionNames][];
+                            dict_item_action_exclude_mod_passive.Add(item.Id, passives);
                         }
-                        mods[i] = str.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                        passives[i] = str.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                                      .Where(s => !string.IsNullOrEmpty(s))
                                      .Select(s => ItemClass.GetItemClass(s, false))
                                      .Where(_item => _item != null)
                                      .Select(_item => _item.Id)
                                      .ToArray();
-                        //Log.Out($"EXCLUDE MODS FROM ITEM {item.Name} ITEMID {item.Id} ACTION {i} : {string.Join(" ", mods[i])}");
+                        //Log.Out($"EXCLUDE PASSIVES FROM ITEM {item.Name} ITEMID {item.Id} ACTION {i} : {string.Join(" ", passives[i])}");
                     }
                     if (item.Actions[i].Properties.Values.TryGetValue("ExcludeTriggers", out str))
                     {
-                        if (mods == null)
+                        if (triggers == null)
                         {
-                            mods = new int[ItemClass.cMaxActionNames][];
-                            dict_item_action_exclude_mod_trigger.Add(item.Id, mods);
+                            triggers = new int[ItemClass.cMaxActionNames][];
+                            dict_item_action_exclude_mod_trigger.Add(item.Id, triggers);
                         }
-                        mods[i] = str.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                        triggers[i] = str.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                                      .Where(s => !string.IsNullOrEmpty(s))
                                      .Select(s => ItemClass.GetItemClass(s, false))
                                      .Where(_item => _item != null)
                                      .Select(_item => _item.Id)
                                      .ToArray();
-                        //Log.Out($"EXCLUDE MODS FROM ITEM {item.Name} ITEMID {item.Id} ACTION {i} : {string.Join(" ", mods[i])}");
+                        //Log.Out($"EXCLUDE TRIGGERS FROM ITEM {item.Name} ITEMID {item.Id} ACTION {i} : {string.Join(" ", triggers[i])}");
                     }
                 }
             }
