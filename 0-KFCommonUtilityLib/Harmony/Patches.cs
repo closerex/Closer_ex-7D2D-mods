@@ -905,23 +905,56 @@ public static class CommonUtilityPatch
         if (curAction is ItemActionRanged || curAction is ItemActionZoom)
         {
             int curActionIndex = MultiActionManager.GetActionIndexForEntity(_data.holdingEntity);
-            var rangedAction = __instance.Actions[curActionIndex];
+            var rangedAction = __instance.Actions[curActionIndex] as ItemActionRanged;
             var rangedData = _data.actionData[curActionIndex] as ItemActionRanged.ItemActionDataRanged;
-            if (rangedData != null && rangedData is IModuleContainerFor<ActionModuleInterruptReload.InterruptData> module)
+            if (rangedData != null && rangedData is IModuleContainerFor<ActionModuleInterruptReload.InterruptData> dataModule && rangedAction is IModuleContainerFor<ActionModuleInterruptReload> actionModule)
             {
-                if (!_bReleased && _playerActions != null && ((EntityPlayerLocal)_data.holdingEntity).bFirstPersonView && ((_playerActions.Primary.WasPressed && _actionIdx == curActionIndex) || (_playerActions.Secondary.WasPressed && curAction is ItemActionZoom)) && rangedData.isReloading && !rangedData.isReloadCancelled && !rangedData.isWeaponReloadCancelled && !module.Instance.isInterruptRequested)
+                if (!_bReleased && _playerActions != null && ((EntityPlayerLocal)_data.holdingEntity).bFirstPersonView && ((_playerActions.Primary.IsPressed && _actionIdx == curActionIndex) || (_playerActions.Secondary.IsPressed && curAction is ItemActionZoom)) && (rangedData.isReloading || rangedData.isWeaponReloading) && !dataModule.Instance.isInterruptRequested)
                 {
-                    rangedAction.CancelReload(rangedData);
-                    module.Instance.isInterruptRequested = true;
+                    if (dataModule.Instance.holdStartTime < 0)
+                    {
+                        dataModule.Instance.holdStartTime = Time.time;
+                        return false;
+                    }
+                    if (Time.time - dataModule.Instance.holdStartTime >= actionModule.Instance.holdBeforeCancel)
+                    {
+                        if (!rangedAction.reloadCancelled(rangedData))
+                        {
+                            rangedAction.CancelReload(rangedData);
+                        }
+                        if (ConsoleCmdReloadLog.LogInfo)
+                            Log.Out($"interrupt requested!");
+                        dataModule.Instance.isInterruptRequested = true;
+                        if (actionModule.Instance.instantFiringCancel && curAction is ItemActionRanged)
+                        {
+                            if (ConsoleCmdReloadLog.LogInfo)
+                                Log.Out($"instant firing cancel!");
+                            dataModule.Instance.instantFiringRequested = true;
+                            return true;
+                        }
+                    }
                     return false;
                 }
                 if (_bReleased)
                 {
-                    module.Instance.isInterruptRequested = false;
+                    dataModule.Instance.Reset();
                 }
             }
         }
         return true;
+    }
+
+    [HarmonyPatch(typeof(ItemActionAttack), nameof(ItemActionAttack.HasRadial))]
+    [HarmonyPostfix]
+    private static void Postfix_HasRadial_ItemActionAttack(ref bool __result)
+    {
+        EntityPlayerLocal player = GameManager.Instance.World?.GetPrimaryPlayer();
+        int index = MultiActionManager.GetActionIndexForEntity(player);
+        List<ItemActionData> actionDatas = player.inventory?.holdingItemData?.actionData;
+        if (actionDatas != null && actionDatas.Count > index && actionDatas[index] is ItemActionRanged.ItemActionDataRanged rangedData && (rangedData.isReloading || rangedData.isWeaponReloading))
+        {
+            __result = false;
+        }
     }
 
     //override existing sound node instead of throwing exception
@@ -1082,7 +1115,8 @@ public static class CommonUtilityPatch
                 if (index >= 0)
                 {
                     arr_disable_states[index] = true;
-                    Log.Out($"ammo {ammoNames[index]} is disabled");
+                    if (ConsoleCmdReloadLog.LogInfo)
+                        Log.Out($"ammo {ammoNames[index]} is disabled");
                 }
             }
         }
