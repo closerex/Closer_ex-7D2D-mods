@@ -6,10 +6,12 @@
 	<ingredient name="gunBotRoboticsParts" count="1"/>
 	<ingredient name="resourceForgedSteel" count="5"/>
 	<ingredient name="resourceMechanicalParts" count="4"/>
-	<ingredient name="resourceScrapPolymers" count="5"/>
 	<ingredient name="resourceElectricParts" count="2"/>
+	<ingredient name="resourceLegendaryParts" count="0"/>
 	<effect_group>
-		<passive_effect name="CraftingIngredientCount" level="2,6" operation="perc_add" value="1,5" tags="gunBotRoboticsParts,resourceForgedIron,resourceMechanicalParts,resourceScrapPolymers,resourceElectricParts"/>
+		<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunBotRoboticsParts,resourceForgedSteel,resourceElectricParts"/>
+		<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceMechanicalParts"/>
+		<passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
 	</effect_group>
 </recipe>
 
@@ -17,10 +19,12 @@
 	<ingredient name="gunBotRoboticsParts" count="1"/>
 	<ingredient name="resourceForgedSteel" count="5"/>
 	<ingredient name="resourceMechanicalParts" count="4"/>
-	<ingredient name="resourceScrapPolymers" count="5"/>
 	<ingredient name="resourceElectricParts" count="2"/>
+	<ingredient name="resourceLegendaryParts" count="0"/>
 	<effect_group>
-		<passive_effect name="CraftingIngredientCount" level="2,6" operation="perc_add" value="1,5" tags="gunBotRoboticsParts,resourceForgedIron,resourceMechanicalParts,resourceScrapPolymers,resourceElectricParts"/>
+		<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunBotRoboticsParts,resourceForgedSteel,resourceElectricParts"/>
+		<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceMechanicalParts"/>
+		<passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
 	</effect_group>
 </recipe>
 
@@ -28,10 +32,12 @@
 	<ingredient name="gunBotRoboticsParts" count="1"/>
 	<ingredient name="resourceForgedSteel" count="5"/>
 	<ingredient name="resourceMechanicalParts" count="4"/>
-	<ingredient name="resourceScrapPolymers" count="5"/>
 	<ingredient name="resourceElectricParts" count="2"/>
+	<ingredient name="resourceLegendaryParts" count="0"/>
 	<effect_group>
-		<passive_effect name="CraftingIngredientCount" level="2,6" operation="perc_add" value="1,5" tags="gunBotRoboticsParts,resourceForgedIron,resourceMechanicalParts,resourceScrapPolymers,resourceElectricParts"/>
+		<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunBotRoboticsParts,resourceForgedSteel,resourceElectricParts"/>
+		<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceMechanicalParts"/>
+		<passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
 	</effect_group>
 </recipe>
 
@@ -39,10 +45,12 @@
 	<ingredient name="gunBotRoboticsParts" count="1"/>
 	<ingredient name="resourceForgedSteel" count="5"/>
 	<ingredient name="resourceMechanicalParts" count="4"/>
-	<ingredient name="resourceScrapPolymers" count="5"/>
 	<ingredient name="resourceElectricParts" count="2"/>
+	<ingredient name="resourceLegendaryParts" count="0"/>
 	<effect_group>
-		<passive_effect name="CraftingIngredientCount" level="2,6" operation="perc_add" value="1,5" tags="gunBotRoboticsParts,resourceForgedIron,resourceMechanicalParts,resourceScrapPolymers,resourceElectricParts"/>
+		<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunBotRoboticsParts,resourceForgedSteel,resourceElectricParts"/>
+		<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceMechanicalParts"/>
+		<passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
 	</effect_group>
 </recipe>
 

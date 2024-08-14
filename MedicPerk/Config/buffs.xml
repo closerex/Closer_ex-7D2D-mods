@@ -4,10 +4,16 @@
 		<triggered_effect trigger="onSelfEnteredGame" action="ModifyCVar" cvar="$medicBuffRegen" operation="set" value="2"/>
 		<triggered_effect trigger="onSelfEnteredGame" action="ModifyCVar" cvar="$medicHealSpeed" operation="set" value="1"/>
 	</append>
+
+<conditional>
+	<if cond="mod_loaded('0-XNPCCore')">
 	<append xpath="/buffs/buff[@name='buffNPCStatusCheck']/effect_group">
 		<triggered_effect trigger="onSelfFirstSpawn" action="ModifyCVar" cvar="$medicBuffRegen" operation="set" value="2"/>
 		<triggered_effect trigger="onSelfFirstSpawn" action="ModifyCVar" cvar="$medicHealSpeed" operation="set" value="1"/>
 	</append>
+	</if>
+</conditional>
+		
 	<append xpath="/buffs/buff[@name='buffZedTimeCooldown']/effect_group[@name='zedtime']">
 	</append>
 	<append xpath="/buffs">

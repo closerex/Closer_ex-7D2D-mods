@@ -25,7 +25,7 @@
 			<property name="Group" value="Ammo/Weapons,Ranged Weapons"/>
 			<property name="RepairExpMultiplier" value="10.8"/>
 			<property name="LightValue" value=".45"/>
-			<property name="EconomicValue" value="500"/>
+			<property name="EconomicValue" value="1500"/>
 			<property name="TraderStageTemplate" value="baseTier1"/>
 			<property name="UnlockedBy" value="craftingMedicGuns"/><!-- perkGunslinger,gunHandgunT1PistolSchematic, -->
 			<property name="ShowQuality" value="true"/>
@@ -205,7 +205,7 @@
 			<property name="Group" value="Ammo/Weapons,Ranged Weapons"/>
 			<property name="RepairExpMultiplier" value="10.8"/>
 			<property name="LightValue" value=".45"/>
-			<property name="EconomicValue" value="1500"/>
+			<property name="EconomicValue" value="2500"/>
 			<property name="UnlockedBy" value="craftingMedicGuns"/>
 			<property name="TraderStageTemplate" value="baseTier2"/>
 			<!--These are special weapons and need an unlock or NRE crash-->
@@ -392,7 +392,7 @@
 			<property name="RepairExpMultiplier" value="10.8"/>
 			<property name="PickupJournalEntry" value="alternateAmmoTip"/>
 			<property name="LightValue" value=".45"/>
-			<property name="EconomicValue" value="1500"/>
+			<property name="EconomicValue" value="3500"/>
 			<property name="TraderStageTemplate" value="baseTier3"/>
 			<property name="UnlockedBy" value="craftingMedicGuns"/><!-- gunShotgunT3AutoShotgunSchematic, -->
 			<property name="ShowQuality" value="true"/>
@@ -565,7 +565,7 @@
 			<property name="Sound_Sight_In" value="rifle_sight_in"/>
 			<property name="Sound_Sight_Out" value="rifle_sight_out"/>
 			<property name="RepairExpMultiplier" value="10.8"/>
-			<property name="EconomicValue" value="2000"/>
+			<property name="EconomicValue" value="4000"/>
 			<property name="TraderStageTemplate" value="baseTier3"/>
 			<property name="UnlockedBy" value="craftingMedicGuns"/><!-- gunMGT2TacticalARSchematic, -->
 			<property name="ShowQuality" value="true"/>

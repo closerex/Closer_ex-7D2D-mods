@@ -4,10 +4,10 @@
 		<!-- *** MEDIC_GUN_SKILLS -->
 	<crafting_skill name="craftingMedicGuns" max_level="75" parent="attCrafting" name_key="craftingMedicGunsName" desc_key="craftingMedicGunsDesc" long_desc_key="craftingMedicGunsLongDesc" icon="icon_perkmedic">
 
-		<display_entry item="gunMedicPistol" unlock_level="5,10,15,20,25" />
-		<display_entry item="gunMedicSMG201" unlock_level="15,25,35,45,55" />
-		<display_entry item="gunMedicShotgun301" unlock_level="20,30,40,50,60" />
-		<display_entry item="gunMedicAssaultRifle401" unlock_level="40,50,60,70,75" />
+		<display_entry item="gunMedicPistol" unlock_level="5,10,15,20,25,30" />
+		<display_entry item="gunMedicSMG201" unlock_level="15,25,35,45,55,60" />
+		<display_entry item="gunMedicShotgun301" unlock_level="20,30,40,50,60,65" />
+		<display_entry item="gunMedicAssaultRifle401" unlock_level="40,50,60,65,70,75" />
 
 		<effect_group>
 			<passive_effect name="RecipeTagUnlocked" operation="base_set" level="5,75" value="1" tags="gunMedicPistol"/>
@@ -15,10 +15,10 @@
 			<passive_effect name="RecipeTagUnlocked" operation="base_set" level="20,75" value="1" tags="gunMedicShotgun301"/>
 			<passive_effect name="RecipeTagUnlocked" operation="base_set" level="40,75" value="1" tags="gunMedicAssaultRifle401"/>
 
-			<passive_effect name="CraftingTier" operation="base_add" level="10,15,20,25,75" value="1,2,3,4,4" tags="gunMedicPistol"/>
-			<passive_effect name="CraftingTier" operation="base_add" level="25,35,45,55,75" value="1,2,3,4,4" tags="gunMedicSMG201"/>
-			<passive_effect name="CraftingTier" operation="base_add" level="30,40,50,60,75" value="1,2,3,4,4" tags="gunMedicShotgun301"/>
-			<passive_effect name="CraftingTier" operation="base_add" level="50,60,70,75" value="1,2,3,4" tags="gunMedicAssaultRifle401"/>
+			<passive_effect name="CraftingTier" operation="base_add" level="10,15,20,25,30,75" value="1,2,3,4,5,5" tags="gunMedicPistol"/>
+			<passive_effect name="CraftingTier" operation="base_add" level="25,35,45,55,60,75" value="1,2,3,4,5,5" tags="gunMedicSMG201"/>
+			<passive_effect name="CraftingTier" operation="base_add" level="30,40,50,60,65,75" value="1,2,3,4,5,5" tags="gunMedicShotgun301"/>
+			<passive_effect name="CraftingTier" operation="base_add" level="50,60,65,70,75" value="1,2,3,4,5" tags="gunMedicAssaultRifle401"/>
 		</effect_group>
 	</crafting_skill>
 	</insertBefore>
