@@ -44,6 +44,10 @@
 !ApexDevotion/**
 !M16M203
 !M16M203/**
+!KF2_M4_Benelli
+!KF2_M4_Benelli/**
+!KF2_Katana
+!KF2_Katana/**
 !ZZCustomPlayerActionManagerSMXPatch/
 !ZZCustomPlayerActionManagerSMXPatch/**
 !.gitignore
