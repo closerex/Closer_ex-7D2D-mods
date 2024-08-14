@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xml>
+	<Name value="KF2_M4_Benelli" />
+	<DisplayName value="KF2 M4 Benelli" />
+	<Description value="Add custom weapon animations." />
+	<Author value="closer_ex" />
+	<Version value="1.0.0" />
+</xml>

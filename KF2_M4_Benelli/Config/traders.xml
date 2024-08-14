@@ -1,0 +1,5 @@
+<configs>
+    <append xpath="/traders/trader_item_groups/trader_item_group[@name='groupRangedAll']">
+        <item name="gunT3M4Benelli" quality="1,5"/>
+    </append>
+</configs>
