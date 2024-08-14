@@ -78,7 +78,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         {
             return;
         }
-        Log.Out("State entered!");
+        //Log.Out("State entered!");
         //AnimatorClipInfo[] array = animator.GetNextAnimatorClipInfo(layerIndex);
         float length = ClipLength * attackDurationNormalized;
         ////if (array.Length == 0)
@@ -139,8 +139,11 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             calculatedImpactDuration = 0.001f;
             calculatedImpactPlaybackSpeed = 0.001f;
         }
-        Log.Out($"original: raycast time {RaycastTime} impact duration {ImpactDuration} impact playback speed {ImpactPlaybackSpeed} clip length {length}/{stateInfo.length}");
-        Log.Out($"calculated: raycast time {calculatedRaycastTime} impact duration {calculatedImpactDuration} impact playback speed {calculatedImpactPlaybackSpeed} speed multiplier {originalMeleeAttackSpeed}");
+        if (ConsoleCmdReloadLog.LogInfo)
+        {
+            Log.Out($"original: raycast time {RaycastTime} impact duration {ImpactDuration} impact playback speed {ImpactPlaybackSpeed} clip length {length}/{stateInfo.length}");
+            Log.Out($"calculated: raycast time {calculatedRaycastTime} impact duration {calculatedImpactDuration} impact playback speed {calculatedImpactPlaybackSpeed} speed multiplier {originalMeleeAttackSpeed}");
+        }
         GameManager.Instance.StartCoroutine(impactStart(animator, layerIndex, length));
         GameManager.Instance.StartCoroutine(customGrazeStart(length));
     }
@@ -172,9 +175,9 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         //animator.Play(0, layer, Mathf.Min(1f, calculatedRaycastTime * attackDurationNormalized / length));
         animator.SetFloat(AttackSpeedHash, calculatedImpactPlaybackSpeed);
         speedMultiplierToKeep = calculatedImpactPlaybackSpeed;
-        Log.Out("Impact start!");
+        //Log.Out("Impact start!");
         yield return new WaitForSeconds(calculatedImpactDuration);
-        Log.Out("Impact stop!");
+        //Log.Out("Impact stop!");
         animator.SetFloat(AttackSpeedHash, originalMeleeAttackSpeed);
         speedMultiplierToKeep = originalMeleeAttackSpeed;
         //playingImpact = false;
@@ -183,7 +186,10 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
 
     private IEnumerator customGrazeStart(float length)
     {
-        Log.Out($"Custom graze time: {calculatedGrazeTime} original {CustomGrazeCastTime}");
+        if (ConsoleCmdReloadLog.LogInfo)
+        {
+            Log.Out($"Custom graze time: {calculatedGrazeTime} original {CustomGrazeCastTime}");
+        }
         yield return new WaitForSeconds(calculatedGrazeTime);
         if (entity != null && !entity.isEntityRemote && actionIndex >= 0)
         {
@@ -197,7 +203,10 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
 
     private IEnumerator customGrazeUpdate(ItemActionDynamicMelee.ItemActionDynamicMeleeData data)
     {
-        Log.Out($"Custom graze duration: {calculatedGrazeDuration} original {CustomGrazeCastDuration}");
+        if (ConsoleCmdReloadLog.LogInfo)
+        {
+            Log.Out($"Custom graze duration: {calculatedGrazeDuration} original {CustomGrazeCastDuration}");
+        }
         if (calculatedGrazeDuration <= 0f)
         {
             yield break;
@@ -216,7 +225,11 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             float originalSwingDegrees = action.SwingDegrees;
             action.SwingAngle = SwingAngle;
             action.SwingDegrees = SwingDegrees;
-            Log.Out($"GrazeCast {action.GrazeCast(data, normalizedTime)}!");
+            bool grazeResult = action.GrazeCast(data, normalizedTime);
+            if (ConsoleCmdReloadLog.LogInfo)
+            {
+                Log.Out($"GrazeCast {grazeResult}!");
+            }
             action.SwingAngle = originalSwingAngle;
             action.SwingDegrees = originalSwingDegrees;
             yield return null;
