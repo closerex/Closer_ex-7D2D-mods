@@ -21,6 +21,8 @@
 			<property name="EconomicValue" value="500"/>
 			<property name="UnlockedBy" value="perkDemolitionsExpert"/>
 			<property name="ShowQuality" value="true"/>
+            <property name="SoundPickup" value="rifle_polymer_grab"/>
+            <property name="SoundPlace" value="rifle_polymer_place"/>
 
 			<property class="Action0">
 				<property name="Class" value="BetterLauncher,FullautoLauncher"/>
