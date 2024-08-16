@@ -29,7 +29,7 @@ public class MinEventActionUpdateLocalCache : MinEventActionBase
         switch (_attribute.Name.LocalName)
         {
             case "passive":
-                passive = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>(_attribute.Value);
+                passive = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>(_attribute.Value, true);
                 return true;
             case "tags":
                 tags = FastTags<TagGroup.Global>.Parse(_attribute.Value);

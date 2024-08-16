@@ -362,8 +362,8 @@ public static class CommonUtilityPatch
         {
             if (codes[i].Calls(mtd_enum_parse))
             {
-                codes.Insert(i + 1, CodeInstruction.Call(typeof(CustomEffectEnumManager), nameof(CustomEffectEnumManager.RegisterOrGetEnum), new[] { typeof(string) }, new[] { typeof(PassiveEffects) }));
-                codes.RemoveRange(i - 1, 2);
+                codes.Insert(i + 1, CodeInstruction.Call(typeof(CustomEffectEnumManager), nameof(CustomEffectEnumManager.RegisterOrGetEnum), new[] { typeof(string), typeof(bool) }, new[] { typeof(PassiveEffects) }));
+                codes.RemoveAt(i);
                 break;
             }
         }
@@ -382,8 +382,8 @@ public static class CommonUtilityPatch
         {
             if (codes[i].Calls(mtd_enum_parse))
             {
-                codes.Insert(i + 1, CodeInstruction.Call(typeof(CustomEffectEnumManager), nameof(CustomEffectEnumManager.RegisterOrGetEnum), new[] { typeof(string) }, new[] { typeof(MinEventTypes) }));
-                codes.RemoveRange(i - 1, 2);
+                codes.Insert(i + 1, CodeInstruction.Call(typeof(CustomEffectEnumManager), nameof(CustomEffectEnumManager.RegisterOrGetEnum), new[] { typeof(string), typeof(bool) }, new[] { typeof(MinEventTypes) }));
+                codes.RemoveAt(i);
                 break;
             }
         }

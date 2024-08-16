@@ -41,13 +41,13 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
 
         //only call these from callbacks hooked to ModEvents.GameStartDone and cache the results for future usage
         //patched to PassiveEffect.ParsePassiveEffect and MinEventActionBase.ParseXmlAttribute
-        public static T RegisterOrGetEnum<T>(string name) where T : struct, Enum
+        public static T RegisterOrGetEnum<T>(string name, bool ignoreCase = false) where T : struct, Enum
         {
             if (!EnumHolder<T>.Registered)
             {
                 throw new Exception($"Enum not registered: {typeof(T).Name}");
             }
-            return EnumHolder<T>.RegisterOrGetEnum(name);
+            return EnumHolder<T>.RegisterOrGetEnum(name, ignoreCase);
         }
 
         //public static PassiveEffects RegisterOrGetPassive(string passive)
@@ -78,10 +78,13 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             private static int max, min;
             private static readonly TypeCode typecode;
             private static readonly Dictionary<string, T> dict_default_enums = new Dictionary<string, T>();
+            private static readonly Dictionary<string, T> dict_default_enums_lower = new Dictionary<string, T>();
             private static readonly LinkedList<(int start, int end)> link_default_holes = new LinkedList<(int start, int end)>();
             private static Dictionary<string, T> dict_final_enums = new Dictionary<string, T>();
+            private static Dictionary<string, T> dict_final_enums_lower = new Dictionary<string, T>();
             private static LinkedList<(int start, int end)> link_final_holes = new LinkedList<(int start, int end)>();
             public static bool Registered { get; set; } = false;
+            private static bool DefaultInited { get; set; } = false;
             static EnumHolder()
             {
                 Type underlying = Enum.GetUnderlyingType(typeof(T));
@@ -133,13 +136,18 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
 
             public static void InitDefault()
             {
+                if (DefaultInited)
+                    return;
                 dict_default_enums.Clear();
+                dict_default_enums_lower.Clear();
                 link_default_holes.Clear();
                 var total = Enum.GetNames(typeof(T)).Length;
                 var enums = Enum.GetValues(typeof(T)).Cast<T>().ToArray();
                 for (int i = 0; i < total; i++)
                 {
-                    dict_default_enums.Add(enums[i].ToString(), enums[i]);
+                    string name = enums[i].ToString();
+                    dict_default_enums.Add(name, enums[i]);
+                    dict_default_enums_lower.Add(name.ToLower(), enums[i]);
                 }
                 var values = enums.Select(e => Convert.ToInt32(e)).OrderBy(i => i).ToArray();
                 int nextHole = min;
@@ -168,11 +176,13 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 {
                     link_default_holes.AddLast((nextHole, max));
                 }
+                DefaultInited = true;
             }
 
             public static void InitFinal()
             {
                 dict_final_enums = new Dictionary<string, T>(dict_default_enums);
+                dict_final_enums_lower = new Dictionary<string, T>(dict_default_enums_lower);
                 link_final_holes = new LinkedList<(int start, int end)>(link_default_holes);
             }
 
@@ -181,9 +191,9 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 //Log.Out($"{typeof(T).Name}:\n" + string.Join("\n", dict_final_enums.Select(p => $"name: {p.Key} value: {p.Value}")));
             }
 
-            public static T RegisterOrGetEnum(string passive)
+            public static T RegisterOrGetEnum(string passive, bool ignoreCase = false)
             {
-                if (!dict_final_enums.TryGetValue(passive, out var value))
+                if (!(ignoreCase ? dict_final_enums_lower : dict_final_enums).TryGetValue(ignoreCase ? passive.ToLower() : passive, out var value))
                 {
                     if (link_final_holes.Count == 0)
                         throw new OverflowException($"Enum count exceeds limit {max}!");
@@ -191,6 +201,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                     link_final_holes.RemoveFirst();
                     value = (T)Enum.ToObject(typeof(T), Convert.ChangeType(start, typecode));
                     dict_final_enums.Add(passive, value);
+                    dict_final_enums_lower.Add(passive.ToLower(), value);
                     if (start < end)
                     {
                         start++;

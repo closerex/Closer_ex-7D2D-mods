@@ -391,7 +391,8 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 {
                     meta = 0;
                 }
-                itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[indice.GetMetaIndexForMode(i)], meta, TypedMetadataValue.TypeTag.Integer);
+                if (indice.GetMetaIndexForMode(i) == indice.GetActionIndexForMode(i))
+                    itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[indice.GetMetaIndexForMode(i)], meta, TypedMetadataValue.TypeTag.Integer);
             }
             MinEventParams.CachedEventParam.ItemValue = prevItemValue;
             MinEventParams.CachedEventParam.ItemActionData = prevActionData;

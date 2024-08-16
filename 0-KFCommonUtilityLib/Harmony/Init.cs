@@ -26,10 +26,10 @@ public class CommonUtilityLibInit : IModApi
         CustomEffectEnumManager.RegisterEnumType<MinEventTypes>();
         CustomEffectEnumManager.RegisterEnumType<PassiveEffects>();
         //FUCK YOU TFP
-        CustomEffectEnumManager.InitDefault();
-        CustomEffectEnumManager.InitFinal();
+        //CustomEffectEnumManager.InitDefault();
+        //CustomEffectEnumManager.InitFinal();
         ModEvents.GameAwake.RegisterHandler(CommonUtilityPatch.InitShotStates);
-        //ModEvents.GameAwake.RegisterHandler(CustomEffectEnumManager.InitDefault);
+        ModEvents.GameAwake.RegisterHandler(CustomEffectEnumManager.InitDefault);
         ModEvents.GameAwake.RegisterHandler(DelayLoadModuleManager.DelayLoad);
         ModEvents.GameAwake.RegisterHandler(ItemActionModuleManager.ClearOutputFolder);
         //ModEvents.GameAwake.RegisterHandler(AssemblyLocator.Init);
@@ -51,14 +51,14 @@ public class CommonUtilityLibInit : IModApi
         CustomEnums.onRechargeValueUpdate = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onRechargeValueUpdate");
         CustomEnums.onSelfItemSwitchMode = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onSelfItemSwitchMode");
 
-        CustomEnums.ReloadSpeedRatioFPV2TPV = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("ReloadSpeedRatioFPV2TPV");
-        CustomEnums.RecoilSnappiness = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RecoilSnappiness");
-        CustomEnums.RecoilReturnSpeed = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RecoilReturnSpeed");
+        CustomEnums.ReloadSpeedRatioFPV2TPV = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("ReloadSpeedRatioFPV2TPV", true);
+        CustomEnums.RecoilSnappiness = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RecoilSnappiness", true);
+        CustomEnums.RecoilReturnSpeed = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RecoilReturnSpeed", true);
         //CustomEnums.ProjectileImpactDamagePercentBlock = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("ProjectileImpactDamagePercentBlock");
         //CustomEnums.ProjectileImpactDamagePercentEntity = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("ProjectileImpactDamagePercentEntity");
-        CustomEnums.PartialReloadCount = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("PartialReloadCount");
+        CustomEnums.PartialReloadCount = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("PartialReloadCount", true);
 
-        CustomEnums.CustomTaggedEffect = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("CustomTaggedEffect");
+        CustomEnums.CustomTaggedEffect = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("CustomTaggedEffect", true);
     }
 }
 

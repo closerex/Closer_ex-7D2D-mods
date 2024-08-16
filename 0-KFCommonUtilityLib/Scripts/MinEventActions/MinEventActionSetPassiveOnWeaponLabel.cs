@@ -28,7 +28,7 @@ public class MinEventActionSetPassiveOnWeaponLabel : MinEventActionRemoteHolding
                     usePattern = true;
                     break;
                 case "passive":
-                    passive = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>(_attribute.Value);
+                    passive = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>(_attribute.Value, true);
                     break;
                 case "tags":
                     tags = FastTags<TagGroup.Global>.Parse(_attribute.Value);
