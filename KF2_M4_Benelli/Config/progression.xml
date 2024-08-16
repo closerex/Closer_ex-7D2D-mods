@@ -1,9 +1,0 @@
-<configs>
-    <append xpath="/progression/crafting_skills/crafting_skill[@name='craftingShotguns']">
-		<display_entry item="gunT3M4Benelli" unlock_level="61,68,76,84,92,100" />
-    </append>
-    <append xpath="/progression/crafting_skills/crafting_skill[@name='craftingShotguns']/effect_group">
-        <passive_effect name="RecipeTagUnlocked" operation="base_set" level="61,100" value="1" tags="gunT3M4Benelli"/>
-        <passive_effect name="CraftingTier" operation="base_add" level="68,76,84,92,100" value="1,2,3,4,5" tags="gunT3M4Benelli"/>
-    </append>
-</configs>

@@ -1,0 +1,5 @@
+<configs>
+	<include filename="kaboomstick/sounds.xml"/>
+	<include filename="m4benelli/sounds.xml"/>
+	<include filename="katana/sounds.xml"/>
+</configs>

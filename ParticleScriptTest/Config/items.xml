@@ -9,7 +9,7 @@
 	<append xpath="/items/item[@name='ammoRocketFrag']/property[@class='Action1']">
 		<property name="Explosion.ParticleIndex" value="#@modfolder(CustomParticleScriptTest):Resources/GuppyTest.unity3d?MagicExplosion$ammoRocketFrag"/>
 		<property name="Explosion.Duration" value="8"/>
-		<property name="Explosion.SubExplosion" value="#@modfolder(Kaboomstick):Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$itemExplosionSpawn"/>
+		<property name="Explosion.SubExplosion" value="#@modfolder(CLSWeaponPackEXP):Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$itemExplosionSpawn"/>
 		<property name="Explosion.SubExplosionTransform" value="$Particles_SubExplosion"/>
 		<property name="Explosion.CustomScriptTypes" value="SubExplosionController,CustomParticleLoaderMultiExplosion"/>
 	</append>
@@ -23,7 +23,7 @@
 			<property name="Explosion.RadiusBlocks" value="0"/>
 			<property name="Explosion.RadiusEntities" value="0"/>
 			<property name="FusePrimeOnActivate" value="true"/>
-			<property name="Explosion.SubExplosion" value="#@modfolder(Kaboomstick):Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$Frag"/>
+			<property name="Explosion.SubExplosion" value="#@modfolder(CLSWeaponPackEXP):Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$Frag"/>
 			<property name="Explosion.SubExplosionTransform" value="Bombs"/>
 			<property name="Explosion.SpawnEntityItem" value="thrownGrenadeTurret"/>
 			<property name="Explosion.CustomScriptTypes" value="SubExplosionController,CustomParticleLoaderMultiExplosion$MoveParticleToPlayer,ParticleScriptTestPatch$FaceExplosionPosition,ParticleScriptTestPatch$ExplosionSpawnEntity,CustomParticleLoaderSpawnEntity"/>
@@ -41,7 +41,7 @@
 			<property name="Explosion.RadiusBlocks" value="0"/>
 			<property name="Explosion.RadiusEntities" value="0"/>
 			<property name="Explosion.SyncOnConnect" value="true"/>
-			<property name="Explosion.SubExplosion" value="#@modfolder(Kaboomstick):Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$Frag"/>
+			<property name="Explosion.SubExplosion" value="#@modfolder(CLSWeaponPackEXP):Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$Frag"/>
 			<property name="Explosion.SubExplosionTransform" value="Mortar Joint"/>
 			<property name="Explosion.CustomScriptTypes" value="SubExplosionController,CustomParticleLoaderMultiExplosion$FaceExplosionPosition,ParticleScriptTestPatch$TurretAiController,ParticleScriptTestPatch"/>
 			<property name="FusePrimeOnActivate" value="true"/>
@@ -75,7 +75,7 @@
 			<property name="Explosion.RadiusBlocks" value="0"/>
 			<property name="Explosion.RadiusEntities" value="0"/>
 			<property name="Explosion.Duration" value="8"/>
-			<property name="Explosion.SubExplosion" value="#@modfolder(Kaboomstick):Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$Frag"/>
+			<property name="Explosion.SubExplosion" value="#@modfolder(CLSWeaponPackEXP):Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$Frag"/>
 			<property name="Explosion.SubExplosionTransform" value="$Particles_SubExplosion$"/>
 			<property name="Explosion.CustomScriptTypes" value="SubExplosionController,CustomParticleLoaderMultiExplosion"/>
 			<property name="FusePrimeOnActivate" value="true"/>
@@ -89,7 +89,7 @@
 			<property name="Meshfile" value="@:Other/Items/Weapons/Ranged/Grenade/GrenadePrefab.prefab"/>
 			<property name="UnlockedBy" value="perkDemolitionsExpert,thrownGrenadeSchematic"/>
 			<property name="DisplayType" value="ammoGrenade"/>
-			<property name="Explosion.ParticleIndex" value="#@modfolder(Kaboomstick):Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$itemExplosionSpawn"/>
+			<property name="Explosion.ParticleIndex" value="#@modfolder(CLSWeaponPackEXP):Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$itemExplosionSpawn"/>
 			<property name="Explosion.RadiusBlocks" value="0"/>
 			<property name="Explosion.RadiusEntities" value="0"/>
 			<property name="Explosion.Duration" value="8"/>

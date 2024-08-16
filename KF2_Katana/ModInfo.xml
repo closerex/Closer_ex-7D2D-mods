@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-
-<xml>
-	<Name value="KF2_Katana" />
-	<DisplayName value="KF2 Katana" />
-	<Description value="Add custom weapon animations." />
-	<Author value="closer_ex" />
-	<Version value="1.0.0" />
-</xml>

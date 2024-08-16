@@ -1,0 +1,127 @@
+﻿<configs>
+	<append xpath="/items">
+		<item name="meleeWpnBladeT3KF2Katana">
+			<property name="Tags" value="machete,melee,grunting,light,longShaft,perkFlurryOfAgility,weapon,meleeWeapon,attAgility,perkDeepCuts,perkTheHuntsman,canHaveCosmetic,bladeSkill,corpseRemoval"/>
+			<property name="DisplayType" value="meleeKnife"/>
+			<property name="CustomIcon" value="meleeWpnBladeT3KF2Katana"/>
+			<property name="HoldType" value="65"/>
+			<property name="Meshfile" value="#@modfolder:Resources/Katana.unity3d?katana_m.prefab"/>
+			<property name="Material" value="MmeleeWpnBladeParts"/>
+			<!-- <property name="TintColor" value="107, 107, 71"/> -->
+			<property name="Weight" value="1"/>
+			<property name="ScrapTimeOverride" value="10.0"/>
+			<property name="RepairTools" value="resourceRepairKit"/>
+			<property name="DegradationBreaksAfter" value="false"/>
+			<property name="EconomicValue" value="1100"/>
+			<property name="TraderStageTemplate" value="baseTier2"/><!-- meleeWpnBladeT3Machete -->
+			<property name="SoundJammed" value="ItemNeedsRepair"/>
+			<property name="SoundDestroy" value="wooddestroy1"/>
+			<property name="Group" value="Ammo/Weapons,Melee Weapons"/>
+			<property name="RepairExpMultiplier" value="5.5"/>
+			<property name="UnlockedBy" value="craftingBlades"/><!-- meleeWpnBladeT3MacheteSchematic, -->
+			<property name="ShowQuality" value="true"/>
+			<property name="SoundUnholster" value="weapon_unholster"/>
+			<property name="SoundHolster" value="weapon_holster"/>
+			<property name="SoundPickup" value="machete_grab"/>
+			<property name="SoundPlace" value="machete_place"/>
+		
+			<property class="Action0">
+				<property name="Class" value="DynamicMelee"/>
+				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;DynamicGraze,KFCommonUtilityLib"/>
+				<property name="Damage_type" value="Slashing"/>
+				<property name="Sphere" value=".15"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
+				<property name="DynamicSoundStart" value="katanaEmptySwingLight"/>
+				<property name="Sound_start" value="machete_swinglight"/>
+				<!-- <property name="ToolCategory.Butcher" value="0" param1="4.7"/> -->
+					<!-- This triggers the use of the special corpse harvesting animation if there is a matching harvest event.
+					Also, param1 is the damage multiplier for corpse harvesting. -->
+				<property name="UseGrazingHits" value="true"/>
+				<property name="GrazeStart" value=".28"/>
+				<property name="GrazeEnd" value=".4"/>
+				<property name="SwingDegrees" value="80"/>
+				<property name="SwingAngle" value="130"/>
+				<property name="ImpactPlaybackSpeed" value="0.5"/>
+				<property name="ImpactDuration" value="0.2"/>
+				<property class="HitSounds">
+					<property name="Override0" value="organic" param1="katanaslashorganic"/>
+				</property>
+				<property class="GrazeSounds">
+					<property name="Override0" value="organic" param1="metalgrazeorganic"/>
+				</property>
+			</property>
+			<property class="Action1">
+				<property name="Class" value="DynamicMelee"/>
+				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;DynamicGraze,KFCommonUtilityLib"/>
+				<property name="Damage_type" value="Slashing"/>
+				<property name="Sphere" value=".15"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
+				<property name="DynamicSoundStart" value="katanaEmptySwingHeavy"/>
+				<property name="Sound_start" value="machete_swingheavy"/>
+				<!-- <property name="ToolCategory.Butcher" value="0" param1="4.7"/> -->
+				<property name="UsePowerAttackAnimation" value="true"/>
+				<property name="UseGrazingHits" value="true"/>
+				<property name="IsHorizontalSwing" value="true"/>
+				<property name="GrazeStart" value=".3"/>
+				<property name="GrazeEnd" value=".4"/>
+				<property name="SwingDegrees" value="-80"/>
+				<property name="SwingAngle" value="-60"/>
+				<property name="ImpactPlaybackSpeed" value="0.5"/>
+				<property name="ImpactDuration" value="0.1"/>
+				<property class="HitSounds">
+					<property name="Override0" value="organic" param1="katanaslashorganic"/>
+				</property>
+				<property class="GrazeSounds">
+					<property name="Override0" value="organic" param1="metalgrazeorganic"/>
+				</property>
+			</property>
+			<effect_group name="meleeWpnBladeT3KF2Katana">
+				<passive_effect name="AttacksPerMinute" operation="base_set" value="100" tags="perkDeepCuts,perkFlurryOfAgility"/>
+				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".4" tags="primary"/>
+				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value=".8" tags="primary"/>
+				<passive_effect name="StaminaLoss" operation="base_set" value="18" tags="primary"/> <!-- - 10% -->
+				<passive_effect name="DegradationMax" operation="base_set" value="1000,2000" tier="1,6" tags="perkDeepCuts"/>
+				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkDeepCuts"/>
+				<passive_effect name="MaxRange" operation="base_set" value="2.7" tags="perkDeepCuts"/>
+				<passive_effect name="BlockRange" operation="base_set" value="3.9" tags="perkDeepCuts"/>
+				<passive_effect name="ModSlots" operation="base_set" value="3,3,3,4,4,4" tier="1,2,3,4,5,6"/>
+				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+				<passive_effect name="EntityDamage" operation="base_set" value="30" tags="perkDeepCuts"/> <!-- meleeWpnBladeT3Machete --> <!-- + 10% -->
+				<passive_effect name="EntityDamage" operation="perc_add" value="-.04,.04" tags="perkDeepCuts"/> <!-- random EntityDmg -->
+				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDeepCuts"/> <!-- tier bonus -->
+				<passive_effect name="BlockDamage" operation="base_set" value="23" tags="perkDeepCuts"/> <!-- + 10% -->
+				<passive_effect name="BlockDamage" operation="perc_add" value="-.04,.04" tags="perkDeepCuts"/> <!-- random BlockDmg -->
+				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDeepCuts"/> <!-- tier bonus -->
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="earth"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="stone"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="metal"/>
+				<!--<passive_effect name="BlockDamage" operation="perc_add" value="1.5" tags="blockButcher"/>-->
+				<passive_effect name="DismemberChance" operation="base_add" value="1"/>
+			</effect_group>
+			<effect_group name="Power Attack">
+				<passive_effect name="AttacksPerMinute" operation="base_set" value="60" tags="secondary"/>
+				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".8" tags="secondary"/>
+				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value="1" tags="secondary"/>
+				<passive_effect name="EntityDamage" operation="perc_add" value="1" tags="secondary"/>
+				<passive_effect name="BlockDamage" operation="perc_add" value="1" tags="secondary"/>
+				<passive_effect name="StaminaLoss" operation="base_set" value="36" tags="secondary"/> <!-- - 10% -->
+			</effect_group>
+			<effect_group name="sneak damage bonus">
+				<requirement name="CVarCompare" cvar="_crouching" operation="Equals" value="1"/>
+				<requirement name="CVarCompare" cvar="_notAlerted" operation="GT" value="0" target="other"/>
+					<passive_effect name="DamageBonus" operation="base_add" value="4.5"/>
+					<passive_effect name="EntityDamage" operation="perc_add" value="4.5" tags="perkDeepCuts"/>
+					<display_value name="dEntityDamageSneak" value="4.5"/>
+			</effect_group>
+			<effect_group name="sneak damage bonus">
+				<requirements compare_type="or">
+					<requirement name="IsAlive" target="other"/>
+					<requirement name="IsCorpse" target="other"/>
+				</requirements>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="Blood"/>
+					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="Blood"/>
+					<triggered_effect trigger="onSelfSecondaryActionRayHit" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="Blood"/>
+					<triggered_effect trigger="onSelfSecondaryActionGrazeHit" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="Blood"/>
+			</effect_group>
+		</item>
+	</append>
+</configs>

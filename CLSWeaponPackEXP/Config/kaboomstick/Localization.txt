@@ -1,0 +1,5 @@
+Key,File,Type,english,schinese
+gunKaboomstick,items,Gun,HRG Kaboomstick,HRG大爆炸射手
+gunKaboomstickDesc,items,Gun,Explosive ammo included to spice up the experience.,使用爆炸子弹，体验倍增！
+ammoKaboomstickShellHE,item,Ammo,HRG Kaboomstick Shell HE,HRG大爆炸射手弹药 高爆
+ammoKaboomstickShellFrag,item,Ammo,HRG Kaboomstick Shell Frag,HRG大爆炸射手弹药 破片

@@ -1,0 +1,13 @@
+<configs>
+	<!-- Kaboomstick Ammo -->
+	<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingExplosives']/display_entry[contains(@icon, 'ammoRocketFrag')]/unlock_entry/@item">,ammoKaboomstickShellFrag,ammoKaboomstickShellHE</append>
+	<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingExplosives']/effect_group/passive_effect[@name='RecipeTagUnlocked'][@level='45,100']/@tags">,ammoKaboomstickShellFrag,ammoKaboomstickShellHE</append>	
+
+	<!-- Kaboomstick  -->
+	<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingExplosives']/display_entry[contains(@icon, 'gunExplosivesT3RocketLauncher')]/@icon">,gunKaboomstick</append>
+	<append xpath="//crafting_skill[@name='craftingExplosives']/display_entry[contains(@icon, 'gunExplosivesT3RocketLauncher')]">
+			<unlock_entry item="gunKaboomstick" unlock_tier="2" />
+	</append>
+	<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingExplosives']/effect_group/passive_effect[@name='RecipeTagUnlocked'][@level='50,100']/@tags">,gunKaboomstick</append>	
+	<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingExplosives']/effect_group/passive_effect[@name='CraftingTier'][@level='60,70,80,90,100']/@tags">,gunKaboomstick</append>
+</configs>

@@ -1,0 +1,4 @@
+Key,File,Type,UsedInMainMenu,NoTranslate,english,Context / Alternate Text,german,spanish,french,italian,japanese,koreana,polish,brazilian,russian,turkish,schinese,tchinese
+
+meleeWpnBladeT3KF2Katana,items,Melee,,,Katana (Prototype 01),,,,,,,,,,,,武士刀（原型01）,
+meleeWpnBladeT3KF2KatanaDesc,items,Melee,,,"Slashes faster and heavier than a machete with an additional stamina cost. Use the [action:permanent:Reload][action:local:Reload] key to move through different weapon check animations. Can be crafted, found in loot, rewards, or the trader inventory. Useful for gutting animals but you can't harvest with it.\n\nRepair with a Repair Kit.\nScrap to Machete parts.\n\nTry and show a little respect for its class."",,,,,,,,,,,,"比普通砍刀更快且更致命，但是更耗体力。使用[action:permanent:Reload][action:local:Reload]键检视武器。可以通过制作、搜刮、任务或者商人获得。擅长开肠破肚，但是无法用于收割资源。\n\n使用修理工具维修。\n可拆解为砍刀零件。\n\n试挥一下，别忘了礼仪。",
