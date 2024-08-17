@@ -173,12 +173,18 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
     {
         //playingImpact = true;
         //animator.Play(0, layer, Mathf.Min(1f, calculatedRaycastTime * attackDurationNormalized / length));
-        animator.SetFloat(AttackSpeedHash, calculatedImpactPlaybackSpeed);
+        if (animator)
+        {
+            //Log.Out("Impact start!");
+            animator.SetFloat(AttackSpeedHash, calculatedImpactPlaybackSpeed);
+        }
         speedMultiplierToKeep = calculatedImpactPlaybackSpeed;
-        //Log.Out("Impact start!");
         yield return new WaitForSeconds(calculatedImpactDuration);
-        //Log.Out("Impact stop!");
-        animator.SetFloat(AttackSpeedHash, originalMeleeAttackSpeed);
+        if (animator)
+        {
+            //Log.Out("Impact stop!");
+            animator.SetFloat(AttackSpeedHash, originalMeleeAttackSpeed);
+        }
         speedMultiplierToKeep = originalMeleeAttackSpeed;
         //playingImpact = false;
         yield break;

@@ -88,7 +88,7 @@ public class ActionModuleMetaRecharger
             BackgroundInventoryUpdateManager.RegisterUpdater(_invData.holdingEntity, _invData.slotIdx, this);
         }
 
-        public void OnUpdate(ItemInventoryData invData)
+        public bool OnUpdate(ItemInventoryData invData)
         {
             ItemValue itemValue = invData.itemValue;
             EntityAlive holdingEntity = invData.holdingEntity;
@@ -96,6 +96,7 @@ public class ActionModuleMetaRecharger
             holdingEntity.MinEventContext.ItemValue = itemValue;
             holdingEntity.MinEventContext.ItemActionData = invData.actionData[indexOfAction];
             float curTime = Time.time;
+            bool res = false;
             for (int i = 0; i < module.rechargeDatas.Length; i++)
             {
                 string rechargeData = module.rechargeDatas[i];
@@ -155,8 +156,10 @@ public class ActionModuleMetaRecharger
                         itemValue.FireEvent(CustomEnums.onRechargeValueUpdate, holdingEntity.MinEventContext);
                         //Log.Out($"action index is {holdingEntity.MinEventContext.ItemActionData.indexInEntityOfAction} after firing event");
                     }
+                    res |= modified;
                 }
             }
+            return res;
         }
     }
 }

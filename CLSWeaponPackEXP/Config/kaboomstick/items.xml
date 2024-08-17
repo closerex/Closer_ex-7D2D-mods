@@ -2,8 +2,8 @@
 	<append xpath="/items">
 		<item name="gunKaboomstick">
 			<property name="CustomIcon" value="UI_WeaponSelect_HRG_Kaboomstick"/>
-			<property name="Tags" value="weapon,ranged,shotgun,holdBreathAiming,reloadPenalty,launcher,attPerception,dBarrel,perkDemolitionsExpert,canHaveCosmetic,noSilencer,kaboomstick"/>
-			<property name="DisplayType" value="rangedShotgunNoMag"/>
+			<property name="Tags" value="weapon,ranged,shotgun,holdBreathAiming,reloadPenalty,launcher,attPerception,dBarrel,perkDemolitionsExpert,canHaveCosmetic,noSilencer,kaboomstick,explosivesSkill"/>
+			<property name="DisplayType" value="rangedLauncher"/>
 			<property name="HoldType" value="56"/>
 			<property name="Meshfile" value="#@modfolder:Resources/Kaboomstick_prefab.unity3d?kaboomstick_m.prefab"/>
 			<property name="DropMeshfile" value="#@modfolder:Resources/Kaboomstick_prefab.unity3d?kaboomstick_m.prefab"/>
@@ -72,6 +72,9 @@
 					<requirement name="RoundsInMagazine" operation="GT" value="0"/>
 					<requirement name="ProgressionLevel" progression_name="perkDemolitionsExpert" operation="GTE" value="5"/>
 				</passive_effect>
+				<passive_effect name="MaxRange" operation="base_set" value="100" tags="perkDemolitionsExpert"/>
+				<passive_effect name="DamageFalloffRange" operation="base_set" value="70" tags="perkDemolitionsExpert"/>
+				<passive_effect name="DamageFalloffRange" operation="perc_add" value="-.2,.2" tier="1,6" tags="perkDemolitionsExpert"/> <!-- random effective rng -->				
 				<passive_effect name="RoundsPerMinute" operation="base_set" value="1000" tags="perkDemolitionsExpert"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkDemolitionsExpert"/>
 				<passive_effect name="MagazineSize" operation="base_set" value="2" tags="perkDemolitionsExpert"/>

@@ -5,7 +5,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
     public interface IBackgroundInventoryUpdater
     {
         int Index { get; }
-        void OnUpdate(ItemInventoryData invData);
+        bool OnUpdate(ItemInventoryData invData);
     }
 
     public static class BackgroundInventoryUpdateManager
@@ -70,19 +70,27 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 var prevInvData = entity.MinEventContext.ItemInventoryData;
                 var prevItemValue = entity.MinEventContext.ItemValue;
                 var prevActionData = entity.MinEventContext.ItemActionData;
+                bool invChanged = false;
                 for (int i = 0; i < slotCount; i++)
                 {
                     if (arr_updaters[i] != null)
                     {
                         foreach (var updater in arr_updaters[i])
                         {
-                            updater?.OnUpdate(inv.GetItemDataInSlot(i));
+                            if (updater != null)
+                            {
+                                invChanged |= updater.OnUpdate(inv.GetItemDataInSlot(i));
+                            }
                         }
                     }
                 }
                 entity.MinEventContext.ItemInventoryData = prevInvData;
                 entity.MinEventContext.ItemActionData = prevActionData;
                 entity.MinEventContext.ItemValue = prevItemValue;
+                if (invChanged)
+                {
+                    entity.inventory.CallOnToolbeltChangedInternal();
+                }
             }
         }
     }
