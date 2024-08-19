@@ -27,6 +27,7 @@ public class ActionModuleMultiBarrel
         __customData.barrelCount = int.Parse(_data.invData.itemValue.GetPropertyOverrideForAction("BarrelCount", originalValue, actionIndex));
 
         __customData.muzzles = new Transform[__customData.barrelCount];
+        __customData.projectileJoints = new Transform[__customData.barrelCount];
 
         for (int i = 0; i < __customData.barrelCount; i++)
         {
