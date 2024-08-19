@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
+using static ActionModuleMultiBarrel;
 
 public class FLARCompatibilityPatchInit : IModApi
 {
@@ -72,6 +73,17 @@ public static class FLARPatch
 
     //    return codes;
     //}
+
+    //multi barrel patch
+    [HarmonyPatch(typeof(ActionModuleMultiBarrel), "Prefix_ItemActionEffects_ItemActionRanged")]
+    [HarmonyPostfix]
+    private static void Postfix_ItemActionEffects_ActionModuleMultiBarrel(ItemActionData _actionData, int _userData, MultiBarrelData __2)
+    {
+        if (_actionData is ItemActionBetterLauncher.ItemActionDataBetterLauncher launcherData)
+        {
+            launcherData.projectileJoint = __2.projectileJoints[(byte)(_userData >> 8)];
+        }
+    }
 
     //multi action patch
     [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemActionBetterLauncher.StartHolding))]

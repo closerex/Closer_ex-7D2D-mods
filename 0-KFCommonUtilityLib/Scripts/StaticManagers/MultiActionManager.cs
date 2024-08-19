@@ -2,8 +2,7 @@
 using KFCommonUtilityLib.Scripts.Utilities;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+using UniLinq;
 using UnityEngine;
 
 namespace KFCommonUtilityLib.Scripts.StaticManagers
@@ -16,6 +15,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
     //partially done: should support shared meta
     //alt actions should be considered primary, redirect index == 0 to custom method
     //redirect ItemClass.Actions[0] to custom method
+    //however, player input handling is redirected to action0 so that alternative module can dispatch it to correct action.
     //patch GameManager.updateSendClientPlayerPositionToServer to sync data, so that mode change always happens after holding item change
 
     public struct MultiActionIndice

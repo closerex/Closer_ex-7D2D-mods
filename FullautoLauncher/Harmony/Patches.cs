@@ -167,7 +167,7 @@ class ItemActionLauncherProjectilePatch
         }
     }
 
-    [HarmonyPatch(typeof(GameManager), "FixedUpdate")]
+    [HarmonyPatch(typeof(GameManager), nameof(GameManager.FixedUpdate))]
     [HarmonyPostfix]
     private static void Postfix_FixedUpdate_GameManager()
     {

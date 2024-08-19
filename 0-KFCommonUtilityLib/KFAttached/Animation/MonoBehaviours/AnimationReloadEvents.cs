@@ -1,4 +1,5 @@
 ﻿#if NotEditor
+using KFCommonUtilityLib.Scripts.StaticManagers;
 #endif
 using System.Collections;
 using UnityEngine;
@@ -34,7 +35,7 @@ public class AnimationReloadEvents : MonoBehaviour
         {
             player.MinEventContext.ItemActionData = actionData;
             ItemValue item = ItemClass.GetItem(actionRanged.MagazineItemNames[actionData.invData.itemValue.SelectedAmmoTypeIndex], false);
-            int magSize = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, actionData.invData.itemValue, actionRanged.BulletsPerMagazine, player);
+            int magSize = actionRanged.GetMaxAmmoCount(actionData);
             actionData.reloadAmount = GetAmmoCountToReload(player, item, magSize);
             if (actionData.reloadAmount > 0)
             {
@@ -72,6 +73,11 @@ public class AnimationReloadEvents : MonoBehaviour
         actionData.isReloadCancelled = false;
         actionData.isWeaponReloadCancelled = false;
         actionData.isChangingAmmoType = false;
+        if (actionData is IModuleContainerFor<ActionModuleMultiBarrel.MultiBarrelData> dataModule)
+        {
+            int magSize = actionRanged.GetMaxAmmoCount(actionData);
+            dataModule.Instance.SetCurrentBarrel(magSize - actionData.invData.itemValue.Meta);
+        }
 #if DEBUG
         Log.Out($"ANIMATION RELOAD EVENT FINISHED : {actionData.invData.item.Name}");
 #endif
@@ -194,9 +200,22 @@ public class AnimationReloadEvents : MonoBehaviour
                 projectileCount = (itemActionLauncher.HasInfiniteAmmo(actionData) ? magSize : GetAmmoCount(actionData.invData.holdingEntity, ammoValue, magSize));
                 projectileCount *= getProjectileCount(itemActionDataLauncher);
             }
-            for (int i = itemActionDataLauncher.projectileInstance.Count; i < projectileCount; i++)
+            int times = 1;
+            IModuleContainerFor<ActionModuleMultiBarrel.MultiBarrelData> dataModule = actionData as IModuleContainerFor<ActionModuleMultiBarrel.MultiBarrelData>;
+            if (dataModule != null && dataModule.Instance.oneRoundMultishot)
             {
-                itemActionDataLauncher.projectileInstance.Add(itemActionLauncher.instantiateProjectile(actionData, new Vector3(0f, 0f, 0f)));
+                times = dataModule.Instance.roundsPerShot;
+            }
+            for (int j = itemActionDataLauncher.projectileInstance.Count; j < projectileCount; j++)
+            {
+                for (int i = 0; i < times; i++)
+                {
+                    if (dataModule != null)
+                    {
+                        itemActionDataLauncher.projectileJoint = dataModule.Instance.projectileJoints[i];
+                    }
+                    itemActionDataLauncher.projectileInstance.Add(itemActionLauncher.instantiateProjectile(actionData, Vector3.zero));
+                }
             }
         }
         actionData.isReloading = true;
