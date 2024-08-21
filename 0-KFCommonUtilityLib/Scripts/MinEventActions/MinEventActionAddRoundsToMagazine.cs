@@ -8,6 +8,7 @@ public class MinEventActionAddRoundsToMagazine : MinEventActionAmmoAccessBase
         _params.ItemValue.Meta += GetCount(_params);
         if (maxPerc > 0)
             _params.ItemValue.Meta = Utils.FastMin((int)((_params.ItemValue.ItemClass.Actions[0] as ItemActionRanged).GetMaxAmmoCount(_params.ItemActionData) * maxPerc), _params.ItemValue.Meta);
+        _params.Self?.inventory?.CallOnToolbeltChangedInternal();
     }
 
     public override bool ParseXmlAttribute(XAttribute _attribute)

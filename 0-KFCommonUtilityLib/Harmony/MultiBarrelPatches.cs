@@ -49,6 +49,7 @@ namespace KFCommonUtilityLib.Harmony
                         new CodeInstruction(OpCodes.Ldloc_S, lbd_data_module),
                         CodeInstruction.LoadField(typeof(ActionModuleMultiBarrel.MultiBarrelData), nameof(ActionModuleMultiBarrel.MultiBarrelData.roundsPerShot)),
                         new CodeInstruction(OpCodes.Stloc_S, lbd_rounds),
+                        new CodeInstruction(OpCodes.Br_S, loopCondi),
                         new CodeInstruction(OpCodes.Ldc_I4_1).WithLabels(lbl),
                         new CodeInstruction(OpCodes.Stloc_S, lbd_rounds),
                         new CodeInstruction(OpCodes.Br_S, loopCondi),
@@ -89,6 +90,9 @@ namespace KFCommonUtilityLib.Harmony
                         new CodeInstruction(OpCodes.Ldloc_S, lbd_data_module),
                         CodeInstruction.Call(typeof(ActionModuleMultiBarrel.MultiBarrelData), nameof(ActionModuleMultiBarrel.MultiBarrelData.CycleBarrels)),
                         new CodeInstruction(OpCodes.Ldloc_S, lbd_i).WithLabels(lbl_pre),
+                        new CodeInstruction(OpCodes.Dup),
+                        new CodeInstruction(OpCodes.Ldloc_S, lbd_rounds),
+                        CodeInstruction.Call(typeof(MultiBarrelPatches), nameof(MultiBarrelPatches.LogInfo)),
                         new CodeInstruction(OpCodes.Ldc_I4_1),
                         new CodeInstruction(OpCodes.Add),
                         new CodeInstruction(OpCodes.Stloc_S, lbd_i),
@@ -145,5 +149,7 @@ namespace KFCommonUtilityLib.Harmony
         {
             return (dataModule = (data as IModuleContainerFor<ActionModuleMultiBarrel.MultiBarrelData>)?.Instance) != null;
         }
+
+        private static void LogInfo(int cur, int max) => Log.Out($"max rounds {max}, cur {cur}");
     }
 }

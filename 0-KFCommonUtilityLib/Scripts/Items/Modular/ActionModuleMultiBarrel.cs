@@ -26,6 +26,8 @@ public class ActionModuleMultiBarrel
         __instance.Properties.ParseString("BarrelCount", ref originalValue);
         __customData.barrelCount = int.Parse(_data.invData.itemValue.GetPropertyOverrideForAction("BarrelCount", originalValue, actionIndex));
 
+        Log.Out($"MuzzleIsPerRound: {__customData.muzzleIsPerRound} OneRoundMultiShot: {__customData.oneRoundMultishot} RoundsPerShot: {__customData.roundsPerShot} BarrelCount: {__customData.barrelCount}");
+
         __customData.muzzles = new Transform[__customData.barrelCount];
         __customData.projectileJoints = new Transform[__customData.barrelCount];
 
@@ -83,7 +85,9 @@ public class ActionModuleMultiBarrel
         ItemActionRanged.ItemActionDataRanged rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
         if (rangedData != null)
         {
-            rangedData.muzzle = __customData.muzzles[(byte)(_userData >> 8)];
+            byte index = (byte)(_userData >> 8);
+            rangedData.muzzle = __customData.muzzles[index];
+            __customData.SetAnimatorParam(index);
         }
         return true;
     }
@@ -122,7 +126,7 @@ public class ActionModuleMultiBarrel
         public void CycleBarrels()
         {
             curBarrelIndex = ++curBarrelIndex >= barrelCount ? 0 : curBarrelIndex;
-            invData.holdingEntity.emodel.avatarController.UpdateInt("barrelIndex", curBarrelIndex, true);
+            Log.Out($"cycle barrel index {curBarrelIndex}");
         }
 
         public void SetCurrentBarrel(int roundUsed)
@@ -135,7 +139,13 @@ public class ActionModuleMultiBarrel
             {
                 curBarrelIndex = (roundUsed / roundsPerShot) % barrelCount;
             }
-            invData.holdingEntity.emodel.avatarController.UpdateInt("barrelIndex", curBarrelIndex, true);
+            SetAnimatorParam(curBarrelIndex);
+            Log.Out($"set barrel index {curBarrelIndex}");
+        }
+
+        public void SetAnimatorParam(int barrelIndex)
+        {
+            invData.holdingEntity.emodel.avatarController.UpdateInt("barrelIndex", barrelIndex, true);
         }
     }
 }
