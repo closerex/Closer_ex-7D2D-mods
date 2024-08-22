@@ -366,6 +366,7 @@
   <ItemGroup>
     <Compile Include="Harmony\BackgroundInventoryUpdatePatch.cs" />
     <Compile Include="Harmony\DisplayMetaAsBuffPatch.cs" />
+    <Compile Include="Harmony\InvariableRPMPatches.cs" />
     <Compile Include="Harmony\ItemActionModulePatch.cs" />
     <Compile Include="Harmony\MultiActionPatches.cs" />
     <Compile Include="Harmony\MultiActionReversePatches.cs" />
@@ -473,6 +474,7 @@
     <Compile Include="Scripts\Items\Modular\ActionModuleHoldOpen.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleInspectable.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleInterruptReload.cs" />
+    <Compile Include="Scripts\Items\Modular\ActionModuleInvariableRPM.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleLocalPassiveCache.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleMetaConsumer.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleMultiActionFix.cs" />
