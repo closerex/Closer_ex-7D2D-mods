@@ -139,7 +139,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 ItemAction itemAction = item.Actions[i];
                 if (itemAction != null && itemAction.Properties.Values.TryGetValue("ItemActionModules", out string str_modules))
                 {
-                    string[] modules = str_modules.Split(';');
+                    string[] modules = str_modules.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                     Type itemActionType = itemAction.GetType();
                     Type[] moduleTypes = modules.Select(s => ReflectionHelpers.GetTypeWithPrefix("ActionModule", s.Trim()))
                                                 .Where(t => t.GetCustomAttribute<TypeTargetAttribute>().BaseType.IsAssignableFrom(itemActionType)).ToArray();

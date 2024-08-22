@@ -469,6 +469,7 @@
     <Compile Include="Scripts\Items\Modular\ActionModuleAnimationLocked.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleDisplayAsBuff.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleDynamicGraze.cs" />
+    <Compile Include="Scripts\Items\Modular\ActionModuleDynamicMuzzleFlash.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleHoldOpen.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleInspectable.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleInterruptReload.cs" />

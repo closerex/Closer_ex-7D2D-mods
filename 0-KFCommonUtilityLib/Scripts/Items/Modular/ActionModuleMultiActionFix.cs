@@ -118,7 +118,7 @@ public class ActionModuleMultiActionFix
     [MethodTargetPrefix(nameof(ItemActionAttack.OnHUD))]
     private bool Prefix_OnHUD(ItemActionData _actionData)
     {
-        if (_actionData.indexInEntityOfAction != _actionData.invData.holdingEntity.MinEventContext.ItemActionData.indexInEntityOfAction)
+        if (_actionData.invData?.holdingEntity?.MinEventContext?.ItemActionData == null || _actionData.indexInEntityOfAction != _actionData.invData.holdingEntity.MinEventContext.ItemActionData.indexInEntityOfAction)
             return false;
         return true;
     }
