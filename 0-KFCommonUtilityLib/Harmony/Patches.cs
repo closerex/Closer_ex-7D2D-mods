@@ -1132,6 +1132,82 @@ public static class CommonUtilityPatch
         return ammoStates[index];
     }
 
+    //dont spread onSelfItemActivate/onSelfItemDeactivate to attachments
+    //handle start holding
+    [HarmonyPatch(typeof(Inventory), nameof(Inventory.syncHeldItem))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_syncHeldItem_Inventory(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var prop_itemvalue = AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItemItemValue));
+        var mtd_fireevent = AccessTools.Method(typeof(ItemValue), nameof(ItemValue.FireEvent));
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_fireevent) && codes[i - 5].Calls(prop_itemvalue))
+            {
+                codes[i] = CodeInstruction.Call(typeof(MinEffectController), nameof(MinEffectController.FireEvent));
+                codes.InsertRange(i - 4, new[]
+                {
+                    CodeInstruction.Call(typeof(ItemValue), "get_ItemClass"),
+                    CodeInstruction.LoadField(typeof(ItemClass), nameof(ItemClass.Effects))
+                });
+                i += 2;
+            }
+        }
+
+        return codes;
+    }
+
+    //handle radial activation
+    [HarmonyPatch(typeof(XUiC_Radial), nameof(XUiC_Radial.handleActivatableItemCommand))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_handleActivatableItemCommand_XUiC_Radial(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var mtd_fireevent = AccessTools.Method(typeof(ItemValue), nameof(ItemValue.FireEvent));
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_fireevent))
+            {
+                codes[i] = CodeInstruction.Call(typeof(MinEffectController), nameof(MinEffectController.FireEvent));
+                codes.InsertRange(i - 2, new[]
+                {
+                    CodeInstruction.Call(typeof(ItemValue), "get_ItemClass"),
+                    CodeInstruction.LoadField(typeof(ItemClass), nameof(ItemClass.Effects))
+                });
+                i += 2;
+            }
+        }
+        return codes;
+    }
+
+    //handle equipments
+    [HarmonyPatch(typeof(Equipment), nameof(Equipment.SetSlotItem))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_SetSlotItem_Equipment(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var mtd_fireevent = AccessTools.Method(typeof(ItemValue), nameof(ItemValue.FireEvent));
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_fireevent) && codes[i - 5].opcode == OpCodes.Ldloc_0 && codes[i - 4].OperandIs((int)MinEventTypes.onSelfItemDeactivate))
+            {
+                codes[i] = CodeInstruction.Call(typeof(MinEffectController), nameof(MinEffectController.FireEvent));
+                codes.InsertRange(i - 4, new[]
+                {
+                    CodeInstruction.Call(typeof(ItemValue), "get_ItemClass"),
+                    CodeInstruction.LoadField(typeof(ItemClass), nameof(ItemClass.Effects))
+                });
+                i += 2;
+            }
+        }
+        return codes;
+    }
+
     //[HarmonyPatch(typeof(Inventory), nameof(Inventory.updateHoldingItem))]
     //[HarmonyTranspiler]
     //private static IEnumerable<CodeInstruction> Transpiler_updateHoldingItem_Inventory(IEnumerable<CodeInstruction> instructions)

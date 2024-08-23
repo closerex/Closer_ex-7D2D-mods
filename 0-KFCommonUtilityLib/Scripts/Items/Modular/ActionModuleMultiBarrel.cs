@@ -39,10 +39,8 @@ public class ActionModuleMultiBarrel
             __customData.projectileJoints[i] = AnimationRiggingManager.GetTransformOverrideByName(_data.invData.model, jointName);
         }
 
-        int magSize = __instance.GetMaxAmmoCount(_data);
         int meta = MultiActionUtils.GetMetaByActionIndex(_data.invData.itemValue, actionIndex);
-        int roundUsed = magSize - meta;
-        __customData.SetCurrentBarrel(roundUsed);
+        __customData.SetCurrentBarrel(meta);
         ((ItemActionRanged.ItemActionDataRanged)_data).IsDoubleBarrel = false;
     }
 
@@ -80,10 +78,10 @@ public class ActionModuleMultiBarrel
     }
 
     [MethodTargetPrefix(nameof(ItemAction.ItemActionEffects), typeof(ItemActionRanged))]
-    private bool Prefix_ItemActionEffects_ItemActionRanged(ItemActionData _actionData, int _userData, MultiBarrelData __customData)
+    private bool Prefix_ItemActionEffects_ItemActionRanged(ItemActionData _actionData, int _userData, int _firingState, MultiBarrelData __customData)
     {
         ItemActionRanged.ItemActionDataRanged rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
-        if (rangedData != null)
+        if (rangedData != null && _firingState != 0)
         {
             byte index = (byte)(_userData >> 8);
             rangedData.muzzle = __customData.muzzles[index];
@@ -93,14 +91,14 @@ public class ActionModuleMultiBarrel
     }
 
     [MethodTargetPrefix(nameof(ItemAction.ItemActionEffects), typeof(ItemActionLauncher))]
-    private bool Prefix_ItemActionEffects_ItemActionLauncher(ItemActionData _actionData, int _userData, MultiBarrelData __customData)
+    private bool Prefix_ItemActionEffects_ItemActionLauncher(ItemActionData _actionData, int _userData, int _firingState, MultiBarrelData __customData)
     {
         ItemActionLauncher.ItemActionDataLauncher launcherData = _actionData as ItemActionLauncher.ItemActionDataLauncher;
         if (launcherData != null)
         {
             launcherData.projectileJoint = __customData.projectileJoints[(byte)(_userData >> 8)];
         }
-        return Prefix_ItemActionEffects_ItemActionRanged(_actionData, _userData, __customData);
+        return Prefix_ItemActionEffects_ItemActionRanged(_actionData, _userData, _firingState, __customData);
     }
 
     public class MultiBarrelData
@@ -129,15 +127,37 @@ public class ActionModuleMultiBarrel
             Log.Out($"cycle barrel index {curBarrelIndex}");
         }
 
-        public void SetCurrentBarrel(int roundUsed)
+        public void SetCurrentBarrel(int roundLeft)
         {
-            if (muzzleIsPerRound || oneRoundMultishot)
+            if (muzzleIsPerRound)
             {
-                curBarrelIndex = roundUsed % barrelCount;
+                int totalSwitches;
+                if (oneRoundMultishot)
+                {
+                    totalSwitches = roundLeft * roundsPerShot;
+                }
+                else
+                {
+                    totalSwitches = roundLeft;
+                }
+                int lastCycleSwitches = totalSwitches % barrelCount;
+                int barrelGroup = barrelCount / roundsPerShot;
+                curBarrelIndex = (barrelCount - lastCycleSwitches) / barrelGroup * barrelGroup;
             }
             else
             {
-                curBarrelIndex = (roundUsed / roundsPerShot) % barrelCount;
+                if (oneRoundMultishot)
+                {
+                    curBarrelIndex = barrelCount - (roundLeft % barrelCount);
+                }
+                else
+                {
+                    curBarrelIndex = barrelCount - ((roundLeft + 1) / roundsPerShot) % barrelCount;
+                }
+            }
+            if (curBarrelIndex >= barrelCount)
+            {
+                curBarrelIndex = 0;
             }
             SetAnimatorParam(curBarrelIndex);
             Log.Out($"set barrel index {curBarrelIndex}");
@@ -146,6 +166,7 @@ public class ActionModuleMultiBarrel
         public void SetAnimatorParam(int barrelIndex)
         {
             invData.holdingEntity.emodel.avatarController.UpdateInt("barrelIndex", barrelIndex, true);
+            Log.Out($"set param index {barrelIndex}");
         }
     }
 }

@@ -9,6 +9,7 @@ namespace KFCommonUtilityLib.Harmony
     [HarmonyPatch]
     public static class InvariableRPMPatches
     {
+        //added as a transpiler so that it's applied before all post processing
         [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.OnHoldingUpdate))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_OnHoldingUpdate_ItemActionRanged(IEnumerable<CodeInstruction> instructions)

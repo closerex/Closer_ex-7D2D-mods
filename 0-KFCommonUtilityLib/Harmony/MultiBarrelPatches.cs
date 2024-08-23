@@ -141,7 +141,7 @@ namespace KFCommonUtilityLib.Harmony
         {
             if (__instance.actionData is IModuleContainerFor<ActionModuleMultiBarrel.MultiBarrelData> dataModule)
             {
-                dataModule.Instance.SetCurrentBarrel(__instance.actionRanged.GetMaxAmmoCount(__instance.actionData) - __instance.actionData.invData.itemValue.Meta);
+                dataModule.Instance.SetCurrentBarrel(__instance.actionData.invData.itemValue.Meta);
             }
         }
 

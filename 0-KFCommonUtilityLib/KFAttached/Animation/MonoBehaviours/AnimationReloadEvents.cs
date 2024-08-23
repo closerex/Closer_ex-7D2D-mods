@@ -75,8 +75,7 @@ public class AnimationReloadEvents : MonoBehaviour
         actionData.isChangingAmmoType = false;
         if (actionData is IModuleContainerFor<ActionModuleMultiBarrel.MultiBarrelData> dataModule)
         {
-            int magSize = actionRanged.GetMaxAmmoCount(actionData);
-            dataModule.Instance.SetCurrentBarrel(magSize - actionData.invData.itemValue.Meta);
+            dataModule.Instance.SetCurrentBarrel(actionData.invData.itemValue.Meta);
         }
 #if DEBUG
         Log.Out($"ANIMATION RELOAD EVENT FINISHED : {actionData.invData.item.Name}");

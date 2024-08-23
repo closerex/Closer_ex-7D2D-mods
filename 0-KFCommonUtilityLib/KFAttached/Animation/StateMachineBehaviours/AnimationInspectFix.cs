@@ -33,7 +33,7 @@ public class AnimationInspectFix : MonoBehaviour
         if (useStateTag)
         {
             var stateInfo = animator.GetCurrentAnimatorStateInfo(layer);
-            if (stateInfo.IsTag(inspectName))
+            if (stateInfo.IsTag(inspectName) && stateInfo.normalizedTime < finishTime)
             {
                 animator.ResetTrigger(inspectHash);
             }
@@ -47,20 +47,4 @@ public class AnimationInspectFix : MonoBehaviour
             }
         }
     }
-
-    //private void LateUpdate()
-    //{
-    //    Rig rig = GetComponentInChildren<Rig>(true);
-    //    if (rig)
-    //    {
-    //        if (rig.weight > 0)
-    //        {
-    //            rig.weight -= 0.01f;
-    //        }
-    //        if (rig.weight <= 0)
-    //        {
-    //            rig.weight = 1;
-    //        }
-    //    }
-    //}
 }
