@@ -29,6 +29,8 @@
 	<append xpath="/item_modifiers/item_modifier[@name='modGunSoundSuppressorSilencer']">
 		<item_property_overrides name="gunT3M4Benelli">
 			<property name="Sound_start" value="pump_shotgun_s_fire"/>
+			<property name="Particles_muzzle_fire" value="#@modfolder:Resources/M4Benelli.unity3d?m4_benelli_muzzle_flash_silenced.prefab"/>
+			<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/M4Benelli.unity3d?m4_benelli_muzzle_flash_silenced_fpv.prefab"/>
 		</item_property_overrides>
 	</append>
 </configs>

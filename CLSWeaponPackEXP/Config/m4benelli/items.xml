@@ -34,7 +34,7 @@
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;DynamicMuzzleFlash,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InstantFiringCancel" value="true"/>
 				<property name="Delay" value=".8"/> <!-- obsolete if rounds per minute exists -->
@@ -77,7 +77,7 @@
 				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="6.859">
 					<requirement name="ProgressionLevel" progression_name="perkBoomstick" operation="GTE" value="5"/>
 				</passive_effect>
-				<passive_effect name="RoundsPerMinute" operation="base_set" value="178" tags="perkBoomstick"/>
+				<passive_effect name="RoundsPerMinute" operation="base_set" value="267" tags="perkBoomstick"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkBoomstick"/>
 				<passive_effect name="PartialReloadCount" operation="base_set" value="1" tags="perkBoomstick"/>
 				<passive_effect name="MagazineSize" operation="base_set" value="8" tags="perkBoomstick"/>

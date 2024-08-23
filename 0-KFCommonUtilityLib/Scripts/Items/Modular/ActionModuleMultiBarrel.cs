@@ -26,7 +26,7 @@ public class ActionModuleMultiBarrel
         __instance.Properties.ParseString("BarrelCount", ref originalValue);
         __customData.barrelCount = int.Parse(_data.invData.itemValue.GetPropertyOverrideForAction("BarrelCount", originalValue, actionIndex));
 
-        Log.Out($"MuzzleIsPerRound: {__customData.muzzleIsPerRound} OneRoundMultiShot: {__customData.oneRoundMultishot} RoundsPerShot: {__customData.roundsPerShot} BarrelCount: {__customData.barrelCount}");
+        //Log.Out($"MuzzleIsPerRound: {__customData.muzzleIsPerRound} OneRoundMultiShot: {__customData.oneRoundMultishot} RoundsPerShot: {__customData.roundsPerShot} BarrelCount: {__customData.barrelCount}");
 
         __customData.muzzles = new Transform[__customData.barrelCount];
         __customData.projectileJoints = new Transform[__customData.barrelCount];
@@ -124,7 +124,7 @@ public class ActionModuleMultiBarrel
         public void CycleBarrels()
         {
             curBarrelIndex = ++curBarrelIndex >= barrelCount ? 0 : curBarrelIndex;
-            Log.Out($"cycle barrel index {curBarrelIndex}");
+            //Log.Out($"cycle barrel index {curBarrelIndex}");
         }
 
         public void SetCurrentBarrel(int roundLeft)
@@ -160,13 +160,13 @@ public class ActionModuleMultiBarrel
                 curBarrelIndex = 0;
             }
             SetAnimatorParam(curBarrelIndex);
-            Log.Out($"set barrel index {curBarrelIndex}");
+            //Log.Out($"set barrel index {curBarrelIndex}");
         }
 
         public void SetAnimatorParam(int barrelIndex)
         {
             invData.holdingEntity.emodel.avatarController.UpdateInt("barrelIndex", barrelIndex, true);
-            Log.Out($"set param index {barrelIndex}");
+            //Log.Out($"set param index {barrelIndex}");
         }
     }
 }
