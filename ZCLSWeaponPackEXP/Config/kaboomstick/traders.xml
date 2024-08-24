@@ -1,0 +1,31 @@
+<configs>
+	<conditional>
+		<if cond="!mod_loaded('EFT8_DVS_Configs')">
+			<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupRangedAll']">
+				<item name="gunKaboomstick" quality="1,5"/>
+			</append>
+			<append xpath="/traders/trader_item_groups/trader_item_group[@name='ammoAll']">
+				<item name="ammoKaboomstickShellHE" count="25,50"/>
+				<item name="ammoKaboomstickShellFrag" count="25,50"/>
+			</append>
+			<append xpath="/traders/trader_item_groups/trader_item_group[@name='ammoHP']">
+				<item name="ammoKaboomstickShellHE" count="25,50"/>
+			</append>
+			<append xpath="/traders/trader_item_groups/trader_item_group[@name='ammoAP']">
+				<item name="ammoKaboomstickShellHE" count="25,50"/>
+			</append>
+		</if>
+	</conditional>
+
+	<conditional>
+		<if cond="mod_loaded('EFT8_DVS_Configs')">
+			<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupRangedAllEft']">
+				<item name="gunKaboomstick" quality="1,5"/>
+			</append>
+			<append xpath="/traders/trader_item_groups/trader_item_group[@name='ammoAllEft']">
+				<item name="ammoKaboomstickShellHE" count="25,50"/>
+				<item name="ammoKaboomstickShellFrag" count="25,50"/>
+			</append>
+		</if>
+	</conditional>
+</configs>

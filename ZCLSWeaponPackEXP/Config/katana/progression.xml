@@ -1,0 +1,17 @@
+<configs>
+	
+	<!-- KF2 Katana -->
+	
+	<insertAfter xpath="/progression/crafting_skills/crafting_skill[@name='craftingBlades']/display_entry[@item='meleeWpnBladeT3Machete']">
+		<display_entry item="meleeWpnBladeT3KF2Katana" unlock_level="50,55,60,65,70,75" />
+	</insertAfter>
+
+	<insertAfter xpath="/progression/crafting_skills/crafting_skill[@name='craftingBlades']/effect_group/passive_effect[@name='RecipeTagUnlocked'][@tags='meleeWpnBladeT3Machete']">
+			<passive_effect name="RecipeTagUnlocked" operation="base_set" level="50,75" value="1" tags="meleeWpnBladeT3KF2Katana"/>
+	</insertAfter>	
+
+	<insertAfter xpath="/progression/crafting_skills/crafting_skill[@name='craftingBlades']/effect_group/passive_effect[@name='CraftingTier'][@tags='meleeWpnBladeT3Machete']">
+			<passive_effect name="CraftingTier" operation="base_add" level="55,60,65,70,75" value="1,2,3,4,5" tags="meleeWpnBladeT3KF2Katana"/>
+	</insertAfter>
+	
+</configs>

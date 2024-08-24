@@ -1,0 +1,6 @@
+<configs>
+	<include filename="kaboomstick/loot.xml"/>
+	<include filename="m4benelli/loot.xml"/>
+	<include filename="katana/loot.xml"/>
+	<include filename="af2011/loot.xml"/>
+</configs>

@@ -1,0 +1,5 @@
+Key,File,Type,english,schinese
+gunHandgunT3DualAF2011A1S,items,Gun,Dual Wield AF-2011A1,Dual Wield AF-2011A1
+gunHandgunT3DualAF2011A1SDesc,items,Gun,"Dual Wield the AF-2011A1 double-barreled, semi-automatic pistol on those special occasions.","Dual Wield the AF-2011A1 double-barreled, semi-automatic pistol on those special occasions."
+gunHandgunT3AF2011A1S,items,Gun,AF-2011A1,AF-2011A1
+gunHandgunT3AF2011A1SDesc,items,Gun,"The AF-2011A1 provides the power of a double-barreled, semi-automatic pistol.","The AF-2011A1 provides the power of a double-barreled, semi-automatic pistol."

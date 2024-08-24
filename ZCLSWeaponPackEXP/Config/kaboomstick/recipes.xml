@@ -1,0 +1,31 @@
+<configs>
+	<append xpath="/recipes">
+		<recipe name="gunKaboomstick" count="1" craft_area="workbench" tags="learnable,perkDemolitionsExpert,workbenchCrafting">
+			<ingredient name="gunExplosivesT3RocketLauncherParts" count="1"/>
+			<ingredient name="resourceForgedSteel" count="10"/>
+			<ingredient name="resourceDuctTape" count="2"/>
+			<ingredient name="resourceSpring" count="2"/>
+			<ingredient name="resourceLegendaryParts" count="0"/>
+			<effect_group>
+				<passive_effect name="CraftingIngredientCount" level="2,6" operation="perc_add" value="1,5" tags="gunExplosivesT3RocketLauncherParts,resourceForgedSteel,resourceDuctTape,resourceSpring"/>
+				<passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
+			</effect_group>
+		</recipe>
+
+		<recipe name="ammoKaboomstickShellFrag" count="1" craft_time="40" craft_area="workbench" tags="learnable,workbenchCrafting">
+			<ingredient name="resourceBuckshot" count="10"/>
+			<ingredient name="resourceGunPowder" count="8"/>
+			<ingredient name="resourceDuctTape" count="1"/>
+			<ingredient name="ammoGasCan" count="200"/>
+			<ingredient name="resourceRocketCasing" count="1"/>
+		</recipe>
+
+		<recipe name="ammoKaboomstickShellHE" count="1" craft_time="30" craft_area="workbench" tags="learnable,workbenchCrafting">
+			<ingredient name="resourceRocketTip" count="1"/>
+			<ingredient name="resourceGunPowder" count="8"/>
+			<ingredient name="resourceDuctTape" count="1"/>
+			<ingredient name="ammoGasCan" count="200"/>
+			<ingredient name="resourceRocketCasing" count="1"/>
+		</recipe>
+	</append>
+</configs>

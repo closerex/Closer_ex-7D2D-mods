@@ -1,0 +1,6 @@
+<configs>
+	<include filename="kaboomstick/progression.xml"/>
+	<include filename="m4benelli/progression.xml"/>
+	<include filename="katana/progression.xml"/>
+	<include filename="af2011/progression.xml"/>
+</configs>

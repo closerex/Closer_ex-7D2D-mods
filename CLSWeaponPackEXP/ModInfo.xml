@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-
-<xml>
-	<Name value="CLSWeaponPackEXP"/>
-	<DisplayName value="Closer's experimental weapon pack" />
-	<Description value="New toys." />
-	<Author value="closer_ex" />
-	<Version value="1.0.0" />
-</xml>

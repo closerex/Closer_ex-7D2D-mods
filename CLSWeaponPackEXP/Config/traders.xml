@@ -1,5 +1,0 @@
-<configs>
-	<include filename="kaboomstick/traders.xml"/>
-	<include filename="m4benelli/traders.xml"/>
-	<include filename="katana/traders.xml"/>
-</configs>

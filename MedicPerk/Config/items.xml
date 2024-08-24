@@ -36,7 +36,8 @@
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
+				<property name="allowEmptyInspect" value="true"/>
 				<property name="ToggleActionSound" value="Medic_Mode_Switch"/>
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
 				<property name="Sound_start" value="Medic_Pistol_Fire"/>
@@ -64,7 +65,8 @@
 				<property name="Class" value="Ranged"/>
 				<property name="ActionUnlocked" value="false"/>
 				<property name="ActionTags" value="medicAction"/>
-				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
+				<property name="allowEmptyInspect" value="true"/>
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>
@@ -128,7 +130,7 @@
 			</effect_group>
 			<effect_group name="Weapon mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="0"/>
-				<passive_effect name="RoundsPerMinute" operation="base_set" value="256" tags="perkGunslinger"/>
+				<passive_effect name="RoundsPerMinute" operation="base_set" value="342" tags="perkGunslinger"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkGunslinger"/>
 				<passive_effect name="MaxRange" operation="base_set" value="50" tags="perkGunslinger,9mmGun"/>
 				<passive_effect name="DamageFalloffRange" operation="base_set" value="20" tags="perkGunslinger,9mmGun"/>
@@ -217,7 +219,8 @@
 
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
+				<property name="allowEmptyInspect" value="true"/>
 				<property name="ToggleActionSound" value="Medic_Mode_Switch"/>
 				<property name="Delay" value=".150"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
@@ -250,7 +253,8 @@
 				<property name="Class" value="Ranged"/>
 				<property name="ActionUnlocked" value="false"/>
 				<property name="ActionTags" value="medicAction"/>
-				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
+				<property name="allowEmptyInspect" value="true"/>
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>
@@ -315,7 +319,7 @@
 			</effect_group>
 			<effect_group name="Weapon mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="0"/>
-				<passive_effect name="RoundsPerMinute" operation="base_set" value="600" tags="perkGunslinger"/>
+				<passive_effect name="RoundsPerMinute" operation="base_set" value="800" tags="perkGunslinger"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="1000" tags="perkGunslinger"/>
 				<passive_effect name="MaxRange" operation="base_set" value="65" tags="perkGunslinger,9mmGun"/>
 				<passive_effect name="DamageFalloffRange" operation="base_set" value="30" tags="perkGunslinger,9mmGun"/>
@@ -403,7 +407,8 @@
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
+				<property name="allowEmptyInspect" value="true"/>
 				<property name="ToggleActionSound" value="Medic_Mode_Switch"/>
 				<property name="Delay" value=".8"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug"/>
@@ -436,7 +441,8 @@
 				<property name="Class" value="Ranged"/>
 				<property name="ActionUnlocked" value="false"/>
 				<property name="ActionTags" value="medicAction"/>
-				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
+				<property name="allowEmptyInspect" value="true"/>
 				<property name="Magazine_items" value="ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>
@@ -500,7 +506,7 @@
 			</effect_group>
 			<effect_group name="Weapon mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="0"/>
-				<passive_effect name="RoundsPerMinute" operation="base_set" value="150" tags="perkBoomstick"/>
+				<passive_effect name="RoundsPerMinute" operation="base_set" value="300" tags="perkBoomstick"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="1000" tags="perkBoomstick"/>
 				<passive_effect name="MaxRange" operation="base_set" value="20" tags="perkBoomstick"/>
 				<passive_effect name="DamageFalloffRange" operation="base_set" value="10" tags="perkBoomstick"/>
@@ -577,7 +583,8 @@
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
+				<property name="allowEmptyInspect" value="true"/>
 				<property name="ToggleActionSound" value="Medic_Mode_Switch"/>
 				<property name="Delay" value=".150"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammo762mmBulletBall,ammo762mmBulletHP,ammo762mmBulletAP"/>
@@ -604,7 +611,8 @@
 				<property name="Class" value="Ranged"/>
 				<property name="ActionUnlocked" value="false"/>
 				<property name="ActionTags" value="medicAction"/>
-				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
+				<property name="allowEmptyInspect" value="true"/>
 				<property name="Magazine_items" value="ammo762mmBulletBall,ammo762mmBulletHP,ammo762mmBulletAP"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>
@@ -624,7 +632,7 @@
 			</property>
 			<effect_group name="Weapon mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="0"/>
-				<passive_effect name="RoundsPerMinute" operation="base_set" value="562" tags="perkMachineGunner"/>
+				<passive_effect name="RoundsPerMinute" operation="base_set" value="750" tags="perkMachineGunner"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="999" tags="perkMachineGunner"/>
 				<passive_effect name="MaxRange" operation="base_set" value="90" tags="perkMachineGunner,9mmGun"/>
 				<passive_effect name="DamageFalloffRange" operation="base_set" value="50" tags="perkMachineGunner,9mmGun"/>
@@ -723,65 +731,89 @@
 			</effect_group>
 		</item>
 		
-<!-- *** Mod_Schematics -->
-<item name="modMedicModuleSchematic">
-	<property name="Extends" value="schematicNoQualityMaster"/>
-	<property name="CreativeMode" value="Player"/>
-	<property name="CustomIcon" value="medic_module"/>
-	<property name="Unlocks" value="modMedicModule"/>
-	<effect_group tiered="false">
-		<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="modMedicModule" operation="set" value="1"/>
-		<triggered_effect trigger="onSelfPrimaryActionEnd" action="GiveExp" exp="50"/>
-	</effect_group>
-</item>
-		
-	<!-- *** Medic_Guns_Skill_Magazine -->
-<item name="medicgunsSkillMagazine">
-	<property name="Extends" value="masterSkillMagazine"/>
-	<property name="Tags" value="medicgunsCSM,csm"/>
-	<property name="CustomIcon" value="bookMedicGunWeekly"/>
-	<property name="DescriptionKey" value="medicgunsSkillMagazineDesc"/>
-	<property name="Unlocks" value="craftingMedicGuns"/>
-	
-	<effect_group tiered="false">
-		<triggered_effect trigger="onSelfPrimaryActionEnd" action="AddProgressionLevel" progression_name="craftingMedicGuns" level="1"/> <!-- level="-1" sets a perk to max level -->
-		<triggered_effect trigger="onSelfPrimaryActionEnd" action="GiveExp" exp="50"/>
-	</effect_group>
-</item>
+		<!-- *** Mod_Schematics -->
+		<item name="modMedicModuleSchematic">
+			<property name="Extends" value="schematicNoQualityMaster"/>
+			<property name="CreativeMode" value="Player"/>
+			<property name="CustomIcon" value="medic_module"/>
+			<property name="Unlocks" value="modMedicModule"/>
+			<effect_group tiered="false">
+				<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="modMedicModule" operation="set" value="1"/>
+				<triggered_effect trigger="onSelfPrimaryActionEnd" action="GiveExp" exp="50"/>
+			</effect_group>
+		</item>
+				
+			<!-- *** Medic_Guns_Skill_Magazine -->
+		<item name="medicgunsSkillMagazine">
+			<property name="Extends" value="masterSkillMagazine"/>
+			<property name="Tags" value="medicgunsCSM,csm"/>
+			<property name="CustomIcon" value="bookMedicGunWeekly"/>
+			<property name="DescriptionKey" value="medicgunsSkillMagazineDesc"/>
+			<property name="Unlocks" value="craftingMedicGuns"/>
+			
+			<effect_group tiered="false">
+				<triggered_effect trigger="onSelfPrimaryActionEnd" action="AddProgressionLevel" progression_name="craftingMedicGuns" level="1"/> <!-- level="-1" sets a perk to max level -->
+				<triggered_effect trigger="onSelfPrimaryActionEnd" action="GiveExp" exp="50"/>
+			</effect_group>
+		</item>
 
-<item name="resourceMedicGunRepairKit">
-	<property name="HoldType" value="45"/>
-	<property name="Tags" value="junk"/>
-	<property name="Meshfile" value="@:Other/Items/Misc/sackPrefab.prefab"/>
-	<property name="DropMeshfile" value="@:Other/Items/Misc/sack_droppedPrefab.prefab"/>
-	<property name="Material" value="Mmetal"/>
-	<property name="Stacknumber" value="25"/> <!-- STK resourceRepairKit -->
-	<property name="EconomicValue" value="186"/>
-	<property name="RepairTime" value="4"/>
-	<property name="RepairAmount" value="32000"/>
-	<property name="Group" value="Resources"/>
-</item>
+		<item name="resourceMedicGunRepairKit">
+			<property name="HoldType" value="45"/>
+			<property name="Tags" value="junk"/>
+			<property name="Meshfile" value="@:Other/Items/Misc/sackPrefab.prefab"/>
+			<property name="DropMeshfile" value="@:Other/Items/Misc/sack_droppedPrefab.prefab"/>
+			<property name="Material" value="Mmetal"/>
+			<property name="Stacknumber" value="25"/> <!-- STK resourceRepairKit -->
+			<property name="EconomicValue" value="186"/>
+			<property name="RepairTime" value="4"/>
+			<property name="RepairAmount" value="32000"/>
+			<property name="Group" value="Resources"/>
+		</item>
 
-<item name="resourceMedicGunRepairKitBundle">
-	<property name="ItemTypeIcon" value="bundle"/>
-	<property name="CustomIcon" value="resourceMedicGunRepairKit"/>
-	<property name="DescriptionKey" value="resourceMedicGunRepairKitBundleDesc"/>
-	<property name="HoldType" value="45"/>
-	<property name="Meshfile" value="@:Other/Items/Misc/sackPrefab.prefab"/>
-	<property name="DropMeshfile" value="@:Other/Items/Misc/sack_droppedPrefab.prefab"/>
-	<property name="Material" value="Mmetal"/>
-	<property name="Stacknumber" value="5"/> <!-- STK ammobundle -->
-	<property name="Weight" value="0"/>
-	<property name="EconomicValue" value="1488"/>
-	<property name="Group" value="Resources"/>
-	<property class="Action0">
-		<property name="Class" value="OpenBundle"/>
-		<property name="Delay" value="0"/>
-		<property name="Sound_start" value="close_garbage"/>
-		<property name="Create_item" value="resourceMedicGunRepairKit"/>
-		<property name="Create_item_count" value="10"/>
-	</property>
-</item>
+		<item name="resourceMedicGunRepairKitBundle">
+			<property name="ItemTypeIcon" value="bundle"/>
+			<property name="CustomIcon" value="resourceMedicGunRepairKit"/>
+			<property name="DescriptionKey" value="resourceMedicGunRepairKitBundleDesc"/>
+			<property name="HoldType" value="45"/>
+			<property name="Meshfile" value="@:Other/Items/Misc/sackPrefab.prefab"/>
+			<property name="DropMeshfile" value="@:Other/Items/Misc/sack_droppedPrefab.prefab"/>
+			<property name="Material" value="Mmetal"/>
+			<property name="Stacknumber" value="5"/> <!-- STK ammobundle -->
+			<property name="Weight" value="0"/>
+			<property name="EconomicValue" value="1488"/>
+			<property name="Group" value="Resources"/>
+			<property class="Action0">
+				<property name="Class" value="OpenBundle"/>
+				<property name="Delay" value="0"/>
+				<property name="Sound_start" value="close_garbage"/>
+				<property name="Create_item" value="resourceMedicGunRepairKit"/>
+				<property name="Create_item_count" value="10"/>
+			</property>
+		</item>
 		
 	</append>
+
+	<conditional>
+		<if cond="mod_loaded('EFT3_DVS_Ammo')">
+			<set xpath="/items/item[@name='gunMedicPistol']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
+			<set xpath="/items/item[@name='gunMedicPistol']/effect_group[@name='Weapon mode']/passive_effect[@name='EntityDamage' and @tags='perkGunslinger']/@value">0</set>
+			<set xpath="/items/item[@name='gunMedicPistol']/effect_group[@name='Weapon mode']/passive_effect[@name='BlockDamage' and @tags='perkGunslinger']/@value">0</set>
+			<set xpath="/items/item[@name='gunMedicPistol']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
+
+			<set xpath="/items/item[@name='gunMedicSMG201']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
+			<set xpath="/items/item[@name='gunMedicSMG201']/effect_group[@name='Weapon mode']/passive_effect[@name='EntityDamage']/@value">0</set>
+			<set xpath="/items/item[@name='gunMedicSMG201']/effect_group[@name='Weapon mode']/passive_effect[@name='BlockDamage']/@value">0</set>
+			<set xpath="/items/item[@name='gunMedicSMG201']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
+
+			<set xpath="/items/item[@name='gunMedicShotgun301']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug,ammoEftRIPSlug</set>
+			<set xpath="/items/item[@name='gunMedicShotgun301']/effect_group[@name='Weapon mode']/passive_effect[@name='EntityDamage']/@value">0</set>
+			<set xpath="/items/item[@name='gunMedicShotgun301']/effect_group[@name='Weapon mode']/passive_effect[@name='BlockDamage']/@value">0</set>
+			<set xpath="/items/item[@name='gunMedicShotgun301']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
+
+			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
+			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/effect_group[@name='Weapon mode']/passive_effect[@name='EntityDamage']/@value">0</set>
+			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/effect_group[@name='Weapon mode']/passive_effect[@name='BlockDamage']/@value">0</set>
+			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
+		</if>
+	</conditional>
 </configs>

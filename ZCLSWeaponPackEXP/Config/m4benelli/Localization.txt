@@ -1,0 +1,3 @@
+Key,File,Type,english,schinese
+gunT3M4Benelli,items,Gun,M4 Combat Shotgun,M4战斗霰弹枪
+gunT3M4BenelliDesc,items,Gun,"Fire mode is semi-auto only. Reload can be cancelled by shooting and aiming.\n\nBenelli designed the M4 Combat Shotgun for the US military. Semi-automatic, allowing for a good, steady rate of fire.","射击模式只有半自动。可以通过射击和瞄准取消换弹。\n\n伯奈利为美国军队设计了M4战斗霰弹枪。它是半自动式，可以良好和稳定地射击。"

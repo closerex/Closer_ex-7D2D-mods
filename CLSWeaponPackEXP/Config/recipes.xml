@@ -1,5 +1,0 @@
-<configs>
-	<include filename="kaboomstick/recipes.xml"/>
-	<include filename="m4benelli/recipes.xml"/>
-	<include filename="katana/recipes.xml"/>
-</configs>

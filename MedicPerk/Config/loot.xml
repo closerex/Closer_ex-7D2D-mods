@@ -1,5 +1,4 @@
 <configs>
-	
 	<!-- Custom Loot Groups -->
 	<insertAfter xpath="/lootcontainers/lootgroup[@name='empty']">
 		<lootgroup name="groupWeaponsT1_MedicWeapon" count="all" loot_quality_template="QLTemplateT1">
@@ -13,21 +12,12 @@
 			<item name="gunMedicAssaultRifle401" mods="modMedicModule" mod_chance="1" count="1"/>
 		</lootgroup>
 	</insertAfter>
-	<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT1_Ranged']">
-        <item group="groupWeaponsT1_MedicWeapon"/>
-	</append>
-	<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT2_Ranged']">
-        <item group="groupWeaponsT2_MedicWeapon"/>
-	</append>
-	<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3_Ranged']">
-        <item group="groupWeaponsT3_MedicWeapon"/>
-	</append>
 
 	<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsRangedT1']">
 		<item name="gunMedicPistol" mods="modMedicModule" mod_chance="1" count="1"/>
 	</append>
 	<append xpath="/lootcontainers/lootgroup[@name='groupMilitaryFootlocker02']">
-        <item name="gunMedicPistol" mods="modMedicModule" mod_chance="1" count="1" loot_prob_template="veryLow"/>
+		<item name="gunMedicPistol" mods="modMedicModule" mod_chance="1" count="1" loot_prob_template="veryLow"/>
 	</append>
 	<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsRangedT2']">
 		<item name="gunMedicSMG201" mods="modMedicModule" mod_chance="1" count="1"/>
@@ -42,48 +32,107 @@
 		<item name="gunMedicShotgun301" mods="modMedicModule" mod_chance="1" count="1"/>
 		<item name="gunMedicAssaultRifle401" mods="modMedicModule" mod_chance="1" count="1"/>
 	</append>
-	
-<!-- Mods -->
 
-	<append xpath="/lootcontainers/lootgroup[@name='modGunT1']">
-		<item name="modMedicModule"/>
-	</append>
-	<append xpath="/lootcontainers/lootgroup[@name='schematicsModsAndGeneralT1']">
-		<item name="modMedicModuleSchematic"/>
-	</append>
-	
-<!-- Crafting Skill Magazines -->
-	
-	<append xpath="/lootcontainers/lootgroup[@name='skillMagazines']">
-		<item name="medicgunsSkillMagazine"/>
-	</append>
-	
-	<append xpath="/lootcontainers/lootgroup[@name='groupQuestRewardSkillMagazinesAll01']">
-		<item name="medicgunsSkillMagazine" count="2"/>
-	</append>
-	
-	<append xpath="/lootcontainers/lootgroup[@name='survivalMedical']">
-		<item name="medicgunsSkillMagazine" loot_prob_template="med"/>
-	</append>
-	
-	<append xpath="/lootcontainers/lootgroup[@name='groupMedicalPileSmall']">
-		<item name="medicgunsSkillMagazine" count="0,1" loot_prob_template="med"/>
-	</append>
-	
-	<append xpath="/lootcontainers/lootgroup[@name='groupMedicalPileMed']">
-		<item name="medicgunsSkillMagazine" count="0,1" loot_prob_template="med"/>
-	</append>
-	
-	<append xpath="/lootcontainers/lootgroup[@name='groupMedicalPileLarge']">
-		<item name="medicgunsSkillMagazine" count="0,1" loot_prob_template="med"/>
-	</append>
-	
-	<append xpath="/lootcontainers/lootgroup[@name='groupPopNPillsBooks']">
-		<item name="medicgunsSkillMagazine"/>
-	</append>
-	
-	<append xpath="/lootcontainers/lootgroup[@name='groupPopNPillsCrate02']">
-		<item name="medicgunsSkillMagazine" loot_prob_template="high"/>
-	</append>
+	<conditional>
+		<if cond="!mod_loaded('EFT8_DVS_Configs')">
+			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT1_Ranged']">
+				<item group="groupWeaponsT1_MedicWeapon"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT2_Ranged']">
+				<item group="groupWeaponsT2_MedicWeapon"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3_Ranged']">
+				<item group="groupWeaponsT3_MedicWeapon"/>
+			</append>
+			
+			<!-- Mods -->
+			<!-- <append xpath="/lootcontainers/lootgroup[@name='modGunT1']">
+				<item name="modMedicModule"/>
+			</append> -->
+			<append xpath="/lootcontainers/lootgroup[@name='schematicsModsAndGeneralT1']">
+				<item name="modMedicModuleSchematic"/>
+			</append>
+			
+			<!-- Crafting Skill Magazines -->
+			<append xpath="/lootcontainers/lootgroup[@name='skillMagazines']">
+				<item name="medicgunsSkillMagazine"/>
+			</append>
+			
+			<append xpath="/lootcontainers/lootgroup[@name='groupQuestRewardSkillMagazinesAll01']">
+				<item name="medicgunsSkillMagazine" count="2"/>
+			</append>
+			
+			<append xpath="/lootcontainers/lootgroup[@name='survivalMedical']">
+				<item name="medicgunsSkillMagazine" loot_prob_template="med"/>
+			</append>
+			
+			<append xpath="/lootcontainers/lootgroup[@name='groupMedicalPileSmall']">
+				<item name="medicgunsSkillMagazine" count="0,1" loot_prob_template="med"/>
+			</append>
+			
+			<append xpath="/lootcontainers/lootgroup[@name='groupMedicalPileMed']">
+				<item name="medicgunsSkillMagazine" count="0,1" loot_prob_template="med"/>
+			</append>
+			
+			<append xpath="/lootcontainers/lootgroup[@name='groupMedicalPileLarge']">
+				<item name="medicgunsSkillMagazine" count="0,1" loot_prob_template="med"/>
+			</append>
+			
+			<append xpath="/lootcontainers/lootgroup[@name='groupPopNPillsBooks']">
+				<item name="medicgunsSkillMagazine"/>
+			</append>
+			
+			<append xpath="/lootcontainers/lootgroup[@name='groupPopNPillsCrate02']">
+				<item name="medicgunsSkillMagazine" loot_prob_template="high"/>
+			</append>
+		</if>
+		<else>
+			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT1']">
+				<item group="groupWeaponsT1_MedicWeapon"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT2']">
+				<item group="groupWeaponsT2_MedicWeapon"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3']">
+				<item group="groupWeaponsT3_MedicWeapon"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT4']">
+				<item group="groupWeaponsT3_MedicWeapon"/>
+			</append>
 
+			<!-- Crafting Skill Magazines -->
+			<append xpath="/lootcontainers/lootgroup[@name='groupEftMedicalMagazines']">
+				<item name="modMedicModuleSchematic"/>
+				<item name="medicgunsSkillMagazine" count="0,1" loot_prob_template="med"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupEftReadablesSchematicsAllT1Ranged']">
+				<item name="medicgunsSkillMagazine"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupEftReadablesSchematicsAllT2Ranged']">
+				<item name="medicgunsSkillMagazine"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupEftReadablesSchematicsAllT3Ranged']">
+				<item name="medicgunsSkillMagazine"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupEftReadablesSchematicsAllT4Ranged']">
+				<item name="medicgunsSkillMagazine"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupEftMedicalTrash']">
+				<item name="modMedicModuleSchematic" loot_prob_template="veryLow"/>
+				<item name="medicgunsSkillMagazine" loot_prob_template="veryLow"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupEftMedicalT1']">
+				<item name="modMedicModuleSchematic" loot_prob_template="veryLow"/>
+				<item name="medicgunsSkillMagazine" loot_prob_template="veryLow"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupEftMedicalT2']">
+				<item name="modMedicModuleSchematic" loot_prob_template="low"/>
+				<item name="medicgunsSkillMagazine" loot_prob_template="low"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupEftMedicalT3']">
+				<item name="modMedicModuleSchematic" loot_prob_template="low"/>
+				<item name="medicgunsSkillMagazine" loot_prob_template="low"/>
+			</append>
+		</else>
+	</conditional>
 </configs>

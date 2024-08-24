@@ -1,11 +1,23 @@
 <configs>
+	<conditional>
+		<if cond="!mod_loaded('EFT8_DVS_Configs')">
+			<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupRangedAll']">
+				<item name="gunMedicPistol" quality="2,5"/>
+				<item name="gunMedicSMG201" quality="2,5"/>
+				<item name="gunMedicShotgun301" quality="2,5"/>
+				<item name="gunMedicAssaultRifle401" quality="2,5"/>
+			</append>
+		</if>
+		<else>
+			<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupRangedAllEft']">
+				<item name="gunMedicPistol" quality="2,5"/>
+				<item name="gunMedicSMG201" quality="2,5"/>
+				<item name="gunMedicShotgun301" quality="2,5"/>
+				<item name="gunMedicAssaultRifle401" quality="2,5"/>
+			</append>
+		</else>
+	</conditional>
 
-	<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupRangedAll']">
-			<item name="gunMedicPistol" quality="2,5"/>
-			<item name="gunMedicSMG201" quality="2,5"/>
-			<item name="gunMedicShotgun301" quality="2,5"/>
-			<item name="gunMedicAssaultRifle401" quality="2,5"/>
-	</append>
 
 	<append xpath="/traders/trader_item_groups/trader_item_group[@name='skillMagazines']">
 			<item name="medicgunsSkillMagazine" count="1,3"/>	

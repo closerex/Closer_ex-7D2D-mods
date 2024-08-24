@@ -1,0 +1,8 @@
+<configs>
+
+<!-- *** Melee_Weapons -->
+	<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupMeleeAll']">
+		<item name="meleeWpnBladeT3KF2Katana" quality="3,6"/>		
+	</append>
+
+</configs>

@@ -1,9 +1,0 @@
-Key,File,Type,english,schinese
-meleeWpnBladeT3KF2Katana,items,Melee,Katana (Prototype 01),武士刀（原型01）
-meleeWpnBladeT3KF2KatanaDesc,items,Melee,"Slashes faster and heavier than a machete with an additional stamina cost. Use the [action:permanent:Reload][action:local:Reload] key to move through different weapon check animations. Can be crafted, found in loot, rewards, or the trader inventory. Useful for gutting animals but you can't harvest with it.\n\nRepair with a Repair Kit.\nScrap to Machete parts.\n\nTry and show a little respect for its class."","比普通砍刀更快且更致命，但是更耗体力。使用[action:permanent:Reload][action:local:Reload]键检视武器。可以通过制作、搜刮、任务或者商人获得。擅长开肠破肚，但是无法用于收割资源。\n\n使用修理工具维修。\n可拆解为砍刀零件。\n\n试挥一下，别忘了礼仪。"
-gunT3M4Benelli,items,Gun,M4 Combat Shotgun,M4战斗霰弹枪
-gunT3M4BenelliDesc,items,Gun,"Fire mode is semi-auto only. Reload can be cancelled by shooting and aiming.\n\nBenelli designed the M4 Combat Shotgun for the US military. Semi-automatic, allowing for a good, steady rate of fire.","射击模式只有半自动。可以通过射击和瞄准取消换弹。\n\n伯奈利为美国军队设计了M4战斗霰弹枪。它是半自动式，可以良好和稳定地射击。"
-gunKaboomstick,items,Gun,HRG Kaboomstick,HRG大爆炸射手
-gunKaboomstickDesc,items,Gun,Explosive ammo included to spice up the experience.,使用爆炸子弹，体验倍增！
-ammoKaboomstickShellHE,item,Ammo,HRG Kaboomstick Shell HE,HRG大爆炸射手弹药 高爆
-ammoKaboomstickShellFrag,item,Ammo,HRG Kaboomstick Shell Frag,HRG大爆炸射手弹药 破片
