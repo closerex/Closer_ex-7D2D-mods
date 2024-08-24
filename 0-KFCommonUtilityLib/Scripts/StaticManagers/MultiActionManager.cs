@@ -228,7 +228,10 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             ItemValue itemValue = _itemValue ?? ItemValue;
             if (itemValue == null)
                 return;
-            ItemActionAttack itemActionAttack = entity.inventory.holdingItem.Actions[CurActionIndex] as ItemActionAttack;
+            ItemAction[] actions = entity.inventory.holdingItem.Actions;
+            if (CurActionIndex < 0 || CurActionIndex >= actions.Length)
+                return;
+            ItemActionAttack itemActionAttack = actions[CurActionIndex] as ItemActionAttack;
             if (itemActionAttack == null)
                 return;
             itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[curMetaIndex], itemValue.Meta, TypedMetadataValue.TypeTag.Integer);
