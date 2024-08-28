@@ -12,7 +12,7 @@ public class ConsoleCmdReloadDebug : ConsoleCmdAbstract
         {
             var inv = player.inventory;
             var holdingGun = inv.GetHoldingGun() as ItemActionRanged;
-            var holdingGunData = (inv.holdingItemData.actionData[0] as ItemActionRanged.ItemActionDataRanged);
+            var holdingGunData = (inv.holdingItemData.actionData[holdingGun.ActionIndex] as ItemActionRanged.ItemActionDataRanged);
             var reference = AnimationRiggingManager.FpvTransformReference;
             Log.Out($"\n" +
                 $"holding item idx: {inv.holdingItemIdx} name: {inv.holdingItem.Name} isReloading: {holdingGunData.isReloading} canReload: {holdingGun.CanReload(holdingGunData)} isReloadCancelled: {holdingGunData.isReloadCancelled}\n" +

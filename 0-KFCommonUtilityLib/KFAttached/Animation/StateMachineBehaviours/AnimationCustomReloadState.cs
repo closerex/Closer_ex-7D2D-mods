@@ -43,10 +43,14 @@ public class AnimationCustomReloadState : StateMachineBehaviour
     {
         animator.speed = 1f;
         //eventBridge.OnReloadUpdate();
-        //if (actionData == null)
-        //{
-        //    return;
-        //}
+        if (actionData == null)
+        {
+            return;
+        }
+        if (actionData.isReloading)
+        {
+            eventBridge.OnReloadFinish();
+        }
         //actionData.isReloading = false;
         //actionData.isReloadCancelled = false;
         //actionData.isChangingAmmoType = false;

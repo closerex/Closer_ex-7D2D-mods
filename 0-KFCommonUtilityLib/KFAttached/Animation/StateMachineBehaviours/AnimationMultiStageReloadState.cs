@@ -1,5 +1,7 @@
 ﻿#if NotEditor
 using KFCommonUtilityLib.Scripts.StaticManagers;
+using UAI;
+
 #endif
 using UnityEngine;
 
@@ -71,6 +73,13 @@ public class AnimationMultiStageReloadState : StateMachineBehaviour
             actionData.invData.holdingEntity.MinEventContext.ItemActionData = actionData;
             actionData.invData.holdingEntity.FireEvent(MinEventTypes.onReloadUpdate, true);
         }
+    }
+
+    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        animator.speed = 1f;
+        if (stateInfo.IsTag("ReloadEnd"))
+            eventBridge?.OnReloadFinish();
     }
 #endif
 }
