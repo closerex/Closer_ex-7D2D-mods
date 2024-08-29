@@ -42,6 +42,7 @@ public class AnimationCustomReloadState : StateMachineBehaviour
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.speed = 1f;
+#if NotEditor
         //eventBridge.OnReloadUpdate();
         if (actionData == null)
         {
@@ -51,6 +52,7 @@ public class AnimationCustomReloadState : StateMachineBehaviour
         {
             eventBridge.OnReloadFinish();
         }
+#endif
         //actionData.isReloading = false;
         //actionData.isReloadCancelled = false;
         //actionData.isChangingAmmoType = false;
