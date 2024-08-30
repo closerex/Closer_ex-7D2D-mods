@@ -277,6 +277,34 @@ namespace VehicleWeaponPatches
             VPWeaponManager.VehicleWeaponModMapping.Clear();
         }
     }
+
+    [HarmonyPatch(typeof(Vehicle), nameof(Vehicle.CreateParts))]
+    public class VehiclePartsPatch
+    {
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var mtd_getstring = AccessTools.Method(typeof(DynamicProperties), nameof(DynamicProperties.GetString), new[] { typeof(string) });
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].Calls(mtd_getstring))
+                {
+                    codes.InsertRange(i + 6, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldloca_S, 2),
+                        CodeInstruction.Call(typeof(KeyValuePair<string, DynamicProperties>), "get_Key"),
+                        new CodeInstruction(OpCodes.Ldstr, "."),
+                        CodeInstruction.Call(typeof(string), nameof(string.Contains), new[]{typeof(string)}),
+                        new CodeInstruction(OpCodes.Brtrue_S, codes[i + 5].operand)
+                    });
+                    break;
+                }
+            }
+            return codes;
+        }
+    }
     //[HarmonyPatch(typeof(IKController), nameof(IKController.OnAnimatorIK))]
     //public class IKDebugPatch
     //{
