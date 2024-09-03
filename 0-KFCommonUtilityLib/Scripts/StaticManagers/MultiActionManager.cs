@@ -228,12 +228,16 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             ItemValue itemValue = _itemValue ?? ItemValue;
             if (itemValue == null)
                 return;
-            ItemAction[] actions = entity.inventory.holdingItem.Actions;
+            ItemAction[] actions = itemValue.ItemClass.Actions;
             if (CurActionIndex < 0 || CurActionIndex >= actions.Length)
                 return;
             ItemActionAttack itemActionAttack = actions[CurActionIndex] as ItemActionAttack;
             if (itemActionAttack == null)
                 return;
+            if (ConsoleCmdReloadLog.LogInfo)
+            {
+                Log.Out($"Saving meta for item {itemValue.ItemClass.Name}");
+            }
             itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[curMetaIndex], itemValue.Meta, TypedMetadataValue.TypeTag.Integer);
             itemValue.SetMetadata(MultiActionUtils.ActionSelectedAmmoNames[curMetaIndex], (int)itemValue.SelectedAmmoTypeIndex, TypedMetadataValue.TypeTag.Integer);
             if (itemValue.SelectedAmmoTypeIndex > itemActionAttack.MagazineItemNames.Length)
