@@ -12,7 +12,7 @@ namespace KFCommonUtilityLib.KFAttached.KFUtilAttached
             bool flag = false;
             foreach (var controller in controllers)
             {
-                if (controller != null && controller.isActiveAndEnabled)
+                if (controller && controller.isActiveAndEnabled)
                 {
                     flag |= controller.setLabelColor(index, color);
                 }
@@ -25,7 +25,7 @@ namespace KFCommonUtilityLib.KFAttached.KFUtilAttached
             bool flag = false;
             foreach (var controller in controllers)
             {
-                if (controller != null && controller.isActiveAndEnabled)
+                if (controller && controller.isActiveAndEnabled)
                 {
                     flag |= controller.setLabelText(index, data);
                 }

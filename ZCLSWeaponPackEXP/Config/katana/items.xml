@@ -40,8 +40,8 @@
 				<property name="GrazeEnd" value=".4"/>
 				<property name="SwingDegrees" value="80"/>
 				<property name="SwingAngle" value="130"/>
-				<property name="ImpactPlaybackSpeed" value="0.5"/>
-				<property name="ImpactDuration" value="0.2"/>
+				<property name="ImpactPlaybackSpeed" value="0.4"/>
+				<property name="ImpactDuration" value="0.05"/>
 				<property class="HitSounds">
 					<property name="Override0" value="organic" param1="katanaslashorganic"/>
 				</property>
@@ -64,8 +64,8 @@
 				<property name="GrazeEnd" value=".4"/>
 				<property name="SwingDegrees" value="-80"/>
 				<property name="SwingAngle" value="-60"/>
-				<property name="ImpactPlaybackSpeed" value="0.5"/>
-				<property name="ImpactDuration" value="0.1"/>
+				<property name="ImpactPlaybackSpeed" value="0.4"/>
+				<property name="ImpactDuration" value="0.025"/>
 				<property class="HitSounds">
 					<property name="Override0" value="organic" param1="katanaslashorganic"/>
 				</property>
@@ -74,7 +74,7 @@
 				</property>
 			</property>
 			<effect_group name="meleeWpnBladeT3KF2Katana">
-				<passive_effect name="AttacksPerMinute" operation="base_set" value="100" tags="perkDeepCuts,perkFlurryOfAgility"/>
+				<passive_effect name="AttacksPerMinute" operation="base_set" value="100" tags="primary"/>
 				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".4" tags="primary"/>
 				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value=".8" tags="primary"/>
 				<passive_effect name="StaminaLoss" operation="base_set" value="18" tags="primary"/> <!-- - 10% -->
@@ -95,7 +95,7 @@
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="stone"/>
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="metal"/>
 				<!--<passive_effect name="BlockDamage" operation="perc_add" value="1.5" tags="blockButcher"/>-->
-				<passive_effect name="DismemberChance" operation="base_add" value="1"/>
+				<passive_effect name="DismemberChance" operation="base_add" value="1.5"/>
 			</effect_group>
 			<effect_group name="Power Attack">
 				<passive_effect name="AttacksPerMinute" operation="base_set" value="60" tags="secondary"/>

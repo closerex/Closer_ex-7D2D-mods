@@ -233,7 +233,7 @@ static class AnimationRiggingPatches
     [HarmonyPostfix]
     private static void Postfix_StopHolding_ItemClass(Transform _modelTransform)
     {
-        if (_modelTransform != null && _modelTransform.TryGetComponent<RigTargets>(out var targets))
+        if (_modelTransform != null && _modelTransform.TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
         {
             targets.SetEnabled(false, true);
         }
@@ -243,7 +243,7 @@ static class AnimationRiggingPatches
     [HarmonyPostfix]
     private static void Postfix_createHeldItem_Inventory(Inventory __instance, Transform __result)
     {
-        if (__result != null && __result.TryGetComponent<RigTargets>(out var targets))
+        if (__result != null && __result.TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
         {
             if (GameManager.IsDedicatedServer || !(__instance.entity is EntityPlayerLocal player))
             {
@@ -358,7 +358,7 @@ static class AnimationRiggingPatches
     [HarmonyPostfix]
     private static void Postfix_StartAnimationReloading_AvatarMultibodyController(AvatarMultiBodyController __instance)
     {
-        if (__instance.HeldItemTransform != null && __instance.HeldItemTransform.TryGetComponent<RigTargets>(out var targets))
+        if (__instance.HeldItemTransform != null && __instance.HeldItemTransform.TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
         {
             EntityAlive entity = __instance.Entity;
             ItemValue holdingItemItemValue = entity.inventory.holdingItemItemValue;
@@ -473,7 +473,7 @@ static class AnimationRiggingPatches
     [HarmonyPostfix]
     private static void Postfix_SetInRightHand_AvatarLocalPlayerController(Transform _transform, AvatarLocalPlayerController __instance)
     {
-        if (_transform != null && _transform.TryGetComponent<RigTargets>(out var targets))
+        if (_transform != null && _transform.TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
         {
             targets.SetEnabled(__instance.isFPV);
             _transform.SetParent(__instance.CharacterBody.Parts.RightHandT, false);
@@ -486,7 +486,7 @@ static class AnimationRiggingPatches
     [HarmonyPrefix]
     private static bool Prefix_setHoldingItemTransform_Inventory(Inventory __instance)
     {
-        if (__instance.lastdrawnHoldingItemTransform != null && __instance.lastdrawnHoldingItemTransform.TryGetComponent<RigTargets>(out var targets))
+        if (__instance.lastdrawnHoldingItemTransform != null && __instance.lastdrawnHoldingItemTransform.TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
         {
             targets.SetEnabled(false, true);
         }
@@ -502,7 +502,7 @@ static class AnimationRiggingPatches
         {
             foreach (var model in player.inventory.models)
             {
-                if (model != null && model.TryGetComponent<RigTargets>(out var targets))
+                if (model != null && model.TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
                 {
                     targets.Init(__instance.transform);
                 }
@@ -516,7 +516,7 @@ static class AnimationRiggingPatches
     [HarmonyPostfix]
     private static void Postfix_setHoldingItemTransform_Inventory(Transform _t, Inventory __instance)
     {
-        if (_t != null && _t.TryGetComponent<RigTargets>(out var targets))
+        if (_t != null && _t.TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
         {
             targets.SetEnabled(__instance.entity.emodel.IsFPV);
         }
@@ -577,7 +577,7 @@ static class AnimationRiggingPatches
         if (_entity is EntityItem _entityItem)
         {
             var targets = _entityItem.GetComponentInChildren<RigTargets>(true);
-            if (targets != null)
+            if (targets != null && !targets.Destroyed)
             {
                 targets.Destroy();
             }

@@ -6,7 +6,7 @@ public class WeaponDataController : WeaponLabelControllerBase
     private WeaponDataHandlerBase[] handlers;
     public override bool setLabelColor(int index, Color color)
     {
-        if (handlers == null || index >= handlers.Length || index < 0 || !handlers[index].gameObject.activeSelf)
+        if (handlers == null || index >= handlers.Length || index < 0 || !handlers[index] || !handlers[index].gameObject.activeSelf)
             return false;
 
         handlers[index]?.SetColor(color);
@@ -15,7 +15,7 @@ public class WeaponDataController : WeaponLabelControllerBase
 
     public override bool setLabelText(int index, string data)
     {
-        if (handlers == null || index >= handlers.Length || index < 0 || !handlers[index].gameObject.activeSelf)
+        if (handlers == null || index >= handlers.Length || index < 0 || !handlers[index] || !handlers[index].gameObject.activeSelf)
             return false;
 
         handlers[index]?.SetText(data);

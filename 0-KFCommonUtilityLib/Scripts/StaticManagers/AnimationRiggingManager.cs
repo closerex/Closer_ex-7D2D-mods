@@ -131,7 +131,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         public static void OnClearInventorySlot(Inventory inv, int slot)
         {
             Transform transform = inv.models[slot];
-            if (transform != null && transform.TryGetComponent<RigTargets>(out var targets))
+            if (transform != null && transform.TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
             {
                 targets.Destroy();
             }
@@ -147,7 +147,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             Inventory inv = player.inventory;
             Transform transform = inv.models[inv.holdingItemIdx];
             fpvTransformRef = null;
-            if (transform != null && transform.TryGetComponent(out RigTargets targets))
+            if (transform != null && transform.TryGetComponent(out RigTargets targets) && !targets.Destroyed)
                 fpvTransformRef = new FpvTransformRef(targets, inv.holdingItemData);
         }
 
@@ -218,7 +218,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             if (itemModel == null)
                 return null;
             var player = GameManager.Instance.World.GetPrimaryPlayer();
-            if (player == null || !itemModel.TryGetComponent<RigTargets>(out var targets))
+            if (player == null || !itemModel.TryGetComponent<RigTargets>(out var targets) || targets.Destroyed)
             {
                 if (string.IsNullOrEmpty(name))
                     return itemModel;

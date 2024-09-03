@@ -909,7 +909,7 @@ public static class CommonUtilityPatch
             var rangedData = _data.actionData[curActionIndex] as ItemActionRanged.ItemActionDataRanged;
             if (rangedData != null && rangedData is IModuleContainerFor<ActionModuleInterruptReload.InterruptData> dataModule && rangedAction is IModuleContainerFor<ActionModuleInterruptReload> actionModule)
             {
-                if (!_bReleased && _playerActions != null && ((EntityPlayerLocal)_data.holdingEntity).bFirstPersonView && ((_playerActions.Primary.IsPressed && _actionIdx == curActionIndex) || (_playerActions.Secondary.IsPressed && curAction is ItemActionZoom)) && (rangedData.isReloading || rangedData.isWeaponReloading) && !dataModule.Instance.isInterruptRequested)
+                if (!_bReleased && _playerActions != null && ((EntityPlayerLocal)_data.holdingEntity).bFirstPersonView && ((_playerActions.Primary.IsPressed && _actionIdx == curActionIndex) || (_playerActions.Secondary.IsPressed && curAction is ItemActionZoom)) && (rangedData.isReloading || rangedData.isWeaponReloading) && !dataModule.Instance.isInterruptRequested && _data.itemValue.Meta > 0)
                 {
                     if (dataModule.Instance.holdStartTime < 0)
                     {

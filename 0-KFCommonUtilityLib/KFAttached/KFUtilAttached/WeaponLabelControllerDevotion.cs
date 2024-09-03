@@ -7,7 +7,7 @@ public class WeaponLabelControllerDevotion : WeaponLabelControllerBase
     private ApexWeaponHudControllerBase[] controllers;
     public override bool setLabelColor(int index, Color color)
     {
-        if (controllers == null || index >= controllers.Length || !controllers[index].gameObject.activeSelf)
+        if (controllers == null || index >= controllers.Length || !controllers[index] || !controllers[index].gameObject.activeSelf)
             return false;
 
         controllers[index].SetColor(color);
@@ -16,7 +16,7 @@ public class WeaponLabelControllerDevotion : WeaponLabelControllerBase
 
     public override bool setLabelText(int index, string data)
     {
-        if (controllers == null || index >= controllers.Length || !controllers[index].gameObject.activeSelf)
+        if (controllers == null || index >= controllers.Length || !controllers[index] || !controllers[index].gameObject.activeSelf)
             return false;
 
         controllers[index].SetText(data);

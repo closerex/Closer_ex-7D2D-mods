@@ -9,7 +9,7 @@ public class WeaponTextProController : WeaponLabelControllerBase
 
     public override bool setLabelText(int index, string data)
     {
-        if (labels == null || labels.Length <= index || !labels[index].gameObject.activeSelf)
+        if (labels == null || labels.Length <= index || !labels[index] || !labels[index].gameObject.activeSelf)
             return false;
         labels[index].SetText(data);
         return true;
@@ -17,7 +17,7 @@ public class WeaponTextProController : WeaponLabelControllerBase
 
     public override bool setLabelColor(int index, Color color)
     {
-        if (labels == null || labels.Length <= index || !labels[index].gameObject.activeSelf)
+        if (labels == null || labels.Length <= index || !labels[index] || !labels[index].gameObject.activeSelf)
             return false;
         labels[index].color = color;
         return true;

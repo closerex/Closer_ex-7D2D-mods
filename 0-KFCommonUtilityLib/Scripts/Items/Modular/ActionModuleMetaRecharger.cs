@@ -150,7 +150,7 @@ public class ActionModuleMetaRecharger
                     {
                         itemValue.SetMetadata(rechargeData, cur, TypedMetadataValue.TypeTag.Float);
                     }
-                    if (invData.slotIdx == holdingEntity.inventory.holdingItemIdx)
+                    if (invData.slotIdx == holdingEntity.inventory.holdingItemIdx && invData.slotIdx >= 0 && holdingEntity.AttachedToEntity == null)
                     {
                         holdingEntity.MinEventContext.Tags = rechargeTag.tagsOriginal;
                         itemValue.FireEvent(CustomEnums.onRechargeValueUpdate, holdingEntity.MinEventContext);

@@ -27,6 +27,7 @@ public class RigTargets : MonoBehaviour
 
 #if NotEditor
     private static int UniqueRigID = 0;
+    public bool Destroyed { get; private set; } = false;
 #endif
     //private PlayableGraph m_ControllerGraph;
     //private AnimatorControllerPlayable m_ControllerPlayable;
@@ -116,6 +117,8 @@ public class RigTargets : MonoBehaviour
         fpsArms = animator.transform;
         //fpsArms.AddMissingComponent<PlayerRigLateUpdate>();
         this.fpsArms = fpsArms;
+        animator.UnbindAllStreamHandles();
+        animator.UnbindAllSceneHandles();
         itemFpv.SetParent(fpsArms.parent, false);
         itemFpv.SetAsFirstSibling();
         itemFpv.position = Vector3.zero;
@@ -139,7 +142,8 @@ public class RigTargets : MonoBehaviour
         rigBuilder.layers.RemoveAll(r => r.rig == rig);
         rigLayer = new RigLayer(rig, false);
         rigBuilder.layers.Add(rigLayer);
-        RebuildRig(animator, rigBuilder);
+        rigBuilder.Build();
+        animator.Rebind();
         //((AnimationPlayableOutput)animator.playableGraph.GetOutputByType<AnimationPlayableOutput>(0)).SetSortingOrder(0);
 
         //animator.Update(0);
@@ -155,6 +159,7 @@ public class RigTargets : MonoBehaviour
     public void Destroy()
     {
 #if NotEditor
+        Destroyed = true;
         AnimationRiggingManager.RemoveRigExcludeName(rig.gameObject.name);
 #endif
         //if (m_ControllerGraph.IsValid())
@@ -176,10 +181,13 @@ public class RigTargets : MonoBehaviour
 
         var rigBuilder = fpsArms.AddMissingComponent<RigBuilder>();
         rigBuilder.layers.Remove(rigLayer);
-        RebuildRig(animator, rigBuilder);
+        animator.UnbindAllStreamHandles();
+        animator.UnbindAllSceneHandles();
 
         rig.transform.SetParent(transform, false);
         itemFpv.SetParent(transform, false);
+        rigBuilder.Build();
+        animator.Rebind();
         rig.gameObject.SetActive(false);
         itemFpv.gameObject.SetActive(false);
         rigLayer = null;
@@ -232,16 +240,6 @@ public class RigTargets : MonoBehaviour
 
         //}
         gameObject.SetActive(forceDisableRoot ? false : !enabled);
-    }
-
-    public static void RebuildRig(Animator animator, RigBuilder rigBuilder)
-    {
-        animator.UnbindAllStreamHandles();
-        animator.UnbindAllSceneHandles();
-        //rigBuilder.enabled = false;
-        rigBuilder.Build();
-        //rigBuilder.graph.SetTimeUpdateMode(DirectorUpdateMode.Manual);
-        animator.Rebind();
     }
 
 #if NotEditor

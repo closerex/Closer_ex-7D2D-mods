@@ -796,21 +796,25 @@
 	<conditional>
 		<if cond="mod_loaded('EFT3_DVS_Ammo')">
 			<set xpath="/items/item[@name='gunMedicPistol']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
+			<set xpath="/items/item[@name='gunMedicPistol']/property[@class='Action3']/property[@name='Magazine_items']/@value">ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
 			<set xpath="/items/item[@name='gunMedicPistol']/effect_group[@name='Weapon mode']/passive_effect[@name='EntityDamage' and @tags='perkGunslinger']/@value">0</set>
 			<set xpath="/items/item[@name='gunMedicPistol']/effect_group[@name='Weapon mode']/passive_effect[@name='BlockDamage' and @tags='perkGunslinger']/@value">0</set>
 			<set xpath="/items/item[@name='gunMedicPistol']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
 
 			<set xpath="/items/item[@name='gunMedicSMG201']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
+			<set xpath="/items/item[@name='gunMedicSMG201']/property[@class='Action3']/property[@name='Magazine_items']/@value">ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
 			<set xpath="/items/item[@name='gunMedicSMG201']/effect_group[@name='Weapon mode']/passive_effect[@name='EntityDamage']/@value">0</set>
 			<set xpath="/items/item[@name='gunMedicSMG201']/effect_group[@name='Weapon mode']/passive_effect[@name='BlockDamage']/@value">0</set>
 			<set xpath="/items/item[@name='gunMedicSMG201']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
 
-			<set xpath="/items/item[@name='gunMedicShotgun301']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug,ammoEftRIPSlug</set>
+			<set xpath="/items/item[@name='gunMedicShotgun301']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug</set>
+			<set xpath="/items/item[@name='gunMedicShotgun301']/property[@class='Action3']/property[@name='Magazine_items']/@value">ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug</set>
 			<set xpath="/items/item[@name='gunMedicShotgun301']/effect_group[@name='Weapon mode']/passive_effect[@name='EntityDamage']/@value">0</set>
 			<set xpath="/items/item[@name='gunMedicShotgun301']/effect_group[@name='Weapon mode']/passive_effect[@name='BlockDamage']/@value">0</set>
 			<set xpath="/items/item[@name='gunMedicShotgun301']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
 
 			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
+			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/property[@class='Action3']/property[@name='Magazine_items']/@value">ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
 			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/effect_group[@name='Weapon mode']/passive_effect[@name='EntityDamage']/@value">0</set>
 			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/effect_group[@name='Weapon mode']/passive_effect[@name='BlockDamage']/@value">0</set>
 			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>

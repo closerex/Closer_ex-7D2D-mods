@@ -118,6 +118,7 @@
 			<set xpath="/items/item[@name='gunT3M4Benelli']/effect_group[@name='gunT3M4Benelli']/passive_effect[@name='EntityDamage']/@value">0</set>
 			<set xpath="/items/item[@name='gunT3M4Benelli']/effect_group[@name='gunT3M4Benelli']/passive_effect[@name='BlockDamage']/@value">0</set>
 			<set xpath="/items/item[@name='gunT3M4Benelli']/effect_group[@name='gunT3M4Benelli']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
+			<set xpath="/items/item[@name='gunT3M4Benelli']/effect_group[@name='gunT3M4Benelli']/passive_effect[@name='DegradationMax']/@value">1200,2400</set>
 		</if>
 	</conditional>
 </configs>

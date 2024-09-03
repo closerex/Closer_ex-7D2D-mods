@@ -131,8 +131,11 @@ public class ActionModuleInterruptReload
 
         public InterruptData(ItemInventoryData invData, int actionIndex, ActionModuleInterruptReload module)
         {
-            eventBridge = invData.model?.GetComponent<RigTargets>()?.itemFpv?.GetComponentInChildren<AnimationReloadEvents>(true);
-            itemAnimator = eventBridge?.GetComponent<Animator>();
+            if (invData.model && invData.model.TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
+            {
+                eventBridge = targets.itemFpv?.GetComponentInChildren<AnimationReloadEvents>(true);
+                itemAnimator = eventBridge?.GetComponent<Animator>();
+            }
         }
 
         public void Reset()

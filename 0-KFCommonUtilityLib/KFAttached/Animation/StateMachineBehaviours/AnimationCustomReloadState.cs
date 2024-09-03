@@ -38,7 +38,6 @@ public class AnimationCustomReloadState : StateMachineBehaviour
 #endif
     }
 
-    // Token: 0x06000B5C RID: 2908 RVA: 0x000AC3A8 File Offset: 0x000AA5A8
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.speed = 1f;
