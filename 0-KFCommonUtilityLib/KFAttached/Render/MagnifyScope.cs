@@ -137,6 +137,9 @@ namespace KFCommonUtilityLib.KFAttached.Render
         private void OnDisable()
         {
 #if NotEditor
+            if (!player)
+                return;
+
             if (!player.playerCamera.TryGetComponent<MagnifyScopeTargetRef>(out var reference))
             {
                 reference = player.playerCamera.gameObject.AddComponent<MagnifyScopeTargetRef>();
