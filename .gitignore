@@ -42,8 +42,8 @@
 !ApexDevotion/**
 !M16M203
 !M16M203/**
-!CLSWeaponPackEXP
-!CLSWeaponPackEXP/**
+!ZCLSWeaponPackEXP
+!ZCLSWeaponPackEXP/**
 !ZZCustomPlayerActionManagerSMXPatch/
 !ZZCustomPlayerActionManagerSMXPatch/**
 !.gitignore
