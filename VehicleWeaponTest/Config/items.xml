@@ -1,0 +1,112 @@
+<configs>
+	<append xpath="/items">
+		<item name="guppyParticleCarPlaceable">
+			<property name="Tags" value="vehicle,vengine,vfuel,vlight,vseat,vweapon,vparticleweapon"/>
+			<property name="Group" value="Science"/>
+			<property name="DescriptionKey" value="vehicleVMFastbackPlaceableDesc"/>
+			<property name="HoldType" value="7"/>
+			<property name="CustomIcon" value="vehicleGuppyFastback_1"/>
+			<property name="HoldingItemHidden" value="true"/>
+			<property name="Meshfile" value="#@modfolder:Resources/gupParticleCar.unity3d?guppyParticleCar"/>
+			<property name="DropMeshfile" value="Items/Misc/sack_droppedPrefab"/>
+			<property name="Material" value="Mmetal"/>
+			<property name="EconomicValue" value="6000"/>
+			<property name="SellableToTrader" value="false"/>
+			<property name="Stacknumber" value="1"/>
+			<property class="Action1">
+				<property name="Class" value="SpawnVehicle"/>
+				<property name="Vehicle" value="guppyParticleCar"/>
+			</property>
+			<effect_group name="vehicleVMFastbackPlaceable" tiered="false">
+				<passive_effect name="ModSlots" operation="base_set" value="5"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+				<passive_effect name="DegradationMax" operation="base_set" value="1200"/>
+			</effect_group>
+		</item>
+		
+		<item name="crosscountryChariotPlaceable">
+			<property name="Extends" value="vehicleMinibikePlaceable"/>
+			<property name="DescriptionKey" value="crosscountryChariotPlaceableDesc"/>
+			<property name="Tags" value="vehicle,vengine,vfuel,vlight,vseat,vweapon,vraycastweapon,canHaveCosmetic"/>
+			<property name="Meshfile" value="#@modfolder:Resources/crosscountryChariot.unity3d?crosscountryChariot.prefab"/>
+			<property name="EconomicValue" value="30000"/>
+			<property class="Action1">
+				<property name="Vehicle" value="crosscountryChariot"/>
+				<property name="VehicleSize" value="2.5, 2.1, 5"/>
+			</property>
+			<effect_group name="crosscountryChariotPlaceable" tiered="false">
+				<passive_effect name="ModSlots" operation="base_set" value="5"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+				<passive_effect name="DegradationMax" operation="base_set" value="20000"/>
+			</effect_group>
+		</item>
+		
+		<item name="vehicleMountedMGTestPlaceable">
+			<property name="Extends" value="vehicleMinibikePlaceable"/>
+			<property name="DescriptionKey" value="mountedMGTestPlaceableDesc"/>
+			<property name="Tags" value="vehicle,vengine,vfuel,vlight,vseat,vweapon,vraycastweapon,canHaveCosmetic"/>
+			<property name="Meshfile" value="#@modfolder:Resources/mountedMGTest.unity3d?unclechariot.prefab"/>
+			<property name="EconomicValue" value="30000"/>
+			<property class="Action1">
+				<property name="Vehicle" value="vehicleMountedMGTest"/>
+			</property>
+			<effect_group name="crosscountryChariotPlaceable" tiered="false">
+				<passive_effect name="ModSlots" operation="base_set" value="5"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+				<passive_effect name="DegradationMax" operation="base_set" value="20000"/>
+			</effect_group>
+		</item>
+		
+		<item name="itemPlasmaSmall">
+			<property name="Tags" value="perkDemolitionsExpert"/>
+			<property name="Material" value="Mstone"/>
+			<property name="Canhold" value="false"/>
+			<property name="CreativeMode" value="None"/>
+			<property name="Explosion.ParticleIndex" value="#@modfolder:Resources/plasmaExplosion.unity3d?Plasma_Hit_FX_v1$itemPlasmaSmall"/>
+			<property name="Explosion.RadiusBlocks" value="1"/>
+			<property name="Explosion.RadiusEntities" value="1.5"/>
+			<property name="Explosion.Duration" value="1"/>
+			<property name="Explosion.AudioName" value="plasma_explosion"/>
+			<property name="Explosion.BlastPower" value="20"/>
+			<effect_group tiered="false">
+				<passive_effect name="BlockDamage" operation="base_set" value="5" tags="perkDemolitionsExpert"/>
+				<passive_effect name="EntityDamage" operation="base_set" value="50" tags="perkDemolitionsExpert"/>
+			</effect_group>
+		</item>
+		
+		<item name="vehicleWeaponCrosscountryChariotMG">
+			<property name="Tags" value="weapon,ranged,gun,magazine,attFortitude,vweapon,vraycastweapon,perkMachineGunner,perkBookAutoWeapons"/>
+			<property name="Material" value="MMachineGunParts"/>
+			<property name="CreativeMode" value="None"/>
+			<property name="Canhold" value="false"/>
+			<effect_group name="vehicleWeaponCrosscountryChariotMG">
+				<passive_effect name="MaxRange" operation="base_set" value="100" tags="perkMachineGunner"/>
+				<passive_effect name="DamageFalloffRange" operation="base_set" value="50" tags="perkMachineGunner"/>
+				<passive_effect name="DamageFalloffRange" operation="perc_add" value="-.2,.2" tags="perkMachineGunner"/> <!-- random effective rng -->
+				<passive_effect name="EntityDamage" operation="base_set" value="45" tags="perkMachineGunner,perkBookAutoWeapons"/>
+				<passive_effect name="BlockDamage" operation="base_set" value="8" tags="perkMachineGunner,perkBookAutoWeapons"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="earth"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="2" tags="wood"/>
+
+				<passive_effect name="EntityDamage" operation="perc_add" value="-.15,.15" tags="perkMachineGunner"/> <!-- random EntityDmg -->
+				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkMachineGunner"/> <!-- tier bonus -->
+				<passive_effect name="BlockDamage" operation="perc_add" value="-.15,.15" tags="perkMachineGunner"/> <!-- random BlockDmg -->
+				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkMachineGunner"/> <!-- tier bonus -->
+
+				<passive_effect name="RoundsPerMinute" operation="base_set" value="600" tags="perkMachineGunner"/>
+				<passive_effect name="RoundsPerMinute" operation="perc_add" value="-.05,.05" tags="perkMachineGunner"/> <!-- random APM -->
+				<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkMachineGunner"/> <!-- random WeaponHandling -->
+
+				<passive_effect name="SpreadDegreesVertical" operation="base_set" value="2.8" tags="perkMachineGunner"/>
+				<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="2.8" tags="perkMachineGunner"/>
+				<passive_effect name="SpreadMultiplierIdle" operation="base_set" value=".75" tags="perkMachineGunner"/>
+				<passive_effect name="SpreadMultiplierWalking" operation="base_set" value="1.2" tags="perkMachineGunner"/>
+				<passive_effect name="SpreadMultiplierRunning" operation="base_set" value="1.6" tags="perkMachineGunner"/>
+
+				<passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="1.5" tags="perkMachineGunner"/>
+				<passive_effect name="WeaponHandling" operation="base_set" value=".83" tags="perkMachineGunner"/> <!-- M60 -->
+				<passive_effect name="BuffProcChance" operation="base_set" value=".2" tags="buffBurningFlamingArrow"/>
+			</effect_group>
+		</item>
+	</append>
+</configs>
