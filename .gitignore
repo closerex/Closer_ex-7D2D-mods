@@ -5,6 +5,8 @@
 !0-CustomParticleLoader/**
 !AnimationRiggingWeaponTest/
 !AnimationRiggingWeaponTest/**
+!BetterModCompatibility/
+!BetterModCompatibility/**
 !CustomParticleLoaderBuffArea/
 !CustomParticleLoaderBuffArea/**
 !CustomParticleLoaderMultiExplosion/
