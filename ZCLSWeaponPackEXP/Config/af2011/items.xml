@@ -40,8 +40,8 @@
 				<property name="RoundsPerShot" value="2"/>
 				<property name="BarrelCount" value="4"/>
 				<property name="Magazine_items" value="ammo44MagnumBulletBall,ammo44MagnumBulletHP,ammo44MagnumBulletAP"/>
-				<property name="Sound_start" value="desertvulture_fire"/>
-				<property name="Sound_loop" value="desertvulture_fire"/>
+				<property name="Sound_start" value="af2011_fire"/>
+				<property name="Sound_loop" value="af2011_fire"/>
 				<property name="Sound_end" value=""/>
 				<property name="Sound_empty" value="dryfire"/>
 				<property name="AutoReload" value="false"/>
@@ -176,8 +176,8 @@
 				<property name="RoundsPerShot" value="2"/>
 				<property name="BarrelCount" value="2"/>
 				<property name="Magazine_items" value="ammo44MagnumBulletBall,ammo44MagnumBulletHP,ammo44MagnumBulletAP"/>
-				<property name="Sound_start" value="desertvulture_fire"/>
-				<property name="Sound_loop" value="desertvulture_fire"/>
+				<property name="Sound_start" value="af2011_fire"/>
+				<property name="Sound_loop" value="af2011_fire"/>
 				<property name="Sound_end" value=""/>
 				<property name="Sound_empty" value="dryfire"/>
 				<property name="AutoReload" value="false"/>

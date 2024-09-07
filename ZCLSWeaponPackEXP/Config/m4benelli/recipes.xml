@@ -1,21 +1,17 @@
 <configs>
-        <conditional>
-            <if cond="!mod_loaded('EFT8_DVS_Configs')">
-                <append xpath="/recipes">
-                    <recipe name="gunT3M4Benelli" count="1" craft_area="workbench" tags="learnable,perkBoomstick">
-                        <ingredient name="gunShotgunT1DoubleBarrelParts" count="10"/>
-                        <ingredient name="resourceForgedSteel" count="80"/>
-                        <ingredient name="resourceDuctTape" count="10"/>
-                        <ingredient name="resourceSpring" count="20"/>
-                        <ingredient name="resourceLegendaryParts" count="0"/>
-                        <effect_group>
-                            <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunShotgunT1DoubleBarrelParts,resourceDuctTape"/>
-                            <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceSpring"/>
-                            <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="8,42" tags="resourceForgedSteel"/>
-                            <passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
-                        </effect_group>
-                    </recipe>
-                </append>
-            </if>
-        </conditional>
+    <append xpath="/recipes">
+        <recipe name="gunT3M4Benelli" count="1" craft_area="workbench" tags="learnable,perkBoomstick">
+            <ingredient name="gunShotgunT1DoubleBarrelParts" count="10"/>
+            <ingredient name="resourceForgedSteel" count="80"/>
+            <ingredient name="resourceDuctTape" count="10"/>
+            <ingredient name="resourceSpring" count="20"/>
+            <ingredient name="resourceLegendaryParts" count="0"/>
+            <effect_group>
+                <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunShotgunT1DoubleBarrelParts,resourceDuctTape"/>
+                <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceSpring"/>
+                <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="8,42" tags="resourceForgedSteel"/>
+                <passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
+            </effect_group>
+        </recipe>
+    </append>
 </configs>
