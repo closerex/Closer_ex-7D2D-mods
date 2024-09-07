@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xml>
+	<Name value="BetterModCompatibility" />
+	<DisplayName value="Better Mod Compatibility" />
+	<Description value="Stop some xml from throwing exception and breaking the whole game when some mods are conflicting." />
+	<Author value="closer_ex" />
+	<Version value="1.0.1" />
+</xml>
