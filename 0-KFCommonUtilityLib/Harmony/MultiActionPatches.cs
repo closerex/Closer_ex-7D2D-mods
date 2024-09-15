@@ -2072,12 +2072,14 @@ namespace KFCommonUtilityLib.Harmony
         private static Coroutine switchHoldingItemCo;
         [HarmonyPatch(typeof(Inventory), nameof(Inventory.ShowHeldItem))]
         [HarmonyPrefix]
-        private static bool Prefix_ShowHeldItem_Inventory(bool show)
+        private static bool Prefix_ShowHeldItem_Inventory(bool show, Inventory __instance)
         {
-            if (show && switchHoldingItemCo != null)
+            //Log.Out($"ShowHeldItem {show} on entity {__instance.entity.entityName}\n{StackTraceUtility.ExtractStackTrace()}");
+            if (show && __instance.entity is EntityPlayerLocal && switchHoldingItemCo != null)
             {
                 GameManager.Instance.StopCoroutine(switchHoldingItemCo);
                 switchHoldingItemCo = null;
+                __instance.SetIsFinishedSwitchingHeldItem();
             }
             return true;
         }
@@ -2097,6 +2099,10 @@ namespace KFCommonUtilityLib.Harmony
                     codes.InsertRange(i, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_1),
+                        new CodeInstruction(OpCodes.Brfalse_S, label),
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(Inventory), nameof(Inventory.entity)),
+                        new CodeInstruction(OpCodes.Isinst, typeof(EntityPlayerLocal)),
                         new CodeInstruction(OpCodes.Brfalse_S, label),
                         CodeInstruction.StoreField(typeof(MultiActionPatches), nameof(switchHoldingItemCo)),
                         new CodeInstruction(OpCodes.Ret)

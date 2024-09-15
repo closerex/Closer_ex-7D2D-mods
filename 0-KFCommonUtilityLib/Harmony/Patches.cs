@@ -896,54 +896,6 @@ public static class CommonUtilityPatch
         return true;
     }
 
-    //interrupt reload with firing
-    [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.ExecuteAction))]
-    [HarmonyPrefix]
-    private static bool Prefix_ExecuteAction_ItemClass(ItemClass __instance, int _actionIdx, ItemInventoryData _data, bool _bReleased, PlayerActionsLocal _playerActions)
-    {
-        ItemAction curAction = __instance.Actions[_actionIdx];
-        if (curAction is ItemActionRanged || curAction is ItemActionZoom)
-        {
-            int curActionIndex = MultiActionManager.GetActionIndexForEntity(_data.holdingEntity);
-            var rangedAction = __instance.Actions[curActionIndex] as ItemActionRanged;
-            var rangedData = _data.actionData[curActionIndex] as ItemActionRanged.ItemActionDataRanged;
-            if (rangedData != null && rangedData is IModuleContainerFor<ActionModuleInterruptReload.InterruptData> dataModule && rangedAction is IModuleContainerFor<ActionModuleInterruptReload> actionModule)
-            {
-                if (!_bReleased && _playerActions != null && ((EntityPlayerLocal)_data.holdingEntity).bFirstPersonView && ((_playerActions.Primary.IsPressed && _actionIdx == curActionIndex) || (_playerActions.Secondary.IsPressed && curAction is ItemActionZoom)) && (rangedData.isReloading || rangedData.isWeaponReloading) && !dataModule.Instance.isInterruptRequested && _data.itemValue.Meta > 0)
-                {
-                    if (dataModule.Instance.holdStartTime < 0)
-                    {
-                        dataModule.Instance.holdStartTime = Time.time;
-                        return false;
-                    }
-                    if (Time.time - dataModule.Instance.holdStartTime >= actionModule.Instance.holdBeforeCancel)
-                    {
-                        if (!rangedAction.reloadCancelled(rangedData))
-                        {
-                            rangedAction.CancelReload(rangedData);
-                        }
-                        if (ConsoleCmdReloadLog.LogInfo)
-                            Log.Out($"interrupt requested!");
-                        dataModule.Instance.isInterruptRequested = true;
-                        if (actionModule.Instance.instantFiringCancel && curAction is ItemActionRanged)
-                        {
-                            if (ConsoleCmdReloadLog.LogInfo)
-                                Log.Out($"instant firing cancel!");
-                            dataModule.Instance.instantFiringRequested = true;
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-                if (_bReleased)
-                {
-                    dataModule.Instance.Reset();
-                }
-            }
-        }
-        return true;
-    }
-
     [HarmonyPatch(typeof(ItemActionAttack), nameof(ItemActionAttack.HasRadial))]
     [HarmonyPostfix]
     private static void Postfix_HasRadial_ItemActionAttack(ref bool __result)
@@ -1149,6 +1101,13 @@ public static class CommonUtilityPatch
         }
         return codes;
     }
+
+    //[HarmonyPatch(typeof(Inventory), nameof(Inventory.Execute))]
+    //[HarmonyPrefix]
+    //private static void Prefix_Execute_Inventory(Inventory __instance, int _actionIdx, bool _bReleased, PlayerActionsLocal _playerActions = null)
+    //{
+    //    Log.Out($"Execute Inventory holding item {__instance.holdingItem.Name} slot {__instance.holdingItemIdx} action index {_actionIdx} released {_bReleased} is holster delay {__instance.IsHolsterDelayActive()} is unholster delay {__instance.IsUnholsterDelayActive()}");
+    //}
 
     //[HarmonyPatch(typeof(Inventory), nameof(Inventory.updateHoldingItem))]
     //[HarmonyTranspiler]

@@ -7,6 +7,8 @@ namespace KFCommonUtilityLib.Scripts.ConsoleCmd
 {
     public class ConsoleCmdPlayerDebugInfo : ConsoleCmdAbstract
     {
+        public override bool IsExecuteOnClient => true;
+
         public override void Execute(List<string> _params, CommandSenderInfo _senderInfo)
         {
             EntityPlayerLocal player = GameManager.Instance.World.GetPrimaryPlayer();
@@ -34,8 +36,7 @@ namespace KFCommonUtilityLib.Scripts.ConsoleCmd
             Log.Out(PrintTransform(player.RootTransform));
 
             Transform fpsArm = ((AvatarLocalPlayerController)player.emodel.avatarController).FPSArms.animator.transform;
-            Log.Out($"FPS ARM:\n parent{fpsArm.parent.name}");
-            Log.Out(PrintTransform(fpsArm));
+            Log.Out($"FPS ARM:\nparent {fpsArm.parent.name}\n{PrintTransform(fpsArm)}");
         }
 
         private static string PrintTransform(Transform parent, string str = "", int indent = 0)

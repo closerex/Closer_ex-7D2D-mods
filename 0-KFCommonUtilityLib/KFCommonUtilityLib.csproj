@@ -372,6 +372,7 @@
     <Compile Include="Harmony\MultiActionReversePatches.cs" />
     <Compile Include="Harmony\MultiBarrelPatches.cs" />
     <Compile Include="Harmony\RecoilPatch.cs" />
+    <Compile Include="Harmony\ReloadInterruptionPatches.cs" />
     <Compile Include="Harmony\SaveRescuePatches.cs" />
     <Compile Include="KFAttached\Animation\DebugScripts\AnimatorActionIndexDebug.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationDelayRender.cs" />
