@@ -202,7 +202,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                     {
                         if (TryFindType(typename, out Type itemActionType))
                         {
-                            Log.Out($"Replace ItemAction {item.Actions[indexOfAction].GetType().FullName} with {itemActionType.FullName}");
+                            //Log.Out($"Replace ItemAction {item.Actions[indexOfAction].GetType().FullName} with {itemActionType.FullName}");
                             ItemAction itemActionPrev = item.Actions[indexOfAction];
                             item.Actions[indexOfAction] = (ItemAction)Activator.CreateInstance(itemActionType);
                             item.Actions[indexOfAction].ActionIndex = indexOfAction;
@@ -434,7 +434,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             {
                 typedef_newAction.Methods.Add(mtd.Method);
 
-                Log.Out($"Add method override to new action: {mtd.Method.Name}");
+                //Log.Out($"Add method override to new action: {mtd.Method.Name}");
             }
         }
 
@@ -494,7 +494,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                     {
                         dict_overrides[id] = new MethodOverrideInfo(mtd, mtdinf_base, mtdref_base, attr.PreferredType);
                     }
-                    Log.Out($"Add method override: {id} for {mtdref_base.FullName}/{mtdinf_base.Name}, action type: {itemActionType.Name}");
+                    //Log.Out($"Add method override: {id} for {mtdref_base.FullName}/{mtdinf_base.Name}, action type: {itemActionType.Name}");
                 }
                 else
                 {
@@ -523,7 +523,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             //when overriding, retain attributes of base but make sure to remove the 'new' keyword which presents if you are overriding the root method
             MethodDefinition mtddef_derived = new MethodDefinition(mtdref_base.Name, (mtdref_base.Resolve().Attributes | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot) & ~MethodAttributes.NewSlot, module.ImportReference(mtdref_base.ReturnType));
 
-            Log.Out($"Create method override: {id} for {mtdref_base.FullName}");
+            //Log.Out($"Create method override: {id} for {mtdref_base.FullName}");
             foreach (var par in mtdref_base.Parameters)
             {
                 ParameterDefinition pardef = new ParameterDefinition(par.Name, par.Attributes, module.ImportReference(par.ParameterType));
@@ -624,7 +624,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                         throw new ArgumentException($"Parameter \"{par.Name}\" not found! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
                     try
                     {
-                        Log.Out($"Match Parameter {par.Name} to {mtddef_derived.Parameters[index].Name}/{mtddef_root.Parameters[index].Name} index: {index}");
+                        //Log.Out($"Match Parameter {par.Name} to {mtddef_derived.Parameters[index].Name}/{mtddef_root.Parameters[index].Name} index: {index}");
 
                     }
                     catch (ArgumentOutOfRangeException e)

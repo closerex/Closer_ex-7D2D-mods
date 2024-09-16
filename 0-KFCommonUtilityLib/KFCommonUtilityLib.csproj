@@ -493,7 +493,9 @@
     <Compile Include="Scripts\NetPackages\NetPackageFixedReload.cs" />
     <Compile Include="Scripts\Requirements\ActionHasTags.cs" />
     <Compile Include="Scripts\Requirements\ActionIndexIs.cs" />
+    <Compile Include="Scripts\Requirements\AmmoIndexIs.cs" />
     <Compile Include="Scripts\Requirements\HoldingActionIndexIs.cs" />
+    <Compile Include="Scripts\Requirements\HoldingAmmoIndexIs.cs" />
     <Compile Include="Scripts\Requirements\IsActionUnlocked.cs" />
     <Compile Include="Scripts\Requirements\IsInJeep.cs" />
     <Compile Include="Scripts\Requirements\IsModificationActivated.cs" />
