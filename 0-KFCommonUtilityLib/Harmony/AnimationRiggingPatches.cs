@@ -2,10 +2,7 @@
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System;
-using System.CodeDom;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml.Linq;
 using UniLinq;
@@ -229,6 +226,16 @@ static class AnimationRiggingPatches
         ParseTakeOverReloadTime(_node);
     }
 
+    [HarmonyPatch(typeof(Inventory), nameof(Inventory.ShowHeldItem))]
+    [HarmonyPostfix]
+    private static void Postfix_ShowHeldItem_Inventory(Inventory __instance, bool show)
+    {
+        if (!show && __instance.GetHoldingItemTransform() && __instance.GetHoldingItemTransform().TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
+        {
+            targets.SetEnabled(false, true);
+        }
+    }
+
     [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.StopHolding))]
     [HarmonyPostfix]
     private static void Postfix_StopHolding_ItemClass(Transform _modelTransform)
@@ -281,7 +288,7 @@ static class AnimationRiggingPatches
             {
                 codes.InsertRange(i + 4, new[]
                 {
-                    new CodeInstruction(OpCodes.Ldloc_S, 7),
+                    new CodeInstruction(OpCodes.Ldloc_S, codes[i + 3].operand),
                     new CodeInstruction(OpCodes.Ldarg_2),
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.particlesMuzzleFire))),
@@ -339,6 +346,12 @@ static class AnimationRiggingPatches
     {
         if (__instance is AvatarLocalPlayerController avatarLocalPlayer)
         {
+            if ((avatarLocalPlayer.entity as EntityPlayerLocal).bFirstPersonView && !avatarLocalPlayer.entity.inventory.GetIsFinishedSwitchingHeldItem())
+            {
+                avatarLocalPlayer.UpdateInt(AvatarController.weaponHoldTypeHash, -1, false);
+                avatarLocalPlayer.UpdateBool("Holstered", false, false);
+                avatarLocalPlayer.FPSArms.Animator.Play("idle", 0, 0f);
+            }
             AnimationRiggingManager.UpdateLocalPlayerAvatar(avatarLocalPlayer);
             var mapping = MultiActionManager.GetMappingForEntity(__instance.entity.entityId);
             if (mapping != null)
@@ -512,7 +525,27 @@ static class AnimationRiggingPatches
         }
     }
 
+    #region temporary fix for arm glitch on switching weapon
+    [HarmonyPatch(typeof(Inventory), nameof(Inventory.updateHoldingItem))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_updateHoldingItem_Inventory(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
 
+        var mtd_setparent = AccessTools.Method(typeof(Transform), nameof(Transform.SetParent), new[] { typeof(Transform), typeof(bool) });
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_setparent))
+            {
+                codes[i - 1].opcode = OpCodes.Ldc_I4_1;
+                break;
+            }
+        }
+        return codes;
+    }
+
+    /*
     private static Coroutine delayShowWeaponCo;
     [HarmonyPatch(typeof(Inventory), nameof(Inventory.setHoldingItemTransform))]
     [HarmonyPostfix]
@@ -540,7 +573,6 @@ static class AnimationRiggingPatches
                 yield return CodeInstruction.Call(typeof(Inventory), nameof(Inventory.ShowHeldItem));
             }
         }
-
     }
 
     [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.ShowWeaponCamera))]
@@ -571,6 +603,8 @@ static class AnimationRiggingPatches
         }
         yield break;
     }
+    */
+#endregion
 
     [HarmonyPatch(typeof(World), nameof(World.SpawnEntityInWorld))]
     [HarmonyPrefix]

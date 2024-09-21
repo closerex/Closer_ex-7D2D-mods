@@ -209,6 +209,7 @@ public class RigTargets : MonoBehaviour
         var rigBuilder = fpsArms.AddMissingComponent<RigBuilder>();
 
         itemFpv.gameObject.SetActive(enabled);
+        itemFpv.localPosition = enabled ? Vector3.zero : new Vector3(0, -100, 0);
         rigLayer.active = enabled;
 
         if (enabled)

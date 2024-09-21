@@ -72,6 +72,7 @@ public class AnimationDelayRender : MonoBehaviour
     private NativeArray<TransformLocalData> data;
     TransformAccessArray transArr;
     private JobHandle restoreJob, restoreAndSaveJob;
+    private bool dataInitialized = false;
 
     private void Awake()
     {
@@ -97,6 +98,10 @@ public class AnimationDelayRender : MonoBehaviour
         ClearNative();
         data = new NativeArray<TransformLocalData>(delayTargets.Length, Allocator.Persistent, NativeArrayOptions.ClearMemory);
         transArr = new TransformAccessArray(delayTargets);
+    }
+
+    private void InitializeData()
+    {
         for (int i = 0; i < delayTargets.Length; i++)
         {
             Transform target = delayTargets[i];
@@ -105,17 +110,18 @@ public class AnimationDelayRender : MonoBehaviour
                 data[i] = new TransformLocalData(target.localPosition, target.localRotation, target.localScale);
             }
         }
+        dataInitialized = true;
     }
 
     private void OnEnable()
     {
         InitializeTarget();
         player.weaponCamera?.gameObject.GetOrAddComponent<AnimationDelayRenderReference>().targets.Add(this);
-        var preAnimatorUpdateJob = new TransformRestoreJobs
-        {
-            data = data
-        };
-        restoreJob = preAnimatorUpdateJob.Schedule(transArr);
+        //var preAnimatorUpdateJob = new TransformRestoreJobs
+        //{
+        //    data = data
+        //};
+        //restoreJob = preAnimatorUpdateJob.Schedule(transArr);
         StartCoroutine(EndOfFrameCo());
         Log.Out($"Delay render target count: {delayTargets.Length}");
     }
@@ -125,13 +131,7 @@ public class AnimationDelayRender : MonoBehaviour
         ClearNative();
         player.weaponCamera?.gameObject.GetOrAddComponent<AnimationDelayRenderReference>().targets.Remove(this);
         StopAllCoroutines();
-    }
-
-    private void OnDestroy()
-    {
-        ClearNative();
-        player.weaponCamera?.gameObject.GetOrAddComponent<AnimationDelayRenderReference>().targets.Remove(this);
-        StopAllCoroutines();
+        dataInitialized = false;
     }
 
     private void Update()
@@ -155,6 +155,8 @@ public class AnimationDelayRender : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (!dataInitialized)
+            return;
         var postAnimationUpdateJob = new TransformRestoreAndSaveJobs
         {
             data = data
@@ -185,6 +187,8 @@ public class AnimationDelayRender : MonoBehaviour
 
     private IEnumerator EndOfFrameCo()
     {
+        yield return null;
+        InitializeData();
         while (true)
         {
             yield return new WaitForEndOfFrame();
