@@ -169,7 +169,10 @@ public class RigTargets : MonoBehaviour
         if (fpsArms == null)
         {
             attachmentReference?.SetParent(transform);
+            //detach item fpv and rig so that transform.find does not search for them?
+            itemFpv.parent = null;
             GameObject.Destroy(itemFpv.gameObject);
+            rig.transform.parent = null;
             GameObject.Destroy(rig.gameObject);
             Component.Destroy(this);
             Log.Out("destroying rig no fpsarm"); ;

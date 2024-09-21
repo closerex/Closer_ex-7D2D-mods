@@ -948,9 +948,9 @@ public static class CommonUtilityPatch
         return codes;
     }
 
-    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.StartHolding))]
+    [HarmonyPatch(typeof(ItemActionAttack), nameof(ItemActionAttack.StartHolding))]
     [HarmonyPostfix]
-    private static void Postfix_StartHolding_ItemActionRanged(ItemActionData _data, ItemActionRanged __instance)
+    private static void Postfix_StartHolding_ItemActionAttack(ItemActionData _data, ItemActionAttack __instance)
     {
         if (_data.invData.holdingEntity is EntityPlayerLocal player)
         {

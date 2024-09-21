@@ -82,6 +82,10 @@ public static class FLARPatch
         if (_actionData is ItemActionBetterLauncher.ItemActionDataBetterLauncher launcherData)
         {
             launcherData.projectileJoint = __2.projectileJoints[(byte)(_userData >> 8)];
+            if (launcherData.projectileJoint == null)
+            {
+                Log.Warning($"null projectile joint!\n{StackTraceUtility.ExtractStackTrace()}");
+            }
         }
     }
 
@@ -150,6 +154,10 @@ public static class FLARPatch
     {
         ItemActionBetterLauncher.ItemActionDataBetterLauncher ItemActionDataBetterLauncher = (ItemActionBetterLauncher.ItemActionDataBetterLauncher)_data;
         ItemActionDataBetterLauncher.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName(ItemActionDataBetterLauncher.invData.model, "ProjectileJoint");
+        if (ItemActionDataBetterLauncher.projectileJoint == null)
+        {
+            Log.Warning($"null projectile joint!\n{StackTraceUtility.ExtractStackTrace()}");
+        }
     }
 
     [HarmonyPatch(typeof(ActionModuleMultiActionFix), "Postfix_OnModificationChanged_ItemActionRanged")]
@@ -161,6 +169,10 @@ public static class FLARPatch
             string indexExtension = (_data.indexInEntityOfAction > 0 ? _data.indexInEntityOfAction.ToString() : "");
             string jointName = _data.invData.itemValue.GetPropertyOverrideForAction($"ProjectileJoint_Name", $"ProjectileJoint{indexExtension}", _data.indexInEntityOfAction);
             launcherData.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName(launcherData.invData.model, jointName) ?? launcherData.projectileJoint;
+            if (launcherData.projectileJoint == null)
+            {
+                Log.Warning($"null projectile joint!\n{StackTraceUtility.ExtractStackTrace()}");
+            }
         }
     }
 
