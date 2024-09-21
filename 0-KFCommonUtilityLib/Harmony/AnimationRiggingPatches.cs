@@ -273,11 +273,13 @@ static class AnimationRiggingPatches
     {
         var codes = instructions.ToList();
 
+        var fld_fpv = AccessTools.Field(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.bFirstPersonView));
+
         for (int i = 0; i < codes.Count; i++)
         {
-            if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 7)
+            if (codes[i].LoadsField(fld_fpv))
             {
-                codes.InsertRange(i + 1, new[]
+                codes.InsertRange(i + 4, new[]
                 {
                     new CodeInstruction(OpCodes.Ldloc_S, 7),
                     new CodeInstruction(OpCodes.Ldarg_2),
@@ -290,7 +292,7 @@ static class AnimationRiggingPatches
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.particlesMuzzleSmokeFpv))),
                     new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(AnimationRiggingManager), nameof(AnimationRiggingManager.SpawnFpvParticles))),
-                    new CodeInstruction(OpCodes.Brtrue_S, codes[i - 8].operand)
+                    new CodeInstruction(OpCodes.Brtrue_S, codes[i - 5].operand)
                 });
                 break;
             }

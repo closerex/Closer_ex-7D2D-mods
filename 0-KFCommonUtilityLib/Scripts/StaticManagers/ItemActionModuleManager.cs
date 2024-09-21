@@ -144,7 +144,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                     Type[] moduleTypes = modules.Select(s => ReflectionHelpers.GetTypeWithPrefix("ActionModule", s.Trim()))
                                                 .Where(t => t.GetCustomAttribute<TypeTargetAttribute>().BaseType.IsAssignableFrom(itemActionType)).ToArray();
                     string typename = CreateTypeName(itemActionType, moduleTypes);
-                    Log.Out(typename);
+                    //Log.Out(typename);
                     if (!TryFindType(typename, out _) && !TryFindInCur(typename, out _))
                         PatchType(itemActionType, moduleTypes);
                     if (!dict_replacement_mapping.TryGetValue(item.Name, out var list))
