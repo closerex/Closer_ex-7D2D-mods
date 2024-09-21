@@ -948,13 +948,13 @@ public static class CommonUtilityPatch
         return codes;
     }
 
-    [HarmonyPatch(typeof(ItemActionAttack), nameof(ItemActionAttack.StartHolding))]
+    [HarmonyPatch(typeof(ItemAction), nameof(ItemAction.StartHolding))]
     [HarmonyPostfix]
-    private static void Postfix_StartHolding_ItemActionAttack(ItemActionData _data, ItemActionAttack __instance)
+    private static void Postfix_StartHolding_ItemAction(ItemActionData _data, ItemAction __instance)
     {
-        if (_data.invData.holdingEntity is EntityPlayerLocal player)
+        if (__instance is ItemActionAttack itemActionAttack && _data.invData.holdingEntity is EntityPlayerLocal player)
         {
-            var arr_disabled_ammo = GetUnusableItemEntries(__instance.MagazineItemNames, player, _data.indexInEntityOfAction);
+            var arr_disabled_ammo = GetUnusableItemEntries(itemActionAttack.MagazineItemNames, player, _data.indexInEntityOfAction);
             if (arr_disabled_ammo == null)
             {
                 return;
