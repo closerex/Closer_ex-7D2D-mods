@@ -1101,6 +1101,26 @@ public static class CommonUtilityPatch
         return codes;
     }
 
+    [HarmonyPatch(typeof(GameManager), nameof(GameManager.DropContentOfLootContainerServer))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_DropContentOfLootContainerServer_GameManager(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var setter_localscale = AccessTools.PropertySetter(typeof(Transform), nameof(Transform.localScale));
+
+        for (var i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(setter_localscale))
+            {
+                codes.RemoveRange(i - 6, 7);
+                break;
+            }
+        }
+
+        return codes;
+    }
+
     //[HarmonyPatch(typeof(Inventory), nameof(Inventory.Execute))]
     //[HarmonyPrefix]
     //private static void Prefix_Execute_Inventory(Inventory __instance, int _actionIdx, bool _bReleased, PlayerActionsLocal _playerActions = null)

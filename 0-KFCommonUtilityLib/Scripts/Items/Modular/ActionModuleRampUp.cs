@@ -1,73 +1,39 @@
-﻿using Audio;
-using KFCommonUtilityLib.Scripts.Attributes;
+﻿using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.Utilities;
-using System;
 using UnityEngine;
 using static ItemActionRanged;
 
 [TypeTarget(typeof(ItemActionRanged), typeof(RampUpData))]
 public class ActionModuleRampUp
 {
-    [MethodTargetPostfix(nameof(ItemActionRanged.ItemActionEffects))]
-    public void Postfix_ItemActionEffects(RampUpData __customData, ItemActionData _actionData, int _firingState, int _userData)
+    public enum State
     {
-        var entity = _actionData.invData.holdingEntity;
-        if (_firingState != 0)
-        {
-            if ((_userData & 2) > 0)
-            {
-                Manager.Stop(entity.entityId, __customData.rampSound);
-                __customData.rampStarted = true;
-                __customData.rampStartTime = Time.time;
-                Manager.Play(entity, __customData.rampSound);
-            }
-        }
-        else if ((_userData & 4) > 0)
-        {
-            //Log.Out("released, try aim charge!" + _userData);
-            ResetRamp(__customData, _actionData);
-            if (!__customData.prepareStarted)
-            {
-                //Log.Out("released and aim charge!");
-                Manager.Stop(entity.entityId, __customData.prepareSound);
-                __customData.prepareStarted = true;
-                __customData.prepareStartTime = Time.time;
-                Manager.Play(entity, __customData.prepareSound);
-
-                entity.emodel.avatarController.UpdateBool("prepare", true, true);
-                entity.emodel.avatarController.UpdateFloat("prepareSpeed", __customData.prepareSpeed, true);
-            }
-        }
-        else
-        {
-            //Log.Out("released, reset all!" + _userData + entity.AimingGun);
-            ResetAll(__customData, _actionData);
-        }
+        RampUp,
+        Stable,
+        RampDown
     }
 
+    private readonly static int prepareHash = Animator.StringToHash("prepare");
+    private readonly static int prepareSpeedHash = Animator.StringToHash("prepareSpeed");
+    private readonly static int rampHash = Animator.StringToHash("ramp");
+    private readonly static int prepareRatioHash = Animator.StringToHash("prepareRatio");
+    private readonly static int rampRatioHash = Animator.StringToHash("rampRatio");
+    private readonly static int totalRatioHash = Animator.StringToHash("totalRatio");
+
     [MethodTargetPostfix(nameof(ItemActionRanged.OnHoldingUpdate))]
-    public void Postfix_OnHoldingUpdate(ItemActionData _actionData, RampUpData __customData)
+    public void Postfix_OnHoldingUpdate(ItemActionData _actionData, RampUpData __customData, ItemActionRanged __instance)
     {
         var rangedData = _actionData as ItemActionDataRanged;
+        __customData.originalDelay = rangedData.Delay;
         if (rangedData.invData.holdingEntity.isEntityRemote)
             return;
 
         bool aiming = rangedData.invData.holdingEntity.AimingGun;
-        if (!__customData.prepareStarted && __customData.zoomPrepare && aiming)
+        bool isRampUp = ((rangedData.bPressed && !rangedData.bReleased && __instance.notReloading(rangedData) && rangedData.curBurstCount < __instance.GetBurstCount(rangedData)) || (__customData.zoomPrepare && aiming)) && (__instance.InfiniteAmmo || _actionData.invData.itemValue.Meta > 0) && _actionData.invData.itemValue.PercentUsesLeft > 0;
+        UpdateTick(__customData, _actionData, isRampUp);
+        if (__customData.rampRatio > 0)
         {
-            rangedData.invData.gameManager.ItemActionEffectsServer(rangedData.invData.holdingEntity.entityId, rangedData.invData.slotIdx, rangedData.indexInEntityOfAction, 0, Vector3.zero, Vector3.zero, 4);
-            //Log.Out("Aim charge!");
-        }
-        else if (__customData.prepareStarted && rangedData.bReleased && (!__customData.zoomPrepare || !aiming))
-        {
-            rangedData.invData.gameManager.ItemActionEffectsServer(rangedData.invData.holdingEntity.entityId, rangedData.invData.slotIdx, rangedData.indexInEntityOfAction, 0, Vector3.zero, Vector3.zero, 0);
-            //Log.Out("Stop charge!");
-        }
-        else if (__customData.rampStarted)
-        {
-            float rampElapsed = Time.time - __customData.rampStartTime;
-            if (rampElapsed > 0)
-                rangedData.Delay /= rampElapsed > __customData.rampTime ? __customData.maxMultiplier : rampElapsed * (__customData.maxMultiplier - 1) / __customData.rampTime + 1;
+            rangedData.Delay /= __customData.rampRatio >= 1f ? __customData.maxMultiplier : __customData.rampRatio * (__customData.maxMultiplier - 1f) + 1f;
         }
     }
 
@@ -77,19 +43,23 @@ public class ActionModuleRampUp
         int actionIndex = __instance.ActionIndex;
         string originalValue = 1.ToString();
         __instance.Properties.ParseString("RampMultiplier", ref originalValue);
-        __customData.maxMultiplier = Mathf.Max(float.Parse(_data.invData.itemValue.GetPropertyOverrideForAction("RampMultiplier", originalValue, actionIndex)), 0);
+        __customData.maxMultiplier = Mathf.Max(float.Parse(_data.invData.itemValue.GetPropertyOverrideForAction("RampMultiplier", originalValue, actionIndex)), 1);
 
         originalValue = 0.ToString();
-        __instance.Properties.ParseString("RampTime", ref originalValue);
-        __customData.rampTime = float.Parse(_data.invData.itemValue.GetPropertyOverrideForAction("RampTime", originalValue, actionIndex));
-
-        originalValue = 1.ToString();
-        __instance.Properties.ParseString("MinRampShots", ref originalValue);
-        __customData.minRampShots = Mathf.Max(int.Parse(_data.invData.itemValue.GetPropertyOverrideForAction("MinRampShots", originalValue, actionIndex)), 1);
+        __instance.Properties.ParseString("RampUpTime", ref originalValue);
+        __customData.rampUpTime = float.Parse(_data.invData.itemValue.GetPropertyOverrideForAction("RampTime", originalValue, actionIndex));
 
         originalValue = string.Empty;
-        __instance.Properties.ParseString("RampStartSound", ref originalValue);
-        __customData.rampSound = _data.invData.itemValue.GetPropertyOverrideForAction("RampStartSound", originalValue, actionIndex);
+        __instance.Properties.ParseString("RampUpSound", ref originalValue);
+        __customData.rampUpSound = _data.invData.itemValue.GetPropertyOverrideForAction("RampStartSound", originalValue, actionIndex);
+
+        originalValue = 0.ToString();
+        __instance.Properties.ParseString("RampDownTime", ref originalValue);
+        __customData.rampDownTime = Mathf.Max(float.Parse(_data.invData.itemValue.GetPropertyOverrideForAction("RampTime", originalValue, actionIndex)), 0);
+
+        originalValue = string.Empty;
+        __instance.Properties.ParseString("RampDownSound", ref originalValue);
+        __customData.rampDownSound = _data.invData.itemValue.GetPropertyOverrideForAction("RampStartSound", originalValue, actionIndex);
 
         originalValue = 0.ToString();
         __instance.Properties.ParseString("PrepareTime", ref originalValue);
@@ -103,12 +73,21 @@ public class ActionModuleRampUp
         originalValue = false.ToString();
         __instance.Properties.ParseString("PrepareOnAim", ref originalValue);
         __customData.zoomPrepare = bool.Parse(_data.invData.itemValue.GetPropertyOverrideForAction("PrepareOnAim", originalValue, actionIndex));
+
+        originalValue = string.Empty;
+        __instance.Properties.ParseString("RampStableSound", ref originalValue);
+        __customData.rampStableSound = _data.invData.itemValue.GetPropertyOverrideForAction("RampStableSound", originalValue, actionIndex);
+
+        __customData.totalChargeTime = __customData.prepareTime + __customData.rampUpTime;
+        __customData.rampDownTimeScale = __customData.rampDownTime > 0 ? (__customData.totalChargeTime) / __customData.rampDownTime : float.MaxValue;
+
+        ResetAll(__customData, _data);
     }
 
     [MethodTargetPostfix(nameof(ItemActionRanged.StopHolding))]
     public void Postfix_StopHolding(RampUpData __customData, ItemActionData _data)
     {
-        ResetRamp(__customData, _data);
+        ResetAll(__customData, _data);
     }
 
     [MethodTargetPrefix(nameof(ItemActionRanged.ExecuteAction))]
@@ -118,71 +97,171 @@ public class ActionModuleRampUp
         if (!_bReleased && (__instance.InfiniteAmmo || _actionData.invData.itemValue.Meta > 0) && _actionData.invData.itemValue.PercentUsesLeft > 0)
         {
             rangedData.bReleased = false;
-            if (!__customData.prepareStarted)
-                rangedData.invData.gameManager.ItemActionEffectsServer(rangedData.invData.holdingEntity.entityId, rangedData.invData.slotIdx, rangedData.indexInEntityOfAction, 0, Vector3.zero, Vector3.zero, 4);
-
-            if (Time.time - __customData.prepareStartTime < __customData.prepareTime)
+            rangedData.bPressed = true;
+            if (__customData.curTime < __customData.prepareTime)
                 return false;
         }
         return true;
     }
 
-    [MethodTargetPostfix(nameof(ItemActionRanged.ReloadGun))]
-    public void ReloadGun(RampUpData __customData, ItemActionData _actionData)
+    private void UpdateTick(RampUpData data, ItemActionData actionData, bool isRampUp)
     {
-        ResetRamp(__customData, _actionData);
+        float previousTime = data.curTime;
+        float deltaTime = Time.time - data.lastTickTime;
+        data.lastTickTime = Time.time;
+        ref float curTime = ref data.curTime;
+        ref State curState = ref data.curState;
+        float totalChargeTime = data.totalChargeTime;
+        switch (curState)
+        {
+            case State.RampUp:
+                {
+                    curTime = Mathf.Max(curTime, 0);
+                    if (isRampUp)
+                    {
+                        actionData.invData.holdingEntity.emodel.avatarController.UpdateBool(prepareHash, true, true);
+                        if (curTime < totalChargeTime)
+                        {
+                            curTime += deltaTime;
+                        }
+                        if (curTime >= data.prepareTime)
+                        {
+                            actionData.invData.holdingEntity.emodel.avatarController.UpdateBool(rampHash, true, true);
+                        }
+                        if (curTime >= totalChargeTime)
+                        {
+                            //Log.Out($"change state from {curState} to stable");
+                            actionData.invData.holdingEntity.PlayOneShot(data.rampStableSound);
+                            curState = State.Stable;
+                        }
+                    }
+                    else
+                    {
+                        //Log.Out($"change state from {curState} to ramp down");
+                        actionData.invData.holdingEntity.StopOneShot(data.rampUpSound);
+                        actionData.invData.holdingEntity.PlayOneShot(data.rampDownSound);
+                        curState = State.RampDown;
+                    }
+                    break;
+                }
+            case State.RampDown:
+                {
+                    curTime = Mathf.Min(curTime, totalChargeTime);
+                    if (!isRampUp)
+                    {
+                        actionData.invData.holdingEntity.emodel.avatarController.UpdateBool(rampHash, false, true);
+                        if (curTime > 0)
+                        {
+                            curTime -= deltaTime * data.rampDownTimeScale;
+                        }
+                        if (curTime < data.prepareTime)
+                        {
+                            actionData.invData.holdingEntity.emodel.avatarController.UpdateBool(prepareHash, false, true);
+                        }
+                        if (curTime <= 0)
+                        {
+                            //Log.Out($"change state from {curState} to stable");
+                            //actionData.invData.holdingEntity.PlayOneShot(data.rampStableSound);
+                            curState = State.Stable;
+                        }
+                    }
+                    else
+                    {
+                        //Log.Out($"change state from {curState} to ramp up");
+                        actionData.invData.holdingEntity.StopOneShot(data.rampDownSound);
+                        actionData.invData.holdingEntity.PlayOneShot(data.rampUpSound);
+                        curState = State.RampUp;
+                    }
+                    break;
+                }
+            case State.Stable:
+                {
+                    if (isRampUp)
+                    {
+                        if (curTime < totalChargeTime)
+                        {
+                            //Log.Out($"change state from {curState} to ramp up");
+                            actionData.invData.holdingEntity.StopOneShot(data.rampStableSound);
+                            actionData.invData.holdingEntity.StopOneShot(data.rampDownSound);
+                            actionData.invData.holdingEntity.PlayOneShot(data.rampUpSound);
+                            curState = State.RampUp;
+                        }
+                        else
+                        {
+                            actionData.invData.holdingEntity.emodel.avatarController.UpdateBool(prepareHash, true, true);
+                            actionData.invData.holdingEntity.emodel.avatarController.UpdateBool(rampHash, true, true);
+                        }
+                    }
+                    else
+                    {
+                        if (curTime > 0)
+                        {
+                            //Log.Out($"change state from {curState} to ramp down");
+                            actionData.invData.holdingEntity.StopOneShot(data.rampStableSound);
+                            actionData.invData.holdingEntity.StopOneShot(data.rampUpSound);
+                            actionData.invData.holdingEntity.PlayOneShot(data.rampDownSound);
+                            curState = State.RampDown;
+                        }
+                        else
+                        {
+                            actionData.invData.holdingEntity.emodel.avatarController.UpdateBool(prepareHash, false, true);
+                            actionData.invData.holdingEntity.emodel.avatarController.UpdateBool(rampHash, false, true);
+                        }
+                    }
+                    break;
+                }
+        }
+        //Log.Out($"turret burst fire rate {turret.burstFireRate} max {turret.burstFireRateMax} cur time {curTime} cur state {curState} is ramp up {isRampUp} turret: ison {turret.IsOn} has target {turret.hasTarget} state {turret.state}");
+        actionData.invData.holdingEntity.emodel.avatarController.UpdateFloat(prepareSpeedHash, data.prepareSpeed);
+        if (curTime != previousTime)
+        {
+            actionData.invData.holdingEntity.emodel.avatarController.UpdateFloat(prepareRatioHash, data.prepareRatio = (data.prepareTime == 0 ? 1f : Mathf.Clamp01(curTime / data.prepareTime)));
+            actionData.invData.holdingEntity.emodel.avatarController.UpdateFloat(rampRatioHash, data.rampRatio = (data.rampUpTime == 0 ? 1f : Mathf.Clamp01((curTime - data.prepareTime) / data.rampUpTime)));
+            actionData.invData.holdingEntity.emodel.avatarController.UpdateFloat(totalRatioHash, data.totalRatio = (totalChargeTime == 0 ? 1f : Mathf.Clamp01(curTime / totalChargeTime)));
+        }
     }
 
-    [MethodTargetPostfix("getUserData")]
-    protected void Postfix_getUserData(ItemActionData _actionData, ref int __result, RampUpData __customData)
-    {
-        ItemActionDataRanged rangedData = _actionData as ItemActionDataRanged;
-        __result |= (Convert.ToInt32(rangedData.curBurstCount == __customData.minRampShots) << 1) | (Convert.ToInt32(__customData.zoomPrepare && rangedData.invData.holdingEntity.AimingGun) << 2);
-    }
     private void ResetAll(RampUpData _rampData, ItemActionData _actionData)
     {
-        ResetPrepare(_rampData, _actionData);
-        ResetRamp(_rampData, _actionData);
+        _rampData.curTime = 0f;
+        _rampData.lastTickTime = Time.time;
+        _rampData.curState = State.Stable;
+        _rampData.prepareRatio = 0f;
+        _rampData.rampRatio = 0f;
+        _rampData.totalRatio = 0f;
+        ((ItemActionDataRanged)_actionData).Delay = _rampData.originalDelay;
+        _actionData.invData.holdingEntity.StopOneShot(_rampData.prepareSound);
+        _actionData.invData.holdingEntity.emodel.avatarController.UpdateBool(prepareHash, false, true);
+        _actionData.invData.holdingEntity.StopOneShot(_rampData.rampUpSound);
+        _actionData.invData.holdingEntity.emodel.avatarController.UpdateBool(rampHash, false, true);
         //Log.Out("Reset all!");
     }
 
-    private void ResetPrepare(RampUpData _rampData, ItemActionData _actionData)
-    {
-        _rampData.prepareStarted = false;
-        Manager.Stop(_actionData.invData.holdingEntity.entityId, _rampData.prepareSound);
-        _actionData.invData.holdingEntity.emodel.avatarController.UpdateBool("prepare", false, true);
-        //Log.Out("Reset Prepare!");
-    }
-
-    private void ResetRamp(RampUpData _rampData, ItemActionData _actionData)
-    {
-        _rampData.rampStarted = false;
-        Manager.Stop(_actionData.invData.holdingEntity.entityId, _rampData.rampSound);
-        //Log.Out("Reset Ramp!");
-    }
     public class RampUpData
     {
         public float maxMultiplier = 1f;
 
-        public int minRampShots = 1;
-
         public string prepareSound = string.Empty;
-
         public float prepareSpeed = 1f;
-
-        public bool prepareStarted = false;
-
-        public float prepareStartTime = 0f;
-
         public float prepareTime = 0f;
 
-        public string rampSound = string.Empty;
+        public string rampUpSound = string.Empty;
+        public float rampUpTime = 0f;
+        public float totalChargeTime = 0f;
 
-        public bool rampStarted = false;
+        public string rampDownSound = string.Empty;
+        public float rampDownTime = 0f;
+        public float rampDownTimeScale = float.MaxValue;
 
-        public float rampStartTime = 0f;
+        public string rampStableSound = string.Empty;
 
-        public float rampTime = 0f;
+        public float originalDelay = 0f;
+        public float curTime = 0f;
+        public State curState = State.Stable;
+        public float prepareRatio = 0f;
+        public float rampRatio = 0f;
+        public float totalRatio = 0f;
+        public float lastTickTime = 0f;
 
         public bool zoomPrepare = false;
 
