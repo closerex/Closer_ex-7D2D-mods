@@ -95,7 +95,7 @@ public class ItemActionBetterLauncher : ItemActionRanged
         ItemActionDataBetterLauncher ItemActionDataBetterLauncher = (ItemActionDataBetterLauncher)_actionData;
         ItemValue holdingItemItemValue = _actionData.invData.holdingEntity.inventory.holdingItemItemValue;
         ItemClass forId = ItemClass.GetForId(ItemClass.GetItem(MagazineItemNames[holdingItemItemValue.SelectedAmmoTypeIndex], false).type);
-        int projCount = (int)EffectManager.GetValue(PassiveEffects.RoundRayCount, ItemActionDataBetterLauncher.invData.itemValue, 1f, ItemActionDataBetterLauncher.invData.holdingEntity); ;
+        int projCount = (int)EffectManager.GetValue(PassiveEffects.RoundRayCount, ItemActionDataBetterLauncher.invData.itemValue, 1f, ItemActionDataBetterLauncher.invData.holdingEntity);
         if (projCount <= 0)
         {
             return;
@@ -103,6 +103,10 @@ public class ItemActionBetterLauncher : ItemActionRanged
         if (ItemActionDataBetterLauncher.info == null)
         {
             Log.Error("null info!");
+            return;
+        }
+        if (ItemActionDataBetterLauncher.projectileJoint == null)
+        {
             return;
         }
         Vector3 realStartPosition = ItemActionDataBetterLauncher.projectileJoint.position + Origin.position;
