@@ -121,6 +121,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                         {
                             if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, itemValueProjectile, 0.5f, firingEntity, null, itemProjectile.ItemTags | FastTags<TagGroup.Global>.Parse(Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory), true, false))
                             {
+                                RestoreProjectileValue();
                                 ProjectileID = ProjectileManager.AddProjectileItem(transform, -1, Voxel.voxelRayHitInfo.hit.pos, dir.normalized, itemValueProjectile.type);
                                 SetState(State.Sticky);
                             }
@@ -132,6 +133,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                         }
                         else if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, itemValueProjectile, 0.5f, firingEntity, null, itemProjectile.ItemTags, true, false))
                         {
+                            RestoreProjectileValue();
                             ProjectileID = ProjectileManager.AddProjectileItem(transform, -1, Voxel.voxelRayHitInfo.hit.pos, dir.normalized, itemValueProjectile.type);
                             Utils.SetLayerRecursively(ProjectileManager.GetProjectile(ProjectileID).gameObject, 14, null);
                             SetState(State.Sticky);
@@ -158,6 +160,16 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 }
             }
             previousPosition = checkPos;
+        }
+
+        private void RestoreProjectileValue()
+        {
+            itemValueProjectile.Modifications = ItemValue.emptyItemValueArray;
+            itemValueProjectile.CosmeticMods = ItemValue.emptyItemValueArray;
+            itemValueProjectile.Quality = 0;
+            itemValueProjectile.UseTimes = 0;
+            itemValueProjectile.Meta = 0;
+            itemValueProjectile.SelectedAmmoTypeIndex = 0;
         }
     }
 
