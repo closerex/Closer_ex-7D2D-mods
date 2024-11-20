@@ -130,6 +130,36 @@ namespace BetterModCompatibility.Harmony
             return codes;
         }
 
+        [HarmonyPatch(typeof(ItemActionEntryCraft), nameof(ItemActionEntryCraft.RefreshEnabled))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_ItemActionEntryCraft_RefreshEnabled(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var fld_crafting_tier = AccessTools.Field(typeof(ItemActionEntryCraft), nameof(ItemActionEntryCraft.craftingTier));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].LoadsField(fld_crafting_tier))
+                {
+                    codes.RemoveRange(i + 1, 21);
+                    codes.InsertRange(i + 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldloc_1),
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.Call(typeof(BaseItemActionEntry), "get_ItemController"),
+                        CodeInstruction.Call(typeof(XUiController), "get_xui"),
+                        CodeInstruction.Call(typeof(XUi), "get_playerUI"),
+                        CodeInstruction.Call(typeof(LocalPlayerUI), "get_entityPlayer"),
+                        CodeInstruction.Call(typeof(Recipe), nameof(Recipe.GetCraftingTier))
+                    });
+                    break;
+                }
+            }
+
+            return codes;
+        }
+
         [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.LateInitAll))]
         [HarmonyPostfix]
         private static void Postfix_ItemClass_LateInitAll()
