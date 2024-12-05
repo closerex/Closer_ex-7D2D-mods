@@ -231,16 +231,16 @@ namespace VehicleWeaponPatches
         {
             var codes = instructions.ToList();
 
-            var mtd_add = AccessTools.Method(typeof(MinEffectController), nameof(MinEffectController.AddEffectGroup));
+            var mtd_parse = AccessTools.Method(typeof(MinEffectGroup), nameof(MinEffectGroup.ParseXml));
 
             for(int i = 0;i < codes.Count;i++)
             {
-                if (codes[i].Calls(mtd_add))
+                if (codes[i].Calls(mtd_parse))
                 {
-                    codes.InsertRange(i, new[]
+                    codes.InsertRange(i + 1, new[]
                     {
                         new CodeInstruction(OpCodes.Dup),
-                        new CodeInstruction(codes[i - 2].opcode, codes[i - 2].operand),
+                        new CodeInstruction(codes[i - 1].opcode, codes[i - 1].operand),
                         new CodeInstruction(OpCodes.Ldarg_2),
                         new CodeInstruction(OpCodes.Ldarg_3),
                         CodeInstruction.Call(typeof(VehicleModParsePatch), nameof(ParseVehicleWeaponModEffect))

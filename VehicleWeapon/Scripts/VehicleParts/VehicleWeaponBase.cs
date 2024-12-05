@@ -257,7 +257,7 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
                 if (pair.vmodName == weapon.ModName)
                 {
                     weapon.effects.EffectGroups.Add(pair.group);
-                    weapon.effects.PassivesIndex.UnionWith(pair.group.PassivesIndex);
+                    weapon.effects.PassivesIndex.UnionWith(pair.group.PassivesIndices);
                     Log.Out("Adding effect group to " + weapon.ModName);
                 }
                 i++;

@@ -116,7 +116,7 @@ public class AnimationDelayRender : MonoBehaviour
     private void OnEnable()
     {
         InitializeTarget();
-        player.weaponCamera?.gameObject.GetOrAddComponent<AnimationDelayRenderReference>().targets.Add(this);
+        player.playerCamera?.gameObject.GetOrAddComponent<AnimationDelayRenderReference>().targets.Add(this);
         //var preAnimatorUpdateJob = new TransformRestoreJobs
         //{
         //    data = data
@@ -129,7 +129,7 @@ public class AnimationDelayRender : MonoBehaviour
     private void OnDisable()
     {
         ClearNative();
-        player.weaponCamera?.gameObject.GetOrAddComponent<AnimationDelayRenderReference>().targets.Remove(this);
+        player.playerCamera?.gameObject.GetOrAddComponent<AnimationDelayRenderReference>().targets.Remove(this);
         StopAllCoroutines();
         dataInitialized = false;
     }

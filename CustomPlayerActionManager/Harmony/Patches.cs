@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using InControl;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 
@@ -65,9 +64,9 @@ public class Patches
         {
             if (codes[i].opcode == OpCodes.Stloc_1)
             {
-                codes.InsertRange(i + 1, new[]
+                codes.InsertRange(i, new[]
                 {
-                    new CodeInstruction(OpCodes.Ldloc_0),
+                    new CodeInstruction(OpCodes.Dup),
                     CodeInstruction.Call(typeof(CustomPlayerActionManager), nameof(CustomPlayerActionManager.CreateControllerActions)),
                 });
                 break;

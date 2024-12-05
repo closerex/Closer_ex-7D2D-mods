@@ -1,5 +1,7 @@
 ﻿using HarmonyLib;
+using HarmonyLib.Public.Patching;
 using KFCommonUtilityLib.Scripts.StaticManagers;
+using System.Reflection;
 
 namespace KFCommonUtilityLib.Harmony
 {
@@ -27,6 +29,13 @@ namespace KFCommonUtilityLib.Harmony
         {
             ItemActionModuleManager.FinishAndLoad();
             return true;
+        }
+
+        [HarmonyPatch(typeof(PatchManager), "GetRealMethod")]
+        [HarmonyReversePatch]
+        public static MethodBase GetRealMethod(MethodInfo method, bool useReplacement)
+        {
+            return null;
         }
     }
 }

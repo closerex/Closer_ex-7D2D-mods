@@ -484,6 +484,7 @@
     <Compile Include="Scripts\Items\Modular\ActionModuleRampUp.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleMetaRecharger.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleTagged.cs" />
+    <Compile Include="Scripts\Items\Modular\ActionModuleTranspilerTest.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionModifyCVarWithLocalCache.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionOverrideZoomFOV.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionSetMetadataOnWeaponLabel.cs" />
@@ -541,6 +542,7 @@
     <Compile Include="Scripts\StaticManagers\LocalItemTagsManager.cs" />
     <Compile Include="Scripts\StaticManagers\MultiActionManager.cs" />
     <Compile Include="Scripts\StaticManagers\RecoilManager.cs" />
+    <Compile Include="Scripts\Utilities\MonoCecilExtensions.cs" />
     <Compile Include="Scripts\Utilities\MultiActionUtils.cs" />
     <Compile Include="Scripts\Utilities\MultiActionProjectileRewrites.cs" />
     <Compile Include="Scripts\Utilities\SaveTextureToFileUtility.cs" />
