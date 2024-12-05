@@ -813,8 +813,8 @@
 			<set xpath="/items/item[@name='gunMedicShotgun301']/effect_group[@name='Weapon mode']/passive_effect[@name='BlockDamage']/@value">0</set>
 			<set xpath="/items/item[@name='gunMedicShotgun301']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
 
-			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
-			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/property[@class='Action3']/property[@name='Magazine_items']/@value">ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
+			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft55645NATO,ammoEft55645NATOAP,ammoEft55645NATOHP</set>
+			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/property[@class='Action3']/property[@name='Magazine_items']/@value">ammoEft55645NATO,ammoEft55645NATOAP,ammoEft55645NATOHP</set>
 			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/effect_group[@name='Weapon mode']/passive_effect[@name='EntityDamage']/@value">0</set>
 			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/effect_group[@name='Weapon mode']/passive_effect[@name='BlockDamage']/@value">0</set>
 			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
