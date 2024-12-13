@@ -7,15 +7,6 @@ namespace KFCommonUtilityLib.KFAttached.Render
     {
 #if NotEditor
         internal MagnifyScope target;
-
-        [ImageEffectUsesCommandBuffer]
-        private void OnRenderImage(RenderTexture source, RenderTexture destination)
-        {
-            if (target != null)
-            {
-                target.BokehBlurCallback(source, destination);
-            }
-        }
 #endif
     }
 }

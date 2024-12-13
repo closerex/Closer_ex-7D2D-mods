@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if NotEditor
+using KFCommonUtilityLib.Scripts.StaticManagers;
+#endif
 using UnityEngine;
 
 namespace KFCommonUtilityLib.KFAttached.Render
@@ -8,32 +10,37 @@ namespace KFCommonUtilityLib.KFAttached.Render
     public class MagnifyScope : MonoBehaviour
     {
 #if NotEditor
-        [SerializeField]
-        private Material postEffectMat;
-        [Range(0f, 3f)]
-        public float BlurRadius = 1f;
-        [Range(8, 128)]
-        public int Iteration = 32;
-        [Range(1, 10)]
-        public float RTDownScaling = 2;
-        [Range(0, 1)]
-        public float animatedEffectScale = 0f;
-
         private int itemSlot = -1;
+        private static Shader newShader;
 #endif
         private RenderTexture targetTexture;
         private Renderer renderTarget;
 
-        private float DownScalingReci;
-        private Vector4 mGoldenRot = new Vector4();
+        private Camera pipCamera;
+        [SerializeField]
+        private Transform cameraJoint;
+        [SerializeField]
+        private float aspectRatio = 1.0f;
+        [SerializeField]
+        private bool hideFpvModelInScope = false;
+        [SerializeField]
+        private bool variableZoom = false;
+        [SerializeField]
+        private bool scaleReticle = false;
+        [SerializeField]
+        private bool scaleDownReticle = false;
+        [SerializeField]
+        private float reticleScaleRatio = 1f;
+        private float initialReticleScale = 1f;
 
-        private static readonly int GoldenRot = Shader.PropertyToID("_GoldenRot");
-        private static readonly int Params = Shader.PropertyToID("_Params");
-        private static readonly int BufferRT1 = Shader.PropertyToID("_BufferRT1");
 #if NotEditor
         private EntityPlayerLocal player;
+        private ItemActionZoom.ItemActionDataZoom zoomActionData;
+        private bool IsVariableZoom => variableZoom && variableZoomData != null;
+        private ActionModuleVariableZoom.VariableZoomData variableZoomData;
 #else
         public Camera debugCamera;
+        public float debugScale = 2f;
 #endif
         private void Awake()
         {
@@ -51,25 +58,22 @@ namespace KFCommonUtilityLib.KFAttached.Render
                 Destroy(this);
                 return;
             }
+            if (newShader == null)
+            {
+                newShader = LoadManager.LoadAsset<Shader>("#@modfolder(CommonUtilityLib):Resources/PIPScope.unity3d?PIPScope.shadergraph", null, null, false, true).Asset;
+            }
+            if (renderTarget.material.shader.name == "Shader Graphs/MagnifyScope")
+            {
+                renderTarget.material.shader = newShader;
+            }
             player = entity;
             itemSlot = player.inventory.holdingItemIdx;
-            if (!player.playerCamera.TryGetComponent<MagnifyScopeTargetRef>(out var reference))
-            {
-                reference = player.playerCamera.gameObject.AddComponent<MagnifyScopeTargetRef>();
-            }
-            float c = Mathf.Cos(2.39996323f);
-            float s = Mathf.Sin(2.39996323f);
-            mGoldenRot.Set(c, s, -s, c);
-            DownScalingReci = 1 / RTDownScaling;
+            initialReticleScale = renderTarget.material.GetFloat("_ReticleScale");
 #else
             if(debugCamera == null)
             {
                 Destroy(this);
                 return;
-            }
-            if (debugCamera && !debugCamera.TryGetComponent<MagnifyScopeTargetRef>(out var reference))
-            {
-                reference = debugCamera.gameObject.AddComponent<MagnifyScopeTargetRef>();
             }
 #endif
             //if (!player.playerCamera.TryGetComponent<BokehBlurTargetRef>(out var bokeh))
@@ -82,11 +86,9 @@ namespace KFCommonUtilityLib.KFAttached.Render
 
         private void OnEnable()
         {
+            CreateCamera();
+            float targetScale;
 #if NotEditor
-            if (!player.playerCamera.TryGetComponent<MagnifyScopeTargetRef>(out var reference))
-            {
-                reference = player.playerCamera.gameObject.AddComponent<MagnifyScopeTargetRef>();
-            }
             //inventory holding item is not set when creating model, this might be an issue for items with base scope that has this script attached
             //workaround taken from alternative action module, which keeps a reference to the ItemValue being set until its custom data is created
             //afterwards it's set to null so we still need to access holding item when this method is triggered by mods
@@ -96,127 +98,160 @@ namespace KFCommonUtilityLib.KFAttached.Render
                 return;
             }
             var zoomAction = (ItemActionZoom)((ActionModuleAlternative.InventorySetItemTemp?.ItemClass ?? player.inventory.holdingItem).Actions[1]);
-            var zoomActionData = (ItemActionZoom.ItemActionDataZoom)player.inventory.holdingItemData.actionData[1];
-            string originalRatio = zoomAction.Properties.GetString("ZoomRatio");
-            if (string.IsNullOrEmpty(originalRatio))
+            zoomActionData = (ItemActionZoom.ItemActionDataZoom)player.inventory.holdingItemData.actionData[1];
+            if (variableZoom && zoomActionData is IModuleContainerFor<ActionModuleVariableZoom.VariableZoomData> zoomDataModule)
             {
-                originalRatio = "0";
+                variableZoomData = zoomDataModule.Instance;
+                targetScale = variableZoomData.curScale;
+                variableZoomData.shouldUpdate = false;
             }
-            float targetScale = StringParsers.ParseFloat(player.inventory.holdingItemItemValue.GetPropertyOverride("ZoomRatio", originalRatio));
-            if (targetScale > 0)
+            else
             {
-                float maxZoom = zoomActionData.MaxZoomIn;
-                float refScale = 1 / (Mathf.Tan(Mathf.Deg2Rad * 27.5f) * player.playerCamera.aspect);
-                float maxScale = 1 / (Mathf.Tan(Mathf.Deg2Rad * maxZoom / 2) * player.playerCamera.aspect);
-                float shaderScale = targetScale / (maxScale / refScale);
-                renderTarget.material.SetFloat("_Zoom", shaderScale);
-                Log.Out($"Ref scale {refScale} Max scale {maxScale} Shader scale {shaderScale} Target scale {targetScale}");
-                Log.Out($"Max zoom {maxZoom} aspect {player.playerCamera.aspect}");
+                string originalRatio = zoomAction.Properties.GetString("ZoomRatio");
+                if (string.IsNullOrEmpty(originalRatio))
+                {
+                    originalRatio = "0";
+                }
+                targetScale = StringParsers.ParseFloat(player.inventory.holdingItemItemValue.GetPropertyOverride("ZoomRatio", originalRatio));
             }
 
 #else
             if(debugCamera == null)
             {
                 Destroy(this);
-                return;
             }
-            if (!debugCamera.TryGetComponent<MagnifyScopeTargetRef>(out var reference))
-            {
-                reference = debugCamera.gameObject.AddComponent<MagnifyScopeTargetRef>();
-            }
+            targetScale = debugScale;
 #endif
-            reference.AddTarget(this);
-            //if (!player.playerCamera.TryGetComponent<BokehBlurTargetRef>(out var bokeh))
-            //{
-            //    bokeh = player.playerCamera.gameObject.AddComponent<BokehBlurTargetRef>();
-            //    bokeh.target = this;
-            //}
-            //bokeh.enabled = true;
+            UpdateFOV(targetScale);
         }
+
+#if NotEditor
+        private void Update()
+        {
+            if (IsVariableZoom && variableZoomData.shouldUpdate)
+            {
+                UpdateFOV(variableZoomData.curScale);
+                variableZoomData.shouldUpdate = false;
+            }
+
+            if (zoomActionData != null)
+            {
+                bool aimingGun = player.AimingGun;
+                if (aimingGun && !pipCamera.enabled)
+                {
+                    pipCamera.enabled = true;
+                }
+                else if (!aimingGun && !zoomActionData.bZoomInProgress && pipCamera.enabled)
+                {
+                    pipCamera.enabled = false;
+                }
+            }
+        }
+#endif
 
         private void OnDisable()
         {
+            DestroyCamera();
 #if NotEditor
-            if (!player)
-                return;
-
-            if (!player.playerCamera.TryGetComponent<MagnifyScopeTargetRef>(out var reference))
-            {
-                reference = player.playerCamera.gameObject.AddComponent<MagnifyScopeTargetRef>();
-            }
 #else
             if(debugCamera == null)
             {
                 Destroy(this);
-                return;
-            }
-            if (!debugCamera.TryGetComponent<MagnifyScopeTargetRef>(out var reference))
-            {
-                reference = debugCamera.gameObject.AddComponent<MagnifyScopeTargetRef>();
             }
 #endif
-            reference.RemoveTarget(this);
-            //if (!player.playerCamera.TryGetComponent<BokehBlurTargetRef>(out var bokeh))
-            //{
-            //    bokeh = player.playerCamera.gameObject.AddComponent<BokehBlurTargetRef>();
-            //    bokeh.target = this;
-            //}
-            //bokeh.enabled = false;
+        }
+
+        private void DestroyCamera()
+        {
+            targetTexture?.Release();
+            Destroy(pipCamera?.gameObject);
+        }
+
+        private void UpdateFOV(float targetScale)
+        {
+            if (targetScale > 0)
+            {
+#if NotEditor
+                float targetFov = Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * 7.5f) / Mathf.Sqrt(targetScale));
+#else
+                float targetFov = Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * 27.5f) / Mathf.Sqrt(targetScale));
+#endif
+                pipCamera.fieldOfView = targetFov;
+                if (scaleReticle)
+                {
+                    if (variableZoomData.maxScale > variableZoomData.minScale)
+                    {
+                        float minScale;
+                        if (reticleScaleRatio >= 1)
+                        {
+                            minScale = scaleDownReticle ? 1 - (variableZoomData.maxScale * reticleScaleRatio - variableZoomData.minScale) / (variableZoomData.maxScale * reticleScaleRatio) : 1;
+                        }
+                        else
+                        {
+                            minScale = scaleDownReticle ? 1 - reticleScaleRatio * (variableZoomData.maxScale - variableZoomData.minScale) / variableZoomData.maxScale : 1;
+                        }
+                        float maxScale;
+                        if (reticleScaleRatio >= 1)
+                        {
+                            maxScale = scaleDownReticle ? 1 : variableZoomData.maxScale * reticleScaleRatio / variableZoomData.minScale;
+                        }
+                        else
+                        {
+                            maxScale = scaleDownReticle ? 1 : 1 + reticleScaleRatio * (variableZoomData.maxScale - variableZoomData.minScale) / variableZoomData.minScale;
+                        }
+                        float reticleScale = Mathf.Lerp(minScale, maxScale, (variableZoomData.curScale - variableZoomData.minScale) / (variableZoomData.maxScale - variableZoomData.minScale));
+                        renderTarget.material.SetFloat("_ReticleScale", initialReticleScale / reticleScale);
+                    }
+                    else
+                    {
+                        renderTarget.material.SetFloat("_ReticleScale", initialReticleScale);
+                    }
+                }
+                //Log.Out($"target fov {targetFov} target scale {targetScale}");
+            }
+        }
+
+        private void CreateCamera()
+        {
+            targetTexture = new RenderTexture((int)(Screen.height * aspectRatio), Screen.height, 24, RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear)
+            {
+                filterMode = FilterMode.Bilinear
+            };
+            renderTarget.material.mainTexture = targetTexture;
+            GameObject cameraGO = new GameObject("KFPiPCam");
+            pipCamera = cameraGO.AddComponent<Camera>();
+#if NotEditor
+            pipCamera.CopyFrom(player.playerCamera);
+#else
+            pipCamera.CopyFrom(debugCamera);
+#endif
+            pipCamera.targetTexture = targetTexture;
+            pipCamera.fieldOfView = 55;
+            pipCamera.nearClipPlane = 0.05f;
+            pipCamera.aspect = aspectRatio;
+            if (cameraJoint == null || hideFpvModelInScope)
+            {
+                pipCamera.cullingMask &= ~(1024);
+            }
+            else
+            {
+                pipCamera.cullingMask |= 1024;
+            }
+            pipCamera.ResetProjectionMatrix();
+
+            if (cameraJoint != null)
+            {
+                cameraGO.transform.parent = cameraJoint.transform;
+            }
+            else
+            {
+                cameraGO.transform.parent = transform;
+            }
+            cameraGO.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
         }
 
         internal void RenderImageCallback(RenderTexture source, RenderTexture destination)
         {
-            if (targetTexture == null)
-            {
-                targetTexture = new RenderTexture(source.width, source.height, 24, RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear)
-                {
-                    filterMode = FilterMode.Bilinear,
-                    antiAliasing = source.antiAliasing
-                };
-            }
-            else if (targetTexture.width != source.width || targetTexture.height != source.height)
-            {
-                targetTexture.Release();
-                targetTexture = new RenderTexture(source.width, source.height, 24, RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear)
-                {
-                    filterMode = FilterMode.Bilinear,
-                    antiAliasing = source.antiAliasing
-                };
-            }
-            renderTarget.material.mainTexture = targetTexture;
-            Graphics.Blit(source, targetTexture);
-            //if (postEffectMat != null)
-            //{
-            //    RenderTextureDescriptor desc = source.descriptor;
-            //    postEffectMat.SetVector(GoldenRot, mGoldenRot);
-            //    postEffectMat.SetVector(Params, new Vector4(Iteration, BlurRadius * animatedEffectScale, 1f / desc.width, 1f / desc.height));
-            //    desc.width = (int)(desc.width / RTDownScaling);
-            //    desc.height = (int)(desc.height / RTDownScaling);
-            //    desc.enableRandomWrite = true;
-            //    RenderTexture postEffectTexture = RenderTexture.GetTemporary(desc);
-            //    Graphics.Blit(source, postEffectTexture, new Vector2(RTDownScaling, RTDownScaling), Vector2.zero);
-            //    Graphics.Blit(postEffectTexture, postEffectTexture, postEffectMat);
-            //    Graphics.Blit(postEffectTexture, destination, new Vector2(DownScalingReci, DownScalingReci), Vector2.zero);
-            //    RenderTexture.ReleaseTemporary(postEffectTexture);
-            //}
-        }
-
-        internal void BokehBlurCallback(RenderTexture source, RenderTexture destination)
-        {
-            //if (postEffectMat != null)
-            //{
-            //    RenderTextureDescriptor desc = source.descriptor;
-            //    desc.width = (int)(desc.width / RTDownScaling);
-            //    desc.height = (int)(desc.height / RTDownScaling);
-            //    desc.enableRandomWrite = true;
-            //    postEffectMat.SetVector(GoldenRot, mGoldenRot);
-            //    postEffectMat.SetVector(Params, new Vector4(Iteration, BlurRadius, 1f / desc.width, 1f / desc.height));
-            //    RenderTexture postEffectTexture = RenderTexture.GetTemporary(desc);
-            //    Graphics.Blit(source, postEffectTexture, new Vector2(RTDownScaling, RTDownScaling), Vector2.zero);
-            //    Graphics.Blit(postEffectTexture, postEffectTexture, postEffectMat);
-            //    Graphics.Blit(postEffectTexture, destination, new Vector2(DownScalingReci, DownScalingReci), Vector2.zero);
-            //    RenderTexture.ReleaseTemporary(postEffectTexture);
-            //}
         }
     }
 }

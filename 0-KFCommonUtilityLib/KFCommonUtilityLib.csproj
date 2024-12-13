@@ -485,6 +485,7 @@
     <Compile Include="Scripts\Items\Modular\ActionModuleMetaRecharger.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleTagged.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleTranspilerTest.cs" />
+    <Compile Include="Scripts\Items\Modular\ActionModuleVariableZoom.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionModifyCVarWithLocalCache.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionOverrideZoomFOV.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionSetMetadataOnWeaponLabel.cs" />
