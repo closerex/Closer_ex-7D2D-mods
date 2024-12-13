@@ -1,7 +1,11 @@
 ﻿#if NotEditor
+using HarmonyLib;
 using KFCommonUtilityLib.Scripts.StaticManagers;
+using System.Reflection;
+
 #endif
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 namespace KFCommonUtilityLib.KFAttached.Render
 {
@@ -10,13 +14,15 @@ namespace KFCommonUtilityLib.KFAttached.Render
     public class MagnifyScope : MonoBehaviour
     {
 #if NotEditor
-        private int itemSlot = -1;
         private static Shader newShader;
+        private static FieldInfo fieldResources = AccessTools.Field(typeof(PostProcessLayer), "m_Resources");
 #endif
         private RenderTexture targetTexture;
         private Renderer renderTarget;
 
         private Camera pipCamera;
+        [SerializeField]
+        private bool manualControl = false;
         [SerializeField]
         private Transform cameraJoint;
         [SerializeField]
@@ -36,6 +42,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
 
 #if NotEditor
         private EntityPlayerLocal player;
+        private int itemSlot = -1;
         private ItemActionZoom.ItemActionDataZoom zoomActionData;
         private bool IsVariableZoom => variableZoom && variableZoomData != null;
         private ActionModuleVariableZoom.VariableZoomData variableZoomData;
@@ -135,7 +142,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
                 variableZoomData.shouldUpdate = false;
             }
 
-            if (zoomActionData != null)
+            if (!manualControl && zoomActionData != null)
             {
                 bool aimingGun = player.AimingGun;
                 if (aimingGun && !pipCamera.enabled)
@@ -241,6 +248,12 @@ namespace KFCommonUtilityLib.KFAttached.Render
                 pipCamera.cullingMask |= 1024;
             }
             pipCamera.ResetProjectionMatrix();
+
+#if NotEditor
+            var old = player.playerCamera.GetComponent<PostProcessLayer>();
+            var layer = pipCamera.gameObject.GetOrAddComponent<PostProcessLayer>();
+            layer.Init(fieldResources.GetValue(old) as PostProcessResources);
+#endif
 
             if (cameraJoint != null)
             {
