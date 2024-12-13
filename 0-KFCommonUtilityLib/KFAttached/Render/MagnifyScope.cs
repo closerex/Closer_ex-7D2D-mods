@@ -30,7 +30,8 @@ namespace KFCommonUtilityLib.KFAttached.Render
         [SerializeField]
         private bool scaleDownReticle = false;
         [SerializeField]
-        private float reticleScaleRatio = 1f;
+        private float reticleScaleRatio = 1.0f;
+
         private float initialReticleScale = 1f;
 
 #if NotEditor
@@ -177,6 +178,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
                 float targetFov = Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * 27.5f) / Mathf.Sqrt(targetScale));
 #endif
                 pipCamera.fieldOfView = targetFov;
+#if NotEditor
                 if (scaleReticle)
                 {
                     if (variableZoomData.maxScale > variableZoomData.minScale)
@@ -208,6 +210,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
                     }
                 }
                 //Log.Out($"target fov {targetFov} target scale {targetScale}");
+#endif
             }
         }
 
