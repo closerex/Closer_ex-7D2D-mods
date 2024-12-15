@@ -145,13 +145,13 @@ namespace KFCommonUtilityLib.KFAttached.Render
             if (!manualControl && zoomActionData != null)
             {
                 bool aimingGun = player.AimingGun;
-                if (aimingGun && !pipCamera.enabled)
+                if (aimingGun && !pipCamera.gameObject.activeSelf)
                 {
-                    pipCamera.enabled = true;
+                    pipCamera.gameObject.SetActive(true);
                 }
-                else if (!aimingGun && !zoomActionData.bZoomInProgress && pipCamera.enabled)
+                else if (!aimingGun && !zoomActionData.bZoomInProgress && pipCamera.gameObject.activeSelf)
                 {
-                    pipCamera.enabled = false;
+                    pipCamera.gameObject.SetActive(false);
                 }
             }
         }
@@ -223,38 +223,12 @@ namespace KFCommonUtilityLib.KFAttached.Render
 
         private void CreateCamera()
         {
-            targetTexture = new RenderTexture((int)(Screen.height * aspectRatio), Screen.height, 24, RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear)
+            targetTexture = new RenderTexture((int)(Screen.height * 0.5f * aspectRatio), (int)(Screen.height * 0.5f), 24, RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear)
             {
                 filterMode = FilterMode.Bilinear
             };
             renderTarget.material.mainTexture = targetTexture;
             GameObject cameraGO = new GameObject("KFPiPCam");
-            pipCamera = cameraGO.AddComponent<Camera>();
-#if NotEditor
-            pipCamera.CopyFrom(player.playerCamera);
-#else
-            pipCamera.CopyFrom(debugCamera);
-#endif
-            pipCamera.targetTexture = targetTexture;
-            pipCamera.fieldOfView = 55;
-            pipCamera.nearClipPlane = 0.05f;
-            pipCamera.aspect = aspectRatio;
-            if (cameraJoint == null || hideFpvModelInScope)
-            {
-                pipCamera.cullingMask &= ~(1024);
-            }
-            else
-            {
-                pipCamera.cullingMask |= 1024;
-            }
-            pipCamera.ResetProjectionMatrix();
-
-#if NotEditor
-            var old = player.playerCamera.GetComponent<PostProcessLayer>();
-            var layer = pipCamera.gameObject.GetOrAddComponent<PostProcessLayer>();
-            layer.Init(fieldResources.GetValue(old) as PostProcessResources);
-#endif
-
             if (cameraJoint != null)
             {
                 cameraGO.transform.parent = cameraJoint.transform;
@@ -264,6 +238,36 @@ namespace KFCommonUtilityLib.KFAttached.Render
                 cameraGO.transform.parent = transform;
             }
             cameraGO.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            cameraGO.transform.localScale = Vector3.one;
+
+            pipCamera = cameraGO.AddComponent<Camera>();
+#if NotEditor
+            //pipCamera.CopyFrom(player.playerCamera);
+            cameraGO.AddComponent<WeaponCameraFollow>().targetTexture = targetTexture;
+            pipCamera.cullingMask = player.playerCamera.cullingMask;
+#else
+            pipCamera.CopyFrom(debugCamera);
+#endif
+            pipCamera.targetTexture = targetTexture;
+            pipCamera.depth = -2;
+            pipCamera.fieldOfView = 55;
+            pipCamera.nearClipPlane = 0.05f;
+            pipCamera.farClipPlane = 2000f;
+            pipCamera.aspect = aspectRatio;
+            if (cameraJoint == null || hideFpvModelInScope)
+            {
+                pipCamera.cullingMask &= ~(1024);
+            }
+            else
+            {
+                pipCamera.cullingMask |= 1024;
+            }
+
+#if NotEditor
+            var old = player.playerCamera.GetComponent<PostProcessLayer>();
+            var layer = pipCamera.gameObject.GetOrAddComponent<PostProcessLayer>();
+            layer.Init(fieldResources.GetValue(old) as PostProcessResources);
+#endif
         }
 
         internal void RenderImageCallback(RenderTexture source, RenderTexture destination)

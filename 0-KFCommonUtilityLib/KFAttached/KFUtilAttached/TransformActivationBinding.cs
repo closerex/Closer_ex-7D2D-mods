@@ -4,7 +4,7 @@ using UnityEngine;
 public class TransformActivationBinding : MonoBehaviour
 {
     [SerializeField]
-    private GameObject[] bindings;
+    internal GameObject[] bindings;
     [SerializeField]
     private GameObject[] inverseBindings;
     [SerializeField]
