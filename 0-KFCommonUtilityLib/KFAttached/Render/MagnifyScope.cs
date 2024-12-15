@@ -237,13 +237,10 @@ namespace KFCommonUtilityLib.KFAttached.Render
             {
                 cameraGO.transform.parent = transform;
             }
-            cameraGO.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-            cameraGO.transform.localScale = Vector3.one;
 
             pipCamera = cameraGO.AddComponent<Camera>();
 #if NotEditor
             //pipCamera.CopyFrom(player.playerCamera);
-            cameraGO.AddComponent<WeaponCameraFollow>().targetTexture = targetTexture;
             pipCamera.cullingMask = player.playerCamera.cullingMask;
 #else
             pipCamera.CopyFrom(debugCamera);
@@ -262,8 +259,11 @@ namespace KFCommonUtilityLib.KFAttached.Render
             {
                 pipCamera.cullingMask |= 1024;
             }
+            cameraGO.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            cameraGO.transform.localScale = Vector3.one;
 
 #if NotEditor
+            cameraGO.AddComponent<WeaponCameraFollow>().targetTexture = targetTexture;
             var old = player.playerCamera.GetComponent<PostProcessLayer>();
             var layer = pipCamera.gameObject.GetOrAddComponent<PostProcessLayer>();
             layer.Init(fieldResources.GetValue(old) as PostProcessResources);
