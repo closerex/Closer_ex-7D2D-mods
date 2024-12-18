@@ -249,7 +249,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
             pipCamera.depth = -2;
             pipCamera.fieldOfView = 55;
             pipCamera.nearClipPlane = 0.05f;
-            pipCamera.farClipPlane = 2000f;
+            pipCamera.farClipPlane = 5000;
             pipCamera.aspect = aspectRatio;
             if (cameraJoint == null || hideFpvModelInScope)
             {
@@ -263,7 +263,9 @@ namespace KFCommonUtilityLib.KFAttached.Render
             cameraGO.transform.localScale = Vector3.one;
 
 #if NotEditor
-            cameraGO.AddComponent<WeaponCameraFollow>().targetTexture = targetTexture;
+            WeaponCameraFollow weaponCameraFollow = cameraGO.AddComponent<WeaponCameraFollow>();
+            weaponCameraFollow.targetTexture = targetTexture;
+            weaponCameraFollow.dynamicSensitivityData = (zoomActionData as IModuleContainerFor<ActionModuleDynamicSensitivity.DynamicSensitivityData>)?.Instance;
             var old = player.playerCamera.GetComponent<PostProcessLayer>();
             var layer = pipCamera.gameObject.GetOrAddComponent<PostProcessLayer>();
             layer.Init(fieldResources.GetValue(old) as PostProcessResources);

@@ -5,11 +5,18 @@ using UnityEngine.Rendering;
 public class WeaponCameraFollow : MonoBehaviour
 {
     public RenderTexture targetTexture;
+#if NotEditor
+    public ActionModuleDynamicSensitivity.DynamicSensitivityData dynamicSensitivityData;
+#endif
 
     private void OnEnable()
     {
 #if NotEditor
         OcclusionManager.Instance.SetMultipleCameras(true);
+        if (dynamicSensitivityData != null)
+        {
+            dynamicSensitivityData.activated = true;
+        }
 #endif
     }
 
@@ -17,6 +24,10 @@ public class WeaponCameraFollow : MonoBehaviour
     {
 #if NotEditor
         OcclusionManager.Instance.SetMultipleCameras(false);
+        if (dynamicSensitivityData != null)
+        {
+            dynamicSensitivityData.activated = false;
+        }
 #endif
         if (!targetTexture || !targetTexture.IsCreated())
         {

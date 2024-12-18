@@ -37,10 +37,28 @@ public class ActionModuleDynamicSensitivity
         }
     }
 
+    [MethodTargetPostfix(nameof(ItemAction.OnHoldingUpdate))]
+    private void Postfix_OnHoldingUpdate(ItemActionData _actionData, DynamicSensitivityData __customData)
+    {
+        if (((ItemActionZoom.ItemActionDataZoom)_actionData).aimingValue)
+        {
+            float originalSensitivity = GamePrefs.GetFloat(EnumGamePrefs.OptionsZoomSensitivity);
+            if (__customData.activated)
+            {
+                PlayerMoveController.Instance.mouseZoomSensitivity = originalSensitivity / Mathf.Sqrt(__customData.variableZoomData == null ? __customData.zoomRatio : __customData.variableZoomData.curScale);
+            }
+            else
+            {
+                PlayerMoveController.Instance.mouseZoomSensitivity = originalSensitivity;
+            }
+        }
+    }
+
     public class DynamicSensitivityData
     {
         public ActionModuleVariableZoom.VariableZoomData variableZoomData = null;
         public float zoomRatio = 1.0f;
+        public bool activated = false;
 
         public DynamicSensitivityData(ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleDynamicSensitivity _module)
         {
