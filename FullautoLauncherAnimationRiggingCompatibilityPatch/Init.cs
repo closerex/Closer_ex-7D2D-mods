@@ -77,11 +77,11 @@ public static class FLARPatch
     //multi barrel patch
     [HarmonyPatch(typeof(ActionModuleMultiBarrel), "Prefix_ItemActionEffects_ItemActionRanged")]
     [HarmonyPostfix]
-    private static void Postfix_ItemActionEffects_ActionModuleMultiBarrel(ItemActionData _actionData, int _userData, MultiBarrelData __2)
+    private static void Postfix_ItemActionEffects_ActionModuleMultiBarrel(ItemActionData _actionData, int _userData, MultiBarrelData __3)
     {
         if (_actionData is ItemActionBetterLauncher.ItemActionDataBetterLauncher launcherData)
         {
-            launcherData.projectileJoint = __2.projectileJoints[(byte)(_userData >> 8)];
+            launcherData.projectileJoint = __3.projectileJoints[(byte)(_userData >> 8)];
             if (launcherData.projectileJoint == null)
             {
                 Log.Warning($"null projectile joint!\n{StackTraceUtility.ExtractStackTrace()}");
