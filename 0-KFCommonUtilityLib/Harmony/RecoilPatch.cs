@@ -79,19 +79,28 @@ class RecoilPatch
 
         for (int i = 0; i < codes.Count; i++)
         {
-            if (codes[i].LoadsField(fld_rotation))
+            if (codes[i].LoadsField(fld_rotation, true))
             {
-                for (; i < codes.Count; i++)
+                if (codes[i + 1].LoadsField(fld_rx, true))
                 {
-                    if (codes[i].StoresField(fld_rx))
+                    for (; i < codes.Count; i++)
                     {
-                        codes.Insert(i, CodeInstruction.Call(typeof(RecoilManager), nameof(RecoilManager.CompensateX)));
-                        break;
+                        if (codes[i].opcode == OpCodes.Stind_R4)
+                        {
+                            codes.Insert(i, CodeInstruction.Call(typeof(RecoilManager), nameof(RecoilManager.CompensateX)));
+                            break;
+                        }
                     }
-                    else if (codes[i].StoresField(fld_ry))
+                }
+                else if (codes[i + 1].LoadsField(fld_ry, true))
+                {
+                    for (; i < codes.Count; i++)
                     {
-                        codes.Insert(i, CodeInstruction.Call(typeof(RecoilManager), nameof(RecoilManager.CompensateY)));
-                        break;
+                        if (codes[i].opcode == OpCodes.Stind_R4)
+                        {
+                            codes.Insert(i, CodeInstruction.Call(typeof(RecoilManager), nameof(RecoilManager.CompensateY)));
+                            break;
+                        }
                     }
                 }
             }
