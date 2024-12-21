@@ -85,7 +85,13 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         private static float Compensate(float moved, float original, ref float targetRotation, ref float targetReturn)
         {
             float modified = moved - original;
-            float target = ApplyOppositeCompensation(targetRotation, modified, out modified);
+            float dsScale = 1;
+            if (player.AimingGun && player.inventory.holdingItemData.actionData[1] is IModuleContainerFor<ActionModuleDynamicSensitivity.DynamicSensitivityData> dsDataContainer && dsDataContainer.Instance.activated)
+            {
+                dsScale = dsDataContainer.Instance.zoomRatio;
+            }
+            float target = ApplyOppositeCompensation(targetRotation, modified * dsScale, out modified);
+            modified /= dsScale;
             float compensated = target - targetRotation;
             targetRotation = target;
             float @return = targetReturn + compensated + (modified * targetReturn < 0 ? modified : 0);
@@ -107,7 +113,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 return;
             if (state == RecoilState.Recoil && recoilScaledDelta < 1)
             {
-                Log.Out($"target rotation {targetRotationXY}");
+                //Log.Out($"target rotation {targetRotationXY}");
                 if (targetRotationXY.sqrMagnitude <= 1e-6)
                 {
                     targetRotationXY = Vector3.zero;
@@ -132,7 +138,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             }
             else if (state == RecoilState.Return && targetReturnXY.sqrMagnitude > 1e-6)
             {
-                Log.Out($"target return {targetReturnXY}");
+                //Log.Out($"target return {targetReturnXY}");
                 if (targetReturnXY.sqrMagnitude <= 1e-6)
                 {
                     targetReturnXY = Vector3.zero;
