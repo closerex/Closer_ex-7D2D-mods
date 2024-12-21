@@ -88,7 +88,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             float dsScale = 1;
             if (player.AimingGun && player.inventory.holdingItemData.actionData[1] is IModuleContainerFor<ActionModuleDynamicSensitivity.DynamicSensitivityData> dsDataContainer && dsDataContainer.Instance.activated)
             {
-                dsScale = dsDataContainer.Instance.zoomRatio;
+                dsScale = Mathf.Sqrt(dsDataContainer.Instance.zoomRatio);
             }
             float target = ApplyOppositeCompensation(targetRotation, modified * dsScale, out modified);
             modified /= dsScale;
