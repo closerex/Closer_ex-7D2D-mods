@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using UniLinq;
 using System.Xml.Linq;
 
 public class IsModificationActivated : RequirementBase
@@ -12,16 +8,15 @@ public class IsModificationActivated : RequirementBase
 
     public override bool IsValid(MinEventParams _params)
     {
-        if (!base.IsValid(_params))
-            return false;
-
         if (modId < 0)
         {
             modId = ItemClass.GetItemClass(modName)?.Id ?? -1;
+            //Log.Out($"modId {modId}");
             if (modId < 0)
                 return false;
         }
 
+        //Log.Out($"modName {modName} modId {modId} mods{(_params?.ItemValue?.Modifications == null ? ": null" : _params.ItemValue.Modifications.Select(v => $"\n{(v == null || v.IsEmpty() ? "null" : $"item {v.ItemClass.Name} type {v.type} activated {v.Activated}")}").Join())} cos{(_params?.ItemValue?.CosmeticMods == null ? ": null" : _params.ItemValue.CosmeticMods.Select(v => $"\n{(v == null || v.IsEmpty() ? "null" : $"item {v.ItemClass.Name} type {v.type} activated {v.Activated}")}").Join())}");
         if(_params.ItemValue != null)
         {
             if (_params.ItemValue.Modifications != null)
