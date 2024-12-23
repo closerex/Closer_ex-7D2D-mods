@@ -94,7 +94,6 @@ namespace KFCommonUtilityLib.KFAttached.Render
 
         private void OnEnable()
         {
-            CreateCamera();
             float targetScale;
 #if NotEditor
             //inventory holding item is not set when creating model, this might be an issue for items with base scope that has this script attached
@@ -130,6 +129,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
             }
             targetScale = debugScale;
 #endif
+            CreateCamera();
             UpdateFOV(targetScale);
         }
 

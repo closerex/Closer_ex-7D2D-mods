@@ -503,6 +503,7 @@
     <Compile Include="Scripts\Requirements\HoldingAmmoIndexIs.cs" />
     <Compile Include="Scripts\Requirements\IsActionUnlocked.cs" />
     <Compile Include="Scripts\Requirements\IsInJeep.cs" />
+    <Compile Include="Scripts\Requirements\IsHoldingItemModificationActivated.cs" />
     <Compile Include="Scripts\Requirements\IsModificationActivated.cs" />
     <Compile Include="Scripts\Requirements\ItemActionIndexIs.cs" />
     <Compile Include="Scripts\StaticManagers\AnimationRiggingManager.cs" />

@@ -37,7 +37,7 @@ public class ActionModuleVariableZoom
             str = __customData.maxScale.ToString();
         }
         __customData.minScale = StringParsers.ParseFloat(_data.invData.itemValue.GetPropertyOverride("ZoomRatioMin", str));
-        Mathf.Clamp(__customData.curScale, __customData.minScale, __customData.maxScale);
+        __customData.curScale = Utils.FastClamp(__customData.curScale, __customData.minScale, __customData.maxScale);
         __customData.shouldUpdate = true;
     }
 

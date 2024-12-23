@@ -84,13 +84,13 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
 
         private static float Compensate(float moved, float original, ref float targetRotation, ref float targetReturn)
         {
-            float modified = moved - original;
             float dsScale = 1;
             if (player.AimingGun && player.inventory.holdingItemData.actionData[1] is IModuleContainerFor<ActionModuleDynamicSensitivity.DynamicSensitivityData> dsDataContainer && dsDataContainer.Instance.activated)
             {
-                dsScale = Mathf.Sqrt(dsDataContainer.Instance.zoomRatio);
+                dsScale = Mathf.Sqrt(dsDataContainer.Instance.ZoomRatio);
             }
-            float target = ApplyOppositeCompensation(targetRotation, modified * dsScale, out modified);
+            float modified = moved * dsScale - original;
+            float target = ApplyOppositeCompensation(targetRotation, modified, out modified);
             modified /= dsScale;
             float compensated = target - targetRotation;
             targetRotation = target;

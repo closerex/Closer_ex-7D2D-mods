@@ -11,7 +11,7 @@ public class ActionModuleDynamicSensitivity
         float originalSensitivity = GamePrefs.GetFloat(EnumGamePrefs.OptionsZoomSensitivity);
         if (_isAiming)
         {
-            PlayerMoveController.Instance.mouseZoomSensitivity = originalSensitivity / Mathf.Sqrt(__customData.variableZoomData == null ? __customData.zoomRatio : __customData.variableZoomData.curScale);
+            PlayerMoveController.Instance.mouseZoomSensitivity = originalSensitivity / Mathf.Sqrt(__customData.ZoomRatio);
         }
         else
         {
@@ -33,7 +33,7 @@ public class ActionModuleDynamicSensitivity
             {
                 str = "1";
             }
-            __customData.zoomRatio = StringParsers.ParseFloat(_data.invData.itemValue.GetPropertyOverride("ZoomRatio", str));
+            __customData.ZoomRatio = StringParsers.ParseFloat(_data.invData.itemValue.GetPropertyOverride("ZoomRatio", str));
         }
     }
 
@@ -45,7 +45,7 @@ public class ActionModuleDynamicSensitivity
             float originalSensitivity = GamePrefs.GetFloat(EnumGamePrefs.OptionsZoomSensitivity);
             if (__customData.activated)
             {
-                PlayerMoveController.Instance.mouseZoomSensitivity = originalSensitivity / Mathf.Sqrt(__customData.variableZoomData == null ? __customData.zoomRatio : __customData.variableZoomData.curScale);
+                PlayerMoveController.Instance.mouseZoomSensitivity = originalSensitivity / Mathf.Sqrt(__customData.ZoomRatio);
             }
             else
             {
@@ -57,8 +57,10 @@ public class ActionModuleDynamicSensitivity
     public class DynamicSensitivityData
     {
         public ActionModuleVariableZoom.VariableZoomData variableZoomData = null;
-        public float zoomRatio = 1.0f;
+        private float zoomRatio = 1.0f;
         public bool activated = false;
+
+        public float ZoomRatio { get => variableZoomData?.curScale ?? zoomRatio; set => zoomRatio = value; }
 
         public DynamicSensitivityData(ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleDynamicSensitivity _module)
         {
