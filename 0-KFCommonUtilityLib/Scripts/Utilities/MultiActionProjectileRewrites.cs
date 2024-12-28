@@ -89,7 +89,8 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                                  ItemActionAttack.EnumAttackMode.RealNoHarvesting,
                                  null,
                                  -1,
-                                 itemValueProjectile);
+                                 itemValueProjectile,
+                                 itemValueLauncher);
                     if (firingEntity.MinEventContext.Other == null)
                     {
                         firingEntity.FireEvent(MinEventTypes.onSelfPrimaryActionMissEntity, false);
@@ -182,7 +183,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                                float _actionExpBonus = 0f, ItemActionAttack rangeCheckedAction = null,
                                Dictionary<string, ItemActionAttack.Bonuses> _toolBonuses = null,
                                ItemActionAttack.EnumAttackMode _attackMode = ItemActionAttack.EnumAttackMode.RealNoHarvesting,
-                               Dictionary<string, string> _hitSoundOverrides = null, int ownedEntityId = -1, ItemValue projectileValue = null)
+                               Dictionary<string, string> _hitSoundOverrides = null, int ownedEntityId = -1, ItemValue projectileValue = null, ItemValue launcherValue = null)
         {
             if (_attackDetails != null)
             {
@@ -215,11 +216,11 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             bool isHoldingDamageItem = false;
             if (attackerEntity != null)
             {
-                if (projectileValue == null)
+                if (launcherValue == null)
                 {
-                    projectileValue = attackerEntity.inventory.holdingItemItemValue;
+                    launcherValue = attackerEntity.inventory.holdingItemItemValue;
                 }
-                isHoldingDamageItem = projectileValue.Equals(attackerEntity.inventory.holdingItemItemValue);
+                isHoldingDamageItem = launcherValue.Equals(attackerEntity.inventory.holdingItemItemValue);
             }
             bool isHitTargetPlayer = true;
             //if hits block or terrain
@@ -267,7 +268,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 }
                 if (landProtectionModifier != 1f)
                 {
-                    if (attackerEntity && _attackMode != ItemActionAttack.EnumAttackMode.Simulate && attackerEntity is EntityPlayer && !projectileValue.ItemClass.ignoreKeystoneSound && !projectileValue.ToBlockValue().Block.IgnoreKeystoneOverlay)
+                    if (attackerEntity && _attackMode != ItemActionAttack.EnumAttackMode.Simulate && attackerEntity is EntityPlayer && !launcherValue.ItemClass.ignoreKeystoneSound && !launcherValue.ToBlockValue().Block.IgnoreKeystoneOverlay)
                     {
                         attackerEntity.PlayOneShot("keystone_impact_overlay", false);
                     }
@@ -380,7 +381,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 }
                 EntityAlive hitEntityAlive = hitEntity as EntityAlive;
                 DamageSourceEntity damageSourceEntity = new DamageSourceEntity(EnumDamageSource.External, _damageType, _attackerEntityId, hitInfo.ray.direction, hitInfo.transform.name, hitInfo.hit.pos, Voxel.phyxRaycastHit.textureCoord);
-                damageSourceEntity.AttackingItem = projectileValue;
+                damageSourceEntity.AttackingItem = launcherValue;
                 damageSourceEntity.DismemberChance = _dismemberChance;
                 damageSourceEntity.CreatorEntityId = ownedEntityId;
                 bool isCriticalHit = _attackDetails.isCriticalHit;
@@ -478,7 +479,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                             attackerMinEventParams.StartPosition = hitInfo.ray.origin;
                             if (ownedEntityId != -1)
                             {
-                                projectileValue.FireEvent(MinEventTypes.onSelfAttackedOther, attackerEntity.MinEventContext);
+                                launcherValue.FireEvent(MinEventTypes.onSelfAttackedOther, attackerEntity.MinEventContext);
                             }
                             attackerEntity.FireEvent(MinEventTypes.onSelfAttackedOther, isHoldingDamageItem);
                             if (hitEntityAlive && hitEntityAlive.RecordedDamage.Strength > 0)

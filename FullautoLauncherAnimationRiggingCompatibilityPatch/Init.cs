@@ -271,7 +271,8 @@ public static class FLARPatch
                                        ItemActionAttack.EnumAttackMode.RealNoHarvesting,
                                        null,
                                        -1,
-                                       info.itemValueProjectile);
+                                       info.itemValueProjectile,
+                                       info.itemValueLauncher);
                 if (entityAlive.MinEventContext.Other == null)
                 {
                     entityAlive.FireEvent(MinEventTypes.onSelfPrimaryActionMissEntity, false);
