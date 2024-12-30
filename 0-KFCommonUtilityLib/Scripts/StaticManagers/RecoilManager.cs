@@ -14,27 +14,42 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         private static RecoilState state;
         private static float recoilScaledDelta = 0f;
         //private static float returnScaledDelta = 0f;
-        private static Vector3 returnSpeedCur = Vector3.zero;
         private static Vector2 targetRotationXY = Vector2.zero;
         private static Vector2 targetReturnXY = Vector2.zero;
+        private static Vector3 returnSpeedCur = Vector3.zero;
+        private static Vector2 totalRotationXY = Vector2.zero;
+        private static Vector3 totalReturnCur = Vector3.zero;
         private static EntityPlayerLocal player;
         private const float MAX_RECOIL_ANGLE = 15;
+        private const float DEFAULT_SNAPPINESS_PISTOL = 6f;
+        private const float DEFAULT_SNAPPINESS_RIFLE = 3.6f;
+        private const float DEFAULT_SNAPPINESS_SHOTGUN = 8f;
+        private const float DEFAULT_RETURN_SPEED_PISTOL = 8f;
+        private const float DEFAULT_RETURN_SPEED_RIFLE = 4f;
+        private const float DEFAULT_RETURN_SPEED_SHOTGUN = 4f;
+        private static readonly FastTags<TagGroup.Global> PistolTag = FastTags<TagGroup.Global>.Parse("pistol");
+        private static readonly FastTags<TagGroup.Global> ShotgunTag = FastTags<TagGroup.Global>.Parse("shotgun");
 
-        public static void InitPlayer(EntityPlayerLocal _player)
+        private static void ClearData()
         {
+            state = RecoilState.None;
             recoilScaledDelta = 0;
             returnSpeedCur = Vector3.zero;
             targetRotationXY = Vector2.zero;
             targetReturnXY = Vector2.zero;
+            totalRotationXY = Vector2.zero;
+            totalReturnCur = Vector3.zero;
+        }
+
+        public static void InitPlayer(EntityPlayerLocal _player)
+        {
+            ClearData();
             player = _player;
         }
 
         public static void Cleanup()
         {
-            recoilScaledDelta = 0;
-            returnSpeedCur = Vector3.zero;
-            targetRotationXY = Vector2.zero;
-            targetReturnXY = Vector2.zero;
+            ClearData();
             player = null;
         }
 
@@ -50,16 +65,16 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             if (!player.AimingGun)
             {
                 targetRotationXY += new Vector2(targetRotationX, targetRotationY) * 2f;
-                targetReturnXY += new Vector2(targetRotationX, targetRotationY) * 2f;
+                totalRotationXY += new Vector2(targetRotationX, targetRotationY) * 2f;
             }
             else
             {
                 targetRotationXY += new Vector2(targetRotationX, targetRotationY);
-                targetReturnXY += new Vector2(targetRotationX, targetRotationY);
+                totalRotationXY += new Vector2(targetRotationX, targetRotationY);
             }
-            float targetReturnXCapped = Mathf.Clamp(targetReturnXY.x, -MAX_RECOIL_ANGLE, MAX_RECOIL_ANGLE);
-            targetRotationXY.x = Mathf.Clamp(targetRotationXY.x + targetReturnXCapped - targetReturnXY.x, -MAX_RECOIL_ANGLE, MAX_RECOIL_ANGLE);
-            targetReturnXY.x = targetReturnXCapped;
+            float targetReturnXCapped = Mathf.Clamp(totalRotationXY.x, -MAX_RECOIL_ANGLE, MAX_RECOIL_ANGLE);
+            targetRotationXY.x = Mathf.Clamp(targetRotationXY.x + targetReturnXCapped - totalRotationXY.x, -MAX_RECOIL_ANGLE, MAX_RECOIL_ANGLE);
+            totalRotationXY.x = targetReturnXCapped;
         }
 
         public static float CompensateX(float movedX)
@@ -94,7 +109,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             modified /= dsScale;
             float compensated = target - targetRotation;
             targetRotation = target;
-            float @return = targetReturn + compensated + (modified * targetReturn < 0 ? modified : 0);
+            float @return = targetReturn + (modified * targetReturn < 0 ? modified : 0);
             //Log.Out($"return {@return} targetReturn {targetReturn} compensated {compensated} modified {modified}");
             if (@return * targetReturn > 0)
             {
@@ -123,11 +138,28 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                     return;
                 }
                 //returnScaledDelta = 0;
-                float snappiness = EffectManager.GetValue(CustomEnums.RecoilSnappiness, player.inventory.holdingItemItemValue, 2.4f, player);
+
+                FastTags<TagGroup.Global> actionTags = player.inventory.holdingItemItemValue.ItemClass.ItemTags;
+                MultiActionManager.ModifyItemTags(player.inventory.holdingItemItemValue, player.inventory.holdingItemData.actionData[MultiActionManager.GetActionIndexForEntity(player)], ref actionTags);
+                float snappinessDefault;
+                if (actionTags.Test_AnySet(PistolTag))
+                {
+                    snappinessDefault = DEFAULT_SNAPPINESS_PISTOL;
+                }
+                else if (actionTags.Test_AnySet(ShotgunTag))
+                {
+                    snappinessDefault = DEFAULT_SNAPPINESS_SHOTGUN;
+                }
+                else
+                {
+                    snappinessDefault = DEFAULT_SNAPPINESS_RIFLE;
+                }
+                float snappiness = EffectManager.GetValue(CustomEnums.RecoilSnappiness, player.inventory.holdingItemItemValue, snappinessDefault, player);
                 //targetRotationXY = Vector2.Lerp(targetRotationXY, Vector2.zero, returnSpeed * Time.deltaTime);
                 recoilScaledDelta += snappiness * Time.deltaTime;
                 Vector3 result = Vector3.Slerp(Vector3.zero, new Vector3(targetRotationXY.x, targetRotationXY.y), recoilScaledDelta);
                 targetRotationXY -= new Vector2(result.x, result.y);
+                targetReturnXY += new Vector2(result.x, result.y);
                 player.movementInput.rotation += result;
                 if (recoilScaledDelta >= 1)
                 {
@@ -139,34 +171,51 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             else if (state == RecoilState.Return && targetReturnXY.sqrMagnitude > 1e-6)
             {
                 //Log.Out($"target return {targetReturnXY}");
-                if (targetReturnXY.sqrMagnitude <= 1e-6)
+                if (targetReturnXY.sqrMagnitude <= 1e-6 && totalRotationXY.sqrMagnitude <= 1e-6)
                 {
                     targetReturnXY = Vector3.zero;
+                    totalRotationXY = Vector2.zero;
                     returnSpeedCur = Vector3.zero;
+                    totalReturnCur = Vector3.zero;
                     //returnScaledDelta = 1;
                     state = RecoilState.None;
                     return;
                 }
-                float returnSpeed = EffectManager.GetValue(CustomEnums.RecoilReturnSpeed, player.inventory.holdingItemItemValue, 3.6f, player);
+                FastTags<TagGroup.Global> actionTags = player.inventory.holdingItemItemValue.ItemClass.ItemTags;
+                MultiActionManager.ModifyItemTags(player.inventory.holdingItemItemValue, player.inventory.holdingItemData.actionData[MultiActionManager.GetActionIndexForEntity(player)], ref actionTags);
+                float returnSpeedDefault;
+                if (actionTags.Test_AnySet(PistolTag))
+                {
+                    returnSpeedDefault = DEFAULT_RETURN_SPEED_PISTOL;
+                }
+                else if (actionTags.Test_AnySet(ShotgunTag))
+                {
+                    returnSpeedDefault = DEFAULT_RETURN_SPEED_SHOTGUN;
+                }
+                else
+                {
+                    returnSpeedDefault = DEFAULT_RETURN_SPEED_RIFLE;
+                }
+
+                float returnSpeed = EffectManager.GetValue(CustomEnums.RecoilReturnSpeed, player.inventory.holdingItemItemValue, returnSpeedDefault, player);
                 //returnScaledDelta += returnSpeed * Time.deltaTime;
                 Vector3 result = Vector3.SmoothDamp(Vector3.zero, new Vector3(targetReturnXY.x, targetReturnXY.y), ref returnSpeedCur, 1 / returnSpeed);
                 targetReturnXY -= new Vector2(result.x, result.y);
                 player.movementInput.rotation -= result;
-                if (targetReturnXY.sqrMagnitude <= 1e-6)
+                result = Vector3.SmoothDamp(Vector3.zero, new Vector3(totalRotationXY.x, totalRotationXY.y), ref totalReturnCur, 1 / returnSpeed);
+                totalRotationXY -= new Vector2(result.x, result.y);
+                if (targetReturnXY.sqrMagnitude <= 1e-6 && totalRotationXY.sqrMagnitude <= 1e-6)
                 {
                     targetReturnXY = Vector3.zero;
+                    totalRotationXY = Vector2.zero;
                     returnSpeedCur = Vector3.zero;
+                    totalReturnCur = Vector3.zero;
                     state = RecoilState.None;
                 }
             }
             else
             {
-                state = RecoilState.None;
-                recoilScaledDelta = 0;
-                returnSpeedCur = Vector3.zero;
-                //returnScaledDelta = 0;
-                targetRotationXY = Vector3.zero;
-                targetReturnXY = Vector3.zero;
+                ClearData();
             }
         }
 
