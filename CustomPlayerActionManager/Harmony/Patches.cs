@@ -62,18 +62,27 @@ public class Patches
 
         for(int i = 0; i < codes.Count; ++i)
         {
-            if (codes[i].opcode == OpCodes.Stloc_1)
+            if (codes[i].opcode == OpCodes.Stloc_0)
             {
-                codes.InsertRange(i, new[]
+                codes.InsertRange(i - 1, new[]
                 {
-                    new CodeInstruction(OpCodes.Dup),
-                    CodeInstruction.Call(typeof(CustomPlayerActionManager), nameof(CustomPlayerActionManager.CreateControllerActions)),
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    CodeInstruction.LoadField(typeof(XUiC_OptionsController), nameof(XUiC_OptionsController.actionTabGroups)),
+                    CodeInstruction.Call(typeof(CustomPlayerActionManager), nameof(CustomPlayerActionManager.CreateControllerActions))
                 });
                 break;
             }
         }
 
         return codes;
+    }
+
+
+    [HarmonyPatch(typeof(XUiC_OptionsController), nameof(XUiC_OptionsController.storeCurrentBindings))]
+    [HarmonyPostfix]
+    private static void Postfix_storeCurrentBindings_XUiC_OptionsController(XUiC_OptionsController __instance)
+    {
+        CustomPlayerActionManager.StoreCurrentCustomBindings(__instance.actionBindingsOnOpen);
     }
 
 
