@@ -471,6 +471,7 @@
     <Compile Include="Scripts\Input\PlayerActionToggleMode.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleAlternative.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleAnimationLocked.cs" />
+    <Compile Include="Scripts\Items\Modular\ActionModuleCustomAnimationDelay.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleDisplayAsBuff.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleDynamicGraze.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleDynamicMuzzleFlash.cs" />
