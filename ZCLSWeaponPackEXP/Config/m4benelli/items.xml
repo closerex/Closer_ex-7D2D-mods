@@ -58,6 +58,7 @@
 			</property>
 			<property class="Action1">
 				<property name="Class" value="Zoom"/>
+				<property name="ItemActionModules" value="DynamicSensitivity,KFCommonUtilityLib"/>
 				<property name="Zoom_max_out" value="55"/>
 				<property name="Zoom_max_in" value="55"/>
 				<property name="SightsCameraOffset" value="0,0,0"/>
@@ -77,6 +78,8 @@
 				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="6.859">
 					<requirement name="ProgressionLevel" progression_name="perkBoomstick" operation="GTE" value="5"/>
 				</passive_effect>
+				<!-- <passive_effect name="RecoilSnappiness" operation="base_set" value="6" tags="perkBoomstick"/>
+				<passive_effect name="RecoilReturnSpeed" operation="base_set" value="4" tags="perkBoomstick"/> -->
 				<passive_effect name="RoundsPerMinute" operation="base_set" value="267" tags="perkBoomstick"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkBoomstick"/>
 				<passive_effect name="PartialReloadCount" operation="base_set" value="1" tags="perkBoomstick"/>

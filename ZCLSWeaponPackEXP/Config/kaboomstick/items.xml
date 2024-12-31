@@ -73,6 +73,8 @@
 					<requirement name="RoundsInMagazine" operation="GT" value="0"/>
 					<requirement name="ProgressionLevel" progression_name="perkDemolitionsExpert" operation="GTE" value="5"/>
 				</passive_effect>
+				<!-- <passive_effect name="RecoilSnappiness" operation="base_set" value="6" tags="perkDemolitionsExpert"/>
+				<passive_effect name="RecoilReturnSpeed" operation="base_set" value="4" tags="perkDemolitionsExpert"/> -->
 				<passive_effect name="MaxRange" operation="base_set" value="100" tags="perkDemolitionsExpert"/>
 				<passive_effect name="DamageFalloffRange" operation="base_set" value="70" tags="perkDemolitionsExpert"/>
 				<passive_effect name="DamageFalloffRange" operation="perc_add" value="-.2,.2" tier="1,6" tags="perkDemolitionsExpert"/> <!-- random effective rng -->				
