@@ -20,6 +20,8 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         private static Vector2 totalRotationXY = Vector2.zero;
         private static Vector3 totalReturnCur = Vector3.zero;
         private static EntityPlayerLocal player;
+        // reserved
+        public static bool enableCap = true;
         private const float MAX_RECOIL_ANGLE = 15;
         private const float DEFAULT_SNAPPINESS_PISTOL = 6f;
         private const float DEFAULT_SNAPPINESS_RIFLE = 3.6f;
@@ -72,9 +74,12 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 targetRotationXY += new Vector2(targetRotationX, targetRotationY);
                 totalRotationXY += new Vector2(targetRotationX, targetRotationY);
             }
-            float targetReturnXCapped = Mathf.Clamp(totalRotationXY.x, -MAX_RECOIL_ANGLE, MAX_RECOIL_ANGLE);
-            targetRotationXY.x = Mathf.Clamp(targetRotationXY.x + targetReturnXCapped - totalRotationXY.x, -MAX_RECOIL_ANGLE, MAX_RECOIL_ANGLE);
-            totalRotationXY.x = targetReturnXCapped;
+            if (enableCap)
+            {
+                float targetReturnXCapped = Mathf.Clamp(totalRotationXY.x, -MAX_RECOIL_ANGLE, MAX_RECOIL_ANGLE);
+                targetRotationXY.x = Mathf.Clamp(targetRotationXY.x + targetReturnXCapped - totalRotationXY.x, -MAX_RECOIL_ANGLE, MAX_RECOIL_ANGLE);
+                totalRotationXY.x = targetReturnXCapped;
+            }
         }
 
         public static float CompensateX(float movedX)
@@ -100,14 +105,23 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         private static float Compensate(float moved, float original, ref float targetRotation, ref float targetReturn)
         {
             float dsScale = 1;
-            if (player.AimingGun && player.inventory.holdingItemData.actionData[1] is IModuleContainerFor<ActionModuleDynamicSensitivity.DynamicSensitivityData> dsDataContainer && dsDataContainer.Instance.activated)
+            if (player.AimingGun)
             {
-                dsScale = Mathf.Sqrt(dsDataContainer.Instance.ZoomRatio);
+                dsScale = 1 / PlayerMoveController.Instance.mouseZoomSensitivity;
+                //dsScale = 1 / GamePrefs.GetFloat(EnumGamePrefs.OptionsZoomSensitivity);
+                //if (player.inventory.holdingItemData.actionData[1] is IModuleContainerFor<ActionModuleDynamicSensitivity.DynamicSensitivityData> dsDataContainer && dsDataContainer.Instance.activated)
+                //{
+                //    dsScale *= Mathf.Sqrt(dsDataContainer.Instance.ZoomRatio);
+                //}
             }
             float modified = moved * dsScale - original;
             float target = ApplyOppositeCompensation(targetRotation, modified, out modified);
             modified /= dsScale;
             float compensated = target - targetRotation;
+            if (compensated < 0)
+            {
+                Log.Out($"compensated {compensated} prev {targetRotation} cur {target}");
+            }
             targetRotation = target;
             float @return = targetReturn + (modified * targetReturn < 0 ? modified : 0);
             //Log.Out($"return {@return} targetReturn {targetReturn} compensated {compensated} modified {modified}");
@@ -202,8 +216,11 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 Vector3 result = Vector3.SmoothDamp(Vector3.zero, new Vector3(targetReturnXY.x, targetReturnXY.y), ref returnSpeedCur, 1 / returnSpeed);
                 targetReturnXY -= new Vector2(result.x, result.y);
                 player.movementInput.rotation -= result;
-                result = Vector3.SmoothDamp(Vector3.zero, new Vector3(totalRotationXY.x, totalRotationXY.y), ref totalReturnCur, 1 / returnSpeed);
-                totalRotationXY -= new Vector2(result.x, result.y);
+                if (enableCap)
+                {
+                    result = Vector3.SmoothDamp(Vector3.zero, new Vector3(totalRotationXY.x, totalRotationXY.y), ref totalReturnCur, 2 / returnSpeed);
+                    totalRotationXY -= new Vector2(result.x, result.y);
+                }
                 if (targetReturnXY.sqrMagnitude <= 1e-6 && totalRotationXY.sqrMagnitude <= 1e-6)
                 {
                     targetReturnXY = Vector3.zero;

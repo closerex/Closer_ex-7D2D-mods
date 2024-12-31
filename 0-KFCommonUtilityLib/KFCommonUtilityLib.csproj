@@ -547,6 +547,7 @@
     <Compile Include="Scripts\StaticManagers\LocalItemTagsManager.cs" />
     <Compile Include="Scripts\StaticManagers\MultiActionManager.cs" />
     <Compile Include="Scripts\StaticManagers\RecoilManager.cs" />
+    <Compile Include="Scripts\Utilities\EasingFunctions.cs" />
     <Compile Include="Scripts\Utilities\MonoCecilExtensions.cs" />
     <Compile Include="Scripts\Utilities\MultiActionUtils.cs" />
     <Compile Include="Scripts\Utilities\MultiActionProjectileRewrites.cs" />
