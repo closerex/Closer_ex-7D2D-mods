@@ -44,6 +44,11 @@ public class ActionModuleCustomAnimationDelay
         AnimationDelayData.AnimationDelay[_actionData.invData.item.HoldType.Value] = __state;
     }
 
+    //following are fix for item use time from menu entry
+    //when IsActionRunning is called from coroutine which is started by menu entry,
+    //as OnHoldingUpdate is not called every frame, the check might yield false before item actually gets consumed, thus returning the item
+    //so we call OnHoldingUpdate to properly consume the item
+    //vanilla method on the other hand, is forcing double delay in IsActionRunning
     [MethodTargetPostfix(nameof(ItemAction.IsActionRunning), typeof(ItemActionEat))]
     private void Postfix_IsActionRunning_ItemActionEat(ItemActionEat __instance, ItemActionData _actionData, AnimationDelays __state, bool __result)
     {
