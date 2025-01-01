@@ -108,7 +108,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         };
         public static void UpdateLocalPlayerAvatar(AvatarLocalPlayerController controller)
         {
-            if (fpvTransformRef != null && (controller.Entity as EntityPlayerLocal).bFirstPersonView && !IsCameraWindowOpen)
+            if (fpvTransformRef != null && (controller.Entity as EntityPlayerLocal).bFirstPersonView && !IsCameraWindowOpen && fpvTransformRef.targets && fpvTransformRef.targets.itemFpv)
             {
                 //workaround for animator bullshit
                 if (!fpvTransformRef.targets.itemFpv.gameObject.activeSelf)
@@ -320,45 +320,45 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
 
         public static void SetTrigger(int _pid)
         {
-            if (fpvTransformRef != null)
+            if (fpvTransformRef != null && fpvTransformRef.fpvAnimator)
             {
-                fpvTransformRef.fpvAnimator?.SetTrigger(_pid);
+                fpvTransformRef.fpvAnimator.SetTrigger(_pid);
                 //Log.Out($"setting trigger {_pid}");
             }
         }
 
         public static void ResetTrigger(int _pid)
         {
-            if (fpvTransformRef != null)
+            if (fpvTransformRef != null && fpvTransformRef.fpvAnimator)
             {
-                fpvTransformRef.fpvAnimator?.ResetTrigger(_pid);
+                fpvTransformRef.fpvAnimator.ResetTrigger(_pid);
                 //Log.Out($"resetting trigger {_pid}");
             }
         }
 
         public static void SetFloat(int _pid, float _value)
         {
-            if (fpvTransformRef != null)
+            if (fpvTransformRef != null && fpvTransformRef.fpvAnimator)
             {
-                fpvTransformRef.fpvAnimator?.SetFloat(_pid, _value);
+                fpvTransformRef.fpvAnimator.SetFloat(_pid, _value);
                 //Log.Out($"setting float {_pid}");
             }
         }
 
         public static void SetBool(int _pid, bool _value)
         {
-            if (fpvTransformRef != null)
+            if (fpvTransformRef != null && fpvTransformRef.fpvAnimator)
             {
-                fpvTransformRef.fpvAnimator?.SetBool(_pid, _value);
+                fpvTransformRef.fpvAnimator.SetBool(_pid, _value);
                 //Log.Out($"setting bool {_pid}");
             }
         }
 
         public static void SetInt(int _pid, int _value)
         {
-            if (fpvTransformRef != null)
+            if (fpvTransformRef != null && fpvTransformRef.fpvAnimator)
             {
-                fpvTransformRef.fpvAnimator?.SetInteger(_pid, _value);
+                fpvTransformRef.fpvAnimator.SetInteger(_pid, _value);
                 //Log.Out($"setting int {_pid}");
             }
         }

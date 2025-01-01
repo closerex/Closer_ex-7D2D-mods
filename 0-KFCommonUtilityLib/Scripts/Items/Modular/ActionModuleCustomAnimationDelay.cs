@@ -43,4 +43,44 @@ public class ActionModuleCustomAnimationDelay
             return;
         AnimationDelayData.AnimationDelay[_actionData.invData.item.HoldType.Value] = __state;
     }
+
+    [MethodTargetPostfix(nameof(ItemAction.IsActionRunning), typeof(ItemActionEat))]
+    private void Postfix_IsActionRunning_ItemActionEat(ItemActionEat __instance, ItemActionData _actionData, AnimationDelays __state, bool __result)
+    {
+        Postfix_IsActionRunning(__instance, _actionData, __state);
+        if (!__result && ((ItemActionEat.MyInventoryData)_actionData).bEatingStarted)
+        {
+            __instance.OnHoldingUpdate(_actionData);
+        }
+    }
+
+    [MethodTargetPostfix(nameof(ItemAction.IsActionRunning), typeof(ItemActionGainSkill))]
+    private void Postfix_IsActionRunning_ItemActionGainSkill(ItemActionGainSkill __instance, ItemActionData _actionData, AnimationDelays __state, bool __result)
+    {
+        Postfix_IsActionRunning(__instance, _actionData, __state);
+        if (!__result && ((ItemActionGainSkill.MyInventoryData)_actionData).bReadingStarted)
+        {
+            __instance.OnHoldingUpdate(_actionData);
+        }
+    }
+
+    [MethodTargetPostfix(nameof(ItemAction.IsActionRunning), typeof(ItemActionLearnRecipe))]
+    private void Postfix_IsActionRunning_ItemActionLearnRecipe(ItemActionLearnRecipe __instance, ItemActionData _actionData, AnimationDelays __state, bool __result)
+    {
+        Postfix_IsActionRunning(__instance, _actionData, __state);
+        if (!__result && ((ItemActionLearnRecipe.MyInventoryData)_actionData).bReadingStarted)
+        {
+            __instance.OnHoldingUpdate(_actionData);
+        }
+    }
+
+    [MethodTargetPostfix(nameof(ItemAction.IsActionRunning), typeof(ItemActionQuest))]
+    private void Postfix_IsActionRunning_ItemActionQuest(ItemActionQuest __instance, ItemActionData _actionData, AnimationDelays __state, bool __result)
+    {
+        Postfix_IsActionRunning(__instance, _actionData, __state);
+        if (!__result && ((ItemActionQuest.MyInventoryData)_actionData).bQuestAccept)
+        {
+            __instance.OnHoldingUpdate(_actionData);
+        }
+    }
 }
