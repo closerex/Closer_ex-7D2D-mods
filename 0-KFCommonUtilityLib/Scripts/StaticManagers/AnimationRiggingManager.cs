@@ -40,6 +40,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         public static FpvTransformRef FpvTransformReference => fpvTransformRef;
 
         internal static bool IsCameraWindowOpen = false;
+        private static bool RigItemChangedThisFrame = false;
 
         //private static readonly HashSet<int> hash_rig_items = new HashSet<int>();
         private static FpvTransformRef fpvTransformRef;
@@ -54,6 +55,8 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         {
             //hash_rig_items.Clear();
             fpvTransformRef = null;
+            IsCameraWindowOpen = false;
+            RigItemChangedThisFrame = false;
             hash_items_parse_later.Clear();
             hash_items_take_over_reload_time.Clear();
             hash_rig_names.Clear();
@@ -127,6 +130,13 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 //controller.FPSArms?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
                 //controller.CharacterBody?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
             }
+            if (RigItemChangedThisFrame)
+            {
+                Log.Out("Rigged weapon changed, resetting animator...");
+                controller.FPSArms.Animator.Play("idle", 0, 0f);
+                controller.UpdateInt(AvatarController.weaponHoldTypeHash, -1, false);
+                RigItemChangedThisFrame = false;
+            }
         }
 
         public static void OnClearInventorySlot(Inventory inv, int slot)
@@ -134,6 +144,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             Transform transform = inv.models[slot];
             if (transform != null && transform.TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
             {
+                RigItemChangedThisFrame = true;
                 targets.Destroy();
             }
             if (slot == inv.holdingItemIdx)
@@ -147,9 +158,16 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         {
             Inventory inv = player.inventory;
             Transform transform = inv.models[inv.holdingItemIdx];
+            if (fpvTransformRef != null)
+            {
+                RigItemChangedThisFrame = true;
+            }
             fpvTransformRef = null;
             if (transform != null && transform.TryGetComponent(out RigTargets targets) && !targets.Destroyed)
+            {
                 fpvTransformRef = new FpvTransformRef(targets, inv.holdingItemData);
+                RigItemChangedThisFrame = true;
+            }
         }
 
         public static Transform GetAttachmentReferenceOverrideTransform(Transform transform, string transformPath, Entity entity)

@@ -118,10 +118,10 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             float target = ApplyOppositeCompensation(targetRotation, modified, out modified);
             modified /= dsScale;
             float compensated = target - targetRotation;
-            if (compensated < 0)
-            {
-                Log.Out($"compensated {compensated} prev {targetRotation} cur {target}");
-            }
+            //if (compensated < 0)
+            //{
+            //    Log.Out($"compensated {compensated} prev {targetRotation} cur {target}");
+            //}
             targetRotation = target;
             float @return = targetReturn + (modified * targetReturn < 0 ? modified : 0);
             //Log.Out($"return {@return} targetReturn {targetReturn} compensated {compensated} modified {modified}");
@@ -143,14 +143,14 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             if (state == RecoilState.Recoil && recoilScaledDelta < 1)
             {
                 //Log.Out($"target rotation {targetRotationXY}");
-                if (targetRotationXY.sqrMagnitude <= 1e-6)
-                {
-                    targetRotationXY = Vector3.zero;
-                    recoilScaledDelta = 1;
-                    returnSpeedCur = Vector3.zero;
-                    state = RecoilState.Return;
-                    return;
-                }
+                //if (targetRotationXY.sqrMagnitude <= 1e-6)
+                //{
+                //    targetRotationXY = Vector3.zero;
+                //    recoilScaledDelta = 1;
+                //    returnSpeedCur = Vector3.zero;
+                //    state = RecoilState.Return;
+                //    return;
+                //}
                 //returnScaledDelta = 0;
 
                 FastTags<TagGroup.Global> actionTags = player.inventory.holdingItemItemValue.ItemClass.ItemTags;

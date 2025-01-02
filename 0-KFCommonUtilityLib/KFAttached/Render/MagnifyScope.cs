@@ -171,8 +171,15 @@ namespace KFCommonUtilityLib.KFAttached.Render
 
         private void DestroyCamera()
         {
-            targetTexture?.Release();
-            Destroy(pipCamera?.gameObject);
+            if (targetTexture && targetTexture.IsCreated())
+            {
+                targetTexture.Release();
+                Destroy(targetTexture);
+            }
+            if (pipCamera)
+            {
+                Destroy(pipCamera.gameObject);
+            }
         }
 
         private void UpdateFOV(float targetScale)

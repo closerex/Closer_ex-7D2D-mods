@@ -84,7 +84,7 @@ public static class FLARPatch
             launcherData.projectileJoint = __3.projectileJoints[(byte)(_userData >> 8)];
             if (launcherData.projectileJoint == null)
             {
-                Log.Warning($"null projectile joint!\n{StackTraceUtility.ExtractStackTrace()}");
+                Log.Warning($"null projectile joint on inventory slot {launcherData.invData.slotIdx}!!\n{StackTraceUtility.ExtractStackTrace()}");
             }
         }
     }
@@ -156,7 +156,7 @@ public static class FLARPatch
         ItemActionDataBetterLauncher.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName(ItemActionDataBetterLauncher.invData.model, "ProjectileJoint");
         if (ItemActionDataBetterLauncher.projectileJoint == null)
         {
-            Log.Warning($"null projectile joint!\n{StackTraceUtility.ExtractStackTrace()}");
+            Log.Warning($"null projectile joint on inventory slot {ItemActionDataBetterLauncher.invData.slotIdx}!\n{StackTraceUtility.ExtractStackTrace()}");
         }
     }
 
@@ -171,7 +171,7 @@ public static class FLARPatch
             launcherData.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName(launcherData.invData.model, jointName) ?? launcherData.projectileJoint;
             if (launcherData.projectileJoint == null)
             {
-                Log.Warning($"null projectile joint!\n{StackTraceUtility.ExtractStackTrace()}");
+                Log.Warning($"null projectile joint on inventory slot {launcherData.invData.slotIdx}!\n{StackTraceUtility.ExtractStackTrace()}");
             }
         }
     }

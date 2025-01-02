@@ -106,8 +106,6 @@ public class RigTargets : MonoBehaviour
             Destroy();
             return;
         }
-        Stopwatch sw = new Stopwatch();
-        sw.Start();
 
         if (itemAnimator.TryGetComponent<AnimationDelayRender>(out var delayRenderer))
         {
@@ -117,18 +115,11 @@ public class RigTargets : MonoBehaviour
         fpsArms = animator.transform;
         //fpsArms.AddMissingComponent<PlayerRigLateUpdate>();
         this.fpsArms = fpsArms;
-        animator.UnbindAllStreamHandles();
-        animator.UnbindAllSceneHandles();
         itemFpv.SetParent(fpsArms.parent, false);
         itemFpv.SetAsFirstSibling();
         itemFpv.position = Vector3.zero;
         itemFpv.localPosition = Vector3.zero;
         itemFpv.localRotation = Quaternion.identity;
-        rig.transform.SetParent(fpsArms, false);
-        rig.transform.SetAsFirstSibling();
-        rig.transform.position = Vector3.zero;
-        rig.transform.localPosition = Vector3.zero;
-        rig.transform.localRotation = Quaternion.identity;
 #if NotEditor
         Utils.SetLayerRecursively(itemFpv.gameObject, 10, Utils.ExcludeLayerZoom);
         Utils.SetLayerRecursively(gameObject, 24, Utils.ExcludeLayerZoom);
@@ -138,44 +129,56 @@ public class RigTargets : MonoBehaviour
         rc.targetRoot = fpsArms;
         rc.Rebind();
 
-        var rigBuilder = fpsArms.AddMissingComponent<RigBuilder>();
-        rigBuilder.layers.RemoveAll(r => r.rig == rig);
-        rigLayer = new RigLayer(rig, false);
-        rigBuilder.layers.Add(rigLayer);
-        rigBuilder.Build();
-        animator.Rebind();
         //((AnimationPlayableOutput)animator.playableGraph.GetOutputByType<AnimationPlayableOutput>(0)).SetSortingOrder(0);
 
         //animator.Update(0);
         //itemAnimator.Update(0);
 
-        sw.Stop();
-        string info = $"setup animation rig took {sw.ElapsedMilliseconds} ms";
-        Log.Out(info);
-
         SetEnabled(false, true);
     }
 
-    public void Destroy()
+    public void BuildRig()
     {
-#if NotEditor
-        Destroyed = true;
-        AnimationRiggingManager.RemoveRigExcludeName(rig.gameObject.name);
-#endif
-        //if (m_ControllerGraph.IsValid())
-        //{
-        //    m_ControllerGraph.Destroy();
-        //}
-        if (fpsArms == null)
+        if (!fpsArms)
         {
-            attachmentReference?.SetParent(transform);
-            //detach item fpv and rig so that transform.find does not search for them?
-            itemFpv.parent = null;
-            GameObject.Destroy(itemFpv.gameObject);
-            rig.transform.parent = null;
-            GameObject.Destroy(rig.gameObject);
-            Component.Destroy(this);
-            Log.Out("destroying rig no fpsarm"); ;
+            Destroy();
+            return;
+        }
+        if (rigLayer != null)
+        {
+            return;
+        }
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
+        rig.transform.SetParent(fpsArms, false);
+        rig.transform.SetAsFirstSibling();
+        rig.transform.position = Vector3.zero;
+        rig.transform.localPosition = Vector3.zero;
+        rig.transform.localRotation = Quaternion.identity;
+        var animator = fpsArms.GetComponent<Animator>();
+        animator.UnbindAllStreamHandles();
+        animator.UnbindAllSceneHandles();
+
+        var rigBuilder = fpsArms.AddMissingComponent<RigBuilder>();
+        rigBuilder.layers.RemoveAll(r => r.rig == rig);
+        rigLayer = new RigLayer(rig, true);
+        rigBuilder.layers.Add(rigLayer);
+        animator.Rebind();
+        rigBuilder.Build();
+        sw.Stop();
+        string info = $"setup animation rig took {sw.ElapsedMilliseconds} ms";
+        Log.Out(info);
+    }
+
+    public void DestroyRig()
+    {
+        if (!fpsArms)
+        {
+            Destroy();
+            return;
+        }
+        if (rigLayer == null)
+        {
             return;
         }
         Stopwatch sw = new Stopwatch();
@@ -188,22 +191,46 @@ public class RigTargets : MonoBehaviour
         animator.UnbindAllSceneHandles();
 
         rig.transform.SetParent(transform, false);
-        itemFpv.SetParent(transform, false);
-        rigBuilder.Build();
         animator.Rebind();
+        rigBuilder.Build();
         rig.gameObject.SetActive(false);
-        itemFpv.gameObject.SetActive(false);
         rigLayer = null;
-        fpsArms = null;
         sw.Stop();
         string info = $"destroy animation rig took {sw.ElapsedMilliseconds} ms";
         Log.Out(info);
     }
 
+    public void Destroy()
+    {
+#if NotEditor
+        Destroyed = true;
+        AnimationRiggingManager.RemoveRigExcludeName(rig.gameObject.name);
+#endif
+        //if (m_ControllerGraph.IsValid())
+        //{
+        //    m_ControllerGraph.Destroy();
+        //}
+        if (fpsArms)
+        {
+            DestroyRig();
+        }
+        fpsArms = null;
+
+        attachmentReference?.SetParent(transform);
+        //detach item fpv and rig so that transform.find does not search for them?
+        itemFpv.parent = null;
+        GameObject.Destroy(itemFpv.gameObject);
+        rig.transform.parent = null;
+        GameObject.Destroy(rig.gameObject);
+        Component.Destroy(this);
+        Log.Out("destroying rig no fpsarm"); ;
+        return;
+    }
+
     public void SetEnabled(bool enabled, bool forceDisableRoot = false)
     {
-        if (rigLayer == null)
-            return;
+        //if (rigLayer == null)
+        //    return;
         //var t = new StackTrace();
 
         //LogInfo($"set enabled {isFPV} stack trace:\n{t.ToString()}");
@@ -213,10 +240,11 @@ public class RigTargets : MonoBehaviour
 
         itemFpv.gameObject.SetActive(enabled);
         itemFpv.localPosition = enabled ? Vector3.zero : new Vector3(0, -100, 0);
-        rigLayer.active = enabled;
+        //rigLayer.active = enabled;
 
         if (enabled)
         {
+            BuildRig();
 #if NotEditor
             if (!itemAnimator.TryGetComponent<AnimationDelayRender>(out var delayRenderer))
             {
@@ -225,25 +253,29 @@ public class RigTargets : MonoBehaviour
             }
 #endif
         }
-        //if (enabled && manualUpdate)
-        //{
-        //    //so it seems there's no direct way to reset this animator playable controller
-        //    //I have no choice but rebuild the whole graph again and pass the animator param bindings to the animator again
-        //    //luckily this does not introduce much overhead
-        //    //RebuildPlayableGraph();
-        //    //foreach (var binding in attachmentReference.GetComponentsInChildren<TransformActivationBinding>(true))
-        //    //{
-        //    //    binding.UpdateBool(binding.gameObject.activeSelf);
-        //    //}
-        //    itemAnimator.Update(Time.deltaTime);
-        //    //m_ControllerGraph.Evaluate(Time.deltaTime);
-        //    //weaponRB?.Evaluate(Time.deltaTime);
-        //}
-        //else
-        //{
+        else
+        {
+            DestroyRig();
+        }
+            //if (enabled && manualUpdate)
+            //{
+            //    //so it seems there's no direct way to reset this animator playable controller
+            //    //I have no choice but rebuild the whole graph again and pass the animator param bindings to the animator again
+            //    //luckily this does not introduce much overhead
+            //    //RebuildPlayableGraph();
+            //    //foreach (var binding in attachmentReference.GetComponentsInChildren<TransformActivationBinding>(true))
+            //    //{
+            //    //    binding.UpdateBool(binding.gameObject.activeSelf);
+            //    //}
+            //    itemAnimator.Update(Time.deltaTime);
+            //    //m_ControllerGraph.Evaluate(Time.deltaTime);
+            //    //weaponRB?.Evaluate(Time.deltaTime);
+            //}
+            //else
+            //{
 
-        //}
-        gameObject.SetActive(forceDisableRoot ? false : !enabled);
+            //}
+            gameObject.SetActive(forceDisableRoot ? false : !enabled);
     }
 
 #if NotEditor

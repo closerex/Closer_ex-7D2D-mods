@@ -2,6 +2,7 @@
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Xml.Linq;
@@ -346,12 +347,12 @@ static class AnimationRiggingPatches
     {
         if (__instance is AvatarLocalPlayerController avatarLocalPlayer)
         {
-            if ((avatarLocalPlayer.entity as EntityPlayerLocal).bFirstPersonView && !avatarLocalPlayer.entity.inventory.GetIsFinishedSwitchingHeldItem())
-            {
-                avatarLocalPlayer.UpdateInt(AvatarController.weaponHoldTypeHash, -1, false);
-                avatarLocalPlayer.UpdateBool("Holstered", false, false);
-                avatarLocalPlayer.FPSArms.Animator.Play("idle", 0, 0f);
-            }
+            //if ((avatarLocalPlayer.entity as EntityPlayerLocal).bFirstPersonView && !avatarLocalPlayer.entity.inventory.GetIsFinishedSwitchingHeldItem())
+            //{
+            //    avatarLocalPlayer.UpdateInt(AvatarController.weaponHoldTypeHash, -1, false);
+            //    avatarLocalPlayer.UpdateBool("Holstered", false, false);
+            //    avatarLocalPlayer.FPSArms.Animator.Play("idle", 0, 0f);
+            //}
             AnimationRiggingManager.UpdateLocalPlayerAvatar(avatarLocalPlayer);
             var mapping = MultiActionManager.GetMappingForEntity(__instance.entity.entityId);
             if (mapping != null)
@@ -501,7 +502,7 @@ static class AnimationRiggingPatches
     [HarmonyPrefix]
     private static bool Prefix_setHoldingItemTransform_Inventory(Inventory __instance)
     {
-        if (__instance.lastdrawnHoldingItemTransform != null && __instance.lastdrawnHoldingItemTransform.TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
+        if (__instance.lastdrawnHoldingItemTransform && __instance.lastdrawnHoldingItemTransform.TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
         {
             targets.SetEnabled(false, true);
         }
@@ -545,8 +546,67 @@ static class AnimationRiggingPatches
         return codes;
     }
 
+    //private static Coroutine delayShowWeaponCo;
+    //private static IEnumerator DelayShowWeapon(Camera camera)
+    //{
+    //    Log.Out($"Delay show weapon!");
+    //    camera.cullingMask &= ~(1 << 10);
+    //    yield return new WaitForSeconds(0.5f);
+    //    if (camera)
+    //    {
+    //        camera.cullingMask |= 1 << 10;
+    //    }
+    //    delayShowWeaponCo = null;
+    //    Log.Out($"Show weapon!");
+    //    yield break;
+    //}
+
+    //[HarmonyPatch(typeof(Inventory), nameof(Inventory.setHeldItemByIndex))]
+    //[HarmonyPrefix]
+    //private static bool Prefix_setHeldItemByIndex_Inventory(Inventory __instance, out bool __state)
+    //{
+    //    __state = __instance.holdingItemData?.model && __instance.holdingItemData.model.GetComponent<RigTargets>();
+
+    //    return true;
+    //}
+
+    //[HarmonyPatch(typeof(Inventory), nameof(Inventory.setHeldItemByIndex))]
+    //[HarmonyPostfix]
+    //private static void Postfix_setHeldItemByIndex_Inventory(Inventory __instance, bool __state)
+    //{
+    //    if (__state && __instance.entity is EntityPlayerLocal player && player.bFirstPersonView && (!__instance.holdingItemData?.model || !__instance.holdingItemData.model.GetComponent<RigTargets>()))
+    //    {
+    //        if (delayShowWeaponCo != null)
+    //        {
+    //            ThreadManager.StopCoroutine(delayShowWeaponCo);
+    //        }
+
+    //        if (__instance.holdingItemIdx == __instance.DUMMY_SLOT_IDX)
+    //        {
+    //            player.ShowHoldingItem(true);
+    //        }
+    //        else
+    //        {
+    //            delayShowWeaponCo = ThreadManager.StartCoroutine(DelayShowWeapon(player.playerCamera));
+    //        }
+    //    }
+    //}
+
+    //[HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.ShowHoldingItem))]
+    //[HarmonyPrefix]
+    //private static bool Prefix_ShowHoldingItem_EntityPlayerLocal(bool show)
+    //{
+    //    if (delayShowWeaponCo != null)
+    //    {
+    //        if (show)
+    //        {
+    //            return false;
+    //        }
+    //        ThreadManager.StopCoroutine(delayShowWeaponCo);
+    //    }
+    //    return true;
+    //}
     /*
-    private static Coroutine delayShowWeaponCo;
     [HarmonyPatch(typeof(Inventory), nameof(Inventory.setHoldingItemTransform))]
     [HarmonyPostfix]
     private static void Postfix_setHoldingItemTransform_Inventory(Transform _t, Inventory __instance)
@@ -593,18 +653,8 @@ static class AnimationRiggingPatches
         }
     }
 
-    private static IEnumerator DelayShowWeapon(Camera camera)
-    {
-        yield return null;
-        yield return null;
-        if (camera)
-        {
-            camera.cullingMask |= 1 << 10;
-        }
-        yield break;
-    }
     */
-#endregion
+    #endregion
 
     [HarmonyPatch(typeof(World), nameof(World.SpawnEntityInWorld))]
     [HarmonyPrefix]
