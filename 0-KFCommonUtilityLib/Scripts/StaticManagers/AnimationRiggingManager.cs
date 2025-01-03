@@ -133,9 +133,12 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             if (RigItemChangedThisFrame)
             {
                 Log.Out("Rigged weapon changed, resetting animator...");
-                controller.FPSArms.Animator.Play("idle", 0, 0f);
-                controller.UpdateInt(AvatarController.weaponHoldTypeHash, -1, false);
                 RigItemChangedThisFrame = false;
+                if ((controller.Entity as EntityPlayerLocal).bFirstPersonView && !IsCameraWindowOpen)
+                {
+                    controller.FPSArms?.Animator.Play("idle", 0, 0f);
+                }
+                controller.UpdateInt(AvatarController.weaponHoldTypeHash, -1, false);
             }
         }
 

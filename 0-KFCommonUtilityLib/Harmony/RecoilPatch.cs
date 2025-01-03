@@ -35,6 +35,14 @@ class RecoilPatch
         {
             if (codes[i].Is(OpCodes.Call, mtd_ctor) && codes[i + 1].opcode == OpCodes.Ldloc_0)
             {
+                for (int j = i + 1; j < codes.Count - 1; j++)
+                {
+                    if (codes[j].opcode == OpCodes.Pop && codes[j + 1].opcode == OpCodes.Ldarg_0)
+                    {
+                        codes.RemoveRange(i + 1, j - i);
+                        break;
+                    }
+                }
                 codes.InsertRange(i + 1, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_0),
