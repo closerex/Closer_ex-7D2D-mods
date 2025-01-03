@@ -170,8 +170,8 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 }
                 float snappiness = EffectManager.GetValue(CustomEnums.RecoilSnappiness, player.inventory.holdingItemItemValue, snappinessDefault, player);
                 //targetRotationXY = Vector2.Lerp(targetRotationXY, Vector2.zero, returnSpeed * Time.deltaTime);
-                recoilScaledDelta += snappiness * Time.deltaTime;
-                Vector3 result = Vector3.Slerp(Vector3.zero, new Vector3(targetRotationXY.x, targetRotationXY.y), recoilScaledDelta);
+                recoilScaledDelta += snappiness * 3 * Time.deltaTime;
+                Vector3 result = Vector3.Lerp(Vector3.zero, new Vector3(targetRotationXY.x, targetRotationXY.y), recoilScaledDelta);
                 targetRotationXY -= new Vector2(result.x, result.y);
                 targetReturnXY += new Vector2(result.x, result.y);
                 player.movementInput.rotation += result;
