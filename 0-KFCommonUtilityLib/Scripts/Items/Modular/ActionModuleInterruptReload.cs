@@ -101,7 +101,7 @@ public class ActionModuleInterruptReload
             ItemActionRanged.ItemActionDataRanged rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
             rangedData.isReloading = __state.isReloading;
             rangedData.isWeaponReloading = __state.isWeaponReloading;
-            if (__customData.itemAnimator != null && __customData.eventBridge != null)
+            if (__customData.itemAnimator && __customData.eventBridge)
             {
                 if (rangedData.m_LastShotTime > __state.lastShotTime && rangedData.m_LastShotTime < Time.time + 1f)
                 {
@@ -121,6 +121,11 @@ public class ActionModuleInterruptReload
         }
     }
 
+    public bool IsRequestPossible(InterruptData interruptData)
+    {
+        return interruptData.eventBridge && interruptData.itemAnimator;
+    }
+
     public class InterruptData
     {
         public bool isInterruptRequested;
@@ -131,10 +136,13 @@ public class ActionModuleInterruptReload
 
         public InterruptData(ItemInventoryData invData, int actionIndex, ActionModuleInterruptReload module)
         {
-            if (invData.model && invData.model.TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
+            if (invData.model && invData.model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
             {
-                eventBridge = targets.itemFpv?.GetComponentInChildren<AnimationReloadEvents>(true);
-                itemAnimator = eventBridge?.GetComponent<Animator>();
+                itemAnimator = targets.ItemAnimator;
+                if (itemAnimator)
+                {
+                    eventBridge = itemAnimator.GetComponent<AnimationReloadEvents>();
+                }
             }
         }
 

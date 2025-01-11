@@ -1,4 +1,5 @@
 ﻿using KFCommonUtilityLib.Scripts.Attributes;
+using KFCommonUtilityLib.Scripts.StaticManagers;
 
 [TypeTarget(typeof(ItemActionDynamic))]
 public class ActionModuleDynamicGraze
@@ -8,15 +9,17 @@ public class ActionModuleDynamicGraze
     [MethodTargetPrefix(nameof(ItemAction.ExecuteAction))]
     private bool Prefix_ExecuteAction(ItemActionDynamic __instance, ItemActionData _actionData, bool _bReleased, out (bool executed, string originalSound) __state)
     {
-        if (!_bReleased && !string.IsNullOrEmpty(dynamicSoundStart) && _actionData.invData.holdingEntity is EntityPlayerLocal player && player.bFirstPersonView)
+        if (!_bReleased && !string.IsNullOrEmpty(dynamicSoundStart) && _actionData.invData.holdingEntity is EntityPlayerLocal player)
         {
-            __state = (true, __instance.soundStart);
-            __instance.soundStart = dynamicSoundStart;
+            var targets = AnimationRiggingManager.GetRigTargetsFromPlayer(player);
+            if (targets && !targets.Destroyed && targets.ItemCurrent)
+            {
+                __state = (true, __instance.soundStart);
+                __instance.soundStart = dynamicSoundStart;
+                return true;
+            }
         }
-        else
-        {
-            __state = (false, null);
-        }
+        __state = (false, null);
         return true;
     }
 
@@ -32,15 +35,17 @@ public class ActionModuleDynamicGraze
     [MethodTargetPrefix(nameof(ItemAction.OnHoldingUpdate))]
     private bool Prefix_OnHoldingUpdate(ItemActionDynamic __instance, ItemActionData _actionData, out (bool executed, bool useGrazeCast) __state)
     {
-        if (_actionData.invData.holdingEntity is EntityPlayerLocal player && player.bFirstPersonView)
+        if (_actionData.invData.holdingEntity is EntityPlayerLocal player)
         {
-            __state = (true, __instance.UseGrazingHits);
-            __instance.UseGrazingHits = false;
+            var targets = AnimationRiggingManager.GetRigTargetsFromPlayer(player);
+            if (targets && !targets.Destroyed && targets.ItemCurrent)
+            {
+                __state = (true, __instance.UseGrazingHits);
+                __instance.UseGrazingHits = false;
+                return true;
+            }
         }
-        else
-        {
-            __state = (false, false);
-        }
+        __state = (false, false);
         return true;
     }
 

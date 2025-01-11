@@ -17,7 +17,7 @@ public class TransformActivationBinding : MonoBehaviour
     private GameObject[] disableOnDisable;
     [SerializeField]
     private string[] animatorParamBindings;
-    internal Animator animator;
+    internal AnimationTargetsAbs targets;
 
     private void OnEnable()
     {
@@ -26,7 +26,7 @@ public class TransformActivationBinding : MonoBehaviour
         {
             foreach (GameObject t in bindings)
             {
-                if (t != null)
+                if (t)
                     t.SetActive(true);
             }
         }
@@ -34,7 +34,7 @@ public class TransformActivationBinding : MonoBehaviour
         {
             foreach (GameObject t in inverseBindings)
             {
-                if (t != null)
+                if (t)
                     t.SetActive(false);
             }
         }
@@ -42,7 +42,7 @@ public class TransformActivationBinding : MonoBehaviour
         {
             foreach (GameObject t in disableOnEnable)
             {
-                if (t != null)
+                if (t)
                     t.SetActive(false);
             }
         }
@@ -50,7 +50,7 @@ public class TransformActivationBinding : MonoBehaviour
         {
             foreach (GameObject t in enableOnEnable)
             {
-                if (t != null)
+                if (t)
                     t.SetActive(true);
             }
         }
@@ -63,14 +63,14 @@ public class TransformActivationBinding : MonoBehaviour
         if (bindings != null)
         {
             foreach (GameObject t in bindings)
-                if (t != null)
+                if (t)
                     t.SetActive(false);
         }
         if (inverseBindings != null)
         {
             foreach (GameObject t in inverseBindings)
             {
-                if (t != null)
+                if (t)
                     t.SetActive(true);
             }
         }
@@ -78,7 +78,7 @@ public class TransformActivationBinding : MonoBehaviour
         {
             foreach (GameObject t in enableOnDisable)
             {
-                if (t != null)
+                if (t)
                     t.SetActive(true);
             }
         }
@@ -86,7 +86,7 @@ public class TransformActivationBinding : MonoBehaviour
         {
             foreach (GameObject t in disableOnDisable)
             {
-                if (t != null)
+                if (t)
                     t.SetActive(true);
             }
         }
@@ -95,8 +95,13 @@ public class TransformActivationBinding : MonoBehaviour
 
     internal void UpdateBool(bool enabled)
     {
-        if (animatorParamBindings != null && animator != null)
+        if (animatorParamBindings != null && targets)
         {
+            Animator animator = targets.ItemAnimator;
+            if (!animator)
+            {
+                return;
+            }
             foreach (string str in animatorParamBindings)
             {
                 if (str != null)
