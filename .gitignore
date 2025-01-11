@@ -1,4 +1,6 @@
 */
+*.cs
+desktop.ini
 !CustomMuzzleFlash/
 !CustomMuzzleFlash/**
 !0-CustomParticleLoader/
@@ -60,3 +62,4 @@
 readme.txt
 /0-KFCommonUtilityLib/DynamicFileNesting
 *.rar
+*.7z
