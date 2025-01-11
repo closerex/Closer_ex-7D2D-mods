@@ -16,7 +16,7 @@ public class ActionModuleErgoAffected
     [MethodTargetPostfix(nameof(ItemAction.OnModificationsChanged))]
     private void Postfix_OnModificationChanged(ItemActionData _data, ItemActionZoom __instance, ErgoData __customData)
     {
-        zoomInTimeBase = 0.4f;
+        zoomInTimeBase = 0.3f;
         __instance.Properties.ParseFloat("ZoomInTimeBase", ref zoomInTimeBase);
         aimSpeedModifierBase = 1f;
         __instance.Properties.ParseFloat("AimSpeedModifierBase", ref aimSpeedModifierBase);
