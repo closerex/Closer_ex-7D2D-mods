@@ -27,10 +27,7 @@ public static class CommonUtilityPatch
         _actionData.isWeaponReloadCancelled = false;
         holdingEntity.FireEvent(MinEventTypes.onReloadStop);
 
-        if (holdingEntity is EntityPlayerLocal && AnimationRiggingManager.FpvTransformReference != null)
-        {
-            AnimationAmmoUpdateState.SetAmmoCountForEntity(holdingEntity, holdingEntity.inventory.holdingItemIdx);
-        }
+        AnimationAmmoUpdateState.SetAmmoCountForEntity(holdingEntity, holdingEntity.inventory.holdingItemIdx);
     }
 
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SwapAmmoType))]

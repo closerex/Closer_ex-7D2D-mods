@@ -20,7 +20,7 @@ namespace KFCommonUtilityLib.Harmony
                 var rangedData = _data.actionData[curActionIndex] as ItemActionRanged.ItemActionDataRanged;
                 if (rangedData != null && rangedData is IModuleContainerFor<ActionModuleInterruptReload.InterruptData> dataModule && rangedAction is IModuleContainerFor<ActionModuleInterruptReload> actionModule)
                 {
-                    if (!_bReleased && _playerActions != null && ((EntityPlayerLocal)_data.holdingEntity).bFirstPersonView && ((_playerActions.Primary.IsPressed && _actionIdx == curActionIndex && _data.itemValue.Meta > 0) || (_playerActions.Secondary.IsPressed && curAction is ItemActionZoom)) && (rangedData.isReloading || rangedData.isWeaponReloading) && !dataModule.Instance.isInterruptRequested)
+                    if (!_bReleased && _playerActions != null && actionModule.Instance.IsRequestPossible(dataModule.Instance) && ((_playerActions.Primary.IsPressed && _actionIdx == curActionIndex && _data.itemValue.Meta > 0) || (_playerActions.Secondary.IsPressed && curAction is ItemActionZoom)) && (rangedData.isReloading || rangedData.isWeaponReloading) && !dataModule.Instance.isInterruptRequested)
                     {
                         if (dataModule.Instance.holdStartTime < 0)
                         {
@@ -59,7 +59,7 @@ namespace KFCommonUtilityLib.Harmony
         [HarmonyPrefix]
         private static bool Prefix_CancelReload_ItemAction(ItemActionData _actionData)
         {
-            if (_actionData?.invData?.holdingEntity is EntityPlayerLocal && AnimationRiggingManager.IsHoldingRiggedWeapon)
+            if (_actionData?.invData?.holdingEntity is EntityPlayerLocal && AnimationRiggingManager.IsHoldingRiggedWeapon(_actionData.invData.holdingEntity as EntityPlayerLocal))
             {
                 return false;
             }

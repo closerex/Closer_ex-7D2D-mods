@@ -2,7 +2,6 @@
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Xml.Linq;
@@ -191,6 +190,13 @@ static class AnimationRiggingPatches
         }
     }
 
+    [HarmonyPatch(typeof(EntityAlive), nameof(EntityAlive.OnHoldingItemChanged))]
+    [HarmonyPostfix]
+    private static void Postfix_OnHoldingItemChanged_EntityAlive(EntityAlive __instance)
+    {
+        AnimationRiggingManager.OnHoldingItemIndexChanged(__instance as EntityPlayer);
+    }
+
     [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.OnHoldingItemChanged))]
     [HarmonyPostfix]
     private static void Postfix_OnHoldingItemChanged_EntityPlayerLocal(EntityPlayerLocal __instance)
@@ -231,9 +237,9 @@ static class AnimationRiggingPatches
     [HarmonyPostfix]
     private static void Postfix_ShowHeldItem_Inventory(Inventory __instance, bool show)
     {
-        if (!show && __instance.GetHoldingItemTransform() && __instance.GetHoldingItemTransform().TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
+        if (!show && __instance.GetHoldingItemTransform() && __instance.GetHoldingItemTransform().TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
         {
-            targets.SetEnabled(false, true);
+            targets.SetEnabled(false);
         }
     }
 
@@ -241,9 +247,9 @@ static class AnimationRiggingPatches
     [HarmonyPostfix]
     private static void Postfix_StopHolding_ItemClass(Transform _modelTransform)
     {
-        if (_modelTransform != null && _modelTransform.TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
+        if (_modelTransform != null && _modelTransform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
         {
-            targets.SetEnabled(false, true);
+            targets.SetEnabled(false);
         }
     }
 
@@ -251,17 +257,23 @@ static class AnimationRiggingPatches
     [HarmonyPostfix]
     private static void Postfix_createHeldItem_Inventory(Inventory __instance, Transform __result)
     {
-        if (__result != null && __result.TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
+        if (__result != null && __result.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
         {
-            if (GameManager.IsDedicatedServer || !(__instance.entity is EntityPlayerLocal player))
+            if (GameManager.IsDedicatedServer || !(__instance.entity is EntityPlayer player))
             {
                 targets.Destroy();
             }
             else
             {
-                Transform fpsArms = (player.emodel.avatarController as AvatarLocalPlayerController)?.FPSArms?.Parts.BodyObj.transform;
-                if (fpsArms != null)
-                    targets.Init(fpsArms);
+                if (player is EntityPlayerLocal localPlayer)
+                {
+                    targets.Init(localPlayer.emodel.avatarController.GetActiveModelRoot(), localPlayer.bFirstPersonView);
+                }
+                else
+                {
+                    targets.DestroyRemote();
+                    targets.Init(player.emodel.avatarController.GetActiveModelRoot(), false);
+                }
             }
         }
     }
@@ -270,7 +282,7 @@ static class AnimationRiggingPatches
     [HarmonyPrefix]
     private static bool Prefix_ForceHoldingItemUpdate(Inventory __instance)
     {
-        if (__instance.entity is EntityPlayerLocal)
+        if (__instance.entity is EntityPlayer)
             AnimationRiggingManager.OnClearInventorySlot(__instance, __instance.holdingItemIdx);
         return true;
     }
@@ -336,7 +348,7 @@ static class AnimationRiggingPatches
     [HarmonyPrefix]
     private static bool Prefix_clearSlotByIndex(Inventory __instance, int _idx)
     {
-        if (__instance.entity is EntityPlayerLocal)
+        if (__instance.entity is EntityPlayer)
             AnimationRiggingManager.OnClearInventorySlot(__instance, _idx);
         return true;
     }
@@ -345,6 +357,7 @@ static class AnimationRiggingPatches
     [HarmonyPostfix]
     private static void Postfix_Update_AvatarMultiBodyController(AvatarMultiBodyController __instance)
     {
+        AnimationRiggingManager.UpdatePlayerAvatar(__instance);
         if (__instance is AvatarLocalPlayerController avatarLocalPlayer)
         {
             //if ((avatarLocalPlayer.entity as EntityPlayerLocal).bFirstPersonView && !avatarLocalPlayer.entity.inventory.GetIsFinishedSwitchingHeldItem())
@@ -353,13 +366,19 @@ static class AnimationRiggingPatches
             //    avatarLocalPlayer.UpdateBool("Holstered", false, false);
             //    avatarLocalPlayer.FPSArms.Animator.Play("idle", 0, 0f);
             //}
-            AnimationRiggingManager.UpdateLocalPlayerAvatar(avatarLocalPlayer);
             var mapping = MultiActionManager.GetMappingForEntity(__instance.entity.entityId);
             if (mapping != null)
             {
                 avatarLocalPlayer.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, mapping.CurActionIndex, true);
             }
         }
+    }
+
+    [HarmonyPatch(typeof(LegacyAvatarController), nameof(LegacyAvatarController.Update))]
+    [HarmonyPostfix]
+    private static void Postfix_Update_LegacyAvatarController(LegacyAvatarController __instance)
+    {
+        AnimationRiggingManager.UpdatePlayerAvatar(__instance);
     }
 
     [HarmonyPatch(typeof(AvatarMultiBodyController), nameof(AvatarMultiBodyController.StartAnimationReloading))]
@@ -374,7 +393,7 @@ static class AnimationRiggingPatches
     [HarmonyPostfix]
     private static void Postfix_StartAnimationReloading_AvatarMultibodyController(AvatarMultiBodyController __instance)
     {
-        if (__instance.HeldItemTransform != null && __instance.HeldItemTransform.TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
+        if (__instance.HeldItemTransform != null && __instance.HeldItemTransform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
         {
             EntityAlive entity = __instance.Entity;
             ItemValue holdingItemItemValue = entity.inventory.holdingItemItemValue;
@@ -489,12 +508,22 @@ static class AnimationRiggingPatches
     [HarmonyPostfix]
     private static void Postfix_SetInRightHand_AvatarLocalPlayerController(Transform _transform, AvatarLocalPlayerController __instance)
     {
-        if (_transform != null && _transform.TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
+        if (_transform != null && _transform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
         {
-            targets.SetEnabled(__instance.isFPV);
-            _transform.SetParent(__instance.CharacterBody.Parts.RightHandT, false);
-            _transform.localPosition = Vector3.zero;
-            _transform.localRotation = Quaternion.identity;
+            targets.SetEnabled(true);
+            //_transform.SetParent(__instance.CharacterBody.Parts.RightHandT, false);
+            //_transform.localPosition = Vector3.zero;
+            //_transform.localRotation = Quaternion.identity;
+        }
+    }
+
+    [HarmonyPatch(typeof(LegacyAvatarController), nameof(LegacyAvatarController.SetInRightHand))]
+    [HarmonyPostfix]
+    private static void Postfix_SetInRightHand_LegacyAvatarController(Transform _transform)
+    {
+        if (_transform != null && _transform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+        {
+            targets.SetEnabled(true);
         }
     }
 
@@ -502,9 +531,9 @@ static class AnimationRiggingPatches
     [HarmonyPrefix]
     private static bool Prefix_setHoldingItemTransform_Inventory(Inventory __instance)
     {
-        if (__instance.lastdrawnHoldingItemTransform && __instance.lastdrawnHoldingItemTransform.TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
+        if (__instance.lastdrawnHoldingItemTransform && __instance.lastdrawnHoldingItemTransform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
         {
-            targets.SetEnabled(false, true);
+            targets.SetEnabled(false);
         }
         return true;
     }
@@ -514,13 +543,13 @@ static class AnimationRiggingPatches
     private static void Postfix_Start_vp_FPWeapon(vp_FPWeapon __instance)
     {
         var player = __instance.GetComponentInParent<EntityPlayerLocal>();
-        if (player != null)
+        if (player && player.inventory != null)
         {
             foreach (var model in player.inventory.models)
             {
-                if (model != null && model.TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
+                if (model != null && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
                 {
-                    targets.Init(__instance.transform);
+                    targets.Init(__instance.transform, true);
                 }
             }
         }
@@ -662,13 +691,46 @@ static class AnimationRiggingPatches
     {
         if (_entity is EntityItem _entityItem)
         {
-            var targets = _entityItem.GetComponentInChildren<RigTargets>(true);
+            var targets = _entityItem.GetComponentInChildren<AnimationTargetsAbs>(true);
             if (targets != null && !targets.Destroyed)
             {
                 targets.Destroy();
             }
         }
         return true;
+    }
+
+    [HarmonyPatch(typeof(World), nameof(World.SpawnEntityInWorld))]
+    [HarmonyPostfix]
+    private static void Postfix_SpawnEntityInWorld_World(Entity _entity)
+    {
+        if (_entity is EntityPlayer player && !(_entity is EntityPlayerLocal) && player.inventory != null)
+        {
+            foreach (var model in player.inventory.models)
+            {
+                if (model != null && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+                {
+                    targets.DestroyRemote();
+                    targets.Init(player.emodel.avatarController.GetActiveModelRoot(), false);
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(EModelBase), nameof(EModelBase.SwitchModelAndView))]
+    [HarmonyPostfix]
+    private static void Postfix_SwitchModelAndView_EModelBase(EModelBase __instance)
+    {
+        if (__instance.entity is EntityPlayerLocal player && player.inventory != null)
+        {
+            foreach (var model in player.inventory.models)
+            {
+                if (model != null && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+                {
+                    targets.Init(player.emodel.avatarController.GetActiveModelRoot(), player.bFirstPersonView);
+                }
+            }
+        }
     }
 
     [HarmonyPatch(typeof(SDCSUtils), nameof(SDCSUtils.cleanupEquipment))]
@@ -859,37 +921,72 @@ static class AnimationRiggingPatches
 
     [HarmonyPatch(typeof(AvatarLocalPlayerController), nameof(AvatarLocalPlayerController._setTrigger))]
     [HarmonyPostfix]
-    private static void Postfix_Avatar_SetTrigger(int _pid)
+    private static void Postfix_AvatarLocalPlayerController_SetTrigger(int _pid, AvatarLocalPlayerController __instance)
     {
-        AnimationRiggingManager.SetTrigger(_pid);
+        AnimationRiggingManager.SetTrigger(_pid, __instance.entity as EntityPlayer);
     }
 
     [HarmonyPatch(typeof(AvatarLocalPlayerController), nameof(AvatarLocalPlayerController._resetTrigger))]
     [HarmonyPostfix]
-    private static void Postfix_Avatar_ResetTrigger(int _pid)
+    private static void Postfix_AvatarLocalPlayerController_ResetTrigger(int _pid, AvatarLocalPlayerController __instance)
     {
-        AnimationRiggingManager.ResetTrigger(_pid);
+        AnimationRiggingManager.ResetTrigger(_pid, __instance.entity as EntityPlayer);
     }
 
     [HarmonyPatch(typeof(AvatarLocalPlayerController), nameof(AvatarLocalPlayerController._setFloat))]
     [HarmonyPostfix]
-    private static void Postfix_Avatar_SetFloat(int _pid, float _value)
+    private static void Postfix_AvatarLocalPlayerController_SetFloat(int _pid, float _value, AvatarLocalPlayerController __instance)
     {
-        AnimationRiggingManager.SetFloat(_pid, _value);
+        AnimationRiggingManager.SetFloat(_pid, _value, __instance.entity as EntityPlayer);
     }
 
     [HarmonyPatch(typeof(AvatarLocalPlayerController), nameof(AvatarLocalPlayerController._setBool))]
     [HarmonyPostfix]
-    private static void Postfix_Avatar_SetBool(int _pid, bool _value)
+    private static void Postfix_AvatarLocalPlayerController_SetBool(int _pid, bool _value, AvatarLocalPlayerController __instance)
     {
-        AnimationRiggingManager.SetBool(_pid, _value);
+        AnimationRiggingManager.SetBool(_pid, _value, __instance.entity as EntityPlayer);
     }
 
     [HarmonyPatch(typeof(AvatarLocalPlayerController), nameof(AvatarLocalPlayerController._setInt))]
     [HarmonyPostfix]
-    private static void Postfix_Avatar_SetInt(int _pid, int _value)
+    private static void Postfix_AvatarLocalPlayerController_SetInt(int _pid, int _value, AvatarLocalPlayerController __instance)
     {
-        AnimationRiggingManager.SetInt(_pid, _value);
+        AnimationRiggingManager.SetInt(_pid, _value, __instance.entity as EntityPlayer);
+    }
+
+    [HarmonyPatch(typeof(LegacyAvatarController), nameof(LegacyAvatarController._setTrigger))]
+    [HarmonyPostfix]
+    private static void Postfix_LegacyAvatarController_SetTrigger(int _propertyHash, LegacyAvatarController __instance)
+    {
+        AnimationRiggingManager.SetTrigger(_propertyHash, __instance.entity as EntityPlayer);
+    }
+
+    [HarmonyPatch(typeof(LegacyAvatarController), nameof(LegacyAvatarController._resetTrigger))]
+    [HarmonyPostfix]
+    private static void Postfix_LegacyAvatarController_ResetTrigger(int _propertyHash, LegacyAvatarController __instance)
+    {
+        AnimationRiggingManager.ResetTrigger(_propertyHash, __instance.entity as EntityPlayer);
+    }
+
+    [HarmonyPatch(typeof(LegacyAvatarController), nameof(LegacyAvatarController._setFloat))]
+    [HarmonyPostfix]
+    private static void Postfix_LegacyAvatarController_SetFloat(int _propertyHash, float _value, LegacyAvatarController __instance)
+    {
+        AnimationRiggingManager.SetFloat(_propertyHash, _value, __instance.entity as EntityPlayer);
+    }
+
+    [HarmonyPatch(typeof(LegacyAvatarController), nameof(LegacyAvatarController._setBool))]
+    [HarmonyPostfix]
+    private static void Postfix_LegacyAvatarController_SetBool(int _propertyHash, bool _value, LegacyAvatarController __instance)
+    {
+        AnimationRiggingManager.SetBool(_propertyHash, _value, __instance.entity as EntityPlayer);
+    }
+
+    [HarmonyPatch(typeof(LegacyAvatarController), nameof(LegacyAvatarController._setInt))]
+    [HarmonyPostfix]
+    private static void Postfix_LegacyAvatarController_SetInt(int _propertyHash, int _value, LegacyAvatarController __instance)
+    {
+        AnimationRiggingManager.SetInt(_propertyHash, _value, __instance.entity as EntityPlayer);
     }
 
     [HarmonyPatch(typeof(AvatarLocalPlayerController), nameof(AvatarLocalPlayerController._resetTrigger), typeof(int), typeof(bool))]

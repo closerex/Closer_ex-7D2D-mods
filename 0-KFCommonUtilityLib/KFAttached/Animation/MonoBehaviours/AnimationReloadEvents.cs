@@ -58,6 +58,7 @@ public class AnimationReloadEvents : MonoBehaviour
         animator.SetBool("Reload", false);
         animator.SetBool("IsReloading", false);
         animator.speed = 1f;
+        cancelReloadCo = null;
 #if NotEditor
         if (actionData == null || !actionData.isReloading)
         {
@@ -235,8 +236,7 @@ public class AnimationReloadEvents : MonoBehaviour
 
     private void OnDisable()
     {
-        StopAllCoroutines();
-        cancelReloadCo = null;
+        OnReloadEnd();
     }
 
     private IEnumerator ForceCancelReloadCo(float delay)

@@ -6,47 +6,49 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
 {
     public static class AnimationRiggingManager
     {
-        public class FpvTransformRef
+        //public class FpvTransformRef
+        //{
+        //    public Animator fpvAnimator;
+        //    public RigTargets targets;
+        //    public ItemInventoryData invData;
+        //    //public Transform muzzle;
+        //    //public Transform muzzle2;
+        //    //public bool isDoubleBarrel;
+
+        //    public FpvTransformRef(RigTargets targets, ItemInventoryData invData)
+        //    {
+        //        this.targets = targets;
+        //        this.invData = invData;
+        //        //this.isDoubleBarrel = isDoubleBarrel;
+        //        fpvAnimator = targets.itemFpv.GetComponentInChildren<Animator>();
+        //        //if (isDoubleBarrel)
+        //        //{
+        //        //    muzzle = targets.itemFpv.transform.FindInChildren("Muzzle_L");
+        //        //    muzzle2 = targets.itemFpv.transform.FindInChildren("Muzzle_R");
+        //        //}
+        //        //else
+        //        //    muzzle = targets.itemFpv.transform.FindInChilds("Muzzle");
+        //    }
+
+        //    public bool IsRanged(out ItemActionRanged.ItemActionDataRanged rangedData)
+        //    {
+        //        return (rangedData = invData.actionData[MultiActionManager.GetActionIndexForEntity(GameManager.Instance.World.GetPrimaryPlayer())] as ItemActionRanged.ItemActionDataRanged) != null;
+        //    }
+        //}
+
+        public static bool IsHoldingRiggedWeapon(EntityPlayer player)
         {
-            public Animator fpvAnimator;
-            public RigTargets targets;
-            public ItemInventoryData invData;
-            //public Transform muzzle;
-            //public Transform muzzle2;
-            //public bool isDoubleBarrel;
-
-            public FpvTransformRef(RigTargets targets, ItemInventoryData invData)
-            {
-                this.targets = targets;
-                this.invData = invData;
-                //this.isDoubleBarrel = isDoubleBarrel;
-                fpvAnimator = targets.itemFpv.GetComponentInChildren<Animator>();
-                //if (isDoubleBarrel)
-                //{
-                //    muzzle = targets.itemFpv.transform.FindInChildren("Muzzle_L");
-                //    muzzle2 = targets.itemFpv.transform.FindInChildren("Muzzle_R");
-                //}
-                //else
-                //    muzzle = targets.itemFpv.transform.FindInChilds("Muzzle");
-            }
-
-            public bool IsRanged(out ItemActionRanged.ItemActionDataRanged rangedData)
-            {
-                return (rangedData = fpvTransformRef.invData.actionData[MultiActionManager.GetActionIndexForEntity(GameManager.Instance.World.GetPrimaryPlayer())] as ItemActionRanged.ItemActionDataRanged) != null;
-            }
+            AnimationTargetsAbs targets = GetRigTargetsFromPlayer(player);
+            return targets && !targets.Destroyed;
         }
 
-        public static bool IsHoldingRiggedWeapon => fpvTransformRef != null;
-        public static FpvTransformRef FpvTransformReference => fpvTransformRef;
-
-        internal static bool IsCameraWindowOpen = false;
-        private static bool RigItemChangedThisFrame = false;
+        //private static bool RigItemChangedThisFrame = false;
 
         //private static readonly HashSet<int> hash_rig_items = new HashSet<int>();
-        private static FpvTransformRef fpvTransformRef;
         private static readonly HashSet<int> hash_items_take_over_reload_time = new HashSet<int>();
         private static readonly HashSet<string> hash_items_parse_later = new HashSet<string>();
         private static readonly HashSet<string> hash_rig_names = new HashSet<string>();
+        private static readonly HashSet<int> hash_rig_changed_players = new HashSet<int>();
 
         //patched to item xml parsing
         //public static void AddRigItem(int itemId) => hash_rig_items.Add(itemId);
@@ -54,12 +56,11 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         public static void Clear()
         {
             //hash_rig_items.Clear();
-            fpvTransformRef = null;
-            IsCameraWindowOpen = false;
-            RigItemChangedThisFrame = false;
+            //RigItemChangedThisFrame = false;
             hash_items_parse_later.Clear();
             hash_items_take_over_reload_time.Clear();
             hash_rig_names.Clear();
+            hash_rig_changed_players.Clear();
         }
 
         public static void AddReloadTimeTakeOverItem(string name)
@@ -102,41 +103,64 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             return hash_items_take_over_reload_time.Contains(id);
         }
 
+        public static AnimationTargetsAbs GetRigTargetsFromPlayer(EntityPlayer player)
+        {
+            if (!player)
+                return null;
+            Transform holdingItemTransform = player.inventory?.GetHoldingItemTransform();
+            if (holdingItemTransform)
+            {
+                return holdingItemTransform.GetComponent<AnimationTargetsAbs>();
+            }
+            return null;
+        }
+
+        public static AnimationTargetsAbs GetRigTargetsFromInventory(Inventory inventory)
+        {
+            Transform holdingItemTransform = inventory?.GetHoldingItemTransform();
+            if (holdingItemTransform)
+            {
+                return holdingItemTransform.GetComponent<AnimationTargetsAbs>();
+            }
+            return null;
+        }
+
         //public static bool IsRigItem(int itemId) => hash_rig_items.Contains(itemId);
 
-        private readonly static int[] resetHashes = new int[]
+        public static void UpdatePlayerAvatar(AvatarController controller)
         {
-            Animator.StringToHash("Reload"),
-            Animator.StringToHash("WeaponFire")
-        };
-        public static void UpdateLocalPlayerAvatar(AvatarLocalPlayerController controller)
-        {
-            if (fpvTransformRef != null && (controller.Entity as EntityPlayerLocal).bFirstPersonView && !IsCameraWindowOpen && fpvTransformRef.targets && fpvTransformRef.targets.itemFpv)
+            AnimationTargetsAbs targets = GetRigTargetsFromPlayer(controller.Entity as EntityPlayer);
+            bool RigItemChangedThisFrame = hash_rig_changed_players.Remove(controller.Entity.entityId);
+            if (targets && !targets.Destroyed)
             {
-                //workaround for animator bullshit
-                if (!fpvTransformRef.targets.itemFpv.gameObject.activeSelf)
-                {
-                    Log.Out("Rigged weapon not active, enabling it...");
-                    fpvTransformRef.targets.SetEnabled(true);
-                }
-                //vroid workaround
-                //it seems to use a separate animator for vroid model and does not replace CharacterBody
-                //controller.UpdateInt(AvatarController.weaponHoldTypeHash, -1, false);
-                controller.FPSArms.Animator.Play("idle", 0, 0f);
-                foreach (var hash in resetHashes)
-                {
-                    AnimationRiggingPatches.VanillaResetTrigger(controller, hash, false);
-                }
-                //controller.FPSArms?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
-                //controller.CharacterBody?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
+                targets.UpdatePlayerAvatar(controller, RigItemChangedThisFrame);
             }
+            //if ((controller.Entity as EntityPlayerLocal).bFirstPersonView && targets && !targets.Destroyed && targets.itemFpv)
+            //{
+            //    //workaround for animator bullshit
+            //    if (!targets.itemFpv.gameObject.activeSelf)
+            //    {
+            //        Log.Out("Rigged weapon not active, enabling it...");
+            //        targets.SetEnabled(true);
+            //    }
+            //    //vroid workaround
+            //    //it seems to use a separate animator for vroid model and does not replace CharacterBody
+            //    //controller.UpdateInt(AvatarController.weaponHoldTypeHash, -1, false);
+            //    controller.FPSArms.Animator.Play("idle", 0, 0f);
+            //    foreach (var hash in resetHashes)
+            //    {
+            //        AnimationRiggingPatches.VanillaResetTrigger(controller, hash, false);
+            //    }
+            //    //controller.FPSArms?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
+            //    //controller.CharacterBody?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
+            //}
             if (RigItemChangedThisFrame)
             {
                 Log.Out("Rigged weapon changed, resetting animator...");
                 RigItemChangedThisFrame = false;
-                if ((controller.Entity as EntityPlayerLocal).bFirstPersonView && !IsCameraWindowOpen)
+                if (controller is AvatarLocalPlayerController localPlayerController && localPlayerController.isFPV && localPlayerController.FPSArms != null)
                 {
-                    controller.FPSArms?.Animator.Play("idle", 0, 0f);
+                    localPlayerController.FPSArms?.Animator.Play("idle", 0, 0f);
                 }
                 controller.UpdateInt(AvatarController.weaponHoldTypeHash, -1, false);
             }
@@ -144,32 +168,48 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
 
         public static void OnClearInventorySlot(Inventory inv, int slot)
         {
+            if (inv == null || slot != inv.holdingItemIdx)
+                return;
             Transform transform = inv.models[slot];
-            if (transform != null && transform.TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
+            if (transform && transform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
             {
-                RigItemChangedThisFrame = true;
+                //RigItemChangedThisFrame = true;
+                if (inv.entity is EntityPlayer)
+                {
+                    hash_rig_changed_players.Add(inv.entity.entityId);
+                }
                 targets.Destroy();
-            }
-            if (slot == inv.holdingItemIdx)
-            {
-                fpvTransformRef = null;
             }
         }
 
-        //patched to EntityPlayerLocal.OnHoldingItemChanged
-        public static void OnHoldingItemIndexChanged(EntityPlayerLocal player)
+        //patched to EntityPlayerLocal.OnHoldingItemChanged and EntityAlive.OnHoldingItemIndexChanged
+        public static void OnHoldingItemIndexChanged(EntityPlayer player)
         {
-            Inventory inv = player.inventory;
-            Transform transform = inv.models[inv.holdingItemIdx];
-            if (fpvTransformRef != null)
+            if (!player || player.inventory == null || player.inventory.m_LastDrawnHoldingItemIndex < 0 || player.inventory.m_LastDrawnHoldingItemIndex >= player.inventory.GetSlotCount())
+                return;
+            if (player.inventory.m_LastDrawnHoldingItemIndex == player.inventory.holdingItemIdx)
             {
-                RigItemChangedThisFrame = true;
+                hash_rig_changed_players.Add(player.entityId);
+                return;
             }
-            fpvTransformRef = null;
-            if (transform != null && transform.TryGetComponent(out RigTargets targets) && !targets.Destroyed)
+            Transform lastHoldingTransform = player.inventory.models[player.inventory.m_LastDrawnHoldingItemIndex];
+            if (!lastHoldingTransform)
             {
-                fpvTransformRef = new FpvTransformRef(targets, inv.holdingItemData);
-                RigItemChangedThisFrame = true;
+                hash_rig_changed_players.Add(player.entityId);
+                return;
+            }
+            AnimationTargetsAbs targets = lastHoldingTransform.GetComponent<AnimationTargetsAbs>();
+            if (targets && !targets.Destroyed)
+            {
+                //RigItemChangedThisFrame = true;
+                hash_rig_changed_players.Add(player.entityId);
+                return;
+            }
+            targets = GetRigTargetsFromPlayer(player);
+            if (targets && !targets.Destroyed)
+            {
+                //RigItemChangedThisFrame = true;
+                hash_rig_changed_players.Add(player.entityId);
             }
         }
 
@@ -213,41 +253,41 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             return GameUtils.FindDeepChildActive(transform, transformPath);
         }
 
-        public static Transform GetMuzzleOverrideFPV(Transform muzzle, bool isLocalFpv)
-        {
-            if (!isLocalFpv || fpvTransformRef == null)
-                return muzzle;
-            if (fpvTransformRef.IsRanged(out var rangedData))
-            {
-                return rangedData.muzzle;
-            }
-            return muzzle;
-        }
+        //public static Transform GetMuzzleOverrideFPV(Transform muzzle, bool isLocalFpv)
+        //{
+        //    if (!isLocalFpv || fpvTransformRef == null)
+        //        return muzzle;
+        //    if (fpvTransformRef.IsRanged(out var rangedData))
+        //    {
+        //        return rangedData.muzzle;
+        //    }
+        //    return muzzle;
+        //}
 
-        public static Transform GetMuzzle2OverrideFPV(Transform muzzle2, bool isLocalFpv)
-        {
-            if (!isLocalFpv || fpvTransformRef == null)
-                return muzzle2;
-            if (fpvTransformRef.IsRanged(out var rangedData))
-            {
-                return rangedData.muzzle2;
-            }
-            return muzzle2;
-        }
+        //public static Transform GetMuzzle2OverrideFPV(Transform muzzle2, bool isLocalFpv)
+        //{
+        //    if (!isLocalFpv || fpvTransformRef == null)
+        //        return muzzle2;
+        //    if (fpvTransformRef.IsRanged(out var rangedData))
+        //    {
+        //        return rangedData.muzzle2;
+        //    }
+        //    return muzzle2;
+        //}
 
         public static Transform GetTransformOverrideByName(Transform itemModel, string name, bool onlyActive = false)
         {
             if (itemModel == null)
                 return null;
             var player = GameManager.Instance.World.GetPrimaryPlayer();
-            if (player == null || !itemModel.TryGetComponent<RigTargets>(out var targets) || targets.Destroyed)
+            if (player == null || !itemModel.TryGetComponent<AnimationTargetsAbs>(out var targets) || targets.Destroyed)
             {
                 if (string.IsNullOrEmpty(name))
                     return itemModel;
                 return onlyActive ? GameUtils.FindDeepChildActive(itemModel, name) : GameUtils.FindDeepChild(itemModel, name);
             }
 
-            Transform targetRoot = (player.bFirstPersonView ? targets.itemFpv : itemModel);
+            Transform targetRoot = targets.ItemCurrentOrDefault;
             if (string.IsNullOrEmpty(name))
                 return targetRoot;
             return onlyActive ? GameUtils.FindDeepChildActive(targetRoot, name) : GameUtils.FindDeepChild(targetRoot, name);
@@ -261,7 +301,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         //patched to ItemActionRanged.ItemActionEffect
         public static bool SpawnFpvParticles(bool isLocalFpv, ItemActionData _actionData, string particlesMuzzleFire, string particlesMuzzleFireFpv, string particlesMuzzleSmoke, string particlesMuzzleSmokeFpv)
         {
-            if (!isLocalFpv || fpvTransformRef == null)
+            if (!isLocalFpv || !GetRigTargetsFromInventory(_actionData.invData.holdingEntity.inventory))
                 return false;
             var itemActionDataRanged = _actionData as ItemActionRanged.ItemActionDataRanged;
             EntityPlayerLocal player = GameManager.Instance.World.GetPrimaryPlayer();
@@ -339,47 +379,52 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         //    }
         //}
 
-        public static void SetTrigger(int _pid)
+        public static void SetTrigger(int _pid, EntityPlayer player)
         {
-            if (fpvTransformRef != null && fpvTransformRef.fpvAnimator)
+            AnimationTargetsAbs targets = GetRigTargetsFromPlayer(player);
+            if (targets && !targets.Destroyed && targets.ItemAnimator)
             {
-                fpvTransformRef.fpvAnimator.SetTrigger(_pid);
+                targets.ItemAnimator.SetTrigger(_pid);
                 //Log.Out($"setting trigger {_pid}");
             }
         }
 
-        public static void ResetTrigger(int _pid)
+        public static void ResetTrigger(int _pid, EntityPlayer player)
         {
-            if (fpvTransformRef != null && fpvTransformRef.fpvAnimator)
+            AnimationTargetsAbs targets = GetRigTargetsFromPlayer(player);
+            if (targets && !targets.Destroyed && targets.ItemAnimator)
             {
-                fpvTransformRef.fpvAnimator.ResetTrigger(_pid);
+                targets.ItemAnimator.ResetTrigger(_pid);
                 //Log.Out($"resetting trigger {_pid}");
             }
         }
 
-        public static void SetFloat(int _pid, float _value)
+        public static void SetFloat(int _pid, float _value, EntityPlayer player)
         {
-            if (fpvTransformRef != null && fpvTransformRef.fpvAnimator)
+            AnimationTargetsAbs targets = GetRigTargetsFromPlayer(player);
+            if (targets&& !targets.Destroyed  && targets.ItemAnimator)
             {
-                fpvTransformRef.fpvAnimator.SetFloat(_pid, _value);
+                targets.ItemAnimator.SetFloat(_pid, _value);
                 //Log.Out($"setting float {_pid}");
             }
         }
 
-        public static void SetBool(int _pid, bool _value)
+        public static void SetBool(int _pid, bool _value, EntityPlayer player)
         {
-            if (fpvTransformRef != null && fpvTransformRef.fpvAnimator)
+            AnimationTargetsAbs targets = GetRigTargetsFromPlayer(player);
+            if (targets && !targets.Destroyed && targets.ItemAnimator)
             {
-                fpvTransformRef.fpvAnimator.SetBool(_pid, _value);
+                targets.ItemAnimator.SetBool(_pid, _value);
                 //Log.Out($"setting bool {_pid}");
             }
         }
 
-        public static void SetInt(int _pid, int _value)
+        public static void SetInt(int _pid, int _value, EntityPlayer player)
         {
-            if (fpvTransformRef != null && fpvTransformRef.fpvAnimator)
+            AnimationTargetsAbs targets = GetRigTargetsFromPlayer(player);
+            if (targets && !targets.Destroyed && targets.ItemAnimator)
             {
-                fpvTransformRef.fpvAnimator.SetInteger(_pid, _value);
+                targets.ItemAnimator.SetInteger(_pid, _value);
                 //Log.Out($"setting int {_pid}");
             }
         }

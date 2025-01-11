@@ -441,6 +441,7 @@
     <Compile Include="KFAttached\Render\BokehBlurTargetRef.cs" />
     <Compile Include="KFAttached\Render\MagnifyScope.cs" />
     <Compile Include="KFAttached\Render\MagnifyScopeTargetRef.cs" />
+    <Compile Include="KFAttached\RigAdaptors\AnimationTargetsAbs.cs" />
     <Compile Include="KFAttached\RigAdaptors\Utils\InventorySlotGurad.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="KFAttached\RigAdaptors\Adaptors\BlendConstraintAdaptor.cs" />
@@ -467,7 +468,6 @@
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdListParticleScripts.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdMultiActionItemValueDebug.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPrintLocalCache.cs" />
-    <Compile Include="Scripts\ConsoleCmd\ConsoleCmdReloadDebug.cs" />
     <Compile Include="Scripts\Input\PlayerActionToggleMode.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleAlternative.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleAnimationLocked.cs" />
