@@ -24,8 +24,11 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         // reserved
         private static bool enableCap = true;
         private static bool enableDynamicCap = true;
+        private static bool enableSoftCap = true;
         private static float maxRecoilAngle = 15;
         private static int maxDynamicRecoilCapShots = 6;
+        private static float recoilCapRemain = 0.2f;
+        private static float recoilCompensationSensitivityMultiplier = 0.5f;
         private const float DEFAULT_SNAPPINESS_PISTOL = 6f;
         private const float DEFAULT_SNAPPINESS_RIFLE = 3.6f;
         private const float DEFAULT_SNAPPINESS_SHOTGUN = 8f;
@@ -50,6 +53,10 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         {
             var capSetting = settings.GetTab("RecoilSettings").GetCategory("Capping");
 
+            var recoilCompensationSetting = capSetting.GetSetting("RecoilCompensationSensitivityMultiplier") as ISliderGlobalSetting;
+            recoilCompensationSensitivityMultiplier = float.Parse(recoilCompensationSetting.CurrentValue);
+            recoilCompensationSetting.OnSettingChanged += (setting, newValue) => recoilCompensationSensitivityMultiplier = float.Parse(newValue);
+
             var enableCapSetting = capSetting.GetSetting("EnableCap") as ISwitchGlobalSetting;
             enableCap = enableCapSetting.CurrentValue == "Enable";
             enableCapSetting.OnSettingChanged += (setting, newValue) =>
@@ -57,6 +64,14 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 enableCap = newValue == "Enable";
                 UpdateSettingState(setting.Category);
             };
+
+            var recoilRemainSetting = capSetting.GetSetting("RecoilRemain") as ISliderGlobalSetting;
+            recoilCapRemain = float.Parse(recoilRemainSetting.CurrentValue);
+            recoilRemainSetting.OnSettingChanged += (setting, newValue) => recoilCapRemain = float.Parse(newValue);
+
+            var enableSoftCapSetting = capSetting.GetSetting("EnableSoftCap") as ISwitchGlobalSetting;
+            enableSoftCap = enableSoftCapSetting.CurrentValue == "Enable";
+            enableSoftCapSetting.OnSettingChanged += (setting, newValue) => enableSoftCap = newValue == "Enable";
 
             var maxRecoilAngleSetting = capSetting.GetSetting("MaxRecoilAngle") as ISliderGlobalSetting;
             maxRecoilAngle = float.Parse(maxRecoilAngleSetting.CurrentValue);
@@ -79,6 +94,8 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         private static void UpdateSettingState(IGlobalModSettingsCategory category)
         {
             category.GetSetting("EnableCap").Enabled = true;
+            category.GetSetting("RecoilRemain").Enabled = enableCap;
+            category.GetSetting("EnableSoftCap").Enabled = enableCap;
             category.GetSetting("MaxRecoilAngle").Enabled = enableCap && !enableDynamicCap;
             category.GetSetting("EnableDynamicCap").Enabled = enableCap;
             category.GetSetting("MaxDynamicRecoilCapShots").Enabled = enableCap && enableDynamicCap;
@@ -103,7 +120,31 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             recoilScaledDelta = 0;
             returnSpeedCur = Vector3.zero;
             //returnScaledDelta = 0;
-            float targetRotationX = player.rand.RandomRange(recoilRangeVer.x, recoilRangeVer.y);
+            float cap = 0f;
+            if (enableCap)
+            {
+                if (enableDynamicCap)
+                {
+                    cap = Mathf.Abs(recoilRangeVer.y) * maxDynamicRecoilCapShots;
+                }
+                else
+                {
+                    cap = maxRecoilAngle;
+                }
+            }
+            float targetRotationX;
+            if (enableCap && Mathf.Abs(totalRotationXY.x) >= Mathf.Abs(cap))
+            {
+                targetRotationX = player.rand.RandomRange(0, recoilRangeVer.x * recoilCapRemain);
+            }
+            else
+            {
+                targetRotationX = player.rand.RandomRange(recoilRangeVer.x, recoilRangeVer.y);
+                if (enableSoftCap)
+                {
+                    targetRotationX *= Mathf.Lerp(recoilCapRemain, 1f, 1 - Mathf.InverseLerp(0, Mathf.Abs(cap), Mathf.Abs(totalRotationXY.x)));
+                }
+            }
             float targetRotationY = player.rand.RandomRange(recoilRangeHor.x, recoilRangeHor.y);
             if (!player.AimingGun)
             {
@@ -115,22 +156,12 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 targetRotationXY += new Vector2(targetRotationX, targetRotationY);
                 totalRotationXY += new Vector2(targetRotationX, targetRotationY);
             }
-            if (enableCap)
-            {
-                float totalRotationXCapped;
-                float cap;
-                if (enableDynamicCap)
-                {
-                    cap = Mathf.Abs(recoilRangeVer.y) * maxDynamicRecoilCapShots;
-                }
-                else
-                {
-                    cap = maxRecoilAngle;
-                }
-                totalRotationXCapped = Mathf.Clamp(totalRotationXY.x, -cap, cap);
-                targetRotationXY.x = Mathf.Clamp(targetRotationXY.x + totalRotationXCapped - totalRotationXY.x, -cap, cap);
-                totalRotationXY.x = totalRotationXCapped;
-            }
+            //if (enableCap)
+            //{
+            //    float totalRotationXCapped = Mathf.Clamp(totalRotationXY.x, -cap, cap);
+            //    targetRotationXY.x = Mathf.Clamp(targetRotationXY.x + totalRotationXCapped - totalRotationXY.x, -cap, cap);
+            //    totalRotationXY.x = totalRotationXCapped;
+            //}
         }
 
         public static float CompensateX(float movedX)
@@ -158,7 +189,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             float dsScale = 1;
             if (player.AimingGun)
             {
-                dsScale = 1 / PlayerMoveController.Instance.mouseZoomSensitivity;
+                dsScale = Mathf.Lerp(1, 1 / PlayerMoveController.Instance.mouseZoomSensitivity, recoilCompensationSensitivityMultiplier);
                 //dsScale = 1 / GamePrefs.GetFloat(EnumGamePrefs.OptionsZoomSensitivity);
                 //if (player.inventory.holdingItemData.actionData[1] is IModuleContainerFor<ActionModuleDynamicSensitivity.DynamicSensitivityData> dsDataContainer && dsDataContainer.Instance.activated)
                 //{
