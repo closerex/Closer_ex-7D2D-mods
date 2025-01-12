@@ -2,3 +2,13 @@ Key,File,Type,UsedInMainMenu,english,schinese
 inpGrpMultiActionName,UI,Controls Dialog,x,Multi Action,武器模式
 inpActToggleWeaponModeName,UI,Controls Dialog,x,Toggle Weapon Mode,切换武器模式
 inpActToggleWeaponModeDesc,UI,Controls Dialog,x,"For weapons with multiple modes, cycle between them with this key",使用有多种模式的武器时，在不同模式间循环切换
+kflibTabRecoilSettingsName,UI,Menu,x,Recoil Settings,后坐力设置
+kflibCategoryRecoilCappingName,UI,Menu,x,Recoil Cap Settings,后坐力上限设置
+kflibSettingEnableCapName,UI,Menu,x,Enable Recoil Cap,启用后坐力上限
+kflibSettingEnableCapDesc,UI,Menu,x,Allow capping vertical recoil at certain threshold.,允许使用垂直后坐力上限。
+kflibSettingMaxRecoilAngleName,UI,Menu,x,Max Recoil Angle,后坐力角度上限
+kflibSettingMaxRecoilAngleDesc,UI,Menu,x,A fixed max angle to trigger recoil cap.,设置固定角度的上限。
+kflibSettingEnableDynamicCapName,UI,Menu,x,Enable Dynamic Recoil Cap,启用动态上限
+kflibSettingEnableDynamicCapDesc,UI,Menu,x,Trigger recoil cap after certain shots.,设置基于射击次数的上限。
+kflibSettingMaxDynamicRecoilCapShotsName,UI,Menu,x,Max Shots Before Capping,最大射击次数
+kflibSettingMaxDynamicRecoilCapShotsDesc,UI,Menu,x,"Trigger recoil cap after certain shots. This is a rough value, and the actual cap angle is calculated by the max random kick angle per shot.",在射击指定次数后触发后坐力上限。上限角度是根据最大随机角度计算的，所以不一定与设置完全一致。

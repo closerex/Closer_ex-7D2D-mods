@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using GearsAPI.Settings.Global;
+using UnityEngine;
 
 namespace KFCommonUtilityLib.Scripts.StaticManagers
 {
@@ -21,8 +22,10 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         private static Vector3 totalReturnCur = Vector3.zero;
         private static EntityPlayerLocal player;
         // reserved
-        public static bool enableCap = true;
-        private const float MAX_RECOIL_ANGLE = 15;
+        private static bool enableCap = true;
+        private static bool enableDynamicCap = true;
+        private static float maxRecoilAngle = 15;
+        private static int maxDynamicRecoilCapShots = 6;
         private const float DEFAULT_SNAPPINESS_PISTOL = 6f;
         private const float DEFAULT_SNAPPINESS_RIFLE = 3.6f;
         private const float DEFAULT_SNAPPINESS_SHOTGUN = 8f;
@@ -41,6 +44,44 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             targetReturnXY = Vector2.zero;
             totalRotationXY = Vector2.zero;
             totalReturnCur = Vector3.zero;
+        }
+
+        public static void InitRecoilSettings(IModGlobalSettings settings)
+        {
+            var capSetting = settings.GetTab("RecoilSettings").GetCategory("Capping");
+
+            var enableCapSetting = capSetting.GetSetting("EnableCap") as ISwitchGlobalSetting;
+            enableCap = enableCapSetting.CurrentValue == "Enable";
+            enableCapSetting.OnSettingChanged += (setting, newValue) =>
+            {
+                enableCap = newValue == "Enable";
+                UpdateSettingState(setting.Category);
+            };
+
+            var maxRecoilAngleSetting = capSetting.GetSetting("MaxRecoilAngle") as ISliderGlobalSetting;
+            maxRecoilAngle = float.Parse(maxRecoilAngleSetting.CurrentValue);
+            maxRecoilAngleSetting.OnSettingChanged += (setting, newValue) => maxRecoilAngle = float.Parse(newValue);
+
+            var enableDynamicCapSetting = capSetting.GetSetting("EnableDynamicCap") as ISwitchGlobalSetting;
+            enableDynamicCap = enableDynamicCapSetting.CurrentValue == "Enable";
+            enableDynamicCapSetting.OnSettingChanged += (setting, newValue) =>
+            {
+                enableDynamicCap = newValue == "Enable";
+                UpdateSettingState(setting.Category);
+            };
+
+            var maxDynamicRecoilCapShotsSetting = capSetting.GetSetting("MaxDynamicRecoilCapShots") as ISliderGlobalSetting;
+            maxDynamicRecoilCapShots = int.Parse(maxDynamicRecoilCapShotsSetting.CurrentValue);
+            maxDynamicRecoilCapShotsSetting.OnSettingChanged += (setting, newValue) => maxDynamicRecoilCapShots = int.Parse(newValue);
+            UpdateSettingState(capSetting);
+        }
+
+        private static void UpdateSettingState(IGlobalModSettingsCategory category)
+        {
+            category.GetSetting("EnableCap").Enabled = true;
+            category.GetSetting("MaxRecoilAngle").Enabled = enableCap && !enableDynamicCap;
+            category.GetSetting("EnableDynamicCap").Enabled = enableCap;
+            category.GetSetting("MaxDynamicRecoilCapShots").Enabled = enableCap && enableDynamicCap;
         }
 
         public static void InitPlayer(EntityPlayerLocal _player)
@@ -76,9 +117,19 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             }
             if (enableCap)
             {
-                float targetReturnXCapped = Mathf.Clamp(totalRotationXY.x, -MAX_RECOIL_ANGLE, MAX_RECOIL_ANGLE);
-                targetRotationXY.x = Mathf.Clamp(targetRotationXY.x + targetReturnXCapped - totalRotationXY.x, -MAX_RECOIL_ANGLE, MAX_RECOIL_ANGLE);
-                totalRotationXY.x = targetReturnXCapped;
+                float totalRotationXCapped;
+                float cap;
+                if (enableDynamicCap)
+                {
+                    cap = Mathf.Abs(recoilRangeVer.y) * maxDynamicRecoilCapShots;
+                }
+                else
+                {
+                    cap = maxRecoilAngle;
+                }
+                totalRotationXCapped = Mathf.Clamp(totalRotationXY.x, -cap, cap);
+                targetRotationXY.x = Mathf.Clamp(targetRotationXY.x + totalRotationXCapped - totalRotationXY.x, -cap, cap);
+                totalRotationXY.x = totalRotationXCapped;
             }
         }
 

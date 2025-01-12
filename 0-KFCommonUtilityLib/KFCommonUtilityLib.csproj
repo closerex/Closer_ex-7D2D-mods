@@ -58,6 +58,11 @@
       <HintPath>.\DOTween.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="GearsAPI, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\GearsAPI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="InControl">
       <HintPath>..\..\7DaysToDie_Data\Managed\InControl.dll</HintPath>
       <Private>False</Private>

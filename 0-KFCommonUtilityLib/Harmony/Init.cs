@@ -1,9 +1,11 @@
-﻿using HarmonyLib;
+﻿using GearsAPI.Settings;
+using GearsAPI.Settings.Global;
+using GearsAPI.Settings.World;
+using HarmonyLib;
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using UnityEngine;
 
 public class CommonUtilityLibInit : IModApi
 {
@@ -62,6 +64,24 @@ public class CommonUtilityLibInit : IModApi
         CustomEnums.KickDegreeHorizontalModifier = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("KickDegreeHorizontalModifier");
         CustomEnums.KickDegreeVerticalModifier = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("KickDegreeVerticalModifier");
         CustomEnums.WeaponErgonomics = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("WeaponErgonomics");
+    }
+}
+
+public class GearsImpl : IGearsModApi
+{
+    public void InitMod(IGearsMod modInstance)
+    {
+
+    }
+
+    public void OnGlobalSettingsLoaded(IModGlobalSettings modSettings)
+    {
+        RecoilManager.InitRecoilSettings(modSettings);
+    }
+
+    public void OnWorldSettingsLoaded(IModWorldSettings worldSettings)
+    {
+
     }
 }
 
