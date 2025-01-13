@@ -271,7 +271,7 @@ static class AnimationRiggingPatches
                 }
                 else
                 {
-                    targets.DestroyRemote();
+                    targets.DestroyFpv();
                     targets.Init(player.emodel.avatarController.GetActiveModelRoot(), false);
                 }
             }
@@ -692,7 +692,7 @@ static class AnimationRiggingPatches
         if (_entity is EntityItem _entityItem)
         {
             var targets = _entityItem.GetComponentInChildren<AnimationTargetsAbs>(true);
-            if (targets != null && !targets.Destroyed)
+            if (targets && !targets.Destroyed)
             {
                 targets.Destroy();
             }
@@ -708,9 +708,9 @@ static class AnimationRiggingPatches
         {
             foreach (var model in player.inventory.models)
             {
-                if (model != null && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+                if (model && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
                 {
-                    targets.DestroyRemote();
+                    targets.DestroyFpv();
                     targets.Init(player.emodel.avatarController.GetActiveModelRoot(), false);
                 }
             }
@@ -725,9 +725,25 @@ static class AnimationRiggingPatches
         {
             foreach (var model in player.inventory.models)
             {
-                if (model != null && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+                if (model && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
                 {
                     targets.Init(player.emodel.avatarController.GetActiveModelRoot(), player.bFirstPersonView);
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.Detach))]
+    [HarmonyPostfix]
+    private static void Postfix_Detach_EntityPlayerLocal(EntityPlayerLocal __instance)
+    {
+        if (__instance.inventory != null)
+        {
+            foreach (var model in __instance.inventory.models)
+            {
+                if (model && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+                {
+                    targets.Init(__instance.emodel.avatarController.GetActiveModelRoot(), __instance.bFirstPersonView);
                 }
             }
         }

@@ -21,11 +21,8 @@ public class RigTargets : AnimationTargetsAbs
 
     private Animator itemAnimator;
 
-#if NotEditor
-    private static int UniqueRigID = 0;
-#endif
-    public override Transform ItemFpv { get => itemFpv; set => itemTpv = value; }
-    public override Transform AttachmentRef => attachmentReference;
+    public override Transform ItemFpv { get => itemFpv; protected set => itemFpv = value; }
+    public override Transform AttachmentRef { get => attachmentReference; protected set => attachmentReference = value; }
     protected override Animator ItemAnimatorFpv => itemAnimator;
     protected override void Awake()
     {
@@ -33,11 +30,11 @@ public class RigTargets : AnimationTargetsAbs
         if (!itemFpv)
             return;
         itemAnimator = itemFpv.GetComponentInChildren<Animator>(true);
-//#if NotEditor
-//        ItemAnimator.writeDefaultValuesOnDisable = true;
-//#endif
 #if NotEditor
-        rig.gameObject.name += $"_UID_{UniqueRigID++}";
+        itemAnimator.writeDefaultValuesOnDisable = true;
+#endif
+#if NotEditor
+        rig.gameObject.name += $"_UID_{TypeBasedUID<AnimationTargetsAbs>.UID}";
         AnimationRiggingManager.AddRigExcludeName(rig.gameObject.name);
 
         itemFpv.gameObject.SetActive(false);
@@ -45,9 +42,8 @@ public class RigTargets : AnimationTargetsAbs
 #endif
     }
 
-    public override void Init(Transform playerAnimatorTrans, bool isFpv)
+    protected override void Init()
     {
-        base.Init(playerAnimatorTrans, isFpv);
         if (Destroyed || !itemFpv)
         {
             return;
@@ -57,23 +53,31 @@ public class RigTargets : AnimationTargetsAbs
         {
             Destroy(delayRenderer);
         }
-        //Log.Out($"set parent to {PlayerAnimatorTrans.parent.parent.name}/{PlayerAnimatorTrans.parent.name}\n{StackTraceUtility.ExtractStackTrace()}");
-        itemFpv.SetParent(PlayerAnimatorTrans.parent, false);
-        itemFpv.SetAsFirstSibling();
-        itemFpv.position = Vector3.zero;
-        itemFpv.localPosition = Vector3.zero;
-        itemFpv.localRotation = Quaternion.identity;
-#if NotEditor
-        Utils.SetLayerRecursively(itemFpv.gameObject, 10, Utils.ExcludeLayerZoom);
-        Utils.SetLayerRecursively(gameObject, 24, Utils.ExcludeLayerZoom);
-#endif
-        //LogInfo(itemFpv.localPosition.ToString() + " / " + itemFpv.localEulerAngles.ToString());
         if (IsFpv)
         {
+            itemFpv.SetParent(PlayerAnimatorTrans.parent, false);
+            itemFpv.SetAsFirstSibling();
+            itemFpv.position = Vector3.zero;
+            itemFpv.localPosition = Vector3.zero;
+            itemFpv.localRotation = Quaternion.identity;
             var rc = rig.GetComponent<RigConverter>();
             rc.targetRoot = PlayerAnimatorTrans;
             rc.Rebind();
         }
+        else
+        {
+            itemFpv.SetParent(PlayerAnimatorTrans.parent);
+            itemFpv.position = Vector3.zero;
+            itemFpv.localPosition = Vector3.zero;
+            itemFpv.localRotation = Quaternion.identity;
+        }
+        //Log.Out($"set parent to {PlayerAnimatorTrans.parent.parent.name}/{PlayerAnimatorTrans.parent.name}\n{StackTraceUtility.ExtractStackTrace()}");
+
+//#if NotEditor
+//        Utils.SetLayerRecursively(itemFpv.gameObject, 10, Utils.ExcludeLayerZoom);
+//        Utils.SetLayerRecursively(gameObject, 24, Utils.ExcludeLayerZoom);
+//#endif
+        //LogInfo(itemFpv.localPosition.ToString() + " / " + itemFpv.localEulerAngles.ToString());
     }
 
     protected override void SetupFpv()

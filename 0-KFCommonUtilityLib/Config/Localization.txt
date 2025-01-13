@@ -4,17 +4,19 @@ inpActToggleWeaponModeName,UI,Controls Dialog,x,Toggle Weapon Mode,切换武器�
 inpActToggleWeaponModeDesc,UI,Controls Dialog,x,"For weapons with multiple modes, cycle between them with this key",使用有多种模式的武器时，在不同模式间循环切换
 kflibTabRecoilSettingsName,UI,Menu,x,Recoil Settings,后坐力设置
 kflibSettingRecoilCSMName,UI,Menu,x,Sensitivity Multiplier,灵敏度倍率
-kflibSettingRecoilCSMDesc,UI,Menu,x,How much sensitivity compensation should be applied when dragging your mouse against the recoil while aiming.,指示在瞄准状态下抵消后坐力时要应用多少灵敏度补正。
+kflibSettingRecoilCSMDesc,UI,Menu,x,How much sensitivity compensation should be applied when dragging your mouse against the recoil while aiming. Easier recoil control for low zoom sensitivity users.,指示在瞄准状态下抵消后坐力时要应用多少灵敏度补正。帮助低瞄准灵敏度的用户更好地控制后坐力。
+kflibSettingEnablePreRecoilCompensationName,UI,Menu,x,Enable Pre-Recoil Compensation,启用后坐力提前补偿
+kflibSettingEnablePreRecoilCompensationDesc,UI,Menu,x,Allow mouse movement to negate incoming recoil before it takes effect.,允许在后坐力生效之前使用鼠标移动将其抵消。
 kflibCategoryRecoilCappingName,UI,Menu,x,Recoil Cap Settings,后坐力上限设置
 kflibSettingEnableCapName,UI,Menu,x,Enable Recoil Cap,启用后坐力上限
-kflibSettingEnableCapDesc,UI,Menu,x,Allow capping vertical recoil at certain threshold.,允许使用垂直后坐力上限。
+kflibSettingEnableCapDesc,UI,Menu,x,Allow capping vertical recoil at certain angle threshold.,允许使用垂直后坐力角度上限。
 kflibSettingRecoilRemainName,UI,Menu,x,Recoil Multiplier,过量后坐力倍率
 kflibSettingRecoilRemainDesc,UI,Menu,x,Recoil multiplier after reaching the cap.,达到后坐力上限后的后坐力倍率。
 kflibSettingEnableSoftCapName,UI,Menu,x,Enable Soft Cap,启用平滑后坐力过渡
 kflibSettingEnableSoftCapDesc,UI,Menu,x,"Lerp towards recoil multiplier before reaching cap, resulting in a much smoother recoil pattern.",在达到上限之前就开始逐步降低后坐力，使后坐力表现更加平滑。
 kflibSettingMaxRecoilAngleName,UI,Menu,x,Max Recoil Angle,后坐力角度上限
-kflibSettingMaxRecoilAngleDesc,UI,Menu,x,A fixed max angle to trigger recoil cap.,设置固定角度的上限。
+kflibSettingMaxRecoilAngleDesc,UI,Menu,x,A fixed max angle to trigger recoil cap. Only works when dynamic recoil is off.,设置固定角度的上限。仅在动态上限禁用时生效。
 kflibSettingEnableDynamicCapName,UI,Menu,x,Enable Dynamic Recoil Cap,启用动态上限
 kflibSettingEnableDynamicCapDesc,UI,Menu,x,Trigger recoil cap after certain shots.,设置基于射击次数的上限。
 kflibSettingMaxDynamicRecoilCapShotsName,UI,Menu,x,Max Shots Before Capping,最大射击次数
-kflibSettingMaxDynamicRecoilCapShotsDesc,UI,Menu,x,"Trigger recoil cap after certain shots. This is a rough value, and the actual cap angle is calculated by the max random kick angle per shot.",在射击指定次数后触发后坐力上限。上限角度是根据最大随机角度计算的，所以不一定与设置完全一致。
+kflibSettingMaxDynamicRecoilCapShotsDesc,UI,Menu,x,"Trigger recoil cap after certain shots. This is a rough value, and the actual cap angle is calculated by the max random kick angle per shot.",在射击指定次数后触发后坐力上限。上限角度是根据最大随机角度计算的，所以实际射击次数不一定与设置完全一致。

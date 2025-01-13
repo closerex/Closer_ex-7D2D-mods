@@ -24,7 +24,8 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         // reserved
         private static bool enableCap = true;
         private static bool enableDynamicCap = true;
-        private static bool enableSoftCap = true;
+        private static bool enableSoftCap = false;
+        private static bool enablePreRecoilCompensation = false;
         private static float maxRecoilAngle = 15;
         private static int maxDynamicRecoilCapShots = 6;
         private static float recoilCapRemain = 0.2f;
@@ -56,6 +57,10 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             var recoilCompensationSetting = capSetting.GetSetting("RecoilCompensationSensitivityMultiplier") as ISliderGlobalSetting;
             recoilCompensationSensitivityMultiplier = float.Parse(recoilCompensationSetting.CurrentValue);
             recoilCompensationSetting.OnSettingChanged += (setting, newValue) => recoilCompensationSensitivityMultiplier = float.Parse(newValue);
+
+            var preRecoilCompensationSetting = capSetting.GetSetting("EnablePreRecoilCompensation") as ISwitchGlobalSetting;
+            enablePreRecoilCompensation = preRecoilCompensationSetting.CurrentValue == "Enable";
+            preRecoilCompensationSetting.OnSettingChanged += (setting, newValue) => enablePreRecoilCompensation = newValue == "Enable";
 
             var enableCapSetting = capSetting.GetSetting("EnableCap") as ISwitchGlobalSetting;
             enableCap = enableCapSetting.CurrentValue == "Enable";
@@ -135,7 +140,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             float targetRotationX;
             if (enableCap && Mathf.Abs(totalRotationXY.x) >= Mathf.Abs(cap))
             {
-                targetRotationX = player.rand.RandomRange(0, recoilRangeVer.x * recoilCapRemain);
+                targetRotationX = player.rand.RandomRange(recoilRangeVer.x, recoilRangeVer.y) * recoilCapRemain;
             }
             else
             {
@@ -166,6 +171,12 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
 
         public static float CompensateX(float movedX)
         {
+            if (!enablePreRecoilCompensation)
+            {
+                if (targetReturnXY.x * movedX < 0)
+                    targetReturnXY.x = Mathf.Max(0, targetReturnXY.x + movedX);
+                return movedX;
+            }
             float targetX = targetRotationXY.x;
             float returnX = targetReturnXY.x;
             float res = Compensate(movedX, player.movementInput.rotation.x, ref targetX, ref returnX);
@@ -176,6 +187,12 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
 
         public static float CompensateY(float movedY)
         {
+            if (!enablePreRecoilCompensation)
+            {
+                if (targetReturnXY.y * movedY < 0)
+                    targetReturnXY.y = Mathf.Max(0, targetReturnXY.y + movedY);
+                return movedY;
+            }
             float targetY = targetRotationXY.y;
             float returnY = targetReturnXY.y;
             float res = Compensate(movedY, player.movementInput.rotation.y, ref targetY, ref returnY);
@@ -300,7 +317,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 player.movementInput.rotation -= result;
                 if (enableCap)
                 {
-                    result = Vector3.SmoothDamp(Vector3.zero, new Vector3(totalRotationXY.x, totalRotationXY.y), ref totalReturnCur, 2 / returnSpeed);
+                    result = Vector3.SmoothDamp(Vector3.zero, new Vector3(totalRotationXY.x, totalRotationXY.y), ref totalReturnCur, 4 / returnSpeed);
                     totalRotationXY -= new Vector2(result.x, result.y);
                 }
                 if (targetReturnXY.sqrMagnitude <= 1e-6 && totalRotationXY.sqrMagnitude <= 1e-6)

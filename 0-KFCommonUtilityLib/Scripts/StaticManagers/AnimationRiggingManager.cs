@@ -157,7 +157,11 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             if (RigItemChangedThisFrame)
             {
                 Log.Out("Rigged weapon changed, resetting animator...");
-                RigItemChangedThisFrame = false;
+                Transform modelRoot = controller.GetActiveModelRoot();
+                if (modelRoot && (!targets || targets.Destroyed) && modelRoot.GetComponentInChildren<Animator>().TryGetComponent<AnimationGraphBuilder>(out var builder))
+                {
+                    builder.DestroyGraph();
+                }
                 if (controller is AvatarLocalPlayerController localPlayerController && localPlayerController.isFPV && localPlayerController.FPSArms != null)
                 {
                     localPlayerController.FPSArms?.Animator.Play("idle", 0, 0f);

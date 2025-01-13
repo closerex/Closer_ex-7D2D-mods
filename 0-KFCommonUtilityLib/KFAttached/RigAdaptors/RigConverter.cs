@@ -17,6 +17,10 @@ public class RigConverter : MonoBehaviour
     {
         foreach (var constraint in GetComponentsInChildren<IRigConstraint>(true))
         {
+            if (constraint.TryGetComponent<RigConverterIgnore>())
+            {
+                continue;
+            }
             var adaptorName = constraint.GetType().Name + "Adaptor,KFCommonUtilityLib";
             var adaptorType = Type.GetType(adaptorName);
             var adaptor = (RigAdaptorAbs)constraint.component.transform.AddMissingComponent(adaptorType);

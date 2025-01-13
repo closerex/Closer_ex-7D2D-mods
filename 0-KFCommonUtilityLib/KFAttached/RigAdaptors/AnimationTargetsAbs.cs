@@ -6,10 +6,12 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     [SerializeField]
     protected Transform itemTpv;
     protected Animator itemAnimatorTpv;
+    protected bool fpvSet = false;
+    protected bool tpvSet = false;
 
-    public abstract Transform ItemFpv { get; set; }
-    public abstract Transform AttachmentRef { get; }
-    public Transform ItemTpv { get => itemTpv; set => itemTpv = value; }
+    public abstract Transform ItemFpv { get; protected set; }
+    public abstract Transform AttachmentRef { get; protected set; }
+    public Transform ItemTpv { get => itemTpv; protected set => itemTpv = value; }
     public Transform ItemTpvOrSelf => itemTpv ? itemTpv : transform;
     public bool IsFpv { get; set; }
     public bool Destroyed { get; protected set; }
@@ -30,7 +32,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
         gameObject.GetOrAddComponent<AttachmentReference>().attachmentReference = AttachmentRef;
     }
 
-    public virtual void Init(Transform playerAnimatorTrans, bool isFpv)
+    public void Init(Transform playerAnimatorTrans, bool isFpv)
     {
         if (Destroyed)
         {
@@ -41,6 +43,8 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
             Destroy();
             return;
         }
+        fpvSet = false;
+        tpvSet = false;
         var animator = playerAnimatorTrans.GetComponentInChildren<Animator>();
         playerAnimatorTrans = animator.transform;
         PlayerAnimatorTrans = playerAnimatorTrans;
@@ -54,6 +58,17 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
             itemAnimatorTpv = null;
         }
 
+#if NotEditor
+        Utils.SetLayerRecursively(gameObject, 24, Utils.ExcludeLayerZoom);
+        if (ItemFpv)
+        {
+            Utils.SetLayerRecursively(ItemFpv.gameObject, 10, Utils.ExcludeLayerZoom);
+        }
+        if (ItemTpv)
+        {
+            Utils.SetLayerRecursively(ItemTpv.gameObject, 24, Utils.ExcludeLayerZoom);
+        }
+#endif
         if (ItemTpv)
         {
             ItemTpv.parent = isFpv ? playerAnimatorTrans.parent : playerAnimatorTrans;
@@ -62,8 +77,11 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
             ItemTpv.localScale = Vector3.one;
         }
 
+        Init();
         SetEnabled(false);
     }
+
+    protected abstract void Init();
 
     public void Setup()
     {
@@ -72,13 +90,15 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
             Destroy();
             return;
         }
-        if (IsFpv)
+        if (IsFpv && !fpvSet)
         {
             SetupFpv();
+            fpvSet = true;
         }
-        else
+        else if (!IsFpv && !tpvSet)
         {
             SetupTpv();
+            tpvSet = true;
         }
     }
 
@@ -96,13 +116,15 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
             Destroy();
             return;
         }
-        if (IsFpv)
+        if (IsFpv && fpvSet)
         {
             RemoveFpv();
+            fpvSet = false;
         }
-        else
+        else if (!IsFpv && tpvSet)
         {
             RemoveTpv();
+            tpvSet = false;
         }
     }
 
@@ -122,6 +144,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
         if (AttachmentRef)
         {
             AttachmentRef.parent = transform;
+            AttachmentRef = null;
         }
 
         DestroyFpv();
@@ -129,18 +152,6 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
         PlayerAnimatorTrans = null;
 
         Component.Destroy(this);
-    }
-
-    public void DestroyRemote()
-    {
-        if (ItemTpv)
-        {
-            DestroyFpv();
-        }
-        else
-        {
-            Destroy();
-        }
     }
 
     public virtual void DestroyFpv()
@@ -154,6 +165,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
             ItemFpv.parent = null;
             GameObject.Destroy(ItemFpv.gameObject);
         }
+        fpvSet = false;
         ItemFpv = null;
         Log.Out("destroy fpv");
     }
@@ -169,6 +181,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
             ItemTpv.parent = null;
             GameObject.Destroy(ItemTpv.gameObject);
         }
+        tpvSet = false;
         ItemTpv = null;
         Log.Out("destroy tpv");
     }
