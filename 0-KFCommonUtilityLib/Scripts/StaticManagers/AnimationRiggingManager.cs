@@ -283,8 +283,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         {
             if (itemModel == null)
                 return null;
-            var player = GameManager.Instance.World.GetPrimaryPlayer();
-            if (player == null || !itemModel.TryGetComponent<AnimationTargetsAbs>(out var targets) || targets.Destroyed)
+            if (!itemModel.TryGetComponent<AnimationTargetsAbs>(out var targets) || targets.Destroyed)
             {
                 if (string.IsNullOrEmpty(name))
                     return itemModel;

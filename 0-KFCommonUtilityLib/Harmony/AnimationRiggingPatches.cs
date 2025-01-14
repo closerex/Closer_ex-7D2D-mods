@@ -733,17 +733,41 @@ static class AnimationRiggingPatches
         }
     }
 
-    [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.Detach))]
-    [HarmonyPostfix]
-    private static void Postfix_Detach_EntityPlayerLocal(EntityPlayerLocal __instance)
+    [HarmonyPatch(typeof(EntityAlive), nameof(EntityAlive.Detach))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_Detach_EntityAlive(IEnumerable<CodeInstruction> instructions)
     {
+        var codes = instructions.ToList();
+
+        var fld_inv = AccessTools.Field(typeof(EntityAlive), nameof(EntityAlive.inventory));
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].StoresField(fld_inv))
+            {
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    CodeInstruction.Call(typeof(AnimationRiggingPatches), nameof(AnimationRiggingPatches.DetachInitInventory))
+                });
+                break;
+            }
+        }
+        return codes;
+    }
+
+    private static void DetachInitInventory(EntityAlive __instance)
+    {
+        if (!(__instance is EntityPlayer player))
+        {
+            return;
+        }
         if (__instance.inventory != null)
         {
             foreach (var model in __instance.inventory.models)
             {
                 if (model && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
                 {
-                    targets.Init(__instance.emodel.avatarController.GetActiveModelRoot(), __instance.bFirstPersonView);
+                    targets.Init(__instance.emodel.avatarController.GetActiveModelRoot(), player is EntityPlayerLocal localPlayer ? localPlayer.bFirstPersonView : false);
                 }
             }
         }
