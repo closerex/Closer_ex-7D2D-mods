@@ -105,11 +105,15 @@ public class ItemActionBetterLauncher : ItemActionRanged
             Log.Error("null info!");
             return;
         }
-        if (ItemActionDataBetterLauncher.projectileJoint == null)
+        Vector3 realStartPosition;
+        if (ItemActionDataBetterLauncher.projectileJoint)
         {
-            return;
+            realStartPosition = ItemActionDataBetterLauncher.projectileJoint.position + Origin.position;
         }
-        Vector3 realStartPosition = ItemActionDataBetterLauncher.projectileJoint.position + Origin.position;
+        else
+        {
+            realStartPosition = _actionData.invData.model.transform.position + Origin.position;
+        }
         for (int i = 0; i < projCount; i++)
         {
             var par = group.Fire(entity.entityId, ItemActionDataBetterLauncher.info, _startPos, realStartPosition, getDirectionOffset(ItemActionDataBetterLauncher, _direction, i), entity, hitmaskOverride);
