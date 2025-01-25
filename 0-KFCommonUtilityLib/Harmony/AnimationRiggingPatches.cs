@@ -620,11 +620,19 @@ static class AnimationRiggingPatches
         var player = __instance.GetComponentInParent<EntityPlayerLocal>();
         if (player && player.inventory != null)
         {
-            foreach (var model in player.inventory.models)
+            for (int i = 0; i < player.inventory.models.Length; i++)
             {
+                Transform model = player.inventory.models[i];
                 if (model != null && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
                 {
-                    targets.Init(__instance.transform, true);
+                    if (i == player.inventory.holdingItemIdx)
+                    {
+                        player.inventory.ForceHoldingItemUpdate();
+                    }
+                    else
+                    {
+                        targets.Init(__instance.transform, true);
+                    }
                 }
             }
         }
