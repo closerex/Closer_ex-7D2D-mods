@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 [AddComponentMenu("KFAttachments/Binding Helpers/Transform Activation Binding")]
@@ -54,7 +55,11 @@ public class TransformActivationBinding : MonoBehaviour
                     t.SetActive(true);
             }
         }
-        UpdateBool(true);
+#if NotEditor
+        ThreadManager.StartCoroutine(UpdateBool(true));
+#else
+        StartCoroutine(UpdateBool(true));
+#endif
     }
 
     private void OnDisable()
@@ -90,17 +95,23 @@ public class TransformActivationBinding : MonoBehaviour
                     t.SetActive(true);
             }
         }
-        UpdateBool(false);
+#if NotEditor
+        ThreadManager.StartCoroutine(UpdateBool(false));
+#else
+        StartCoroutine(UpdateBool(false));
+#endif
     }
 
-    internal void UpdateBool(bool enabled)
+    internal IEnumerator UpdateBool(bool enabled)
     {
-        if (animatorParamBindings != null && targets)
+        yield return new WaitForEndOfFrame();
+        if (animatorParamBindings != null && targets && targets.IsAnimationSet)
         {
-            Animator animator = targets.ItemAnimator;
-            if (!animator)
+            IAnimatorWrapper animator = targets.GraphBuilder.WeaponWrapper;
+            if (animator == null || !animator.IsValid)
             {
-                return;
+                Log.Warning($"animator wrapper invalid!");
+                yield break;
             }
             foreach (string str in animatorParamBindings)
             {

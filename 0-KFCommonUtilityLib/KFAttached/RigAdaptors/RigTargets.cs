@@ -1,14 +1,17 @@
 #if NotEditor
 using KFCommonUtilityLib.Scripts.StaticManagers;
+using UniLinq;
+#else
+using System.Linq;
 #endif
 using System.Diagnostics;
 using UnityEngine;
-using UnityEngine.Animations;
 using UnityEngine.Animations.Rigging;
 
 [AddComponentMenu("KFAttachments/RigAdaptors/Rig Targets")]
 public class RigTargets : AnimationTargetsAbs
 {
+    [Header("Fpv Fields")]
     [SerializeField]
     public Transform itemFpv;
     [SerializeField]
@@ -16,8 +19,7 @@ public class RigTargets : AnimationTargetsAbs
     [SerializeField]
     public Transform attachmentReference;
 
-    private RigLayer rigLayer;
-    private RigBuilder weaponRB;
+    private RigLayer rigLayerFpv;
 
     private Animator itemAnimator;
 
@@ -38,23 +40,23 @@ public class RigTargets : AnimationTargetsAbs
         AnimationRiggingManager.AddRigExcludeName(rig.gameObject.name);
 
         itemFpv.gameObject.SetActive(false);
-        rig.gameObject.SetActive(false);
 #endif
     }
 
     protected override void Init()
     {
-        if (Destroyed || !itemFpv)
+        base.Init();
+        if (!itemFpv)
         {
             return;
         }
 
-        if (ItemAnimator.TryGetComponent<AnimationDelayRender>(out var delayRenderer))
-        {
-            Destroy(delayRenderer);
-        }
         if (IsFpv)
         {
+            if (ItemAnimatorFpv.TryGetComponent<AnimationDelayRender>(out var delayRenderer))
+            {
+                Destroy(delayRenderer);
+            }
             itemFpv.SetParent(PlayerAnimatorTrans.parent, false);
             itemFpv.SetAsFirstSibling();
             itemFpv.position = Vector3.zero;
@@ -80,79 +82,76 @@ public class RigTargets : AnimationTargetsAbs
         //LogInfo(itemFpv.localPosition.ToString() + " / " + itemFpv.localEulerAngles.ToString());
     }
 
-    protected override void SetupFpv()
+    protected override bool SetupFpv()
     {
-        if (!PlayerAnimatorTrans || !itemFpv)
-        {
-            Destroy();
-            return;
-        }
-        if (rigLayer != null)
-        {
-            return;
-        }
         Stopwatch sw = new Stopwatch();
         sw.Start();
         rig.transform.SetParent(PlayerAnimatorTrans, false);
-        rig.transform.SetAsFirstSibling();
         rig.transform.position = Vector3.zero;
         rig.transform.localPosition = Vector3.zero;
         rig.transform.localRotation = Quaternion.identity;
-        var animator = PlayerAnimatorTrans.GetComponent<Animator>();
-        animator.UnbindAllStreamHandles();
-        animator.UnbindAllSceneHandles();
 
         var rigBuilder = PlayerAnimatorTrans.AddMissingComponent<RigBuilder>();
-        rigBuilder.layers.RemoveAll(r => r.rig == rig);
-        rigLayer = new RigLayer(rig, true);
-        rigBuilder.layers.Add(rigLayer);
-        animator.Rebind();
-        rigBuilder.Build();
+        rigBuilder.layers.Insert(0, rigLayerFpv = new RigLayer(rig, true));
+#if NotEditor
+        foreach (var layer in rigBuilder.layers)
+        {
+            if (layer.name == SDCSUtils.IKRIG)
+            {
+                layer.active = false;
+            }
+        }
+#endif
+        BuildRig(rigBuilder.GetComponent<Animator>(), rigBuilder);
         sw.Stop();
         string info = $"setup animation rig took {sw.ElapsedMilliseconds} ms";
+        //info += $"\n{StackTraceUtility.ExtractStackTrace()}";
         Log.Out(info);
+        return true;
     }
 
     protected override void RemoveFpv()
     {
-        if (!PlayerAnimatorTrans || !itemFpv)
-        {
-            Destroy();
-            return;
-        }
-        if (rigLayer == null)
-        {
-            return;
-        }
         Stopwatch sw = new Stopwatch();
         sw.Start();
-        var animator = PlayerAnimatorTrans.GetComponent<Animator>();
 
         var rigBuilder = PlayerAnimatorTrans.AddMissingComponent<RigBuilder>();
-        rigBuilder.layers.Remove(rigLayer);
-        animator.UnbindAllStreamHandles();
-        animator.UnbindAllSceneHandles();
-
+        int removed = rigBuilder.layers.RemoveAll(r => r.name == rigLayerFpv.name);
+//#if NotEditor
+//        Log.Out($"Removed {removed} layers, remaining:\n{string.Join("\n", rigBuilder.layers.Select(layer => layer.name))}");
+//#endif
         rig.transform.SetParent(transform, false);
-        animator.Rebind();
-        rigBuilder.Build();
         rig.gameObject.SetActive(false);
-        rigLayer = null;
+        rigLayerFpv = null;
+#if NotEditor
+        foreach (var layer in rigBuilder.layers)
+        {
+            if (layer.name == SDCSUtils.IKRIG)
+            {
+                layer.active = true;
+            }
+        }
+#endif
+        BuildRig(rigBuilder.GetComponent<Animator>(), rigBuilder);
         sw.Stop();
         string info = $"destroy animation rig took {sw.ElapsedMilliseconds} ms";
+        //info += $"\n{StackTraceUtility.ExtractStackTrace()}";
         Log.Out(info);
     }
 
     public override void DestroyFpv()
     {
+#if NotEditor
+        if (rig)
+        {
+            AnimationRiggingManager.RemoveRigExcludeName(rig.gameObject.name);
+        }
+#endif
         base.DestroyFpv();
         if (rig)
         {
-#if NotEditor
-            AnimationRiggingManager.RemoveRigExcludeName(rig.gameObject.name);
-#endif
             rig.transform.parent = null;
-            GameObject.Destroy(rig.gameObject);
+            GameObject.DestroyImmediate(rig.gameObject);
         }
         rig = null;
     }
@@ -162,41 +161,23 @@ public class RigTargets : AnimationTargetsAbs
         //var t = new StackTrace();
 
         //LogInfo($"set enabled {isFPV} stack trace:\n{t.ToString()}");
-        if (IsFpv)
-        {
-            var rigBuilder = PlayerAnimatorTrans.AddMissingComponent<RigBuilder>();
-        }
         if (itemFpv)
         {
             itemFpv.localPosition = enabled ? Vector3.zero : new Vector3(0, -100, 0);
         }
         base.SetEnabled(enabled);
 #if NotEditor
-        if (enabled && ItemAnimator && !ItemAnimator.TryGetComponent<AnimationDelayRender>(out var delayRenderer))
+        if (enabled && IsFpv && ItemAnimatorFpv && !ItemAnimatorFpv.TryGetComponent<AnimationDelayRender>(out var delayRenderer))
         {
-            delayRenderer = ItemAnimator.gameObject.AddComponent<AnimationDelayRender>();
+            delayRenderer = ItemAnimatorFpv.gameObject.AddComponent<AnimationDelayRender>();
         }
 #endif
     }
 
 #if NotEditor
-    private readonly static int[] resetHashes = new int[]
-    {
-            Animator.StringToHash("Reload"),
-            Animator.StringToHash("WeaponFire")
-    };
-
     public override void UpdatePlayerAvatar(AvatarController avatarController, bool rigWeaponChanged)
     {
         base.UpdatePlayerAvatar(avatarController, rigWeaponChanged);
-        if (avatarController is AvatarLocalPlayerController localPlayerController && localPlayerController.isFPV && localPlayerController.FPSArms != null)
-        {
-            localPlayerController.FPSArms.Animator.Play("idle", 0, 0f);
-            foreach (var hash in resetHashes)
-            {
-                AnimationRiggingPatches.VanillaResetTrigger(localPlayerController, hash, false);
-            }
-        }
     }
 #endif
 }

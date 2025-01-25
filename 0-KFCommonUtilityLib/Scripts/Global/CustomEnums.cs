@@ -18,5 +18,6 @@
     public static PassiveEffects KickDegreeHorizontalModifier;
     public static PassiveEffects KickDegreeVerticalModifier;
     public static PassiveEffects WeaponErgonomics;
+    public static PassiveEffects RecoilCameraShakeStrength;
     #endregion
 }

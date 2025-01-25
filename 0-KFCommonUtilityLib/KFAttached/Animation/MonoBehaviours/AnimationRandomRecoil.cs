@@ -3,11 +3,16 @@ using Unity.Mathematics;
 using UnityEngine;
 
 [AddComponentMenu("KFAttachments/Binding Helpers/Animation Random Recoil")]
-public class AnimationRandomRecoil : AnimationProceduralRecoildAbs
+public class AnimationRandomRecoil : AnimationProceduralRecoildAbs, IPlayableGraphRelated
+#if UNITY_EDITOR
+    , ISerializationCallbackReceiver
+#endif
 {
     [Header("Targets")]
     [SerializeField] private Transform target;
+    [SerializeField, HideInInspector] private string targetName;
     [SerializeField] private Transform pivot;
+    [SerializeField, HideInInspector] private string pivotName;
     [Header("Rotation")]
     //[SerializeField] private Vector3 minRotation = new Vector3(-5, -2, -2);
     //[SerializeField] private Vector3 maxRotation = new Vector3(0, 2, 2);
@@ -32,20 +37,15 @@ public class AnimationRandomRecoil : AnimationProceduralRecoildAbs
     private Sequence seq;
     //private bool isTweeningIn = true;
 
-    private void Awake()
-    {
-        if (pivot == null || target == null)
-        {
-            Destroy(this);
-        }
-    }
-
     public override void AddRecoil(Vector3 positionMultiplier, Vector3 rotationMultiplier)
     {
-        targetPosition = Vector3.Scale(KFExtensions.Random(randomKickbackMin, randomKickbackMax), positionMultiplier);
-        targetRotation = Vector3.Scale(KFExtensions.Random(randomRotationMin, randomRotationMax), rotationMultiplier);
-        GameObject targetObj = target.gameObject;
-        RecreateSeq();
+        if (target && pivot)
+        {
+            targetPosition = Vector3.Scale(KFExtensions.Random(randomKickbackMin, randomKickbackMax), positionMultiplier);
+            targetRotation = Vector3.Scale(KFExtensions.Random(randomRotationMin, randomRotationMax), rotationMultiplier);
+            GameObject targetObj = target.gameObject;
+            RecreateSeq();
+        }
     }
 
     private void OnEnable()
@@ -61,8 +61,11 @@ public class AnimationRandomRecoil : AnimationProceduralRecoildAbs
     private void ResetSeq()
     {
         seq?.Rewind(false);
-        target.localEulerAngles = Vector3.zero;
-        target.localPosition = Vector3.zero;
+        if (target)
+        {
+            target.localEulerAngles = Vector3.zero;
+            target.localPosition = Vector3.zero;
+        }
     }
 
     private void RecreateSeq()
@@ -84,14 +87,77 @@ public class AnimationRandomRecoil : AnimationProceduralRecoildAbs
 
     private void UpdateTransform()
     {
-        target.localEulerAngles = Vector3.zero;
-        target.localPosition = Vector3.zero;
-        target.RotateAroundPivot(pivot, currentRotation);
-        target.localPosition += currentPosition;
+        if (target)
+        {
+            target.localEulerAngles = Vector3.zero;
+            target.localPosition = Vector3.zero;
+            target.RotateAroundPivot(pivot, currentRotation);
+            target.localPosition += currentPosition;
+        }
+
         //if (!isTweeningIn)
         //{
         //    targetRotation = currentRotation;
         //    targetPosition = currentPosition;
         //}
     }
+
+    public MonoBehaviour Init(Transform playerAnimatorTrans, bool isLocalPlayer)
+    {
+        if (isLocalPlayer)
+        {
+            var copy = playerAnimatorTrans.AddMissingComponent<AnimationRandomRecoil>();
+            copy.enabled = true;
+            if (target)
+            {
+                copy.target = this.target;
+            }
+            else
+            {
+                copy.target = playerAnimatorTrans.FindInAllChilds(targetName);
+            }
+            if (pivot)
+            {
+                copy.pivot = pivot;
+            }
+            else
+            {
+                copy.pivot = playerAnimatorTrans.FindInAllChilds(pivotName);
+            }
+            copy.randomRotationMin = this.randomRotationMin;
+            copy.randomRotationMax = this.randomRotationMax;
+            copy.randomKickbackMin = this.randomKickbackMin;
+            copy.randomKickbackMax = this.randomKickbackMax;
+            copy.tweenInDuration = this.tweenInDuration;
+            copy.tweenOutDuration = this.tweenOutDuration;
+            copy.elasticAmplitude = this.elasticAmplitude;
+            copy.elasticPeriod = this.elasticPeriod;
+            return copy;
+        }
+        return null;
+    }
+
+    public void Disable(Transform playerAnimatorTrans)
+    {
+        enabled = false;
+    }
+
+#if UNITY_EDITOR
+    public void OnBeforeSerialize()
+    {
+        if (target)
+        {
+            targetName = target.name;
+        }
+        if (pivot)
+        {
+            pivotName = pivot.name;
+        }
+    }
+
+    public void OnAfterDeserialize()
+    {
+
+    }
+#endif
 }

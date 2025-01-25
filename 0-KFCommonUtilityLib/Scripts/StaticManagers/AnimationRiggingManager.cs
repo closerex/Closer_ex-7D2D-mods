@@ -135,6 +135,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             {
                 targets.UpdatePlayerAvatar(controller, RigItemChangedThisFrame);
             }
+            controller.UpdateBool(AvatarController.isCrouchingHash, controller.entity.IsCrouching, true);
             //if ((controller.Entity as EntityPlayerLocal).bFirstPersonView && targets && !targets.Destroyed && targets.itemFpv)
             //{
             //    //workaround for animator bullshit
@@ -154,35 +155,42 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             //    //controller.FPSArms?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
             //    //controller.CharacterBody?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
             //}
-            if (RigItemChangedThisFrame)
-            {
-                Log.Out("Rigged weapon changed, resetting animator...");
-                Transform modelRoot = controller.GetActiveModelRoot();
-                if (modelRoot && (!targets || targets.Destroyed) && modelRoot.GetComponentInChildren<Animator>().TryGetComponent<AnimationGraphBuilder>(out var builder))
-                {
-                    builder.DestroyGraph();
-                }
-                if (controller is AvatarLocalPlayerController localPlayerController && localPlayerController.isFPV && localPlayerController.FPSArms != null)
-                {
-                    localPlayerController.FPSArms?.Animator.Play("idle", 0, 0f);
-                }
-                controller.UpdateInt(AvatarController.weaponHoldTypeHash, -1, false);
-            }
+            //if (RigItemChangedThisFrame)
+            //{
+            //    Log.Out("Rigged weapon changed, resetting animator...");
+            //    Transform modelRoot = controller.GetActiveModelRoot();
+            //    //if (modelRoot && (!targets || targets.Destroyed) && modelRoot.GetComponentInChildren<Animator>().TryGetComponent<AnimationGraphBuilder>(out var builder))
+            //    //{
+            //    //    builder.DestroyGraph(!targets || targets.Destroyed);
+            //    //}
+            //    if (controller is AvatarLocalPlayerController localPlayerController && localPlayerController.isFPV && localPlayerController.FPSArms != null)
+            //    {
+            //        if (localPlayerController.FPSArms.Animator.TryGetComponent<AnimationGraphBuilder>(out var builder))
+            //        {
+            //            builder.VanillaWrapper.Play("idle", 0, 0f);
+            //        }
+            //        else
+            //        {
+            //            localPlayerController.FPSArms.Animator.Play("idle", 0, 0f);
+            //        }
+            //    }
+            //    controller.UpdateInt(AvatarController.weaponHoldTypeHash, -1, false);
+            //}
         }
 
         public static void OnClearInventorySlot(Inventory inv, int slot)
         {
-            if (inv == null || slot != inv.holdingItemIdx)
+            if (inv == null)
                 return;
             Transform transform = inv.models[slot];
             if (transform && transform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
             {
                 //RigItemChangedThisFrame = true;
-                if (inv.entity is EntityPlayer)
+                targets.Destroy();
+                if (slot == inv.holdingItemIdx && inv.entity is EntityPlayer)
                 {
                     hash_rig_changed_players.Add(inv.entity.entityId);
                 }
-                targets.Destroy();
             }
         }
 
@@ -203,14 +211,14 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 return;
             }
             AnimationTargetsAbs targets = lastHoldingTransform.GetComponent<AnimationTargetsAbs>();
-            if (targets && !targets.Destroyed)
-            {
-                //RigItemChangedThisFrame = true;
-                hash_rig_changed_players.Add(player.entityId);
-                return;
-            }
+            //if (targets && !targets.Destroyed && targets.IsAnimationSet)
+            //{
+            //    //RigItemChangedThisFrame = true;
+            //    hash_rig_changed_players.Add(player.entityId);
+            //    return;
+            //}
             targets = GetRigTargetsFromPlayer(player);
-            if (targets && !targets.Destroyed)
+            if (targets && !targets.Destroyed && targets.IsAnimationSet)
             {
                 //RigItemChangedThisFrame = true;
                 hash_rig_changed_players.Add(player.entityId);
@@ -372,64 +380,54 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             return true;
         }
 
-        //private static int hash = Animator.StringToHash("WeaponFire");
-        //public static void FpvWeaponFire()
+        //public static void SetTrigger(int _pid, EntityPlayer player)
         //{
-        //    if (fpvTransformRef != null)
+        //    AnimationTargetsAbs targets = GetRigTargetsFromPlayer(player);
+        //    if (targets && !targets.Destroyed && targets.ItemAnimator)
         //    {
-        //        fpvTransformRef.fpvAnimator?.ResetTrigger(hash);
-        //        fpvTransformRef.fpvAnimator?.SetTrigger(hash);
+        //        targets.ItemAnimator.SetTrigger(_pid);
+        //        //Log.Out($"setting trigger {_pid}");
         //    }
         //}
 
-        public static void SetTrigger(int _pid, EntityPlayer player)
-        {
-            AnimationTargetsAbs targets = GetRigTargetsFromPlayer(player);
-            if (targets && !targets.Destroyed && targets.ItemAnimator)
-            {
-                targets.ItemAnimator.SetTrigger(_pid);
-                //Log.Out($"setting trigger {_pid}");
-            }
-        }
+        //public static void ResetTrigger(int _pid, EntityPlayer player)
+        //{
+        //    AnimationTargetsAbs targets = GetRigTargetsFromPlayer(player);
+        //    if (targets && !targets.Destroyed && targets.ItemAnimator)
+        //    {
+        //        targets.ItemAnimator.ResetTrigger(_pid);
+        //        //Log.Out($"resetting trigger {_pid}");
+        //    }
+        //}
 
-        public static void ResetTrigger(int _pid, EntityPlayer player)
-        {
-            AnimationTargetsAbs targets = GetRigTargetsFromPlayer(player);
-            if (targets && !targets.Destroyed && targets.ItemAnimator)
-            {
-                targets.ItemAnimator.ResetTrigger(_pid);
-                //Log.Out($"resetting trigger {_pid}");
-            }
-        }
+        //public static void SetFloat(int _pid, float _value, EntityPlayer player)
+        //{
+        //    AnimationTargetsAbs targets = GetRigTargetsFromPlayer(player);
+        //    if (targets&& !targets.Destroyed  && targets.ItemAnimator)
+        //    {
+        //        targets.ItemAnimator.SetFloat(_pid, _value);
+        //        //Log.Out($"setting float {_pid}");
+        //    }
+        //}
 
-        public static void SetFloat(int _pid, float _value, EntityPlayer player)
-        {
-            AnimationTargetsAbs targets = GetRigTargetsFromPlayer(player);
-            if (targets&& !targets.Destroyed  && targets.ItemAnimator)
-            {
-                targets.ItemAnimator.SetFloat(_pid, _value);
-                //Log.Out($"setting float {_pid}");
-            }
-        }
+        //public static void SetBool(int _pid, bool _value, EntityPlayer player)
+        //{
+        //    AnimationTargetsAbs targets = GetRigTargetsFromPlayer(player);
+        //    if (targets && !targets.Destroyed && targets.ItemAnimator)
+        //    {
+        //        targets.ItemAnimator.SetBool(_pid, _value);
+        //        //Log.Out($"setting bool {_pid}");
+        //    }
+        //}
 
-        public static void SetBool(int _pid, bool _value, EntityPlayer player)
-        {
-            AnimationTargetsAbs targets = GetRigTargetsFromPlayer(player);
-            if (targets && !targets.Destroyed && targets.ItemAnimator)
-            {
-                targets.ItemAnimator.SetBool(_pid, _value);
-                //Log.Out($"setting bool {_pid}");
-            }
-        }
-
-        public static void SetInt(int _pid, int _value, EntityPlayer player)
-        {
-            AnimationTargetsAbs targets = GetRigTargetsFromPlayer(player);
-            if (targets && !targets.Destroyed && targets.ItemAnimator)
-            {
-                targets.ItemAnimator.SetInteger(_pid, _value);
-                //Log.Out($"setting int {_pid}");
-            }
-        }
+        //public static void SetInt(int _pid, int _value, EntityPlayer player)
+        //{
+        //    AnimationTargetsAbs targets = GetRigTargetsFromPlayer(player);
+        //    if (targets && !targets.Destroyed && targets.ItemAnimator)
+        //    {
+        //        targets.ItemAnimator.SetInteger(_pid, _value);
+        //        //Log.Out($"setting int {_pid}");
+        //    }
+        //}
     }
 }

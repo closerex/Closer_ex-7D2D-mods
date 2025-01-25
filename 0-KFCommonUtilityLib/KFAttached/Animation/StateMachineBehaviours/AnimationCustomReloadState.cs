@@ -18,7 +18,7 @@ public class AnimationCustomReloadState : StateMachineBehaviour
 #if NotEditor
         if (player == null)
         {
-            player = animator.GetComponentInParent<EntityPlayerLocal>();
+            player = animator.GetComponentInParent<EntityAlive>();
         }
         int actionIndex = MultiActionManager.GetActionIndexForEntity(player);
 #if DEBUG
@@ -88,7 +88,7 @@ public class AnimationCustomReloadState : StateMachineBehaviour
     }
 
     private ItemActionRanged.ItemActionDataRanged actionData;
-    private EntityPlayerLocal player;
+    private EntityAlive player;
     private AnimationReloadEvents eventBridge;
 #endif
 }

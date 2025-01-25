@@ -381,7 +381,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 }
                 EntityAlive hitEntityAlive = hitEntity as EntityAlive;
                 DamageSourceEntity damageSourceEntity = new DamageSourceEntity(EnumDamageSource.External, _damageType, _attackerEntityId, hitInfo.ray.direction, hitInfo.transform.name, hitInfo.hit.pos, Voxel.phyxRaycastHit.textureCoord);
-                damageSourceEntity.AttackingItem = launcherValue;
+                damageSourceEntity.AttackingItem = projectileValue;
                 damageSourceEntity.DismemberChance = _dismemberChance;
                 damageSourceEntity.CreatorEntityId = ownedEntityId;
                 bool isCriticalHit = _attackDetails.isCriticalHit;
@@ -392,6 +392,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                     if (hitEntityAlive.Health > 0)
                     {
                         equipmentTags = FastTags<TagGroup.Global>.Parse(damageSourceEntity.GetEntityDamageEquipmentSlotGroup(hitEntityAlive).ToStringCached());
+                        equipmentTags |= DamagePatches.GetBodyPartTags(damageSourceEntity.GetEntityDamageBodyPart(hitEntityAlive));
                     }
                     finalEntityDamage = (int)MultiActionReversePatches.ProjectileGetValue(PassiveEffects.DamageModifier, projectileValue, finalEntityDamage, attackerEntity, null, equipmentTags | _attackDetails.WeaponTypeTag | hitEntityAlive.EntityClass.Tags, true, false);
                     finalEntityDamage = (int)MultiActionReversePatches.ProjectileGetValue(PassiveEffects.InternalDamageModifier, projectileValue, finalEntityDamage, hitEntityAlive, null, equipmentTags | projectileValue.ItemClass.ItemTags, true, false);

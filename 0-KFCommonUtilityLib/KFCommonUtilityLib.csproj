@@ -174,6 +174,42 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="KFAttached\LeanTween\License.txt" />
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\BlendConstraintAdaptor.cs.meta">
+      <DependentUpon>BlendConstraintReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\ChainIKConstraintAdaptor.cs.meta">
+      <DependentUpon>ChainIKConstraintReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\DampedTransformAdaptor.cs.meta">
+      <DependentUpon>DampedTransformReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiAimConstraintAdaptor.cs.meta">
+      <DependentUpon>MultiAimConstraintReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiParentConstraintAdaptor.cs.meta">
+      <DependentUpon>MultiParentConstraintReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiPositionConstraintAdaptor.cs.meta">
+      <DependentUpon>MultiPositionConstraintReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiReferentialConstraintAdaptor.cs.meta">
+      <DependentUpon>MultiReferentialConstraintReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiRotationConstraintAdaptor.cs.meta">
+      <DependentUpon>MultiRotationConstraintReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\OverrideTransformAdaptor.cs.meta">
+      <DependentUpon>OverrideTransformReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\TwistChainConstraintAdaptor.cs.meta">
+      <DependentUpon>TwistChainConstraintReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\TwistCorrectionAdaptor.cs.meta">
+      <DependentUpon>TwistCorrectionReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\TwoBoneIKConstraintAdaptor.cs.meta">
+      <DependentUpon>TwoBoneIKConstraintReverseAdaptor.cs</DependentUpon>
+    </None>
     <None Include="ModInfo.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -370,6 +406,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Harmony\BackgroundInventoryUpdatePatch.cs" />
+    <Compile Include="Harmony\DamagePatches.cs" />
     <Compile Include="Harmony\DisplayMetaAsBuffPatch.cs" />
     <Compile Include="Harmony\InvariableRPMPatches.cs" />
     <Compile Include="Harmony\ItemActionModulePatch.cs" />
@@ -377,7 +414,6 @@
     <Compile Include="Harmony\MultiActionReversePatches.cs" />
     <Compile Include="Harmony\MultiBarrelPatches.cs" />
     <Compile Include="Harmony\RecoilPatch.cs" />
-    <Compile Include="Harmony\ReloadInterruptionPatches.cs" />
     <Compile Include="Harmony\SaveRescuePatches.cs" />
     <Compile Include="KFAttached\Animation\DebugScripts\AnimatorActionIndexDebug.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationDelayRender.cs" />
@@ -386,6 +422,10 @@
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationGraphBuilder.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationProceduralRecoildAbs.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationSmokeParticle.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\AnimatorWrapper\AnimatorWrapper.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\AnimatorWrapper\PlayableWrapper.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\IAnimatorWrapper.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\IPlayableGraphRelated.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationAmmoUpdateState.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationCustomMeleeAttackState.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationInspectFix.cs" />
@@ -402,6 +442,16 @@
     <Compile Include="KFAttached\FPSPack\FPSShaderColorGradient.cs" />
     <Compile Include="KFAttached\FPSPack\FPSShaderFloatCurves.cs" />
     <Compile Include="KFAttached\FPSPack\MaterialType.cs" />
+    <Compile Include="KFAttached\GG Camera Shake\Runtime\Attenuator.cs" />
+    <Compile Include="KFAttached\GG Camera Shake\Runtime\BounceShake.cs" />
+    <Compile Include="KFAttached\GG Camera Shake\Runtime\CameraShakePresets.cs" />
+    <Compile Include="KFAttached\GG Camera Shake\Runtime\CameraShaker.cs" />
+    <Compile Include="KFAttached\GG Camera Shake\Runtime\Displacement.cs" />
+    <Compile Include="KFAttached\GG Camera Shake\Runtime\Envelope.cs" />
+    <Compile Include="KFAttached\GG Camera Shake\Runtime\ICameraShake.cs" />
+    <Compile Include="KFAttached\GG Camera Shake\Runtime\KickShake.cs" />
+    <Compile Include="KFAttached\GG Camera Shake\Runtime\PerlinShake.cs" />
+    <Compile Include="KFAttached\GG Camera Shake\Runtime\Power.cs" />
     <Compile Include="KFAttached\KFUtilAttached\ApexWeaponHudControllerBase.cs" />
     <Compile Include="KFAttached\KFUtilAttached\MuzzlePositionBinding.cs" />
     <Compile Include="KFAttached\KFUtilAttached\RigActivationBinding.cs" />
@@ -447,9 +497,21 @@
     <Compile Include="KFAttached\Render\BokehBlurTargetRef.cs" />
     <Compile Include="KFAttached\Render\MagnifyScope.cs" />
     <Compile Include="KFAttached\Render\MagnifyScopeTargetRef.cs" />
+    <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\BlendConstraintReverseAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\ChainIKConstraintReverseAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\DampedTransformReverseAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiAimConstraintReverseAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiParentConstraintReverseAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiPositionConstraintReverseAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiReferentialConstraintReverseAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiRotationConstraintReverseAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\OverrideTransformReverseAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\TwistChainConstraintReverseAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\TwistCorrectionReverseAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\TwoBoneIKConstraintReverseAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\AnimationTargetsAbs.cs" />
     <Compile Include="KFAttached\RigAdaptors\PlayGraphTargets.cs" />
-    <Compile Include="KFAttached\RigAdaptors\RigConverterIgnore.cs" />
+    <Compile Include="KFAttached\RigAdaptors\RigConverterRole.cs" />
     <Compile Include="KFAttached\RigAdaptors\Utils\InventorySlotGurad.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="KFAttached\RigAdaptors\Adaptors\BlendConstraintAdaptor.cs" />

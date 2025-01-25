@@ -131,6 +131,9 @@ public static class CommonUtilityPatch
         if ((_rangedData = __instance.inventory.holdingItemData.actionData[0] as ItemActionRanged.ItemActionDataRanged) == null && (_rangedData = __instance.inventory.holdingItemData.actionData[1] as ItemActionRanged.ItemActionDataRanged) == null)
             return;
 
+        if (_rangedData.invData.model.TryGetComponent<AnimationTargetsAbs>(out var targets) && targets.ItemFpv)
+            return;
+
         var anim = (__instance.emodel.avatarController as AvatarLocalPlayerController).FPSArms.Animator;
         if (anim.IsInTransition(0))
             return;

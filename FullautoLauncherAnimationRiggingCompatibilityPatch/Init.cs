@@ -154,7 +154,7 @@ public static class FLARPatch
     {
         ItemActionBetterLauncher.ItemActionDataBetterLauncher ItemActionDataBetterLauncher = (ItemActionBetterLauncher.ItemActionDataBetterLauncher)_data;
         ItemActionDataBetterLauncher.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName(ItemActionDataBetterLauncher.invData.model, "ProjectileJoint");
-        if (ItemActionDataBetterLauncher.projectileJoint == null)
+        if (!ItemActionDataBetterLauncher.projectileJoint)
         {
             Log.Warning($"null projectile joint on inventory slot {ItemActionDataBetterLauncher.invData.slotIdx}!\n{StackTraceUtility.ExtractStackTrace()}");
         }

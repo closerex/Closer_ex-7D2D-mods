@@ -30,7 +30,7 @@ public class AnimationMultiStageReloadState : StateMachineBehaviour
             animator.speed = 1f;
             animator.SetBool("IsReloading", true);
 #if NotEditor
-            EntityPlayerLocal player = animator.GetComponentInParent<EntityPlayerLocal>();
+            EntityAlive player = animator.GetComponentInParent<EntityAlive>();
             int actionIndex = MultiActionManager.GetActionIndexForEntity(player);
             eventBridge.OnReloadStart(actionIndex);
 #if DEBUG

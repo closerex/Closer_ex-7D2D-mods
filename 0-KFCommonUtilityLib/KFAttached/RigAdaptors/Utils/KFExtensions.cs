@@ -79,4 +79,329 @@ public static class KFExtensions
     {
         return new Vector3(AngleToInferior(angle.x), AngleToInferior(angle.y), AngleToInferior(angle.z));
     }
+
+    public static IAnimatorWrapper GetWrapperForParam(this Animator self, AnimatorControllerParameter param, bool prefVanilla = false)
+    {
+        if (!self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+            return AnimationGraphBuilder.DummyWrapper;
+        switch (builder.GetWrapperRoleByParam(param))
+        {
+            case AnimationGraphBuilder.ParamInWrapper.Both:
+                if (prefVanilla)
+                {
+                    return builder.VanillaWrapper;
+                }
+                else
+                {
+                    return builder.WeaponWrapper;
+                }
+            case AnimationGraphBuilder.ParamInWrapper.Vanilla:
+                return builder.VanillaWrapper;
+            case AnimationGraphBuilder.ParamInWrapper.Weapon:
+                return builder.WeaponWrapper;
+            default:
+                return AnimationGraphBuilder.DummyWrapper;
+        }
+    }
+
+    public static IAnimatorWrapper GetWrapperForParamHash(this Animator self, int nameHash, bool prefVanilla = false)
+    {
+        if (!self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+            return AnimationGraphBuilder.DummyWrapper;
+        switch (builder.GetWrapperRoleByParamHash(nameHash))
+        {
+            case AnimationGraphBuilder.ParamInWrapper.Both:
+                if (prefVanilla)
+                {
+                    return builder.VanillaWrapper;
+                }
+                else
+                {
+                    return builder.WeaponWrapper;
+                }
+            case AnimationGraphBuilder.ParamInWrapper.Vanilla:
+                return builder.VanillaWrapper;
+            case AnimationGraphBuilder.ParamInWrapper.Weapon:
+                return builder.WeaponWrapper;
+            default:
+                return AnimationGraphBuilder.DummyWrapper;
+        }
+    }
+
+    public static IAnimatorWrapper GetWrapperForParamHash(this Animator self, string name, bool prefVanilla = false)
+    {
+        if (!self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+            return AnimationGraphBuilder.DummyWrapper;
+        switch (builder.GetWrapperRoleByParamName(name))
+        {
+            case AnimationGraphBuilder.ParamInWrapper.Both:
+                if (prefVanilla)
+                {
+                    return builder.VanillaWrapper;
+                }
+                else
+                {
+                    return builder.WeaponWrapper;
+                }
+            case AnimationGraphBuilder.ParamInWrapper.Vanilla:
+                return builder.VanillaWrapper;
+            case AnimationGraphBuilder.ParamInWrapper.Weapon:
+                return builder.WeaponWrapper;
+            default:
+                return AnimationGraphBuilder.DummyWrapper;
+        }
+    }
+
+    public static bool GetWrappedBool(this Animator self, int _propertyHash)
+    {
+        if (self)
+        {
+            var wrapper = self.GetWrapperForParamHash(_propertyHash);
+            if (wrapper.IsValid)
+            {
+                return wrapper.GetBool(_propertyHash);
+            }
+            return self.GetBool(_propertyHash);
+        }
+        return false;
+    }
+
+    public static int GetWrappedInt(this Animator self, int _propertyHash)
+    {
+        if (self)
+        {
+            var wrapper = self.GetWrapperForParamHash(_propertyHash);
+            if (wrapper.IsValid)
+            {
+                return wrapper.GetInteger(_propertyHash);
+            }
+            return self.GetInteger(_propertyHash);
+        }
+        return 0;
+    }
+
+    public static float GetWrappedFloat(this Animator self, int _propertyHash)
+    {
+        if (self)
+        {
+            var wrapper = self.GetWrapperForParamHash(_propertyHash);
+            if (wrapper.IsValid)
+            {
+                return wrapper.GetFloat(_propertyHash);
+            }
+            return self.GetFloat(_propertyHash);
+        }
+        return float.NaN;
+    }
+
+    public static void SetWrappedTrigger(this Animator self, int _propertyHash)
+    {
+        if (self)
+        {
+            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+            {
+                var role = builder.GetWrapperRoleByParamHash(_propertyHash);
+                switch(role)
+                {
+                    case AnimationGraphBuilder.ParamInWrapper.Both:
+                        builder.VanillaWrapper.SetTrigger(_propertyHash);
+                        builder.WeaponWrapper.SetTrigger(_propertyHash);
+                        break;
+                    case AnimationGraphBuilder.ParamInWrapper.Vanilla:
+                        builder.VanillaWrapper.SetTrigger(_propertyHash);
+                        break;
+                    case AnimationGraphBuilder.ParamInWrapper.Weapon:
+                        builder.WeaponWrapper.SetTrigger(_propertyHash);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                self.SetTrigger(_propertyHash);
+            }
+        }
+    }
+
+    public static void ResetWrappedTrigger(this Animator self, int _propertyHash)
+    {
+        if (self)
+        {
+            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+            {
+                var role = builder.GetWrapperRoleByParamHash(_propertyHash);
+                switch (role)
+                {
+                    case AnimationGraphBuilder.ParamInWrapper.Both:
+                        builder.VanillaWrapper.ResetTrigger(_propertyHash);
+                        builder.WeaponWrapper.ResetTrigger(_propertyHash);
+                        break;
+                    case AnimationGraphBuilder.ParamInWrapper.Vanilla:
+                        builder.VanillaWrapper.ResetTrigger(_propertyHash);
+                        break;
+                    case AnimationGraphBuilder.ParamInWrapper.Weapon:
+                        builder.WeaponWrapper.ResetTrigger(_propertyHash);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                self.ResetTrigger(_propertyHash);
+            }
+        }
+    }
+
+    public static void SetWrappedBool(this Animator self, int _propertyHash, bool _value)
+    {
+        if (self)
+        {
+            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+            {
+                var role = builder.GetWrapperRoleByParamHash(_propertyHash);
+                switch (role)
+                {
+                    case AnimationGraphBuilder.ParamInWrapper.Both:
+                        builder.VanillaWrapper.SetBool(_propertyHash, _value);
+                        builder.WeaponWrapper.SetBool(_propertyHash, _value);
+                        break;
+                    case AnimationGraphBuilder.ParamInWrapper.Vanilla:
+                        builder.VanillaWrapper.SetBool(_propertyHash, _value);
+                        break;
+                    case AnimationGraphBuilder.ParamInWrapper.Weapon:
+                        builder.WeaponWrapper.SetBool(_propertyHash, _value);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                self.SetBool(_propertyHash, _value);
+            }
+        }
+    }
+
+    public static void SetWrappedInt(this Animator self, int _propertyHash, int _value)
+    {
+        if (self)
+        {
+            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+            {
+                var role = builder.GetWrapperRoleByParamHash(_propertyHash);
+                switch (role)
+                {
+                    case AnimationGraphBuilder.ParamInWrapper.Both:
+                        builder.VanillaWrapper.SetInteger(_propertyHash, _value);
+                        builder.WeaponWrapper.SetInteger(_propertyHash, _value);
+                        break;
+                    case AnimationGraphBuilder.ParamInWrapper.Vanilla:
+                        builder.VanillaWrapper.SetInteger(_propertyHash, _value);
+                        break;
+                    case AnimationGraphBuilder.ParamInWrapper.Weapon:
+                        builder.WeaponWrapper.SetInteger(_propertyHash, _value);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                self.SetInteger(_propertyHash, _value);
+            }
+        }
+    }
+
+    public static void SetWrappedFloat(this Animator self, int _propertyHash, float _value)
+    {
+        if (self)
+        {
+            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+            {
+                var role = builder.GetWrapperRoleByParamHash(_propertyHash);
+                switch (role)
+                {
+                    case AnimationGraphBuilder.ParamInWrapper.Both:
+                        builder.VanillaWrapper.SetFloat(_propertyHash, _value);
+                        builder.WeaponWrapper.SetFloat(_propertyHash, _value);
+                        break;
+                    case AnimationGraphBuilder.ParamInWrapper.Vanilla:
+                        builder.VanillaWrapper.SetFloat(_propertyHash, _value);
+                        break;
+                    case AnimationGraphBuilder.ParamInWrapper.Weapon:
+                        builder.WeaponWrapper.SetFloat(_propertyHash, _value);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                self.SetFloat(_propertyHash, _value);
+            }
+        }
+    }
+
+    public static AnimatorControllerParameter[] GetWrappedParameters(this  Animator self)
+    {
+        if (self)
+        {
+            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder) && builder.HasWeaponOverride)
+            {
+                return builder.Parameters;
+            }
+            return self.parameters;
+        }
+        return null;
+    }
+
+    public static IAnimatorWrapper GetItemAnimatorWrapper(this Animator self)
+    {
+        if (self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+            return builder.WeaponWrapper;
+        return new AnimatorWrapper(self);
+    }
+
+    public static bool IsVanillaInTransition(this Animator self, int layerIndex)
+    {
+        if (self)
+        {
+            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+            {
+                return builder.VanillaWrapper.IsInTransition(layerIndex);
+            }
+            return self.IsInTransition(layerIndex);
+        }
+        return false;
+    }
+
+    public static AnimatorStateInfo GetCurrentVanillaStateInfo(this Animator self, int layerIndex)
+    {
+        if (self)
+        {
+            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+            {
+                return builder.VanillaWrapper.GetCurrentAnimatorStateInfo(layerIndex);
+            }
+            return self.GetCurrentAnimatorStateInfo(layerIndex);
+        }
+        return default;
+    }
+
+    public static void SetVanillaLayerWeight(this Animator self, int layerIndex, float weight)
+    {
+        if (self)
+        {
+            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+            {
+                builder.VanillaWrapper.SetLayerWeight(layerIndex, weight);
+            }
+            else
+            {
+                self.SetLayerWeight(layerIndex, weight);
+            }
+        }
+    }
 }

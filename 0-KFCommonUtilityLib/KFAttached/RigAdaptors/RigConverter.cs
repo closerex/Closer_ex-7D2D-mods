@@ -17,11 +17,16 @@ public class RigConverter : MonoBehaviour
     {
         foreach (var constraint in GetComponentsInChildren<IRigConstraint>(true))
         {
-            if (constraint.TryGetComponent<RigConverterIgnore>())
+            if (constraint.component.TryGetComponent<RigConverterRole>(out var role) && role.role == RigConverterRole.Role.Ignore)
             {
                 continue;
             }
-            var adaptorName = constraint.GetType().Name + "Adaptor,KFCommonUtilityLib";
+            var adaptorName = constraint.GetType().Name;
+            if (role && role.role == RigConverterRole.Role.Reverse)
+            {
+                adaptorName += "Reverse";
+            }
+            adaptorName += "Adaptor,KFCommonUtilityLib";
             var adaptorType = Type.GetType(adaptorName);
             var adaptor = (RigAdaptorAbs)constraint.component.transform.AddMissingComponent(adaptorType);
             adaptor.ReadRigData();

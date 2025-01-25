@@ -1,4 +1,5 @@
-﻿using KFCommonUtilityLib.Scripts.Attributes;
+﻿using HarmonyLib;
+using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using UnityEngine;
 
@@ -45,6 +46,22 @@ public class ActionModuleInterruptReload
     {
         firingStateName = _props.GetString("FiringStateFullName");
         instantFiringCancel = _props.GetBool("InstantFiringCancel");
+    }
+
+    [MethodTargetPostfix(nameof(ItemAction.OnModificationsChanged))]
+    private void Postfix_OnModificationsChanged(ItemActionData _data, InterruptData __customData)
+    {
+        var invData = _data.invData;
+        __customData.itemAnimator = AnimationGraphBuilder.DummyWrapper;
+        __customData.eventBridge = null;
+        if (invData.model && invData.model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed && targets.IsAnimationSet)
+        {
+            __customData.itemAnimator = targets.GraphBuilder.WeaponWrapper;
+            if (__customData.itemAnimator.IsValid)
+            {
+                __customData.eventBridge = targets.ItemAnimator.GetComponent<AnimationReloadEvents>();
+            }
+        }
     }
 
     private struct State
@@ -101,7 +118,7 @@ public class ActionModuleInterruptReload
             ItemActionRanged.ItemActionDataRanged rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
             rangedData.isReloading = __state.isReloading;
             rangedData.isWeaponReloading = __state.isWeaponReloading;
-            if (__customData.itemAnimator && __customData.eventBridge)
+            if (__customData.itemAnimator.IsValid && __customData.eventBridge)
             {
                 if (rangedData.m_LastShotTime > __state.lastShotTime && rangedData.m_LastShotTime < Time.time + 1f)
                 {
@@ -121,9 +138,21 @@ public class ActionModuleInterruptReload
         }
     }
 
+    [MethodTargetPrefix(nameof(ItemAction.ItemActionEffects))]
+    private bool Prefix_ItemActionEffects(ItemActionData _actionData, int _firingState, InterruptData __customData)
+    {
+        var rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
+        if (_firingState != 0 && (rangedData.isReloading || rangedData.isWeaponReloading) && !(rangedData.invData.holdingEntity is EntityPlayerLocal) && __customData.eventBridge)
+        {
+            __customData.eventBridge.OnReloadEnd();
+            __customData.itemAnimator.Play(firingStateName, -1, 0f);
+        }
+        return true;
+    }
+
     public bool IsRequestPossible(InterruptData interruptData)
     {
-        return interruptData.eventBridge && interruptData.itemAnimator;
+        return interruptData.eventBridge && interruptData.itemAnimator.IsValid;
     }
 
     public class InterruptData
@@ -132,18 +161,18 @@ public class ActionModuleInterruptReload
         public float holdStartTime = -1f;
         public bool instantFiringRequested = false;
         public AnimationReloadEvents eventBridge;
-        public Animator itemAnimator;
+        public IAnimatorWrapper itemAnimator;
 
         public InterruptData(ItemInventoryData invData, int actionIndex, ActionModuleInterruptReload module)
         {
-            if (invData.model && invData.model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
-            {
-                itemAnimator = targets.ItemAnimator;
-                if (itemAnimator)
-                {
-                    eventBridge = itemAnimator.GetComponent<AnimationReloadEvents>();
-                }
-            }
+            //if (invData.model && invData.model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+            //{
+            //    itemAnimator = targets.ItemAnimator;
+            //    if (itemAnimator)
+            //    {
+            //        eventBridge = itemAnimator.GetComponent<AnimationReloadEvents>();
+            //    }
+            //}
         }
 
         public void Reset()
@@ -152,5 +181,68 @@ public class ActionModuleInterruptReload
             holdStartTime = -1f;
             instantFiringRequested = false;
         }
+    }
+}
+
+[HarmonyPatch]
+internal static class ReloadInterruptionPatches
+{
+    //interrupt reload with firing
+    [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.ExecuteAction))]
+    [HarmonyPrefix]
+    private static bool Prefix_ExecuteAction_ItemClass(ItemClass __instance, int _actionIdx, ItemInventoryData _data, bool _bReleased, PlayerActionsLocal _playerActions)
+    {
+        ItemAction curAction = __instance.Actions[_actionIdx];
+        if (curAction is ItemActionRanged || curAction is ItemActionZoom)
+        {
+            int curActionIndex = MultiActionManager.GetActionIndexForEntity(_data.holdingEntity);
+            var rangedAction = __instance.Actions[curActionIndex] as ItemActionRanged;
+            var rangedData = _data.actionData[curActionIndex] as ItemActionRanged.ItemActionDataRanged;
+            if (rangedData != null && rangedData is IModuleContainerFor<ActionModuleInterruptReload.InterruptData> dataModule && rangedAction is IModuleContainerFor<ActionModuleInterruptReload> actionModule)
+            {
+                if (!_bReleased && _playerActions != null && actionModule.Instance.IsRequestPossible(dataModule.Instance) && ((_playerActions.Primary.IsPressed && _actionIdx == curActionIndex && _data.itemValue.Meta > 0) || (_playerActions.Secondary.IsPressed && curAction is ItemActionZoom)) && (rangedData.isReloading || rangedData.isWeaponReloading) && !dataModule.Instance.isInterruptRequested)
+                {
+                    if (dataModule.Instance.holdStartTime < 0)
+                    {
+                        dataModule.Instance.holdStartTime = Time.time;
+                        return false;
+                    }
+                    if (Time.time - dataModule.Instance.holdStartTime >= actionModule.Instance.holdBeforeCancel)
+                    {
+                        if (!rangedAction.reloadCancelled(rangedData))
+                        {
+                            rangedAction.CancelReload(rangedData);
+                        }
+                        if (ConsoleCmdReloadLog.LogInfo)
+                            Log.Out($"interrupt requested!");
+                        dataModule.Instance.isInterruptRequested = true;
+                        if (actionModule.Instance.instantFiringCancel && curAction is ItemActionRanged)
+                        {
+                            if (ConsoleCmdReloadLog.LogInfo)
+                                Log.Out($"instant firing cancel!");
+                            dataModule.Instance.instantFiringRequested = true;
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                if (_bReleased)
+                {
+                    dataModule.Instance.Reset();
+                }
+            }
+        }
+        return true;
+    }
+
+    [HarmonyPatch(typeof(ItemAction), nameof(ItemAction.CancelReload))]
+    [HarmonyPrefix]
+    private static bool Prefix_CancelReload_ItemAction(ItemActionData _actionData)
+    {
+        if (_actionData?.invData?.holdingEntity is EntityPlayerLocal && AnimationRiggingManager.IsHoldingRiggedWeapon(_actionData.invData.holdingEntity as EntityPlayerLocal))
+        {
+            return false;
+        }
+        return true;
     }
 }

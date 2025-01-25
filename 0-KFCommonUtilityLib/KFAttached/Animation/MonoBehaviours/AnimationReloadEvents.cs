@@ -5,13 +5,13 @@ using System.Collections;
 using UnityEngine;
 
 [AddComponentMenu("KFAttachments/Utils/Animation Reload Events")]
-public class AnimationReloadEvents : MonoBehaviour
+public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
 {
     private void Awake()
     {
         animator = GetComponent<Animator>();
 #if NotEditor
-        player = GetComponentInParent<EntityPlayerLocal>();
+        player = GetComponentInParent<EntityAlive>();
 #endif
     }
 
@@ -55,11 +55,11 @@ public class AnimationReloadEvents : MonoBehaviour
     public void OnReloadEnd()
     {
         StopAllCoroutines();
-        animator.SetBool("Reload", false);
-        animator.SetBool("IsReloading", false);
+        animator.SetWrappedBool(Animator.StringToHash("Reload"), false);
+        animator.SetWrappedBool(Animator.StringToHash("IsReloading"), false);
         animator.speed = 1f;
-        cancelReloadCo = null;
 #if NotEditor
+        cancelReloadCo = null;
         if (actionData == null || !actionData.isReloading)
         {
             return;
@@ -111,7 +111,7 @@ public class AnimationReloadEvents : MonoBehaviour
         if (actionData.isReloadCancelled || actionData.isWeaponReloadCancelled || actionData.invData.itemValue.Meta >= magSize || player.GetItemCount(ammo) <= 0)
         {
             Log.Out("Partial reload finished");
-            animator.SetBool("IsReloading", false);
+            animator.SetWrappedBool(Animator.StringToHash("IsReloading"), false);
         }
 #endif
     }
@@ -146,7 +146,7 @@ public class AnimationReloadEvents : MonoBehaviour
     {
         if (player == null)
         {
-            player = GetComponentInParent<EntityPlayerLocal>();
+            player = GetComponentInParent<EntityAlive>();
         }
         actionData = player.inventory.holdingItemData.actionData[actionIndex] as ItemActionRanged.ItemActionDataRanged;
         actionRanged = (ItemActionRanged)player.inventory.holdingItem.Actions[actionIndex];
@@ -236,7 +236,10 @@ public class AnimationReloadEvents : MonoBehaviour
 
     private void OnDisable()
     {
-        OnReloadEnd();
+        if (animator)
+        {
+            OnReloadEnd();
+        }
     }
 
     private IEnumerator ForceCancelReloadCo(float delay)
@@ -329,9 +332,24 @@ public class AnimationReloadEvents : MonoBehaviour
         return rps > 0 ? rps : 1;
     }
 
-    public EntityPlayerLocal player;
+    public EntityAlive player;
     public ItemActionRanged.ItemActionDataRanged actionData;
     public ItemActionRanged actionRanged;
 #endif
     private Animator animator;
+
+    public MonoBehaviour Init(Transform playerAnimatorTrans, bool isLocalPlayer)
+    {
+        var copy = playerAnimatorTrans.AddMissingComponent<AnimationReloadEvents>();
+        if (copy)
+        {
+            copy.enabled = true;
+        }
+        return copy;
+    }
+
+    public void Disable(Transform playerAnimatorTrans)
+    {
+        enabled = false;
+    }
 }

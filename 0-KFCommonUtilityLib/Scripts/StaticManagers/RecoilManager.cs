@@ -1,4 +1,5 @@
-﻿using GearsAPI.Settings.Global;
+﻿using CameraShake;
+using GearsAPI.Settings.Global;
 using UnityEngine;
 
 namespace KFCommonUtilityLib.Scripts.StaticManagers
@@ -21,7 +22,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         private static Vector2 totalRotationXY = Vector2.zero;
         private static Vector3 totalReturnCur = Vector3.zero;
         private static EntityPlayerLocal player;
-        // reserved
+        //Gears options
         private static bool enableCap = true;
         private static bool enableDynamicCap = true;
         private static bool enableSoftCap = false;
@@ -110,6 +111,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         {
             ClearData();
             player = _player;
+            player.cameraTransform.AddMissingComponent<CameraShaker>();
         }
 
         public static void Cleanup()
@@ -118,6 +120,8 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             player = null;
         }
 
+        private static float shakeFreq = 20;
+        private static int shakeBounce = 5;
         public static void AddRecoil(Vector2 recoilRangeHor, Vector2 recoilRangeVer)
         {
             if (player == null) { return; }
@@ -137,6 +141,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                     cap = maxRecoilAngle;
                 }
             }
+            float cameraShakeStrength = EffectManager.GetValue(CustomEnums.RecoilCameraShakeStrength, player.inventory.holdingItemItemValue, 0.12f, player);
             float targetRotationX;
             if (enableCap && Mathf.Abs(totalRotationXY.x) >= Mathf.Abs(cap))
             {
@@ -155,11 +160,13 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             {
                 targetRotationXY += new Vector2(targetRotationX, targetRotationY) * 2f;
                 totalRotationXY += new Vector2(targetRotationX, targetRotationY) * 2f;
+                CameraShaker.Presets.ShortShake3D(cameraShakeStrength * 1.2f, shakeFreq, shakeBounce);
             }
             else
             {
                 targetRotationXY += new Vector2(targetRotationX, targetRotationY);
                 totalRotationXY += new Vector2(targetRotationX, targetRotationY);
+                CameraShaker.Presets.ShortShake3D(cameraShakeStrength, shakeFreq, shakeBounce);
             }
             //if (enableCap)
             //{

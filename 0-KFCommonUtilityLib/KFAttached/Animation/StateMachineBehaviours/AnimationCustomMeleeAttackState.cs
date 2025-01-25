@@ -72,7 +72,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         //    return;
         //}
         hasFired = false;
-        actionIndex = animator.GetInteger(AvatarController.itemActionIndexHash);
+        actionIndex = animator.GetWrappedInt(AvatarController.itemActionIndexHash);
         entity = animator.GetComponentInParent<EntityAlive>();
         if (!slotGurad.IsValid(entity))
         {
@@ -112,7 +112,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             fastTags |= itemClass.ItemTags;
         }
         originalMeleeAttackSpeed = EffectManager.GetValue(PassiveEffects.AttacksPerMinute, holdingItemItemValue, attacksPerMinute, entity, null, fastTags) / 60f * length;
-        animator.SetFloat(AttackSpeedHash, originalMeleeAttackSpeed);
+        animator.SetWrappedFloat(AttackSpeedHash, originalMeleeAttackSpeed);
         speedMultiplierToKeep = originalMeleeAttackSpeed;
         ItemClass holdingItem = entity.inventory.holdingItem;
         holdingItem.Properties.ParseFloat((actionIndex != 1) ? "Action0.RaycastTime" : "Action1.RaycastTime", ref RaycastTime);
@@ -176,14 +176,14 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         if (animator)
         {
             //Log.Out("Impact start!");
-            animator.SetFloat(AttackSpeedHash, calculatedImpactPlaybackSpeed);
+            animator.SetWrappedFloat(AttackSpeedHash, calculatedImpactPlaybackSpeed);
         }
         speedMultiplierToKeep = calculatedImpactPlaybackSpeed;
         yield return new WaitForSeconds(calculatedImpactDuration);
         if (animator)
         {
             //Log.Out("Impact stop!");
-            animator.SetFloat(AttackSpeedHash, originalMeleeAttackSpeed);
+            animator.SetWrappedFloat(AttackSpeedHash, originalMeleeAttackSpeed);
         }
         speedMultiplierToKeep = originalMeleeAttackSpeed;
         //playingImpact = false;
@@ -250,7 +250,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         //{
         //    animator.SetFloat(AttackSpeedHash, originalMeleeAttackSpeed);
         //}
-        animator.SetFloat(AttackSpeedHash, originalMeleeAttackSpeed);
+        animator.SetWrappedFloat(AttackSpeedHash, originalMeleeAttackSpeed);
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -260,7 +260,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         //{
         //    animator.Play(animator.GetNextAnimatorStateInfo(layerIndex).shortNameHash, layerIndex);
         //}
-        animator.SetFloat(AttackSpeedHash, speedMultiplierToKeep);
+        animator.SetWrappedFloat(AttackSpeedHash, speedMultiplierToKeep);
     }
 #endif
 }

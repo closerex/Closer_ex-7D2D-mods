@@ -64,6 +64,7 @@ public class CommonUtilityLibInit : IModApi
         CustomEnums.KickDegreeHorizontalModifier = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("KickDegreeHorizontalModifier");
         CustomEnums.KickDegreeVerticalModifier = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("KickDegreeVerticalModifier");
         CustomEnums.WeaponErgonomics = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("WeaponErgonomics");
+        CustomEnums.RecoilCameraShakeStrength = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RecoilCameraShakeStrength");
     }
 }
 

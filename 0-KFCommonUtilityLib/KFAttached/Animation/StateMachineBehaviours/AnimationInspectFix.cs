@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
-public class AnimationInspectFix : MonoBehaviour
+public class AnimationInspectFix : MonoBehaviour, IPlayableGraphRelated
 {
     [SerializeField]
     private string inspectName = "Inspect";
@@ -17,34 +17,55 @@ public class AnimationInspectFix : MonoBehaviour
     [SerializeField]
     private bool useStateTag = false;
     private static int inspectHash = Animator.StringToHash("weaponInspect");
-    private Animator animator;
+    private IAnimatorWrapper wrapper;
 
     private void Awake()
     {
-        animator = GetComponent<Animator>();
-        if (!animator)
-        {
-            Destroy(this);
-        }
     }
 
     private void Update()
     {
+        if (wrapper == null || !wrapper.IsValid)
+        {
+            var animator = GetComponent<Animator>();
+            if (!animator)
+            {
+                Destroy(this);
+                return;
+            }
+            wrapper = animator.GetItemAnimatorWrapper();
+        }
         if (useStateTag)
         {
-            var stateInfo = animator.GetCurrentAnimatorStateInfo(layer);
+            var stateInfo = wrapper.GetCurrentAnimatorStateInfo(layer);
             if (stateInfo.IsTag(inspectName) && stateInfo.normalizedTime < finishTime)
             {
-                animator.ResetTrigger(inspectHash);
+                wrapper.ResetTrigger(inspectHash);
             }
         }
         else
         {
-            var transInfo = animator.GetAnimatorTransitionInfo(layer);
+            var transInfo = wrapper.GetAnimatorTransitionInfo(layer);
             if (transInfo.IsUserName(inspectName) && transInfo.normalizedTime < finishTime)
             {
-                animator.ResetTrigger(inspectHash);
+                wrapper.ResetTrigger(inspectHash);
             }
         }
+    }
+
+    public MonoBehaviour Init(Transform playerAnimatorTrans, bool isLocalPlayer)
+    {
+        enabled = false;
+        var copy = isLocalPlayer ? playerAnimatorTrans.AddMissingComponent<AnimationInspectFix>() : null;
+        if (copy)
+        {
+            copy.enabled = true;
+        }
+        return copy;
+    }
+
+    public void Disable(Transform playerAnimatorTrans)
+    {
+        enabled = false;
     }
 }

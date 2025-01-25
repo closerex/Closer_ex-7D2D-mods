@@ -33,5 +33,19 @@ namespace KFCommonUtilityLib.Harmony
         {
             BackgroundInventoryUpdateManager.Cleanup();
         }
+
+        [HarmonyPatch(typeof(EntityAlive), nameof(EntityAlive.AttachToEntity))]
+        [HarmonyPostfix]
+        private static void Postfix_AttachToEntity_EntityAlive(EntityAlive __instance)
+        {
+            BackgroundInventoryUpdateManager.DisableUpdater(__instance);
+        }
+
+        [HarmonyPatch(typeof(EntityAlive), nameof(EntityAlive.Detach))]
+        [HarmonyPostfix]
+        private static void Postfix_Detach_EntityAlive(EntityAlive __instance)
+        {
+            BackgroundInventoryUpdateManager.EnableUpdater(__instance);
+        }
     }
 }
