@@ -2,6 +2,10 @@ Key,File,Type,UsedInMainMenu,english,schinese
 inpGrpMultiActionName,UI,Controls Dialog,x,Multi Action,武器模式
 inpActToggleWeaponModeName,UI,Controls Dialog,x,Toggle Weapon Mode,切换武器模式
 inpActToggleWeaponModeDesc,UI,Controls Dialog,x,"For weapons with multiple modes, cycle between them with this key",使用有多种模式的武器时，在不同模式间循环切换
+inpGrpFireModeName,UI,Controls Dialog,x,Firing Mode,射击模式
+inpActToggleFireModeName,UI,Controls Dialog,x,Toggle Firing Mode,切换射击模式
+inpActToggleFireModeDesc,UI,Controls Dialog,x,"For weapons with multiple firing modes, cycle between them with this key",使用有多种射击模式的武器时，在不同模式间循环切换
+ttCurrentFiringMode,UI,Controls Dialog,x,"Firing Mode: {0}","射击模式：{0}"
 kflibTabRecoilSettingsName,UI,Menu,x,Recoil Settings,后坐力设置
 kflibSettingRecoilCSMName,UI,Menu,x,Sensitivity Multiplier,灵敏度倍率
 kflibSettingRecoilCSMDesc,UI,Menu,x,How much sensitivity compensation should be applied when dragging your mouse against the recoil while aiming. Easier recoil control for low zoom sensitivity users.,指示在瞄准状态下抵消后坐力时要应用多少灵敏度补正。帮助低瞄准灵敏度的用户更好地控制后坐力。

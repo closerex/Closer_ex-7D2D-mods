@@ -5,6 +5,7 @@
     public static MinEventTypes onReloadAboutToStart;
     public static MinEventTypes onRechargeValueUpdate;
     public static MinEventTypes onSelfItemSwitchMode;
+    public static MinEventTypes onSelfBurstModeChanged;
     #endregion
 
     #region Passives
@@ -19,5 +20,6 @@
     public static PassiveEffects KickDegreeVerticalModifier;
     public static PassiveEffects WeaponErgonomics;
     public static PassiveEffects RecoilCameraShakeStrength;
+    public static PassiveEffects BurstShotInterval;
     #endregion
 }

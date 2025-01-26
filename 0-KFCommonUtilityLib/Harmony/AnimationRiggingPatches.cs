@@ -392,6 +392,17 @@ static class AnimationRiggingPatches
             {
                 avatarLocalPlayer.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, mapping.CurActionIndex, true);
             }
+
+            if (__instance.entity.inventory?.holdingItemData?.actionData != null)
+            {
+                foreach (var actionData in __instance.entity.inventory.holdingItemData.actionData)
+                {
+                    if (actionData is IModuleContainerFor<ActionModuleFireModeSelector.FireModeData> data)
+                    {
+                        avatarLocalPlayer.UpdateInt(ActionModuleFireModeSelector.AnimatorParamHashes[actionData.indexInEntityOfAction], data.Instance.currentFireMode, true);
+                    }
+                }
+            }
         }
     }
 

@@ -1,15 +1,15 @@
 ﻿using InControl;
 
-public class PlayerActionToggleMode : CustomPlayerActionVersionBase
+public class PlayerActionToggleFireMode : CustomPlayerActionVersionBase
 {
-    public static PlayerActionToggleMode Instance { get; private set; }
+    public static PlayerActionToggleFireMode Instance { get; private set; }
     public override ControllerActionType ControllerActionDisplay => ControllerActionType.OnFoot;
 
     public PlayerAction Toggle;
 
-    public PlayerActionToggleMode()
+    public PlayerActionToggleFireMode()
     {
-        Name = "WeaponMode";
+        Name = "ToggleFireMode";
         Version = 1;
         Instance = this;
         Enabled = true;
@@ -22,8 +22,8 @@ public class PlayerActionToggleMode : CustomPlayerActionVersionBase
 
     public override void CreateActions()
     {
-        Toggle = CreatePlayerAction("ToggleMode");
-        Toggle.UserData = new PlayerActionData.ActionUserData("inpActToggleWeaponModeName", "inpActToggleWeaponModeDesc", PlayerActionData.GroupPlayerControl);
+        Toggle = CreatePlayerAction("ToggleFireMode");
+        Toggle.UserData = new PlayerActionData.ActionUserData("inpActToggleFireModeName", "inpActToggleFireModeDesc", PlayerActionData.GroupPlayerControl);
     }
 
     public override void CreateDefaultJoystickBindings()
@@ -33,6 +33,6 @@ public class PlayerActionToggleMode : CustomPlayerActionVersionBase
 
     public override void CreateDefaultKeyboardBindings()
     {
-        Toggle.AddDefaultBinding(new Key[] { Key.X });
+        Toggle.AddDefaultBinding(new Key[] { Key.Z });
     }
 }
