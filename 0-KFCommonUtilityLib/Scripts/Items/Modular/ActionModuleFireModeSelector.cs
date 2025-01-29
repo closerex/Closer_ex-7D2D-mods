@@ -200,14 +200,15 @@ public class ActionModuleFireModeSelector
                 }
                 _data.invData.holdingEntity.emodel.avatarController.TriggerEvent(FireModeSwitchParamHashes[_data.indexInEntityOfAction]);
             }
-            if (!string.IsNullOrEmpty(modeNames[_fireMode]))
-            {
-                GameManager.ShowTooltip(_data.invData.holdingEntity as EntityPlayerLocal, modeNames[_fireMode], true);
-            }
-            else
-            {
-                GameManager.ShowTooltip(_data.invData.holdingEntity as EntityPlayerLocal, "ttCurrentFiringMode", _fireMode.ToString(), null, null, true);
-            }
+            //if (!string.IsNullOrEmpty(modeNames[_fireMode]))
+            //{
+            //    GameManager.ShowTooltip(_data.invData.holdingEntity as EntityPlayerLocal, modeNames[_fireMode], true);
+            //}
+            //else
+            //{
+            //    GameManager.ShowTooltip(_data.invData.holdingEntity as EntityPlayerLocal, "ttCurrentFiringMode", _fireMode.ToString(), null, null, true);
+            //}
+            GameManager.ShowTooltip(_data.invData.holdingEntity as EntityPlayerLocal, "ttCurrentFiringMode", string.IsNullOrEmpty(modeNames[_fireMode]) ? _fireMode.ToString() : Localization.Get(modeNames[_fireMode]), null, null, true);
             _data.invData.holdingEntity.FireEvent(CustomEnums.onSelfBurstModeChanged);
             UpdateDelay(_data);
 
