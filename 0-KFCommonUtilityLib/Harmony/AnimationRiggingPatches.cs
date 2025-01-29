@@ -399,7 +399,7 @@ static class AnimationRiggingPatches
                 {
                     if (actionData is IModuleContainerFor<ActionModuleFireModeSelector.FireModeData> data)
                     {
-                        avatarLocalPlayer.UpdateInt(ActionModuleFireModeSelector.AnimatorParamHashes[actionData.indexInEntityOfAction], data.Instance.currentFireMode, true);
+                        avatarLocalPlayer.UpdateInt(ActionModuleFireModeSelector.FireModeParamHashes[actionData.indexInEntityOfAction], data.Instance.currentFireMode, true);
                     }
                 }
             }

@@ -67,6 +67,7 @@ public class CommonUtilityLibInit : IModApi
         CustomEnums.WeaponErgonomics = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("WeaponErgonomics");
         CustomEnums.RecoilCameraShakeStrength = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RecoilCameraShakeStrength");
         CustomEnums.BurstShotInterval = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("BurstShotInterval");
+        CustomEnums.MaxWeaponSpread = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("MaxWeaponSpread");
     }
 }
 

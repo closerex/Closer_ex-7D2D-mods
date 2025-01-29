@@ -25,13 +25,21 @@ public class ActionModuleFireModeSelector
         "FireMode3",
         "FireMode4",
     };
-    public static int[] AnimatorParamHashes = new[]
+    public static int[] FireModeParamHashes = new[]
     {
         Animator.StringToHash("FireMode"),
         Animator.StringToHash("FireMode1"),
         Animator.StringToHash("FireMode2"),
         Animator.StringToHash("FireMode3"),
         Animator.StringToHash("FireMode4"),
+    };
+    public static int[] FireModeSwitchParamHashes = new[]
+    {
+        Animator.StringToHash("FireModeChanged"),
+        Animator.StringToHash("FireModeChanged1"),
+        Animator.StringToHash("FireModeChanged2"),
+        Animator.StringToHash("FireModeChanged3"),
+        Animator.StringToHash("FireModeChanged4"),
     };
 
     [MethodTargetPostfix(nameof(ItemAction.OnModificationsChanged))]
@@ -190,6 +198,7 @@ public class ActionModuleFireModeSelector
                 {
                     _data.invData.holdingEntity.PlayOneShot(switchSound);
                 }
+                _data.invData.holdingEntity.emodel.avatarController.TriggerEvent(FireModeSwitchParamHashes[_data.indexInEntityOfAction]);
             }
             if (!string.IsNullOrEmpty(modeNames[_fireMode]))
             {

@@ -23,14 +23,14 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         private static Vector3 totalReturnCur = Vector3.zero;
         private static EntityPlayerLocal player;
         //Gears options
-        private static bool enableCap = true;
-        private static bool enableDynamicCap = true;
+        private static bool enableCap = false;
+        private static bool enableDynamicCap = false;
         private static bool enableSoftCap = false;
         private static bool enablePreRecoilCompensation = false;
         private static float maxRecoilAngle = 15;
         private static int maxDynamicRecoilCapShots = 6;
-        private static float recoilCapRemain = 0.2f;
-        private static float recoilCompensationSensitivityMultiplier = 0.5f;
+        private static float recoilCapRemain = 1f;
+        private static float recoilCompensationSensitivityMultiplier = 0f;
         private const float DEFAULT_SNAPPINESS_PISTOL = 6f;
         private const float DEFAULT_SNAPPINESS_RIFLE = 3.6f;
         private const float DEFAULT_SNAPPINESS_SHOTGUN = 8f;
@@ -152,7 +152,8 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 targetRotationX = player.rand.RandomRange(recoilRangeVer.x, recoilRangeVer.y);
                 if (enableSoftCap)
                 {
-                    targetRotationX *= Mathf.Lerp(recoilCapRemain, 1f, 1 - Mathf.InverseLerp(0, Mathf.Abs(cap), Mathf.Abs(totalRotationXY.x)));
+                    //targetRotationX *= Mathf.Lerp(recoilCapRemain, 1f, 1 - Mathf.InverseLerp(0, Mathf.Abs(cap), Mathf.Abs(totalRotationXY.x)));
+                    targetRotationX *= Mathf.Lerp(recoilCapRemain, 1f, Mathf.Cos(Mathf.PI * .5f * Mathf.InverseLerp(0, Mathf.Abs(cap), Mathf.Abs(totalRotationXY.x))));
                 }
             }
             float targetRotationY = player.rand.RandomRange(recoilRangeHor.x, recoilRangeHor.y);

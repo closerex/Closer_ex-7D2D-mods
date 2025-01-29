@@ -1,6 +1,7 @@
 ﻿#if NotEditor
 using HarmonyLib;
 using KFCommonUtilityLib.Scripts.StaticManagers;
+using System.ComponentModel;
 using System.Reflection;
 
 #endif
@@ -273,9 +274,13 @@ namespace KFCommonUtilityLib.KFAttached.Render
             WeaponCameraFollow weaponCameraFollow = cameraGO.AddComponent<WeaponCameraFollow>();
             weaponCameraFollow.targetTexture = targetTexture;
             weaponCameraFollow.dynamicSensitivityData = (zoomActionData as IModuleContainerFor<ActionModuleDynamicSensitivity.DynamicSensitivityData>)?.Instance;
+            weaponCameraFollow.player = player;
             var old = player.playerCamera.GetComponent<PostProcessLayer>();
             var layer = pipCamera.gameObject.GetOrAddComponent<PostProcessLayer>();
+            layer.antialiasingMode = old.antialiasingMode;
+            layer.superResolution = (SuperResolution)old.superResolution.GetType().CreateInstance();
             layer.Init(fieldResources.GetValue(old) as PostProcessResources);
+            weaponCameraFollow.UpdateAntialiasing();
 #endif
         }
 

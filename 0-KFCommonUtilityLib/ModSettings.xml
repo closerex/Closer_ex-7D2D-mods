@@ -3,21 +3,21 @@
   <Global>
     <Tab name="RecoilSettings" displayKey="kflibTabRecoilSettingsName" tooltipKey="">
       <Category name="Capping" displayKey="kflibCategoryRecoilCappingName" tooltipKey="">
-        <Slider name="RecoilCompensationSensitivityMultiplier" displayKey="kflibSettingRecoilCSMName" tooltipKey="kflibSettingRecoilCSMDesc" value="0.20" defaultValue="0.5">
+        <Slider name="RecoilCompensationSensitivityMultiplier" displayKey="kflibSettingRecoilCSMName" tooltipKey="kflibSettingRecoilCSMDesc" value="0.00" defaultValue="0.5">
           <Property increment="0.01" minValue="0.00" maxValue="1.00" type="incrementalValuesFloat" />
           <Property type="formatter" formatString="0.00" />
         </Slider>
-        <Switch name="EnablePreRecoilCompensation" displayKey="kflibSettingEnablePreRecoilCompensationName" tooltipKey="kflibSettingEnablePreRecoilCompensationDesc" value="Enable" defaultValue="Disable" leftValue="Disable" rightValue="Enable" />
-        <Switch name="EnableCap" displayKey="kflibSettingEnableCapName" tooltipKey="kflibSettingEnableCapDesc" value="Enable" defaultValue="Enable" leftValue="Disable" rightValue="Enable" />
+        <Switch name="EnablePreRecoilCompensation" displayKey="kflibSettingEnablePreRecoilCompensationName" tooltipKey="kflibSettingEnablePreRecoilCompensationDesc" value="Disable" defaultValue="Disable" leftValue="Disable" rightValue="Enable" />
+        <Switch name="EnableCap" displayKey="kflibSettingEnableCapName" tooltipKey="kflibSettingEnableCapDesc" value="Disable" defaultValue="Enable" leftValue="Disable" rightValue="Enable" />
         <Slider name="RecoilRemain" displayKey="kflibSettingRecoilRemainName" tooltipKey="kflibSettingRecoilRemainDesc" value="0.2" defaultValue="0.2">
           <Property increment="0.01" minValue="0.00" maxValue="1.00" type="incrementalValuesFloat" />
           <Property type="formatter" formatString="0.00" />
         </Slider>
-        <Switch name="EnableSoftCap" displayKey="kflibSettingEnableSoftCapName" tooltipKey="kflibSettingEnableSoftCapDesc" value="Enable" defaultValue="Disable" leftValue="Disable" rightValue="Enable" />
+        <Switch name="EnableSoftCap" displayKey="kflibSettingEnableSoftCapName" tooltipKey="kflibSettingEnableSoftCapDesc" value="Disable" defaultValue="Disable" leftValue="Disable" rightValue="Enable" />
         <Slider name="MaxRecoilAngle" displayKey="kflibSettingMaxRecoilAngleName" tooltipKey="kflibSettingMaxRecoilAngleDesc" value="15" defaultValue="15">
           <Property increment="1" minValue="0" maxValue="45" type="incrementalValuesInt" />
         </Slider>
-        <Switch name="EnableDynamicCap" displayKey="kflibSettingEnableDynamicCapName" tooltipKey="kflibSettingEnableDynamicCapDesc" value="Enable" defaultValue="Enable" leftValue="Disable" rightValue="Enable" />
+        <Switch name="EnableDynamicCap" displayKey="kflibSettingEnableDynamicCapName" tooltipKey="kflibSettingEnableDynamicCapDesc" value="Disable" defaultValue="Enable" leftValue="Disable" rightValue="Enable" />
         <Slider name="MaxDynamicRecoilCapShots" displayKey="kflibSettingMaxDynamicRecoilCapShotsName" tooltipKey="kflibSettingMaxDynamicRecoilCapShotsDesc" value="6" defaultValue="6">
           <Property increment="1" minValue="0" maxValue="30" type="incrementalValuesInt" />
         </Slider>

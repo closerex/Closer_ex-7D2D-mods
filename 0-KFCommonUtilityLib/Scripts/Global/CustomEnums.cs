@@ -21,5 +21,6 @@
     public static PassiveEffects WeaponErgonomics;
     public static PassiveEffects RecoilCameraShakeStrength;
     public static PassiveEffects BurstShotInterval;
+    public static PassiveEffects MaxWeaponSpread;
     #endregion
 }

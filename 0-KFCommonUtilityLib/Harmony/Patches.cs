@@ -3,7 +3,7 @@ using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using UniLinq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml.Linq;
@@ -1119,6 +1119,33 @@ public static class CommonUtilityPatch
         }
 
         return codes;
+    }
+
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.onHoldingEntityFired))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_onHoldingEntityFired_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].opcode == OpCodes.Ldc_R4 && codes[i].operand is 5f)
+            {
+                codes.RemoveAt(i);
+                codes.InsertRange(i, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_1),
+                    CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(CommonUtilityPatch.GetMaxSpread))
+                });
+                break;
+            }
+        }
+        return codes;
+    }
+
+    private static float GetMaxSpread(ItemActionData _data)
+    {
+        return EffectManager.GetValue(CustomEnums.MaxWeaponSpread, _data.invData.itemValue, 5f, _data.invData.holdingEntity);
     }
 
     //[HarmonyPatch(typeof(Inventory), nameof(Inventory.Execute))]
