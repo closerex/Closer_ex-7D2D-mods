@@ -6,9 +6,10 @@ inpGrpFireModeName,UI,Controls Dialog,x,Firing Mode,射击模式
 inpActToggleFireModeName,UI,Controls Dialog,x,Toggle Firing Mode,切换射击模式
 inpActToggleFireModeDesc,UI,Controls Dialog,x,"For weapons with multiple firing modes, cycle between them with this key",使用有多种射击模式的武器时，在不同模式间循环切换
 ttCurrentFiringMode,UI,Controls Dialog,x,"Firing Mode: {0}","射击模式：{0}"
-ttFiringModeSemiAuto,UI,Controls Dialog,x,Semi Auto,单发
-ttFiringModeBurst,UI,Controls Dialog,x,Burst Fire,三连发
-ttFiringModeFullAuto,UI,Controls Dialog,x,Full Auto,全自动
+ttFiringModeSemiAuto,UI,Controls Dialog,x,Single,半自动
+ttFiringModeBurst2,UI,Controls Dialog,x,2-round Burst,两连发
+ttFiringModeBurst3,UI,Controls Dialog,x,3-round Burst,三连发
+ttFiringModeFullAuto,UI,Controls Dialog,x,Full-Auto,全自动
 ttFiringModePumpAction,UI,Controls Dialog,x,Pump Action,泵动
 kflibTabRecoilSettingsName,UI,Menu,x,Recoil Settings,后坐力设置
 kflibSettingRecoilCSMName,UI,Menu,x,Sensitivity Multiplier,灵敏度倍率
