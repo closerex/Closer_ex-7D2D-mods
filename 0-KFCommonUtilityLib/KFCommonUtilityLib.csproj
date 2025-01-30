@@ -572,6 +572,8 @@
     <Compile Include="Scripts\Requirements\ActionHasTags.cs" />
     <Compile Include="Scripts\Requirements\ActionIndexIs.cs" />
     <Compile Include="Scripts\Requirements\AmmoIndexIs.cs" />
+    <Compile Include="Scripts\Requirements\HoldingFireModeIs.cs" />
+    <Compile Include="Scripts\Requirements\FireModeIs.cs" />
     <Compile Include="Scripts\Requirements\HoldingActionIndexIs.cs" />
     <Compile Include="Scripts\Requirements\HoldingAmmoIndexIs.cs" />
     <Compile Include="Scripts\Requirements\IsActionUnlocked.cs" />

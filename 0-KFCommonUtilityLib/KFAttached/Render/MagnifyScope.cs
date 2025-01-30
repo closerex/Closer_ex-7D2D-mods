@@ -277,10 +277,10 @@ namespace KFCommonUtilityLib.KFAttached.Render
             weaponCameraFollow.player = player;
             var old = player.playerCamera.GetComponent<PostProcessLayer>();
             var layer = pipCamera.gameObject.GetOrAddComponent<PostProcessLayer>();
-            layer.antialiasingMode = old.antialiasingMode;
-            layer.superResolution = (SuperResolution)old.superResolution.GetType().CreateInstance();
+            //layer.antialiasingMode = old.antialiasingMode;
+            //layer.superResolution = (SuperResolution)old.superResolution.GetType().CreateInstance();
             layer.Init(fieldResources.GetValue(old) as PostProcessResources);
-            weaponCameraFollow.UpdateAntialiasing();
+            //weaponCameraFollow.UpdateAntialiasing();
 #endif
         }
 

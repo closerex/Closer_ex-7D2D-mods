@@ -17,7 +17,10 @@ public class HideMarkerOnAimPatch
     [HarmonyPostfix]
     private static void Postfix_CreateIcon_XUiC_OnScreenIcons(XUiC_OnScreenIcons __instance)
     {
-        __instance.screenIconList[__instance.screenIconList.Count - 1].Transform.SetParent(__instance.ViewComponent.UiTransform.Find("AllIconParent"));
+        if (__instance.ViewComponent?.UiTransform)
+        {
+            __instance.screenIconList[__instance.screenIconList.Count - 1].Transform.SetParent(__instance.ViewComponent.UiTransform.Find("AllIconParent"));
+        }
     }
 
     [HarmonyPatch(typeof(XUiC_OnScreenIcons), nameof(XUiC_OnScreenIcons.Update))]

@@ -14,6 +14,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         }
 
         private static RecoilState state;
+        private static float lastKickTime = 0f;
         private static float recoilScaledDelta = 0f;
         //private static float returnScaledDelta = 0f;
         private static Vector2 targetRotationXY = Vector2.zero;
@@ -49,6 +50,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             targetReturnXY = Vector2.zero;
             totalRotationXY = Vector2.zero;
             totalReturnCur = Vector3.zero;
+            lastKickTime = 0f;
         }
 
         public static void InitRecoilSettings(IModGlobalSettings settings)
@@ -142,21 +144,20 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 }
             }
             float cameraShakeStrength = EffectManager.GetValue(CustomEnums.RecoilCameraShakeStrength, player.inventory.holdingItemItemValue, 0.12f, player);
-            float targetRotationX;
-            if (enableCap && Mathf.Abs(totalRotationXY.x) >= Mathf.Abs(cap))
+            float targetRotationX = player.rand.RandomRange(recoilRangeVer.x, recoilRangeVer.y);
+            float targetRotationY = player.rand.RandomRange(recoilRangeHor.x, recoilRangeHor.y);
+            if (enableCap)
             {
-                targetRotationX = player.rand.RandomRange(recoilRangeVer.x, recoilRangeVer.y) * recoilCapRemain;
-            }
-            else
-            {
-                targetRotationX = player.rand.RandomRange(recoilRangeVer.x, recoilRangeVer.y);
-                if (enableSoftCap)
+                if (Mathf.Abs(totalRotationXY.x) >= Mathf.Abs(cap))
+                {
+                    targetRotationX *= recoilCapRemain;
+                }
+                else if (enableSoftCap)
                 {
                     //targetRotationX *= Mathf.Lerp(recoilCapRemain, 1f, 1 - Mathf.InverseLerp(0, Mathf.Abs(cap), Mathf.Abs(totalRotationXY.x)));
                     targetRotationX *= Mathf.Lerp(recoilCapRemain, 1f, Mathf.Cos(Mathf.PI * .5f * Mathf.InverseLerp(0, Mathf.Abs(cap), Mathf.Abs(totalRotationXY.x))));
                 }
             }
-            float targetRotationY = player.rand.RandomRange(recoilRangeHor.x, recoilRangeHor.y);
             if (!player.AimingGun)
             {
                 targetRotationXY += new Vector2(targetRotationX, targetRotationY) * 2f;
@@ -169,6 +170,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 totalRotationXY += new Vector2(targetRotationX, targetRotationY);
                 CameraShaker.Presets.ShortShake3D(cameraShakeStrength, shakeFreq, shakeBounce);
             }
+            lastKickTime = Time.time;
             //if (enableCap)
             //{
             //    float totalRotationXCapped = Mathf.Clamp(totalRotationXY.x, -cap, cap);
@@ -292,16 +294,16 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             else if (state == RecoilState.Return && targetReturnXY.sqrMagnitude > 1e-6)
             {
                 //Log.Out($"target return {targetReturnXY}");
-                if (targetReturnXY.sqrMagnitude <= 1e-6 && totalRotationXY.sqrMagnitude <= 1e-6)
-                {
-                    targetReturnXY = Vector3.zero;
-                    totalRotationXY = Vector2.zero;
-                    returnSpeedCur = Vector3.zero;
-                    totalReturnCur = Vector3.zero;
-                    //returnScaledDelta = 1;
-                    state = RecoilState.None;
-                    return;
-                }
+                //if (targetReturnXY.sqrMagnitude <= 1e-6 && totalRotationXY.sqrMagnitude <= 1e-6)
+                //{
+                //    targetReturnXY = Vector3.zero;
+                //    totalRotationXY = Vector2.zero;
+                //    returnSpeedCur = Vector3.zero;
+                //    totalReturnCur = Vector3.zero;
+                //    //returnScaledDelta = 1;
+                //    state = RecoilState.None;
+                //    return;
+                //}
                 FastTags<TagGroup.Global> actionTags = player.inventory.holdingItemItemValue.ItemClass.ItemTags;
                 MultiActionManager.ModifyItemTags(player.inventory.holdingItemItemValue, player.inventory.holdingItemData.actionData[MultiActionManager.GetActionIndexForEntity(player)], ref actionTags);
                 float returnSpeedDefault;
@@ -328,7 +330,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                     result = Vector3.SmoothDamp(Vector3.zero, new Vector3(totalRotationXY.x, totalRotationXY.y), ref totalReturnCur, 4 / returnSpeed);
                     totalRotationXY -= new Vector2(result.x, result.y);
                 }
-                if (targetReturnXY.sqrMagnitude <= 1e-6 && totalRotationXY.sqrMagnitude <= 1e-6)
+                if (targetReturnXY.sqrMagnitude <= 1e-6 && totalRotationXY.sqrMagnitude <= 1e-6 && Time.time - lastKickTime >= 1 / returnSpeed)
                 {
                     targetReturnXY = Vector3.zero;
                     totalRotationXY = Vector2.zero;

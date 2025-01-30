@@ -19,7 +19,7 @@ public class WeaponCameraFollow : MonoBehaviour
         {
             dynamicSensitivityData.activated = true;
         }
-        UpdateAntialiasing();
+        //UpdateAntialiasing();
 #endif
     }
 
