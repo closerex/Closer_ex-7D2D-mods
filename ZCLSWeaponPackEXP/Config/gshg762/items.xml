@@ -4,6 +4,7 @@
 <item name="gunMGT3GshG72">
 	<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,barrelAttachments,sideAttachments,smallTopAttachments,magazine,drumMagazine,bottomAttachments,mediumTopAttachments,attFortitude,perkMachineGunner,perkBookAutoWeapons,attachmentsIncluded,canHaveCosmetic,machinegunSkill"/>
 	<property name="DisplayType" value="rangedGun"/>
+	<property name="CreativeMode" value="None"/>
 	<property name="HoldType" value="19"/>
 	<property name="Meshfile" value="#@modfolder:Resources/GshG762.unity3d?GshG762_m.prefab"/>
 	<property name="Material" value="MMachineGunParts"/>

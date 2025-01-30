@@ -12,7 +12,7 @@
 				<item name="ammoKaboomstickShellHE" count="25,50"/>
 			</append>
 			<append xpath="/traders/trader_item_groups/trader_item_group[@name='ammoAP']">
-				<item name="ammoKaboomstickShellHE" count="25,50"/>
+				<item name="ammoKaboomstickShellFrag" count="25,50"/>
 			</append>
 		</if>
 	</conditional>
