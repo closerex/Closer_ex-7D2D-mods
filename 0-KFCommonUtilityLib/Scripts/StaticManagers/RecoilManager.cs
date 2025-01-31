@@ -15,7 +15,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
 
         private static RecoilState state;
         private static float lastKickTime = 0f;
-        private static float recoilScaledDelta = 0f;
+        //private static float recoilScaledDelta = 0f;
         //private static float returnScaledDelta = 0f;
         private static Vector2 targetRotationXY = Vector2.zero;
         private static Vector2 targetReturnXY = Vector2.zero;
@@ -44,7 +44,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         private static void ClearData()
         {
             state = RecoilState.None;
-            recoilScaledDelta = 0;
+            //recoilScaledDelta = 0;
             returnSpeedCur = Vector3.zero;
             targetRotationXY = Vector2.zero;
             targetReturnXY = Vector2.zero;
@@ -128,7 +128,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         {
             if (player == null) { return; }
             state = RecoilState.Recoil;
-            recoilScaledDelta = 0;
+            //recoilScaledDelta = 0;
             returnSpeedCur = Vector3.zero;
             //returnScaledDelta = 0;
             float cap = 0f;
@@ -154,8 +154,8 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 }
                 else if (enableSoftCap)
                 {
-                    //targetRotationX *= Mathf.Lerp(recoilCapRemain, 1f, 1 - Mathf.InverseLerp(0, Mathf.Abs(cap), Mathf.Abs(totalRotationXY.x)));
-                    targetRotationX *= Mathf.Lerp(recoilCapRemain, 1f, Mathf.Cos(Mathf.PI * .5f * Mathf.InverseLerp(0, Mathf.Abs(cap), Mathf.Abs(totalRotationXY.x))));
+                    targetRotationX *= Mathf.Lerp(recoilCapRemain, 1f, 1 - Mathf.InverseLerp(0, Mathf.Abs(cap), Mathf.Abs(totalRotationXY.x)));
+                    //targetRotationX *= Mathf.Lerp(recoilCapRemain, 1f, Mathf.Cos(Mathf.PI * .5f * Mathf.InverseLerp(0, Mathf.Abs(cap), Mathf.Abs(totalRotationXY.x))));
                 }
             }
             if (!player.AimingGun)
@@ -249,7 +249,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         {
             if (player == null)
                 return;
-            if (state == RecoilState.Recoil && recoilScaledDelta < 1)
+            if (state == RecoilState.Recoil)
             {
                 //Log.Out($"target rotation {targetRotationXY}");
                 //if (targetRotationXY.sqrMagnitude <= 1e-6)
@@ -279,19 +279,19 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 }
                 float snappiness = EffectManager.GetValue(CustomEnums.RecoilSnappiness, player.inventory.holdingItemItemValue, snappinessDefault, player);
                 //targetRotationXY = Vector2.Lerp(targetRotationXY, Vector2.zero, returnSpeed * Time.deltaTime);
-                recoilScaledDelta += snappiness * 3 * Time.deltaTime;
-                Vector3 result = Vector3.Lerp(Vector3.zero, new Vector3(targetRotationXY.x, targetRotationXY.y), recoilScaledDelta);
+                float scaledDeltaTime = (Time.time - lastKickTime) * snappiness * 3;
+                Vector3 result = Vector3.Lerp(Vector3.zero, new Vector3(targetRotationXY.x, targetRotationXY.y), Mathf.Sin(Mathf.PI * .5f * Mathf.Lerp(0, 1, scaledDeltaTime)));
                 targetRotationXY -= new Vector2(result.x, result.y);
                 targetReturnXY += new Vector2(result.x, result.y);
                 player.movementInput.rotation += result;
-                if (recoilScaledDelta >= 1)
+                if (scaledDeltaTime >= 1)
                 {
                     targetRotationXY = Vector3.zero;
                     returnSpeedCur = Vector3.zero;
                     state = RecoilState.Return;
                 }
             }
-            else if (state == RecoilState.Return && targetReturnXY.sqrMagnitude > 1e-6)
+            else if (state == RecoilState.Return)
             {
                 //Log.Out($"target return {targetReturnXY}");
                 //if (targetReturnXY.sqrMagnitude <= 1e-6 && totalRotationXY.sqrMagnitude <= 1e-6)
