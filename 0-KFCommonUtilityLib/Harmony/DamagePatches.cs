@@ -80,15 +80,25 @@ public static class DamagePatches
 
     private static float GetTotalPhysicalArmorResistPercent(Equipment equipment, in DamageResponse damageResponse, EntityAlive attacker)
     {
+        if (!equipment?.m_entity)
+            return 0f;
         FastTags<TagGroup.Global> bodyPartTags = GetBodyPartTags(damageResponse.HitBodyPart);
-        attacker.MinEventContext.Other = equipment.m_entity;
-        attacker.MinEventContext.ItemValue = damageResponse.Source.AttackingItem;
         float resist = EffectManager.GetValue(PassiveEffects.PhysicalDamageResist, null, 0f, equipment.m_entity, null, Equipment.coreDamageResist | bodyPartTags);
-        if (damageResponse.Source.AttackingItem.ItemClass.Actions[1] is ItemActionProjectile)
-        { 
-            return MultiActionReversePatches.ProjectileGetValue(PassiveEffects.TargetArmor, damageResponse.Source.AttackingItem, resist, attacker, null, damageResponse.Source.AttackingItem.ItemClass.ItemTags | bodyPartTags);
+        if (attacker)
+        {
+            attacker.MinEventContext.Other = equipment.m_entity;
+            attacker.MinEventContext.ItemValue = damageResponse.Source.AttackingItem;
+            if (damageResponse.Source.AttackingItem != null)
+            {
+                if (damageResponse.Source.AttackingItem.ItemClass.Actions[1] is ItemActionProjectile)
+                { 
+                    return MultiActionReversePatches.ProjectileGetValue(PassiveEffects.TargetArmor, damageResponse.Source.AttackingItem, resist, attacker, null, damageResponse.Source.AttackingItem.ItemClass.ItemTags | bodyPartTags);
+                }
+                return EffectManager.GetValue(PassiveEffects.TargetArmor, damageResponse.Source.AttackingItem, resist, attacker, null, damageResponse.Source.AttackingItem.ItemClass.ItemTags | bodyPartTags);
+            }
+            return EffectManager.GetValue(PassiveEffects.TargetArmor, null, resist, attacker, null, bodyPartTags);
         }
-        return EffectManager.GetValue(PassiveEffects.TargetArmor, damageResponse.Source.AttackingItem, resist, attacker, null, damageResponse.Source.AttackingItem.ItemClass.ItemTags | bodyPartTags);
+        return resist;
     }
 
     public static FastTags<TagGroup.Global> GetBodyPartTags(EnumBodyPartHit bodyparts)

@@ -94,9 +94,14 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
             Destroy();
             return;
         }
+        var animator = playerAnimatorTrans.GetComponentInChildren<Animator>(true);
+        if (!animator)
+        {
+            Destroy();
+            return;
+        }
         fpvSet = false;
         tpvSet = false;
-        var animator = playerAnimatorTrans.GetComponentInChildren<Animator>();
         playerAnimatorTrans = animator.transform;
         PlayerAnimatorTrans = playerAnimatorTrans;
         GraphBuilder = playerAnimatorTrans.AddMissingComponent<AnimationGraphBuilder>();
