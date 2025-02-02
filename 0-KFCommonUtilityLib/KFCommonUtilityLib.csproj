@@ -562,13 +562,16 @@
     <Compile Include="Scripts\Items\Modular\ActionModuleTagged.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleTranspilerTest.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleVariableZoom.cs" />
+    <Compile Include="Scripts\MinEventActions\MinEventActionAttachPrefabToEntitySync.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionModifyCVarWithLocalCache.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionOverrideZoomFOV.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionSetMetadataOnWeaponLabel.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionSetPassiveOnWeaponLabel.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionUpdateLocalCache.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageEntityActionIndex.cs" />
+    <Compile Include="Scripts\NetPackages\NetPackageEntitySpawnWithCVar.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageFixedReload.cs" />
+    <Compile Include="Scripts\NetPackages\NetPackageRemoteAttachPrefab.cs" />
     <Compile Include="Scripts\Requirements\ActionHasTags.cs" />
     <Compile Include="Scripts\Requirements\ActionIndexIs.cs" />
     <Compile Include="Scripts\Requirements\AmmoIndexIs.cs" />
@@ -579,6 +582,7 @@
     <Compile Include="Scripts\Requirements\IsActionUnlocked.cs" />
     <Compile Include="Scripts\Requirements\IsInJeep.cs" />
     <Compile Include="Scripts\Requirements\IsHoldingItemModificationActivated.cs" />
+    <Compile Include="Scripts\Requirements\IsLocal.cs" />
     <Compile Include="Scripts\Requirements\IsModificationActivated.cs" />
     <Compile Include="Scripts\Requirements\ItemActionIndexIs.cs" />
     <Compile Include="Scripts\StaticManagers\AnimationRiggingManager.cs" />

@@ -6,6 +6,7 @@
     public static MinEventTypes onRechargeValueUpdate;
     public static MinEventTypes onSelfItemSwitchMode;
     public static MinEventTypes onSelfBurstModeChanged;
+    public static MinEventTypes onSelfFirstCVarSync;
     #endregion
 
     #region Passives

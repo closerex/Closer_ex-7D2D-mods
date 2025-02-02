@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml.Linq;
 using UnityEngine;
+using KFCommonUtilityLib.Scripts.NetPackages;
 
 [HarmonyPatch]
 public static class CommonUtilityPatch
@@ -1147,6 +1148,44 @@ public static class CommonUtilityPatch
     {
         return EffectManager.GetValue(CustomEnums.MaxWeaponSpread, _data.invData.itemValue, 5f, _data.invData.holdingEntity);
     }
+
+    [HarmonyPatch(typeof(NetEntityDistributionEntry), nameof(NetEntityDistributionEntry.getSpawnPacket))]
+    [HarmonyPrefix]
+    private static bool Prefix_getSpawnPacket_NetEntityDistributionEntry(NetEntityDistributionEntry __instance, ref NetPackage __result)
+    {
+        if (__instance.trackedEntity is EntityAlive ea)
+        { 
+            __result = NetPackageManager.GetPackage<NetPackageEntitySpawnWithCVar>().Setup(new EntityCreationData(__instance.trackedEntity, true), (EntityAlive)__instance.trackedEntity);
+            return false;
+        }
+        return true;
+    }
+
+    [HarmonyPatch(typeof(World), nameof(World.SpawnEntityInWorld))]
+    [HarmonyPostfix]
+    private static void Postfix_SpawnEntityInWorld_World(Entity _entity)
+    {
+        if (_entity is EntityAlive ea && !ea.isEntityRemote)
+        {
+            ea.FireEvent(CustomEnums.onSelfFirstCVarSync);
+        }
+    }
+
+    //[HarmonyPatch(typeof(EntityBuffs), nameof(EntityBuffs.AddBuff), typeof(string), typeof(Vector3i), typeof(int), typeof(bool), typeof(bool), typeof(float))]
+    //[HarmonyPostfix]
+    //private static void Postfix_AddBuff_EntityBuffs(string _name, EntityBuffs __instance, EntityBuffs.BuffStatus __result, bool _netSync)
+    //{
+    //    if (_name.StartsWith("eftZombieRandomArmor") || _name.StartsWith("eftZombieArmor"))
+    //        Log.Out($"AddBuff [{_name}] on entity {__instance.parent.GetDebugName()} should sync {_netSync} result {__result.ToStringCached()}\n{StackTraceUtility.ExtractStackTrace()}");
+    //}
+
+    //[HarmonyPatch(typeof(EntityBuffs), nameof(EntityBuffs.RemoveBuff))]
+    //[HarmonyPostfix]
+    //private static void Postfix_RemoveBuff_EntityBuffs(string _name, EntityBuffs __instance, bool _netSync)
+    //{
+    //    if (_name.StartsWith("eftZombieRandomArmor") || _name.StartsWith("eftZombieArmor"))
+    //        Log.Out($"RemoveBuff [{_name}] on entity {__instance.parent.GetDebugName()} should sync {_netSync}\n{StackTraceUtility.ExtractStackTrace()}");
+    //}
 
     //[HarmonyPatch(typeof(Inventory), nameof(Inventory.Execute))]
     //[HarmonyPrefix]

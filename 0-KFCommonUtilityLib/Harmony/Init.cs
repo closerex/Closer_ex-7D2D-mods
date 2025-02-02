@@ -53,6 +53,7 @@ public class CommonUtilityLibInit : IModApi
         CustomEnums.onRechargeValueUpdate = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onRechargeValueUpdate");
         CustomEnums.onSelfItemSwitchMode = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onSelfItemSwitchMode");
         CustomEnums.onSelfBurstModeChanged = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onSelfBurstModeChanged");
+        CustomEnums.onSelfFirstCVarSync = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onSelfFirstCVarSync");
 
         CustomEnums.ReloadSpeedRatioFPV2TPV = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("ReloadSpeedRatioFPV2TPV");
         CustomEnums.RecoilSnappiness = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RecoilSnappiness");
