@@ -826,6 +826,28 @@ static class AnimationRiggingPatches
         }
     }
 
+    [HarmonyPatch(typeof(EntityItem), nameof(EntityItem.createMesh))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_createMesh_EntityItem(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+        codes[codes.Count - 1].WithLabels(codes[codes.Count - 11].labels);
+        codes.RemoveRange(codes.Count - 11, 10);
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(EntityItem), nameof(EntityItem.createMesh))]
+    [HarmonyPostfix]
+    private static void Postfix_createMesh_EntityItem(EntityItem __instance)
+    {
+        if (__instance.itemTransform && __instance.itemTransform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+        {
+            targets.Destroy();
+        }
+        __instance.meshRenderers = __instance.itemTransform.GetComponentsInChildren<Renderer>(true);
+        __instance.VisiblityCheck(0, false);
+    }
+
     [HarmonyPatch(typeof(EModelBase), nameof(EModelBase.SwitchModelAndView))]
     [HarmonyPostfix]
     private static void Postfix_SwitchModelAndView_EModelBase(EModelBase __instance)
