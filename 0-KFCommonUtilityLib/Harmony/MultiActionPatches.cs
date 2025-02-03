@@ -2234,47 +2234,47 @@ namespace KFCommonUtilityLib.Harmony
         #endregion
 
         #region requirement tags exclude
-        [HarmonyPatch(typeof(TriggerHasTags), nameof(TriggerHasTags.IsValid))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_IsValid_TriggerHasTags(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
-        {
-            var codes = instructions.ToList();
+        //[HarmonyPatch(typeof(TriggerHasTags), nameof(TriggerHasTags.IsValid))]
+        //[HarmonyTranspiler]
+        //private static IEnumerable<CodeInstruction> Transpiler_IsValid_TriggerHasTags(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        //{
+        //    var codes = instructions.ToList();
 
-            var lbd_tags = generator.DeclareLocal(typeof(FastTags<TagGroup.Global>));
-            FieldInfo fld_tags = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.Tags));
-            bool firstRet = true;
+        //    var lbd_tags = generator.DeclareLocal(typeof(FastTags<TagGroup.Global>));
+        //    FieldInfo fld_tags = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.Tags));
+        //    bool firstRet = true;
 
-            for (int i = 0; i < codes.Count; i++)
-            {
-                if (codes[i].opcode == OpCodes.Ret && firstRet)
-                {
-                    firstRet = false;
-                    codes.InsertRange(i + 1, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldarg_1),
-                        new CodeInstruction(OpCodes.Ldfld, fld_tags),
-                        new CodeInstruction(OpCodes.Stloc_S, lbd_tags),
-                        new CodeInstruction(OpCodes.Ldarg_1),
-                        CodeInstruction.LoadField(typeof(MinEventParams), nameof(MinEventParams.ItemValue)),
-                        new CodeInstruction(OpCodes.Ldarg_1),
-                        CodeInstruction.LoadField(typeof(MinEventParams), nameof(MinEventParams.ItemActionData)),
-                        new CodeInstruction(OpCodes.Ldloca_S, lbd_tags),
-                        CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.ModifyItemTags))
-                    });
-                    i += 9;
-                }
-                else if (codes[i].LoadsField(fld_tags))
-                {
-                    codes[i].opcode = OpCodes.Ldloca_S;
-                    codes[i].operand = lbd_tags;
-                    codes[i].WithLabels(codes[i - 1].ExtractLabels());
-                    codes.RemoveAt(i - 1);
-                    i--;
-                }
-            }
+        //    for (int i = 0; i < codes.Count; i++)
+        //    {
+        //        if (codes[i].opcode == OpCodes.Ret && firstRet)
+        //        {
+        //            firstRet = false;
+        //            codes.InsertRange(i + 1, new[]
+        //            {
+        //                new CodeInstruction(OpCodes.Ldarg_1),
+        //                new CodeInstruction(OpCodes.Ldfld, fld_tags),
+        //                new CodeInstruction(OpCodes.Stloc_S, lbd_tags),
+        //                new CodeInstruction(OpCodes.Ldarg_1),
+        //                CodeInstruction.LoadField(typeof(MinEventParams), nameof(MinEventParams.ItemValue)),
+        //                new CodeInstruction(OpCodes.Ldarg_1),
+        //                CodeInstruction.LoadField(typeof(MinEventParams), nameof(MinEventParams.ItemActionData)),
+        //                new CodeInstruction(OpCodes.Ldloca_S, lbd_tags),
+        //                CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.ModifyItemTags))
+        //            });
+        //            i += 9;
+        //        }
+        //        else if (codes[i].LoadsField(fld_tags))
+        //        {
+        //            codes[i].opcode = OpCodes.Ldloca_S;
+        //            codes[i].operand = lbd_tags;
+        //            codes[i].WithLabels(codes[i - 1].ExtractLabels());
+        //            codes.RemoveAt(i - 1);
+        //            i--;
+        //        }
+        //    }
 
-            return codes;
-        }
+        //    return codes;
+        //}
 
         [HarmonyPatch(typeof(ItemHasTags), nameof(ItemHasTags.IsValid))]
         [HarmonyTranspiler]

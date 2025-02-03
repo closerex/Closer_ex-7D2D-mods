@@ -87,7 +87,7 @@ public static class DamagePatches
         if (attacker)
         {
             attacker.MinEventContext.Other = equipment.m_entity;
-            attacker.MinEventContext.ItemValue = damageResponse.Source.AttackingItem;
+            attacker.MinEventContext.ItemValue = damageResponse.Source.AttackingItem ?? ItemValue.None;
             if (damageResponse.Source.AttackingItem != null)
             {
                 if (damageResponse.Source.AttackingItem.ItemClass.Actions[1] is ItemActionProjectile)
