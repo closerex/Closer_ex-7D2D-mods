@@ -37,6 +37,10 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="mscorlib">
+      <HintPath>..\..\7DaysToDie_Data\Managed\mscorlib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="0Harmony">
       <HintPath>..\0_TFP_Harmony\0Harmony.dll</HintPath>
       <Private>False</Private>
@@ -563,6 +567,7 @@
     <Compile Include="Scripts\Items\Modular\ActionModuleTranspilerTest.cs" />
     <Compile Include="Scripts\Items\Modular\ActionModuleVariableZoom.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionAttachPrefabToEntitySync.cs" />
+    <Compile Include="Scripts\MinEventActions\MinEventActionCVarExpression.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionModifyCVarWithLocalCache.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionOverrideZoomFOV.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionSetMetadataOnWeaponLabel.cs" />
@@ -627,6 +632,29 @@
     <Compile Include="Scripts\StaticManagers\MultiActionManager.cs" />
     <Compile Include="Scripts\StaticManagers\RecoilManager.cs" />
     <Compile Include="Scripts\Utilities\EasingFunctions.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\ExpressionParser.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\FloatExpressionParser.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\CommentParser.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\IComment.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\ICommentedOfT.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\IInput.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\Input.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\IPositionAware.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\IResultOfT.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\ITextSpanOfT.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\Option.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\Parse.Commented.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\Parse.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\Parse.Optional.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\Parse.Positioned.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\Parse.Primitives.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\Parse.Sequence.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\ParseException.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\ParserOfT.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\Position.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\Result.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\ResultHelper.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\StringExtensions.cs" />
     <Compile Include="Scripts\Utilities\MonoCecilExtensions.cs" />
     <Compile Include="Scripts\Utilities\MultiActionUtils.cs" />
     <Compile Include="Scripts\Utilities\MultiActionProjectileRewrites.cs" />
