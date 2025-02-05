@@ -404,6 +404,10 @@ static class AnimationRiggingPatches
                 }
             }
         }
+        if (__instance.entity.AttachedToEntity)
+        {
+            __instance.SetVehicleAnimation(AvatarController.vehiclePoseHash, __instance.entity.vehiclePoseMode);
+        }
     }
 
     [HarmonyPatch(typeof(LegacyAvatarController), nameof(LegacyAvatarController.Update))]
@@ -411,6 +415,10 @@ static class AnimationRiggingPatches
     private static void Postfix_Update_LegacyAvatarController(LegacyAvatarController __instance)
     {
         AnimationRiggingManager.UpdatePlayerAvatar(__instance);
+        if (__instance.entity.AttachedToEntity)
+        {
+            __instance.SetVehicleAnimation(AvatarController.vehiclePoseHash, __instance.entity.vehiclePoseMode);
+        }
     }
 
     //[HarmonyPatch(typeof(AvatarLocalPlayerController), nameof(AvatarLocalPlayerController.LateUpdate))]
@@ -840,9 +848,13 @@ static class AnimationRiggingPatches
     [HarmonyPostfix]
     private static void Postfix_createMesh_EntityItem(EntityItem __instance)
     {
-        if (__instance.itemTransform && __instance.itemTransform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+        if (__instance.itemTransform)
         {
-            targets.Destroy();
+            __instance.itemTransform.tag = "Item";
+            if (__instance.itemTransform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+            {
+                targets.Destroy();
+            }
         }
         __instance.meshRenderers = __instance.itemTransform.GetComponentsInChildren<Renderer>(true);
         __instance.VisiblityCheck(0, false);
@@ -1547,7 +1559,30 @@ static class AnimationRiggingPatches
                 AccessTools.Method(typeof(KFExtensions), nameof(KFExtensions.SetVanillaLayerWeight)));
     }
 
+    private static int drunkHash = Animator.StringToHash("drunk");
+    [HarmonyPatch(typeof(FirstPersonAnimator), nameof(FirstPersonAnimator.SetDrunk))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_SetDrunk_FirstPersonAnimator(IEnumerable<CodeInstruction> instructions)
+    {
+        return instructions.MethodReplacer(
+                AccessTools.Method(typeof(Animator), nameof(Animator.SetFloat), new[] { typeof(string), typeof(float) }),
+                AccessTools.Method(typeof(KFExtensions), nameof(KFExtensions.SetWrappedFloat)))
+                           .Manipulator(ins => ins.LoadsConstant("drunk"),
+                            ins => 
+                            {
+                                ins.opcode = OpCodes.Ldsfld;
+                                ins.operand = AccessTools.Field(typeof(AnimationRiggingPatches), nameof(AnimationRiggingPatches.drunkHash));
+                            });
+    }
 
+    [HarmonyPatch(typeof(AvatarMultiBodyController), nameof(AvatarMultiBodyController.SetVehicleAnimation))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_SetVehicleAnimation_AvatarMultiBodyController(IEnumerable<CodeInstruction> instructions)
+    {
+        return instructions.MethodReplacer(
+                AccessTools.Method(typeof(Animator), nameof(Animator.SetInteger), new[] { typeof(string), typeof(int) }),
+                AccessTools.Method(typeof(KFExtensions), nameof(KFExtensions.SetWrappedInt)));
+    }
     //BodyAnimator.LateUpdate
     //UMACharacterBodyAnimator.LateUpdate
     //BodyAnimator.cacheLayerStateInfo

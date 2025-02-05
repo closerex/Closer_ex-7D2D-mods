@@ -119,7 +119,7 @@ public class AnimatorWrapper : IAnimatorWrapper
 
     public void SetFloat(int id, float value) => animator.SetFloat(id, value);
 
-    public void SetInteger(string name, int value) => animator.SetFloat(name, value);
+    public void SetInteger(string name, int value) => animator.SetInteger(name, value);
 
     public void SetInteger(int id, int value) => animator.SetInteger(id, value);
 

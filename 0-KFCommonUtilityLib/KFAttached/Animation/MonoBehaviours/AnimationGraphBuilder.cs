@@ -254,13 +254,13 @@ public class AnimationGraphBuilder : MonoBehaviour
             VanillaWrapper.Play("idle", 0, 0f);
             VanillaWrapper.SetInteger(AvatarController.weaponHoldTypeHash, -1);
         }
-        if (wasCrouching && !isFpv)
+        if (wasCrouching && !isFpv && VanillaWrapper.GetLayerCount() > 4)
         { 
             VanillaWrapper.Play("2HGeneric", 4, 0);
         }
 #endif
         sw.Stop();
-        Log.Out($"changing animation target took {sw.ElapsedMilliseconds}");
+        Log.Out($"changing animation target to {(target ? target.name : "null")} took {sw.ElapsedMilliseconds}");
     }
 
     private void InitBehaviours(Transform weaponRoot)

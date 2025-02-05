@@ -128,7 +128,7 @@ public static class KFExtensions
         }
     }
 
-    public static IAnimatorWrapper GetWrapperForParamHash(this Animator self, string name, bool prefVanilla = false)
+    public static IAnimatorWrapper GetWrapperForParamName(this Animator self, string name, bool prefVanilla = false)
     {
         if (!self.TryGetComponent<AnimationGraphBuilder>(out var builder))
             return AnimationGraphBuilder.DummyWrapper;
