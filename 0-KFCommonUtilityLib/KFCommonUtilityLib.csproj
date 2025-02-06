@@ -411,6 +411,7 @@
   <ItemGroup>
     <Compile Include="Harmony\BackgroundInventoryUpdatePatch.cs" />
     <Compile Include="Harmony\DamagePatches.cs" />
+    <Compile Include="Harmony\FPVLegPatches.cs" />
     <Compile Include="Harmony\HideMarkerOnAimPatch.cs" />
     <Compile Include="Harmony\DisplayMetaAsBuffPatch.cs" />
     <Compile Include="Harmony\InvariableRPMPatches.cs" />

@@ -35,6 +35,8 @@ public class ActionModuleDynamicSensitivity
             }
             __customData.ZoomRatio = StringParsers.ParseFloat(_data.invData.itemValue.GetPropertyOverride("ZoomRatio", str));
         }
+
+        __customData.dsRangeOverride = StringParsers.ParseVector2(_data.invData.itemValue.GetPropertyOverride("DynamicSensitivityRange", "0,0"));
     }
 
     [MethodTargetPostfix(nameof(ItemAction.OnHoldingUpdate))]
@@ -58,9 +60,25 @@ public class ActionModuleDynamicSensitivity
     {
         public ActionModuleVariableZoom.VariableZoomData variableZoomData = null;
         private float zoomRatio = 1.0f;
+        public Vector2 dsRangeOverride = Vector2.zero;
         public bool activated = false;
 
-        public float ZoomRatio { get => variableZoomData?.curScale ?? zoomRatio; set => zoomRatio = value; }
+        public float ZoomRatio
+        {
+            get
+            {
+                if (variableZoomData != null)
+                {
+                    if (dsRangeOverride.x > 0 && dsRangeOverride.y >= dsRangeOverride.x)
+                    {
+                        return Mathf.Lerp(dsRangeOverride.x, dsRangeOverride.y, Mathf.InverseLerp(variableZoomData.minScale, variableZoomData.maxScale, variableZoomData.curScale));
+                    }
+                    return variableZoomData.curScale;
+                }
+                return zoomRatio;
+            }
+            set => zoomRatio = value;
+        }
 
         public DynamicSensitivityData(ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleDynamicSensitivity _module)
         {

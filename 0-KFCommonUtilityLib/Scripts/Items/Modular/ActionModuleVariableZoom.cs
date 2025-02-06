@@ -45,7 +45,7 @@ public class ActionModuleVariableZoom
     {
         public float maxScale = 1f;
         public float minScale = 1f;
-        public float curScale = 1f;
+        public float curScale = 0f;
         public bool shouldUpdate = true;
         public VariableZoomData(ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleVariableZoom _module)
         {
