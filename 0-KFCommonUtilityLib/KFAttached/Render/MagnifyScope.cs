@@ -1,7 +1,6 @@
 ﻿#if NotEditor
 using HarmonyLib;
 using KFCommonUtilityLib.Scripts.StaticManagers;
-using System.ComponentModel;
 using System.Reflection;
 
 #endif
@@ -95,7 +94,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
 
         private void OnEnable()
         {
-            float targetScale;
+            float targetFov;
 #if NotEditor
             //inventory holding item is not set when creating model, this might be an issue for items with base scope that has this script attached
             //workaround taken from alternative action module, which keeps a reference to the ItemValue being set until its custom data is created
@@ -110,7 +109,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
             if (variableZoom && zoomActionData is IModuleContainerFor<ActionModuleVariableZoom.VariableZoomData> zoomDataModule)
             {
                 variableZoomData = zoomDataModule.Instance;
-                targetScale = variableZoomData.curScale;
+                targetFov = variableZoomData.curFov;
                 variableZoomData.shouldUpdate = false;
             }
             else
@@ -120,7 +119,8 @@ namespace KFCommonUtilityLib.KFAttached.Render
                 {
                     originalRatio = "0";
                 }
-                targetScale = StringParsers.ParseFloat(player.inventory.holdingItemItemValue.GetPropertyOverride("ZoomRatio", originalRatio));
+                targetFov = StringParsers.ParseFloat(player.inventory.holdingItemItemValue.GetPropertyOverride("ZoomRatio", originalRatio));
+                targetFov = Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * 7.5f) / Mathf.Sqrt(targetFov));
             }
 
 #else
@@ -128,10 +128,10 @@ namespace KFCommonUtilityLib.KFAttached.Render
             {
                 Destroy(this);
             }
-            targetScale = debugScale;
+            targetFov = Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * 27.5f) / Mathf.Sqrt(debugScale));
 #endif
             CreateCamera();
-            UpdateFOV(targetScale);
+            UpdateFOV(targetFov);
         }
 
 #if NotEditor
@@ -139,7 +139,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
         {
             if (IsVariableZoom && variableZoomData.shouldUpdate)
             {
-                UpdateFOV(variableZoomData.curScale);
+                UpdateFOV(variableZoomData.curFov);
                 variableZoomData.shouldUpdate = false;
             }
 
@@ -183,15 +183,15 @@ namespace KFCommonUtilityLib.KFAttached.Render
             }
         }
 
-        private void UpdateFOV(float targetScale)
+        private void UpdateFOV(float targetFov)
         {
-            if (targetScale > 0)
+            if (targetFov > 0)
             {
-#if NotEditor
-                float targetFov = Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * 7.5f) / Mathf.Sqrt(targetScale));
-#else
-                float targetFov = Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * 27.5f) / Mathf.Sqrt(targetScale));
-#endif
+//#if NotEditor
+//                float targetFov = targetScale;
+//#else
+//                float targetFov = Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * 27.5f) / Mathf.Sqrt(targetScale));
+//#endif
                 pipCamera.fieldOfView = targetFov;
 #if NotEditor
                 if (scaleReticle)
@@ -216,7 +216,8 @@ namespace KFCommonUtilityLib.KFAttached.Render
                         {
                             maxScale = scaleDownReticle ? 1 : 1 + reticleScaleRatio * (variableZoomData.maxScale - variableZoomData.minScale) / variableZoomData.minScale;
                         }
-                        float reticleScale = Mathf.Lerp(minScale, maxScale, (variableZoomData.curScale - variableZoomData.minScale) / (variableZoomData.maxScale - variableZoomData.minScale));
+                        //float reticleScale = Mathf.Lerp(minScale, maxScale, (variableZoomData.curScale - variableZoomData.minScale) / (variableZoomData.maxScale - variableZoomData.minScale));
+                        float reticleScale = Mathf.Lerp(minScale, maxScale, variableZoomData.curSteps);
                         renderTarget.material.SetFloat("_ReticleScale", initialReticleScale / reticleScale);
                     }
                     else
