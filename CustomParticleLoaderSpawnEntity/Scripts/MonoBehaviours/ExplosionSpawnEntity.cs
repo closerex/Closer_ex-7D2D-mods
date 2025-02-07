@@ -146,7 +146,7 @@ public class ExplosionSpawnEntity : MonoBehaviour
             {
                 //Log.Out("can spawn entity!");
                 Chunk chunk = (Chunk)GameManager.Instance.World.GetChunkSync(World.toChunkXZ((int)entity.position.x), World.toChunkXZ((int)entity.position.z));
-                entity.SetSpawnerSource(EnumSpawnerSource.Unknown, chunk.Key, _prop.spawnType == SpawnEntityProperty.SpawnType.EntityGroup ? _prop.spawn : null);
+                entity.SetSpawnerSource(EnumSpawnerSource.Unknown);
                 GameManager.Instance.World.SpawnEntityInWorld(entity);
                 //Log.Out("entity added to world!");
                 if (entity is EntityItem)
