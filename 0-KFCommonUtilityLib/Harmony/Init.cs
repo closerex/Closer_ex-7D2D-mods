@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 public class CommonUtilityLibInit : IModApi
 {
     private static bool inited = false;
+    internal static Harmony HarmonyInstance { get; private set; }
     public void InitMod(Mod _modInstance)
     {
         if (inited)
@@ -42,8 +43,8 @@ public class CommonUtilityLibInit : IModApi
         ModEvents.GameStartDone.RegisterHandler(MultiActionManager.PostloadCleanup);
         //ModEvents.GameStartDone.RegisterHandler(CustomEffectEnumManager.PrintResults);
         //ModEvents.GameUpdate.RegisterHandler(CommonUtilityPatch.ForceUpdateGC);
-        var harmony = new HarmonyLib.Harmony(GetType().ToString());
-        harmony.PatchAll(Assembly.GetExecutingAssembly());
+        HarmonyInstance = new Harmony(GetType().ToString());
+        HarmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
     }
 
     private static void RegisterKFEnums()

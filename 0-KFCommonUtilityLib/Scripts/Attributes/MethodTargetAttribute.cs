@@ -42,7 +42,7 @@ namespace KFCommonUtilityLib.Scripts.Attributes
     [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
     public sealed class MethodTargetTranspilerAttribute : Attribute, IMethodTarget
     {
-        public MethodTargetTranspilerAttribute(string targetMethod, Type preferredType = null, Type[] @params = null)
+        public MethodTargetTranspilerAttribute(string targetMethod, Type preferredType, Type[] @params = null)
         {
             TargetMethod = targetMethod;
             PreferredType = preferredType;

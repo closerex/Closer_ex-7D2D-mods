@@ -18,15 +18,15 @@ public class RoundsInInventory : RequirementBase
     public override bool IsValid(MinEventParams _params)
     {
         if (!this.ParamsValid(_params))
-            return false;
+            return invert;
 
         ItemValue itemValue = _params.ItemValue;
-        if (itemValue.IsEmpty() || !(itemValue.ItemClass.Actions[0] is ItemActionRanged _ranged))
-            return false;
+        if (itemValue.IsEmpty() || !(_params.ItemActionData is ItemActionRanged.ItemActionDataRanged _rangedData))
+            return invert;
 
-        string ammoName = _ranged.MagazineItemNames[itemValue.SelectedAmmoTypeIndex];
+        string ammoName = ((ItemActionRanged)itemValue.ItemClass.Actions[_rangedData.indexInEntityOfAction]).MagazineItemNames[itemValue.SelectedAmmoTypeIndex];
         if (TryGetValue(ammoName, out var ammoValue))
             return compareValues(_params.Self.GetItemCount(ammoValue), this.operation, this.value) ^ invert;
-        return false;
+        return invert;
     }
 }

@@ -1,9 +1,12 @@
 ﻿using HarmonyLib;
+using HarmonyLib.Public.Patching;
 using KFCommonUtilityLib.Harmony;
 using KFCommonUtilityLib.Scripts.Attributes;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
+using MonoMod.Cil;
+using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +18,6 @@ using UnityEngine;
 using UnityEngine.Scripting;
 using FieldAttributes = Mono.Cecil.FieldAttributes;
 using MethodAttributes = Mono.Cecil.MethodAttributes;
-using MethodBody = Mono.Cecil.Cil.MethodBody;
 using TypeAttributes = Mono.Cecil.TypeAttributes;
 
 namespace KFCommonUtilityLib.Scripts.StaticManagers
@@ -56,6 +58,20 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
     public interface IModuleContainerFor<out T> where T : class
     {
         T Instance { get; }
+    }
+
+    public class TypeChainNode
+    {
+        public TypeChainNode(Type type_action, MethodInfo mtdinf_original, PatchInfo patchinf_harmony)
+        {
+            this.type_action = type_action;
+            this.mtdinf_original = mtdinf_original;
+            this.patchinf_harmony = patchinf_harmony;
+        }
+
+        public Type type_action;
+        public MethodInfo mtdinf_original;
+        public PatchInfo patchinf_harmony;
     }
 
     public class MethodPatchInfo
@@ -363,11 +379,12 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             //<derived method name, method patch info>
             Dictionary<string, MethodPatchInfo> dict_overrides = new Dictionary<string, MethodPatchInfo>();
             //<derived method name, transpiler stub methods in inheritance order>
-            Dictionary<string, List<(MethodDefinition mtddef_target, MethodReference mtdref_original, MethodReference mtdref_harmony, List<MethodInfo> list_mtdinf_patches)>> dict_transpilers = new Dictionary<string, List<(MethodDefinition mtddef_target, MethodReference mtdref_original, MethodReference mtdref_harmony, List<MethodInfo> list_mtdinf_patches)>>();
+            //TODO: USE TREE INSTEAD OF LIST
+            Dictionary<string, List<TypeChainNode>> dict_transpilers = new Dictionary<string, List<TypeChainNode>>();
             //<derived method name, <module type name, local variable>>
             Dictionary<string, Dictionary<string, VariableDefinition>> dict_all_states = new Dictionary<string, Dictionary<string, VariableDefinition>>();
 
-            //Get all transpilers and clone original methods
+            //Get all transpilers
             for (int i = 0; i < moduleTypes.Length; i++)
             {
                 Type moduleType = moduleTypes[i];
@@ -375,32 +392,75 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 foreach (var mtd in moduleType.GetMethods(searchFlags))
                 {
                     var attr = mtd.GetCustomAttribute<MethodTargetTranspilerAttribute>();
+                    //make sure the transpiler has a target method to apply, otherwise skip it
                     if (attr != null)
                     {
-                        string id = attr.GetTargetMethodIdentifier();
-                        if (!dict_transpilers.TryGetValue(id, out var list_transpilers))
+                        var mtdinf_target = AccessTools.Method(attr.PreferredType, attr.TargetMethod, attr.Params);
+                        if (mtdinf_target == null || mtdinf_target.IsAbstract || !mtdinf_target.IsVirtual || !mtdinf_target.DeclaringType.Equals(attr.PreferredType))
                         {
-                            list_transpilers = new List<(MethodDefinition mtddef_target, MethodReference mtdref_original, MethodReference mtdref_harmony, List<MethodInfo> list_mtdinf_patches)> { };
-                            dict_transpilers[id] = list_transpilers;
+                            continue;
                         }
-                        int maxLevels = 0;
-                        Type nextType = itemActionType;
-                        while (attr.PreferredType.IsAssignableFrom(nextType))
+                        string id = attr.GetTargetMethodIdentifier();
+                        if (!dict_transpilers.TryGetValue(id, out var list))
                         {
-                            maxLevels++;
-                            if (list_transpilers.Count < maxLevels)
+                            dict_transpilers[id] = (list = new List<TypeChainNode>());
+                            Type nextType = itemActionType;
+                            TypeChainNode curNode = null;
+                            while (attr.PreferredType.IsAssignableFrom(nextType))
                             {
                                 var mtdinfo_cur = AccessTools.Method(nextType, attr.TargetMethod, attr.Params);
-                                var mtdinfo_harmony = ItemActionModulePatch.GetRealMethod(mtdinfo_cur, true);
-                                //transpilers on undeclared methods are invalid
-                                var mtdref_original = mtdinfo_cur.DeclaringType.Equals(nextType) ? module.ImportReference(mtdinfo_cur) : null;
-                                var mtdref_harmony = mtdref_original != null ? module.ImportReference(mtdinfo_harmony) : null;
-                                var mtddef_copy = mtdref_harmony?.Resolve()?.CloneToModuleAsStatic(module.ImportReference(mtdinfo_cur.DeclaringType), module) ?? null;
-                                list_transpilers.Add((mtddef_copy, mtdref_original, mtdref_harmony, new List<MethodInfo>()));
+                                if (mtdinfo_cur != null && mtdinfo_cur.DeclaringType.Equals(nextType))
+                                {
+                                    var patchinf_harmony = mtdinfo_cur.ToPatchInfoDontAdd().Copy();
+                                    curNode = new TypeChainNode(mtdinfo_cur.DeclaringType, mtdinfo_cur, patchinf_harmony);
+                                    list.Add(curNode);
+                                }
+                                nextType = nextType.BaseType;
                             }
-                            nextType = nextType.BaseType;
+
+                            if (curNode != null)
+                            {
+                                curNode.patchinf_harmony.AddTranspilers(CommonUtilityLibInit.HarmonyInstance.Id, new HarmonyMethod(mtd));
+                                Log.Out($"Adding transpiler {mtd.FullDescription()}\nCurrent transpilers:\n{string.Join('\n', curNode.patchinf_harmony.transpilers.Select(p => p.PatchMethod.FullDescription()))}");
+                            }
                         }
-                        list_transpilers[maxLevels - 1].list_mtdinf_patches.Add(mtd);
+                        else
+                        {
+                            bool childFound = false;
+                            foreach (var node in ((IEnumerable<TypeChainNode>)list).Reverse())
+                            {
+                                if (node.type_action.Equals(attr.PreferredType))
+                                {
+                                    childFound = true;
+                                    node.patchinf_harmony.AddTranspilers(CommonUtilityLibInit.HarmonyInstance.Id, mtd);
+                                    Log.Out($"Adding transpiler {mtd.FullDescription()}\nCurrent transpilers:\n{string.Join('\n', node.patchinf_harmony.transpilers.Select(p => p.PatchMethod.FullDescription()))}");
+                                    break;
+                                }
+                            }
+
+                            if (!childFound)
+                            {
+                                Type nextType = list[list.Count - 1].type_action.BaseType;
+                                TypeChainNode curNode = null;
+                                while (attr.PreferredType.IsAssignableFrom(nextType))
+                                {
+                                    var mtdinfo_cur = AccessTools.Method(nextType, attr.TargetMethod, attr.Params);
+                                    if (mtdinfo_cur != null && mtdinfo_cur.DeclaringType.Equals(nextType))
+                                    {
+                                        var patchinf_harmony = mtdinfo_cur.ToPatchInfoDontAdd().Copy();
+                                        curNode = new TypeChainNode(mtdinfo_cur.DeclaringType, mtdinfo_cur, patchinf_harmony);
+                                        list.Add(curNode);
+                                    }
+                                    nextType = nextType.BaseType;
+                                }
+
+                                if (curNode != null)
+                                {
+                                    curNode.patchinf_harmony.AddTranspilers(CommonUtilityLibInit.HarmonyInstance.Id, new HarmonyMethod(mtd));
+                                    Log.Out($"Adding transpiler {mtd.FullDescription()}\nCurrent transpilers:\n{string.Join('\n', curNode.patchinf_harmony.transpilers.Select(p => p.PatchMethod.FullDescription()))}");
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -409,61 +469,45 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             Dictionary<string, MethodDefinition> dict_replacers = new Dictionary<string, MethodDefinition>();
             foreach (var pair in dict_transpilers)
             {
+                List<TypeChainNode> list = pair.Value;
+                
                 //the top copy to call in the override method
                 MethodDefinition mtddef_override_copy = null;
                 MethodReference mtdref_override_base = null;
-                for (int i = pair.Value.Count - 1; i >= 0; i--)
+                for (int i = list.Count - 1; i >= 0; i--)
                 {
-                    var mtddef_target = pair.Value[i].mtddef_target;
-                    var mtdref_original = pair.Value[i].mtdref_harmony;
-                    if (mtddef_target != null)
+                    TypeChainNode curNode = list[i];
+                    MethodPatcher patcher = curNode.mtdinf_original.GetMethodPatcher();
+                    DynamicMethodDefinition dmd = patcher.CopyOriginal();
+                    ILContext context = new ILContext(dmd.Definition);
+                    HarmonyManipulator.Manipulate(curNode.mtdinf_original, curNode.patchinf_harmony, context);
+                    var mtdref_original = module.ImportReference(curNode.mtdinf_original);
+                    var mtddef_copy = mtdref_original.Resolve().CloneToModuleAsStatic(context.Body, module.ImportReference(curNode.type_action), module);
+                    dmd.Dispose();
+                    context.Dispose();
+                    if (mtddef_override_copy != null && mtdref_override_base != null)
                     {
-                        foreach (var patch in pair.Value[i].list_mtdinf_patches)
+                        //replace calls to the base
+                        foreach (var ins in mtddef_copy.Body.Instructions)
                         {
-                            mtddef_target.Body.SimplifyMacros();
-                            patch.Invoke(null, new object[] { mtddef_target.Body, module });
-                            mtddef_target.Body.OptimizeMacros();
-                        }
-
-                        if (i < pair.Value.Count - 1)
-                        {
-                            //find first available base method
-                            MethodDefinition mtddef_base_target = null;
-                            MethodReference mtdref_base_original = null;
-                            for (int j = i + 1; j < pair.Value.Count; j++)
+                            if (ins.OpCode == OpCodes.Call && ((MethodReference)ins.Operand).FullName.Equals(mtdref_override_base.FullName))
                             {
-                                mtddef_base_target = pair.Value[j].mtddef_target;
-                                mtdref_base_original = pair.Value[j].mtdref_original;
-                                if (mtddef_base_target != null)
-                                {
-                                    break;
-                                }
-                            }
-                            //replace calls to the base
-                            if (mtddef_base_target != null)
-                            {
-                                foreach (var ins in mtddef_target.Body.Instructions)
-                                {
-                                    if (ins.OpCode == OpCodes.Call && ((MethodReference)ins.Operand).FullName.Equals(mtdref_base_original.FullName))
-                                    {
-                                        Log.Out($"replacing call to {mtdref_base_original.FullName} to {mtddef_base_target.FullName}");
-                                        ins.Operand = mtddef_base_target;
-                                    }
-                                }
+                                Log.Out($"replacing call to {mtdref_override_base.FullName} to {mtddef_override_copy.FullName}");
+                                ins.Operand = mtddef_override_copy;
                             }
                         }
-                        //the iteration is reversed so make sure we grab the latest method
-                        if (mtddef_target != null)
-                        {
-                            mtddef_override_copy = mtddef_target;
-                            mtdref_override_base = mtdref_original;
-                        }
-                        //add patched copy to the class
-                        typedef_newAction.Methods.Add(mtddef_target);
                     }
+                    //add patched copy to the class
+                    typedef_newAction.Methods.Add(mtddef_copy);
+                    //the iteration is reversed so make sure we grab the latest method
+                    mtddef_override_copy = mtddef_copy;
+                    mtdref_override_base = mtdref_original;
                 }
                 //create the method override that calls the patched copy
-                GetOrCreateOverride(dict_overrides, pair.Key, mtdref_override_base, module, mtddef_override_copy);
+                if (mtddef_override_copy != null && mtdref_override_base != null)
+                { 
+                    GetOrCreateOverride(dict_overrides, pair.Key, mtdref_override_base, module, mtddef_override_copy);
+                }
             }
 
             //Apply Postfixes first so that Prefixes can jump to the right instruction
@@ -631,7 +675,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             MethodDefinition mtddef_derived = new MethodDefinition(mtdref_base.Name, (mtdref_base.Resolve().Attributes | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot) & ~MethodAttributes.NewSlot, module.ImportReference(mtdref_base.ReturnType));
 
             //Log.Out($"Create method override: {id} for {mtdref_base.FullName}");
-            foreach (var par in mtdref_base.Parameters)
+            foreach (var par in mtddef_base_override?.Parameters?.Skip(1) ?? mtdref_base.Parameters)
             {
                 ParameterDefinition pardef = new ParameterDefinition(par.Name, par.Attributes, module.ImportReference(par.ParameterType));
                 if (par.HasConstant)

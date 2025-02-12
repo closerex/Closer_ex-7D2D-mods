@@ -13,8 +13,8 @@ public class AnimationCustomReloadState : StateMachineBehaviour
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.speed = 1f;
-        animator.SetBool("Reload", false);
-        animator.SetBool("IsReloading", true);
+        animator.SetWrappedBool(Animator.StringToHash("Reload"), false);
+        animator.SetWrappedBool(Animator.StringToHash("IsReloading"), true);
 #if NotEditor
         if (player == null)
         {

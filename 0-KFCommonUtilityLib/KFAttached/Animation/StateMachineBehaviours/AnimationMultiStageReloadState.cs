@@ -20,7 +20,7 @@ public class AnimationMultiStageReloadState : StateMachineBehaviour
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.SetBool("Reload", false);
+        animator.SetWrappedBool(Animator.StringToHash("Reload"), false);
         if (eventBridge == null)
         {
             eventBridge = animator.GetComponent<AnimationReloadEvents>();
@@ -28,7 +28,7 @@ public class AnimationMultiStageReloadState : StateMachineBehaviour
         if (stateInfo.IsTag("ReloadStart"))
         {
             animator.speed = 1f;
-            animator.SetBool("IsReloading", true);
+            animator.SetWrappedBool(Animator.StringToHash("IsReloading"), true);
 #if NotEditor
             EntityAlive player = animator.GetComponentInParent<EntityAlive>();
             int actionIndex = MultiActionManager.GetActionIndexForEntity(player);

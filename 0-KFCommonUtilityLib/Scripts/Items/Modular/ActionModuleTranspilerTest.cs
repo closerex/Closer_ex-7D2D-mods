@@ -1,36 +1,48 @@
 ﻿using HarmonyLib;
 using KFCommonUtilityLib.Scripts.Attributes;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection.Emit;
+using UnityEngine;
 
 [TypeTarget(typeof(ItemAction))]
 public class ActionModuleTranspilerTest
 {
-    [MethodTargetTranspiler(nameof(ItemAction.ExecuteAction), typeof(ItemActionRanged))]
-    private static void Transpiler_RangedTest(MethodBody body, ModuleDefinition module)
+    [MethodTargetTranspiler(nameof(ItemActionAttack.ExecuteAction), typeof(ItemActionAttack))]
+    private static IEnumerable<CodeInstruction> Transpiler_InvalidTest(IEnumerable<CodeInstruction> instructions)
     {
-        var worker = body.GetILProcessor();
-        var start = body.Instructions[0];
-        worker.InsertBefore(start, worker.Create(OpCodes.Ldstr, "Ranged!"));
-        worker.InsertBefore(start, worker.Create(OpCodes.Call, module.ImportReference(AccessTools.Method(typeof(ActionModuleTranspilerTest), nameof(ActionModuleTranspilerTest.CallSomething)))));
+        yield return new CodeInstruction(OpCodes.Ldstr, "Ranged!");
+        yield return CodeInstruction.Call(typeof(ActionModuleTranspilerTest), nameof(ActionModuleTranspilerTest.CallSomething));
+        foreach (var ins in instructions)
+        {
+            yield return ins;
+        }
+    }
+
+
+    [MethodTargetTranspiler(nameof(ItemAction.ExecuteAction), typeof(ItemActionRanged))]
+    private static IEnumerable<CodeInstruction> Transpiler_RangedTest(IEnumerable<CodeInstruction> instructions)
+    {
+        yield return new CodeInstruction(OpCodes.Ldstr, "Ranged!");
+        yield return CodeInstruction.Call(typeof(ActionModuleTranspilerTest), nameof(ActionModuleTranspilerTest.CallSomething));
+        foreach (var ins in instructions)
+        {
+            yield return ins;
+        }
     }
 
     [MethodTargetTranspiler(nameof(ItemAction.ExecuteAction), typeof(ItemActionCatapult))]
-    private static void Transpiler_CatapultTest(MethodBody body, ModuleDefinition module)
+    private static IEnumerable<CodeInstruction> Transpiler_CatapultTest(IEnumerable<CodeInstruction> instructions)
     {
-        var worker = body.GetILProcessor();
-        var start = body.Instructions[0];
-        worker.InsertBefore(start, worker.Create(OpCodes.Ldstr, "Catapult!"));
-        worker.InsertBefore(start, worker.Create(OpCodes.Call, module.ImportReference(AccessTools.Method(typeof(ActionModuleTranspilerTest), nameof(ActionModuleTranspilerTest.CallSomething)))));
+        yield return new CodeInstruction(OpCodes.Ldstr, "Catapult!");
+        yield return CodeInstruction.Call(typeof(ActionModuleTranspilerTest), nameof(ActionModuleTranspilerTest.CallSomething));
+        foreach (var ins in instructions)
+        {
+            yield return ins;
+        }
     }
 
-    private static void CallSomething(string _)
+    private static void CallSomething(string str)
     {
-
+        Log.Out($"Call something: {str}\n{StackTraceUtility.ExtractStackTrace()}");
     }
 }

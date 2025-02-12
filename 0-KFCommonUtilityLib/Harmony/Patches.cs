@@ -66,7 +66,7 @@ public static class CommonUtilityPatch
         int take = -1, insert = -1;
         for (int i = 0; i < codes.Count; ++i)
         {
-            if (codes[i].opcode == OpCodes.Ldc_I4_S && codes[i].OperandIs((int)MinEventTypes.onSelfRangedBurstShotStart) && codes[i + 2].Calls(mtd_fire_event))
+            if (codes[i].opcode == OpCodes.Ldc_I4_S && codes[i].OperandIs((int)MinEventTypes.onSelfRangedBurstShotEnd) && codes[i + 2].Calls(mtd_fire_event))
                 take = i - 3;
             else if (codes[i].Calls(mtd_get_model_layer))
                 insert = i + 2;
@@ -1002,7 +1002,7 @@ public static class CommonUtilityPatch
         bool[] arr_disable_states = new bool[ammoNames.Length];
         if(!string.IsNullOrEmpty(str_disabled_ammo_names))
         {
-            string[] arr_disabled_ammo_names = str_disabled_ammo_names.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+            string[] arr_disabled_ammo_names = str_disabled_ammo_names.Split(',', StringSplitOptions.RemoveEmptyEntries);
             foreach (var name in arr_disabled_ammo_names)
             {
                 int index = Array.IndexOf(ammoNames, name.Trim());

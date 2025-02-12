@@ -755,6 +755,95 @@ public static class MonoCecilExtensions
         return clonedMethod;
     }
 
+    public static MethodDefinition CloneToModuleAsStatic(this MethodDefinition method, MethodBody body, TypeReference originalType, ModuleDefinition module)
+    {
+        // Create a new MethodDefinition with the same properties as the original method.
+        var clonedMethod = new MethodDefinition(method.Name, MethodAttributes.Static | MethodAttributes.Public | MethodAttributes.HideBySig, module.ImportReference(method.ReturnType))
+        {
+            ImplAttributes = method.ImplAttributes,
+            SemanticsAttributes = method.SemanticsAttributes
+        };
+
+        // Copy all custom attributes from the original method to the cloned method.
+        foreach (var attribute in method.CustomAttributes)
+            clonedMethod.CustomAttributes.Add(attribute.CloneToModule(module));
+
+        if (!method.Attributes.HasFlag(MethodAttributes.Static))
+            clonedMethod.Parameters.Add(new ParameterDefinition("self", ParameterAttributes.None, originalType));
+        // Clone all parameters and add them to the cloned method.
+        foreach (var parameter in method.Parameters)
+            clonedMethod.Parameters.Add(parameter.CloneToModule(module));
+
+        // Create a new method body for the cloned method.
+        clonedMethod.Body = new MethodBody(clonedMethod);
+
+        // If the original method has a body, copy the relevant properties to the cloned method's body.
+        clonedMethod.Body.MaxStackSize = body.MaxStackSize;
+        clonedMethod.Body.InitLocals = body.InitLocals;
+
+        // Clone all variables and add them to the cloned method's body.
+        foreach (var variable in body.Variables) clonedMethod.Body.Variables.Add(variable.CloneToModule(module));
+
+        // Instruction mapping from old to new instructions used to update branch targets which is necessary after cloning
+        var instructionMapping = new Dictionary<Instruction, Instruction>();
+
+        // Clone all the instructions and create the mapping.
+        foreach (var instruction in body.Instructions)
+        {
+            var clonedInstruction = instruction.Clone();
+            clonedInstruction.Resolve(clonedMethod, method, module);
+            instructionMapping[instruction] = clonedInstruction;
+            clonedMethod.Body.Instructions.Add(clonedInstruction);
+        }
+
+        // Now fix up the branch targets.
+        foreach (var instruction in clonedMethod.Body.Instructions)
+        {
+            // If the instruction is a branch instruction, fix up its target.
+            if (instruction.OpCode.FlowControl == FlowControl.Branch ||
+                instruction.OpCode.FlowControl == FlowControl.Cond_Branch)
+            {
+                instruction.Operand = instructionMapping[(Instruction)instruction.Operand];
+            }
+
+            // If the instruction is a switch instruction, fix up its targets.
+            if (instruction.OpCode == OpCodes.Switch)
+            {
+                var oldTargets = (Instruction[])instruction.Operand;
+                var newTargets = new Instruction[oldTargets.Length];
+                for (int i = 0; i < oldTargets.Length; ++i)
+                {
+                    newTargets[i] = instructionMapping[oldTargets[i]];
+                }
+                instruction.Operand = newTargets;
+            }
+        }
+
+        // copy the exception handler blocks
+        foreach (ExceptionHandler eh in body.ExceptionHandlers)
+        {
+            ExceptionHandler neh = new ExceptionHandler(eh.HandlerType);
+            neh.CatchType = module.ImportReference(eh.CatchType);
+
+            // we need to setup neh.Start and End; these are instructions; we need to locate it in the source by index
+            if (eh.TryStart != null)
+            {
+                int idx = body.Instructions.IndexOf(eh.TryStart);
+                neh.TryStart = clonedMethod.Body.Instructions[idx];
+            }
+            if (eh.TryEnd != null)
+            {
+                int idx = body.Instructions.IndexOf(eh.TryEnd);
+                neh.TryEnd = clonedMethod.Body.Instructions[idx];
+            }
+
+            clonedMethod.Body.ExceptionHandlers.Add(neh);
+        }
+
+        // Return the cloned method.
+        return clonedMethod;
+    }
+
     public static VariableDefinition CloneToModule(this VariableDefinition variable, ModuleDefinition module)
     {
         // Create and return a new VariableDefinition with the same type as the original variable.

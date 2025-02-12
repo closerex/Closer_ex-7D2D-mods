@@ -1,9 +1,4 @@
 ﻿using KFCommonUtilityLib.Scripts.StaticManagers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 public class IsActionUnlocked : TargetedCompareRequirementBase
