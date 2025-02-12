@@ -158,8 +158,8 @@
 				<passive_effect name="WeaponHandling" operation="base_set" value=".95" tags="perkGunslinger"/>
 				<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkGunslinger"/> <!-- random WeaponHandling -->
 				
-				<triggered_effect trigger="onSelfRangedBurstShotStart" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
-				<triggered_effect trigger="onSelfRangedBurstShotStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1">
+				<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
+				<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1">
 					<requirement name="RoundsInMagazine" operation="LTE" value="6"/>
 				</triggered_effect>
 			</effect_group>
@@ -348,8 +348,8 @@
 				<passive_effect name="WeaponHandling" operation="base_set" value=".8" tags="perkGunslinger"/>
 				<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkGunslinger"/> <!-- random WeaponHandling -->
 				
-				<triggered_effect trigger="onSelfRangedBurstShotStart" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
-				<triggered_effect trigger="onSelfRangedBurstShotStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1">
+				<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
+				<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1">
 					<requirement name="RoundsInMagazine" operation="LTE" value="6"/>
 				</triggered_effect>
 			</effect_group>
@@ -531,8 +531,8 @@
 				<passive_effect name="WeaponHandling" operation="base_set" value="1.8" tags="perkBoomstick"/>
 				<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkBoomstick"/> <!-- random WeaponHandling -->
 				
-				<triggered_effect trigger="onSelfRangedBurstShotStart" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
-				<triggered_effect trigger="onSelfRangedBurstShotStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1">
+				<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
+				<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1">
 					<requirement name="RoundsInMagazine" operation="LTE" value="6"/>
 				</triggered_effect>
 			</effect_group>
@@ -662,8 +662,8 @@
 				<passive_effect name="WeaponHandling" operation="base_set" value=".95" tags="perkMachineGunner"/>
 				<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkMachineGunner"/> <!-- random WeaponHandling -->
 				
-				<triggered_effect trigger="onSelfRangedBurstShotStart" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
-				<triggered_effect trigger="onSelfRangedBurstShotStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1">
+				<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
+				<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1">
 					<requirement name="RoundsInMagazine" operation="LTE" value="6"/>
 				</triggered_effect>
 			</effect_group>
