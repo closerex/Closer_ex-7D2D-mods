@@ -1,23 +1,23 @@
 ﻿using HarmonyLib;
 using HarmonyLib.Public.Patching;
-using KFCommonUtilityLib.Scripts.StaticManagers;
 using System.Collections.Generic;
 using UniLinq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System;
+using System.Security.Cryptography;
 
 namespace KFCommonUtilityLib.Harmony
 {
     [HarmonyPatch]
-    public static class ItemActionModulePatch
+    public static class ModularPatches
     {
         [HarmonyPatch(typeof(GameManager), nameof(GameManager.StartGame))]
         [HarmonyPrefix]
         private static bool Prefix_StartGame_GameManager()
         {
-            ItemActionModuleManager.InitNew();
+            ModuleManagers.InitNew();
             return true;
         }
 
@@ -28,12 +28,39 @@ namespace KFCommonUtilityLib.Harmony
             ItemActionModuleManager.CheckItem(__instance);
         }
 
-        [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.LateInitAll))]
+        [HarmonyPatch(typeof(GameManager), nameof(GameManager.WorldInfo))]
         [HarmonyPrefix]
-        private static bool Prefix_LateInitAll_ItemClass()
+        private static void Prefix_WorldInfo_GameManager()
         {
-            ItemActionModuleManager.FinishAndLoad();
-            return true;
+            ModuleManagers.FinishAndLoad();
+        }
+
+        [HarmonyPatch(typeof(ConnectionManager), nameof(ConnectionManager.ServerReady))]
+        [HarmonyPrefix]
+        private static void Prefix_ServerReady_ConnectionManager()
+        {
+            ModuleManagers.FinishAndLoad();
+        }
+
+        [HarmonyPatch(typeof(WorldStaticData), nameof(WorldStaticData.ReloadAllXmlsSync))]
+        [HarmonyPrefix]
+        private static void Prefix_ReloadAllXmlsSync_WorldStaticData()
+        {
+            ModuleManagers.InitNew();
+        }
+
+        [HarmonyPatch(typeof(WorldStaticData), nameof(WorldStaticData.ReloadAllXmlsSync))]
+        [HarmonyPostfix]
+        private static void Postfix_ReloadAllXmlsSync_WorldStaticData()
+        {
+            ModuleManagers.FinishAndLoad();
+        }
+
+        [HarmonyPatch(typeof(GameManager), nameof(GameManager.Disconnect))]
+        [HarmonyPostfix]
+        private static void Postfix_Disconnect_GameManager()
+        {
+            ModuleManagers.Cleanup();
         }
 
         [HarmonyPatch(typeof(PatchManager), "GetRealMethod")]
@@ -51,7 +78,7 @@ namespace KFCommonUtilityLib.Harmony
                     CodeInstruction.LoadField(typeof(PatchManager), "ReplacementToOriginals"),
                     CodeInstruction.LoadField(typeof(PatchManager), "ReplacementToOriginalsMono"),
                     new CodeInstruction(OpCodes.Ldarg_0),
-                    CodeInstruction.Call(typeof(ItemActionModulePatch), nameof(ItemActionModulePatch.GetPatched)),
+                    CodeInstruction.Call(typeof(ModularPatches), nameof(ModularPatches.GetPatched)),
                     new CodeInstruction(OpCodes.Ret)
                 };
             }

@@ -1,6 +1,5 @@
 ﻿#if NotEditor
 using HarmonyLib;
-using KFCommonUtilityLib.Scripts.StaticManagers;
 using System.Reflection;
 
 #endif

@@ -1,4 +1,4 @@
-﻿using KFCommonUtilityLib.Scripts.StaticManagers;
+﻿using KFCommonUtilityLib;
 using System.Xml.Linq;
 
 public class MinEventActionModifyCVarWithLocalCache : MinEventActionModifyCVar

@@ -2,6 +2,7 @@
 using GearsAPI.Settings.Global;
 using GearsAPI.Settings.World;
 using HarmonyLib;
+using KFCommonUtilityLib;
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System.Reflection;
@@ -28,13 +29,13 @@ public class CommonUtilityLibInit : IModApi
         //DelayLoadModuleManager.RegisterDelayloadDll("SCore", "SCoreEntityHitCompatibilityPatch");
         CustomEffectEnumManager.RegisterEnumType<MinEventTypes>();
         CustomEffectEnumManager.RegisterEnumType<PassiveEffects>();
-        //FUCK YOU TFP
-        //CustomEffectEnumManager.InitDefault();
-        //CustomEffectEnumManager.InitFinal();
+
+        ModuleManagers.ClearOutputFolder();
+        ItemActionModuleManager.Init();
+
         ModEvents.GameAwake.RegisterHandler(CommonUtilityPatch.InitShotStates);
         ModEvents.GameAwake.RegisterHandler(CustomEffectEnumManager.InitDefault);
         ModEvents.GameAwake.RegisterHandler(DelayLoadModuleManager.DelayLoad);
-        ModEvents.GameAwake.RegisterHandler(ItemActionModuleManager.ClearOutputFolder);
         //ModEvents.GameAwake.RegisterHandler(AssemblyLocator.Init);
         ModEvents.GameAwake.RegisterHandler(MultiActionUtils.SetMinEventArrays);
         ModEvents.GameStartDone.RegisterHandler(RegisterKFEnums);
