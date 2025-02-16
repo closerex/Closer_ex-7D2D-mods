@@ -79,6 +79,8 @@ namespace CustomMuzzleFlash
             {
                 smoke.SetParent(_data.muzzle, false);
             }
+            smoke.localPosition = Vector3.zero;
+            smoke.localRotation = Quaternion.identity;
             if (_data.invData.holdingEntity is EntityPlayerLocal player && player.bFirstPersonView)
             {
                 Utils.SetLayerRecursively(smoke.gameObject, 10);
