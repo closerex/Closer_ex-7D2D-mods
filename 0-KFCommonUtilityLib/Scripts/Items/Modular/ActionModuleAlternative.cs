@@ -1,15 +1,17 @@
 ﻿using GUI_2;
+using HarmonyLib;
 using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System.Collections;
 using Unity.Mathematics;
 
-[TypeTarget(typeof(ItemActionAttack), typeof(AlternativeData))]
+[TypeTarget(typeof(ItemActionAttack)), ActionDataTarget(typeof(AlternativeData))]
 public class ActionModuleAlternative
 {
     internal static ItemValue InventorySetItemTemp;
-    [MethodTargetPrefix(nameof(ItemActionAttack.StartHolding))]
+
+    [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPrefix]
     private bool Prefix_StartHolding(ItemActionData _data, AlternativeData __customData)
     {
         //__customData.Init();
@@ -43,7 +45,7 @@ public class ActionModuleAlternative
             player?.emodel?.avatarController?.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, mapping.CurActionIndex);
     }
 
-    [MethodTargetPrefix(nameof(ItemActionRanged.CancelReload))]
+    [HarmonyPatch(nameof(ItemActionRanged.CancelReload)), MethodTargetPrefix]
     private bool Prefix_CancelReload(ItemActionData _actionData, AlternativeData __customData)
     {
         if (__customData.mapping == null)
@@ -57,7 +59,7 @@ public class ActionModuleAlternative
         return false;
     }
 
-    [MethodTargetPrefix(nameof(ItemActionAttack.CancelAction))]
+    [HarmonyPatch(nameof(ItemAction.CancelAction)), MethodTargetPrefix]
     private bool Prefix_CancelAction(ItemActionData _actionData, AlternativeData __customData)
     {
         if (__customData.mapping == null)
@@ -71,7 +73,7 @@ public class ActionModuleAlternative
         return false;
     }
 
-    [MethodTargetPrefix(nameof(ItemActionAttack.IsStatChanged))]
+    [HarmonyPatch(nameof(ItemAction.IsStatChanged)), MethodTargetPrefix]
     private bool Prefix_IsStatChanged(ref bool __result)
     {
         var mapping = MultiActionManager.GetMappingForEntity(GameManager.Instance.World.GetPrimaryPlayerId());
@@ -88,7 +90,7 @@ public class ActionModuleAlternative
     //}
 
     //todo: change to action specific property
-    [MethodTargetPostfix(nameof(ItemActionAttack.OnModificationsChanged))]
+    [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
     private void Postfix_OnModificationChanged(ItemActionData _data, ItemActionAttack __instance, AlternativeData __customData)
     {
         __instance.Properties.ParseString("ToggleActionSound", ref __customData.toggleSound);
@@ -96,7 +98,7 @@ public class ActionModuleAlternative
         __customData.mapping.toggleSound = __customData.toggleSound;
     }
 
-    [MethodTargetPrefix(nameof(ItemActionAttack.SetupRadial))]
+    [HarmonyPatch(nameof(ItemAction.SetupRadial)), MethodTargetPrefix]
     private bool Prefix_SetupRadial(XUiC_Radial _xuiRadialWindow, EntityPlayerLocal _epl)
     {
         var mapping = MultiActionManager.GetMappingForEntity(_epl.entityId);

@@ -4,7 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-[TypeTarget(typeof(ItemAction), typeof(LocalPassiveCacheData))]
+[TypeTarget(typeof(ItemAction)), ActionDataTarget(typeof(LocalPassiveCacheData))]
 public class ActionModuleLocalPassiveCache
 {
     //public int[] nameHashes;

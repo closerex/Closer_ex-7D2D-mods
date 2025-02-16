@@ -1,4 +1,5 @@
-﻿using KFCommonUtilityLib.Scripts.Attributes;
+﻿using HarmonyLib;
+using KFCommonUtilityLib.Scripts.Attributes;
 using System;
 using UniLinq;
 
@@ -11,7 +12,7 @@ public class ActionModuleMetaConsumer
     private float[] consumeValues;
     private static FastTags<TagGroup.Global> TagsConsumption = FastTags<TagGroup.Global>.Parse("ConsumptionValue");
 
-    [MethodTargetPostfix(nameof(ItemActionRanged.ReadFrom))]
+    [HarmonyPatch(nameof(ItemAction.ReadFrom)), MethodTargetPostfix]
     private void Postfix_ReadFrom(DynamicProperties _props, ItemAction __instance)
     {
         string consumeData = string.Empty;
@@ -30,7 +31,7 @@ public class ActionModuleMetaConsumer
         consumeValues = new float[consumeDatas.Length];
     }
 
-    [MethodTargetPrefix(nameof(ItemActionRanged.ExecuteAction))]
+    [HarmonyPatch(nameof(ItemAction.ExecuteAction)), MethodTargetPrefix]
     private bool Prefix_ExecuteAction(ItemActionData _actionData, bool _bReleased, ItemActionRanged __instance)
     {
         ItemActionRanged.ItemActionDataRanged _data = _actionData as ItemActionRanged.ItemActionDataRanged;

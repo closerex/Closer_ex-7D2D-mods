@@ -6,13 +6,11 @@ namespace KFCommonUtilityLib.Scripts.Attributes
     public sealed class TypeTargetAttribute : Attribute
     {
         // This is a positional argument
-        public TypeTargetAttribute(Type baseType, Type dataType = null)
+        public TypeTargetAttribute(Type baseType)
         {
             BaseType = baseType;
-            DataType = dataType;
         }
 
         public Type BaseType { get; }
-        public Type DataType { get; }
     }
 }

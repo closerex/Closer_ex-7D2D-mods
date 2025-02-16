@@ -1,4 +1,5 @@
-﻿using KFCommonUtilityLib.Scripts.Attributes;
+﻿using HarmonyLib;
+using KFCommonUtilityLib.Scripts.Attributes;
 using System.Collections;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ public class ActionModuleHoldOpen
     private const string emptyAnimatorBool = "empty";
     private int emptyAnimatorBoolHash;
 
-    [MethodTargetPostfix(nameof(ItemActionRanged.ReadFrom))]
+    [HarmonyPatch(nameof(ItemAction.ReadFrom)), MethodTargetPostfix]
     private void Postfix_ReadFrom(DynamicProperties _props, ItemActionRanged __instance)
     {
         int metaIndex = __instance.ActionIndex;
@@ -26,27 +27,27 @@ public class ActionModuleHoldOpen
         }
     }
 
-    [MethodTargetPostfix("getUserData")]
+    [HarmonyPatch(nameof(ItemActionRanged.getUserData)), MethodTargetPostfix]
     public void Postfix_getUserData(ItemActionData _actionData, ref int __result)
     {
         __result |= (_actionData.invData.itemValue.Meta <= 0 ? 1 : 0);
     }
 
-    [MethodTargetPostfix(nameof(ItemActionRanged.ItemActionEffects))]
+    [HarmonyPatch(nameof(ItemAction.ItemActionEffects)), MethodTargetPostfix]
     public void Postfix_ItemActionEffects(ItemActionData _actionData, int _firingState, int _userData)
     {
         if (_firingState != (int)ItemActionFiringState.Off && (_userData & 1) > 0)
             _actionData.invData.holdingEntity.emodel.avatarController.UpdateBool(emptyAnimatorBoolHash, true, false);
     }
 
-    [MethodTargetPostfix(nameof(ItemActionRanged.ReloadGun))]
+    [HarmonyPatch(nameof(ItemActionRanged.ReloadGun)), MethodTargetPostfix]
     public void Postfix_ReloadGun(ItemActionData _actionData)
     {
         //delay 2 frames before reloading, since the animation is likely to be triggered the next frame this is called
         ThreadManager.StartCoroutine(DelaySetEmpty(_actionData, false, 2));
     }
 
-    [MethodTargetPrefix(nameof(ItemActionRanged.StartHolding))]
+    [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPrefix]
     public bool Prefix_StartHolding(ItemActionData _data)
     {
         //delay 1 frame before equipping weapon
@@ -55,14 +56,14 @@ public class ActionModuleHoldOpen
         return true;
     }
 
-    [MethodTargetPostfix("ConsumeAmmo")]
+    [HarmonyPatch(nameof(ItemActionRanged.ConsumeAmmo)), MethodTargetPostfix]
     public void Postfix_ConsumeAmmo(ItemActionData _actionData)
     {
         if (_actionData.invData.itemValue.Meta == 0)
             _actionData.invData.holdingEntity.FireEvent(CustomEnums.onSelfMagzineDeplete, true);
     }
 
-    [MethodTargetPrefix(nameof(ItemActionRanged.SwapAmmoType))]
+    [HarmonyPatch(nameof(ItemAction.SwapAmmoType)), MethodTargetPrefix]
     public bool Prefix_SwapAmmoType(EntityAlive _entity)
     {
         _entity.emodel.avatarController.UpdateBool(emptyAnimatorBoolHash, true, false);

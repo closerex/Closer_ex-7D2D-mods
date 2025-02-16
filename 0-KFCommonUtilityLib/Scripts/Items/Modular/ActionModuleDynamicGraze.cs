@@ -1,4 +1,5 @@
-﻿using KFCommonUtilityLib.Scripts.Attributes;
+﻿using HarmonyLib;
+using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.StaticManagers;
 
 [TypeTarget(typeof(ItemActionDynamic))]
@@ -6,7 +7,7 @@ public class ActionModuleDynamicGraze
 {
     private string dynamicSoundStart = null;
 
-    [MethodTargetPrefix(nameof(ItemAction.ExecuteAction))]
+    [HarmonyPatch(nameof(ItemAction.ExecuteAction)), MethodTargetPrefix]
     private bool Prefix_ExecuteAction(ItemActionDynamic __instance, ItemActionData _actionData, bool _bReleased, out (bool executed, string originalSound) __state)
     {
         if (!_bReleased && !string.IsNullOrEmpty(dynamicSoundStart) && _actionData.invData.holdingEntity is EntityPlayerLocal player)
@@ -23,7 +24,7 @@ public class ActionModuleDynamicGraze
         return true;
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.ExecuteAction))]
+    [HarmonyPatch(nameof(ItemAction.ExecuteAction)), MethodTargetPostfix]
     private void Postfix_ExecuteAction(ItemActionDynamic __instance, (bool executed, string originalSound) __state)
     {
         if (__state.executed)
@@ -32,7 +33,7 @@ public class ActionModuleDynamicGraze
         }
     }
 
-    [MethodTargetPrefix(nameof(ItemAction.OnHoldingUpdate))]
+    [HarmonyPatch(nameof(ItemAction.OnHoldingUpdate)), MethodTargetPrefix]
     private bool Prefix_OnHoldingUpdate(ItemActionDynamic __instance, ItemActionData _actionData, out (bool executed, bool useGrazeCast) __state)
     {
         if (_actionData.invData.holdingEntity is EntityPlayerLocal player)
@@ -49,7 +50,7 @@ public class ActionModuleDynamicGraze
         return true;
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.OnHoldingUpdate))]
+    [HarmonyPatch(nameof(ItemAction.OnHoldingUpdate)), MethodTargetPostfix]
     private void Postfix_OnHoldingUpdate(ItemActionDynamic __instance, (bool executed, bool useGrazeCast) __state)
     {
         if (__state.executed)
@@ -58,7 +59,7 @@ public class ActionModuleDynamicGraze
         }
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.ReadFrom))]
+    [HarmonyPatch(nameof(ItemAction.ReadFrom)), MethodTargetPostfix]
     private void Postfix_ReadFrom(DynamicProperties _props)
     {
         _props.ParseString("DynamicSoundStart", ref dynamicSoundStart);

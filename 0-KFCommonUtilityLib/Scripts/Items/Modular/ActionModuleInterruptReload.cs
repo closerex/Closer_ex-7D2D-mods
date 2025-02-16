@@ -4,7 +4,7 @@ using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using UnityEngine;
 
-[TypeTarget(typeof(ItemActionRanged), typeof(InterruptData))]
+[TypeTarget(typeof(ItemActionRanged)), ActionDataTarget(typeof(InterruptData))]
 public class ActionModuleInterruptReload
 {
     //[MethodTargetPrefix(nameof(ItemActionZoom.ExecuteAction), typeof(ItemActionZoom))]
@@ -35,21 +35,21 @@ public class ActionModuleInterruptReload
     public string firingStateName = "";
     public bool instantFiringCancel = false;
 
-    [MethodTargetPrefix(nameof(ItemActionRanged.StartHolding))]
+    [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPrefix]
     private bool Prefix_StartHolding(InterruptData __customData)
     {
         __customData.Reset();
         return true;
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.ReadFrom))]
+    [HarmonyPatch(nameof(ItemAction.ReadFrom)), MethodTargetPostfix]
     private void Postfix_ReadFrom(DynamicProperties _props)
     {
         firingStateName = _props.GetString("FiringStateFullName");
         instantFiringCancel = _props.GetBool("InstantFiringCancel");
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.OnModificationsChanged))]
+    [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
     private void Postfix_OnModificationsChanged(ItemActionData _data, InterruptData __customData)
     {
         var invData = _data.invData;
@@ -73,13 +73,13 @@ public class ActionModuleInterruptReload
         public float lastShotTime;
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.IsActionRunning))]
+    [HarmonyPatch(nameof(ItemAction.IsActionRunning)), MethodTargetPostfix]
     private void Postfix_IsActionRunning(ref bool __result, InterruptData __customData)
     {
         __result &= !__customData.instantFiringRequested;
     }
 
-    [MethodTargetPrefix(nameof(ItemAction.ExecuteAction))]
+    [HarmonyPatch(nameof(ItemAction.ExecuteAction)), MethodTargetPrefix]
     private bool Prefix_ExecuteAction(ItemActionData _actionData, bool _bReleased, InterruptData __customData, out State __state)
     {
         __state = default;
@@ -109,7 +109,7 @@ public class ActionModuleInterruptReload
         return true;
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.ExecuteAction))]
+    [HarmonyPatch(nameof(ItemAction.ExecuteAction)), MethodTargetPostfix]
     private void Postfix_ExecuteAction(ItemActionData _actionData, InterruptData __customData, State __state)
     {
         if (__state.executed)
@@ -139,7 +139,7 @@ public class ActionModuleInterruptReload
         }
     }
 
-    [MethodTargetPrefix(nameof(ItemAction.ItemActionEffects))]
+    [HarmonyPatch(nameof(ItemAction.ItemActionEffects)), MethodTargetPrefix]
     private bool Prefix_ItemActionEffects(ItemActionData _actionData, int _firingState, InterruptData __customData)
     {
         var rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;

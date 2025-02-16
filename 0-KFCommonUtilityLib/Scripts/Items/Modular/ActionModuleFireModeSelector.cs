@@ -7,7 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[TypeTarget(typeof(ItemActionRanged), typeof(FireModeData))]
+[TypeTarget(typeof(ItemActionRanged)), ActionDataTarget(typeof(FireModeData))]
 public class ActionModuleFireModeSelector
 {
     public struct FireMode
@@ -43,7 +43,7 @@ public class ActionModuleFireModeSelector
         Animator.StringToHash("FireModeChanged4"),
     };
 
-    [MethodTargetPostfix(nameof(ItemAction.OnModificationsChanged))]
+    [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
     private void Postfix_OnModificationChanged(ItemActionData _data, FireModeData __customData, ItemActionRanged __instance)
     {
         __instance.Properties.ParseString("FireModeSwitchingSound", ref fireModeSwitchingSound);
@@ -101,20 +101,20 @@ public class ActionModuleFireModeSelector
         __customData.isRequestedByCoroutine = false;
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.StartHolding))]
+    [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPostfix]
     private void Postfix_StartHolding(ItemActionData _data, FireModeData __customData)
     {
         __customData.SetFireMode(_data, __customData.currentFireMode);
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.OnHoldingUpdate))]
+    [HarmonyPatch(nameof(ItemAction.OnHoldingUpdate)), MethodTargetPostfix]
     private static void Postfix_OnHoldingUpdate(ItemActionData _actionData, FireModeData __customData)
     {
         __customData.UpdateDelay(_actionData);
         __customData.inputReleased = true;
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.StopHolding))]
+    [HarmonyPatch(nameof(ItemAction.StopHolding)), MethodTargetPostfix]
     private static void Postfix_StopHolding(FireModeData __customData)
     {
         if (__customData.delayFiringCo != null)
@@ -126,7 +126,7 @@ public class ActionModuleFireModeSelector
         __customData.inputReleased = true;
     }
 
-    [MethodTargetPrefix(nameof(ItemAction.ExecuteAction))]
+    [HarmonyPatch(nameof(ItemAction.ExecuteAction)), MethodTargetPrefix]
     private bool Prefix_ExecuteAction(ItemActionData _actionData, ItemActionRanged __instance, FireModeData __customData, bool _bReleased)
     {
         if (__customData.isRequestedByCoroutine)
@@ -154,14 +154,14 @@ public class ActionModuleFireModeSelector
         return false;
     }
 
-    [MethodTargetPostfix(nameof(ItemActionRanged.GetBurstCount))]
+    [HarmonyPatch(nameof(ItemActionRanged.GetBurstCount)), MethodTargetPostfix]
     private void Postfix_GetBurstCount(FireModeData __customData, ref int __result)
     {
         FireMode fireMode = __customData.fireModes[__customData.currentFireMode];
         __result = fireMode.isFullAuto ? 999 : fireMode.burstCount;
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.IsActionRunning))]
+    [HarmonyPatch(nameof(ItemAction.IsActionRunning)), MethodTargetPostfix]
     private void Postfix_IsActionRunning(FireModeData __customData, ref bool __result)
     {
         __result |= __customData.delayFiringCo != null;

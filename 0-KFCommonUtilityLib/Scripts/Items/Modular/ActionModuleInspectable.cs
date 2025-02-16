@@ -1,22 +1,18 @@
-﻿using KFCommonUtilityLib.Scripts.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HarmonyLib;
+using KFCommonUtilityLib.Scripts.Attributes;
 
 [TypeTarget(typeof(ItemAction))]
 public class ActionModuleInspectable
 {
     public bool allowEmptyInspect;
 
-    [MethodTargetPostfix(nameof(ItemAction.ReadFrom))]
+    [HarmonyPatch(nameof(ItemAction.ReadFrom)), MethodTargetPostfix]
     private void Postfix_ReadFrom(DynamicProperties _props)
     {
         allowEmptyInspect = _props.GetBool("allowEmptyInspect");
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.CancelAction), typeof(ItemActionDynamic))]
+    [HarmonyPatch(typeof(ItemActionDynamic), nameof(ItemAction.CancelAction)), MethodTargetPostfix]
     private void Postfix_CancelAction_ItemActionDynamic(ItemActionDynamic.ItemActionDynamicData _actionData)
     {
         var entity = _actionData.invData.holdingEntity;

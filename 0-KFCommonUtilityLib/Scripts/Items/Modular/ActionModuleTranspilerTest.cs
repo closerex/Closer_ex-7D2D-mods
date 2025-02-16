@@ -7,7 +7,7 @@ using UnityEngine;
 [TypeTarget(typeof(ItemAction))]
 public class ActionModuleTranspilerTest
 {
-    [MethodTargetTranspiler(nameof(ItemActionAttack.ExecuteAction), typeof(ItemActionAttack))]
+    [HarmonyPatch(typeof(ItemActionAttack), nameof(ItemAction.ExecuteAction)), MethodTargetTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_InvalidTest(IEnumerable<CodeInstruction> instructions)
     {
         yield return new CodeInstruction(OpCodes.Ldstr, "Ranged!");
@@ -19,7 +19,7 @@ public class ActionModuleTranspilerTest
     }
 
 
-    [MethodTargetTranspiler(nameof(ItemAction.ExecuteAction), typeof(ItemActionRanged))]
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemAction.ExecuteAction)), MethodTargetTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_RangedTest(IEnumerable<CodeInstruction> instructions)
     {
         yield return new CodeInstruction(OpCodes.Ldstr, "Ranged!");
@@ -30,7 +30,7 @@ public class ActionModuleTranspilerTest
         }
     }
 
-    [MethodTargetTranspiler(nameof(ItemAction.ExecuteAction), typeof(ItemActionCatapult))]
+    [HarmonyPatch(typeof(ItemActionCatapult), nameof(ItemAction.ExecuteAction)), MethodTargetTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_CatapultTest(IEnumerable<CodeInstruction> instructions)
     {
         yield return new CodeInstruction(OpCodes.Ldstr, "Catapult!");

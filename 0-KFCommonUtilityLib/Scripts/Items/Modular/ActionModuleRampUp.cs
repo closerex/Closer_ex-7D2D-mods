@@ -1,9 +1,10 @@
-﻿using KFCommonUtilityLib.Scripts.Attributes;
+﻿using HarmonyLib;
+using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.Utilities;
 using UnityEngine;
 using static ItemActionRanged;
 
-[TypeTarget(typeof(ItemActionRanged), typeof(RampUpData))]
+[TypeTarget(typeof(ItemActionRanged)), ActionDataTarget(typeof(RampUpData))]
 public class ActionModuleRampUp
 {
     public enum State
@@ -20,7 +21,7 @@ public class ActionModuleRampUp
     private readonly static int rampRatioHash = Animator.StringToHash("rampRatio");
     private readonly static int totalRatioHash = Animator.StringToHash("totalRatio");
 
-    [MethodTargetPostfix(nameof(ItemActionRanged.OnHoldingUpdate))]
+    [HarmonyPatch(nameof(ItemAction.OnHoldingUpdate)), MethodTargetPostfix]
     public void Postfix_OnHoldingUpdate(ItemActionData _actionData, RampUpData __customData, ItemActionRanged __instance)
     {
         var rangedData = _actionData as ItemActionDataRanged;
@@ -37,7 +38,7 @@ public class ActionModuleRampUp
         }
     }
 
-    [MethodTargetPostfix(nameof(ItemActionRanged.OnModificationsChanged))]
+    [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
     public void Postfix_OnModificationsChanged(ItemActionData _data, RampUpData __customData, ItemActionRanged __instance)
     {
         int actionIndex = __instance.ActionIndex;
@@ -84,13 +85,13 @@ public class ActionModuleRampUp
         ResetAll(__customData, _data);
     }
 
-    [MethodTargetPostfix(nameof(ItemActionRanged.StopHolding))]
+    [HarmonyPatch(nameof(ItemAction.StopHolding)), MethodTargetPostfix]
     public void Postfix_StopHolding(RampUpData __customData, ItemActionData _data)
     {
         ResetAll(__customData, _data);
     }
 
-    [MethodTargetPrefix(nameof(ItemActionRanged.ExecuteAction))]
+    [HarmonyPatch(nameof(ItemAction.ExecuteAction)), MethodTargetPrefix]
     public bool Prefix_ExecuteAction(RampUpData __customData, ItemActionRanged __instance, ItemActionData _actionData, bool _bReleased)
     {
         ItemActionDataRanged rangedData = _actionData as ItemActionDataRanged;

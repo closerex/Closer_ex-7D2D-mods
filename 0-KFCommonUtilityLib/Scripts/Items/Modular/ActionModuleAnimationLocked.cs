@@ -1,22 +1,23 @@
-﻿using KFCommonUtilityLib.Scripts.Attributes;
+﻿using HarmonyLib;
+using KFCommonUtilityLib.Scripts.Attributes;
 
-[TypeTarget(typeof(ItemAction), typeof(AnimationLockedData))]
+[TypeTarget(typeof(ItemAction)), ActionDataTarget(typeof(AnimationLockedData))]
 public class ActionModuleAnimationLocked
 {
-    [MethodTargetPostfix(nameof(ItemAction.StartHolding))]
+    [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPostfix]
     private void Postfix_StartHolding(AnimationLockedData __customData)
     {
         __customData.isLocked = false;
         __customData.isReloadLocked = false;
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.IsActionRunning))]
+    [HarmonyPatch(nameof(ItemAction.IsActionRunning)), MethodTargetPostfix]
     private void Postfix_IsActionRunning(AnimationLockedData __customData, ref bool __result)
     {
         __result |= __customData.isLocked;
     }
 
-    [MethodTargetPostfix(nameof(ItemActionAttack.CanReload), typeof(ItemActionAttack))]
+    [HarmonyPatch(typeof(ItemActionAttack), nameof(ItemActionAttack.CanReload)), MethodTargetPostfix]
     private void Postfix_CanReload_ItemActionAttack(AnimationLockedData __customData, ref bool __result)
     {
         __result &= !__customData.isReloadLocked;

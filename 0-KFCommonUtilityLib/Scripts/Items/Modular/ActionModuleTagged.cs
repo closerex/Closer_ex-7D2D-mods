@@ -1,11 +1,12 @@
-﻿using KFCommonUtilityLib.Scripts.Attributes;
+﻿using HarmonyLib;
+using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.Utilities;
 using UniLinq;
 
-[TypeTarget(typeof(ItemAction), typeof(TaggedData))]
+[TypeTarget(typeof(ItemAction)), ActionDataTarget(typeof(TaggedData))]
 public class ActionModuleTagged
 {
-    [MethodTargetPostfix(nameof(ItemAction.OnModificationsChanged))]
+    [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
     private void Postfix_OnModificationChanged(ItemAction __instance, ItemActionData _data, TaggedData __customData)
     {
         var tags = __instance.Properties.GetString("ActionTags").Split(',', System.StringSplitOptions.RemoveEmptyEntries);

@@ -1,24 +1,25 @@
-﻿using KFCommonUtilityLib.Scripts.Attributes;
+﻿using HarmonyLib;
+using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 
-[TypeTarget(typeof(ItemActionAttack), typeof(MultiActionData))]
+[TypeTarget(typeof(ItemActionAttack)), ActionDataTarget(typeof(MultiActionData))]
 public class ActionModuleMultiActionFix
 {
-    [MethodTargetPrefix(nameof(ItemActionAttack.StartHolding))]
+    [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPrefix]
     private bool Prefix_StartHolding(ItemActionData _data, out ItemActionData __state)
     {
         SetAndSaveItemActionData(_data, out __state);
         return true;
     }
 
-    [MethodTargetPostfix(nameof(ItemActionAttack.StartHolding))]
+    [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPostfix]
     private void Postfix_StartHolding(ItemActionData _data, ItemActionData __state)
     {
         RestoreItemActionData(_data, __state);
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.OnModificationsChanged), typeof(ItemActionRanged))]
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
     private void Postfix_OnModificationChanged_ItemActionRanged(ItemActionData _data)
     {
         var rangedData = _data as ItemActionRanged.ItemActionDataRanged;
@@ -41,7 +42,7 @@ public class ActionModuleMultiActionFix
         }
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.OnModificationsChanged), typeof(ItemActionLauncher))]
+    [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
     private void Postfix_OnModificationChanged_ItemActionLauncher(ItemActionData _data)
     {
         Postfix_OnModificationChanged_ItemActionRanged(_data);
@@ -53,59 +54,59 @@ public class ActionModuleMultiActionFix
         }
     }
 
-    [MethodTargetPrefix(nameof(ItemActionAttack.StopHolding))]
+    [HarmonyPatch(nameof(ItemAction.StopHolding)), MethodTargetPrefix]
     private bool Prefix_StopHolding(ItemActionData _data, out ItemActionData __state)
     {
         SetAndSaveItemActionData(_data, out __state);
         return true;
     }
 
-    [MethodTargetPostfix(nameof(ItemActionAttack.StopHolding))]
+    [HarmonyPatch(nameof(ItemAction.StopHolding)), MethodTargetPostfix]
     private void Postfix_StopHolding(ItemActionData _data, ItemActionData __state)
     {
         RestoreItemActionData(_data, __state);
     }
 
-    [MethodTargetPrefix(nameof(ItemActionAttack.ItemActionEffects), typeof(ItemActionLauncher))]
+    [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemAction.ItemActionEffects)), MethodTargetPrefix]
     private bool Prefix_ItemActionEffects(ItemActionData _actionData, out ItemActionData __state)
     {
         SetAndSaveItemActionData(_actionData, out __state);
         return true;
     }
 
-    [MethodTargetPostfix(nameof(ItemActionAttack.ItemActionEffects), typeof(ItemActionLauncher))]
+    [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemAction.ItemActionEffects)), MethodTargetPostfix]
     private void Postfix_ItemActionEffects(ItemActionData _actionData, ItemActionData __state)
     {
         RestoreItemActionData(_actionData, __state);
     }
 
-    [MethodTargetPrefix(nameof(ItemActionAttack.CancelAction))]
+    [HarmonyPatch(nameof(ItemAction.CancelAction)), MethodTargetPrefix]
     private bool Prefix_CancelAction(ItemActionData _actionData, out ItemActionData __state)
     {
         SetAndSaveItemActionData(_actionData, out __state);
         return true;
     }
 
-    [MethodTargetPostfix(nameof(ItemActionAttack.CancelAction))]
+    [HarmonyPatch(nameof(ItemAction.CancelAction)), MethodTargetPostfix]
     private void Postfix_CancelAction(ItemActionData _actionData, ItemActionData __state)
     {
         RestoreItemActionData(_actionData, __state);
     }
 
-    [MethodTargetPrefix(nameof(ItemActionAttack.CancelReload))]
+    [HarmonyPatch(nameof(ItemActionAttack.CancelReload)), MethodTargetPrefix]
     private bool Prefix_CancelReload(ItemActionData _actionData, out ItemActionData __state)
     {
         SetAndSaveItemActionData(_actionData, out __state);
         return true;
     }
 
-    [MethodTargetPostfix(nameof(ItemActionAttack.CancelReload))]
+    [HarmonyPatch(nameof(ItemActionAttack.CancelReload)), MethodTargetPostfix]
     private void Postfix_CancelReload(ItemActionData _actionData, ItemActionData __state)
     {
         RestoreItemActionData(_actionData, __state);
     }
 
-    [MethodTargetPrefix(nameof(ItemActionAttack.ReloadGun))]
+    [HarmonyPatch(nameof(ItemActionAttack.ReloadGun)), MethodTargetPrefix]
     private bool Prefix_ReloadGun(ItemActionData _actionData)
     {
         //int reloadAnimationIndex = MultiActionManager.GetMetaIndexForActionIndex(_actionData.invData.holdingEntity.entityId, _actionData.indexInEntityOfAction);
@@ -115,7 +116,7 @@ public class ActionModuleMultiActionFix
         return true;
     }
 
-    [MethodTargetPrefix(nameof(ItemActionAttack.OnHUD))]
+    [HarmonyPatch(nameof(ItemAction.OnHUD)), MethodTargetPrefix]
     private bool Prefix_OnHUD(ItemActionData _actionData)
     {
         if (_actionData.invData?.holdingEntity?.MinEventContext?.ItemActionData == null || _actionData.indexInEntityOfAction != _actionData.invData.holdingEntity.MinEventContext.ItemActionData.indexInEntityOfAction)
@@ -159,7 +160,7 @@ public class ActionModuleMultiActionFix
     //        (rangedData.lastAccuracy, __customData.lastAccuracy) = (__customData.lastAccuracy, rangedData.lastAccuracy);
     //    }
     //}
-    [MethodTargetPrefix("onHoldingEntityFired", typeof(ItemActionRanged))]
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.onHoldingEntityFired)), MethodTargetPrefix]
     private bool Prefix_onHoldingEntityFired(ItemActionData _actionData)
     {
         if (!_actionData.invData.holdingEntity.isEntityRemote)

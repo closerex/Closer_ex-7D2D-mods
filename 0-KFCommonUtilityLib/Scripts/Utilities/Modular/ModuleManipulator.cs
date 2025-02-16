@@ -14,6 +14,7 @@ using UnityEngine.Scripting;
 using TypeAttributes = Mono.Cecil.TypeAttributes;
 using MethodAttributes = Mono.Cecil.MethodAttributes;
 using FieldAttributes = Mono.Cecil.FieldAttributes;
+using Mono.Cecil.Rocks;
 
 namespace KFCommonUtilityLib
 {
@@ -76,9 +77,8 @@ namespace KFCommonUtilityLib
         public Type[] moduleTypes;
         public TypeDefinition typedef_newTarget;
         public TypeReference typeref_interface;
-        public TypeTargetAttribute[] arr_attr_modules;
-        public TypeReference[] arr_typeref_modules;
         public FieldDefinition[] arr_flddef_modules;
+
         public ModuleManipulator(AssemblyDefinition workingAssembly, IModuleProcessor processor, Type targetType, Type baseType, params Type[] moduleTypes)
         {
             module = workingAssembly.MainModule;
@@ -92,9 +92,6 @@ namespace KFCommonUtilityLib
         private void Patch()
         {
             typeref_interface = module.ImportReference(typeof(IModuleContainerFor<>));
-            //Prepare type info
-            arr_attr_modules = moduleTypes.Select(t => t.GetCustomAttribute<TypeTargetAttribute>()).ToArray();
-            arr_typeref_modules = moduleTypes.Select(t => module.ImportReference(t)).ToArray();
             //Create new override type
             TypeReference typeref_target = module.ImportReference(targetType);
             typedef_newTarget = new TypeDefinition(null, ModuleUtils.CreateTypeName(targetType, moduleTypes), TypeAttributes.AnsiClass | TypeAttributes.BeforeFieldInit | TypeAttributes.Public | TypeAttributes.Sealed, typeref_target);
@@ -107,12 +104,8 @@ namespace KFCommonUtilityLib
             {
                 //Create ItemAction field
                 Type type_module = moduleTypes[i];
-                FieldDefinition flddef_module = new FieldDefinition(ModuleUtils.CreateFieldName(type_module), FieldAttributes.Public, arr_typeref_modules[i]);
-                typedef_newTarget.Fields.Add(flddef_module);
+                MakeContainerFor(typedef_newTarget, type_module, out var flddef_module);
                 arr_flddef_modules[i] = flddef_module;
-
-                TypeReference typeref_module = arr_typeref_modules[i];
-                ModuleUtils.MakeContainerFor(module, typeref_interface, typedef_newTarget, type_module, flddef_module, typeref_module);
             }
 
             //Create ItemAction constructor
@@ -149,24 +142,29 @@ namespace KFCommonUtilityLib
                 foreach (var mtd in moduleType.GetMethods(searchFlags))
                 {
                     var attr = mtd.GetCustomAttribute<MethodTargetTranspilerAttribute>();
+                    var hp = mtd.GetCustomAttribute<HarmonyPatch>();
                     //make sure the transpiler has a target method to apply, otherwise skip it
-                    if (attr != null)
+                    if (attr != null && hp != null && hp.info.declaringType != null)
                     {
-                        var mtdinf_target = AccessTools.Method(attr.PreferredType, attr.TargetMethod, attr.Params);
-                        if (mtdinf_target == null || mtdinf_target.IsAbstract || !mtdinf_target.IsVirtual || !mtdinf_target.DeclaringType.Equals(attr.PreferredType))
+                        var hm = hp.info;
+                        hm.methodType = hm.methodType ?? MethodType.Normal;
+                        var mtdinf_target = hm.GetOriginalMethod() as MethodInfo;
+                        if (mtdinf_target == null || mtdinf_target.IsAbstract || !mtdinf_target.IsVirtual)
                         {
                             continue;
                         }
-                        string id = attr.GetTargetMethodIdentifier();
+                        string id = hm.GetTargetMethodIdentifier();
                         if (!dict_transpilers.TryGetValue(id, out var list))
                         {
                             dict_transpilers[id] = (list = new List<TranspilerTarget>());
                             Type nextType = targetType;
                             TranspilerTarget curNode = null;
-                            while (attr.PreferredType.IsAssignableFrom(nextType))
+                            var hm_next = hm.Clone();
+                            while (hm.declaringType.IsAssignableFrom(nextType))
                             {
-                                var mtdinfo_cur = AccessTools.Method(nextType, attr.TargetMethod, attr.Params);
-                                if (mtdinfo_cur != null && mtdinfo_cur.DeclaringType.Equals(nextType))
+                                hm_next.declaringType = nextType;
+                                var mtdinfo_cur = hm_next.GetOriginalMethod() as MethodInfo;
+                                if (mtdinfo_cur != null)
                                 {
                                     var patchinf_harmony = mtdinfo_cur.ToPatchInfoDontAdd().Copy();
                                     curNode = new TranspilerTarget(mtdinfo_cur.DeclaringType, mtdinfo_cur, patchinf_harmony);
@@ -186,7 +184,7 @@ namespace KFCommonUtilityLib
                             bool childFound = false;
                             foreach (var node in ((IEnumerable<TranspilerTarget>)list).Reverse())
                             {
-                                if (node.type_action.Equals(attr.PreferredType))
+                                if (node.type_action.Equals(hm.declaringType))
                                 {
                                     childFound = true;
                                     node.patchinf_harmony.AddTranspilers(CommonUtilityLibInit.HarmonyInstance.Id, mtd);
@@ -199,10 +197,12 @@ namespace KFCommonUtilityLib
                             {
                                 Type nextType = list[list.Count - 1].type_action.BaseType;
                                 TranspilerTarget curNode = null;
-                                while (attr.PreferredType.IsAssignableFrom(nextType))
+                                var hm_next = hm.Clone();
+                                while (hm.declaringType.IsAssignableFrom(nextType))
                                 {
-                                    var mtdinfo_cur = AccessTools.Method(nextType, attr.TargetMethod, attr.Params);
-                                    if (mtdinfo_cur != null && mtdinfo_cur.DeclaringType.Equals(nextType))
+                                    hm_next.declaringType = nextType;
+                                    var mtdinfo_cur = hm_next.GetOriginalMethod() as MethodInfo;
+                                    if (mtdinfo_cur != null)
                                     {
                                         var patchinf_harmony = mtdinfo_cur.ToPatchInfoDontAdd().Copy();
                                         curNode = new TranspilerTarget(mtdinfo_cur.DeclaringType, mtdinfo_cur, patchinf_harmony);
@@ -271,7 +271,7 @@ namespace KFCommonUtilityLib
             for (int i = 0; i < moduleTypes.Length; i++)
             {
                 Type moduleType = moduleTypes[i];
-                Dictionary<string, MethodOverrideInfo> dict_targets = GetMethodOverrideTargets<MethodTargetPostfixAttribute>(targetType, moduleType);
+                Dictionary<string, MethodOverrideInfo> dict_targets = GetMethodOverrideTargets<MethodTargetPostfixAttribute>(moduleType);
                 string moduleID = ModuleUtils.CreateFieldName(moduleType);
                 foreach (var pair in dict_targets)
                 {
@@ -302,7 +302,7 @@ namespace KFCommonUtilityLib
             for (int i = moduleTypes.Length - 1; i >= 0; i--)
             {
                 Type moduleType = moduleTypes[i];
-                Dictionary<string, MethodOverrideInfo> dict_targets = GetMethodOverrideTargets<MethodTargetPrefixAttribute>(targetType, moduleType);
+                Dictionary<string, MethodOverrideInfo> dict_targets = GetMethodOverrideTargets<MethodTargetPrefixAttribute>(moduleType);
                 string moduleID = ModuleUtils.CreateFieldName(moduleType);
                 foreach (var pair in dict_targets)
                 {
@@ -347,44 +347,49 @@ namespace KFCommonUtilityLib
         ///
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="itemActionType"></param>
+        /// <param name="targetType"></param>
         /// <param name="moduleType"></param>
         /// <param name="module"></param>
         /// <returns></returns>
-        private Dictionary<string, MethodOverrideInfo> GetMethodOverrideTargets<T>(Type itemActionType, Type moduleType) where T : Attribute, IMethodTarget
+        private Dictionary<string, MethodOverrideInfo> GetMethodOverrideTargets<T>(Type moduleType) where T : Attribute, IMethodTarget
         {
             Dictionary<string, MethodOverrideInfo> dict_overrides = new Dictionary<string, MethodOverrideInfo>();
             const BindingFlags searchFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
             foreach (var mtd in moduleType.GetMethods(searchFlags))
             {
                 IMethodTarget attr = mtd.GetCustomAttribute<T>();
-                if (attr != null && (attr.PreferredType == null || attr.PreferredType.IsAssignableFrom(itemActionType)))
+                HarmonyPatch hp = mtd.GetCustomAttribute<HarmonyPatch>();
+                if (attr != null && hp != null && (hp.info.declaringType == null || hp.info.declaringType.IsAssignableFrom(targetType)))
                 {
-                    string id = attr.GetTargetMethodIdentifier();
-                    MethodInfo mtdinf_base = AccessTools.Method(itemActionType, attr.TargetMethod, attr.Params);
+                    var hm = hp.info;
+                    hm.methodType = hm.methodType ?? MethodType.Normal;
+                    var hmclone = hm.Clone();
+                    hmclone.declaringType = targetType;
+                    string id = hm.GetTargetMethodIdentifier();
+                    MethodInfo mtdinf_base = hmclone.GetBaseMethod() as MethodInfo;
                     if (mtdinf_base == null || !mtdinf_base.IsVirtual || mtdinf_base.IsFinal)
                     {
-                        Log.Error($"Method not found: {attr.TargetMethod}");
+                        Log.Error($"Method not found: {moduleType.FullName} on {hmclone.methodName}\n{hmclone.ToString()}");
                         continue;
                     }
 
                     MethodReference mtdref_base = module.ImportReference(mtdinf_base);
                     //Find preferred patch
-                    if (dict_overrides.TryGetValue(id, out var pair))
+                    if (dict_overrides.TryGetValue(id, out var info))
                     {
-                        if (attr.PreferredType == null)
+                        if (hm.declaringType == null)
                             continue;
                         //cur action type is sub or same class of cur preferred type
                         //cur preferred type is sub class of previous preferred type
                         //means cur preferred type is closer to the action type in inheritance hierachy than the previous one
-                        if (attr.PreferredType.IsAssignableFrom(itemActionType) && (pair.prefType == null || attr.PreferredType.IsSubclassOf(pair.prefType)))
+                        if (hm.declaringType.IsAssignableFrom(targetType) && (info.prefType == null || hm.declaringType.IsSubclassOf(info.prefType)))
                         {
-                            dict_overrides[id] = new MethodOverrideInfo(mtd, mtdinf_base, mtdref_base, attr.PreferredType);
+                            dict_overrides[id] = new MethodOverrideInfo(mtd, mtdinf_base, mtdref_base, hm.declaringType);
                         }
                     }
                     else
                     {
-                        dict_overrides[id] = new MethodOverrideInfo(mtd, mtdinf_base, mtdref_base, attr.PreferredType);
+                        dict_overrides[id] = new MethodOverrideInfo(mtd, mtdinf_base, mtdref_base, hm.declaringType);
                     }
                     //Log.Out($"Add method override: {id} for {mtdref_base.FullName}/{mtdinf_base.Name}, action type: {itemActionType.Name}");
                 }
@@ -413,10 +418,11 @@ namespace KFCommonUtilityLib
                 return mtdpinf_derived;
             }
             //when overriding, retain attributes of base but make sure to remove the 'new' keyword which presents if you are overriding the root method
-            MethodDefinition mtddef_derived = new MethodDefinition(mtdref_base.Name, (mtdref_base.Resolve().Attributes | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot) & ~MethodAttributes.NewSlot, module.ImportReference(mtdref_base.ReturnType));
+            MethodDefinition mtddef_base = mtdref_base.Resolve();
+            MethodDefinition mtddef_derived = new MethodDefinition(mtddef_base.Name, (mtddef_base.Attributes | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot) & ~MethodAttributes.NewSlot, module.ImportReference(mtddef_base.ReturnType));
 
             //Log.Out($"Create method override: {id} for {mtdref_base.FullName}");
-            foreach (var par in mtddef_base_override?.Parameters?.Skip(1) ?? mtdref_base.Parameters)
+            foreach (var par in mtddef_base_override?.Parameters?.Skip(1) ?? mtddef_base.Parameters)
             {
                 ParameterDefinition pardef = new ParameterDefinition(par.Name, par.Attributes, module.ImportReference(par.ParameterType));
                 if (par.HasConstant)
@@ -429,7 +435,7 @@ namespace KFCommonUtilityLib
             bool hasReturnVal = mtddef_derived.ReturnType.MetadataType != MetadataType.Void;
             if (hasReturnVal)
             {
-                mtddef_derived.Body.Variables.Add(new VariableDefinition(module.ImportReference(mtdref_base.ReturnType)));
+                mtddef_derived.Body.Variables.Add(new VariableDefinition(module.ImportReference(mtddef_base.ReturnType)));
             }
             var il = mtddef_derived.Body.GetILProcessor();
             if (hasReturnVal)
@@ -604,5 +610,23 @@ namespace KFCommonUtilityLib
             return true;
         }
 
+        public void MakeContainerFor(TypeDefinition typedef_container, Type type_module, out FieldDefinition flddef_module)
+        {
+            var typeref_module = module.ImportReference(type_module);
+            flddef_module = new FieldDefinition(ModuleUtils.CreateFieldName(type_module), FieldAttributes.Public, typeref_module);
+            typedef_container.Fields.Add(flddef_module);
+            typedef_container.Interfaces.Add(new InterfaceImplementation(typeref_interface.MakeGenericInstanceType(typeref_module)));
+            PropertyDefinition propdef_instance = new PropertyDefinition("Instance", Mono.Cecil.PropertyAttributes.None, typeref_module);
+            MethodDefinition mtddef_instance_getter = new MethodDefinition("get_Instance", MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Virtual | MethodAttributes.Final, typeref_module);
+            mtddef_instance_getter.Overrides.Add(module.ImportReference(AccessTools.Method(typeof(IModuleContainerFor<>).MakeGenericType(type_module), "get_Instance")));
+            typedef_container.Methods.Add(mtddef_instance_getter);
+            mtddef_instance_getter.Body = new Mono.Cecil.Cil.MethodBody(mtddef_instance_getter);
+            var generator = mtddef_instance_getter.Body.GetILProcessor();
+            generator.Emit(OpCodes.Ldarg_0);
+            generator.Emit(OpCodes.Ldfld, flddef_module);
+            generator.Emit(OpCodes.Ret);
+            propdef_instance.GetMethod = mtddef_instance_getter;
+            typedef_container.Properties.Add(propdef_instance);
+        }
     }
 }

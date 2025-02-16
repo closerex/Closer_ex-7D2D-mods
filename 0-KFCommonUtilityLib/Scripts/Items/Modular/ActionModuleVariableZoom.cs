@@ -1,11 +1,12 @@
-﻿using KFCommonUtilityLib.Scripts.Attributes;
+﻿using HarmonyLib;
+using KFCommonUtilityLib.Scripts.Attributes;
 using UnityEngine;
 
-[TypeTarget(typeof(ItemActionZoom), typeof(VariableZoomData))]
+[TypeTarget(typeof(ItemActionZoom)), ActionDataTarget(typeof(VariableZoomData))]
 public class ActionModuleVariableZoom
 {
     public static float zoomScale = 7.5f;
-    [MethodTargetPostfix(nameof(ItemActionZoom.ConsumeScrollWheel))]
+    [HarmonyPatch(nameof(ItemAction.ConsumeScrollWheel)), MethodTargetPostfix]
     private void Postfix_ConsumeScrollWheel(ItemActionData _actionData, float _scrollWheelInput, PlayerActionsLocal _playerInput, VariableZoomData __customData)
     {
         if (!_actionData.invData.holdingEntity.AimingGun || _scrollWheelInput == 0f)
@@ -29,7 +30,7 @@ public class ActionModuleVariableZoom
         return Mathf.Sin(Mathf.PI * cur / 2);
     }
 
-    [MethodTargetPostfix(nameof(ItemActionZoom.OnModificationsChanged))]
+    [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
     private void Postfix_OnModificationChanged(ItemActionZoom __instance, ItemActionData _data, VariableZoomData __customData)
     {
         string str = __instance.Properties.GetString("ZoomRatio");

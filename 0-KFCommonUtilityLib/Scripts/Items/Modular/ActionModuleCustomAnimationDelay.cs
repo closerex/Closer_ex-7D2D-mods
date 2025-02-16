@@ -1,10 +1,11 @@
-﻿using KFCommonUtilityLib.Scripts.Attributes;
+﻿using HarmonyLib;
+using KFCommonUtilityLib.Scripts.Attributes;
 using static AnimationDelayData;
 
 [TypeTarget(typeof(ItemAction))]
 public class ActionModuleCustomAnimationDelay
 {
-    [MethodTargetPrefix(nameof(ItemAction.OnHoldingUpdate))]
+    [HarmonyPatch(nameof(ItemAction.OnHoldingUpdate)), MethodTargetPrefix]
     private bool Prefix_OnHoldingUpdate(ItemAction __instance, ItemActionData _actionData, out AnimationDelays __state)
     {
         __state = AnimationDelayData.AnimationDelay[_actionData.invData.item.HoldType.Value];
@@ -16,7 +17,7 @@ public class ActionModuleCustomAnimationDelay
         return true;
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.OnHoldingUpdate))]
+    [HarmonyPatch(nameof(ItemAction.OnHoldingUpdate)), MethodTargetPostfix]
     private void Postfix_OnHoldingUpdate(ItemAction __instance, ItemActionData _actionData, AnimationDelays __state)
     {
         if (!__instance.UseAnimation)
@@ -24,7 +25,7 @@ public class ActionModuleCustomAnimationDelay
         AnimationDelayData.AnimationDelay[_actionData.invData.item.HoldType.Value] = __state;
     }
 
-    [MethodTargetPrefix(nameof(ItemAction.IsActionRunning))]
+    [HarmonyPatch(nameof(ItemAction.IsActionRunning)), MethodTargetPrefix]
     private bool Prefix_IsActionRunning(ItemAction __instance, ItemActionData _actionData, out AnimationDelays __state)
     {
         __state = AnimationDelayData.AnimationDelay[_actionData.invData.item.HoldType.Value];
@@ -36,7 +37,7 @@ public class ActionModuleCustomAnimationDelay
         return true;
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.IsActionRunning))]
+    [HarmonyPatch(nameof(ItemAction.IsActionRunning)), MethodTargetPostfix]
     private void Postfix_IsActionRunning(ItemAction __instance, ItemActionData _actionData, AnimationDelays __state)
     {
         if (!__instance.UseAnimation)
@@ -49,7 +50,7 @@ public class ActionModuleCustomAnimationDelay
     //as OnHoldingUpdate is not called every frame, the check might yield false before item actually gets consumed, thus returning the item
     //so we call OnHoldingUpdate to properly consume the item
     //vanilla method on the other hand, is forcing double delay in IsActionRunning
-    [MethodTargetPostfix(nameof(ItemAction.IsActionRunning), typeof(ItemActionEat))]
+    [HarmonyPatch(typeof(ItemActionEat), nameof(ItemAction.IsActionRunning)), MethodTargetPostfix]
     private void Postfix_IsActionRunning_ItemActionEat(ItemActionEat __instance, ItemActionData _actionData, AnimationDelays __state, bool __result)
     {
         Postfix_IsActionRunning(__instance, _actionData, __state);
@@ -59,7 +60,7 @@ public class ActionModuleCustomAnimationDelay
         }
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.IsActionRunning), typeof(ItemActionGainSkill))]
+    [HarmonyPatch(typeof(ItemActionGainSkill), nameof(ItemAction.IsActionRunning)), MethodTargetPostfix]
     private void Postfix_IsActionRunning_ItemActionGainSkill(ItemActionGainSkill __instance, ItemActionData _actionData, AnimationDelays __state, bool __result)
     {
         Postfix_IsActionRunning(__instance, _actionData, __state);
@@ -69,7 +70,7 @@ public class ActionModuleCustomAnimationDelay
         }
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.IsActionRunning), typeof(ItemActionLearnRecipe))]
+    [HarmonyPatch(typeof(ItemActionLearnRecipe), nameof(ItemAction.IsActionRunning)), MethodTargetPostfix]
     private void Postfix_IsActionRunning_ItemActionLearnRecipe(ItemActionLearnRecipe __instance, ItemActionData _actionData, AnimationDelays __state, bool __result)
     {
         Postfix_IsActionRunning(__instance, _actionData, __state);
@@ -79,7 +80,7 @@ public class ActionModuleCustomAnimationDelay
         }
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.IsActionRunning), typeof(ItemActionQuest))]
+    [HarmonyPatch(typeof(ItemActionQuest), nameof(ItemAction.IsActionRunning)), MethodTargetPostfix]
     private void Postfix_IsActionRunning_ItemActionQuest(ItemActionQuest __instance, ItemActionData _actionData, AnimationDelays __state, bool __result)
     {
         Postfix_IsActionRunning(__instance, _actionData, __state);

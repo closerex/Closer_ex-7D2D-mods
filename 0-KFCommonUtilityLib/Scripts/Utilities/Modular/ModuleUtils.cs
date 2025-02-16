@@ -63,21 +63,5 @@ namespace KFCommonUtilityLib
             }
             return sb.ToString();
         }
-
-        public static void MakeContainerFor(ModuleDefinition module, TypeReference typeref_interface, TypeDefinition typedef_container, Type type_module, FieldDefinition flddef_module, TypeReference typeref_module)
-        {
-            typedef_container.Interfaces.Add(new InterfaceImplementation(typeref_interface.MakeGenericInstanceType(typeref_module)));
-            PropertyDefinition propdef_instance = new PropertyDefinition("Instance", Mono.Cecil.PropertyAttributes.None, typeref_module);
-            MethodDefinition mtddef_instance_getter = new MethodDefinition("get_Instance", MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Virtual | MethodAttributes.Final, typeref_module);
-            mtddef_instance_getter.Overrides.Add(module.ImportReference(AccessTools.Method(typeof(IModuleContainerFor<>).MakeGenericType(type_module), "get_Instance")));
-            typedef_container.Methods.Add(mtddef_instance_getter);
-            mtddef_instance_getter.Body = new Mono.Cecil.Cil.MethodBody(mtddef_instance_getter);
-            var generator = mtddef_instance_getter.Body.GetILProcessor();
-            generator.Emit(OpCodes.Ldarg_0);
-            generator.Emit(OpCodes.Ldfld, flddef_module);
-            generator.Emit(OpCodes.Ret);
-            propdef_instance.GetMethod = mtddef_instance_getter;
-            typedef_container.Properties.Add(propdef_instance);
-        }
     }
 }

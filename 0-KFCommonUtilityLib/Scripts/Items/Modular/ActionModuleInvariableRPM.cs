@@ -9,7 +9,7 @@ using UniLinq;
 public class ActionModuleInvariableRPM
 {
     //added as a transpiler so that it's applied before all post processing
-    [MethodTargetTranspiler(nameof(ItemActionRanged.OnHoldingUpdate), typeof(ItemActionRanged))]
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemAction.OnHoldingUpdate)), MethodTargetTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_OnHoldingUpdate_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
     {
         var codes = instructions.ToList();
@@ -38,7 +38,7 @@ public class ActionModuleInvariableRPM
                         CodeInstruction.Call(typeof(ActionModuleInvariableRPM), nameof(CalcFixedRPM))
                     });
                     codes.RemoveRange(start, i - start + 2);
-                    Log.Out("Invariable RPM Patch applied!");
+                    //Log.Out("Invariable RPM Patch applied!");
                 }
                 break;
             }

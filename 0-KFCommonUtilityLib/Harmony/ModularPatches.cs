@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System;
-using System.Security.Cryptography;
 
 namespace KFCommonUtilityLib.Harmony
 {
@@ -169,6 +168,163 @@ namespace KFCommonUtilityLib.Harmony
             Array.Copy(self.finalizers, res.finalizers, res.finalizers.Length);
             Array.Copy(self.ilmanipulators, res.ilmanipulators, res.ilmanipulators.Length);
             return res;
+        }
+
+        //public static MethodBase GetOriginalMethod(this HarmonyMethod attr)
+        //{
+        //    try
+        //    {
+        //        MethodType? methodType = attr.methodType;
+        //        if (methodType != null)
+        //        {
+        //            switch (methodType.GetValueOrDefault())
+        //            {
+        //                case MethodType.Normal:
+        //                    if (attr.methodName == null)
+        //                    {
+        //                        return null;
+        //                    }
+        //                    return AccessTools.DeclaredMethod(attr.declaringType, attr.methodName, attr.argumentTypes, null);
+        //                case MethodType.Getter:
+        //                    {
+        //                        if (attr.methodName == null)
+        //                        {
+        //                            PropertyInfo propertyInfo = AccessTools.DeclaredIndexer(attr.declaringType, attr.argumentTypes);
+        //                            return (propertyInfo != null) ? propertyInfo.GetGetMethod(true) : null;
+        //                        }
+        //                        PropertyInfo propertyInfo2 = AccessTools.DeclaredProperty(attr.declaringType, attr.methodName);
+        //                        return (propertyInfo2 != null) ? propertyInfo2.GetGetMethod(true) : null;
+        //                    }
+        //                case MethodType.Setter:
+        //                    {
+        //                        if (attr.methodName == null)
+        //                        {
+        //                            PropertyInfo propertyInfo3 = AccessTools.DeclaredIndexer(attr.declaringType, attr.argumentTypes);
+        //                            return (propertyInfo3 != null) ? propertyInfo3.GetSetMethod(true) : null;
+        //                        }
+        //                        PropertyInfo propertyInfo4 = AccessTools.DeclaredProperty(attr.declaringType, attr.methodName);
+        //                        return (propertyInfo4 != null) ? propertyInfo4.GetSetMethod(true) : null;
+        //                    }
+        //                case MethodType.Constructor:
+        //                    return AccessTools.DeclaredConstructor(attr.declaringType, attr.argumentTypes, false);
+        //                case MethodType.StaticConstructor:
+        //                    return AccessTools.GetDeclaredConstructors(attr.declaringType, null).FirstOrDefault((ConstructorInfo c) => c.IsStatic);
+        //                case MethodType.Enumerator:
+        //                    if (attr.methodName == null)
+        //                    {
+        //                        return null;
+        //                    }
+        //                    return AccessTools.EnumeratorMoveNext(AccessTools.DeclaredMethod(attr.declaringType, attr.methodName, attr.argumentTypes, null));
+        //                case MethodType.Async:
+        //                    if (attr.methodName == null)
+        //                    {
+        //                        return null;
+        //                    }
+        //                    return AccessTools.AsyncMoveNext(AccessTools.DeclaredMethod(attr.declaringType, attr.methodName, attr.argumentTypes, null));
+        //            }
+        //        }
+        //    }
+        //    catch (AmbiguousMatchException ex)
+        //    {
+        //        throw new Exception("Ambiguous match for HarmonyMethod[" + attr.ToString() + "]", ex.InnerException ?? ex);
+        //    }
+        //    return null;
+        //}
+
+        //public static MethodBase GetBaseMethod(this HarmonyMethod attr)
+        //{
+        //    try
+        //    {
+        //        MethodType? methodType = attr.methodType;
+        //        if (methodType != null)
+        //        {
+        //            switch (methodType.GetValueOrDefault())
+        //            {
+        //                case MethodType.Normal:
+        //                    if (attr.methodName == null)
+        //                    {
+        //                        return null;
+        //                    }
+        //                    return AccessTools.Method(attr.declaringType, attr.methodName, attr.argumentTypes, null);
+        //                case MethodType.Getter:
+        //                    {
+        //                        if (attr.methodName == null)
+        //                        {
+        //                            PropertyInfo propertyInfo = AccessTools.Indexer(attr.declaringType, attr.argumentTypes);
+        //                            return (propertyInfo != null) ? propertyInfo.GetGetMethod(true) : null;
+        //                        }
+        //                        PropertyInfo propertyInfo2 = AccessTools.Property(attr.declaringType, attr.methodName);
+        //                        return (propertyInfo2 != null) ? propertyInfo2.GetGetMethod(true) : null;
+        //                    }
+        //                case MethodType.Setter:
+        //                    {
+        //                        if (attr.methodName == null)
+        //                        {
+        //                            PropertyInfo propertyInfo3 = AccessTools.Indexer(attr.declaringType, attr.argumentTypes);
+        //                            return (propertyInfo3 != null) ? propertyInfo3.GetSetMethod(true) : null;
+        //                        }
+        //                        PropertyInfo propertyInfo4 = AccessTools.Property(attr.declaringType, attr.methodName);
+        //                        return (propertyInfo4 != null) ? propertyInfo4.GetSetMethod(true) : null;
+        //                    }
+        //                case MethodType.Constructor:
+        //                    return AccessTools.Constructor(attr.declaringType, attr.argumentTypes, false);
+        //                case MethodType.StaticConstructor:
+        //                    return AccessTools.GetDeclaredConstructors(attr.declaringType, null).FirstOrDefault((ConstructorInfo c) => c.IsStatic);
+        //                case MethodType.Enumerator:
+        //                    if (attr.methodName == null)
+        //                    {
+        //                        return null;
+        //                    }
+        //                    return AccessTools.EnumeratorMoveNext(AccessTools.Method(attr.declaringType, attr.methodName, attr.argumentTypes, null));
+        //                case MethodType.Async:
+        //                    if (attr.methodName == null)
+        //                    {
+        //                        return null;
+        //                    }
+        //                    return AccessTools.AsyncMoveNext(AccessTools.Method(attr.declaringType, attr.methodName, attr.argumentTypes, null));
+        //            }
+        //        }
+        //    }
+        //    catch (AmbiguousMatchException ex)
+        //    {
+        //        throw new Exception("Ambiguous match for HarmonyMethod[" + attr.ToString() + "]", ex.InnerException ?? ex);
+        //    }
+        //    return null;
+        //}
+    }
+
+    [HarmonyPatch]
+    public static class PatchToolsPatches
+    {
+        public static MethodBase TargetMethod()
+        {
+            return AccessTools.DeclaredMethod(AccessTools.TypeByName("HarmonyLib.PatchTools"), "GetOriginalMethod");
+        }
+
+        [HarmonyReversePatch]
+        public static MethodBase GetOriginalMethod(this HarmonyMethod attr)
+        {
+            return null;
+        }
+
+        [HarmonyReversePatch]
+        public static MethodBase GetBaseMethod(this HarmonyMethod attr)
+        {
+            IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                if (instructions == null)
+                    return null;
+                return instructions.MethodReplacer(AccessTools.Method(typeof(AccessTools), nameof(AccessTools.DeclaredMethod), new[] { typeof(Type), typeof(string), typeof(Type[]), typeof(Type[]) }),
+                                                   AccessTools.Method(typeof(AccessTools), nameof(AccessTools.Method), new[] { typeof(Type), typeof(string), typeof(Type[]), typeof(Type[]) }))
+                                   .MethodReplacer(AccessTools.Method(typeof(AccessTools), nameof(AccessTools.DeclaredIndexer)),
+                                                   AccessTools.Method(typeof(AccessTools), nameof(AccessTools.Indexer)))
+                                   .MethodReplacer(AccessTools.Method(typeof(AccessTools), nameof(AccessTools.DeclaredProperty), new[] { typeof(Type), typeof(string) }),
+                                                   AccessTools.Method(typeof(AccessTools), nameof(AccessTools.Property), new[] { typeof(Type), typeof(string) }))
+                                   .MethodReplacer(AccessTools.Method(typeof(AccessTools), nameof(AccessTools.DeclaredConstructor)),
+                                                   AccessTools.Method(typeof(AccessTools), nameof(AccessTools.Constructor)));
+            }
+            _ = Transpiler(null);
+            return null;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using KFCommonUtilityLib.Scripts.Attributes;
+﻿using HarmonyLib;
+using KFCommonUtilityLib.Scripts.Attributes;
 
 public class DisplayAsBuffEntityUINotification : BuffEntityUINotification
 {
@@ -41,7 +42,7 @@ public class ActionModuleDisplayAsBuff
     private DisplayAsBuffEntityUINotification notification;
     private BuffClass buffClass;
 
-    [MethodTargetPostfix(nameof(ItemActionRanged.ReadFrom))]
+    [HarmonyPatch(nameof(ItemAction.ReadFrom)), MethodTargetPostfix]
     private void Postfix_ReadFrom(DynamicProperties _props)
     {
         notification = new DisplayAsBuffEntityUINotification();
@@ -54,7 +55,7 @@ public class ActionModuleDisplayAsBuff
         notification.SetBuff(buff);
     }
 
-    [MethodTargetPostfix(nameof(ItemActionRanged.StartHolding))]
+    [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPostfix]
     private void Postfix_StartHolding(ItemActionData _data)
     {
         EntityPlayerLocal player = _data.invData.holdingEntity as EntityPlayerLocal;
@@ -65,7 +66,7 @@ public class ActionModuleDisplayAsBuff
         }
     }
 
-    [MethodTargetPostfix(nameof(ItemActionRanged.StopHolding))]
+    [HarmonyPatch(nameof(ItemAction.StopHolding)), MethodTargetPostfix]
     private void Postfix_StopHolding(ItemActionData _data)
     {
         EntityPlayerLocal player = _data.invData.holdingEntity as EntityPlayerLocal;

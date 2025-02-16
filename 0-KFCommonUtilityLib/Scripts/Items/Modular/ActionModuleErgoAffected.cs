@@ -7,14 +7,14 @@ using System.Reflection.Emit;
 using UniLinq;
 using UnityEngine;
 
-[TypeTarget(typeof(ItemActionZoom), typeof(ErgoData))]
+[TypeTarget(typeof(ItemActionZoom)), ActionDataTarget(typeof(ErgoData))]
 public class ActionModuleErgoAffected
 {
     public static readonly int AimSpeedModifierHash = Animator.StringToHash("AimSpeedModifier");
     public float zoomInTimeBase;
     public float aimSpeedModifierBase;
 
-    [MethodTargetPostfix(nameof(ItemAction.OnModificationsChanged))]
+    [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
     private void Postfix_OnModificationChanged(ItemActionData _data, ItemActionZoom __instance, ErgoData __customData)
     {
         zoomInTimeBase = 0.3f;
@@ -25,7 +25,7 @@ public class ActionModuleErgoAffected
         __customData.aimSet = false;
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.ExecuteAction))]
+    [HarmonyPatch(nameof(ItemAction.ExecuteAction)), MethodTargetPostfix]
     private void Postfix_ExecuteAction(ItemActionData _actionData, ItemActionZoom __instance, bool _bReleased, ErgoData __customData)
     {
         EntityAlive holdingEntity = _actionData.invData.holdingEntity;

@@ -1,11 +1,12 @@
-﻿using KFCommonUtilityLib;
+﻿using HarmonyLib;
+using KFCommonUtilityLib;
 using KFCommonUtilityLib.Scripts.Attributes;
 using UnityEngine;
 
-[TypeTarget(typeof(ItemActionZoom), typeof(DynamicSensitivityData))]
+[TypeTarget(typeof(ItemActionZoom)), ActionDataTarget(typeof(DynamicSensitivityData))]
 public class ActionModuleDynamicSensitivity
 {
-    [MethodTargetPostfix(nameof(ItemAction.AimingSet))]
+    [HarmonyPatch(nameof(ItemAction.AimingSet)), MethodTargetPostfix]
     private void Postfix_AimingSet(ItemActionData _actionData, bool _isAiming, bool _wasAiming, DynamicSensitivityData __customData)
     {
         float originalSensitivity = GamePrefs.GetFloat(EnumGamePrefs.OptionsZoomSensitivity);
@@ -19,7 +20,7 @@ public class ActionModuleDynamicSensitivity
         }
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.OnModificationsChanged))]
+    [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
     private void Postfix_OnModificationsChanged(ItemActionZoom __instance, ItemActionData _data, DynamicSensitivityData __customData)
     {
         if (_data is IModuleContainerFor<ActionModuleVariableZoom.VariableZoomData> variableZoomData)
@@ -39,7 +40,7 @@ public class ActionModuleDynamicSensitivity
         __customData.dsRangeOverride = StringParsers.ParseVector2(_data.invData.itemValue.GetPropertyOverride("DynamicSensitivityRange", "0,0"));
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.OnHoldingUpdate))]
+    [HarmonyPatch(nameof(ItemAction.OnHoldingUpdate)), MethodTargetPostfix]
     private void Postfix_OnHoldingUpdate(ItemActionData _actionData, DynamicSensitivityData __customData)
     {
         if (((ItemActionZoom.ItemActionDataZoom)_actionData).aimingValue)

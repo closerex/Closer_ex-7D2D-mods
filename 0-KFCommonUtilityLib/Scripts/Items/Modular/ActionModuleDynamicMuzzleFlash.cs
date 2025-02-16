@@ -1,7 +1,8 @@
-﻿using KFCommonUtilityLib.Scripts.Attributes;
+﻿using HarmonyLib;
+using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.Utilities;
 
-[TypeTarget(typeof(ItemActionAttack), typeof(DynamicMuzzleFlashData))]
+[TypeTarget(typeof(ItemActionAttack)), ActionDataTarget(typeof(DynamicMuzzleFlashData))]
 public class ActionModuleDynamicMuzzleFlash
 {
     private struct State
@@ -13,7 +14,7 @@ public class ActionModuleDynamicMuzzleFlash
         public string particlesMuzzleSmokeFpv;
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.OnModificationsChanged))]
+    [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
     private void Postfix_OnModificationsChanged(ItemActionAttack __instance, ItemActionAttackData _data, DynamicMuzzleFlashData __customData)
     {
         __customData.particlesMuzzleFire = _data.invData.itemValue.GetPropertyOverrideForAction("Particles_muzzle_fire", __instance.particlesMuzzleFire, __instance.ActionIndex);
@@ -38,7 +39,7 @@ public class ActionModuleDynamicMuzzleFlash
         }
     }
 
-    [MethodTargetPrefix(nameof(ItemAction.ItemActionEffects))]
+    [HarmonyPatch(nameof(ItemAction.ItemActionEffects)), MethodTargetPrefix]
     private bool Prefix_ItemActionEffects(ItemActionAttack __instance, DynamicMuzzleFlashData __customData, out State __state)
     {
         __state = new State()
@@ -56,7 +57,7 @@ public class ActionModuleDynamicMuzzleFlash
         return true;
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.ItemActionEffects))]
+    [HarmonyPatch(nameof(ItemAction.ItemActionEffects)), MethodTargetPostfix]
     private void Postfix_ItemActionEffects(ItemActionAttack __instance, State __state)
     {
         if (__state.executed)

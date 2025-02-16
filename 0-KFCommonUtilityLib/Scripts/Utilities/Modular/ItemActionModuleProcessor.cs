@@ -8,6 +8,7 @@ using UnityEngine.Scripting;
 using FieldAttributes = Mono.Cecil.FieldAttributes;
 using MethodAttributes = Mono.Cecil.MethodAttributes;
 using TypeAttributes = Mono.Cecil.TypeAttributes;
+using KFCommonUtilityLib.Scripts.Attributes;
 
 namespace KFCommonUtilityLib
 {
@@ -15,8 +16,13 @@ namespace KFCommonUtilityLib
     {
         TypeDefinition typedef_newActionData;
         Type[] arr_type_data;
-        TypeReference[] arr_typeref_data;
         FieldDefinition[] arr_flddef_data;
+
+        public Type GetModuleTypeByName(string name)
+        {
+            return ReflectionHelpers.GetTypeWithPrefix("ActionModule", name);
+        }
+
         public void InitModules(ModuleManipulator manipulator, Type targetType, Type baseType, params Type[] moduleTypes)
         {
             ModuleDefinition module = manipulator.module;
@@ -34,8 +40,7 @@ namespace KFCommonUtilityLib
             }
 
             //ACTION MODULE DATA TYPES
-            arr_type_data = manipulator.arr_attr_modules.Select(a => a.DataType).ToArray();
-            arr_typeref_data = arr_type_data.Select(a => a != null ? module.ImportReference(a) : null).ToArray();
+            arr_type_data = moduleTypes.Select(m => m.GetCustomAttribute<ActionDataTargetAttribute>()).Select(a => a?.DataType).ToArray();
             //Create new ItemActionData
             //Find CreateModifierData
             MethodDefinition mtddef_create_data = module.ImportReference(mtdinf_create_data).Resolve();
@@ -51,15 +56,11 @@ namespace KFCommonUtilityLib
             arr_flddef_data = new FieldDefinition[moduleTypes.Length];
             for (int i = 0; i < moduleTypes.Length; i++)
             {
-                if (arr_typeref_data[i] != null)
+                if (arr_type_data[i] != null)
                 {
-                    TypeReference typeref_data = arr_typeref_data[i];
                     Type type_data = arr_type_data[i];
-                    FieldDefinition flddef_data = new FieldDefinition(ModuleUtils.CreateFieldName(type_data), FieldAttributes.Public, typeref_data);
-                    typedef_newActionData.Fields.Add(flddef_data);
+                    manipulator.MakeContainerFor(typedef_newActionData, type_data, out var flddef_data);
                     arr_flddef_data[i] = flddef_data;
-
-                    ModuleUtils.MakeContainerFor(module, manipulator.typeref_interface, typedef_newActionData, type_data, flddef_data, typeref_data);
                 }
             }
 

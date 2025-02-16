@@ -1,9 +1,11 @@
-﻿using Mono.Cecil;
+﻿using KFCommonUtilityLib.Scripts.Attributes;
+using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Security.Permissions;
+using UniLinq;
 using UnityEngine;
 
 namespace KFCommonUtilityLib
@@ -11,9 +13,9 @@ namespace KFCommonUtilityLib
     public static class ModuleManagers
     {
         public static AssemblyDefinition WorkingAssembly { get; private set; } = null;
-        public static event Action<AssemblyDefinition> OnAssemblyCreated;
-        public static event Action<AssemblyDefinition> OnAssemblyLoaded;
-        private static bool inited = false;
+        public static event Action OnAssemblyCreated;
+        public static event Action OnAssemblyLoaded;
+        public static bool Inited { get; private set; }
         private static readonly List<Assembly> list_created = new List<Assembly>();
         private static DefaultAssemblyResolver resolver;
         private static ModuleAttributes moduleAttributes;
@@ -31,7 +33,7 @@ namespace KFCommonUtilityLib
 
         internal static void InitNew()
         {
-            if (inited)
+            if (Inited)
             {
                 return;
             }
@@ -71,14 +73,26 @@ namespace KFCommonUtilityLib
             SecurityDeclaration sdec = new SecurityDeclaration(Mono.Cecil.SecurityAction.RequestMinimum);
             sdec.SecurityAttributes.Add(sattr_permission);
             WorkingAssembly.SecurityDeclarations.Add(sdec);
-            OnAssemblyCreated?.Invoke(WorkingAssembly);
-            inited = true;
+            OnAssemblyCreated?.Invoke();
+            Inited = true;
             Log.Out("======Init New======");
+        }
+
+        public static bool PatchType(Type targetType, Type baseType, string moduleNames, IModuleProcessor processor, out string typename)
+        {
+            string[] modules = moduleNames.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            Type[] moduleTypes = modules.Select(s => processor.GetModuleTypeByName(s.Trim()))
+                                        .Where(t => t.GetCustomAttribute<TypeTargetAttribute>().BaseType.IsAssignableFrom(targetType)).ToArray();
+            typename = ModuleUtils.CreateTypeName(targetType, moduleTypes);
+            //Log.Out(typename);
+            if (!ModuleManagers.TryFindType(typename, out _) && !ModuleManagers.TryFindInCur(typename, out _))
+                _ = new ModuleManipulator(ModuleManagers.WorkingAssembly, processor, targetType, baseType, moduleTypes);
+            return true;
         }
 
         internal static void FinishAndLoad()
         {
-            if (!inited)
+            if (!Inited)
             {
                 return;
             }
@@ -113,7 +127,8 @@ namespace KFCommonUtilityLib
                     Assembly newAssembly = Assembly.LoadFile(filename);
                     list_created.Add(newAssembly);
                 }
-                OnAssemblyLoaded?.Invoke(WorkingAssembly);
+                Inited = false;
+                OnAssemblyLoaded?.Invoke();
                 Cleanup();
             }
         }
@@ -121,7 +136,7 @@ namespace KFCommonUtilityLib
         //cleanup
         internal static void Cleanup()
         {
-            inited = false;
+            Inited = false;
             WorkingAssembly?.Dispose();
             WorkingAssembly = null;
         }

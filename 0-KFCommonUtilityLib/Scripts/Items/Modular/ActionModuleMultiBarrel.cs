@@ -8,10 +8,10 @@ using System.Reflection.Emit;
 using UniLinq;
 using UnityEngine;
 
-[TypeTarget(typeof(ItemActionRanged), typeof(MultiBarrelData))]
+[TypeTarget(typeof(ItemActionRanged)), ActionDataTarget(typeof(MultiBarrelData))]
 public class ActionModuleMultiBarrel
 {
-    [MethodTargetPostfix(nameof(ItemAction.OnModificationsChanged))]
+    [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
     private void Postfix_OnModificationChanged(ItemActionData _data, MultiBarrelData __customData, ItemActionRanged __instance)
     {
         int actionIndex = _data.indexInEntityOfAction;
@@ -49,14 +49,14 @@ public class ActionModuleMultiBarrel
         ((ItemActionRanged.ItemActionDataRanged)_data).IsDoubleBarrel = false;
     }
 
-    [MethodTargetPrefix(nameof(ItemAction.StartHolding), typeof(ItemActionLauncher))]
+    [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemAction.StartHolding)), MethodTargetPrefix]
     private void Prefix_StartHolding_ItemActionLauncher(ItemActionData _data, ItemActionLauncher __instance, MultiBarrelData __customData)
     {
         ItemActionLauncher.ItemActionDataLauncher launcherData = _data as ItemActionLauncher.ItemActionDataLauncher;
         launcherData.projectileJoint = __customData.projectileJoints[0];
     }
 
-    [MethodTargetPostfix(nameof(ItemAction.StartHolding), typeof(ItemActionLauncher))]
+    [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemAction.StartHolding)), MethodTargetPostfix]
     private void Postfix_StartHolding_ItemActionLauncher(ItemActionData _data, ItemActionLauncher __instance, MultiBarrelData __customData)
     {
         ItemActionLauncher.ItemActionDataLauncher launcherData = _data as ItemActionLauncher.ItemActionDataLauncher;
@@ -76,13 +76,13 @@ public class ActionModuleMultiBarrel
         launcherData.projectileJoint = __customData.projectileJoints[__customData.curBarrelIndex];
     }
 
-    [MethodTargetPostfix(nameof(ItemActionRanged.getUserData))]
+    [HarmonyPatch(nameof(ItemActionRanged.getUserData)), MethodTargetPostfix]
     private void Postfix_getUserData(MultiBarrelData __customData, ref int __result)
     {
         __result |= ((byte)__customData.curBarrelIndex) << 8;
     }
 
-    [MethodTargetPrefix(nameof(ItemAction.ItemActionEffects), typeof(ItemActionRanged))]
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemAction.ItemActionEffects)), MethodTargetPrefix]
     private bool Prefix_ItemActionEffects_ItemActionRanged(ItemActionData _actionData, int _userData, int _firingState, MultiBarrelData __customData)
     {
         ItemActionRanged.ItemActionDataRanged rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
@@ -95,7 +95,7 @@ public class ActionModuleMultiBarrel
         return true;
     }
 
-    [MethodTargetPrefix(nameof(ItemAction.ItemActionEffects), typeof(ItemActionLauncher))]
+    [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemAction.ItemActionEffects)), MethodTargetPrefix]
     private bool Prefix_ItemActionEffects_ItemActionLauncher(ItemActionData _actionData, int _userData, int _firingState, MultiBarrelData __customData)
     {
         ItemActionLauncher.ItemActionDataLauncher launcherData = _actionData as ItemActionLauncher.ItemActionDataLauncher;
@@ -106,7 +106,7 @@ public class ActionModuleMultiBarrel
         return Prefix_ItemActionEffects_ItemActionRanged(_actionData, _userData, _firingState, __customData);
     }
 
-    [MethodTargetTranspiler(nameof(ItemActionRanged.ExecuteAction), typeof(ItemActionRanged))]
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemAction.ExecuteAction)), MethodTargetTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_ExecuteAction_ItemActionRanged(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
     {
         var codes = instructions.ToList();

@@ -1,10 +1,11 @@
-﻿using KFCommonUtilityLib.Scripts.Attributes;
+﻿using HarmonyLib;
+using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using System;
 using UniLinq;
 using UnityEngine;
 
-[TypeTarget(typeof(ItemActionRanged), typeof(MetaRechargerData))]
+[TypeTarget(typeof(ItemActionRanged)), ActionDataTarget(typeof(MetaRechargerData))]
 public class ActionModuleMetaRecharger
 {
     public struct RechargeTags
@@ -25,7 +26,7 @@ public class ActionModuleMetaRecharger
     private static readonly FastTags<TagGroup.Global> TagsDecrease = FastTags<TagGroup.Global>.Parse("RechargeDataDecrease");
     private static readonly FastTags<TagGroup.Global> TagsDecreaseInterval = FastTags<TagGroup.Global>.Parse("RechargeDecreaseInterval");
 
-    [MethodTargetPostfix(nameof(ItemActionRanged.ReadFrom))]
+    [HarmonyPatch(nameof(ItemAction.ReadFrom)), MethodTargetPostfix]
     private void Postfix_ReadFrom(DynamicProperties _props, ItemAction __instance)
     {
         rechargeDatas = null;
@@ -55,7 +56,7 @@ public class ActionModuleMetaRecharger
         }).ToArray();
     }
 
-    [MethodTargetPrefix(nameof(ItemActionAttack.StartHolding))]
+    [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPrefix]
     private bool Prefix_StartHolding(ItemActionData _data, MetaRechargerData __customData)
     {
         EntityAlive holdingEntity = _data.invData.holdingEntity;

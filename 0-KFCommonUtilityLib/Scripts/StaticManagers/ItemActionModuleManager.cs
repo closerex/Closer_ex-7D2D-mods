@@ -46,8 +46,8 @@ namespace KFCommonUtilityLib
 
         public static void Init()
         {
-            ModuleManagers.OnAssemblyCreated += (_) => dict_replacement_mapping.Clear();
-            ModuleManagers.OnAssemblyLoaded += (_) =>
+            ModuleManagers.OnAssemblyCreated += () => dict_replacement_mapping.Clear();
+            ModuleManagers.OnAssemblyLoaded += () =>
             {
                 //replace item actions
                 foreach (var pair in dict_replacement_mapping)
@@ -71,25 +71,24 @@ namespace KFCommonUtilityLib
 
         internal static void CheckItem(ItemClass item)
         {
+            if (!ModuleManagers.Inited)
+            {
+                return;
+            }
             for (int i = 0; i < item.Actions.Length; i++)
             {
                 ItemAction itemAction = item.Actions[i];
                 if (itemAction != null && itemAction.Properties.Values.TryGetValue("ItemActionModules", out string str_modules))
                 {
-                    string[] modules = str_modules.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                    Type itemActionType = itemAction.GetType();
-                    Type[] moduleTypes = modules.Select(s => ReflectionHelpers.GetTypeWithPrefix("ActionModule", s.Trim()))
-                                                .Where(t => t.GetCustomAttribute<TypeTargetAttribute>().BaseType.IsAssignableFrom(itemActionType)).ToArray();
-                    string typename = ModuleUtils.CreateTypeName(itemActionType, moduleTypes);
-                    //Log.Out(typename);
-                    if (!ModuleManagers.TryFindType(typename, out _) && !ModuleManagers.TryFindInCur(typename, out _))
-                        _ = new ModuleManipulator(ModuleManagers.WorkingAssembly, new ItemActionModuleProcessor(), itemActionType, typeof(ItemAction), moduleTypes);
-                    if (!dict_replacement_mapping.TryGetValue(item.Name, out var list))
+                    if (ModuleManagers.PatchType(itemAction.GetType(), typeof(ItemAction), str_modules, new ItemActionModuleProcessor(), out string typename))
                     {
-                        list = new List<(string typename, int indexOfAction)>();
-                        dict_replacement_mapping.Add(item.Name, list);
+                        if (!dict_replacement_mapping.TryGetValue(item.Name, out var list))
+                        {
+                            list = new List<(string typename, int indexOfAction)>();
+                            dict_replacement_mapping.Add(item.Name, list);
+                        }
+                        list.Add((typename, i));
                     }
-                    list.Add((typename, i));
                 }
             }
         }
