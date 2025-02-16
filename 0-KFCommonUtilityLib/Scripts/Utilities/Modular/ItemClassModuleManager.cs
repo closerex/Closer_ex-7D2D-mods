@@ -1,0 +1,89 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace KFCommonUtilityLib
+{
+    public static class ItemClassModuleManager
+    {
+        private static readonly Dictionary<string, string> dict_classtypes = new Dictionary<string, string>();
+
+        internal static void Init()
+        {
+            ModuleManagers.OnAssemblyCreated += () => dict_classtypes.Clear();
+            ModuleManagers.OnAssemblyLoaded += () =>
+            {
+                foreach (var pair in dict_classtypes)
+                {
+                    if (ModuleManagers.TryFindType(pair.Value, out Type classType))
+                    {
+                        var item = ItemClass.GetItemClass(pair.Key);
+                        if (item != null)
+                        {
+                            var itemNew = (ItemClass)Activator.CreateInstance(classType);
+                            item.PreInitCopyTo(itemNew);
+                            itemNew.Init();
+                            ItemClass.itemNames.RemoveAt(ItemClass.itemNames.Count - 1);
+                            ItemClass.list[itemNew.Id] = itemNew;
+                        }
+                    }
+                }
+                dict_classtypes.Clear();
+            };
+        }
+
+        internal static void CheckItem(ItemClass item)
+        {
+            if (!ModuleManagers.Inited)
+            {
+                return;
+            }
+
+            if (item != null && item.Properties.Values.TryGetValue("ItemClassModules", out string str_modules))
+            {
+                if (ModuleManagers.PatchType<ItemClassModuleProcessor>(item.GetType(), typeof(ItemClass), str_modules, out string typename))
+                {
+                    dict_classtypes[item.Name] = typename;
+                }
+            }
+        }
+
+        private static void PreInitCopyTo(this ItemClass from, ItemClass to)
+        {
+            to.Actions = from.Actions;
+            foreach (var action in to.Actions)
+            {
+                if (action != null)
+                {
+                    action.item = to;
+                }
+            }
+            to.SetName(from.Name);
+            to.pId = from.pId;
+            to.Properties = from.Properties;
+            to.setLocalizedItemName(from.localizedName);
+            to.Stacknumber = from.Stacknumber;
+            to.SetCanHold(from.bCanHold);
+            to.SetCanDrop(from.bCanDrop);
+            to.MadeOfMaterial = from.MadeOfMaterial;
+            to.MeshFile = from.MeshFile;
+            to.StickyOffset = from.StickyOffset;
+            to.StickyColliderRadius = from.StickyColliderRadius;
+            to.StickyColliderUp = from.StickyColliderUp;
+            to.StickyColliderLength = from.StickyColliderLength;
+            to.StickyMaterial = from.StickyMaterial;
+            to.ImageEffectOnActive = from.ImageEffectOnActive;
+            to.Active = from.Active;
+            to.IsSticky = from.IsSticky;
+            to.DropMeshFile = from.DropMeshFile;
+            to.HandMeshFile = from.HandMeshFile;
+            to.HoldType = from.HoldType;
+            to.RepairTools = from.RepairTools;
+            to.RepairAmount = from.RepairAmount;
+            to.RepairTime = from.RepairTime;
+            to.MaxUseTimes = from.MaxUseTimes;
+            to.MaxUseTimesBreaksAfter = from.MaxUseTimesBreaksAfter;
+            to.EconomicValue = from.EconomicValue;
+            to.Preview = from.Preview;
+        }
+    }
+}

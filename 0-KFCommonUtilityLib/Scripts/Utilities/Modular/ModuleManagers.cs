@@ -78,11 +78,23 @@ namespace KFCommonUtilityLib
             Log.Out("======Init New======");
         }
 
-        public static bool PatchType(Type targetType, Type baseType, string moduleNames, IModuleProcessor processor, out string typename)
+        public static bool PatchType<T>(Type targetType, Type baseType, string moduleNames, out string typename) where T : IModuleProcessor, new()
         {
+            T processor = new T();
             string[] modules = moduleNames.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
             Type[] moduleTypes = modules.Select(s => processor.GetModuleTypeByName(s.Trim()))
                                         .Where(t => t.GetCustomAttribute<TypeTargetAttribute>().BaseType.IsAssignableFrom(targetType)).ToArray();
+            typename = ModuleUtils.CreateTypeName(targetType, moduleTypes);
+            //Log.Out(typename);
+            if (!ModuleManagers.TryFindType(typename, out _) && !ModuleManagers.TryFindInCur(typename, out _))
+                _ = new ModuleManipulator(ModuleManagers.WorkingAssembly, processor, targetType, baseType, moduleTypes);
+            return true;
+        }
+
+        public static bool PatchType<T>(Type targetType, Type baseType, Type[] moduleTypes, out string typename) where T : IModuleProcessor, new()
+        {
+            T processor = new T();
+            moduleTypes = moduleTypes.Where(t => t.GetCustomAttribute<TypeTargetAttribute>().BaseType.IsAssignableFrom(targetType)).ToArray();
             typename = ModuleUtils.CreateTypeName(targetType, moduleTypes);
             //Log.Out(typename);
             if (!ModuleManagers.TryFindType(typename, out _) && !ModuleManagers.TryFindInCur(typename, out _))

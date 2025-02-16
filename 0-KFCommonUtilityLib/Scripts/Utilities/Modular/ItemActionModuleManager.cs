@@ -44,7 +44,7 @@ namespace KFCommonUtilityLib
     {
         private static readonly Dictionary<string, List<(string typename, int indexOfAction)>> dict_replacement_mapping = new Dictionary<string, List<(string typename, int indexOfAction)>>();
 
-        public static void Init()
+        internal static void Init()
         {
             ModuleManagers.OnAssemblyCreated += () => dict_replacement_mapping.Clear();
             ModuleManagers.OnAssemblyLoaded += () =>
@@ -80,7 +80,7 @@ namespace KFCommonUtilityLib
                 ItemAction itemAction = item.Actions[i];
                 if (itemAction != null && itemAction.Properties.Values.TryGetValue("ItemActionModules", out string str_modules))
                 {
-                    if (ModuleManagers.PatchType(itemAction.GetType(), typeof(ItemAction), str_modules, new ItemActionModuleProcessor(), out string typename))
+                    if (ModuleManagers.PatchType<ItemActionModuleProcessor>(itemAction.GetType(), typeof(ItemAction), str_modules, out string typename))
                     {
                         if (!dict_replacement_mapping.TryGetValue(item.Name, out var list))
                         {

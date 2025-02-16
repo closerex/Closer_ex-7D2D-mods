@@ -339,9 +339,9 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                             particle.Clear();
                             particle.Play();
                         }
-                        var temp = fire.gameObject.GetOrAddComponent<TemporaryObject>();
+                        var temp = fire.gameObject.GetOrAddComponent<TemporaryMuzzleFlash>();
                         temp.life = 5;
-                        temp.Restart();
+                        //temp.Restart();
                         if (fire.TryGetComponent<LODGroup>(out var lod))
                             lod.enabled = false;
                         //Log.Out($"barrel position: {fire.transform.parent.parent.position}/{fire.transform.parent.parent.localPosition}, muzzle position: {fire.transform.parent.position}/{fire.transform.parent.localPosition}, particle position: {fire.transform.position}");
@@ -357,7 +357,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                     {
                         smoke.transform.localPosition = Vector3.zero;
                         //smoke.transform.localEulerAngles = Vector3.zero;
-                        smoke.gameObject.layer = 10;
+                        Utils.SetLayerRecursively(smoke.gameObject, 10, null);
                         smoke.transform.SetParent(itemActionDataRanged.muzzle, false);
                         //smoke.transform.localPosition = Vector3.zero;
                         //smoke.transform.localEulerAngles = Vector3.zero;
@@ -368,9 +368,9 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                             particle.Clear();
                             particle.Play();
                         }
-                        var temp = smoke.gameObject.GetOrAddComponent<TemporaryObject>();
+                        var temp = smoke.gameObject.GetOrAddComponent<TemporaryMuzzleFlash>();
                         temp.life = 5;
-                        temp.Restart();
+                        //temp.Restart();
                         if (smoke.TryGetComponent<LODGroup>(out var lod))
                             lod.enabled = false;
                     }

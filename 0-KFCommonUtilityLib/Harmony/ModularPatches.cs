@@ -24,6 +24,7 @@ namespace KFCommonUtilityLib.Harmony
         [HarmonyPostfix]
         private static void Postfix_Init_ItemClass(ItemClass __instance)
         {
+            ItemClassModuleManager.CheckItem(__instance);
             ItemActionModuleManager.CheckItem(__instance);
         }
 

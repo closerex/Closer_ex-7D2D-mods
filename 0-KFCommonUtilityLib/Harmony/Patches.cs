@@ -9,6 +9,7 @@ using System.Reflection.Emit;
 using System.Xml.Linq;
 using UnityEngine;
 using KFCommonUtilityLib.Scripts.NetPackages;
+using KFCommonUtilityLib;
 
 [HarmonyPatch]
 public static class CommonUtilityPatch
@@ -1169,6 +1170,47 @@ public static class CommonUtilityPatch
         {
             ea.FireEvent(CustomEnums.onSelfFirstCVarSync);
         }
+    }
+
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ItemActionEffects))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_ItemActionEffects_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        for (int i = 0; i < codes.Count - 2; i++)
+        {
+            if (codes[i].opcode == OpCodes.Ldloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 9 && codes[i + 2].Branches(out _))
+            {
+                codes.InsertRange(i + 3, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldloc_S, codes[i].operand).WithLabels(codes[i + 3].ExtractLabels()),
+                    CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(AddTmpMuzzleFlash)),
+                });
+                i += 5;
+            }
+            else if (codes[i].opcode == OpCodes.Ldloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 12 && codes[i + 2].Branches(out _))
+            {
+                codes.InsertRange(i + 3, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldloc_S, codes[i].operand).WithLabels(codes[i + 3].ExtractLabels()),
+                    CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(AddTmpMuzzleFlash)),
+                });
+                i += 5;
+            }
+        }
+        return codes;
+    }
+
+    private static void AddTmpMuzzleFlash(Transform trans)
+    {
+        if (trans.TryGetComponent<TemporaryObject>(out var tmp))
+        {
+            tmp.StopAllCoroutines();
+            Component.Destroy(tmp);
+        }
+        tmp = trans.AddMissingComponent<TemporaryMuzzleFlash>();
+        tmp.life = 5f;
     }
 
     //[HarmonyPatch(typeof(EntityBuffs), nameof(EntityBuffs.AddBuff), typeof(string), typeof(Vector3i), typeof(int), typeof(bool), typeof(bool), typeof(float))]

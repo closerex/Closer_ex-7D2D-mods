@@ -636,7 +636,7 @@
     <Compile Include="Scripts\Requirements\RoundsInInventory.cs" />
     <Compile Include="Scripts\Requirements\RoundsInMagazineBase.cs" />
     <Compile Include="Scripts\StaticManagers\DelayLoadModuleManager.cs" />
-    <Compile Include="Scripts\StaticManagers\ItemActionModuleManager.cs" />
+    <Compile Include="Scripts\Utilities\Modular\ItemActionModuleManager.cs" />
     <Compile Include="Scripts\StaticManagers\LocalItemTagsManager.cs" />
     <Compile Include="Scripts\StaticManagers\MultiActionManager.cs" />
     <Compile Include="Scripts\StaticManagers\RecoilManager.cs" />
@@ -666,6 +666,8 @@
     <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\StringExtensions.cs" />
     <Compile Include="Scripts\Utilities\Modular\IModuleProcessor.cs" />
     <Compile Include="Scripts\Utilities\Modular\ItemActionModuleProcessor.cs" />
+    <Compile Include="Scripts\Utilities\Modular\ItemClassModuleManager.cs" />
+    <Compile Include="Scripts\Utilities\Modular\ItemClassModuleProcessor.cs" />
     <Compile Include="Scripts\Utilities\Modular\ModuleManagers.cs" />
     <Compile Include="Scripts\Utilities\Modular\ModuleManipulator.cs" />
     <Compile Include="Scripts\Utilities\Modular\ModuleUtils.cs" />
@@ -674,6 +676,7 @@
     <Compile Include="Scripts\Utilities\MultiActionProjectileRewrites.cs" />
     <Compile Include="Scripts\Utilities\SaveTextureToFileUtility.cs" />
     <Compile Include="Scripts\Utilities\EntityInventoryExtension.cs" />
+    <Compile Include="Scripts\Utilities\TemporaryMuzzleFlash.cs" />
     <Compile Include="Scripts\Utilities\TypeBasedUID.cs" />
   </ItemGroup>
   <ItemGroup>

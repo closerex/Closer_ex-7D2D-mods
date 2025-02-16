@@ -31,6 +31,7 @@ public class CommonUtilityLibInit : IModApi
         CustomEffectEnumManager.RegisterEnumType<PassiveEffects>();
 
         ModuleManagers.ClearOutputFolder();
+        ItemClassModuleManager.Init();
         ItemActionModuleManager.Init();
 
         ModEvents.GameAwake.RegisterHandler(CommonUtilityPatch.InitShotStates);
