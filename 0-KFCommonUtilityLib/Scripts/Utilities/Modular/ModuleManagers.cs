@@ -187,30 +187,34 @@ namespace KFCommonUtilityLib
                 Log.Warning("Failed to get mod!");
                 self = ModManager.GetModForAssembly(typeof(ItemActionModuleManager).Assembly);
             }
-            if (self != null && WorkingAssembly != null && WorkingAssembly.MainModule.Types.Count > 1)
+            if (self != null && WorkingAssembly != null)
             {
-                Log.Out("Assembly is valid!");
-                Log.Out("======Finish and Load======");
-                using (MemoryStream ms = new MemoryStream())
+                if (WorkingAssembly.MainModule.Types.Count > 1)
                 {
-                    try
+                    Log.Out("Assembly is valid!");
+                    using (MemoryStream ms = new MemoryStream())
                     {
-                        WorkingAssembly.Write(ms);
+                        try
+                        {
+                            WorkingAssembly.Write(ms);
+                        }
+                        catch (Exception)
+                        {
+                            new ConsoleCmdShutdown().Execute(new List<string>(), new CommandSenderInfo());
+                        }
+                        DirectoryInfo dirInfo = Directory.CreateDirectory(Path.Combine(self.Path, "AssemblyOutput"));
+                        string filename = Path.Combine(dirInfo.FullName, WorkingAssembly.Name.Name + ".dll");
+                        Log.Out("Output Assembly: " + filename);
+                        using (FileStream fs = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Write))
+                        {
+                            ms.WriteTo(fs);
+                        }
+                        Assembly newAssembly = Assembly.LoadFile(filename);
+                        list_created.Add(newAssembly);
                     }
-                    catch (Exception)
-                    {
-                        new ConsoleCmdShutdown().Execute(new List<string>(), new CommandSenderInfo());
-                    }
-                    DirectoryInfo dirInfo = Directory.CreateDirectory(Path.Combine(self.Path, "AssemblyOutput"));
-                    string filename = Path.Combine(dirInfo.FullName, WorkingAssembly.Name.Name + ".dll");
-                    Log.Out("Output Assembly: " + filename);
-                    using (FileStream fs = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Write))
-                    {
-                        ms.WriteTo(fs);
-                    }
-                    Assembly newAssembly = Assembly.LoadFile(filename);
-                    list_created.Add(newAssembly);
                 }
+
+                Log.Out("======Finish and Load======");
                 Inited = false;
                 OnAssemblyLoaded?.Invoke();
                 Cleanup();
