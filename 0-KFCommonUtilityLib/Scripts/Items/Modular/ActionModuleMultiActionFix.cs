@@ -6,21 +6,38 @@ using KFCommonUtilityLib.Scripts.Utilities;
 [TypeTarget(typeof(ItemActionAttack)), ActionDataTarget(typeof(MultiActionData))]
 public class ActionModuleMultiActionFix
 {
+    private int actionIndex;
+    public string GetDisplayType(ItemValue itemValue)
+    {
+        string displayType = itemValue.GetPropertyOverrideForAction("DisplayType", null, actionIndex);
+        if (string.IsNullOrEmpty(displayType))
+        {
+            displayType = itemValue.ItemClass.DisplayType;
+        }
+        return displayType;
+    }
+
+    [HarmonyPatch(nameof(ItemAction.ReadFrom)), MethodTargetPostfix]
+    public void Postfix_ReadFrom(ItemActionAttack __instance)
+    {
+        actionIndex = __instance.ActionIndex;
+    }
+
     [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPrefix]
-    private bool Prefix_StartHolding(ItemActionData _data, out ItemActionData __state)
+    public bool Prefix_StartHolding(ItemActionData _data, out ItemActionData __state)
     {
         SetAndSaveItemActionData(_data, out __state);
         return true;
     }
 
     [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPostfix]
-    private void Postfix_StartHolding(ItemActionData _data, ItemActionData __state)
+    public void Postfix_StartHolding(ItemActionData _data, ItemActionData __state)
     {
         RestoreItemActionData(_data, __state);
     }
 
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
-    private void Postfix_OnModificationChanged_ItemActionRanged(ItemActionData _data)
+    public void Postfix_OnModificationChanged_ItemActionRanged(ItemActionData _data, ItemActionAttack __instance)
     {
         var rangedData = _data as ItemActionRanged.ItemActionDataRanged;
         if (rangedData != null)
@@ -43,9 +60,9 @@ public class ActionModuleMultiActionFix
     }
 
     [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
-    private void Postfix_OnModificationChanged_ItemActionLauncher(ItemActionData _data)
+    public void Postfix_OnModificationChanged_ItemActionLauncher(ItemActionData _data, ItemActionAttack __instance)
     {
-        Postfix_OnModificationChanged_ItemActionRanged(_data);
+        Postfix_OnModificationChanged_ItemActionRanged(_data, __instance);
         if (_data is ItemActionLauncher.ItemActionDataLauncher launcherData)
         {
             string indexExtension = (_data.indexInEntityOfAction > 0 ? _data.indexInEntityOfAction.ToString() : "");
@@ -55,59 +72,59 @@ public class ActionModuleMultiActionFix
     }
 
     [HarmonyPatch(nameof(ItemAction.StopHolding)), MethodTargetPrefix]
-    private bool Prefix_StopHolding(ItemActionData _data, out ItemActionData __state)
+    public bool Prefix_StopHolding(ItemActionData _data, out ItemActionData __state)
     {
         SetAndSaveItemActionData(_data, out __state);
         return true;
     }
 
     [HarmonyPatch(nameof(ItemAction.StopHolding)), MethodTargetPostfix]
-    private void Postfix_StopHolding(ItemActionData _data, ItemActionData __state)
+    public void Postfix_StopHolding(ItemActionData _data, ItemActionData __state)
     {
         RestoreItemActionData(_data, __state);
     }
 
     [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemAction.ItemActionEffects)), MethodTargetPrefix]
-    private bool Prefix_ItemActionEffects(ItemActionData _actionData, out ItemActionData __state)
+    public bool Prefix_ItemActionEffects(ItemActionData _actionData, out ItemActionData __state)
     {
         SetAndSaveItemActionData(_actionData, out __state);
         return true;
     }
 
     [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemAction.ItemActionEffects)), MethodTargetPostfix]
-    private void Postfix_ItemActionEffects(ItemActionData _actionData, ItemActionData __state)
+    public void Postfix_ItemActionEffects(ItemActionData _actionData, ItemActionData __state)
     {
         RestoreItemActionData(_actionData, __state);
     }
 
     [HarmonyPatch(nameof(ItemAction.CancelAction)), MethodTargetPrefix]
-    private bool Prefix_CancelAction(ItemActionData _actionData, out ItemActionData __state)
+    public bool Prefix_CancelAction(ItemActionData _actionData, out ItemActionData __state)
     {
         SetAndSaveItemActionData(_actionData, out __state);
         return true;
     }
 
     [HarmonyPatch(nameof(ItemAction.CancelAction)), MethodTargetPostfix]
-    private void Postfix_CancelAction(ItemActionData _actionData, ItemActionData __state)
+    public void Postfix_CancelAction(ItemActionData _actionData, ItemActionData __state)
     {
         RestoreItemActionData(_actionData, __state);
     }
 
     [HarmonyPatch(nameof(ItemActionAttack.CancelReload)), MethodTargetPrefix]
-    private bool Prefix_CancelReload(ItemActionData _actionData, out ItemActionData __state)
+    public bool Prefix_CancelReload(ItemActionData _actionData, out ItemActionData __state)
     {
         SetAndSaveItemActionData(_actionData, out __state);
         return true;
     }
 
     [HarmonyPatch(nameof(ItemActionAttack.CancelReload)), MethodTargetPostfix]
-    private void Postfix_CancelReload(ItemActionData _actionData, ItemActionData __state)
+    public void Postfix_CancelReload(ItemActionData _actionData, ItemActionData __state)
     {
         RestoreItemActionData(_actionData, __state);
     }
 
     [HarmonyPatch(nameof(ItemActionAttack.ReloadGun)), MethodTargetPrefix]
-    private bool Prefix_ReloadGun(ItemActionData _actionData)
+    public bool Prefix_ReloadGun(ItemActionData _actionData)
     {
         //int reloadAnimationIndex = MultiActionManager.GetMetaIndexForActionIndex(_actionData.invData.holdingEntity.entityId, _actionData.indexInEntityOfAction);
         _actionData.invData.holdingEntity.emodel?.avatarController?.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, _actionData.indexInEntityOfAction, false);
@@ -117,7 +134,7 @@ public class ActionModuleMultiActionFix
     }
 
     [HarmonyPatch(nameof(ItemAction.OnHUD)), MethodTargetPrefix]
-    private bool Prefix_OnHUD(ItemActionData _actionData)
+    public bool Prefix_OnHUD(ItemActionData _actionData)
     {
         if (_actionData.invData?.holdingEntity?.MinEventContext?.ItemActionData == null || _actionData.indexInEntityOfAction != _actionData.invData.holdingEntity.MinEventContext.ItemActionData.indexInEntityOfAction)
             return false;
@@ -125,7 +142,7 @@ public class ActionModuleMultiActionFix
     }
 
     //[MethodTargetPrefix(nameof(ItemActionAttack.ExecuteAction), typeof(ItemActionRanged))]
-    //private bool Prefix_ExecuteAction(ItemActionData _actionData, MultiActionData __customData)
+    //public bool Prefix_ExecuteAction(ItemActionData _actionData, MultiActionData __customData)
     //{
     //    //when executing action, set last action index so that correct accuracy is used for drawing crosshair
     //    if (_actionData.invData.holdingEntity is EntityPlayerLocal player)
@@ -136,7 +153,7 @@ public class ActionModuleMultiActionFix
     //}
 
     //[MethodTargetPrefix("updateAccuracy", typeof(ItemActionRanged))]
-    //private bool Prefix_updateAccuracy(ItemActionData _actionData, MultiActionData __customData)
+    //public bool Prefix_updateAccuracy(ItemActionData _actionData, MultiActionData __customData)
     //{
     //    if (_actionData.invData.holdingEntity is EntityPlayerLocal player && MultiActionManager.GetActionIndexForEntityID(player.entityId) == _actionData.indexInEntityOfAction)
     //        return true;
@@ -147,7 +164,7 @@ public class ActionModuleMultiActionFix
     //}
 
     //[MethodTargetPostfix("updateAccuracy", typeof(ItemActionRanged))]
-    //private void Postfix_updateAccuracy(ItemActionData _actionData, MultiActionData __customData)
+    //public void Postfix_updateAccuracy(ItemActionData _actionData, MultiActionData __customData)
     //{
     //    //retain rangedData accuracy if it's the last executed action
     //    ItemActionRanged.ItemActionDataRanged rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
@@ -161,7 +178,7 @@ public class ActionModuleMultiActionFix
     //    }
     //}
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.onHoldingEntityFired)), MethodTargetPrefix]
-    private bool Prefix_onHoldingEntityFired(ItemActionData _actionData)
+    public bool Prefix_onHoldingEntityFired(ItemActionData _actionData)
     {
         if (!_actionData.invData.holdingEntity.isEntityRemote)
         {
@@ -172,7 +189,7 @@ public class ActionModuleMultiActionFix
     }
 
     //[MethodTargetPostfix("onHoldingEntityFired", typeof(ItemActionRanged))]
-    //private void Postfix_onHoldingEntityFired(ItemActionData _actionData, MultiActionData __customData)
+    //public void Postfix_onHoldingEntityFired(ItemActionData _actionData, MultiActionData __customData)
     //{
     //    //after firing, if it's the last executed action then update custom accuracy
     //    if (_actionData.invData.holdingEntity is EntityPlayerLocal player && MultiActionManager.GetActionIndexForEntityID(player.entityId) == _actionData.indexInEntityOfAction)
@@ -181,13 +198,13 @@ public class ActionModuleMultiActionFix
     //    }
     //}
 
-    private static void SetAndSaveItemActionData(ItemActionData _actionData, out ItemActionData lastActionData)
+    public static void SetAndSaveItemActionData(ItemActionData _actionData, out ItemActionData lastActionData)
     {
         lastActionData = _actionData.invData.holdingEntity.MinEventContext.ItemActionData;
         _actionData.invData.holdingEntity.MinEventContext.ItemActionData = _actionData;
     }
 
-    private static void RestoreItemActionData(ItemActionData _actionData, ItemActionData lastActionData)
+    public static void RestoreItemActionData(ItemActionData _actionData, ItemActionData lastActionData)
     {
         if (lastActionData != null)
             _actionData.invData.holdingEntity.MinEventContext.ItemActionData = lastActionData;

@@ -401,13 +401,45 @@ namespace KFCommonUtilityLib.Scripts.Utilities
 
         public static void SetCachedEventParamsDummyAction(ItemStack itemStack)
         {
-            ItemClass itemClass = itemStack.itemValue.ItemClass;
+            ItemClass itemClass = itemStack?.itemValue?.ItemClass;
             if (itemClass != null)
             {
                 MinEventParams.CachedEventParam.ItemActionData = MultiActionUtils.DummyActionDatas[itemStack.itemValue.GetMode()];
+                MinEventParams.CachedEventParam.ItemValue = itemStack.itemValue;
+                MinEventParams.CachedEventParam.Seed = itemStack.itemValue.Seed;
             }
-            MinEventParams.CachedEventParam.ItemValue = itemStack.itemValue;
-            MinEventParams.CachedEventParam.Seed = itemStack.itemValue.Seed;
+        }
+
+        public static string GetDisplayTypeForAction(ItemStack itemStack)
+        {
+            return GetDisplayTypeForAction(itemStack?.itemValue);
+        }
+
+        public static string GetDisplayTypeForAction(ItemValue itemValue)
+        {
+            if (itemValue == null || itemValue.IsEmpty())
+            {
+                return "";
+            }
+            if (itemValue.ItemClass.Actions[itemValue.GetActionIndexByMetaData()] is IModuleContainerFor<ActionModuleMultiActionFix> module)
+            {
+                return module.Instance.GetDisplayType(itemValue);
+            }
+            return itemValue.ItemClass.DisplayType;
+        }
+
+        public static bool CanCompare(ItemValue itemValue1, ItemValue itemValue2)
+        {
+            if (itemValue1 == null || itemValue2 == null || itemValue1.IsEmpty() || itemValue2.IsEmpty())
+            {
+                return false;
+            }
+
+            string displayType1 = itemValue1.ItemClass.IsBlock() ? Block.list[itemValue1.ItemClass.Id].DisplayType : GetDisplayTypeForAction(itemValue1);
+            string displayType2 = itemValue2.ItemClass.IsBlock() ? Block.list[itemValue2.ItemClass.Id].DisplayType : GetDisplayTypeForAction(itemValue2);
+            ItemDisplayEntry displayStatsForTag = UIDisplayInfoManager.Current.GetDisplayStatsForTag(displayType1);
+            ItemDisplayEntry displayStatsForTag2 = UIDisplayInfoManager.Current.GetDisplayStatsForTag(displayType2);
+            return displayStatsForTag != null && displayStatsForTag2 != null && displayStatsForTag.DisplayGroup == displayStatsForTag2.DisplayGroup;
         }
     }
 }

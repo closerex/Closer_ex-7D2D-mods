@@ -10,9 +10,14 @@ namespace KFCommonUtilityLib
 {
     public struct ItemClassModuleProcessor : IModuleProcessor
     {
+
         public Type GetModuleTypeByName(string name)
         {
             return ReflectionHelpers.GetTypeWithPrefix("ItemModule", name);
+        }
+        public bool BuildConstructor(ModuleManipulator manipulator, MethodDefinition mtddef_ctor)
+        {
+            return false;
         }
 
         public void InitModules(ModuleManipulator manipulator, Type targetType, Type baseType, params Type[] moduleTypes)

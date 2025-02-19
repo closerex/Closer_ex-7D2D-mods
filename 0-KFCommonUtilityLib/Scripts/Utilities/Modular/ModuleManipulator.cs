@@ -75,9 +75,11 @@ namespace KFCommonUtilityLib
         public Type targetType;
         public Type baseType;
         public Type[] moduleTypes;
+        public Type[][] moduleExtensionTypes;
         public TypeDefinition typedef_newTarget;
         public TypeReference typeref_interface;
         public FieldDefinition[] arr_flddef_modules;
+        private static MethodInfo mtdinf = AccessTools.Method(typeof(ModuleManagers), nameof(ModuleManagers.GetModuleExtensions));
 
         public ModuleManipulator(AssemblyDefinition workingAssembly, IModuleProcessor processor, Type targetType, Type baseType, params Type[] moduleTypes)
         {
@@ -86,6 +88,7 @@ namespace KFCommonUtilityLib
             this.targetType = targetType;
             this.baseType = baseType;
             this.moduleTypes = moduleTypes;
+            moduleExtensionTypes = moduleTypes.Select(t => (Type[])mtdinf.MakeGenericMethod(t).Invoke(null, null)).ToArray();
             Patch();
         }
 
@@ -110,18 +113,21 @@ namespace KFCommonUtilityLib
 
             //Create ItemAction constructor
             MethodDefinition mtddef_ctor = new MethodDefinition(".ctor", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName, module.TypeSystem.Void);
-            var il = mtddef_ctor.Body.GetILProcessor();
-            il.Append(il.Create(OpCodes.Ldarg_0));
-            il.Append(il.Create(OpCodes.Call, module.ImportReference(targetType.GetConstructor(Array.Empty<Type>()))));
-            il.Append(il.Create(OpCodes.Nop));
-            for (int i = 0; i < arr_flddef_modules.Length; i++)
+            if (processor == null || !processor.BuildConstructor(this, mtddef_ctor))
             {
+                var il = mtddef_ctor.Body.GetILProcessor();
                 il.Append(il.Create(OpCodes.Ldarg_0));
-                il.Append(il.Create(OpCodes.Newobj, module.ImportReference(moduleTypes[i].GetConstructor(Array.Empty<Type>()))));
-                il.Append(il.Create(OpCodes.Stfld, arr_flddef_modules[i]));
+                il.Append(il.Create(OpCodes.Call, module.ImportReference(targetType.GetConstructor(Array.Empty<Type>()))));
                 il.Append(il.Create(OpCodes.Nop));
+                for (int i = 0; i < arr_flddef_modules.Length; i++)
+                {
+                    il.Append(il.Create(OpCodes.Ldarg_0));
+                    il.Append(il.Create(OpCodes.Newobj, module.ImportReference(moduleTypes[i].GetConstructor(Array.Empty<Type>()))));
+                    il.Append(il.Create(OpCodes.Stfld, arr_flddef_modules[i]));
+                    il.Append(il.Create(OpCodes.Nop));
+                }
+                il.Append(il.Create(OpCodes.Ret));
             }
-            il.Append(il.Create(OpCodes.Ret));
             typedef_newTarget.Methods.Add(mtddef_ctor);
 
             processor?.InitModules(this, targetType, baseType, moduleTypes);
@@ -139,63 +145,26 @@ namespace KFCommonUtilityLib
             {
                 Type moduleType = moduleTypes[i];
                 const BindingFlags searchFlags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
-                foreach (var mtd in moduleType.GetMethods(searchFlags))
+                foreach (var mtd in moduleType.GetMethods(searchFlags).Concat(moduleExtensionTypes[i].SelectMany(t => t.GetMethods(searchFlags))))
                 {
                     var attr = mtd.GetCustomAttribute<MethodTargetTranspilerAttribute>();
-                    var hp = mtd.GetCustomAttribute<HarmonyPatch>();
-                    //make sure the transpiler has a target method to apply, otherwise skip it
-                    if (attr != null && hp != null && hp.info.declaringType != null)
+                    foreach (var hp in mtd.GetCustomAttributes<HarmonyPatch>())
                     {
-                        var hm = hp.info;
-                        hm.methodType = hm.methodType ?? MethodType.Normal;
-                        var mtdinf_target = hm.GetOriginalMethod() as MethodInfo;
-                        if (mtdinf_target == null || mtdinf_target.IsAbstract || !mtdinf_target.IsVirtual)
+                        //make sure the transpiler has a target method to apply, otherwise skip it
+                        if (attr != null && hp != null && hp.info.declaringType != null)
                         {
-                            continue;
-                        }
-                        string id = hm.GetTargetMethodIdentifier();
-                        if (!dict_transpilers.TryGetValue(id, out var list))
-                        {
-                            dict_transpilers[id] = (list = new List<TranspilerTarget>());
-                            Type nextType = targetType;
-                            TranspilerTarget curNode = null;
-                            var hm_next = hm.Clone();
-                            while (hm.declaringType.IsAssignableFrom(nextType))
+                            var hm = hp.info;
+                            hm.methodType = hm.methodType ?? MethodType.Normal;
+                            var mtdinf_target = hm.GetOriginalMethod() as MethodInfo;
+                            if (mtdinf_target == null || mtdinf_target.IsAbstract || !mtdinf_target.IsVirtual)
                             {
-                                hm_next.declaringType = nextType;
-                                var mtdinfo_cur = hm_next.GetOriginalMethod() as MethodInfo;
-                                if (mtdinfo_cur != null)
-                                {
-                                    var patchinf_harmony = mtdinfo_cur.ToPatchInfoDontAdd().Copy();
-                                    curNode = new TranspilerTarget(mtdinfo_cur.DeclaringType, mtdinfo_cur, patchinf_harmony);
-                                    list.Add(curNode);
-                                }
-                                nextType = nextType.BaseType;
+                                continue;
                             }
-
-                            if (curNode != null)
+                            string id = hm.GetTargetMethodIdentifier();
+                            if (!dict_transpilers.TryGetValue(id, out var list))
                             {
-                                curNode.patchinf_harmony.AddTranspilers(CommonUtilityLibInit.HarmonyInstance.Id, new HarmonyMethod(mtd));
-                                Log.Out($"Adding transpiler {mtd.FullDescription()}\nCurrent transpilers:\n{string.Join('\n', curNode.patchinf_harmony.transpilers.Select(p => p.PatchMethod.FullDescription()))}");
-                            }
-                        }
-                        else
-                        {
-                            bool childFound = false;
-                            foreach (var node in ((IEnumerable<TranspilerTarget>)list).Reverse())
-                            {
-                                if (node.type_action.Equals(hm.declaringType))
-                                {
-                                    childFound = true;
-                                    node.patchinf_harmony.AddTranspilers(CommonUtilityLibInit.HarmonyInstance.Id, mtd);
-                                    Log.Out($"Adding transpiler {mtd.FullDescription()}\nCurrent transpilers:\n{string.Join('\n', node.patchinf_harmony.transpilers.Select(p => p.PatchMethod.FullDescription()))}");
-                                    break;
-                                }
-                            }
-
-                            if (!childFound)
-                            {
-                                Type nextType = list[list.Count - 1].type_action.BaseType;
+                                dict_transpilers[id] = (list = new List<TranspilerTarget>());
+                                Type nextType = targetType;
                                 TranspilerTarget curNode = null;
                                 var hm_next = hm.Clone();
                                 while (hm.declaringType.IsAssignableFrom(nextType))
@@ -215,6 +184,45 @@ namespace KFCommonUtilityLib
                                 {
                                     curNode.patchinf_harmony.AddTranspilers(CommonUtilityLibInit.HarmonyInstance.Id, new HarmonyMethod(mtd));
                                     Log.Out($"Adding transpiler {mtd.FullDescription()}\nCurrent transpilers:\n{string.Join('\n', curNode.patchinf_harmony.transpilers.Select(p => p.PatchMethod.FullDescription()))}");
+                                }
+                            }
+                            else
+                            {
+                                bool childFound = false;
+                                foreach (var node in ((IEnumerable<TranspilerTarget>)list).Reverse())
+                                {
+                                    if (node.type_action.Equals(hm.declaringType))
+                                    {
+                                        childFound = true;
+                                        node.patchinf_harmony.AddTranspilers(CommonUtilityLibInit.HarmonyInstance.Id, mtd);
+                                        Log.Out($"Adding transpiler {mtd.FullDescription()}\nCurrent transpilers:\n{string.Join('\n', node.patchinf_harmony.transpilers.Select(p => p.PatchMethod.FullDescription()))}");
+                                        break;
+                                    }
+                                }
+
+                                if (!childFound)
+                                {
+                                    Type nextType = list[list.Count - 1].type_action.BaseType;
+                                    TranspilerTarget curNode = null;
+                                    var hm_next = hm.Clone();
+                                    while (hm.declaringType.IsAssignableFrom(nextType))
+                                    {
+                                        hm_next.declaringType = nextType;
+                                        var mtdinfo_cur = hm_next.GetOriginalMethod() as MethodInfo;
+                                        if (mtdinfo_cur != null)
+                                        {
+                                            var patchinf_harmony = mtdinfo_cur.ToPatchInfoDontAdd().Copy();
+                                            curNode = new TranspilerTarget(mtdinfo_cur.DeclaringType, mtdinfo_cur, patchinf_harmony);
+                                            list.Add(curNode);
+                                        }
+                                        nextType = nextType.BaseType;
+                                    }
+
+                                    if (curNode != null)
+                                    {
+                                        curNode.patchinf_harmony.AddTranspilers(CommonUtilityLibInit.HarmonyInstance.Id, new HarmonyMethod(mtd));
+                                        Log.Out($"Adding transpiler {mtd.FullDescription()}\nCurrent transpilers:\n{string.Join('\n', curNode.patchinf_harmony.transpilers.Select(p => p.PatchMethod.FullDescription()))}");
+                                    }
                                 }
                             }
                         }
@@ -271,7 +279,7 @@ namespace KFCommonUtilityLib
             for (int i = 0; i < moduleTypes.Length; i++)
             {
                 Type moduleType = moduleTypes[i];
-                Dictionary<string, MethodOverrideInfo> dict_targets = GetMethodOverrideTargets<MethodTargetPostfixAttribute>(moduleType);
+                Dictionary<string, MethodOverrideInfo> dict_targets = GetMethodOverrideTargets<MethodTargetPostfixAttribute>(i);
                 string moduleID = ModuleUtils.CreateFieldName(moduleType);
                 foreach (var pair in dict_targets)
                 {
@@ -287,7 +295,7 @@ namespace KFCommonUtilityLib
                     }
                     var list_inst_pars = MatchArguments(mtddef_root, mtdpinf_derived, mtddef_target, i, true, dict_states, moduleID);
                     //insert invocation
-                    il = mtddef_derived.Body.GetILProcessor();
+                    var il = mtddef_derived.Body.GetILProcessor();
                     foreach (var ins in list_inst_pars)
                     {
                         il.InsertBefore(mtdpinf_derived.PostfixEnd, ins);
@@ -302,7 +310,7 @@ namespace KFCommonUtilityLib
             for (int i = moduleTypes.Length - 1; i >= 0; i--)
             {
                 Type moduleType = moduleTypes[i];
-                Dictionary<string, MethodOverrideInfo> dict_targets = GetMethodOverrideTargets<MethodTargetPrefixAttribute>(moduleType);
+                Dictionary<string, MethodOverrideInfo> dict_targets = GetMethodOverrideTargets<MethodTargetPrefixAttribute>(i);
                 string moduleID = ModuleUtils.CreateFieldName(moduleType);
                 foreach (var pair in dict_targets)
                 {
@@ -313,7 +321,7 @@ namespace KFCommonUtilityLib
                     dict_all_states.TryGetValue(pair.Key, out var dict_states);
                     var list_inst_pars = MatchArguments(mtddef_root, mtdpinf_derived, mtddef_target, i, false, dict_states, moduleID);
                     //insert invocation
-                    il = mtdpinf_derived.Method.Body.GetILProcessor();
+                    var il = mtdpinf_derived.Method.Body.GetILProcessor();
                     Instruction ins_insert = mtdpinf_derived.PrefixBegin;
                     foreach (var ins in list_inst_pars)
                     {
@@ -351,51 +359,57 @@ namespace KFCommonUtilityLib
         /// <param name="moduleType"></param>
         /// <param name="module"></param>
         /// <returns></returns>
-        private Dictionary<string, MethodOverrideInfo> GetMethodOverrideTargets<T>(Type moduleType) where T : Attribute, IMethodTarget
+        private Dictionary<string, MethodOverrideInfo> GetMethodOverrideTargets<T>(int moduleIndex) where T : Attribute, IMethodTarget
         {
+            Type moduleType = moduleTypes[moduleIndex];
             Dictionary<string, MethodOverrideInfo> dict_overrides = new Dictionary<string, MethodOverrideInfo>();
             const BindingFlags searchFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-            foreach (var mtd in moduleType.GetMethods(searchFlags))
+            const BindingFlags extensionFlags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+            foreach (var mtd in moduleType.GetMethods(searchFlags).Concat(moduleExtensionTypes[moduleIndex].SelectMany(t => t.GetMethods(extensionFlags))))
             {
-                IMethodTarget attr = mtd.GetCustomAttribute<T>();
-                HarmonyPatch hp = mtd.GetCustomAttribute<HarmonyPatch>();
-                if (attr != null && hp != null && (hp.info.declaringType == null || hp.info.declaringType.IsAssignableFrom(targetType)))
+                if (mtd.GetCustomAttribute<T>() != null)
                 {
-                    var hm = hp.info;
-                    hm.methodType = hm.methodType ?? MethodType.Normal;
-                    var hmclone = hm.Clone();
-                    hmclone.declaringType = targetType;
-                    string id = hm.GetTargetMethodIdentifier();
-                    MethodInfo mtdinf_base = hmclone.GetBaseMethod() as MethodInfo;
-                    if (mtdinf_base == null || !mtdinf_base.IsVirtual || mtdinf_base.IsFinal)
+                    foreach (HarmonyPatch hp in mtd.GetCustomAttributes<HarmonyPatch>())
                     {
-                        Log.Error($"Method not found: {moduleType.FullName} on {hmclone.methodName}\n{hmclone.ToString()}");
-                        continue;
-                    }
-
-                    MethodReference mtdref_base = module.ImportReference(mtdinf_base);
-                    //Find preferred patch
-                    if (dict_overrides.TryGetValue(id, out var info))
-                    {
-                        if (hm.declaringType == null)
-                            continue;
-                        //cur action type is sub or same class of cur preferred type
-                        //cur preferred type is sub class of previous preferred type
-                        //means cur preferred type is closer to the action type in inheritance hierachy than the previous one
-                        if (hm.declaringType.IsAssignableFrom(targetType) && (info.prefType == null || hm.declaringType.IsSubclassOf(info.prefType)))
+                        if (hp != null && (hp.info.declaringType == null || hp.info.declaringType.IsAssignableFrom(targetType)))
                         {
-                            dict_overrides[id] = new MethodOverrideInfo(mtd, mtdinf_base, mtdref_base, hm.declaringType);
+                            var hm = hp.info;
+                            hm.methodType = hm.methodType ?? MethodType.Normal;
+                            var hmclone = hm.Clone();
+                            hmclone.declaringType = targetType;
+                            string id = hm.GetTargetMethodIdentifier();
+                            MethodInfo mtdinf_base = hmclone.GetBaseMethod() as MethodInfo;
+                            if (mtdinf_base == null || !mtdinf_base.IsVirtual || mtdinf_base.IsFinal)
+                            {
+                                Log.Error($"Method not found: {moduleType.FullName} on {hmclone.methodName}\n{hmclone.ToString()}");
+                                continue;
+                            }
+
+                            MethodReference mtdref_base = module.ImportReference(mtdinf_base);
+                            //Find preferred patch
+                            if (dict_overrides.TryGetValue(id, out var info))
+                            {
+                                if (hm.declaringType == null)
+                                    continue;
+                                //cur action type is sub or same class of cur preferred type
+                                //cur preferred type is sub class of previous preferred type
+                                //means cur preferred type is closer to the action type in inheritance hierachy than the previous one
+                                if (hm.declaringType.IsAssignableFrom(targetType) && (info.prefType == null || hm.declaringType.IsSubclassOf(info.prefType)))
+                                {
+                                    dict_overrides[id] = new MethodOverrideInfo(mtd, mtdinf_base, mtdref_base, hm.declaringType);
+                                }
+                            }
+                            else
+                            {
+                                dict_overrides[id] = new MethodOverrideInfo(mtd, mtdinf_base, mtdref_base, hm.declaringType);
+                            }
+                            //Log.Out($"Add method override: {id} for {mtdref_base.FullName}/{mtdinf_base.Name}, action type: {itemActionType.Name}");
+                        }
+                        else
+                        {
+                            //Log.Out($"No override target found or preferred type not match on {mtd.Name}");
                         }
                     }
-                    else
-                    {
-                        dict_overrides[id] = new MethodOverrideInfo(mtd, mtdinf_base, mtdref_base, hm.declaringType);
-                    }
-                    //Log.Out($"Add method override: {id} for {mtdref_base.FullName}/{mtdinf_base.Name}, action type: {itemActionType.Name}");
-                }
-                else
-                {
-                    //Log.Out($"No override target found or preferred type not match on {mtd.Name}");
                 }
             }
             return dict_overrides;
@@ -489,13 +503,13 @@ namespace KFCommonUtilityLib
             List<Instruction> list_inst_pars = new List<Instruction>();
             list_inst_pars.Add(il.Create(OpCodes.Ldarg_0));
             list_inst_pars.Add(il.Create(OpCodes.Ldfld, flddef_module));
-            foreach (var par in mtddef_target.Parameters)
+            foreach (var par in mtddef_target.IsStatic ? mtddef_target.Parameters.Skip(1) : mtddef_target.Parameters)
             {
                 if (par.Name.StartsWith("___"))
                 {
                     //___ means non public fields
                     string str_fldname = par.Name.Substring(3);
-                    FieldDefinition flddef_target = module.ImportReference(targetType.GetField(str_fldname, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)).Resolve();
+                    FieldDefinition flddef_target = module.ImportReference(targetType.GetField(str_fldname, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)).Resolve();
                     if (flddef_target == null)
                         throw new MissingFieldException($"Field with name \"{str_fldname}\" not found! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
                     if (flddef_target.IsStatic)

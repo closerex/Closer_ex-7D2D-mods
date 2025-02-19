@@ -12,7 +12,7 @@ using UnityEngine;
 public class ActionModuleMultiBarrel
 {
     [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
-    private void Postfix_OnModificationChanged(ItemActionData _data, MultiBarrelData __customData, ItemActionRanged __instance)
+    public void Postfix_OnModificationChanged(ItemActionData _data, MultiBarrelData __customData, ItemActionRanged __instance)
     {
         int actionIndex = _data.indexInEntityOfAction;
         string originalValue = false.ToString();
@@ -50,14 +50,14 @@ public class ActionModuleMultiBarrel
     }
 
     [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemAction.StartHolding)), MethodTargetPrefix]
-    private void Prefix_StartHolding_ItemActionLauncher(ItemActionData _data, ItemActionLauncher __instance, MultiBarrelData __customData)
+    public void Prefix_StartHolding_ItemActionLauncher(ItemActionData _data, ItemActionLauncher __instance, MultiBarrelData __customData)
     {
         ItemActionLauncher.ItemActionDataLauncher launcherData = _data as ItemActionLauncher.ItemActionDataLauncher;
         launcherData.projectileJoint = __customData.projectileJoints[0];
     }
 
     [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemAction.StartHolding)), MethodTargetPostfix]
-    private void Postfix_StartHolding_ItemActionLauncher(ItemActionData _data, ItemActionLauncher __instance, MultiBarrelData __customData)
+    public void Postfix_StartHolding_ItemActionLauncher(ItemActionData _data, ItemActionLauncher __instance, MultiBarrelData __customData)
     {
         ItemActionLauncher.ItemActionDataLauncher launcherData = _data as ItemActionLauncher.ItemActionDataLauncher;
         if (launcherData?.projectileInstance != null && __customData.oneRoundMultishot && __customData.roundsPerShot > 1)
@@ -77,13 +77,13 @@ public class ActionModuleMultiBarrel
     }
 
     [HarmonyPatch(nameof(ItemActionRanged.getUserData)), MethodTargetPostfix]
-    private void Postfix_getUserData(MultiBarrelData __customData, ref int __result)
+    public void Postfix_getUserData(MultiBarrelData __customData, ref int __result)
     {
         __result |= ((byte)__customData.curBarrelIndex) << 8;
     }
 
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemAction.ItemActionEffects)), MethodTargetPrefix]
-    private bool Prefix_ItemActionEffects_ItemActionRanged(ItemActionData _actionData, int _userData, int _firingState, MultiBarrelData __customData)
+    public bool Prefix_ItemActionEffects_ItemActionRanged(ItemActionData _actionData, int _userData, int _firingState, MultiBarrelData __customData)
     {
         ItemActionRanged.ItemActionDataRanged rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
         if (rangedData != null && _firingState != 0)
@@ -96,7 +96,7 @@ public class ActionModuleMultiBarrel
     }
 
     [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemAction.ItemActionEffects)), MethodTargetPrefix]
-    private bool Prefix_ItemActionEffects_ItemActionLauncher(ItemActionData _actionData, int _userData, int _firingState, MultiBarrelData __customData)
+    public bool Prefix_ItemActionEffects_ItemActionLauncher(ItemActionData _actionData, int _userData, int _firingState, MultiBarrelData __customData)
     {
         ItemActionLauncher.ItemActionDataLauncher launcherData = _actionData as ItemActionLauncher.ItemActionDataLauncher;
         if (launcherData != null)
@@ -128,27 +128,25 @@ public class ActionModuleMultiBarrel
                 codes[i + 1].WithLabels(loopStart);
                 codes.InsertRange(i + 1, new[]
                 {
-                        new CodeInstruction(OpCodes.Ldnull),
-                        new CodeInstruction(OpCodes.Stloc_S, lbd_data_module),
-                        new CodeInstruction(OpCodes.Ldarg_1),
-                        new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<MultiBarrelData>)),
-                        new CodeInstruction(OpCodes.Callvirt, prop_instance),
-                        new CodeInstruction(OpCodes.Stloc_S, lbd_data_module),
-                        new CodeInstruction(OpCodes.Ldc_I4_0),
-                        new CodeInstruction(OpCodes.Stloc_S, lbd_i),
-                        new CodeInstruction(OpCodes.Ldloc_S, lbd_data_module),
-                        CodeInstruction.LoadField(typeof(ActionModuleMultiBarrel.MultiBarrelData), nameof(ActionModuleMultiBarrel.MultiBarrelData.roundsPerShot)),
-                        new CodeInstruction(OpCodes.Stloc_S, lbd_rounds),
-                        new CodeInstruction(OpCodes.Br_S, loopCondi),
-                    });
-                i += 16;
+                    new CodeInstruction(OpCodes.Ldarg_1),
+                    new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<MultiBarrelData>)),
+                    new CodeInstruction(OpCodes.Callvirt, prop_instance),
+                    new CodeInstruction(OpCodes.Stloc_S, lbd_data_module),
+                    new CodeInstruction(OpCodes.Ldc_I4_0),
+                    new CodeInstruction(OpCodes.Stloc_S, lbd_i),
+                    new CodeInstruction(OpCodes.Ldloc_S, lbd_data_module),
+                    CodeInstruction.LoadField(typeof(ActionModuleMultiBarrel.MultiBarrelData), nameof(ActionModuleMultiBarrel.MultiBarrelData.roundsPerShot)),
+                    new CodeInstruction(OpCodes.Stloc_S, lbd_rounds),
+                    new CodeInstruction(OpCodes.Br_S, loopCondi),
+                });
+                i += 11;
             }
             //one round multi shot check
             else if (codes[i].Calls(mtd_consume))
             {
                 Label lbl = generator.DefineLabel();
-                codes[i - 2].WithLabels(lbl);
-                codes.InsertRange(i - 2, new[]
+                codes[i - 5].WithLabels(lbl);
+                codes.InsertRange(i - 5, new[]
                 {
                     new CodeInstruction(OpCodes.Ldloc_S, lbd_data_module),
                     CodeInstruction.LoadField(typeof(ActionModuleMultiBarrel.MultiBarrelData), nameof(ActionModuleMultiBarrel.MultiBarrelData.oneRoundMultishot)),
@@ -157,7 +155,7 @@ public class ActionModuleMultiBarrel
                     new CodeInstruction(OpCodes.Ldc_I4_0),
                     new CodeInstruction(OpCodes.Bgt_S, codes[i - 3].operand)
                 });
-                i += 8;
+                i += 6;
             }
             //loop conditions and cycle barrels
             else if (codes[i].Calls(mtd_getmax))
@@ -172,7 +170,10 @@ public class ActionModuleMultiBarrel
                     new CodeInstruction(OpCodes.Brfalse_S, lbl_pre),
                     new CodeInstruction(OpCodes.Ldloc_S, lbd_data_module),
                     CodeInstruction.Call(typeof(ActionModuleMultiBarrel.MultiBarrelData), nameof(ActionModuleMultiBarrel.MultiBarrelData.CycleBarrels)),
-                    new CodeInstruction(OpCodes.Ldloc_S, lbd_i).WithLabels(lbl_pre),
+                    new CodeInstruction(OpCodes.Ldloc_S, 6).WithLabels(lbl_pre),
+                    CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.inventory)),
+                    CodeInstruction.Call(typeof(Inventory), nameof(Inventory.CallOnToolbeltChangedInternal)),
+                    new CodeInstruction(OpCodes.Ldloc_S, lbd_i),
                     new CodeInstruction(OpCodes.Ldc_I4_1),
                     new CodeInstruction(OpCodes.Add),
                     new CodeInstruction(OpCodes.Stloc_S, lbd_i),

@@ -12,6 +12,7 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <LangVersion>9.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -549,6 +550,7 @@
     <Compile Include="Scripts\Attributes\ActionDataTargetAttribute.cs" />
     <Compile Include="Scripts\Attributes\MethodTargetAttribute.cs" />
     <Compile Include="Scripts\Attributes\PatchTargetAttribute.cs" />
+    <Compile Include="Scripts\Attributes\TypeTargetExtensionAttribute.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdListParticleScripts.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdMultiActionItemValueDebug.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPrintLocalCache.cs" />
@@ -636,6 +638,7 @@
     <Compile Include="Scripts\Requirements\RoundsInInventory.cs" />
     <Compile Include="Scripts\Requirements\RoundsInMagazineBase.cs" />
     <Compile Include="Scripts\StaticManagers\DelayLoadModuleManager.cs" />
+    <Compile Include="Scripts\Utilities\Modular\ItemActionDataModuleProcessor.cs" />
     <Compile Include="Scripts\Utilities\Modular\ItemActionModuleManager.cs" />
     <Compile Include="Scripts\StaticManagers\LocalItemTagsManager.cs" />
     <Compile Include="Scripts\StaticManagers\MultiActionManager.cs" />

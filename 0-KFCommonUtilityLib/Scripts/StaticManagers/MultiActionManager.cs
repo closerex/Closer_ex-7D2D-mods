@@ -485,6 +485,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             if (prevMode != mapping.CurMode)
             {
                 FireToggleModeEvent(player, mapping);
+                player.inventory.CallOnToolbeltChangedInternal();
             }
         }
 

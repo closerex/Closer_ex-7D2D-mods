@@ -1,5 +1,6 @@
 ﻿using FullautoLauncher.Scripts.ProjectileManager;
 using HarmonyLib;
+using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System.Collections.Generic;
@@ -20,6 +21,48 @@ public class FLARCompatibilityPatchInit : IModApi
         Log.Out(" Loading Patch: " + GetType());
         var harmony = new Harmony(GetType().ToString());
         harmony.PatchAll(Assembly.GetExecutingAssembly());
+    }
+}
+
+[TypeTargetExtension(typeof(ActionModuleMultiBarrel))]
+public static class FLARMultiBarrelExt
+{
+    //multi barrel patch
+    [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemAction.ItemActionEffects))]
+    [MethodTargetPrefix]
+    private static bool Prefix_ItemActionEffects_ItemActionBetterLauncher(ActionModuleMultiBarrel self, ItemActionData _actionData, int _userData, int _firingState, MultiBarrelData __customData)
+    {
+        if (_actionData is ItemActionBetterLauncher.ItemActionDataBetterLauncher launcherData)
+        {
+            launcherData.projectileJoint = __customData.projectileJoints[(byte)(_userData >> 8)];
+            if (launcherData.projectileJoint == null)
+            {
+                Log.Warning($"null projectile joint on inventory slot {launcherData.invData.slotIdx}!!\n{StackTraceUtility.ExtractStackTrace()}");
+            }
+        }
+        return self.Prefix_ItemActionEffects_ItemActionRanged(_actionData, _userData, _firingState, __customData);
+    }
+}
+
+[TypeTargetExtension(typeof(ActionModuleMultiActionFix))]
+public static class FLARMultiActionFixExt
+{
+
+    [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemAction.OnModificationsChanged))]
+    [MethodTargetPostfix]
+    private static void Postfix_OnModificationChanged_ActionModuleMultiActionFix(ActionModuleMultiActionFix self, ItemActionData _data, ItemActionAttack __instance)
+    {
+        self.Postfix_OnModificationChanged_ItemActionRanged(_data, __instance);
+        if (_data is ItemActionBetterLauncher.ItemActionDataBetterLauncher launcherData)
+        {
+            string indexExtension = (_data.indexInEntityOfAction > 0 ? _data.indexInEntityOfAction.ToString() : "");
+            string jointName = _data.invData.itemValue.GetPropertyOverrideForAction($"ProjectileJoint_Name", $"ProjectileJoint{indexExtension}", _data.indexInEntityOfAction);
+            launcherData.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName(launcherData.invData.model, jointName) ?? launcherData.projectileJoint;
+            if (launcherData.projectileJoint == null)
+            {
+                Log.Warning($"null projectile joint on inventory slot {launcherData.invData.slotIdx}!\n{StackTraceUtility.ExtractStackTrace()}");
+            }
+        }
     }
 }
 
@@ -73,21 +116,6 @@ public static class FLARPatch
 
     //    return codes;
     //}
-
-    //multi barrel patch
-    [HarmonyPatch(typeof(ActionModuleMultiBarrel), "Prefix_ItemActionEffects_ItemActionRanged")]
-    [HarmonyPostfix]
-    private static void Postfix_ItemActionEffects_ActionModuleMultiBarrel(ItemActionData _actionData, int _userData, MultiBarrelData __3)
-    {
-        if (_actionData is ItemActionBetterLauncher.ItemActionDataBetterLauncher launcherData)
-        {
-            launcherData.projectileJoint = __3.projectileJoints[(byte)(_userData >> 8)];
-            if (launcherData.projectileJoint == null)
-            {
-                Log.Warning($"null projectile joint on inventory slot {launcherData.invData.slotIdx}!!\n{StackTraceUtility.ExtractStackTrace()}");
-            }
-        }
-    }
 
     //multi action patch
     [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemActionBetterLauncher.StartHolding))]
@@ -157,22 +185,6 @@ public static class FLARPatch
         if (!ItemActionDataBetterLauncher.projectileJoint)
         {
             Log.Warning($"null projectile joint on inventory slot {ItemActionDataBetterLauncher.invData.slotIdx}!\n{StackTraceUtility.ExtractStackTrace()}");
-        }
-    }
-
-    [HarmonyPatch(typeof(ActionModuleMultiActionFix), "Postfix_OnModificationChanged_ItemActionRanged")]
-    [HarmonyPostfix]
-    private static void Postfix_OnModificationChanged_ActionModuleMultiActionFix(ItemActionData _data)
-    {
-        if (_data is ItemActionBetterLauncher.ItemActionDataBetterLauncher launcherData)
-        {
-            string indexExtension = (_data.indexInEntityOfAction > 0 ? _data.indexInEntityOfAction.ToString() : "");
-            string jointName = _data.invData.itemValue.GetPropertyOverrideForAction($"ProjectileJoint_Name", $"ProjectileJoint{indexExtension}", _data.indexInEntityOfAction);
-            launcherData.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName(launcherData.invData.model, jointName) ?? launcherData.projectileJoint;
-            if (launcherData.projectileJoint == null)
-            {
-                Log.Warning($"null projectile joint on inventory slot {launcherData.invData.slotIdx}!\n{StackTraceUtility.ExtractStackTrace()}");
-            }
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using KFCommonUtilityLib.Scripts.Attributes;
+﻿using HarmonyLib;
+using KFCommonUtilityLib.Scripts.Attributes;
 using Mono.Cecil;
 using System;
 using System.Collections.Generic;
@@ -12,14 +13,76 @@ namespace KFCommonUtilityLib
 {
     public static class ModuleManagers
     {
+        private static class ModuleExtensions<T>
+        {
+            public readonly static List<Type> extensions = new List<Type>();
+        }
         public static AssemblyDefinition WorkingAssembly { get; private set; } = null;
         public static event Action OnAssemblyCreated;
         public static event Action OnAssemblyLoaded;
         public static bool Inited { get; private set; }
+        private static bool extensionScanned;
+        private static readonly HashSet<string> list_registered_path = new HashSet<string>();
         private static readonly List<Assembly> list_created = new List<Assembly>();
         private static DefaultAssemblyResolver resolver;
         private static ModuleAttributes moduleAttributes;
         private static ModuleCharacteristics moduleCharacteristics;
+        private static MethodInfo mtdinf = AccessTools.Method(typeof(ModuleManagers), nameof(ModuleManagers.AddModuleExtension));
+
+        public static void InitModuleExtensions()
+        {
+            if (extensionScanned)
+            {
+                return;
+            }
+            var assemblies = ModManager.GetLoadedAssemblies();
+
+            foreach (var assembly in assemblies)
+            {
+                foreach (var type in assembly.GetTypes())
+                {
+                    var attr = type.GetCustomAttribute<TypeTargetExtensionAttribute>();
+                    if (attr != null)
+                    {
+                        if ((bool)mtdinf.MakeGenericMethod(attr.ModuleType).Invoke(null, new object[] { type }))
+                        {
+                            Log.Out($"Found Module Extension {type.FullName}");
+                        }
+                    }
+                }
+            }
+            extensionScanned = true;
+        }
+
+        public static bool AddModuleExtension<T>(Type extType)
+        {
+            if (typeof(T).GetCustomAttribute<TypeTargetAttribute>() == null)
+            {
+                return false;
+            }
+
+            if (!ModuleExtensions<T>.extensions.Contains(extType))
+                ModuleExtensions<T>.extensions.Add(extType);
+            return true;
+        }
+
+        public static Type[] GetModuleExtensions<T>()
+        {
+            if (typeof(T).GetCustomAttribute<TypeTargetAttribute>() == null)
+            {
+                return Array.Empty<Type>();
+            }
+
+            return ModuleExtensions<T>.extensions.ToArray();
+        }
+
+        public static void AddAssemblySearchPath(string path)
+        {
+            if (Directory.Exists(path))
+            {
+                list_registered_path.Add(path);
+            }
+        }
 
         internal static void ClearOutputFolder()
         {
@@ -37,6 +100,7 @@ namespace KFCommonUtilityLib
             {
                 return;
             }
+            InitModuleExtensions();
             WorkingAssembly?.Dispose();
             if (resolver == null)
             {
@@ -46,6 +110,11 @@ namespace KFCommonUtilityLib
                 foreach (var mod in ModManager.GetLoadedMods())
                 {
                     resolver.AddSearchDirectory(mod.Path);
+                }
+
+                foreach (var path in list_registered_path)
+                {
+                    resolver.AddSearchDirectory(path);
                 }
 
                 AssemblyDefinition assdef_main = AssemblyDefinition.ReadAssembly($"{Application.dataPath}/Managed/Assembly-CSharp.dll", new ReaderParameters() { AssemblyResolver = resolver });
@@ -80,21 +149,24 @@ namespace KFCommonUtilityLib
 
         public static bool PatchType<T>(Type targetType, Type baseType, string moduleNames, out string typename) where T : IModuleProcessor, new()
         {
-            T processor = new T();
-            string[] modules = moduleNames.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-            Type[] moduleTypes = modules.Select(s => processor.GetModuleTypeByName(s.Trim()))
-                                        .Where(t => t.GetCustomAttribute<TypeTargetAttribute>().BaseType.IsAssignableFrom(targetType)).ToArray();
-            typename = ModuleUtils.CreateTypeName(targetType, moduleTypes);
-            //Log.Out(typename);
-            if (!ModuleManagers.TryFindType(typename, out _) && !ModuleManagers.TryFindInCur(typename, out _))
-                _ = new ModuleManipulator(ModuleManagers.WorkingAssembly, processor, targetType, baseType, moduleTypes);
-            return true;
+            Type[] moduleTypes = moduleNames.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                                            .Select(s => new T().GetModuleTypeByName(s.Trim()))
+                                            .Where(t => t.GetCustomAttribute<TypeTargetAttribute>().BaseType.IsAssignableFrom(targetType)).ToArray();
+            return PatchType(targetType, baseType, moduleTypes, new T(), out typename);
         }
 
         public static bool PatchType<T>(Type targetType, Type baseType, Type[] moduleTypes, out string typename) where T : IModuleProcessor, new()
         {
-            T processor = new T();
-            moduleTypes = moduleTypes.Where(t => t.GetCustomAttribute<TypeTargetAttribute>().BaseType.IsAssignableFrom(targetType)).ToArray();
+            return PatchType(targetType, baseType, moduleTypes, new T(), out typename);
+        }
+
+        public static bool PatchType<T>(Type targetType, Type baseType, Type[] moduleTypes, T processor, out string typename) where T : IModuleProcessor
+        {
+            if (moduleTypes.Length == 0)
+            {
+                typename = string.Empty;
+                return false;
+            }
             typename = ModuleUtils.CreateTypeName(targetType, moduleTypes);
             //Log.Out(typename);
             if (!ModuleManagers.TryFindType(typename, out _) && !ModuleManagers.TryFindInCur(typename, out _))
@@ -115,7 +187,7 @@ namespace KFCommonUtilityLib
                 Log.Warning("Failed to get mod!");
                 self = ModManager.GetModForAssembly(typeof(ItemActionModuleManager).Assembly);
             }
-            if (self != null && WorkingAssembly != null && WorkingAssembly.MainModule.Types.Count > 1)
+            if (self != null && WorkingAssembly != null)
             {
                 Log.Out("Assembly is valid!");
                 Log.Out("======Finish and Load======");

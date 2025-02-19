@@ -31,11 +31,12 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             Assembly assembly = Assembly.GetAssembly(typeof(DelayLoadModuleManager));
             Mod mod = ModManager.GetModForAssembly(assembly);
             string delayLoadFolder = mod.Path + "/DelayLoad";
+            ModuleManagers.AddAssemblySearchPath(delayLoadFolder);
             foreach (var pair in list_delay_load)
             {
                 foreach (var dll in pair.dlls)
                 {
-                    if (ModManager.GetLoadedAssemblies().FirstOrDefault(a => a.GetName().Name == pair.mod) != null)
+                    if (ModManager.ModLoaded(pair.mod))
                     {
                         try
                         {
@@ -53,6 +54,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                                         Log.Out(string.Concat($"[DELAYLOAD] Initialized code in {dll}.dll"));
                                     }
                                 }
+                                mod.allAssemblies.Add(patch);
                             }
                         }
                         catch (Exception ex)

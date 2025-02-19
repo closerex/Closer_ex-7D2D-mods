@@ -129,6 +129,10 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
 
         public static void UpdatePlayerAvatar(AvatarController controller)
         {
+            if (!controller?.Entity)
+            {
+                return;
+            }
             AnimationTargetsAbs targets = GetRigTargetsFromPlayer(controller.Entity as EntityPlayer);
             bool RigItemChangedThisFrame = hash_rig_changed_players.Remove(controller.Entity.entityId);
             if (targets && !targets.Destroyed)

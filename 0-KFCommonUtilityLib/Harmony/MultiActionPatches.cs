@@ -2166,6 +2166,31 @@ namespace KFCommonUtilityLib.Harmony
                 }
             }
 
+            return codes.Manipulator(static ins => ins.IsLdarg(2), static ins => ins.opcode = OpCodes.Ldnull);
+        }
+
+        [HarmonyPatch(typeof(XUiC_ItemStack), nameof(XUiC_ItemStack.GetBindingValue))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_GetBindingValue_XUiC_ItemStack(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var prop_perc = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.PercentUsesLeft));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].Calls(prop_perc))
+                {
+                    codes.InsertRange(i - 3, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(XUiC_ItemStack), nameof(XUiC_ItemStack.itemStack)),
+                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.SetCachedEventParamsDummyAction))
+                    });
+                    break;
+                }
+            }
+
             return codes;
         }
         #endregion
@@ -2763,6 +2788,103 @@ namespace KFCommonUtilityLib.Harmony
                 }
             }
 
+            return codes;
+        }
+    }
+    #endregion
+
+    #region Item Info DisplayType
+    [HarmonyPatch]
+    public static class DisplayTypePatches
+    {
+        [HarmonyPatch(typeof(XUiC_AssembleWindow), nameof(XUiC_AssembleWindow.ItemStack), MethodType.Setter)]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_ItemStack_XUiC_AssembleWindow(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var fld_displaytype = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.DisplayType));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].LoadsField(fld_displaytype))
+                {
+                    codes.RemoveRange(i - 1, 2);
+                    codes.InsertRange(i - 1, new[]
+                    {
+                        CodeInstruction.LoadField(typeof(XUiC_AssembleWindow), nameof(XUiC_AssembleWindow.itemStack)),
+                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetDisplayTypeForAction), new []{ typeof(ItemStack) })
+                    });
+                    break;
+                }
+            }
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(XUiC_ItemInfoWindow), nameof(XUiC_ItemInfoWindow.SetInfo))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_SetInfo_XUiC_ItemInfoWindow(IEnumerable<CodeInstruction> instructions, MethodBase originalMethod)
+        {
+            var codes = instructions.ToList();
+
+            var fld_displaytype = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.DisplayType));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].LoadsField(fld_displaytype))
+                {
+                    codes.RemoveRange(i - 1, 2);
+                    codes.InsertRange(i - 1, new[]
+                    {
+                        CodeInstruction.LoadField(typeof(XUiC_ItemInfoWindow), nameof(XUiC_ItemInfoWindow.itemStack)),
+                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetDisplayTypeForAction), new []{ typeof(ItemStack) })
+                    });
+                    break;
+                }
+            }
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(XUiM_ItemStack), nameof(XUiM_ItemStack.HasItemStats))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_HasItemStats_XUiM_ItemStack(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var fld_displaytype = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.DisplayType));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].LoadsField(fld_displaytype))
+                {
+                    codes.RemoveRange(i - 1, 2);
+                    codes.Insert(i - 1, CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetDisplayTypeForAction), new []{ typeof(ItemValue) }));
+                    break;
+                }
+            }
+
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(XUiC_ItemInfoWindow), nameof(XUiC_ItemInfoWindow.HoverEntry), MethodType.Setter)]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_HoverEntry_XUiC_ItemInfoWindow(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var mtd_cancompare = AccessTools.Method(typeof(XUiM_ItemStack), nameof(XUiM_ItemStack.CanCompare));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].Calls(mtd_cancompare))
+                {
+                    codes[i] = CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.CanCompare));
+                    codes[i - 1] = CodeInstruction.LoadField(typeof(XUiC_ItemInfoWindow), nameof(XUiC_ItemInfoWindow.itemStack));
+                    codes.Insert(i, CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)));
+                    codes.RemoveAt(i - 3);
+                    break;
+                }
+            }
             return codes;
         }
     }
