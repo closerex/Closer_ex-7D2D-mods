@@ -187,7 +187,7 @@ namespace KFCommonUtilityLib
                 Log.Warning("Failed to get mod!");
                 self = ModManager.GetModForAssembly(typeof(ItemActionModuleManager).Assembly);
             }
-            if (self != null && WorkingAssembly != null)
+            if (self != null && WorkingAssembly != null && WorkingAssembly.MainModule.Types.Count > 1)
             {
                 Log.Out("Assembly is valid!");
                 Log.Out("======Finish and Load======");
