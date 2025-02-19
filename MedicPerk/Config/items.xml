@@ -166,20 +166,18 @@
 			<effect_group name="Dart mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="3"/>
 				<requirement name="IsActionUnlocked,KFCommonUtilityLib" index="3"/>
-
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0.13" tags="medicWeapon,MedicStock,RechargeDataInterval" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDecreaseInterval" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDataValue" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="3" tags="medicWeapon,MedicStock,RechargeDataDecrease" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="100" tags="medicWeapon,MedicStock,RechargeDataMaximum" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="50" tags="medicWeapon,MedicStock,ConsumptionValue" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="15" tags="medicWeapon,MedicWeaponHeal" match_all_tags="true"/>
-				
-				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,RechargeDataMaximum" pattern="#[passive]" slot="0"/>
-				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,ConsumptionValue" pattern="$[passive]" slot="0"/>
-				<triggered_effect trigger="onRechargeValueUpdate" action="SetMetadataOnWeaponLabel,KFCommonUtilityLib" metadata="MedicStock" slot="0"/>
-				<triggered_effect trigger="onSelfEquipStart" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
-				<triggered_effect trigger="onSelfItemSwitchMode" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="0.13" tags="medicWeapon,MedicStock,RechargeDataInterval" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDecreaseInterval" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDataValue" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="3" tags="medicWeapon,MedicStock,RechargeDataDecrease" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="100" tags="medicWeapon,MedicStock,RechargeDataMaximum" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="50" tags="medicWeapon,MedicStock,ConsumptionValue" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="15" tags="medicWeapon,MedicWeaponHeal" match_all_tags="true"/>
+					<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,RechargeDataMaximum" pattern="#[passive]" slot="0"/>
+					<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,ConsumptionValue" pattern="$[passive]" slot="0"/>
+					<triggered_effect trigger="onRechargeValueUpdate" action="SetMetadataOnWeaponLabel,KFCommonUtilityLib" metadata="MedicStock" slot="0"/>
+					<triggered_effect trigger="onSelfEquipStart" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
+					<triggered_effect trigger="onSelfItemSwitchMode" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
 			</effect_group>
 		</item>
 
@@ -356,20 +354,19 @@
 			<effect_group name="Dart mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="3"/>
 				<requirement name="IsActionUnlocked,KFCommonUtilityLib" index="3"/>
-
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0.13" tags="medicWeapon,MedicStock,RechargeDataInterval" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDecreaseInterval" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDataValue" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="3" tags="medicWeapon,MedicStock,RechargeDataDecrease" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="100" tags="medicWeapon,MedicStock,RechargeDataMaximum" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="40" tags="medicWeapon,MedicStock,ConsumptionValue" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="15" tags="medicWeapon,MedicWeaponHeal" match_all_tags="true"/>
-				
-				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,RechargeDataMaximum" pattern="#[passive]" slot="0"/>
-				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,ConsumptionValue" pattern="$[passive]" slot="0"/>
-				<triggered_effect trigger="onRechargeValueUpdate" action="SetMetadataOnWeaponLabel,KFCommonUtilityLib" metadata="MedicStock" slot="0"/>
-				<triggered_effect trigger="onSelfEquipStart" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
-				<triggered_effect trigger="onSelfItemSwitchMode" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="0.13" tags="medicWeapon,MedicStock,RechargeDataInterval" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDecreaseInterval" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDataValue" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="3" tags="medicWeapon,MedicStock,RechargeDataDecrease" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="100" tags="medicWeapon,MedicStock,RechargeDataMaximum" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="40" tags="medicWeapon,MedicStock,ConsumptionValue" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="15" tags="medicWeapon,MedicWeaponHeal" match_all_tags="true"/>
+					
+					<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,RechargeDataMaximum" pattern="#[passive]" slot="0"/>
+					<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,ConsumptionValue" pattern="$[passive]" slot="0"/>
+					<triggered_effect trigger="onRechargeValueUpdate" action="SetMetadataOnWeaponLabel,KFCommonUtilityLib" metadata="MedicStock" slot="0"/>
+					<triggered_effect trigger="onSelfEquipStart" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
+					<triggered_effect trigger="onSelfItemSwitchMode" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
 			</effect_group>
 		</item>
 
@@ -539,20 +536,19 @@
 			<effect_group name="Dart mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="3"/>
 				<requirement name="IsActionUnlocked,KFCommonUtilityLib" index="3"/>
-
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0.12" tags="medicWeapon,MedicStock,RechargeDataInterval" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDecreaseInterval" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDataValue" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="3" tags="medicWeapon,MedicStock,RechargeDataDecrease" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="100" tags="medicWeapon,MedicStock,RechargeDataMaximum" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="40" tags="medicWeapon,MedicStock,ConsumptionValue" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="20" tags="medicWeapon,MedicWeaponHeal" match_all_tags="true"/>
-				
-				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,RechargeDataMaximum" pattern="#[passive]" slot="0"/>
-				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,ConsumptionValue" pattern="$[passive]" slot="0"/>
-				<triggered_effect trigger="onRechargeValueUpdate" action="SetMetadataOnWeaponLabel,KFCommonUtilityLib" metadata="MedicStock" slot="0"/>
-				<triggered_effect trigger="onSelfEquipStart" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
-				<triggered_effect trigger="onSelfItemSwitchMode" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="0.12" tags="medicWeapon,MedicStock,RechargeDataInterval" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDecreaseInterval" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDataValue" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="3" tags="medicWeapon,MedicStock,RechargeDataDecrease" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="100" tags="medicWeapon,MedicStock,RechargeDataMaximum" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="40" tags="medicWeapon,MedicStock,ConsumptionValue" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="20" tags="medicWeapon,MedicWeaponHeal" match_all_tags="true"/>
+					
+					<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,RechargeDataMaximum" pattern="#[passive]" slot="0"/>
+					<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,ConsumptionValue" pattern="$[passive]" slot="0"/>
+					<triggered_effect trigger="onRechargeValueUpdate" action="SetMetadataOnWeaponLabel,KFCommonUtilityLib" metadata="MedicStock" slot="0"/>
+					<triggered_effect trigger="onSelfEquipStart" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
+					<triggered_effect trigger="onSelfItemSwitchMode" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
 			</effect_group>
 		</item>
 		<item name="gunMedicAssaultRifle401">
@@ -714,20 +710,19 @@
 			<effect_group name="Dart mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="3"/>
 				<requirement name="IsActionUnlocked,KFCommonUtilityLib" index="3"/>
-
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0.1" tags="medicWeapon,MedicStock,RechargeDataInterval" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDecreaseInterval" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDataValue" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="3" tags="medicWeapon,MedicStock,RechargeDataDecrease" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="100" tags="medicWeapon,MedicStock,RechargeDataMaximum" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="30" tags="medicWeapon,MedicStock,ConsumptionValue" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="15" tags="medicWeapon,MedicWeaponHeal" match_all_tags="true"/>
-				
-				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,RechargeDataMaximum" pattern="#[passive]" slot="0"/>
-				<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,ConsumptionValue" pattern="$[passive]" slot="0"/>
-				<triggered_effect trigger="onRechargeValueUpdate" action="SetMetadataOnWeaponLabel,KFCommonUtilityLib" metadata="MedicStock" slot="0"/>
-				<triggered_effect trigger="onSelfEquipStart" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
-				<triggered_effect trigger="onSelfItemSwitchMode" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="0.1" tags="medicWeapon,MedicStock,RechargeDataInterval" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDecreaseInterval" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="medicWeapon,MedicStock,RechargeDataValue" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="3" tags="medicWeapon,MedicStock,RechargeDataDecrease" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="100" tags="medicWeapon,MedicStock,RechargeDataMaximum" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="30" tags="medicWeapon,MedicStock,ConsumptionValue" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="base_set" value="15" tags="medicWeapon,MedicWeaponHeal" match_all_tags="true"/>
+					
+					<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,RechargeDataMaximum" pattern="#[passive]" slot="0"/>
+					<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,ConsumptionValue" pattern="$[passive]" slot="0"/>
+					<triggered_effect trigger="onRechargeValueUpdate" action="SetMetadataOnWeaponLabel,KFCommonUtilityLib" metadata="MedicStock" slot="0"/>
+					<triggered_effect trigger="onSelfEquipStart" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
+					<triggered_effect trigger="onSelfItemSwitchMode" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
 			</effect_group>
 		</item>
 		

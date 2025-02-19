@@ -10,8 +10,8 @@
                 <property name="ActionUnlocked_3" value="true"/>
                 <property name="ActionTagsAppend" value="medicModuleAction"/>
             </item_property_overrides>
-            <effect_group name="Dart mode">
-				<requirement name="ActionHasTags,KFCommonUtilityLib" tags="medicModuleAction"/>
+            <effect_group name="Dart mode stat">
+				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="3"/>
                     <passive_effect name="RoundsPerMinute" operation="base_set" value="600" tags="medicWeapon"/>
                     <passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="medicWeapon"/>
                     <passive_effect name="RoundRayCount" operation="base_set" value="1" tags="medicWeapon"/>
@@ -19,10 +19,12 @@
                     <!-- <passive_effect name="RoundRayCount" operation="perc_add" value="-1" tags="medicWeapon"/> -->
                     <passive_effect name="MaxRange" operation="base_set" value="30" tags="medicWeapon"/>
                     <passive_effect name="DamageFalloffRange" operation="base_set" value="10" tags="medicWeapon"/>
-                    <passive_effect name="EntityDamage" operation="base_set" value="1" tags="medicWeapon"/> <!-- damage offset -->
-                    <passive_effect name="EntityDamage" operation="perc_add" value="-10" tags="medicWeapon"/> <!-- medic weapon decrease -->
-                    <passive_effect name="BlockDamage" operation="base_set" value="1" tags="medicWeapon"/> <!-- damage offset -->
-                    <passive_effect name="BlockDamage" operation="perc_add" value="-10" tags="medicWeapon"/> <!-- medic weapon decrease -->
+                    <passive_effect name="EntityDamage" operation="base_set" value="0" tags="medicWeapon"/> <!-- damage offset -->
+					 <!-- medic weapon decrease -->
+                    <!-- <passive_effect name="EntityDamage" operation="perc_add" value="-10" tags="medicWeapon"/> -->
+                    <passive_effect name="BlockDamage" operation="base_set" value="0" tags="medicWeapon"/> <!-- damage offset -->
+					 <!-- medic weapon decrease -->
+                    <!-- <passive_effect name="BlockDamage" operation="perc_add" value="-10" tags="medicWeapon"/> -->
 
                     <passive_effect name="SpreadDegreesVertical" operation="base_set" value="0" tags="medicWeapon"/>
                     <passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="0" tags="medicWeapon"/>

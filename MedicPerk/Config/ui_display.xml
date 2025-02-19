@@ -1,0 +1,3 @@
+<configs>
+    <append xpath="/ui_display_info/item_display/item_display_info[@display_type='rangedGun' or @display_type='rangedShotgun']/display_entry/@tags">,medicWeapon</append>
+</configs>
