@@ -306,19 +306,19 @@ public static class FireModePatches
 
         bool isUIOpen = __instance.windowManager.IsCursorWindowOpen() || __instance.windowManager.IsInputActive() || __instance.windowManager.IsModalWindowOpen();
 
-        UpdateLocalInput(__instance.entityPlayerLocal, __instance.playerInput, isUIOpen, Time.deltaTime);
+        UpdateLocalInput(__instance.entityPlayerLocal, isUIOpen);
 
         return true;
     }
 
-    private static void UpdateLocalInput(EntityPlayerLocal _player, PlayerActionsLocal _input, bool _isUIOpen, float _deltaTime)
+    private static void UpdateLocalInput(EntityPlayerLocal _player, bool _isUIOpen)
     {
         if (_isUIOpen || _player.emodel.IsRagdollActive || _player.IsDead() || _player.AttachedToEntity != null)
         {
             return;
         }
 
-        if (PlayerActionToggleFireMode.Instance.Enabled && PlayerActionToggleFireMode.Instance.Toggle.WasPressed)
+        if (PlayerActionKFLib.Instance.Enabled && PlayerActionKFLib.Instance.ToggleFireMode.WasPressed)
         {
             if (_player.inventory.IsHoldingItemActionRunning())
             {

@@ -216,7 +216,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
                             maxScale = scaleDownReticle ? 1 : 1 + reticleScaleRatio * (variableZoomData.maxScale - variableZoomData.minScale) / variableZoomData.minScale;
                         }
                         //float reticleScale = Mathf.Lerp(minScale, maxScale, (variableZoomData.curScale - variableZoomData.minScale) / (variableZoomData.maxScale - variableZoomData.minScale));
-                        float reticleScale = Mathf.Lerp(minScale, maxScale, variableZoomData.curSteps);
+                        float reticleScale = Mathf.Lerp(minScale, maxScale, variableZoomData.curStep);
                         renderTarget.material.SetFloat("_ReticleScale", initialReticleScale / reticleScale);
                     }
                     else

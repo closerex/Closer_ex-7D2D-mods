@@ -9,8 +9,8 @@ namespace KFCommonUtilityLib
 
         internal static void Init()
         {
-            ModuleManagers.OnAssemblyCreated += () => dict_classtypes.Clear();
-            ModuleManagers.OnAssemblyLoaded += () =>
+            ModuleManagers.OnAssemblyCreated += static () => dict_classtypes.Clear();
+            ModuleManagers.OnAssemblyLoaded += static () =>
             {
                 foreach (var pair in dict_classtypes)
                 {
@@ -21,6 +21,10 @@ namespace KFCommonUtilityLib
                         {
                             var itemNew = (ItemClass)Activator.CreateInstance(classType);
                             item.PreInitCopyTo(itemNew);
+                            if (item is ItemClassModifier mod)
+                            {
+                                mod.PreInitCopyToModifier((ItemClassModifier)itemNew);
+                            }
                             itemNew.Init();
                             ItemClass.itemNames.RemoveAt(ItemClass.itemNames.Count - 1);
                             ItemClass.list[itemNew.Id] = itemNew;
@@ -60,6 +64,7 @@ namespace KFCommonUtilityLib
             to.SetName(from.Name);
             to.pId = from.pId;
             to.Properties = from.Properties;
+            to.Effects = from.Effects;
             to.setLocalizedItemName(from.localizedName);
             to.Stacknumber = from.Stacknumber;
             to.SetCanHold(from.bCanHold);
@@ -84,6 +89,16 @@ namespace KFCommonUtilityLib
             to.MaxUseTimesBreaksAfter = from.MaxUseTimesBreaksAfter;
             to.EconomicValue = from.EconomicValue;
             to.Preview = from.Preview;
+        }
+
+        private static void PreInitCopyToModifier(this ItemClassModifier from, ItemClassModifier to)
+        {
+            to.CosmeticInstallChance = from.CosmeticInstallChance;
+            to.PropertyOverrides = from.PropertyOverrides;
+            to.InstallableTags = from.InstallableTags;
+            to.DisallowedTags = from.DisallowedTags;
+            to.ItemTags = from.ItemTags;
+            to.Type = from.Type;
         }
     }
 }

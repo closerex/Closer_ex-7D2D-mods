@@ -571,7 +571,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 return;
             }
 
-            if (PlayerActionToggleMode.Instance.Enabled && PlayerActionToggleMode.Instance.Toggle.WasPressed)
+            if (PlayerActionKFLib.Instance.ToggleActionMode && PlayerActionKFLib.Instance.ToggleActionMode.WasPressed)
             {
                 var mapping = GetMappingForEntity(player.entityId);
 

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
+using UniLinq;
 
 namespace KFCommonUtilityLib.Scripts.StaticManagers
 {
@@ -36,7 +36,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             {
                 foreach (var dll in pair.dlls)
                 {
-                    if (ModManager.ModLoaded(pair.mod))
+                    if (ModManager.GetLoadedAssemblies().Any(a => a.GetName().Name == dll))
                     {
                         try
                         {
@@ -44,10 +44,9 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                             Assembly patch = Assembly.LoadFrom(assPath);
                             if (Path.GetFullPath(patch.Location).Equals(assPath, StringComparison.OrdinalIgnoreCase))
                             {
-                                Type apiType = typeof(IModApi);
                                 foreach (var type in patch.GetTypes())
                                 {
-                                    if (apiType.IsAssignableFrom(type))
+                                    if (typeof(IModApi).IsAssignableFrom(type))
                                     {
                                         IModApi modApi = (IModApi)Activator.CreateInstance(type);
                                         modApi.InitMod(mod);

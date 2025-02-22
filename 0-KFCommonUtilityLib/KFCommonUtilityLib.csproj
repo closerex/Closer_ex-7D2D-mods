@@ -554,30 +554,30 @@
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdListParticleScripts.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdMultiActionItemValueDebug.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPrintLocalCache.cs" />
-    <Compile Include="Scripts\Input\PlayerActionToggleFireMode.cs" />
-    <Compile Include="Scripts\Input\PlayerActionToggleMode.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleAlternative.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleAnimationLocked.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleCustomAnimationDelay.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleDisplayAsBuff.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleDynamicGraze.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleDynamicMuzzleFlash.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleDynamicSensitivity.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleErgoAffected.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleFireModeSelector.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleHoldOpen.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleInspectable.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleInterruptReload.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleInvariableRPM.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleLocalPassiveCache.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleMetaConsumer.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleMultiActionFix.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleMultiBarrel.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleRampUp.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleMetaRecharger.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleTagged.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleTranspilerTest.cs" />
-    <Compile Include="Scripts\Items\Modular\ActionModuleVariableZoom.cs" />
+    <Compile Include="Scripts\Input\PlayerActionKFLib.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleAlternative.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationLocked.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleCustomAnimationDelay.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleDisplayAsBuff.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleDynamicGraze.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleDynamicMuzzleFlash.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleDynamicSensitivity.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleErgoAffected.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleFireModeSelector.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleHoldOpen.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleInspectable.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleInterruptReload.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleInvariableRPM.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleLocalPassiveCache.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleMetaConsumer.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleMultiActionFix.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleMultiBarrel.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleRampUp.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleMetaRecharger.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleTagged.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleTranspilerTest.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleVariableZoom.cs" />
+    <Compile Include="Scripts\Items\ModularClasses\ItemModuleVariableZoom.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionAttachPrefabToEntitySync.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionCVarExpression.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionModifyCVarWithLocalCache.cs" />
@@ -691,6 +691,7 @@
   <ItemGroup>
     <Content Include="ModSettings.xml" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <AttachedScriptFolder>KFAttached</AttachedScriptFolder>

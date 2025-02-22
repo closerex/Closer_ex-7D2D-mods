@@ -46,8 +46,8 @@ namespace KFCommonUtilityLib
 
         internal static void Init()
         {
-            ModuleManagers.OnAssemblyCreated += () => dict_replacement_mapping.Clear();
-            ModuleManagers.OnAssemblyLoaded += () =>
+            ModuleManagers.OnAssemblyCreated += static () => dict_replacement_mapping.Clear();
+            ModuleManagers.OnAssemblyLoaded += static () =>
             {
                 //replace item actions
                 foreach (var pair in dict_replacement_mapping)

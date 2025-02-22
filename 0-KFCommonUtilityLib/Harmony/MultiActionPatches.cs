@@ -1468,6 +1468,23 @@ namespace KFCommonUtilityLib.Harmony
             }
         }
 
+        [HarmonyPatch(typeof(ItemModificationsFromXml), nameof(ItemModificationsFromXml.parseItem))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_parseItem_ItemModificationsFromXml(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            for (int i = 0; i < codes.Count - 1; i++)
+            {
+                if (codes[i].opcode == OpCodes.Ldc_I4_3 && codes[i + 1].opcode == OpCodes.Newarr)
+                {
+                    codes[i].opcode = OpCodes.Ldc_I4_5;
+                    break;
+                }
+            }
+            return codes;
+        }
+
         /*
         [HarmonyPatch(typeof(ItemClassesFromXml), nameof(ItemClassesFromXml.parseItem))]
         [HarmonyPrefix]
