@@ -47,8 +47,6 @@ namespace GearsSettingsSave
             if (!Directory.Exists(SavePath))
             {
                 Directory.CreateDirectory(SavePath);
-                SaveAllModSettingsToJson();
-                return;
             }
 
             foreach (var mod in GearsSettingsManager.GetMods())
@@ -93,12 +91,25 @@ namespace GearsSettingsSave
                             }
                         }
                     }
-                    mod.SaveSettings();
                 }
                 else
                 {
-                    SaveModSettingsToJson(mod);
+                    foreach (var setting in mod.GlobalSettings.GetAllGlobalSettings())
+                    {
+                        switch (setting)
+                        {
+                            case IGlobalValueSetting globalValueSetting:
+                                globalValueSetting.CurrentValue = globalValueSetting.DefaultValue;
+                                break;
+                            case ColorSelectorSetting colorSelectorSetting:
+                                colorSelectorSetting.CurrentColor = colorSelectorSetting.DefaultColor;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
                 }
+                mod.GlobalSettings.SaveSettings();
             }
         }
 
