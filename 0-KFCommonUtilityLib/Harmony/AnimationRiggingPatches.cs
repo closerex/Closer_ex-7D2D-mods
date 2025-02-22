@@ -416,7 +416,7 @@ static class AnimationRiggingPatches
     private static void Postfix_Update_LegacyAvatarController(LegacyAvatarController __instance)
     {
         AnimationRiggingManager.UpdatePlayerAvatar(__instance);
-        if (__instance.entity.AttachedToEntity)
+        if (__instance.entity && __instance.entity.AttachedToEntity)
         {
             __instance.SetVehicleAnimation(AvatarController.vehiclePoseHash, __instance.entity.vehiclePoseMode);
         }
