@@ -50,6 +50,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterModCompatibility", "B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinigunTurret", "MinigunTurret\MinigunTurret.csproj", "{19A75D04-C805-4D56-9146-DF68E653146E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GearsSettingsSave", "GearsSettingsSave\GearsSettingsSave.csproj", "{8B499D72-5499-4EC2-A421-751D4BBEC61B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -140,6 +142,10 @@ Global
 		{19A75D04-C805-4D56-9146-DF68E653146E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19A75D04-C805-4D56-9146-DF68E653146E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19A75D04-C805-4D56-9146-DF68E653146E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B499D72-5499-4EC2-A421-751D4BBEC61B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B499D72-5499-4EC2-A421-751D4BBEC61B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B499D72-5499-4EC2-A421-751D4BBEC61B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B499D72-5499-4EC2-A421-751D4BBEC61B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

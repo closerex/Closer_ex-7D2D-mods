@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xml>
+	<Name value="GearsSettingsSaver" />
+	<DisplayName value="Gears Settings Saver" />
+	<Description value="Save your Gears mod settings separately from ModSettings.xml." />
+	<Author value="closer_ex" />
+	<Version value="1.0.0" />
+</xml>

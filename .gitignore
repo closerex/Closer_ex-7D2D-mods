@@ -17,6 +17,8 @@ desktop.ini
 !CustomParticleLoaderSpawnEntity/**
 !CustomPlayerActionManager/
 !CustomPlayerActionManager/**
+!GearsSettingsSave/
+!GearsSettingsSave/**
 !FullautoLauncher/
 !FullautoLauncher/**
 !FullautoLauncherAnimationRiggingCompatibilityPatch/
