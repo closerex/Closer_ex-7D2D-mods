@@ -34,9 +34,9 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             ModuleManagers.AddAssemblySearchPath(delayLoadFolder);
             foreach (var pair in list_delay_load)
             {
-                foreach (var dll in pair.dlls)
+                if (ModManager.GetLoadedAssemblies().Any(a => a.GetName().Name == pair.mod))
                 {
-                    if (ModManager.GetLoadedAssemblies().Any(a => a.GetName().Name == dll))
+                    foreach (var dll in pair.dlls)
                     {
                         try
                         {

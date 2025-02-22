@@ -225,6 +225,7 @@ public class ActionModuleFireModeSelector
                 {
                     itemValue.Metadata[ActionModuleFireModeSelector.FireModeNames[_data.indexInEntityOfAction]] = new TypedMetadataValue((int)_fireMode, TypedMetadataValue.TypeTag.Integer);
                 }
+                _data.invData.holdingEntity.inventory.CallOnToolbeltChangedInternal();
             }
         }
 
