@@ -35,39 +35,38 @@ internal class ExplosionAreaBuffTick : ExplosionDamageArea
 
     private void onTimerTick(Timer timer)
     {
-        if (BuffActions != null)
+        //Log.Out("Timer tick, buff count: " + this.BuffActions.Count.ToString() + ", entity count: " + this.list_entities.Count.ToString());
+        foreach (EntityAlive entityAlive in hash_entities)
         {
-            //Log.Out("Timer tick, buff count: " + this.BuffActions.Count.ToString() + ", entity count: " + this.list_entities.Count.ToString());
-
-            foreach (EntityAlive entityAlive in hash_entities)
+            if (!entityAlive || !entityAlive.IsAlive())
             {
-                if (!entityAlive.IsAlive())
-                {
-                    //list_entities.Remove(entityAlive);	//don't do this; it will interrupt iteration and throw error
-                    continue;
-                }
+                //list_entities.Remove(entityAlive);	//don't do this; it will interrupt iteration and throw error
+                continue;
+            }
+            if (BuffActions != null)
+            {
                 for (int i = 0; i < this.BuffActions.Count; i++)
                 {
                     entityAlive.Buffs.AddBuff(this.BuffActions[i], InitiatorEntityId, true, false, -1);
-                    if (player != null && entityAlive.entityId != InitiatorEntityId)
-                    {
-                        MinEventParams data = player.MinEventContext;
-                        data.Other = entityAlive;
-                        data.ItemValue = item_value;
-                        data.Position = entityAlive.GetPosition();
-                        //Log.Out("Fire attack event:" + data.ItemValue.ItemClass.GetItemName() + " on " + data.Other.EntityName);
-                        //this fires event on ItemClass
-                        item_value.FireEvent(MinEventTypes.onSelfAttackedOther, data);
-                        //do not use inventory since holding item may have changed
-                        player.FireEvent(MinEventTypes.onSelfAttackedOther, false);
-                    }
                 }
+            }
+            if (player != null && entityAlive.entityId != InitiatorEntityId)
+            {
+                MinEventParams data = player.MinEventContext;
+                data.Other = entityAlive;
+                data.ItemValue = item_value;
+                data.Position = entityAlive.GetPosition();
+                //Log.Out("Fire attack event:" + data.ItemValue.ItemClass.GetItemName() + " on " + data.Other.EntityName);
+                //this fires event on ItemClass
+                item_value.FireEvent(MinEventTypes.onSelfAttackedOther, data);
+                //do not use inventory since holding item may have changed
+                player.FireEvent(MinEventTypes.onSelfAttackedOther, false);
             }
         }
     }
 
     //copied from vanilla; if you dont know how to get a entity in range, copy the same code.
-    private Entity getEntityFromCollider(Collider col)
+    private new Entity getEntityFromCollider(Collider col)
     {
         Transform transform = col.transform;
         if (!transform.tag.StartsWith("E_"))
@@ -88,7 +87,7 @@ internal class ExplosionAreaBuffTick : ExplosionDamageArea
     }
 
     //you need a collider that works as a trigger to receive these two messages
-    private void OnTriggerEnter(Collider other)
+    private new void OnTriggerEnter(Collider other)
     {
         if (!enabled)
             return;
