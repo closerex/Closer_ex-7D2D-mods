@@ -1213,6 +1213,46 @@ public static class CommonUtilityPatch
         tmp.life = 5f;
     }
 
+    [HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.UpdateShakes))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_UpdateShakes_vp_FPCamera(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var fld_shake = AccessTools.Field(typeof(vp_FPCamera), nameof(vp_FPCamera.m_Shake));
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].StoresField(fld_shake))
+            {
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(CheckShakeNaN))
+                });
+                break;
+            }
+        }
+        return codes;
+    }
+
+    private static void CheckShakeNaN(vp_FPCamera fpcamera)
+    {
+        if (float.IsNaN(fpcamera.m_Shake.x) || float.IsNaN(fpcamera.m_Shake.y) || float.IsNaN(fpcamera.m_Shake.z))
+        {
+            Log.Warning("Shake1 NaN {0}, time {1}, speed {2}, amp {3}", new object[]
+            {
+                fpcamera.m_Shake,
+                Time.time,
+                fpcamera.ShakeSpeed,
+                fpcamera.ShakeAmplitude
+            });
+            fpcamera.ShakeSpeed = 0f;
+            fpcamera.m_Shake = Vector3.zero;
+            fpcamera.m_Pitch += -1f;
+        }
+    }
+
     //[HarmonyPatch(typeof(EntityBuffs), nameof(EntityBuffs.AddBuff), typeof(string), typeof(Vector3i), typeof(int), typeof(bool), typeof(bool), typeof(float))]
     //[HarmonyPostfix]
     //private static void Postfix_AddBuff_EntityBuffs(string _name, EntityBuffs __instance, EntityBuffs.BuffStatus __result, bool _netSync)

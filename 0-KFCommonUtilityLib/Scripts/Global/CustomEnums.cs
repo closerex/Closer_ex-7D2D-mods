@@ -7,6 +7,7 @@
     public static MinEventTypes onSelfItemSwitchMode;
     public static MinEventTypes onSelfBurstModeChanged;
     public static MinEventTypes onSelfFirstCVarSync;
+    public static MinEventTypes onSelfHoldingItemAssemble;
     #endregion
 
     #region Passives

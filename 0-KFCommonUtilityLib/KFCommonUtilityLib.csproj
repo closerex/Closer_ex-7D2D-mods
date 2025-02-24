@@ -505,6 +505,7 @@
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationResetRigWeightState.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimatorRandomSwitch.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\RigWeightOverTime.cs" />
+    <Compile Include="KFAttached\Misc\AttachmentReferenceAppended.cs" />
     <Compile Include="KFAttached\Misc\ItemAnimatorUpdate.cs" />
     <Compile Include="KFAttached\Misc\PlayerRigLateUpdate.cs" />
     <Compile Include="KFAttached\Misc\WeaponCameraFollow.cs" />
@@ -582,6 +583,7 @@
     <Compile Include="Scripts\MinEventActions\MinEventActionCVarExpression.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionModifyCVarWithLocalCache.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionOverrideZoomFOV.cs" />
+    <Compile Include="Scripts\MinEventActions\MinEventActionRemovePrefabFromHeldItem.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionSetMetadataOnWeaponLabel.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionSetPassiveOnWeaponLabel.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionUpdateLocalCache.cs" />

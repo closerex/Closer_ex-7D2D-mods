@@ -34,7 +34,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         private static float recoilCompensationSensitivityMultiplier = 0f;
         private const float DEFAULT_SNAPPINESS_PISTOL = 6f;
         private const float DEFAULT_SNAPPINESS_RIFLE = 3.6f;
-        private const float DEFAULT_SNAPPINESS_SHOTGUN = 8f;
+        private const float DEFAULT_SNAPPINESS_SHOTGUN = 6f;
         private const float DEFAULT_RETURN_SPEED_PISTOL = 8f;
         private const float DEFAULT_RETURN_SPEED_RIFLE = 4f;
         private const float DEFAULT_RETURN_SPEED_SHOTGUN = 4f;

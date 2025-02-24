@@ -58,7 +58,7 @@ public class TransformActivationBinding : MonoBehaviour
 #if NotEditor
         ThreadManager.StartCoroutine(UpdateBool(true));
 #else
-        StartCoroutine(UpdateBool(true));
+        UpdateBoolEditor(true);
 #endif
     }
 
@@ -98,10 +98,11 @@ public class TransformActivationBinding : MonoBehaviour
 #if NotEditor
         ThreadManager.StartCoroutine(UpdateBool(false));
 #else
-        StartCoroutine(UpdateBool(false));
+        UpdateBoolEditor(false);
 #endif
     }
 
+#if NotEditor
     internal IEnumerator UpdateBool(bool enabled)
     {
         yield return new WaitForEndOfFrame();
@@ -122,4 +123,25 @@ public class TransformActivationBinding : MonoBehaviour
             }
         }
     }
+#else
+    internal void UpdateBoolEditor(bool enabled)
+    {
+        if (animatorParamBindings != null && targets && targets.IsAnimationSet)
+        {
+            IAnimatorWrapper animator = targets.GraphBuilder.WeaponWrapper;
+            if (animator == null || !animator.IsValid)
+            {
+                Log.Warning($"animator wrapper invalid!");
+                return;
+            }
+            foreach (string str in animatorParamBindings)
+            {
+                if (str != null)
+                {
+                    animator.SetBool(str, enabled);
+                }
+            }
+        }
+    }
+#endif
 }

@@ -178,6 +178,8 @@ static class AnimationRiggingPatches
         var codes = instructions.ToList();
         var mtd_find = AccessTools.Method(typeof(GameUtils), nameof(GameUtils.FindDeepChild));
         var fld_trans = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.Transform));
+        var mtd_layer = AccessTools.Method(typeof(Utils), nameof(Utils.SetLayerRecursively));
+
         for (int i = 1; i < codes.Count; i++)
         {
             if (codes[i].opcode == OpCodes.Stloc_0)
@@ -204,8 +206,26 @@ static class AnimationRiggingPatches
                     i += 4;
                 }
             }
+            else if (codes[i].Calls(mtd_layer))
+            {
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldloc_0),
+                    new CodeInstruction(OpCodes.Ldloc_3),
+                    CodeInstruction.Call(typeof(AnimationRiggingPatches), nameof(CheckAttachmentRefMerge))
+                });
+                i += 3;
+            }
         }
         return codes;
+    }
+
+    private static void CheckAttachmentRefMerge(Transform main, Transform attachmentReference)
+    {
+        if (main.TryGetComponent<AnimationTargetsAbs>(out var targets) && attachmentReference.TryGetComponent<AttachmentReferenceAppended>(out var appended))
+        {
+            appended.Merge(targets.AttachmentRef);
+        }
     }
 
     /// <summary>
@@ -668,6 +688,8 @@ static class AnimationRiggingPatches
         var mtd_setparent = AccessTools.Method(typeof(Transform), nameof(Transform.SetParent), new[] { typeof(Transform), typeof(bool) });
         var mtd_startholding = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.StartHolding));
         var mtd_showrighthand = AccessTools.Method(typeof(Inventory), nameof(Inventory.ShowRightHand));
+        var prop_holdingitem = AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItem));
+        var fld_transform = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.Transform));
 
         for (int i = 0; i < codes.Count; i++)
         {
@@ -677,13 +699,33 @@ static class AnimationRiggingPatches
             }
             else if (codes[i].Calls(mtd_startholding))
             {
-                for (int j = i + 1; j < codes.Count; j++)
+                for (int j = i - 1; j >= 0; j--)
                 {
-                    if (codes[j].Calls(mtd_showrighthand))
+                    if (codes[j].Calls(prop_holdingitem))
                     {
-                        var take = codes.GetRange(i - 9, 10);
-                        codes.InsertRange(j + 1, take);
-                        codes.RemoveRange(i - 9, 10);
+                        for (int k = i + 1; k < codes.Count; k++)
+                        {
+                            if (codes[k].StoresField(fld_transform))
+                            {
+                                codes.InsertRange(k + 1, new[]
+                                {
+                                    new CodeInstruction(OpCodes.Ldloc_0).WithLabels(codes[k + 1].ExtractLabels()),
+                                    new CodeInstruction(OpCodes.Ldc_I4_S, (int)CustomEnums.onSelfHoldingItemAssemble),
+                                    new CodeInstruction(OpCodes.Ldarg_0),
+                                    CodeInstruction.LoadField(typeof(Inventory), nameof(Inventory.entity)),
+                                    CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.MinEventContext)),
+                                    CodeInstruction.Call(typeof(ItemValue), nameof(ItemValue.FireEvent)),
+                                });
+                                k += 6;
+                            }
+                            else if (codes[k].Calls(mtd_showrighthand))
+                            {
+                                codes.InsertRange(k + 1, codes.GetRange(j - 1, i - j + 2));
+                                codes[i + 1].WithLabels(codes[j - 1].ExtractLabels());
+                                codes.RemoveRange(j - 1, i - j + 2);
+                                break;
+                            }
+                        }
                         break;
                     }
                 }

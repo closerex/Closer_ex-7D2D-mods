@@ -1,5 +1,6 @@
 ﻿#if NotEditor
 #endif
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
@@ -31,6 +32,7 @@ public class AnimationGraphBuilder : MonoBehaviour
     private AnimatorControllerParameter[] parameters;
     private readonly Dictionary<int, ParamInWrapper> paramMapping = new Dictionary<int, ParamInWrapper>();
     private readonly Dictionary<string, ParamInWrapper> paramMappingDebug = new Dictionary<string, ParamInWrapper>();
+    private Animator[] childAnimators = Array.Empty<Animator>();
 
     public bool HasWeaponOverride => graph.IsValid();
     //public AnimatorControllerPlayable VanillaPlayable => vanillaControllerPlayable;
@@ -112,6 +114,81 @@ public class AnimationGraphBuilder : MonoBehaviour
         return role;
     }
 
+    public void SetChildFloat(int nameHash, float value)
+    {
+        if (childAnimators.Length == 0)
+        {
+            return;
+        }
+        foreach (var child in childAnimators)
+        {
+            if (child)
+            {
+                child.SetFloat(nameHash, value);
+            }
+        }
+    }
+
+    public void SetChildBool(int nameHash, bool value)
+    {
+        if (childAnimators.Length == 0)
+        {
+            return;
+        }
+        foreach (var child in childAnimators)
+        {
+            if (child)
+            {
+                child.SetBool(nameHash, value);
+            }
+        }
+    }
+
+    public void SetChildInteger(int nameHash, int value)
+    {
+        if (childAnimators.Length == 0)
+        {
+            return;
+        }
+        foreach (var child in childAnimators)
+        {
+            if (child)
+            {
+                child.SetInteger(nameHash, value);
+            }
+        }
+    }
+
+    public void SetChildTrigger(int nameHash)
+    {
+        if (childAnimators.Length == 0)
+        {
+            return;
+        }
+        foreach (var child in childAnimators)
+        {
+            if (child)
+            {
+                child.SetTrigger(nameHash);
+            }
+        }
+    }
+
+    public void ResetChildTrigger(int nameHash)
+    {
+        if (childAnimators.Length == 0)
+        {
+            return;
+        }
+        foreach (var child in childAnimators)
+        {
+            if (child)
+            {
+                child.ResetTrigger(nameHash);
+            }
+        }
+    }
+
     private void InitGraph()
     {
         animator.runtimeAnimatorController = null;
@@ -183,7 +260,10 @@ public class AnimationGraphBuilder : MonoBehaviour
     public void SetCurrentTarget(AnimationTargetsAbs target)
     {
         if (CurrentTarget == target)
+        {
+            UpdateChildAnimatorArray(target);
             return;
+        }
 
         var sw = new Stopwatch();
         sw.Start();
@@ -215,15 +295,15 @@ public class AnimationGraphBuilder : MonoBehaviour
         {
             target.SetEnabled(true);
         }
-//        Log.Out($"\n#=================Rebuild Start");
-//#if NotEditor
-//        Log.Out($"Remaining RigLayers on build:\n{string.Join("\n", rb.layers.Select(layer => layer.name))}");
-//#endif
-//        animator.UnbindAllSceneHandles();
-//        animator.UnbindAllStreamHandles();
-//        rb.enabled = true;
-//        animator.Rebind();
-//        Log.Out($"#=================Rebuild Finish\n");
+        //        Log.Out($"\n#=================Rebuild Start");
+        //#if NotEditor
+        //        Log.Out($"Remaining RigLayers on build:\n{string.Join("\n", rb.layers.Select(layer => layer.name))}");
+        //#endif
+        //        animator.UnbindAllSceneHandles();
+        //        animator.UnbindAllStreamHandles();
+        //        rb.enabled = true;
+        //        animator.Rebind();
+        //        Log.Out($"#=================Rebuild Finish\n");
         animator.WriteDefaultValues();
 
         if (useGraph)
@@ -243,6 +323,8 @@ public class AnimationGraphBuilder : MonoBehaviour
                 WeaponWrapper = DummyWrapper;
             }
         }
+
+        UpdateChildAnimatorArray(target);
         UpdateParamMapping();
 #if NotEditor
         animator.SetWrappedBool(AvatarController.isCrouchingHash, wasCrouching);
@@ -252,12 +334,33 @@ public class AnimationGraphBuilder : MonoBehaviour
             VanillaWrapper.SetInteger(AvatarController.weaponHoldTypeHash, -1);
         }
         if (wasCrouching && !isFpv && VanillaWrapper.GetLayerCount() > 4)
-        { 
+        {
             VanillaWrapper.Play("2HGeneric", 4, 0);
         }
 #endif
         sw.Stop();
         Log.Out($"changing animation target to {(target ? target.name : "null")} took {sw.ElapsedMilliseconds}");
+    }
+
+    private void UpdateChildAnimatorArray(AnimationTargetsAbs target)
+    {
+        if (target && target.ItemCurrentOrDefault)
+        {
+            List<Animator> animators = new List<Animator>();
+            foreach (Transform trans in target.ItemCurrentOrDefault)
+            {
+                animators.AddRange(trans.GetComponentsInChildren<Animator>());
+            }
+            if (target.ItemAnimator)
+            {
+                animators.Remove(target.ItemAnimator);
+            }
+            childAnimators = animators.ToArray();
+        }
+        else
+        {
+            childAnimators = Array.Empty<Animator>();
+        }
     }
 
     private void InitBehaviours(Transform weaponRoot)

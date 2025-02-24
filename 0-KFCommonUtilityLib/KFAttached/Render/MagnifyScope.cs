@@ -58,13 +58,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
                 return;
             }
 #if NotEditor
-            //player = GameManager.Instance?.World?.GetPrimaryPlayer();
-            var entity = GetComponentInParent<EntityPlayerLocal>();
-            if (!entity)
-            {
-                Destroy(this);
-                return;
-            }
+
             if (newShader == null)
             {
                 newShader = LoadManager.LoadAsset<Shader>("#@modfolder(CommonUtilityLib):Resources/PIPScope.unity3d?PIPScope.shadergraph", null, null, false, true).Asset;
@@ -73,8 +67,6 @@ namespace KFCommonUtilityLib.KFAttached.Render
             {
                 renderTarget.material.shader = newShader;
             }
-            player = entity;
-            itemSlot = player.inventory.holdingItemIdx;
             initialReticleScale = renderTarget.material.GetFloat("_ReticleScale");
 #else
             if(debugCamera == null)
@@ -91,10 +83,29 @@ namespace KFCommonUtilityLib.KFAttached.Render
             // Precompute rotations
         }
 
+#if NotEditor
+        private void Start()
+        {
+            var entity = GetComponentInParent<EntityPlayerLocal>();
+            if (!entity)
+            {
+                Destroy(this);
+                return;
+            }
+            player = entity;
+            itemSlot = player.inventory.holdingItemIdx;
+            OnEnable();
+        }
+#endif
+
         private void OnEnable()
         {
             float targetFov;
 #if NotEditor
+            if (!player)
+            {
+                return;
+            }
             //inventory holding item is not set when creating model, this might be an issue for items with base scope that has this script attached
             //workaround taken from alternative action module, which keeps a reference to the ItemValue being set until its custom data is created
             //afterwards it's set to null so we still need to access holding item when this method is triggered by mods

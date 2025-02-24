@@ -28,11 +28,23 @@ namespace KFCommonUtilityLib.Harmony
             ItemActionModuleManager.CheckItem(__instance);
         }
 
-        [HarmonyPatch(typeof(GameManager), nameof(GameManager.WorldInfo))]
-        [HarmonyPrefix]
-        private static void Prefix_WorldInfo_GameManager()
+        [HarmonyPatch(typeof(GameManager), nameof(GameManager.worldInfoCo), MethodType.Enumerator)]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_worldInfoCo_GameManager(IEnumerable<CodeInstruction> instructions)
         {
-            ModuleManagers.FinishAndLoad();
+            var codes = instructions.ToList();
+
+            var mtd_all = AccessTools.Method(typeof(WorldStaticData), nameof(WorldStaticData.AllConfigsReceivedAndLoaded));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].Calls(mtd_all))
+                {
+                    codes.Insert(i + 2, CodeInstruction.Call(typeof(ModuleManagers), nameof(ModuleManagers.FinishAndLoad)).WithLabels(codes[i + 2].ExtractLabels()));
+                    break;
+                }
+            }
+            return codes;
         }
 
         [HarmonyPatch(typeof(ConnectionManager), nameof(ConnectionManager.ServerReady))]

@@ -291,7 +291,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         //    return muzzle2;
         //}
 
-        public static Transform GetTransformOverrideByName(Transform itemModel, string name, bool onlyActive = false)
+        public static Transform GetTransformOverrideByName(Transform itemModel, string name, bool onlyActive = true)
         {
             if (itemModel == null)
                 return null;
@@ -308,7 +308,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             return onlyActive ? GameUtils.FindDeepChildActive(targetRoot, name) : GameUtils.FindDeepChild(targetRoot, name);
         }
 
-        public static Transform GetAddPartTransformOverride(Transform itemModel, string name, bool onlyActive = false)
+        public static Transform GetAddPartTransformOverride(Transform itemModel, string name, bool onlyActive = true)
         {
             return GetTransformOverrideByName(itemModel, name, onlyActive) ?? itemModel;
         }

@@ -28,7 +28,7 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
         if (actionData == null || !actionData.isReloading)
         {
 #if DEBUG
-            Log.Out($"ANIMATION RELOAD EVENT NOT RELOADING : {actionData.invData.item.Name}");
+            Log.Out($"ANIMATION RELOAD EVENT NOT RELOADING : {actionData?.invData.item.Name ?? "null"}");
 #endif
             return;
         }

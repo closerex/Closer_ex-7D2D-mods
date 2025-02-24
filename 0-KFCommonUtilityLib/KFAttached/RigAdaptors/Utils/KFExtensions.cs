@@ -216,6 +216,7 @@ public static class KFExtensions
                     default:
                         break;
                 }
+                builder.SetChildTrigger(_propertyHash);
             }
             else
             {
@@ -246,6 +247,7 @@ public static class KFExtensions
                     default:
                         break;
                 }
+                builder.ResetChildTrigger(_propertyHash);
             }
             else
             {
@@ -276,6 +278,7 @@ public static class KFExtensions
                     default:
                         break;
                 }
+                builder.SetChildBool(_propertyHash, _value);
             }
             else
             {
@@ -306,6 +309,7 @@ public static class KFExtensions
                     default:
                         break;
                 }
+                builder.SetChildInteger(_propertyHash, _value);
             }
             else
             {
@@ -336,6 +340,7 @@ public static class KFExtensions
                     default:
                         break;
                 }
+                builder.SetChildFloat(_propertyHash, _value);
             }
             else
             {
