@@ -64,7 +64,7 @@ namespace CameraShake
                 cameraTransform = transform;
         }
 
-        private void LateUpdate()
+        public void UpdateShake()
         {
             if (cameraTransform == null) return;
 

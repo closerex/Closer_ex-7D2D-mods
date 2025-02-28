@@ -688,6 +688,7 @@ static class AnimationRiggingPatches
         var mtd_setparent = AccessTools.Method(typeof(Transform), nameof(Transform.SetParent), new[] { typeof(Transform), typeof(bool) });
         var mtd_startholding = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.StartHolding));
         var mtd_showrighthand = AccessTools.Method(typeof(Inventory), nameof(Inventory.ShowRightHand));
+        var mtd_holdingchanged = AccessTools.Method(typeof(EntityAlive), nameof(EntityAlive.OnHoldingItemChanged));
         var prop_holdingitem = AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItem));
         var fld_transform = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.Transform));
 
@@ -729,11 +730,40 @@ static class AnimationRiggingPatches
                         break;
                     }
                 }
+                i += 6;
+            }
+            else if (codes[i].Calls(mtd_holdingchanged))
+            {
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(codes[i + 1].ExtractLabels()),
+                    CodeInstruction.Call(typeof(Inventory), nameof(Inventory.syncHeldItem))
+                });
                 break;
             }
         }
         return codes;
     }
+
+    [HarmonyPatch(typeof(Inventory), nameof(Inventory.setHoldingItemTransform))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_setHoldingItemTransform_Inventory(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+        var mtd_sync = AccessTools.Method(typeof(Inventory), nameof(Inventory.syncHeldItem));
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_sync))
+            {
+                codes[i + 1].WithLabels(codes[i - 1].ExtractLabels());
+                codes.RemoveRange(i - 1, 2);
+                break;
+            }
+        }
+        return codes;
+    }
+
 
     //private static Coroutine delayShowWeaponCo;
     //private static IEnumerator DelayShowWeapon(Camera camera)

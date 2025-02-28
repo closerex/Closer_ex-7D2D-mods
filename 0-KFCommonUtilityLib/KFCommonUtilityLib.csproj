@@ -487,6 +487,8 @@
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationAimRecoilResetState.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationRandomRecoil.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationRandomRecoilState.cs" />
+    <Compile Include="KFAttached\Misc\AimReference.cs" />
+    <Compile Include="KFAttached\Misc\AimReferenceGroup.cs" />
     <Compile Include="KFAttached\Misc\AttachmentReference.cs" />
     <Compile Include="KFAttached\KFUtilAttached\ChargeUpController.cs" />
     <Compile Include="KFAttached\KFUtilAttached\WeaponLabelControllerChargeUp.cs" />
@@ -508,6 +510,7 @@
     <Compile Include="KFAttached\Misc\AttachmentReferenceAppended.cs" />
     <Compile Include="KFAttached\Misc\ItemAnimatorUpdate.cs" />
     <Compile Include="KFAttached\Misc\PlayerRigLateUpdate.cs" />
+    <Compile Include="KFAttached\Misc\ScopeBase.cs" />
     <Compile Include="KFAttached\Misc\WeaponCameraFollow.cs" />
     <Compile Include="KFAttached\Render\BokehBlurTargetRef.cs" />
     <Compile Include="KFAttached\Render\MagnifyScope.cs" />
@@ -528,6 +531,7 @@
     <Compile Include="KFAttached\RigAdaptors\PlayGraphTargets.cs" />
     <Compile Include="KFAttached\RigAdaptors\RigConverterRole.cs" />
     <Compile Include="KFAttached\RigAdaptors\Utils\InventorySlotGurad.cs" />
+    <Compile Include="KFAttached\RigAdaptors\Utils\QuaternionUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="KFAttached\RigAdaptors\Adaptors\BlendConstraintAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\Adaptors\ChainIKConstraintAdaptor.cs" />
@@ -573,6 +577,7 @@
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMetaConsumer.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMultiActionFix.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMultiBarrel.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleProceduralAiming.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleRampUp.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMetaRecharger.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleTagged.cs" />

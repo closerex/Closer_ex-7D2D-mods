@@ -114,7 +114,7 @@ public class AnimationRandomRecoil : AnimationProceduralRecoildAbs, IPlayableGra
             }
             else
             {
-                copy.target = playerAnimatorTrans.FindInAllChilds(targetName);
+                copy.target = playerAnimatorTrans.FindInAllChildren(targetName);
             }
             if (pivot)
             {
@@ -122,7 +122,7 @@ public class AnimationRandomRecoil : AnimationProceduralRecoildAbs, IPlayableGra
             }
             else
             {
-                copy.pivot = playerAnimatorTrans.FindInAllChilds(pivotName);
+                copy.pivot = playerAnimatorTrans.FindInAllChildren(pivotName);
             }
             copy.randomRotationMin = this.randomRotationMin;
             copy.randomRotationMax = this.randomRotationMax;

@@ -29,7 +29,7 @@ public class DampedTransformAdaptor : RigAdaptorAbs
     {
         var constraint = GetComponent<DampedTransform>();
         constraint.weight = weight;
-        constraint.data.constrainedObject = targetRoot.FindInAllChilds(m_ConstrainedObject);
+        constraint.data.constrainedObject = targetRoot.FindInAllChildren(m_ConstrainedObject);
         constraint.data.sourceObject = m_Source;
         constraint.data.dampPosition = m_DampPosition;
         constraint.data.dampRotation = m_DampRotation;

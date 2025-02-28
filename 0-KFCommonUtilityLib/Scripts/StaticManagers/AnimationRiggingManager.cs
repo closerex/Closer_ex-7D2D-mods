@@ -103,9 +103,9 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             return hash_items_take_over_reload_time.Contains(id);
         }
 
-        public static AnimationTargetsAbs GetRigTargetsFromPlayer(EntityPlayer player)
+        public static AnimationTargetsAbs GetRigTargetsFromPlayer(EntityAlive player)
         {
-            if (!player)
+            if (player is not EntityPlayer)
                 return null;
             Transform holdingItemTransform = player.inventory?.GetHoldingItemTransform();
             if (holdingItemTransform)

@@ -32,7 +32,7 @@ public class MultiAimConstraintAdaptor : RigAdaptorAbs
         var constraint = GetComponent<MultiAimConstraint>();
         constraint.Reset();
         constraint.weight = weight;
-        constraint.data.constrainedObject = targetRoot.FindInAllChilds(m_ConstrainedObject);
+        constraint.data.constrainedObject = targetRoot.FindInAllChildren(m_ConstrainedObject);
         constraint.data.sourceObjects = m_SourceObjects;
         constraint.data.offset = m_Offset;
         constraint.data.limits = m_limits;
@@ -40,7 +40,7 @@ public class MultiAimConstraintAdaptor : RigAdaptorAbs
         constraint.data.upAxis = m_UpAxis;
         constraint.data.worldUpType = m_WorldUpType;
         if (!string.IsNullOrEmpty(m_WorldUpObject))
-            constraint.data.worldUpObject = targetRoot.FindInAllChilds(m_WorldUpObject);
+            constraint.data.worldUpObject = targetRoot.FindInAllChildren(m_WorldUpObject);
         constraint.data.worldUpAxis = m_WorldUpAxis;
         constraint.data.maintainOffset = m_MaintainOffset;
         constraint.data.constrainedXAxis = m_ConstrainedAxes.x;

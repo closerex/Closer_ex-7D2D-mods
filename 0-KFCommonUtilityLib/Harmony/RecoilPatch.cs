@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
+using CameraShake;
+using System;
 
 [HarmonyPatch]
 class RecoilPatch
@@ -14,6 +16,33 @@ class RecoilPatch
     private static void Postfix_Awake_EntityPlayerLocal(EntityPlayerLocal __instance)
     {
         RecoilManager.InitPlayer(__instance);
+    }
+
+    [HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.LateUpdate))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_LateUpdate_vp_FPCamera(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var mtd_update = AccessTools.Method(typeof(vp_FPCamera), nameof(vp_FPCamera.Update3rdPerson));
+        var prop_trans = AccessTools.PropertyGetter(typeof(vp_Component), nameof(vp_Component.transform));
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_update))
+            {
+                codes.InsertRange(i - 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Call, prop_trans),
+                    CodeInstruction.Call(typeof(KFExtensions), nameof(KFExtensions.AddMissingComponent), new Type[]{ typeof(Transform) }, new Type[]{ typeof(CameraShaker) }),
+                    CodeInstruction.Call(typeof(CameraShaker), nameof(CameraShaker.UpdateShake))
+                });
+                break;
+            }
+        }
+
+        return codes;
     }
 
     [HarmonyPatch(typeof(GameManager), nameof(GameManager.SaveAndCleanupWorld))]

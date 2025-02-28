@@ -23,7 +23,7 @@ public class TwistCorrectionAdaptor : RigAdaptorAbs
         }
         constraint.Reset();
         constraint.weight = weight;
-        constraint.data.sourceObject = targetRoot.FindInAllChilds(m_Source);
+        constraint.data.sourceObject = targetRoot.FindInAllChildren(m_Source);
         constraint.data.twistAxis = m_TwistAxis;
         var twistNodes = new WeightedTransformArray(m_TwistNodes.Length);
         for (int i = 0; i < m_TwistNodes.Length; i++)
@@ -32,7 +32,7 @@ public class TwistCorrectionAdaptor : RigAdaptorAbs
             if (node.Length == 2)
             {
                 if (!string.IsNullOrEmpty(node[0]))
-                    twistNodes.SetTransform(i, targetRoot.FindInAllChilds(node[0]));
+                    twistNodes.SetTransform(i, targetRoot.FindInAllChildren(node[0]));
                 twistNodes.SetWeight(i, float.Parse(node[1]));
             }
         }

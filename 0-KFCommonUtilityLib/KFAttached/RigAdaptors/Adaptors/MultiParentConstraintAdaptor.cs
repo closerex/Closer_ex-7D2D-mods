@@ -21,7 +21,7 @@ public class MultiParentConstraintAdaptor : RigAdaptorAbs
         var constraint = GetComponent<MultiParentConstraint>();
         constraint.Reset();
         constraint.weight = weight;
-        constraint.data.constrainedObject = targetRoot.FindInAllChilds(m_ConstrainedObject);
+        constraint.data.constrainedObject = targetRoot.FindInAllChildren(m_ConstrainedObject);
         constraint.data.sourceObjects = m_SourceObjects;
         constraint.data.constrainedPositionXAxis = m_ConstrainedPositionAxes.x;
         constraint.data.constrainedPositionYAxis = m_ConstrainedPositionAxes.y;

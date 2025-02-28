@@ -43,7 +43,7 @@ public class BlendConstraintAdaptor : RigAdaptorAbs
         var constraint = GetComponent<BlendConstraint>();
         constraint.Reset();
         constraint.weight = weight;
-        constraint.data.constrainedObject = targetRoot.FindInAllChilds(m_ConstrainedObject);
+        constraint.data.constrainedObject = targetRoot.FindInAllChildren(m_ConstrainedObject);
         constraint.data.sourceObjectA = m_SourceA;
         constraint.data.sourceObjectB = m_SourceB;
         constraint.data.blendPosition = m_BlendPosition;

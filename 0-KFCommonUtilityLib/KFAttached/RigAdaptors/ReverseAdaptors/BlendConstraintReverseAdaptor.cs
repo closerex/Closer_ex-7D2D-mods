@@ -44,8 +44,8 @@ public class BlendConstraintReverseAdaptor : RigAdaptorAbs
         constraint.Reset();
         constraint.weight = weight;
         constraint.data.constrainedObject = m_ConstrainedObject;
-        constraint.data.sourceObjectA = targetRoot.FindInAllChilds(m_SourceA);
-        constraint.data.sourceObjectB = targetRoot.FindInAllChilds(m_SourceB);
+        constraint.data.sourceObjectA = targetRoot.FindInAllChildren(m_SourceA);
+        constraint.data.sourceObjectB = targetRoot.FindInAllChildren(m_SourceB);
         constraint.data.blendPosition = m_BlendPosition;
         constraint.data.blendRotation = m_BlendRotation;
         constraint.data.positionWeight = m_PositionWeight;

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public static class KFExtensions
 {
-    public static Transform FindInAllChilds(this Transform target, string name, bool onlyActive = false)
+    public static Transform FindInAllChildren(this Transform target, string name, bool onlyActive = false)
     {
         if (name == null)
         {
@@ -19,7 +19,7 @@ public static class KFExtensions
 
             for (int i = 0; i < target.childCount; i++)
             {
-                Transform transform = target.GetChild(i).FindInAllChilds(name, onlyActive);
+                Transform transform = target.GetChild(i).FindInAllChildren(name, onlyActive);
                 if (transform != null)
                 {
                     return transform;
@@ -56,6 +56,14 @@ public static class KFExtensions
         dir = rot * dir; // rotate it
         self.localPosition = dir + self.InverseTransformPoint(pivot.position); // calculate rotated point
         self.localRotation = rot;
+    }
+
+    public static void RotateAroundPivot(this Transform self, Transform pivot, Quaternion rotation)
+    {
+        Vector3 dir = self.InverseTransformVector(self.position - pivot.position); // get point direction relative to pivot
+        dir = rotation * dir; // rotate it
+        self.localPosition = dir + self.InverseTransformPoint(pivot.position); // calculate rotated point
+        self.localRotation = rotation;
     }
 
     public static Vector3 Random(Vector3 min, Vector3 max)

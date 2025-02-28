@@ -44,7 +44,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     public bool IsFpv { get; set; }
     public bool IsAnimationSet => (IsFpv && fpvSet) || (!IsFpv && tpvSet);
     public bool Destroyed { get; protected set; }
-    protected Transform PlayerAnimatorTrans { get; private set; }
+    public Transform PlayerAnimatorTrans { get; private set; }
     public Animator ItemAnimator => IsFpv ? ItemAnimatorFpv : ItemAnimatorTpv;
     public Transform ItemCurrent => IsFpv ? ItemFpv : ItemTpv;
     public Transform ItemCurrentOrDefault => IsFpv ? ItemFpv : ItemTpvOrSelf;
@@ -114,7 +114,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
         {
             itemAnimatorTpv = null;
         }
-        spine1 = PlayerAnimatorTrans.FindInAllChilds("Spine1");
+        spine1 = PlayerAnimatorTrans.FindInAllChildren("Spine1");
         spine2 = spine1.Find("Spine2");
         spine3 = spine2.Find("Spine3");
 
@@ -199,7 +199,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
         Stopwatch sw = new Stopwatch();
         sw.Start();
 
-        itemTpv.SetParent(itemAnimatorTpv.transform.FindInAllChilds(GetParentName(parentNameTpv)));
+        itemTpv.SetParent(itemAnimatorTpv.transform.FindInAllChildren(GetParentName(parentNameTpv)));
         itemTpv.position = Vector3.zero;
         itemTpv.localPosition = Vector3.zero;
         itemTpv.localRotation = Quaternion.identity;

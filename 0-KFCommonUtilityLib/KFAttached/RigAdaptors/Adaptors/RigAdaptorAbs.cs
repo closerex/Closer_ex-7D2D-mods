@@ -27,7 +27,7 @@ public abstract class RigAdaptorAbs : MonoBehaviour
         WeightedTransformArray array = new WeightedTransformArray();
         for (int i = 0; i < transforms.Length; i++)
         {
-            array.Add(new WeightedTransform(targetRoot.FindInAllChilds(transforms[i]), weights[i]));
+            array.Add(new WeightedTransform(targetRoot.FindInAllChildren(transforms[i]), weights[i]));
         }
         return array;
     }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Reflection.Emit;
 using UniLinq;
 using UnityEngine;
+using static ActionModuleErgoAffected;
 
 [TypeTarget(typeof(ItemActionZoom)), ActionDataTarget(typeof(ErgoData))]
 public class ActionModuleErgoAffected
@@ -31,9 +32,9 @@ public class ActionModuleErgoAffected
         EntityAlive holdingEntity = _actionData.invData.holdingEntity;
         ItemActionData prevActionData = holdingEntity.MinEventContext.ItemActionData;
         holdingEntity.MinEventContext.ItemActionData = _actionData.invData.actionData[MultiActionManager.GetActionIndexForEntity(holdingEntity)];
-        float ergoValue = EffectManager.GetValue(CustomEnums.WeaponErgonomics, _actionData.invData.itemValue, 0, holdingEntity);
-        float aimSpeedModifier = Mathf.Lerp(0.2f, 1, ergoValue);
-        Log.Out($"Ergo is {ergoValue}, base aim modifier is {aimSpeedModifierBase}, aim speed is {aimSpeedModifier * aimSpeedModifierBase}");
+        __customData.curErgo = EffectManager.GetValue(CustomEnums.WeaponErgonomics, _actionData.invData.itemValue, 0, holdingEntity);
+        float aimSpeedModifier = __customData.ModifiedErgo;
+        Log.Out($"Ergo is {__customData.curErgo}, base aim modifier is {aimSpeedModifierBase}, aim speed is {aimSpeedModifier * aimSpeedModifierBase}");
         holdingEntity.emodel.avatarController.UpdateFloat(AimSpeedModifierHash, aimSpeedModifier * aimSpeedModifierBase, true);
         holdingEntity.MinEventContext.ItemActionData = prevActionData;
         if ((_actionData as ItemActionZoom.ItemActionDataZoom).aimingValue && !_bReleased)
@@ -65,6 +66,9 @@ public class ActionModuleErgoAffected
         public float aimStartTime;
         public bool aimSet;
         public ActionModuleErgoAffected module;
+        public float curErgo;
+        public float ModifiedErgo => Mathf.Lerp(0.2f, 1, curErgo);
+
         public ErgoData(ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleErgoAffected _module)
         {
             aimStartTime = float.MaxValue;
@@ -111,8 +115,8 @@ public static class ErgoPatches
             float baseAimTime = ergoData.module.zoomInTimeBase;
             float baseAimMultiplier = ergoData.module.aimSpeedModifierBase;
             baseAimTime /= baseAimMultiplier;
-            float modifiedErgo = EffectManager.GetValue(CustomEnums.WeaponErgonomics, rangedData.invData.itemValue, 1f, rangedData.invData.holdingEntity);
-            modifiedErgo = Mathf.Lerp(0.2f, 1, modifiedErgo);
+            //float modifiedErgo = EffectManager.GetValue(CustomEnums.WeaponErgonomics, rangedData.invData.itemValue, 1f, rangedData.invData.holdingEntity);
+            float modifiedErgo = ergoData.ModifiedErgo;
             float perc = (Time.time - ergoData.aimStartTime) * modifiedErgo / baseAimTime;
             if (perc >= 1)
             {

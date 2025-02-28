@@ -1,0 +1,275 @@
+﻿using HarmonyLib;
+using KFCommonUtilityLib;
+using KFCommonUtilityLib.Scripts.Attributes;
+using KFCommonUtilityLib.Scripts.StaticManagers;
+using Kryz.Tweening;
+using System.Collections.Generic;
+using UnityEngine;
+
+[TypeTarget(typeof(ItemActionZoom)), ActionDataTarget(typeof(ProceduralAimingData))]
+public class ActionModuleProceduralAiming
+{
+    private bool DontUpdatePlayerCameraReference = false;
+    [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
+    public void Postfix_OnModificationsChanged(ItemActionZoom __instance, ItemActionData _data, ProceduralAimingData __customData)
+    {
+        if (_data is IModuleContainerFor<ActionModuleErgoAffected.ErgoData> dataModule)
+        {
+            __customData.zoomInTime = dataModule.Instance.module.zoomInTimeBase / dataModule.Instance.module.aimSpeedModifierBase;
+            __customData.ergoData = dataModule.Instance;
+        }
+        else
+        {
+            float zoomInTimeBase = 0.3f;
+            __instance.Properties.ParseFloat("ZoomInTimeBase", ref zoomInTimeBase);
+            float aimSpeedModifierBase = 1f;
+            __instance.Properties.ParseFloat("AimSpeedModifierBase", ref aimSpeedModifierBase);
+            __customData.zoomInTime = zoomInTimeBase / aimSpeedModifierBase;
+            __customData.ergoData = null;
+        }
+
+        DontUpdatePlayerCameraReference = false;
+        __instance.Properties.ParseBool("DontUpdatePlayerCameraRef", ref DontUpdatePlayerCameraReference);
+
+        __customData.playerOriginTransform = null;
+        __customData.playerCameraPosRef = _data.invData.holdingEntity is EntityPlayerLocal player && player.bFirstPersonView ? player.cameraTransform : null;
+        var targets = AnimationRiggingManager.GetRigTargetsFromPlayer(_data.invData.holdingEntity);
+        if (__customData.playerCameraPosRef)
+        {
+            if (targets.ItemFpv)
+            {
+                __customData.playerOriginTransform = __customData.playerCameraPosRef.FindInAllChildren("Hips");
+                var playerCameraPosRef = targets.ItemFpv.Find("PlayerCameraPositionReference");
+                if (!DontUpdatePlayerCameraReference)
+                {
+                    if (!playerCameraPosRef)
+                    {
+                        playerCameraPosRef = new GameObject("PlayerCameraPositionReference").transform;
+                        playerCameraPosRef.SetParent(targets.ItemFpv, false);
+                    }
+                    playerCameraPosRef.position = __customData.playerCameraPosRef.position;
+                    playerCameraPosRef.rotation = __customData.playerCameraPosRef.rotation;
+                }
+                __customData.playerCameraPosRef = playerCameraPosRef;
+            }
+            else
+            {
+                __customData.playerCameraPosRef = null;
+            }
+        }
+        if (__customData.playerCameraPosRef)
+        {
+            __customData.aimRefTransform = targets.ItemFpv.Find("ScopeBasePositionReference");
+            if (__customData.aimRefTransform)
+            {
+                var scopeRefTrans = __customData.aimRefTransform.Find("ScopePositionReference");
+                if (!scopeRefTrans)
+                {
+                    scopeRefTrans = new GameObject("ScopePositionReference").transform;
+                    scopeRefTrans.SetParent(__customData.aimRefTransform, false);
+                }
+                scopeRefTrans.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+                scopeRefTrans.localScale = Vector3.one;
+                __customData.aimRefTransform = scopeRefTrans;
+            }
+        }
+        else
+        {
+            __customData.aimRefTransform = null;
+        }
+
+        __customData.ResetAiming();
+        __customData.UpdateCurrentReference();
+    }
+
+    [HarmonyPatch(nameof(ItemAction.StopHolding)), MethodTargetPostfix]
+    public void Postfix_StopHolding(ProceduralAimingData __customData)
+    {
+        __customData.ResetAiming();
+    }
+
+    [HarmonyPatch(nameof(ItemAction.ExecuteAction)), MethodTargetPostfix]
+    public void Postfix_ExecuteAction(ProceduralAimingData __customData, ItemActionData _actionData)
+    {
+        if (__customData.isAiming != ((ItemActionZoom.ItemActionDataZoom)_actionData).aimingValue)
+        {
+            __customData.UpdateCurrentReference();
+            __customData.isAiming = ((ItemActionZoom.ItemActionDataZoom)_actionData).aimingValue;
+        }
+    }
+
+    public class ProceduralAimingData
+    {
+        public ActionModuleErgoAffected.ErgoData ergoData;
+        public float zoomInTime;
+        public Transform aimRefTransform;
+        public Transform playerCameraPosRef;
+        public Transform playerOriginTransform;
+
+        public bool isAiming;
+        public int curAimRefIndex = -1;
+        //move curAimRefOffset towards aimRefOffset first, then move curAimOffset towards curAimRefOffset
+        public Vector3 aimRefPosOffset;
+        public Quaternion aimRefRotOffset;
+        public Vector3 curAimPosOffset;
+        public Quaternion curAimRotOffset;
+        private Vector3 targetSwitchPosVelocity;
+        private Quaternion targetSwitchRotVelocity;
+        private float curAimPerc;
+        public List<AimReference> registeredReferences = new List<AimReference>();
+        private int CurAimRefIndex
+        {
+            get
+            {
+                for (int i = registeredReferences.Count - 1; i >= 0; i--)
+                {
+                    if (registeredReferences[i].gameObject.activeInHierarchy)
+                    {
+                        return i;
+                    }
+                }
+                return -1;
+            }
+        }
+
+        private AimReference CurAimRef => curAimRefIndex >= 0 && curAimRefIndex < registeredReferences.Count ? registeredReferences[curAimRefIndex] : null;
+
+        public ProceduralAimingData(ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleProceduralAiming _module)
+        {
+
+        }
+
+        public void ResetAiming()
+        {
+            isAiming = false;
+            curAimRefIndex = -1;
+            aimRefPosOffset = Vector3.zero;
+            aimRefRotOffset = Quaternion.identity;
+            if (aimRefTransform)
+            {
+                aimRefTransform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            }
+            curAimPosOffset = Vector3.zero;
+            curAimRotOffset = Quaternion.identity;
+            curAimPerc = 0;
+            targetSwitchPosVelocity = Vector3.zero;
+            targetSwitchRotVelocity = Quaternion.identity;
+        }
+
+        public void RegisterGroup(AimReference[] group)
+        {
+            foreach (var reference in group)
+            {
+                if (reference.index == -1)
+                {
+                    reference.index = registeredReferences.Count;
+                    registeredReferences.Add(reference);
+                }
+            }
+            UpdateCurrentReference();
+        }
+
+        public void UpdateCurrentReference()
+        {
+            int newRefIndex = CurAimRefIndex;
+            if (newRefIndex != curAimRefIndex)
+            {
+                curAimRefIndex = newRefIndex;
+                AimReference curAimRef = CurAimRef;
+                if (aimRefTransform && curAimRef)
+                {
+                    aimRefPosOffset = curAimRef.positionOffset;
+                    if (curAimRef.asReference)
+                    {
+                        aimRefPosOffset -= aimRefTransform.parent.InverseTransformDirection(Vector3.Project(aimRefTransform.parent.TransformPoint(aimRefPosOffset) - playerCameraPosRef.position, playerCameraPosRef.forward));
+                    }
+                    aimRefRotOffset = curAimRef.rotationOffset;
+                }
+                if (curAimPerc <= 0f)
+                {
+                    SnapToCurReference();
+                }
+            }
+        }
+
+        private void SnapToCurReference()
+        {
+            curAimPosOffset = Vector3.zero;
+            curAimRotOffset = Quaternion.identity;
+            if (aimRefTransform)
+            {
+                aimRefTransform.SetLocalPositionAndRotation(aimRefPosOffset, aimRefRotOffset);
+            }
+        }
+
+        public void LateUpdateAiming()
+        {
+            if (aimRefTransform && playerCameraPosRef && playerOriginTransform && CurAimRef)
+            {
+                float zoomInTimeMod = ergoData == null ? zoomInTime : zoomInTime / ergoData.ModifiedErgo;
+                if (curAimPerc <= 0f)
+                {
+                    //if not aiming, place aimRef at target immediately
+                    SnapToCurReference();
+                }
+                else
+                {
+                    //move aimRef towards target
+                    aimRefTransform.localPosition = Vector3.SmoothDamp(aimRefTransform.localPosition, aimRefPosOffset, ref targetSwitchPosVelocity, 0.075f);
+                    aimRefTransform.localRotation = QuaternionUtil.SmoothDamp(aimRefTransform.localRotation, aimRefRotOffset, ref targetSwitchRotVelocity, 0.075f);
+                }
+                //calculate current target aim offset
+                Vector3 aimTargetPosOffset = playerCameraPosRef.position - aimRefTransform.position;
+                Quaternion aimTargetRotOffset = playerCameraPosRef.rotation * Quaternion.Inverse(aimRefTransform.rotation);
+                if (isAiming)
+                {
+                    //when aiming, move towards target aim offset
+                    curAimPerc = Mathf.Clamp01(curAimPerc + Time.deltaTime / zoomInTimeMod);
+                    if (curAimPerc >= 1)
+                    {
+                        curAimPosOffset = aimTargetPosOffset;
+                        curAimRotOffset = aimTargetRotOffset;
+                    }
+                    else
+                    {
+                        curAimPosOffset = Vector3.Slerp(Vector3.zero, aimTargetPosOffset, curAimPerc);
+                        curAimRotOffset = Quaternion.Slerp(Quaternion.identity, aimTargetRotOffset, curAimPerc);
+                    }
+                }
+                else
+                {
+                    //when not aiming, move towards zero
+                    curAimPerc = Mathf.Clamp01(curAimPerc - Time.deltaTime / zoomInTime);
+                    if (curAimPerc >= 1)
+                    {
+                        curAimPosOffset = Vector3.zero;
+                        curAimRotOffset = Quaternion.identity;
+                    }
+                    else
+                    {
+                        curAimPosOffset = Vector3.Slerp(Vector3.zero, aimTargetPosOffset, curAimPerc);
+                        curAimRotOffset = Quaternion.Slerp(Quaternion.identity, aimTargetRotOffset, curAimPerc);
+                    }
+                }
+                //apply offset to spine3
+                playerOriginTransform.position += curAimPosOffset;
+                curAimRotOffset.ToAngleAxis(out var angle, out var axis);
+                playerOriginTransform.RotateAround(aimRefTransform.position, axis, angle);
+            }
+        }
+    }
+}
+
+[HarmonyPatch]
+public static class ProceduralAimingPatches
+{
+    [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.LateUpdate))]
+    [HarmonyPostfix]
+    private static void Postfix_LateUpdate_EntityPlayerLocal(EntityPlayerLocal __instance)
+    {
+        if (__instance.inventory?.holdingItemData?.actionData?[1] is IModuleContainerFor<ActionModuleProceduralAiming.ProceduralAimingData> module)
+        {
+            module.Instance.LateUpdateAiming();
+        }
+    }
+}

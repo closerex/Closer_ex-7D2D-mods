@@ -20,8 +20,8 @@ public class TwistChainConstraintAdaptor : RigAdaptorAbs
         var constraint = GetComponent<TwistChainConstraint>();
         constraint.Reset();
         constraint.weight = weight;
-        constraint.data.root = targetRoot.FindInAllChilds(m_Root);
-        constraint.data.tip = targetRoot.FindInAllChilds(m_Tip);
+        constraint.data.root = targetRoot.FindInAllChildren(m_Root);
+        constraint.data.tip = targetRoot.FindInAllChildren(m_Tip);
         constraint.data.rootTarget = m_RootTarget;
         constraint.data.tipTarget = m_TipTarget;
         constraint.data.curve = m_Curve;

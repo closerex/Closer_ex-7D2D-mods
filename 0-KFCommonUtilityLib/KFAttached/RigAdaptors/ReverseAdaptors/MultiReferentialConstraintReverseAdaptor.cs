@@ -19,7 +19,7 @@ public class MultiReferentialConstraintReverseAdaptor : RigAdaptorAbs
         constraint.data.sourceObjects = new List<Transform>();
         foreach(var sourceObject in m_SourceObjects)
         {
-            constraint.data.sourceObjects.Add(targetRoot.FindInAllChilds(sourceObject));
+            constraint.data.sourceObjects.Add(targetRoot.FindInAllChildren(sourceObject));
         }
     }
 

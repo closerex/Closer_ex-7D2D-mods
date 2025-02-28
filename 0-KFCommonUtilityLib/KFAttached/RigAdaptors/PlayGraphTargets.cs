@@ -94,7 +94,7 @@ public class PlayGraphTargets : AnimationTargetsAbs
         Stopwatch sw = new Stopwatch();
         sw.Start();
 
-        itemFpv.SetParent(itemAnimatorFpv.transform.FindInAllChilds(GetParentName(parentNameFpv)));
+        itemFpv.SetParent(itemAnimatorFpv.transform.FindInAllChildren(GetParentName(parentNameFpv)));
         itemFpv.position = Vector3.zero;
         itemFpv.localPosition = Vector3.zero;
         itemFpv.localRotation = Quaternion.identity;

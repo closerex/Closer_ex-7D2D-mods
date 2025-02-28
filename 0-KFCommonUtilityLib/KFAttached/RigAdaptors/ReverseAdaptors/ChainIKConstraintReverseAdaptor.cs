@@ -45,7 +45,7 @@ public class ChainIKConstraintReverseAdaptor : RigAdaptorAbs
         constraint.weight = weight;
         constraint.data.root = m_Root;
         constraint.data.tip = m_Tip;
-        constraint.data.target = targetRoot.FindInAllChilds(m_Target);
+        constraint.data.target = targetRoot.FindInAllChildren(m_Target);
         constraint.data.chainRotationWeight = m_ChainRotationWeight;
         constraint.data.tipRotationWeight = m_TipRotationWeight;
         constraint.data.maxIterations = m_MaxIterations;
