@@ -711,7 +711,7 @@ static class AnimationRiggingPatches
                                 codes.InsertRange(k + 1, new[]
                                 {
                                     new CodeInstruction(OpCodes.Ldloc_0).WithLabels(codes[k + 1].ExtractLabels()),
-                                    new CodeInstruction(OpCodes.Ldc_I4_S, (int)CustomEnums.onSelfHoldingItemAssemble),
+                                    CodeInstruction.LoadField(typeof(CustomEnums), nameof(CustomEnums.onSelfHoldingItemAssemble)),
                                     new CodeInstruction(OpCodes.Ldarg_0),
                                     CodeInstruction.LoadField(typeof(Inventory), nameof(Inventory.entity)),
                                     CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.MinEventContext)),
