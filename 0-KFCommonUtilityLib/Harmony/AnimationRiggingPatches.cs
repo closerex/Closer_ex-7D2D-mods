@@ -173,12 +173,14 @@ static class AnimationRiggingPatches
 
     [HarmonyPatch(typeof(MinEventActionAttachPrefabToHeldItem), nameof(MinEventActionAttachPrefabToHeldItem.Execute))]
     [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_Execute_MinEventActionAttachPrefabToHeldItem(IEnumerable<CodeInstruction> instructions)
+    private static IEnumerable<CodeInstruction> Transpiler_Execute_MinEventActionAttachPrefabToHeldItem(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
     {
         var codes = instructions.ToList();
         var mtd_find = AccessTools.Method(typeof(GameUtils), nameof(GameUtils.FindDeepChild));
         var fld_trans = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.Transform));
         var mtd_layer = AccessTools.Method(typeof(Utils), nameof(Utils.SetLayerRecursively));
+
+        var lbd_targets = generator.DeclareLocal(typeof(AnimationTargetsAbs));
 
         for (int i = 1; i < codes.Count; i++)
         {
@@ -206,25 +208,40 @@ static class AnimationRiggingPatches
                     i += 4;
                 }
             }
-            else if (codes[i].Calls(mtd_layer))
+            else if (codes[i].opcode == OpCodes.Stloc_2)
             {
                 codes.InsertRange(i + 1, new[]
                 {
                     new CodeInstruction(OpCodes.Ldloc_0),
+                    CodeInstruction.Call(typeof(Transform), nameof(Transform.GetComponent), new Type[0], new Type[]{ typeof(AnimationTargetsAbs)}),
+                    new CodeInstruction(OpCodes.Stloc_S, lbd_targets.LocalIndex)
+                });
+                i += 3;
+            }
+            else if (codes[i].Calls(mtd_layer))
+            {
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldloc_S, lbd_targets),
                     new CodeInstruction(OpCodes.Ldloc_3),
                     CodeInstruction.Call(typeof(AnimationRiggingPatches), nameof(CheckAttachmentRefMerge))
                 });
                 i += 3;
             }
         }
+        codes.InsertRange(0, new[]
+        {
+            new CodeInstruction(OpCodes.Ldnull),
+            new CodeInstruction(OpCodes.Stloc_S, lbd_targets.LocalIndex)
+        });
         return codes;
     }
 
-    private static void CheckAttachmentRefMerge(Transform main, Transform attachmentReference)
+    private static void CheckAttachmentRefMerge(AnimationTargetsAbs targets, Transform attachmentReference)
     {
-        if (main.TryGetComponent<AnimationTargetsAbs>(out var targets) && attachmentReference.TryGetComponent<AttachmentReferenceAppended>(out var appended))
+        if (targets && !targets.Destroyed && attachmentReference.TryGetComponent<AttachmentReferenceAppended>(out var appended))
         {
-            appended.Merge(targets.AttachmentRef, targets);
+            appended.Merge(targets);
         }
     }
 

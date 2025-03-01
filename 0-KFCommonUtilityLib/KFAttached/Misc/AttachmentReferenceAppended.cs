@@ -3,9 +3,9 @@
 public class AttachmentReferenceAppended : AttachmentReference
 {
     private Transform[] bindings;
-    public void Merge(Transform main, AnimationTargetsAbs targets)
+    public void Merge(AnimationTargetsAbs targets)
     {
-        if (attachmentReference && main)
+        if (attachmentReference && targets)
         {
             foreach (var bindings in attachmentReference.GetComponentsInChildren<TransformActivationBinding>(true))
             {
@@ -15,7 +15,7 @@ public class AttachmentReferenceAppended : AttachmentReference
             for (int i = 0; i < attachmentReference.childCount; i++)
             {
                 bindings[i] = attachmentReference.GetChild(i);
-                bindings[i].SetParent(main, false);
+                bindings[i].SetParent(targets.AttachmentRef, false);
             }
             Destroy(attachmentReference.gameObject);
             attachmentReference = null;
