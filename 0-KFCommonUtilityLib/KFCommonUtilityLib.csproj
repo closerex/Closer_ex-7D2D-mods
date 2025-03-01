@@ -583,6 +583,7 @@
     <Compile Include="Scripts\Items\ModularActions\ActionModuleTagged.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleTranspilerTest.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleVariableZoom.cs" />
+    <Compile Include="Scripts\Items\ModularClasses\ItemModuleSortable.cs" />
     <Compile Include="Scripts\Items\ModularClasses\ItemModuleVariableZoom.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionAttachPrefabToEntitySync.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionCVarExpression.cs" />

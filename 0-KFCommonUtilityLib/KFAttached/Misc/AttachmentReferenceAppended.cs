@@ -3,10 +3,14 @@
 public class AttachmentReferenceAppended : AttachmentReference
 {
     private Transform[] bindings;
-    public void Merge(Transform main)
+    public void Merge(Transform main, AnimationTargetsAbs targets)
     {
         if (attachmentReference && main)
         {
+            foreach (var bindings in attachmentReference.GetComponentsInChildren<TransformActivationBinding>())
+            {
+                bindings.targets = targets;
+            }
             bindings = new Transform[attachmentReference.childCount];
             for (int i = 0; i < attachmentReference.childCount; i++)
             {
@@ -14,6 +18,7 @@ public class AttachmentReferenceAppended : AttachmentReference
                 bindings[i].SetParent(main, false);
             }
             Destroy(attachmentReference.gameObject);
+            attachmentReference = null;
         }
     }
 
@@ -34,6 +39,7 @@ public class AttachmentReferenceAppended : AttachmentReference
         if (attachmentReference)
         {
             Destroy(attachmentReference.gameObject);
+            attachmentReference = null;
         }
     }
 }

@@ -224,7 +224,7 @@ static class AnimationRiggingPatches
     {
         if (main.TryGetComponent<AnimationTargetsAbs>(out var targets) && attachmentReference.TryGetComponent<AttachmentReferenceAppended>(out var appended))
         {
-            appended.Merge(targets.AttachmentRef);
+            appended.Merge(targets.AttachmentRef, targets);
         }
     }
 
