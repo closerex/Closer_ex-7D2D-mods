@@ -7,7 +7,7 @@ public class AttachmentReferenceAppended : AttachmentReference
     {
         if (attachmentReference && main)
         {
-            foreach (var bindings in attachmentReference.GetComponentsInChildren<TransformActivationBinding>())
+            foreach (var bindings in attachmentReference.GetComponentsInChildren<TransformActivationBinding>(true))
             {
                 bindings.targets = targets;
             }
