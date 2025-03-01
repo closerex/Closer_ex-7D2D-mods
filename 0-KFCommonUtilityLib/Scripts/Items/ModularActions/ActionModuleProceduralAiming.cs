@@ -9,7 +9,6 @@ using UnityEngine;
 [TypeTarget(typeof(ItemActionZoom)), ActionDataTarget(typeof(ProceduralAimingData))]
 public class ActionModuleProceduralAiming
 {
-    private bool DontUpdatePlayerCameraReference = false;
     [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
     public void Postfix_OnModificationsChanged(ItemActionZoom __instance, ItemActionData _data, ProceduralAimingData __customData)
     {
@@ -28,9 +27,6 @@ public class ActionModuleProceduralAiming
             __customData.ergoData = null;
         }
 
-        DontUpdatePlayerCameraReference = false;
-        __instance.Properties.ParseBool("DontUpdatePlayerCameraRef", ref DontUpdatePlayerCameraReference);
-
         __customData.playerOriginTransform = null;
         __customData.playerCameraPosRef = _data.invData.holdingEntity is EntityPlayerLocal player && player.bFirstPersonView ? player.cameraTransform : null;
         var targets = AnimationRiggingManager.GetRigTargetsFromPlayer(_data.invData.holdingEntity);
@@ -39,18 +35,7 @@ public class ActionModuleProceduralAiming
             if (targets.ItemFpv)
             {
                 __customData.playerOriginTransform = __customData.playerCameraPosRef.FindInAllChildren("Hips");
-                var playerCameraPosRef = targets.ItemFpv.Find("PlayerCameraPositionReference");
-                if (!DontUpdatePlayerCameraReference)
-                {
-                    if (!playerCameraPosRef)
-                    {
-                        playerCameraPosRef = new GameObject("PlayerCameraPositionReference").transform;
-                        playerCameraPosRef.SetParent(targets.ItemFpv, false);
-                    }
-                    playerCameraPosRef.position = __customData.playerCameraPosRef.position;
-                    playerCameraPosRef.rotation = __customData.playerCameraPosRef.rotation;
-                }
-                __customData.playerCameraPosRef = playerCameraPosRef;
+                __customData.playerCameraPosRef = targets.ItemFpv.Find("PlayerCameraPositionReference");
             }
             else
             {

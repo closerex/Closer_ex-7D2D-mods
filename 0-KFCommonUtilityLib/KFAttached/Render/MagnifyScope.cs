@@ -155,12 +155,19 @@ namespace KFCommonUtilityLib.KFAttached.Render
 
             if (!manualControl && zoomActionData != null)
             {
-                bool aimingGun = player.AimingGun;
-                if (aimingGun && !pipCamera.gameObject.activeSelf)
+                if (player.bFirstPersonView)
                 {
-                    pipCamera.gameObject.SetActive(true);
+                    bool aimingGun = player.AimingGun;
+                    if (aimingGun && !pipCamera.gameObject.activeSelf)
+                    {
+                        pipCamera.gameObject.SetActive(true);
+                    }
+                    else if (!aimingGun && !zoomActionData.bZoomInProgress && pipCamera.gameObject.activeSelf)
+                    {
+                        pipCamera.gameObject.SetActive(false);
+                    }
                 }
-                else if (!aimingGun && !zoomActionData.bZoomInProgress && pipCamera.gameObject.activeSelf)
+                else if (pipCamera.gameObject.activeSelf)
                 {
                     pipCamera.gameObject.SetActive(false);
                 }
