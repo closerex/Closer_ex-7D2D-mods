@@ -80,14 +80,22 @@ namespace KFCommonUtilityLib
                 ItemAction itemAction = item.Actions[i];
                 if (itemAction != null && itemAction.Properties.Values.TryGetValue("ItemActionModules", out string str_modules))
                 {
-                    if (ModuleManagers.PatchType<ItemActionModuleProcessor>(itemAction.GetType(), typeof(ItemAction), str_modules, out string typename))
+                    try
                     {
-                        if (!dict_replacement_mapping.TryGetValue(item.Name, out var list))
+                        if (ModuleManagers.PatchType<ItemActionModuleProcessor>(itemAction.GetType(), typeof(ItemAction), str_modules, out string typename))
                         {
-                            list = new List<(string typename, int indexOfAction)>();
-                            dict_replacement_mapping.Add(item.Name, list);
+                            if (!dict_replacement_mapping.TryGetValue(item.Name, out var list))
+                            {
+                                list = new List<(string typename, int indexOfAction)>();
+                                dict_replacement_mapping.Add(item.Name, list);
+                            }
+                            list.Add((typename, i));
                         }
-                        list.Add((typename, i));
+                    }
+                    catch(Exception e)
+                    {
+                        Log.Error($"Error parsing ItemActionModules for {item.Name} action{i}:\n{e}");
+                        continue;
                     }
                 }
             }
