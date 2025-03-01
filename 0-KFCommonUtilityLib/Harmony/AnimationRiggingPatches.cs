@@ -210,13 +210,22 @@ static class AnimationRiggingPatches
             }
             else if (codes[i].opcode == OpCodes.Stloc_2)
             {
+                var lbl = generator.DefineLabel();
+                var lbls = codes[i + 1].ExtractLabels();
+                codes[i + 1].WithLabels(lbl);
                 codes.InsertRange(i + 1, new[]
                 {
-                    new CodeInstruction(OpCodes.Ldloc_0),
+                    new CodeInstruction(OpCodes.Ldarg_1).WithLabels(lbls),
+                    CodeInstruction.LoadField(typeof(MinEventParams), nameof(MinEventParams.Transform)),
+                    new CodeInstruction(OpCodes.Ldnull),
+                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(UnityEngine.Object), "op_Inequality")),
+                    new CodeInstruction(OpCodes.Brfalse_S, lbl),
+                    new CodeInstruction(OpCodes.Ldarg_1),
+                    CodeInstruction.LoadField(typeof(MinEventParams), nameof(MinEventParams.Transform)),
                     CodeInstruction.Call(typeof(Transform), nameof(Transform.GetComponent), new Type[0], new Type[]{ typeof(AnimationTargetsAbs)}),
-                    new CodeInstruction(OpCodes.Stloc_S, lbd_targets.LocalIndex)
+                    new CodeInstruction(OpCodes.Stloc_S, lbd_targets)
                 });
-                i += 3;
+                i += 9;
             }
             else if (codes[i].Calls(mtd_layer))
             {
@@ -228,19 +237,38 @@ static class AnimationRiggingPatches
                 });
                 i += 3;
             }
+            else if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 5)
+            {
+                var lbl = generator.DefineLabel();
+                var lbls = codes[i + 1].ExtractLabels();
+                codes[i + 1].WithLabels(lbl);
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldloc_3).WithLabels(lbls),
+                    CodeInstruction.Call(typeof(Transform), nameof(Transform.GetComponent), new Type[0], new Type[]{ typeof(IgnoreTint)}),
+                    new CodeInstruction(OpCodes.Ldnull),
+                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(UnityEngine.Object), "op_Inequality")),
+                    new CodeInstruction(OpCodes.Brfalse_S, lbl),
+                    new CodeInstruction(OpCodes.Ret)
+                });
+                i += 6;
+            }
         }
         codes.InsertRange(0, new[]
         {
             new CodeInstruction(OpCodes.Ldnull),
-            new CodeInstruction(OpCodes.Stloc_S, lbd_targets.LocalIndex)
+            new CodeInstruction(OpCodes.Stloc_S, lbd_targets)
         });
         return codes;
     }
 
     private static void CheckAttachmentRefMerge(AnimationTargetsAbs targets, Transform attachmentReference)
     {
+        if (targets && !targets.Destroyed)
+            Log.Out($"merging {targets.name} prefab is null: {attachmentReference is null}");
         if (targets && !targets.Destroyed && attachmentReference.TryGetComponent<AttachmentReferenceAppended>(out var appended))
         {
+            Log.Out("merged");
             appended.Merge(targets);
         }
     }

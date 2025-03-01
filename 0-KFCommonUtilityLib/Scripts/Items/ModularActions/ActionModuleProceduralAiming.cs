@@ -34,7 +34,18 @@ public class ActionModuleProceduralAiming
         {
             if (targets.ItemFpv)
             {
-                __customData.playerOriginTransform = __customData.playerCameraPosRef.FindInAllChildren("Hips");
+                if (targets is RigTargets)
+                {
+                    __customData.isRigWeapon = true;
+                    __customData.playerOriginTransform = targets.ItemAnimator.transform;
+                    __customData.rigWeaponLocalPosition = __customData.playerOriginTransform.localPosition;
+                    __customData.rigWeaponLocalRotation = __customData.playerOriginTransform.localRotation;
+                }
+                else
+                {
+                    __customData.isRigWeapon = false;
+                    __customData.playerOriginTransform = __customData.playerCameraPosRef.FindInAllChildren("Hips");
+                }
                 __customData.playerCameraPosRef = targets.ItemFpv.Find("PlayerCameraPositionReference");
             }
             else
@@ -90,6 +101,9 @@ public class ActionModuleProceduralAiming
         public Transform aimRefTransform;
         public Transform playerCameraPosRef;
         public Transform playerOriginTransform;
+        public bool isRigWeapon;
+        public Vector3 rigWeaponLocalPosition;
+        public Quaternion rigWeaponLocalRotation;
 
         public bool isAiming;
         public int curAimRefIndex = -1;
@@ -139,6 +153,11 @@ public class ActionModuleProceduralAiming
             curAimPerc = 0;
             targetSwitchPosVelocity = Vector3.zero;
             targetSwitchRotVelocity = Quaternion.identity;
+            if (isRigWeapon && playerOriginTransform)
+            {
+                playerOriginTransform.localPosition = rigWeaponLocalPosition;
+                playerOriginTransform.localRotation = rigWeaponLocalRotation;
+            }
         }
 
         public void RegisterGroup(AimReference[] group)
@@ -236,7 +255,12 @@ public class ActionModuleProceduralAiming
                         curAimRotOffset = Quaternion.Slerp(Quaternion.identity, aimTargetRotOffset, curAimPerc);
                     }
                 }
-                //apply offset to spine3
+                //apply offset to player
+                if (isRigWeapon)
+                {
+                    playerOriginTransform.localPosition = rigWeaponLocalPosition;
+                    playerOriginTransform.localRotation = rigWeaponLocalRotation;
+                }
                 playerOriginTransform.position += curAimPosOffset;
                 curAimRotOffset.ToAngleAxis(out var angle, out var axis);
                 playerOriginTransform.RotateAround(aimRefTransform.position, axis, angle);

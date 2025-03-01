@@ -508,6 +508,7 @@
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimatorRandomSwitch.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\RigWeightOverTime.cs" />
     <Compile Include="KFAttached\Misc\AttachmentReferenceAppended.cs" />
+    <Compile Include="KFAttached\Misc\IgnoreTint.cs" />
     <Compile Include="KFAttached\Misc\ItemAnimatorUpdate.cs" />
     <Compile Include="KFAttached\Misc\PlayerRigLateUpdate.cs" />
     <Compile Include="KFAttached\Misc\ScopeBase.cs" />
