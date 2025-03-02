@@ -108,17 +108,11 @@ public class TransformActivationBinding : MonoBehaviour
         yield return new WaitForEndOfFrame();
         if (animatorParamBindings != null && targets && targets.IsAnimationSet)
         {
-            IAnimatorWrapper animator = targets.GraphBuilder.WeaponWrapper;
-            if (animator == null || !animator.IsValid)
-            {
-                Log.Warning($"animator wrapper invalid!");
-                yield break;
-            }
             foreach (string str in animatorParamBindings)
             {
                 if (str != null)
                 {
-                    animator.SetBool(str, enabled);
+                    targets.GraphBuilder.Player.emodel.avatarController.UpdateBool(str, enabled);
                 }
             }
         }

@@ -42,6 +42,9 @@ public class AnimationGraphBuilder : MonoBehaviour
     public IAnimatorWrapper VanillaWrapper { get; private set; }
     public IAnimatorWrapper WeaponWrapper { get; private set; }
     public static IAnimatorWrapper DummyWrapper { get; } = new AnimatorWrapper(null);
+#if NotEditor
+    public EntityPlayer Player { get; private set; }
+#endif
 
     private void Awake()
     {
@@ -55,7 +58,7 @@ public class AnimationGraphBuilder : MonoBehaviour
         vanillaAvatar = animator.avatar;
 #if NotEditor
         vanillaRuntimeController = isFpv ? SDCSUtils.FPAnimController : SDCSUtils.TPAnimController;
-        isLocalPlayer = GetComponentInParent<EntityPlayer>() is EntityPlayerLocal;
+        isLocalPlayer = (Player = GetComponentInParent<EntityPlayer>()) is EntityPlayerLocal;
 #else
         vanillaRuntimeController = animator.runtimeAnimatorController;
 #endif
