@@ -227,12 +227,23 @@ static class AnimationRiggingPatches
                 });
                 i += 9;
             }
+            else if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 4)
+            {
+                codes.RemoveAt(i - 1);
+                codes.InsertRange(i - 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldloc_S, lbd_targets),
+                    new CodeInstruction(OpCodes.Ldloc_2),
+                    CodeInstruction.Call(typeof(AnimationRiggingPatches), nameof(CreateOrMoveAttachment))
+                });
+                i += 2;
+            }
             else if (codes[i].Calls(mtd_layer))
             {
                 codes.InsertRange(i + 1, new[]
                 {
                     new CodeInstruction(OpCodes.Ldloc_S, lbd_targets),
-                    new CodeInstruction(OpCodes.Ldloc_3),
+                    new CodeInstruction(OpCodes.Ldloc_S, 4),
                     CodeInstruction.Call(typeof(AnimationRiggingPatches), nameof(CheckAttachmentRefMerge))
                 });
                 i += 3;
@@ -262,14 +273,25 @@ static class AnimationRiggingPatches
         return codes;
     }
 
-    private static void CheckAttachmentRefMerge(AnimationTargetsAbs targets, Transform attachmentReference)
+    private static GameObject CreateOrMoveAttachment(GameObject go, AnimationTargetsAbs targets, string name)
     {
-        if (targets && !targets.Destroyed)
-            Log.Out($"merging {targets.name} prefab is null: {attachmentReference is null}");
-        if (targets && !targets.Destroyed && attachmentReference.TryGetComponent<AttachmentReferenceAppended>(out var appended))
+        GameObject res = null;
+        if (targets)
         {
-            Log.Out("merged");
-            appended.Merge(targets);
+            res = targets.GetPrefab(name);
+        }
+        if (!res)
+        {
+            res = GameObject.Instantiate(go);
+        }
+        return res;
+    }
+
+    private static void CheckAttachmentRefMerge(AnimationTargetsAbs targets, GameObject attachmentReference)
+    {
+        if (targets)
+        {
+            targets.AttachPrefab(attachmentReference);
         }
     }
 

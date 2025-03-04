@@ -89,7 +89,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
             var entity = GetComponentInParent<EntityPlayerLocal>();
             if (!entity)
             {
-                Destroy(this);
+                Destroy(gameObject);
                 return;
             }
             player = entity;

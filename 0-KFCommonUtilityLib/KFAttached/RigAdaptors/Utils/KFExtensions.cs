@@ -76,6 +76,11 @@ public static class KFExtensions
         return new Vector3(Mathf.Clamp(val.x, min.x, max.x), Mathf.Clamp(val.y, min.y, max.y), Mathf.Clamp(val.z, min.z, max.z));
     }
 
+    public static Vector3 SmoothStep(Vector3 from, Vector3 to, float t)
+    {
+        return new Vector3(Mathf.SmoothStep(from.x, to.x, t), Mathf.SmoothStep(from.y, to.y, t), Mathf.SmoothStep(from.z, to.z, t));
+    }
+
     public static float AngleToInferior(float angle)
     {
         angle %= 360;

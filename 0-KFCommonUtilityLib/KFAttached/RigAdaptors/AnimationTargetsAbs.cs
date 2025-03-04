@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Animations.Rigging;
 using System;
+using System.Collections.Generic;
 
 [AddComponentMenu("")]
 public abstract class AnimationTargetsAbs : MonoBehaviour
@@ -36,6 +37,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     protected Animator itemAnimatorTpv;
     protected bool fpvSet = false;
     protected bool tpvSet = false;
+    private Dictionary<string, GameObject> dict_attachments = new Dictionary<string, GameObject>();
 
     public abstract Transform ItemFpv { get; protected set; }
     public abstract Transform AttachmentRef { get; protected set; }
@@ -81,6 +83,26 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
 #endif
             itemTpv.gameObject.SetActive(false);
         }
+    }
+
+    //attaching the same prefab multiple times is not allowed!
+    public void AttachPrefab(GameObject prefab)
+    {
+        if (!Destroyed && dict_attachments != null && prefab.TryGetComponent<AttachmentReferenceAppended>(out var appended))
+        {
+            Log.Out("merged");
+            appended.Merge(this);
+            dict_attachments[prefab.name] = prefab.gameObject;
+        }
+    }
+
+    public GameObject GetPrefab(string name)
+    {
+        if (Destroyed || dict_attachments == null || !dict_attachments.TryGetValue(name, out var prefab))
+        {
+            return null;
+        }
+        return prefab;
     }
 
     public void Init(Transform playerAnimatorTrans, bool isFpv)
@@ -305,6 +327,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
         Destroyed = true;
 #endif
         PlayerAnimatorTrans = null;
+        dict_attachments = null;
 
         Component.DestroyImmediate(this);
         //Log.Out(StackTraceUtility.ExtractStackTrace());

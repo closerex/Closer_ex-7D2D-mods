@@ -84,15 +84,15 @@ public class ActionModuleProceduralAiming
         __customData.ResetAiming();
     }
 
-    [HarmonyPatch(nameof(ItemAction.ExecuteAction)), MethodTargetPostfix]
-    public void Postfix_ExecuteAction(ProceduralAimingData __customData, ItemActionData _actionData)
-    {
-        if (__customData.isAiming != ((ItemActionZoom.ItemActionDataZoom)_actionData).aimingValue)
-        {
-            __customData.UpdateCurrentReference();
-            __customData.isAiming = ((ItemActionZoom.ItemActionDataZoom)_actionData).aimingValue;
-        }
-    }
+    //[HarmonyPatch(nameof(ItemAction.ExecuteAction)), MethodTargetPostfix]
+    //public void Postfix_ExecuteAction(ProceduralAimingData __customData, ItemActionData _actionData)
+    //{
+    //    if (__customData.isAiming != ((ItemActionZoom.ItemActionDataZoom)_actionData).aimingValue)
+    //    {
+    //        __customData.UpdateCurrentReference();
+    //        __customData.isAiming = ((ItemActionZoom.ItemActionDataZoom)_actionData).aimingValue;
+    //    }
+    //}
 
     public class ProceduralAimingData
     {
@@ -112,9 +112,10 @@ public class ActionModuleProceduralAiming
         public Quaternion aimRefRotOffset;
         public Vector3 curAimPosOffset;
         public Quaternion curAimRotOffset;
+        private Vector3 curAimPosVelocity;
+        private Quaternion curAimRotVelocity;
         private Vector3 targetSwitchPosVelocity;
         private Quaternion targetSwitchRotVelocity;
-        private float curAimPerc;
         public List<AimReference> registeredReferences = new List<AimReference>();
         private int CurAimRefIndex
         {
@@ -150,7 +151,8 @@ public class ActionModuleProceduralAiming
             }
             curAimPosOffset = Vector3.zero;
             curAimRotOffset = Quaternion.identity;
-            curAimPerc = 0;
+            curAimPosVelocity = Vector3.zero;
+            curAimRotVelocity = Quaternion.identity;
             targetSwitchPosVelocity = Vector3.zero;
             targetSwitchRotVelocity = Quaternion.identity;
             if (isRigWeapon && playerOriginTransform)
@@ -189,20 +191,6 @@ public class ActionModuleProceduralAiming
                     }
                     aimRefRotOffset = curAimRef.rotationOffset;
                 }
-                if (curAimPerc <= 0f)
-                {
-                    SnapToCurReference();
-                }
-            }
-        }
-
-        private void SnapToCurReference()
-        {
-            curAimPosOffset = Vector3.zero;
-            curAimRotOffset = Quaternion.identity;
-            if (aimRefTransform)
-            {
-                aimRefTransform.SetLocalPositionAndRotation(aimRefPosOffset, aimRefRotOffset);
             }
         }
 
@@ -210,59 +198,33 @@ public class ActionModuleProceduralAiming
         {
             if (aimRefTransform && playerCameraPosRef && playerOriginTransform && CurAimRef)
             {
-                float zoomInTimeMod = ergoData == null ? zoomInTime : zoomInTime / ergoData.ModifiedErgo;
-                if (curAimPerc <= 0f)
-                {
-                    //if not aiming, place aimRef at target immediately
-                    SnapToCurReference();
-                }
-                else
-                {
-                    //move aimRef towards target
-                    aimRefTransform.localPosition = Vector3.SmoothDamp(aimRefTransform.localPosition, aimRefPosOffset, ref targetSwitchPosVelocity, 0.075f);
-                    aimRefTransform.localRotation = QuaternionUtil.SmoothDamp(aimRefTransform.localRotation, aimRefRotOffset, ref targetSwitchRotVelocity, 0.075f);
-                }
-                //calculate current target aim offset
-                Vector3 aimTargetPosOffset = playerCameraPosRef.position - aimRefTransform.position;
-                Quaternion aimTargetRotOffset = playerCameraPosRef.rotation * Quaternion.Inverse(aimRefTransform.rotation);
-                if (isAiming)
-                {
-                    //when aiming, move towards target aim offset
-                    curAimPerc = Mathf.Clamp01(curAimPerc + Time.deltaTime / zoomInTimeMod);
-                    if (curAimPerc >= 1)
-                    {
-                        curAimPosOffset = aimTargetPosOffset;
-                        curAimRotOffset = aimTargetRotOffset;
-                    }
-                    else
-                    {
-                        curAimPosOffset = Vector3.Slerp(Vector3.zero, aimTargetPosOffset, curAimPerc);
-                        curAimRotOffset = Quaternion.Slerp(Quaternion.identity, aimTargetRotOffset, curAimPerc);
-                    }
-                }
-                else
-                {
-                    //when not aiming, move towards zero
-                    curAimPerc = Mathf.Clamp01(curAimPerc - Time.deltaTime / zoomInTime);
-                    if (curAimPerc >= 1)
-                    {
-                        curAimPosOffset = Vector3.zero;
-                        curAimRotOffset = Quaternion.identity;
-                    }
-                    else
-                    {
-                        curAimPosOffset = Vector3.Slerp(Vector3.zero, aimTargetPosOffset, curAimPerc);
-                        curAimRotOffset = Quaternion.Slerp(Quaternion.identity, aimTargetRotOffset, curAimPerc);
-                    }
-                }
-                //apply offset to player
                 if (isRigWeapon)
                 {
                     playerOriginTransform.localPosition = rigWeaponLocalPosition;
                     playerOriginTransform.localRotation = rigWeaponLocalRotation;
                 }
-                playerOriginTransform.position += curAimPosOffset;
-                curAimRotOffset.ToAngleAxis(out var angle, out var axis);
+                float zoomInTimeMod = ergoData == null ? zoomInTime : zoomInTime / ergoData.ModifiedErgo;
+                zoomInTimeMod *= 0.25f;
+                //move aimRef towards target
+                aimRefTransform.localPosition = Vector3.SmoothDamp(aimRefTransform.localPosition, aimRefPosOffset, ref targetSwitchPosVelocity, 0.075f);
+                aimRefTransform.localRotation = QuaternionUtil.SmoothDamp(aimRefTransform.localRotation, aimRefRotOffset, ref targetSwitchRotVelocity, 0.075f);
+                //calculate current target aim offset
+                Vector3 aimTargetPosOffset = playerOriginTransform.InverseTransformDirection(playerCameraPosRef.position - aimRefTransform.position);
+                Quaternion aimTargetRotOffset = playerCameraPosRef.localRotation * Quaternion.Inverse(aimRefTransform.parent.localRotation * aimRefTransform.localRotation);
+                //move current aim offset towards target aim offset
+                if (isAiming)
+                {
+                    curAimPosOffset = Vector3.SmoothDamp(curAimPosOffset, aimTargetPosOffset, ref curAimPosVelocity, zoomInTimeMod);
+                    curAimRotOffset = QuaternionUtil.SmoothDamp(curAimRotOffset, aimTargetRotOffset, ref curAimRotVelocity, zoomInTimeMod);
+                }
+                else
+                {
+                    curAimPosOffset = Vector3.SmoothDamp(curAimPosOffset, Vector3.zero, ref curAimPosVelocity, zoomInTimeMod);
+                    curAimRotOffset = QuaternionUtil.SmoothDamp(curAimRotOffset, Quaternion.identity, ref curAimRotVelocity, zoomInTimeMod);
+                }
+                //apply offset to player
+                playerOriginTransform.localPosition += curAimPosOffset;
+                (playerCameraPosRef.parent.rotation * curAimRotOffset * Quaternion.Inverse(playerCameraPosRef.parent.rotation)).ToAngleAxis(out var angle, out var axis);
                 playerOriginTransform.RotateAround(aimRefTransform.position, axis, angle);
             }
         }
@@ -278,6 +240,11 @@ public static class ProceduralAimingPatches
     {
         if (__instance.inventory?.holdingItemData?.actionData?[1] is IModuleContainerFor<ActionModuleProceduralAiming.ProceduralAimingData> module)
         {
+            if (__instance.AimingGun != module.Instance.isAiming)
+            {
+                module.Instance.UpdateCurrentReference();
+                module.Instance.isAiming = __instance.AimingGun;
+            }
             module.Instance.LateUpdateAiming();
         }
     }

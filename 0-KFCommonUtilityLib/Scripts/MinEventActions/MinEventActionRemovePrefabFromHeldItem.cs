@@ -18,14 +18,27 @@ public class MinEventActionRemovePrefabFromHeldItem : MinEventActionRemovePrefab
         Transform parent = AnimationRiggingManager.GetAddPartTransformOverride(_params.Transform, parent_transform_path, false);
         if (parent)
         {
-            Transform child = parent.Find("tempPrefab_" + prefabName);
+            Transform child = null;
+            string prefabName = "tempPrefab_" + base.prefabName;
+            if (_params.Transform.TryGetComponent<AnimationTargetsAbs>(out var targets))
+            {
+                GameObject prefab = targets.GetPrefab(prefabName);
+                if (prefab)
+                {
+                    child = prefab.transform;
+                }
+            }
+            if (!child)
+            {
+                child = parent.Find(prefabName);
+            }
             if (child)
             {
-                child.parent = null;
                 if (child.TryGetComponent<AttachmentReferenceAppended>(out var reference))
                 {
                     reference.Remove();
                 }
+                child.parent = null;
                 GameObject.Destroy(child.gameObject);
             }
         }
