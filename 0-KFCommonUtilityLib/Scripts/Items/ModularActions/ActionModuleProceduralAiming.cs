@@ -200,8 +200,7 @@ public class ActionModuleProceduralAiming
             {
                 if (isRigWeapon)
                 {
-                    playerOriginTransform.localPosition = rigWeaponLocalPosition;
-                    playerOriginTransform.localRotation = rigWeaponLocalRotation;
+                    playerOriginTransform.SetLocalPositionAndRotation(rigWeaponLocalPosition, rigWeaponLocalRotation);
                 }
                 float zoomInTimeMod = ergoData == null ? zoomInTime : zoomInTime / ergoData.ModifiedErgo;
                 zoomInTimeMod *= 0.25f;
@@ -223,7 +222,7 @@ public class ActionModuleProceduralAiming
                     curAimRotOffset = QuaternionUtil.SmoothDamp(curAimRotOffset, Quaternion.identity, ref curAimRotVelocity, zoomInTimeMod);
                 }
                 //apply offset to player
-                playerOriginTransform.localPosition += curAimPosOffset;
+                playerOriginTransform.position += playerOriginTransform.TransformDirection(curAimPosOffset);
                 (playerCameraPosRef.parent.rotation * curAimRotOffset * Quaternion.Inverse(playerCameraPosRef.parent.rotation)).ToAngleAxis(out var angle, out var axis);
                 playerOriginTransform.RotateAround(aimRefTransform.position, axis, angle);
             }
