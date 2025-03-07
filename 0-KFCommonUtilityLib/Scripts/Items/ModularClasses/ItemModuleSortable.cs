@@ -39,29 +39,36 @@ public struct ItemModuleSortableComparer : IComparer<ItemValue>
 [HarmonyPatch]
 public static class ModSortingPatches
 {
-    [HarmonyPatch(typeof(XUiC_ItemPartStackGrid), nameof(XUiC_ItemPartStackGrid.HandleSlotChangedEvent))]
-    [HarmonyTranspiler]
-    public static IEnumerable<CodeInstruction> Transpiler_HandleSlotChangedEvent_XUiC_ItemPartStackGrid(IEnumerable<CodeInstruction> instructions)
-    {
-        var codes = instructions.ToList();
-        var prop_setstack = AccessTools.PropertySetter(typeof(XUiC_AssembleWindow), nameof(XUiC_AssembleWindow.ItemStack));
-        var idx = codes.FindIndex(x => x.Calls(prop_setstack));
-        if (idx > 0)
-        {
-            codes.InsertRange(idx, new[]
-            {
-                new CodeInstruction(OpCodes.Dup),
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ModSortingPatches), nameof(SortMods)))
-            });
-        }
-        return codes;
-    }
+    //[HarmonyPatch(typeof(XUiC_ItemPartStackGrid), nameof(XUiC_ItemPartStackGrid.HandleSlotChangedEvent))]
+    //[HarmonyTranspiler]
+    //public static IEnumerable<CodeInstruction> Transpiler_HandleSlotChangedEvent_XUiC_ItemPartStackGrid(IEnumerable<CodeInstruction> instructions)
+    //{
+    //    var codes = instructions.ToList();
+    //    var prop_setstack = AccessTools.PropertySetter(typeof(XUiC_AssembleWindow), nameof(XUiC_AssembleWindow.ItemStack));
+    //    var idx = codes.FindIndex(x => x.Calls(prop_setstack));
+    //    if (idx > 0)
+    //    {
+    //        codes.InsertRange(idx, new[]
+    //        {
+    //            new CodeInstruction(OpCodes.Dup),
+    //            new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ModSortingPatches), nameof(SortMods)))
+    //        });
+    //    }
+    //    return codes;
+    //}
 
-    [HarmonyPatch(typeof(XUiC_ItemPartStackGrid), nameof(XUiC_ItemPartStackGrid.HandleSlotChangedEvent))]
-    [HarmonyPostfix]
-    private static void Postfix_HandleSlotChangedEvent_XUiC_ItemPartStackGrid(XUiC_ItemPartStackGrid __instance)
+    //[HarmonyPatch(typeof(XUiC_ItemPartStackGrid), nameof(XUiC_ItemPartStackGrid.HandleSlotChangedEvent))]
+    //[HarmonyPostfix]
+    //private static void Postfix_HandleSlotChangedEvent_XUiC_ItemPartStackGrid(XUiC_ItemPartStackGrid __instance)
+    //{
+    //    __instance.SetParts(__instance.CurrentItem.itemValue?.Modifications);
+    //}
+
+    [HarmonyPatch(typeof(XUiC_AssembleWindowGroup), nameof(XUiC_AssembleWindowGroup.ItemStack), MethodType.Setter)]
+    [HarmonyPrefix]
+    private static void Postfix_set_ItemStack_XUiC_AssembleWindowGroup(ItemStack value)
     {
-        __instance.SetParts(__instance.CurrentItem.itemValue?.Modifications);
+        SortMods(value);
     }
 
     private static void SortMods(ItemStack itemStack)

@@ -177,20 +177,21 @@ public class ActionModuleProceduralAiming
 
         public void UpdateCurrentReference()
         {
-            int newRefIndex = CurAimRefIndex;
-            if (newRefIndex != curAimRefIndex)
+            curAimRefIndex = CurAimRefIndex;
+            AimReference curAimRef = CurAimRef;
+            if (aimRefTransform && curAimRef)
             {
-                curAimRefIndex = newRefIndex;
-                AimReference curAimRef = CurAimRef;
-                if (aimRefTransform && curAimRef)
+                aimRefPosOffset = curAimRef.positionOffset;
+                if (curAimRef.asReference)
                 {
-                    aimRefPosOffset = curAimRef.positionOffset;
-                    if (curAimRef.asReference)
-                    {
-                        aimRefPosOffset -= aimRefTransform.parent.InverseTransformDirection(Vector3.Project(aimRefTransform.parent.TransformPoint(aimRefPosOffset) - playerCameraPosRef.position, playerCameraPosRef.forward));
-                    }
-                    aimRefRotOffset = curAimRef.rotationOffset;
+                    aimRefPosOffset -= aimRefTransform.parent.InverseTransformDirection(Vector3.Project(aimRefTransform.parent.TransformPoint(aimRefPosOffset) - playerCameraPosRef.position, playerCameraPosRef.forward));
                 }
+                aimRefRotOffset = curAimRef.rotationOffset;
+            }
+
+            for (int i = 0; i < registeredReferences.Count; i++)
+            {
+                registeredReferences[i].UpdateEnableState(curAimRefIndex == i);
             }
         }
 
@@ -208,7 +209,7 @@ public class ActionModuleProceduralAiming
                 aimRefTransform.localPosition = Vector3.SmoothDamp(aimRefTransform.localPosition, aimRefPosOffset, ref targetSwitchPosVelocity, 0.075f);
                 aimRefTransform.localRotation = QuaternionUtil.SmoothDamp(aimRefTransform.localRotation, aimRefRotOffset, ref targetSwitchRotVelocity, 0.075f);
                 //calculate current target aim offset
-                Vector3 aimTargetPosOffset = playerOriginTransform.InverseTransformDirection(playerCameraPosRef.position - aimRefTransform.position);
+                Vector3 aimTargetPosOffset = playerCameraPosRef.InverseTransformDirection(playerCameraPosRef.position - aimRefTransform.position);
                 Quaternion aimTargetRotOffset = playerCameraPosRef.localRotation * Quaternion.Inverse(aimRefTransform.parent.localRotation * aimRefTransform.localRotation);
                 //move current aim offset towards target aim offset
                 if (isAiming)
@@ -222,9 +223,18 @@ public class ActionModuleProceduralAiming
                     curAimRotOffset = QuaternionUtil.SmoothDamp(curAimRotOffset, Quaternion.identity, ref curAimRotVelocity, zoomInTimeMod);
                 }
                 //apply offset to player
-                playerOriginTransform.position += playerOriginTransform.TransformDirection(curAimPosOffset);
-                (playerCameraPosRef.parent.rotation * curAimRotOffset * Quaternion.Inverse(playerCameraPosRef.parent.rotation)).ToAngleAxis(out var angle, out var axis);
-                playerOriginTransform.RotateAround(aimRefTransform.position, axis, angle);
+                if (isRigWeapon)
+                {
+                    (playerCameraPosRef.parent.rotation * curAimRotOffset * Quaternion.Inverse(playerCameraPosRef.parent.rotation)).ToAngleAxis(out var angle, out var axis);
+                    playerOriginTransform.RotateAround(aimRefTransform.position, axis, angle);
+                    playerOriginTransform.position += playerCameraPosRef.TransformDirection(curAimPosOffset);
+                }
+                else
+                {
+                    playerOriginTransform.position += playerCameraPosRef.TransformDirection(curAimPosOffset);
+                    (playerCameraPosRef.parent.rotation * curAimRotOffset * Quaternion.Inverse(playerCameraPosRef.parent.rotation)).ToAngleAxis(out var angle, out var axis);
+                    playerOriginTransform.RotateAround(aimRefTransform.position, axis, angle);
+                }
             }
         }
     }

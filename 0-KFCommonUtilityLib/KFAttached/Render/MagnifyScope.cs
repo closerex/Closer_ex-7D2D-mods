@@ -61,9 +61,9 @@ namespace KFCommonUtilityLib.KFAttached.Render
 
             if (newShader == null)
             {
-                newShader = LoadManager.LoadAsset<Shader>("#@modfolder(CommonUtilityLib):Resources/PIPScope.unity3d?PIPScope.shadergraph", null, null, false, true).Asset;
+                newShader = LoadManager.LoadAsset<Shader>("#@modfolder(CommonUtilityLib):Resources/PIPScope.unity3d?PIPScopeNew.shadergraph", null, null, false, true).Asset;
             }
-            if (renderTarget.material.shader.name == "Shader Graphs/MagnifyScope")
+            if (renderTarget.material.shader.name == "Shader Graphs/MagnifyScope" || renderTarget.material.shader.name == "Shader Graphs/PIPScope")
             {
                 renderTarget.material.shader = newShader;
             }
@@ -130,7 +130,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
                     originalRatio = "0";
                 }
                 targetFov = StringParsers.ParseFloat(player.inventory.holdingItemItemValue.GetPropertyOverride("ZoomRatio", originalRatio));
-                targetFov = Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * 7.5f) / Mathf.Sqrt(targetFov));
+                targetFov = Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * 27.5f) / targetFov);
             }
 
 #else
@@ -249,9 +249,11 @@ namespace KFCommonUtilityLib.KFAttached.Render
 
         private void CreateCamera()
         {
-            targetTexture = new RenderTexture((int)(Screen.height * 0.5f * aspectRatio), (int)(Screen.height * 0.5f), 24, RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear)
+            const float texScale = 1f;
+            targetTexture = new RenderTexture((int)(Screen.height * aspectRatio), (int)(Screen.height), 24, RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear)
             {
-                filterMode = FilterMode.Bilinear
+                filterMode = FilterMode.Bilinear,
+                wrapMode = TextureWrapMode.Clamp
             };
             renderTarget.material.mainTexture = targetTexture;
             GameObject cameraGO = new GameObject("KFPiPCam");
@@ -265,18 +267,21 @@ namespace KFCommonUtilityLib.KFAttached.Render
             }
 
             pipCamera = cameraGO.AddComponent<Camera>();
-#if NotEditor
-            //pipCamera.CopyFrom(player.playerCamera);
-            pipCamera.cullingMask = player.playerCamera.cullingMask;
-#else
-            pipCamera.CopyFrom(debugCamera);
-#endif
             pipCamera.targetTexture = targetTexture;
             pipCamera.depth = -2;
             pipCamera.fieldOfView = 55;
             pipCamera.nearClipPlane = 0.05f;
             pipCamera.farClipPlane = 5000;
             pipCamera.aspect = aspectRatio;
+            pipCamera.rect = new Rect(0, 0, texScale, texScale);
+#if NotEditor
+            //pipCamera.CopyFrom(player.playerCamera);
+            pipCamera.cullingMask = player.playerCamera.cullingMask;
+            renderTarget.material.SetFloat("_AspectMain", player.playerCamera.aspect);
+            renderTarget.material.SetFloat("_AspectScope", pipCamera.aspect);
+#else
+            pipCamera.CopyFrom(debugCamera);
+#endif
             if (cameraJoint == null || hideFpvModelInScope)
             {
                 pipCamera.cullingMask &= ~(1024);

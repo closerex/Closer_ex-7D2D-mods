@@ -83,12 +83,12 @@ public class ActionModuleVariableZoom
 
     public static float FovToScale(float fov)
     {
-        return Mathf.Pow(Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * 7.5f) / fov), 2);
+        return Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * 27.5f) / fov);
     }
 
     public static float ScaleToFov(float scale)
     {
-        return Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * 7.5f) / Mathf.Sqrt(scale));
+        return Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * 27.5f) / scale);
     }
 
     public static float GetNext(float cur)
