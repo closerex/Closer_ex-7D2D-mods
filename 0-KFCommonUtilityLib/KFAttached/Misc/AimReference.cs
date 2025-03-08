@@ -33,7 +33,6 @@ public class AimReference : MonoBehaviour
         {
             return;
         }
-
         group.UpdateEnableStates();
     }
 

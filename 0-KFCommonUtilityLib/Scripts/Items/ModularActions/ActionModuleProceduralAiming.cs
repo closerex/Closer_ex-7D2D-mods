@@ -191,7 +191,7 @@ public class ActionModuleProceduralAiming
 
             for (int i = 0; i < registeredReferences.Count; i++)
             {
-                registeredReferences[i].UpdateEnableState(curAimRefIndex == i);
+                registeredReferences[i].UpdateEnableState(isAiming && curAimRefIndex == i);
             }
         }
 
@@ -251,8 +251,8 @@ public static class ProceduralAimingPatches
         {
             if (__instance.AimingGun != module.Instance.isAiming)
             {
-                module.Instance.UpdateCurrentReference();
                 module.Instance.isAiming = __instance.AimingGun;
+                module.Instance.UpdateCurrentReference();
             }
             module.Instance.LateUpdateAiming();
         }
