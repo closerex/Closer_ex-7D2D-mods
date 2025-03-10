@@ -55,8 +55,15 @@ public class ActionModuleVariableZoom
         str = _data.invData.itemValue.GetPropertyOverride("ToggleOnly", null);
         if (!string.IsNullOrEmpty(str) && bool.TryParse(str, out __customData.isToggleOnly)) ;
 
-        __customData.maxFov = ScaleToFov(__customData.minScale);
-        __customData.minFov = ScaleToFov(__customData.maxScale);
+        str = _data.invData.itemValue.GetPropertyOverride("ForceFovRange", null);
+        if (!string.IsNullOrEmpty(str) && StringParsers.TryParseRange(str, out __customData.fovRange) && __customData.fovRange.min > 0 && __customData.fovRange.max > 0)
+        {
+            __customData.fovRange = new FloatRange(Mathf.Min(__customData.fovRange.max, __customData.fovRange.min), Mathf.Max(__customData.fovRange.max, __customData.fovRange.min));
+            __customData.forceFov = true;
+        }
+
+        //__customData.maxFov = ScaleToFov(__customData.minScale);
+        //__customData.minFov = ScaleToFov(__customData.maxScale);
         __customData.scopeValueIndex = _data.invData.itemValue.Modifications == null ? -1 : Array.FindIndex(_data.invData.itemValue.Modifications, static v => v?.ItemClass is IModuleContainerFor<ItemModuleVariableZoom>);
         if (__customData.scopeValueIndex == -1 && _data.invData.itemValue.ItemClass is not IModuleContainerFor<ItemModuleVariableZoom>)
         {
@@ -81,29 +88,31 @@ public class ActionModuleVariableZoom
         __customData.UpdateByStep();
     }
 
-    public static float FovToScale(float fov)
-    {
-        return Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * 27.5f) / fov);
-    }
+    //public static float FovToScale(float fov)
+    //{
+    //    return Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * 27.5f) / fov);
+    //}
 
-    public static float ScaleToFov(float scale)
-    {
-        return Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * 27.5f) / scale);
-    }
+    //public static float ScaleToFov(float scale)
+    //{
+    //    return Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * 27.5f) / scale);
+    //}
 
-    public static float GetNext(float cur)
-    {
-        return Mathf.Sin(Mathf.PI * cur / 2);
-    }
+    //public static float GetNext(float cur)
+    //{
+    //    return Mathf.Sin(Mathf.PI * cur / 2);
+    //}
 
     public class VariableZoomData
     {
         public float maxScale = 1f;
         public float minScale = 1f;
         public float curScale = 0f;
-        public float maxFov = 15f;
-        public float minFov = 15f;
-        public float curFov = 90f;
+        //public float maxFov = 15f;
+        //public float minFov = 15f;
+        //public float curFov = 90f;
+        public bool forceFov = false;
+        public FloatRange fovRange = new FloatRange(15f, 15f);
         public float curStep = 0;
         public float stepSign = 1f;
         public bool isToggleOnly = false;
@@ -177,8 +186,9 @@ public class ActionModuleVariableZoom
 
         public void UpdateByStep()
         {
-            curFov = Utils.FastLerp(maxFov, minFov, GetNext(curStep));
-            curScale = FovToScale(curFov);
+            //curFov = Utils.FastLerp(maxFov, minFov, GetNext(curStep));
+            //curScale = FovToScale(curFov);
+            curScale = Utils.FastLerp(minScale, maxScale, curStep);
             shouldUpdate = true;
         }
     }

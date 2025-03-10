@@ -1,7 +1,7 @@
 ﻿#if NotEditor
 using HarmonyLib;
+using System;
 using System.Reflection;
-
 #endif
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
@@ -20,6 +20,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
         private Renderer renderTarget;
 
         private Camera pipCamera;
+        [Header("Core")]
         [SerializeField]
         private bool manualControl = false;
         [SerializeField]
@@ -30,14 +31,26 @@ namespace KFCommonUtilityLib.KFAttached.Render
         private bool hideFpvModelInScope = false;
         [SerializeField]
         private bool variableZoom = false;
+        [Header("Reticle Scaling")]
         [SerializeField]
         private bool scaleReticle = false;
         [SerializeField]
-        private bool scaleDownReticle = false;
+        private Vector2 reticleSizeRange = new Vector2(1, 1);
+        //[SerializeField]
+        //private bool scaleDownReticle = false;
+        //[SerializeField]
+        //private float reticleScaleRatio = 1.0f;
+        [Header("Camera Texture Size And Procedural Aiming")]
         [SerializeField]
-        private float reticleScaleRatio = 1.0f;
+        private Transform aimRef;
+        [SerializeField]
+        private float lensSizeFull;
+        [SerializeField]
+        private float lensSizeValid;
 
         private float initialReticleScale = 1f;
+        private float initialFov = 55f;
+        private float textureHeight = Screen.height;
 
 #if NotEditor
         private EntityPlayerLocal player;
@@ -45,14 +58,18 @@ namespace KFCommonUtilityLib.KFAttached.Render
         private ItemActionZoom.ItemActionDataZoom zoomActionData;
         private bool IsVariableZoom => variableZoom && variableZoomData != null;
         private ActionModuleVariableZoom.VariableZoomData variableZoomData;
+        private float targetStep = 0;
+        private float currentStep = 0;
+        private float stepVelocity = 0;
 #else
+        [Header("Editor Debug")]
         public Camera debugCamera;
         public float debugScale = 2f;
 #endif
         private void Awake()
         {
             renderTarget = GetComponent<Renderer>();
-            if (renderTarget == null)
+            if (!renderTarget)
             {
                 Destroy(this);
                 return;
@@ -61,9 +78,9 @@ namespace KFCommonUtilityLib.KFAttached.Render
 
             if (newShader == null)
             {
-                newShader = LoadManager.LoadAsset<Shader>("#@modfolder(CommonUtilityLib):Resources/PIPScope.unity3d?PIPScopeNew.shadergraph", null, null, false, true).Asset;
+                newShader = LoadManager.LoadAsset<Shader>("#@modfolder(CommonUtilityLib):Resources/PIPScope.unity3d?PIPScope.shadergraph", null, null, false, true).Asset;
             }
-            if (renderTarget.material.shader.name == "Shader Graphs/MagnifyScope" || renderTarget.material.shader.name == "Shader Graphs/PIPScope")
+            if (renderTarget.material.shader.name == "Shader Graphs/MagnifyScope" || renderTarget.material.shader.name == "Shader Graphs/PIPScopeNew")
             {
                 renderTarget.material.shader = newShader;
             }
@@ -106,6 +123,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
             {
                 return;
             }
+            CalcInitialFov();
             //inventory holding item is not set when creating model, this might be an issue for items with base scope that has this script attached
             //workaround taken from alternative action module, which keeps a reference to the ItemValue being set until its custom data is created
             //afterwards it's set to null so we still need to access holding item when this method is triggered by mods
@@ -116,11 +134,20 @@ namespace KFCommonUtilityLib.KFAttached.Render
             }
             var zoomAction = (ItemActionZoom)((ActionModuleAlternative.InventorySetItemTemp?.ItemClass ?? player.inventory.holdingItem).Actions[1]);
             zoomActionData = (ItemActionZoom.ItemActionDataZoom)player.inventory.holdingItemData.actionData[1];
-            if (variableZoom && zoomActionData is IModuleContainerFor<ActionModuleVariableZoom.VariableZoomData> zoomDataModule)
+            variableZoomData = (zoomActionData as IModuleContainerFor<ActionModuleVariableZoom.VariableZoomData>)?.Instance;
+            if (variableZoomData != null && (variableZoom || variableZoomData.forceFov))
             {
-                variableZoomData = zoomDataModule.Instance;
-                targetFov = variableZoomData.curFov;
-                variableZoomData.shouldUpdate = false;
+                if (variableZoom)
+                {
+                    variableZoomData.shouldUpdate = false;
+                    targetStep = currentStep = variableZoomData.curStep;
+                    stepVelocity = 0f;
+                    targetFov = CalcCurrentFov();
+                }
+                else
+                {
+                    targetFov = variableZoomData.fovRange.min;
+                }
             }
             else
             {
@@ -130,7 +157,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
                     originalRatio = "0";
                 }
                 targetFov = StringParsers.ParseFloat(player.inventory.holdingItemItemValue.GetPropertyOverride("ZoomRatio", originalRatio));
-                targetFov = Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * 27.5f) / targetFov);
+                targetFov = ScaleToFov(targetFov);
             }
 
 #else
@@ -147,10 +174,18 @@ namespace KFCommonUtilityLib.KFAttached.Render
 #if NotEditor
         private void Update()
         {
-            if (IsVariableZoom && variableZoomData.shouldUpdate)
+            if (IsVariableZoom)
             {
-                UpdateFOV(variableZoomData.curFov);
-                variableZoomData.shouldUpdate = false;
+                if (variableZoomData.shouldUpdate)
+                {
+                    variableZoomData.shouldUpdate = false;
+                    targetStep = variableZoomData.curStep;
+                }
+                if (currentStep != targetStep)
+                {
+                    currentStep = Mathf.SmoothDamp(currentStep, targetStep, ref stepVelocity, 0.05f);
+                    UpdateFOV(CalcCurrentFov());
+                }
             }
 
             if (!manualControl && zoomActionData != null)
@@ -179,6 +214,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
         {
             DestroyCamera();
 #if NotEditor
+            currentStep = targetStep = stepVelocity = 0f;
 #else
             if(debugCamera == null)
             {
@@ -186,6 +222,59 @@ namespace KFCommonUtilityLib.KFAttached.Render
             }
 #endif
         }
+
+        private float ScaleToFov(float scale)
+        {
+            return Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * initialFov * 0.5f) / scale);
+        }
+
+        private float FovToScale(float fov)
+        {
+            return Mathf.Tan(Mathf.Deg2Rad * initialFov * 0.5f) / Mathf.Tan(Mathf.Deg2Rad * fov * 0.5f);
+        }
+
+#if NotEditor
+        private void CalcInitialFov()
+        {
+            if (aimRef)
+            {
+                var distance = Mathf.Abs(Vector3.Dot(renderTarget.bounds.center - aimRef.position, aimRef.forward));
+                var scaleFov = lensSizeValid / (2 * distance * Mathf.Tan(Mathf.Deg2Rad * 27.5f));
+                var scaleTexture = lensSizeFull / (2 * distance * Mathf.Tan(Mathf.Deg2Rad * 27.5f));
+                textureHeight = scaleTexture * Screen.height;
+                //textureHeight = Mathf.Abs(player.playerCamera.WorldToScreenPoint(player.playerCamera.transform.forward * distance + player.playerCamera.transform.up * height).y - 
+                //                          player.playerCamera.WorldToScreenPoint(player.playerCamera.transform.forward * distance - player.playerCamera.transform.up * height).y);
+                initialFov = Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * 27.5f) * scaleFov);
+                Log.Out($"distance {distance}, scale fov {scaleFov}, scale texture {scaleTexture} texture height {textureHeight} initial fov {initialFov}");
+                return;
+            }
+            textureHeight = Screen.height * 0.5f;
+            initialFov = 15;
+        }
+
+        private static float CalcFovStep(float t, float fovMin, float fovMax)
+        {
+            return 2f * Mathf.Rad2Deg * Mathf.Atan(Mathf.Lerp(Mathf.Tan(fovMax * 0.5f * Mathf.Deg2Rad), Mathf.Tan(fovMin * 0.5f * Mathf.Deg2Rad), t));
+        }
+
+        private float CalcCurrentFov()
+        {
+            if (!IsVariableZoom)
+            {
+                throw new Exception("Variable Zoom is not set!");
+            }
+            float targetFov;
+            if (variableZoomData.forceFov)
+            {
+                targetFov = CalcFovStep(currentStep, variableZoomData.fovRange.min, variableZoomData.fovRange.max);
+            }
+            else
+            {
+                targetFov = ScaleToFov(Mathf.Lerp(variableZoomData.minScale, variableZoomData.maxScale, currentStep));
+            }
+            return targetFov;
+        }
+#endif
 
         private void DestroyCamera()
         {
@@ -204,43 +293,38 @@ namespace KFCommonUtilityLib.KFAttached.Render
         {
             if (targetFov > 0)
             {
-//#if NotEditor
-//                float targetFov = targetScale;
-//#else
-//                float targetFov = Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * 27.5f) / Mathf.Sqrt(targetScale));
-//#endif
                 pipCamera.fieldOfView = targetFov;
 #if NotEditor
-                if (scaleReticle)
+                if (scaleReticle && IsVariableZoom)
                 {
-                    if (variableZoomData.maxScale > variableZoomData.minScale)
-                    {
-                        float minScale;
-                        if (reticleScaleRatio >= 1)
-                        {
-                            minScale = scaleDownReticle ? 1 - (variableZoomData.maxScale * reticleScaleRatio - variableZoomData.minScale) / (variableZoomData.maxScale * reticleScaleRatio) : 1;
-                        }
-                        else
-                        {
-                            minScale = scaleDownReticle ? 1 - reticleScaleRatio * (variableZoomData.maxScale - variableZoomData.minScale) / variableZoomData.maxScale : 1;
-                        }
-                        float maxScale;
-                        if (reticleScaleRatio >= 1)
-                        {
-                            maxScale = scaleDownReticle ? 1 : variableZoomData.maxScale * reticleScaleRatio / variableZoomData.minScale;
-                        }
-                        else
-                        {
-                            maxScale = scaleDownReticle ? 1 : 1 + reticleScaleRatio * (variableZoomData.maxScale - variableZoomData.minScale) / variableZoomData.minScale;
-                        }
-                        //float reticleScale = Mathf.Lerp(minScale, maxScale, (variableZoomData.curScale - variableZoomData.minScale) / (variableZoomData.maxScale - variableZoomData.minScale));
-                        float reticleScale = Mathf.Lerp(minScale, maxScale, variableZoomData.curStep);
-                        renderTarget.material.SetFloat("_ReticleScale", initialReticleScale / reticleScale);
-                    }
-                    else
-                    {
-                        renderTarget.material.SetFloat("_ReticleScale", initialReticleScale);
-                    }
+                    renderTarget.material.SetFloat("_ReticleScale", Mathf.Lerp(reticleSizeRange.x, reticleSizeRange.y, currentStep));
+                    //if (variableZoomData.maxScale > variableZoomData.minScale)
+                    //{
+                    //    float minScale;
+                    //    if (reticleScaleRatio >= 1)
+                    //    {
+                    //        minScale = scaleDownReticle ? 1 - (variableZoomData.maxScale * reticleScaleRatio - variableZoomData.minScale) / (variableZoomData.maxScale * reticleScaleRatio) : 1;
+                    //    }
+                    //    else
+                    //    {
+                    //        minScale = scaleDownReticle ? 1 - reticleScaleRatio * (variableZoomData.maxScale - variableZoomData.minScale) / variableZoomData.maxScale : 1;
+                    //    }
+                    //    float maxScale;
+                    //    if (reticleScaleRatio >= 1)
+                    //    {
+                    //        maxScale = scaleDownReticle ? 1 : variableZoomData.maxScale * reticleScaleRatio / variableZoomData.minScale;
+                    //    }
+                    //    else
+                    //    {
+                    //        maxScale = scaleDownReticle ? 1 : 1 + reticleScaleRatio * (variableZoomData.maxScale - variableZoomData.minScale) / variableZoomData.minScale;
+                    //    }
+                    //    float reticleScale = Mathf.Lerp(minScale, maxScale, variableZoomData.curStep);
+                    //    renderTarget.material.SetFloat("_ReticleScale", initialReticleScale / reticleScale);
+                    //}
+                    //else
+                    //{
+                    //    renderTarget.material.SetFloat("_ReticleScale", initialReticleScale);
+                    //}
                 }
                 //Log.Out($"target fov {targetFov} target scale {targetScale}");
 #endif
@@ -250,7 +334,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
         private void CreateCamera()
         {
             const float texScale = 1f;
-            targetTexture = new RenderTexture((int)(Screen.height * aspectRatio), (int)(Screen.height), 24, RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear)
+            targetTexture = new RenderTexture((int)(textureHeight * aspectRatio), (int)(textureHeight), 24, RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear)
             {
                 filterMode = FilterMode.Bilinear,
                 wrapMode = TextureWrapMode.Clamp
@@ -277,8 +361,8 @@ namespace KFCommonUtilityLib.KFAttached.Render
 #if NotEditor
             //pipCamera.CopyFrom(player.playerCamera);
             pipCamera.cullingMask = player.playerCamera.cullingMask;
-            renderTarget.material.SetFloat("_AspectMain", player.playerCamera.aspect);
-            renderTarget.material.SetFloat("_AspectScope", pipCamera.aspect);
+            //renderTarget.material.SetFloat("_AspectMain", player.playerCamera.aspect);
+            //renderTarget.material.SetFloat("_AspectScope", pipCamera.aspect);
 #else
             pipCamera.CopyFrom(debugCamera);
 #endif

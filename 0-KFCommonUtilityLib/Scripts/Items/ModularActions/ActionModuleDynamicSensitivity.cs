@@ -74,7 +74,11 @@ public class ActionModuleDynamicSensitivity
                     {
                         return Mathf.Lerp(dsRangeOverride.x, dsRangeOverride.y, Mathf.InverseLerp(variableZoomData.minScale, variableZoomData.maxScale, variableZoomData.curScale));
                     }
-                    return variableZoomData.curScale;
+                    if (!variableZoomData.forceFov)
+                    {
+                        return variableZoomData.curScale;
+                    }
+                    return 1f;
                 }
                 return zoomRatio;
             }
