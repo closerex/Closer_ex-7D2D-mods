@@ -1,7 +1,7 @@
 ﻿<configs>
 	<append xpath="/items">
 		<item name="gunT3M4Benelli">
-			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shotgun,shortRange,barrelAttachments,sideAttachments,smallTopAttachments,mediumTopAttachments,stock,bottomAttachments,attStrength,perkBoomstick,modGunShotgunTubeExtenderMagazine,attachmentsIncluded,canHaveCosmetic,shotgunSkill"/>
+			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shotgun,shortRange,barrelAttachments,sideAttachments,smallTopAttachments,mediumTopAttachments,stock,bottomAttachments,AssaultScope,ReflexSight,CompactReflexSight,AssaultScopeCompact,Scope30mm,attStrength,perkBoomstick,modGunShotgunTubeExtenderMagazine,attachmentsIncluded,canHaveCosmetic,shotgunSkill"/>
 			<property name="DisplayType" value="rangedShotgun"/>
 			<property name="CustomIcon" value="BenelliM4"/>
 			<property name="HoldType" value="5"/>
@@ -58,12 +58,12 @@
 			</property>
 			<property class="Action1">
 				<property name="Class" value="Zoom"/>
-				<property name="ItemActionModules" value="DynamicSensitivity,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="DynamicSensitivity,KFCommonUtilityLib;VariableZoom,KFCommonUtilityLib;ProceduralAiming,KFCommonUtilityLib"/>
 				<property name="Zoom_max_out" value="55"/>
 				<property name="Zoom_max_in" value="55"/>
 				<property name="SightsCameraOffset" value="0,0,0"/>
-					<property name="zoomTriggerEffectPullDualsense" value="PistolZoom"/>
-					<property name="zoomTriggerEffectPullXb" value="PistolZoom"/>
+				<property name="zoomTriggerEffectPullDualsense" value="PistolZoom"/>
+				<property name="zoomTriggerEffectPullXb" value="PistolZoom"/>
 			</property>
 			<effect_group name="gunT3M4Benelli">
 				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="true">
@@ -110,6 +110,7 @@
 				<passive_effect name="DegradationMax" operation="base_set" value="400,700" tier="1,6" tags="perkBoomstick"/>
 				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkBoomstick"/>
 				<display_value name="dStatStunEffect" value="4"/>
+				<triggered_effect trigger="onSelfHoldingItemCreated" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="AimRefGroupVanilla"/>
 			</effect_group>
 		</item>
 	</append>

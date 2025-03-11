@@ -2,7 +2,6 @@
 	<!-- Reflex -->
 	<append xpath="/item_modifiers/item_modifier[@name='modGunReflexSight']">
 		<item_property_overrides name="gunT3M4Benelli">
-			<property name="ScopeCameraOffset" value="0,-0.03325,-0.025"/>
 			<property name="CrosshairOnAim" value="false"/>
 		</item_property_overrides>
 	</append>
@@ -10,9 +9,10 @@
 		<item_property_overrides name="gunT3M4Benelli">
 			<property name="Zoom_max_out" value="55"/>
 			<property name="Zoom_max_in" value="55"/>
+			<property name="DynamicSensitivityRange" value="2,2"/>
+			<property name="ForceFovRange" value="10,10"/>
 			<property name="ZoomRatio" value="2"/>
 			<property name="CrosshairOnAim" value="false"/>
-			<property name="ScopeCameraOffset" value="0,-0.035,-0.05"/>
 			<property name="Zoom_overlay" value=""/>
 		</item_property_overrides>
 	</append>
@@ -20,9 +20,9 @@
 		<item_property_overrides name="gunT3M4Benelli">
 			<property name="Zoom_max_out" value="55"/>
 			<property name="Zoom_max_in" value="55"/>
-			<property name="ZoomRatio" value="4"/>
+			<property name="DynamicSensitivityRange" value="4,4"/>
+			<property name="ForceFovRange" value="6,6"/>
 			<property name="CrosshairOnAim" value="false"/>
-			<property name="ScopeCameraOffset" value="0,-0.035,-0.05"/>
 			<property name="Zoom_overlay" value=""/>
 		</item_property_overrides>
 	</append>

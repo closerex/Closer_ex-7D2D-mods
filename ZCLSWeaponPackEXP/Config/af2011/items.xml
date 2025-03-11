@@ -1,7 +1,7 @@
 ﻿<configs>
 	<append xpath="/items">
 		<item name="gunHandgunT3DualAF2011A1S">
-			<property name="Tags" value="weapon,ranged,revolver,44enforcer,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,attAgility,perkGunslinger,attachmentsIncluded,canHaveCosmetic,handgunSkill,enforcerReload,dualaf2011,dualwield"/>
+			<property name="Tags" value="weapon,ranged,revolver,44enforcer,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,attAgility,perkGunslinger,attachmentsIncluded,canHaveCosmetic,handgunSkill,enforcerReload,dualaf2011,dualwield,CompactReflexSight"/>
 			<property name="DisplayType" value="rangedGun"/>
 			<property name="HoldType" value="75"/>
 			<property name="Meshfile" value="#@modfolder:Resources/AF2011A1S.unity3d?af2011_dual_m.prefab"/>
@@ -55,6 +55,7 @@
 			</property>
 			<property class="Action1">
 				<property name="Class" value="Zoom"/>
+				<property name="ItemActionModules" value="ProceduralAiming,KFCommonUtilityLib"/>
 				<property name="Zoom_max_out" value="55"/>
 				<property name="Zoom_max_in" value="55"/>
 				<property name="SightsCameraOffset" value="0,0,0"/>
@@ -134,12 +135,14 @@
 				<passive_effect name="DegradationMax" operation="base_set" value="1000,1400" tier="1,6" tags="perkGunslinger"/>
 				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkGunslinger"/>
 
+				<triggered_effect trigger="onSelfHoldingItemCreated" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="AimRefGroupVanilla"/>
+				<triggered_effect trigger="onSelfEquipStart" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="AimRefGroupAltVanilla"/>
 				<triggered_effect trigger="onSelfItemActivate" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="altAiming"/>
 				<triggered_effect trigger="onSelfItemDeactivate" action="SetTransformActive" active="false" parent_transform="#HeldItemRoot" transform_path="altAiming"/>
 			</effect_group>
 		</item>
 		<item name="gunHandgunT3AF2011A1S">
-			<property name="Tags" value="weapon,ranged,revolver,44enforcer,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,sideAttachments,attAgility,perkGunslinger,attachmentsIncluded,canHaveCosmetic,handgunSkill,enforcerReload,af2011"/>
+			<property name="Tags" value="weapon,ranged,revolver,44enforcer,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,sideAttachments,attAgility,perkGunslinger,attachmentsIncluded,canHaveCosmetic,handgunSkill,enforcerReload,af2011,CompactReflexSight"/>
 			<property name="DisplayType" value="rangedGun"/>
 			<property name="HoldType" value="75"/>
 			<property name="Meshfile" value="#@modfolder:Resources/AF2011A1S.unity3d?af2011_m.prefab"/>
@@ -193,6 +196,7 @@
 			</property>
 			<property class="Action1">
 				<property name="Class" value="Zoom"/>
+				<property name="ItemActionModules" value="ProceduralAiming,KFCommonUtilityLib"/>
 				<property name="Zoom_max_out" value="55"/>
 				<property name="Zoom_max_in" value="55"/>
 				<property name="SightsCameraOffset" value="0,0,0"/>
@@ -261,6 +265,7 @@
 		
 				<passive_effect name="DegradationMax" operation="base_set" value="500,700" tier="1,6" tags="perkGunslinger"/>
 				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkGunslinger"/>
+				<triggered_effect trigger="onSelfHoldingItemCreated" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="AimRefGroupVanilla"/>
 			</effect_group>
 		</item>
 	</append>
