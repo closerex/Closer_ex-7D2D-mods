@@ -183,7 +183,14 @@ namespace KFCommonUtilityLib.KFAttached.Render
                 }
                 if (currentStep != targetStep)
                 {
-                    currentStep = Mathf.SmoothDamp(currentStep, targetStep, ref stepVelocity, 0.05f);
+                    if (variableZoomData.isToggleOnly)
+                    {
+                        currentStep = targetStep;
+                    }
+                    else
+                    {
+                        currentStep = Mathf.SmoothDamp(currentStep, targetStep, ref stepVelocity, 0.05f);
+                    }
                     UpdateFOV(CalcCurrentFov());
                 }
             }

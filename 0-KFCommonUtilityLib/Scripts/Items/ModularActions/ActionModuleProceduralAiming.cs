@@ -74,7 +74,7 @@ public class ActionModuleProceduralAiming
         }
 
         __customData.ResetAiming();
-        __customData.UpdateCurrentReference();
+        __customData.UpdateCurrentReference(true);
     }
 
     [HarmonyPatch(nameof(ItemAction.StopHolding)), MethodTargetPostfix]
@@ -174,7 +174,7 @@ public class ActionModuleProceduralAiming
             UpdateCurrentReference();
         }
 
-        public void UpdateCurrentReference()
+        public void UpdateCurrentReference(bool snapTo = false)
         {
             curAimRefIndex = CurAimRefIndex;
             AimReference curAimRef = CurAimRef;
@@ -183,9 +183,14 @@ public class ActionModuleProceduralAiming
                 aimRefPosOffset = curAimRef.positionOffset;
                 if (curAimRef.asReference)
                 {
-                    aimRefPosOffset -= aimRefTransform.parent.InverseTransformDirection(Vector3.Project(aimRefTransform.parent.TransformPoint(aimRefPosOffset) - playerCameraPosRef.position, playerCameraPosRef.forward));
+                    aimRefPosOffset -= aimRefTransform.parent.InverseTransformDirection(Vector3.Project(aimRefTransform.parent.TransformPoint(aimRefPosOffset) - playerCameraPosRef.position, aimRefTransform.forward));
                 }
                 aimRefRotOffset = curAimRef.rotationOffset;
+                if (snapTo)
+                {
+                    aimRefTransform.localPosition = aimRefPosOffset;
+                    aimRefTransform.localRotation = aimRefRotOffset;
+                }
             }
 
             for (int i = 0; i < registeredReferences.Count; i++)
@@ -251,7 +256,7 @@ public static class ProceduralAimingPatches
             if (__instance.AimingGun != module.Instance.isAiming)
             {
                 module.Instance.isAiming = __instance.AimingGun;
-                module.Instance.UpdateCurrentReference();
+                module.Instance.UpdateCurrentReference(true);
             }
             module.Instance.LateUpdateAiming();
         }
