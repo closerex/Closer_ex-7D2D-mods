@@ -181,11 +181,11 @@ public class ActionModuleProceduralAiming
             if (aimRefTransform && curAimRef)
             {
                 aimRefPosOffset = curAimRef.positionOffset;
+                aimRefRotOffset = curAimRef.rotationOffset;
                 if (curAimRef.asReference)
                 {
-                    aimRefPosOffset -= aimRefTransform.parent.InverseTransformDirection(Vector3.Project(aimRefTransform.parent.TransformPoint(aimRefPosOffset) - playerCameraPosRef.position, aimRefTransform.forward));
+                    aimRefPosOffset -= Vector3.Project(aimRefPosOffset - aimRefTransform.parent.InverseTransformPoint(playerCameraPosRef.position), aimRefRotOffset * Vector3.forward);
                 }
-                aimRefRotOffset = curAimRef.rotationOffset;
                 if (snapTo)
                 {
                     aimRefTransform.localPosition = aimRefPosOffset;
