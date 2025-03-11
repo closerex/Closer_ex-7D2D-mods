@@ -15,6 +15,7 @@ public class AnimationGraphBuilder : MonoBehaviour
         None,
         Vanilla,
         Weapon,
+        Attachments,
         Both
     }
     private Animator animator;
@@ -32,7 +33,7 @@ public class AnimationGraphBuilder : MonoBehaviour
     private AnimatorControllerParameter[] parameters;
     private readonly Dictionary<int, ParamInWrapper> paramMapping = new Dictionary<int, ParamInWrapper>();
     private readonly Dictionary<string, ParamInWrapper> paramMappingDebug = new Dictionary<string, ParamInWrapper>();
-    private Animator[] childAnimators = Array.Empty<Animator>();
+    //private Animator[] childAnimators = Array.Empty<Animator>();
 
     public bool HasWeaponOverride => graph.IsValid();
     //public AnimatorControllerPlayable VanillaPlayable => vanillaControllerPlayable;
@@ -41,6 +42,7 @@ public class AnimationGraphBuilder : MonoBehaviour
     private AnimationTargetsAbs CurrentTarget { get; set; }
     public IAnimatorWrapper VanillaWrapper { get; private set; }
     public IAnimatorWrapper WeaponWrapper { get; private set; }
+    public AttachmentWrapper AttachmentWrapper { get; private set; }
     public static IAnimatorWrapper DummyWrapper { get; } = new AnimatorWrapper(null);
 #if NotEditor
     public EntityPlayer Player { get; private set; }
@@ -93,6 +95,21 @@ public class AnimationGraphBuilder : MonoBehaviour
                 }
             }
         }
+        if (AttachmentWrapper != null && AttachmentWrapper.IsValid)
+        {
+            foreach (var animator in AttachmentWrapper.animators)
+            {
+                for (int i = 0; i < animator.parameterCount; i++)
+                {
+                    var param = animator.GetParameter(i);
+                    if (!paramMapping.ContainsKey(param.nameHash))
+                    {
+                        paramMapping[param.nameHash] = ParamInWrapper.Attachments;
+                        paramList.Add(param);
+                    }
+                }
+            }
+        }
         parameters = paramList.ToArray();
     }
 
@@ -119,76 +136,41 @@ public class AnimationGraphBuilder : MonoBehaviour
 
     public void SetChildFloat(int nameHash, float value)
     {
-        if (childAnimators.Length == 0)
+        if (AttachmentWrapper != null && AttachmentWrapper.IsValid)
         {
-            return;
-        }
-        foreach (var child in childAnimators)
-        {
-            if (child)
-            {
-                child.SetFloat(nameHash, value);
-            }
+            AttachmentWrapper.SetFloat(nameHash, value);
         }
     }
 
     public void SetChildBool(int nameHash, bool value)
     {
-        if (childAnimators.Length == 0)
+        if (AttachmentWrapper != null && AttachmentWrapper.IsValid)
         {
-            return;
-        }
-        foreach (var child in childAnimators)
-        {
-            if (child)
-            {
-                child.SetBool(nameHash, value);
-            }
+            AttachmentWrapper.SetBool(nameHash, value);
         }
     }
 
     public void SetChildInteger(int nameHash, int value)
     {
-        if (childAnimators.Length == 0)
+        if (AttachmentWrapper != null && AttachmentWrapper.IsValid)
         {
-            return;
-        }
-        foreach (var child in childAnimators)
-        {
-            if (child)
-            {
-                child.SetInteger(nameHash, value);
-            }
+            AttachmentWrapper.SetInteger(nameHash, value);
         }
     }
 
     public void SetChildTrigger(int nameHash)
     {
-        if (childAnimators.Length == 0)
+        if (AttachmentWrapper != null && AttachmentWrapper.IsValid)
         {
-            return;
-        }
-        foreach (var child in childAnimators)
-        {
-            if (child)
-            {
-                child.SetTrigger(nameHash);
-            }
+            AttachmentWrapper.SetTrigger(nameHash);
         }
     }
 
     public void ResetChildTrigger(int nameHash)
     {
-        if (childAnimators.Length == 0)
+        if (AttachmentWrapper != null && AttachmentWrapper.IsValid)
         {
-            return;
-        }
-        foreach (var child in childAnimators)
-        {
-            if (child)
-            {
-                child.ResetTrigger(nameHash);
-            }
+            AttachmentWrapper.ResetTrigger(nameHash);
         }
     }
 
@@ -347,6 +329,7 @@ public class AnimationGraphBuilder : MonoBehaviour
 
     private void UpdateChildAnimatorArray(AnimationTargetsAbs target)
     {
+        Animator[] childAnimators;
         if (target && target.ItemCurrentOrDefault)
         {
             List<Animator> animators = new List<Animator>();
@@ -364,6 +347,7 @@ public class AnimationGraphBuilder : MonoBehaviour
         {
             childAnimators = Array.Empty<Animator>();
         }
+        AttachmentWrapper = new AttachmentWrapper(childAnimators);
     }
 
     private void InitBehaviours(Transform weaponRoot)

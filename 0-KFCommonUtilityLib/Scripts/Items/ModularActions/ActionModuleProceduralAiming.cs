@@ -2,7 +2,6 @@
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.StaticManagers;
-using Kryz.Tweening;
 using System.Collections.Generic;
 using UnityEngine;
 

@@ -1,38 +1,44 @@
 ﻿using HarmonyLib;
-using KFCommonUtilityLib;
 using KFCommonUtilityLib.Scripts.Attributes;
 using System;
 using System.Collections.Generic;
-using System.Reflection.Emit;
-using UniLinq;
 
 [TypeTarget(typeof(ItemClassModifier))]
 public class ItemModuleSortable
 {
-    public int priority = int.MaxValue;
+    //public int priority = int.MaxValue;
 
-    [HarmonyPatch(nameof(ItemClassModifier.Init)), MethodTargetPostfix]
-    public void Postfix_Init(ItemClassModifier __instance)
-    {
-        __instance.Properties.ParseInt("ModSortPriority", ref priority);
-    }
+    //[HarmonyPatch(nameof(ItemClassModifier.Init)), MethodTargetPostfix]
+    //public void Postfix_Init(ItemClassModifier __instance)
+    //{
+    //    __instance.Properties.ParseInt("ModSortPriority", ref priority);
+    //}
 }
 
 public struct ItemModuleSortableComparer : IComparer<ItemValue>
 {
+    private string itemName;
+    public ItemModuleSortableComparer(ItemValue item)
+    {
+        itemName = item.ItemClass.Name;
+    }
+
     public int Compare(ItemValue x, ItemValue y)
     {
         return GetPriority(x) - GetPriority(y);
     }
 
-    private static int GetPriority(ItemValue itemValue)
+    private int GetPriority(ItemValue itemValue)
     {
-        int priority;
-        if (itemValue.ItemClass is IModuleContainerFor<ItemModuleSortable> module)
-            priority = module.Instance.priority;
-        else
-            priority = int.MaxValue;
-        return priority;
+        if (itemValue.ItemClass is ItemClassModifier modifierClass)
+        {
+            string str = null;
+            if (modifierClass.GetPropertyOverride("ModSortPriority", itemName, ref str) && !int.TryParse(str, out int priority))
+            {
+                return priority;
+            }
+        }
+        return int.MaxValue;
     }
 }
 
@@ -75,7 +81,7 @@ public static class ModSortingPatches
     {
         if (itemStack?.itemValue?.Modifications != null)
         {
-            Array.Sort(itemStack.itemValue.Modifications, new ItemModuleSortableComparer());
+            Array.Sort(itemStack.itemValue.Modifications, new ItemModuleSortableComparer(itemStack.itemValue));
         }
     }
 }

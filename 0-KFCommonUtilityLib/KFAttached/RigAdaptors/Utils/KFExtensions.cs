@@ -112,6 +112,8 @@ public static class KFExtensions
                 return builder.VanillaWrapper;
             case AnimationGraphBuilder.ParamInWrapper.Weapon:
                 return builder.WeaponWrapper;
+            case AnimationGraphBuilder.ParamInWrapper.Attachments:
+                return builder.AttachmentWrapper;
             default:
                 return AnimationGraphBuilder.DummyWrapper;
         }
@@ -136,6 +138,8 @@ public static class KFExtensions
                 return builder.VanillaWrapper;
             case AnimationGraphBuilder.ParamInWrapper.Weapon:
                 return builder.WeaponWrapper;
+            case AnimationGraphBuilder.ParamInWrapper.Attachments:
+                return builder.AttachmentWrapper;
             default:
                 return AnimationGraphBuilder.DummyWrapper;
         }
@@ -160,6 +164,8 @@ public static class KFExtensions
                 return builder.VanillaWrapper;
             case AnimationGraphBuilder.ParamInWrapper.Weapon:
                 return builder.WeaponWrapper;
+            case AnimationGraphBuilder.ParamInWrapper.Attachments:
+                return builder.AttachmentWrapper;
             default:
                 return AnimationGraphBuilder.DummyWrapper;
         }
@@ -170,7 +176,7 @@ public static class KFExtensions
         if (self)
         {
             var wrapper = self.GetWrapperForParamHash(_propertyHash);
-            if (wrapper.IsValid)
+            if (wrapper != null && wrapper.IsValid)
             {
                 return wrapper.GetBool(_propertyHash);
             }
@@ -184,7 +190,7 @@ public static class KFExtensions
         if (self)
         {
             var wrapper = self.GetWrapperForParamHash(_propertyHash);
-            if (wrapper.IsValid)
+            if (wrapper != null && wrapper.IsValid)
             {
                 return wrapper.GetInteger(_propertyHash);
             }
@@ -198,7 +204,7 @@ public static class KFExtensions
         if (self)
         {
             var wrapper = self.GetWrapperForParamHash(_propertyHash);
-            if (wrapper.IsValid)
+            if (wrapper != null && wrapper.IsValid)
             {
                 return wrapper.GetFloat(_propertyHash);
             }

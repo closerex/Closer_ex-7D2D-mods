@@ -437,6 +437,7 @@
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationProceduralRecoildAbs.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationSmokeParticle.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimatorWrapper\AnimatorWrapper.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\AnimatorWrapper\AttachmentWrapper.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimatorWrapper\PlayableWrapper.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\IAnimatorWrapper.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\IPlayableGraphRelated.cs" />
