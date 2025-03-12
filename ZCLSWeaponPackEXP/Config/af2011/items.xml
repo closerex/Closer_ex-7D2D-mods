@@ -1,7 +1,7 @@
 ﻿<configs>
 	<append xpath="/items">
 		<item name="gunHandgunT3DualAF2011A1S">
-			<property name="Tags" value="weapon,ranged,revolver,44enforcer,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,attAgility,perkGunslinger,attachmentsIncluded,canHaveCosmetic,handgunSkill,enforcerReload,dualaf2011,dualwield,CompactReflexSight"/>
+			<property name="Tags" value="weapon,ranged,revolver,44enforcer,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,attAgility,perkGunslinger,attachmentsIncluded,canHaveCosmetic,handgunSkill,enforcerReload,dualaf2011,dualwield"/>
 			<property name="DisplayType" value="rangedGun"/>
 			<property name="HoldType" value="75"/>
 			<property name="Meshfile" value="#@modfolder:Resources/AF2011A1S.unity3d?af2011_dual_m.prefab"/>
@@ -142,7 +142,7 @@
 			</effect_group>
 		</item>
 		<item name="gunHandgunT3AF2011A1S">
-			<property name="Tags" value="weapon,ranged,revolver,44enforcer,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,sideAttachments,attAgility,perkGunslinger,attachmentsIncluded,canHaveCosmetic,handgunSkill,enforcerReload,af2011,CompactReflexSight"/>
+			<property name="Tags" value="weapon,ranged,revolver,44enforcer,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,sideAttachments,attAgility,perkGunslinger,attachmentsIncluded,canHaveCosmetic,handgunSkill,enforcerReload,af2011"/>
 			<property name="DisplayType" value="rangedGun"/>
 			<property name="HoldType" value="75"/>
 			<property name="Meshfile" value="#@modfolder:Resources/AF2011A1S.unity3d?af2011_m.prefab"/>
@@ -283,6 +283,8 @@
 			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='BlockDamage']/@value">0</set>
 			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
 			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='DegradationMax']/@value">1200,2400</set>
+			<append xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/property[@name='Tags']/@value">,CompactReflexSight</append>
+			<append xpath="/items/item[@name='gunHandgunT3AF2011A1S']/property[@name='Tags']/@value">,CompactReflexSight</append>
 		</if>
 	</conditional>
 </configs>

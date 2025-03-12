@@ -1,35 +1,46 @@
 <configs>
-	<insertAfter xpath="/lootcontainers/lootgroup[@name='empty']">
-		<lootgroup name="groupWeaponsT3_GunslingerAF2011A1S" count="1" loot_quality_template="QLTemplateT2">
-			<item name="gunHandgunT3DualAF2011A1S" loot_prob_template="low"/>
-			<item name="gunHandgunT3AF2011A1S"/>
-		</lootgroup>
-	</insertAfter>
-	<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsRangedT3']">
-		<item name="gunHandgunT3DualAF2011A1S"/>
-		<item name="gunHandgunT3AF2011A1S"/>
-	</append>
-	<append xpath="/lootcontainers/lootgroup[@name='groupInfestedT5MeleeRanged']">
-		<item name="gunHandgunT3DualAF2011A1S"/>
-		<item name="gunHandgunT3AF2011A1S"/>
-	</append>
 	<conditional>
 		<if cond="!mod_loaded('EFT8_DVS_Configs')">
+		<insertAfter xpath="/lootcontainers/lootgroup[@name='empty']">
+			<lootgroup name="groupWeaponsT3_GunslingerAF2011A1S" count="1" loot_quality_template="QLTemplateT2">
+				<item name="gunHandgunT3DualAF2011A1S" loot_prob_template="low"/>
+				<item name="gunHandgunT3AF2011A1S"/>
+			</lootgroup>
+		</insertAfter>
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3_Gunslinger']">
 				<item group="groupWeaponsT3_GunslingerAF2011A1S"/>
 			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsRangedT3']">
+				<item name="gunHandgunT3DualAF2011A1S"/>
+				<item name="gunHandgunT3AF2011A1S"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupInfestedT5MeleeRanged']">
+				<item name="gunHandgunT3DualAF2011A1S"/>
+				<item name="gunHandgunT3AF2011A1S"/>
+			</append>
 		</if>
 		<else>
-			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT2']">
-				<item name="gunHandgunT3AF2011A1S" loot_prob_template="veryLow"/>
+			<insertAfter xpath="//lootgroup[@name='groupWeaponsT3_Ranged']">
+				<lootgroup name="groupHandgunT3AF2011A1S" count="all" loot_quality_template="QLTemplateT2">
+					<item name="gunHandgunT3AF2011A1S"/>
+					<item name="ammoEft45ACP" count="10,20"/>
+				</lootgroup>
+				<lootgroup name="groupHandgunT3DualAF2011A1S" count="all" loot_quality_template="QLTemplateT3">
+					<item name="gunHandgunT3DualAF2011A1S"/>
+					<item name="ammoEft45ACP" count="10,20"/>
+				</lootgroup>
+			</insertAfter>
+			<append xpath="/lootcontainers/lootgroup[@name='groupPistolsT1']">
+				<item group="groupHandgunT3AF2011A1S" loot_prob_template="veryLow"/>
+				<item group="groupHandgunT3DualAF2011A1S" loot_prob_template="extremelyLow"/>
 			</append>	
-			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3']">
-				<item name="gunHandgunT3AF2011A1S" loot_prob_template="low"/>
-				<item name="gunHandgunT3DualAF2011A1S" loot_prob_template="veryLow"/>
+			<append xpath="/lootcontainers/lootgroup[@name='groupSMGT1']">
+				<item group="groupHandgunT3AF2011A1S" loot_prob_template="low"/>
+				<item group="groupHandgunT3DualAF2011A1S" loot_prob_template="veryLow"/>
 			</append>	
-			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT4']">
-				<item name="gunHandgunT3AF2011A1S"/>
-				<item name="gunHandgunT3DualAF2011A1S" loot_prob_template="low"/>
+			<append xpath="/lootcontainers/lootgroup[@name='groupSMGT2']">
+				<item group="groupHandgunT3AF2011A1S" loot_prob_template="medLow"/>
+				<item group="groupHandgunT3DualAF2011A1S" loot_prob_template="low"/>
 			</append>
 		</else>
 	</conditional>

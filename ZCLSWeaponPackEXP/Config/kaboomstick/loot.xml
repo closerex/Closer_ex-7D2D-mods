@@ -61,26 +61,13 @@
 			</append>
 		</if>
 		<else>
-			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT1']">
-				<item group="groupWeapons_ExplT2" loot_prob_template="veryLow"/>
-			</append>
-			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT2']">
-				<item group="groupWeapons_ExplT2" loot_prob_template="medLow"/>
-			</append>
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3']">
 				<item group="groupWeapons_ExplT2" loot_prob_template="med"/>
 			</append>
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT4']">
 				<item group="groupWeapons_ExplT2" loot_prob_template="medLow"/>
 			</append>
-			<append xpath="/lootcontainers/lootgroup[@name='groupEftAmmoSmall']">
-				<item group="groupKBSammoSmall" loot_prob_template="veryLow"/>
-			</append>
-			<append xpath="/lootcontainers/lootgroup[@name='groupEftAmmoMedium']">
-				<item group="groupKBSammoSmall" loot_prob_template="low"/>
-				<item group="groupKBSammoMedium" loot_prob_template="veryLow"/>
-			</append>
-			<append xpath="/lootcontainers/lootgroup[@name='groupEftAmmoLarge']">
+			<append xpath="/lootcontainers/lootgroup[@name='groupExplosives']">
 				<item group="groupKBSammoSmall" loot_prob_template="medLow"/>
 				<item group="groupKBSammoMedium" loot_prob_template="low"/>
 				<item group="groupKBSammoLarge" loot_prob_template="veryLow"/>

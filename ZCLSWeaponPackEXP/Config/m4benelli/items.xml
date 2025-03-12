@@ -1,7 +1,7 @@
 ﻿<configs>
 	<append xpath="/items">
 		<item name="gunT3M4Benelli">
-			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shotgun,shortRange,barrelAttachments,sideAttachments,smallTopAttachments,mediumTopAttachments,stock,bottomAttachments,AssaultScope,ReflexSight,CompactReflexSight,AssaultScopeCompact,Scope30mm,attStrength,perkBoomstick,modGunShotgunTubeExtenderMagazine,attachmentsIncluded,canHaveCosmetic,shotgunSkill"/>
+			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shotgun,shortRange,barrelAttachments,sideAttachments,smallTopAttachments,mediumTopAttachments,stock,bottomAttachments,attStrength,perkBoomstick,modGunShotgunTubeExtenderMagazine,attachmentsIncluded,canHaveCosmetic,shotgunSkill"/>
 			<property name="DisplayType" value="rangedShotgun"/>
 			<property name="CustomIcon" value="BenelliM4"/>
 			<property name="HoldType" value="5"/>
@@ -123,6 +123,7 @@
 			<set xpath="/items/item[@name='gunT3M4Benelli']/effect_group[@name='gunT3M4Benelli']/passive_effect[@name='BlockDamage']/@value">0</set>
 			<set xpath="/items/item[@name='gunT3M4Benelli']/effect_group[@name='gunT3M4Benelli']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
 			<set xpath="/items/item[@name='gunT3M4Benelli']/effect_group[@name='gunT3M4Benelli']/passive_effect[@name='DegradationMax']/@value">1200,2400</set>
+			<append xpath="/items/item[@name='gunT3M4Benelli']/property[@name='Tags']/@value">,AssaultScope,ReflexSight,CompactReflexSight,AssaultScopeCompact,Scope30mm</append>
 		</if>
 	</conditional>
 </configs>

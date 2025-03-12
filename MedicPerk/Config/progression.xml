@@ -24,7 +24,7 @@
 	</insertBefore>
 
 	<insertBefore xpath="/progression/perks/perk[@name='perkElectrocutioner']">	
-		<perk name="perkMedic" parent="skillIntellectCombat" name_key="perkMedicBasicName" desc_key="perkMedicBasicDesc" min_level="1" max_level="6" base_skill_point_cost="5" cost_multiplier_per_level="1" icon="icon_perkmedic">
+		<perk name="perkMedic" parent="skillIntellectCombat" name_key="perkMedicBasicName" desc_key="perkMedicBasicDesc" min_level="1" max_level="6" base_skill_point_cost="4" cost_multiplier_per_level="1" icon="icon_perkmedic">
 			<!--The Medic-->
 			<level_requirements level="1"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="0" desc_key="no req"/></level_requirements>
 			<level_requirements level="2"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="1" desc_key="reqPhysicianLevel01"/></level_requirements>

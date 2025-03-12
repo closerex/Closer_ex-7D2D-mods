@@ -7,6 +7,9 @@
 				<item name="gunMedicShotgun301" quality="2,5"/>
 				<item name="gunMedicAssaultRifle401" quality="2,5"/>
 			</append>
+			<append xpath="/traders/trader_item_groups/trader_item_group[@name='skillMagazines']">
+					<item name="medicgunsSkillMagazine" count="1,3"/>	
+			</append>
 		</if>
 		<else>
 			<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupRangedAllEft']">
@@ -18,11 +21,6 @@
 		</else>
 	</conditional>
 
-
-	<append xpath="/traders/trader_item_groups/trader_item_group[@name='skillMagazines']">
-			<item name="medicgunsSkillMagazine" count="1,3"/>	
-	</append>
-	
 	<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupRangedMods']">
 			<item name="modMedicModule"/>	
 	</append>

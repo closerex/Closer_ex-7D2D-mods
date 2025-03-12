@@ -1,17 +1,28 @@
 <configs>
-    <append xpath="/progression/crafting_skills/crafting_skill[@name='craftingHandguns']">
-		<display_entry item="gunHandgunT3DualAF2011A1S" unlock_level="71,76,82,88,94,100" />
-    </append>
-    <append xpath="/progression/crafting_skills/crafting_skill[@name='craftingHandguns']/effect_group">
-        <passive_effect name="RecipeTagUnlocked" operation="base_set" level="71,100" value="1" tags="gunHandgunT3DualAF2011A1S"/>
-        <passive_effect name="CraftingTier" operation="base_add" level="76,82,88,94,100" value="1,2,3,4,5" tags="gunHandgunT3DualAF2011A1S"/>
-    </append>
-	
-    <append xpath="/progression/crafting_skills/crafting_skill[@name='craftingHandguns']">
-		<display_entry item="gunHandgunT3AF2011A1S" unlock_level="71,76,82,88,94,100" />
-    </append>
-    <append xpath="/progression/crafting_skills/crafting_skill[@name='craftingHandguns']/effect_group">
-        <passive_effect name="RecipeTagUnlocked" operation="base_set" level="71,100" value="1" tags="gunHandgunT3AF2011A1S"/>
-        <passive_effect name="CraftingTier" operation="base_add" level="76,82,88,94,100" value="1,2,3,4,5" tags="gunHandgunT3AF2011A1S"/>
-    </append>
+	<conditional>
+		<if cond="!mod_loaded('EFT8_DVS_Configs')">
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingHandguns']">
+				<display_entry item="gunHandgunT3DualAF2011A1S" unlock_level="71,76,82,88,94,100" />
+			</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingHandguns']/effect_group">
+				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="71,100" value="1" tags="gunHandgunT3DualAF2011A1S"/>
+				<passive_effect name="CraftingTier" operation="base_add" level="76,82,88,94,100" value="1,2,3,4,5" tags="gunHandgunT3DualAF2011A1S"/>
+			</append>
+
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingHandguns']">
+				<display_entry item="gunHandgunT3AF2011A1S" unlock_level="71,76,82,88,94,100" />
+			</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingHandguns']/effect_group">
+				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="71,100" value="1" tags="gunHandgunT3AF2011A1S"/>
+				<passive_effect name="CraftingTier" operation="base_add" level="76,82,88,94,100" value="1,2,3,4,5" tags="gunHandgunT3AF2011A1S"/>
+			</append>
+		</if>
+		<else>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingHandguns']/display_entry[contains(@icon,'gunppsh41')]/unlock_entry[@unlock_tier='4']/@item">,gunHandgunT3AF2011A1S,gunHandgunT3DualAF2011A1S</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingHandguns']/effect_group">
+				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="24,100" value="1" tags="gunHandgunT3DualAF2011A1S,gunHandgunT3AF2011A1S"/>
+				<passive_effect name="CraftingTier" operation="base_add" level="29,34,39,44,49,100" value="1,2,3,4,5,5" tags="gunHandgunT3DualAF2011A1S,gunHandgunT3AF2011A1S"/>
+			</append>
+		</else>
+	</conditional>
 </configs>

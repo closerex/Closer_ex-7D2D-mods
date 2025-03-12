@@ -15,10 +15,7 @@
 				<item name="ammoKaboomstickShellFrag" count="25,50"/>
 			</append>
 		</if>
-	</conditional>
-
-	<conditional>
-		<if cond="mod_loaded('EFT8_DVS_Configs')">
+		<else>
 			<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupRangedAllEft']">
 				<item name="gunKaboomstick" quality="1,5"/>
 			</append>
@@ -26,6 +23,6 @@
 				<item name="ammoKaboomstickShellHE" count="25,50"/>
 				<item name="ammoKaboomstickShellFrag" count="25,50"/>
 			</append>
-		</if>
+		</else>
 	</conditional>
 </configs>
