@@ -116,6 +116,7 @@ public class ActionModuleProceduralAiming
         private Vector3 targetSwitchPosVelocity;
         private Quaternion targetSwitchRotVelocity;
         public List<AimReference> registeredReferences = new List<AimReference>();
+        private EntityPlayerLocal holdingEntity;
         private int CurAimRefIndex
         {
             get
@@ -135,7 +136,7 @@ public class ActionModuleProceduralAiming
 
         public ProceduralAimingData(ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleProceduralAiming _module)
         {
-
+            holdingEntity = _invData.holdingEntity as EntityPlayerLocal;
         }
 
         public void ResetAiming()
@@ -161,17 +162,23 @@ public class ActionModuleProceduralAiming
             }
         }
 
-        public void RegisterGroup(AimReference[] group)
+        public bool RegisterGroup(AimReference[] group, string name)
         {
-            foreach (var reference in group)
+            if (holdingEntity && holdingEntity.bFirstPersonView)
             {
-                if (reference.index == -1)
+                foreach (var reference in group)
                 {
-                    reference.index = registeredReferences.Count;
-                    registeredReferences.Add(reference);
+                    if (reference.index == -1)
+                    {
+                        reference.index = registeredReferences.Count;
+                        registeredReferences.Add(reference);
+                    }
                 }
+                UpdateCurrentReference();
+                //Log.Out($"Register group {name}\n{StackTraceUtility.ExtractStackTrace()}");
+                return true;
             }
-            UpdateCurrentReference();
+            return false;
         }
 
         public void UpdateCurrentReference(bool snapTo = false)

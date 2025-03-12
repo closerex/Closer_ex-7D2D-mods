@@ -90,7 +90,6 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     {
         if (!Destroyed && dict_attachments != null && prefab.TryGetComponent<AttachmentReferenceAppended>(out var appended))
         {
-            Log.Out("merged");
             appended.Merge(this);
             dict_attachments[prefab.name] = prefab.gameObject;
         }

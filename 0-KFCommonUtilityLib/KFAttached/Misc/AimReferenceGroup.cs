@@ -44,8 +44,7 @@ public class AimReferenceGroup : MonoBehaviour
         {
             return;
         }
-        data.RegisterGroup(aimReferences);
-        registered = true;
+        registered = data.RegisterGroup(aimReferences, gameObject.name);
     }
 #endif
 
