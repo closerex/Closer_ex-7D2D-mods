@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
 using InControl;
+using Platform;
 
 public class CustomPlayerActionManager
 {
@@ -217,12 +218,6 @@ public class CustomPlayerActionManager
         }
     }
 
-    public static void StoreCurrentCustomBindings(List<string> origin)
-    {
-        foreach (var pair in dict_action_sets)
-            origin.Add(pair.Value.Save());
-    }
-
     public static string CreateDebugInfo(string origin)
     {
         foreach(var pair in dict_action_sets)
@@ -230,8 +225,19 @@ public class CustomPlayerActionManager
         return origin;
     }
 
-    public static bool TryGetCustomActionSetByName(string name, out CustomPlayerActionVersionBase value)
+    public static bool TryGetCustomActionSetByName(string name, out CustomPlayerActionVersionBase value, bool caseSensitive = true)
     {
-        return dict_action_sets.TryGetValue(name, out value);
+        if (caseSensitive)
+            return dict_action_sets.TryGetValue(name, out value);
+        foreach (var pair in dict_action_sets)
+        {
+            if (pair.Key.EqualsCaseInsensitive(name))
+            {
+                value = pair.Value;
+                return true;
+            }
+        }
+        value = null;
+        return false;
     }
 }

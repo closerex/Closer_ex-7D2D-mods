@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Platform;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 
@@ -78,22 +79,6 @@ public class Patches
     }
 
 
-    [HarmonyPatch(typeof(XUiC_OptionsController), nameof(XUiC_OptionsController.storeCurrentBindings))]
-    [HarmonyPostfix]
-    private static void Postfix_storeCurrentBindings_XUiC_OptionsController(XUiC_OptionsController __instance)
-    {
-        CustomPlayerActionManager.StoreCurrentCustomBindings(__instance.actionBindingsOnOpen);
-    }
-
-
-    [HarmonyPatch(typeof(XUiC_OptionsControls), nameof(XUiC_OptionsControls.storeCurrentBindings))]
-    [HarmonyPostfix]
-    private static void Postfix_storeCurrentBindings_XUiC_OptionsControls(XUiC_OptionsControls __instance)
-    {
-        CustomPlayerActionManager.StoreCurrentCustomBindings(__instance.actionBindingsOnOpen);
-    }
-
-
     [HarmonyPatch(typeof(GameOptionsManager), nameof(GameOptionsManager.SaveControls))]
     [HarmonyPostfix]
     private static void Postfix_SaveControls_GameOptionsManager()
@@ -136,6 +121,19 @@ public class Patches
         }
 
         return codes;
+    }
+
+    [HarmonyPatch(typeof(PlayerInputManager), nameof(PlayerInputManager.GetActionSetForName))]
+    [HarmonyPostfix]
+    private static void Postfix_GetActionSetForName(ref PlayerActionsBase __result, string _name)
+    {
+        if (__result == null)
+        {
+            if (CustomPlayerActionManager.TryGetCustomActionSetByName(_name, out var actionSet, false))
+            {
+                __result = actionSet;
+            }
+        }
     }
 }
 
