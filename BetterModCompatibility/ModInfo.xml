@@ -5,5 +5,5 @@
 	<DisplayName value="Better Mod Compatibility" />
 	<Description value="Stop some xml from throwing exception and breaking the whole game when some mods are conflicting." />
 	<Author value="closer_ex" />
-	<Version value="1.0.2" />
+	<Version value="1.0.3" />
 </xml>

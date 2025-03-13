@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -29,7 +30,7 @@ static class LogAndContinuePatches
     }
 
     [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    internal static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
         var codes = instructions.ToList();
 
@@ -49,6 +50,46 @@ static class LogAndContinuePatches
                     CodeInstruction.Call(typeof(XmlPatchHelpers), nameof(XmlPatchHelpers.LogInsteadOfThrow)),
                     lbl_loop == null ? new CodeInstruction(OpCodes.Ret) : new CodeInstruction(OpCodes.Br, lbl_loop)
                 });
+            }
+        }
+        return codes;
+    }
+}
+
+[HarmonyPatch]
+static class LogAndContinuePatches1
+{
+    [HarmonyPatch(typeof(RecipesFromXml), nameof(RecipesFromXml.LoadRecipies), MethodType.Enumerator)]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var mtd_enumerator = AccessTools.Method(typeof(IEnumerable<XElement>), nameof(IEnumerable<XElement>.GetEnumerator), Array.Empty<Type>());
+        object lbl_loop = null;
+        for (int i = 2; i < codes.Count; i++)
+        {
+            if ((codes[i].opcode == OpCodes.Br || codes[i].opcode == OpCodes.Br_S))
+            {
+                lbl_loop = codes[i].operand;
+            }
+            else if (codes[i].opcode == OpCodes.Throw)
+            {
+                codes.RemoveRange(i - 1, 2);
+                codes.Insert(i - 1, CodeInstruction.Call(typeof(XmlPatchHelpers), nameof(XmlPatchHelpers.LogInsteadOfThrow)));
+                if (lbl_loop == null)
+                {
+                    codes.InsertRange(i, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldc_I4_0),
+                        new CodeInstruction(OpCodes.Ret)
+                    });
+                    i++;
+                }
+                else
+                {
+                    codes.Insert(i, new CodeInstruction(OpCodes.Br, lbl_loop));
+                }
             }
         }
         return codes;
