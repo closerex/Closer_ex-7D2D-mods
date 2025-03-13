@@ -328,7 +328,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
         PlayerAnimatorTrans = null;
         dict_attachments = null;
 
-        Component.DestroyImmediate(this);
+        Component.Destroy(this);
         //Log.Out(StackTraceUtility.ExtractStackTrace());
     }
 
@@ -341,7 +341,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
                 GraphBuilder.SetCurrentTarget(null);
             }
             ItemFpv.parent = null;
-            GameObject.DestroyImmediate(ItemFpv.gameObject);
+            GameObject.Destroy(ItemFpv.gameObject);
         }
         fpvSet = false;
         ItemFpv = null;
@@ -357,7 +357,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
                 GraphBuilder.SetCurrentTarget(null);
             }
             ItemTpv.parent = null;
-            GameObject.DestroyImmediate(ItemTpv.gameObject);
+            GameObject.Destroy(ItemTpv.gameObject);
         }
         tpvSet = false;
         ItemTpv = null;

@@ -151,7 +151,7 @@ public class RigTargets : AnimationTargetsAbs
         if (rig)
         {
             rig.transform.parent = null;
-            GameObject.DestroyImmediate(rig.gameObject);
+            GameObject.Destroy(rig.gameObject);
         }
         rig = null;
     }
