@@ -9,6 +9,8 @@ desktop.ini
 !AnimationRiggingWeaponTest/**
 !BetterModCompatibility/
 !BetterModCompatibility/**
+!CustomFPVFov/
+!CustomFPVFov/**
 !CustomParticleLoaderBuffArea/
 !CustomParticleLoaderBuffArea/**
 !CustomParticleLoaderMultiExplosion/
