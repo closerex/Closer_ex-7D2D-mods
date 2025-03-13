@@ -6,8 +6,10 @@ using HarmonyLib;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using UniLinq;
 
 namespace GearsSettingsSave
 {
@@ -58,6 +60,7 @@ namespace GearsSettingsSave
                 string settingFilePath = Path.Combine(SavePath, mod.Mod.Name, "ModSettings.json");
                 if (File.Exists(settingFilePath))
                 {
+                    Dictionary<string, IGlobalModSetting> dict_settings = mod.GlobalSettings.GetAllGlobalSettings().ToDictionary(setting => setting.UniqueSettingName());
                     using (StreamReader reader = File.OpenText(settingFilePath))
                     {
                         JObject saveObj = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
@@ -74,16 +77,20 @@ namespace GearsSettingsSave
                                         foreach (JProperty settingProp in catObj.Properties())
                                         {
                                             var setting = cat.GetSetting(settingProp.Name);
-                                            switch (setting)
+                                            if(setting != null)
                                             {
-                                                case IGlobalValueSetting globalValueSetting:
-                                                    globalValueSetting.CurrentValue = (string)settingProp.Value;
-                                                    break;
-                                                case ColorSelectorSetting colorSelectorSetting:
-                                                    colorSelectorSetting.CurrentColor = StringParsers.ParseHexColor((string)settingProp.Value);
-                                                    break;
-                                                default:
-                                                    break;
+                                                switch (setting)
+                                                {
+                                                    case IGlobalValueSetting globalValueSetting:
+                                                        globalValueSetting.CurrentValue = (string)settingProp.Value;
+                                                        break;
+                                                    case ColorSelectorSetting colorSelectorSetting:
+                                                        colorSelectorSetting.CurrentColor = StringParsers.ParseHexColor((string)settingProp.Value);
+                                                        break;
+                                                    default:
+                                                        break;
+                                                }
+                                                dict_settings.Remove(setting.UniqueSettingName());
                                             }
                                         }
                                     }
@@ -91,26 +98,40 @@ namespace GearsSettingsSave
                             }
                         }
                     }
+                    foreach (var setting in dict_settings.Values)
+                    {
+                        ResetSetting(setting);
+                    }
                 }
                 else
                 {
                     foreach (var setting in mod.GlobalSettings.GetAllGlobalSettings())
                     {
-                        switch (setting)
-                        {
-                            case IGlobalValueSetting globalValueSetting:
-                                globalValueSetting.CurrentValue = globalValueSetting.DefaultValue;
-                                break;
-                            case ColorSelectorSetting colorSelectorSetting:
-                                colorSelectorSetting.CurrentColor = colorSelectorSetting.DefaultColor;
-                                break;
-                            default:
-                                break;
-                        }
+                        ResetSetting(setting);
                     }
                 }
                 mod.GlobalSettings.SaveSettings();
             }
+        }
+
+        private static void ResetSetting(IGlobalModSetting setting)
+        {
+            switch (setting)
+            {
+                case IGlobalValueSetting globalValueSetting:
+                    globalValueSetting.CurrentValue = globalValueSetting.DefaultValue;
+                    break;
+                case ColorSelectorSetting colorSelectorSetting:
+                    colorSelectorSetting.CurrentColor = colorSelectorSetting.DefaultColor;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private static string UniqueSettingName(this IGlobalModSetting setting)
+        {
+            return (setting.Tab?.Name ?? "") + "_" + (setting.Category?.Name ?? "") + "_" + setting.Name;
         }
 
         private static void SaveAllModSettingsToJson()
