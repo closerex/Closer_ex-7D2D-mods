@@ -554,7 +554,7 @@
     <Compile Include="KFAttached\RigAdaptors\Adaptors\TwistCorrectionAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\Adaptors\TwoBoneIKConstraintAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\Utils\KFExtensions.cs" />
-    <Compile Include="Scripts\Attributes\ActionDataTargetAttribute.cs" />
+    <Compile Include="Scripts\Attributes\TypeDataTargetAttribute.cs" />
     <Compile Include="Scripts\Attributes\MethodTargetAttribute.cs" />
     <Compile Include="Scripts\Attributes\PatchTargetAttribute.cs" />
     <Compile Include="Scripts\Attributes\TypeTargetExtensionAttribute.cs" />
@@ -585,6 +585,7 @@
     <Compile Include="Scripts\Items\ModularActions\ActionModuleTagged.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleTranspilerTest.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleVariableZoom.cs" />
+    <Compile Include="Scripts\Items\ModularClasses\ItemModuleMultiItem.cs" />
     <Compile Include="Scripts\Items\ModularClasses\ItemModuleSortable.cs" />
     <Compile Include="Scripts\Items\ModularClasses\ItemModuleVariableZoom.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionAttachPrefabToEntitySync.cs" />
@@ -648,6 +649,7 @@
     <Compile Include="Scripts\Requirements\RoundsInInventory.cs" />
     <Compile Include="Scripts\Requirements\RoundsInMagazineBase.cs" />
     <Compile Include="Scripts\StaticManagers\DelayLoadModuleManager.cs" />
+    <Compile Include="Scripts\Utilities\Modular\ItemInventoryDataModuleProcessor.cs" />
     <Compile Include="Scripts\Utilities\Modular\ItemActionDataModuleProcessor.cs" />
     <Compile Include="Scripts\Utilities\Modular\ItemActionModuleManager.cs" />
     <Compile Include="Scripts\StaticManagers\LocalItemTagsManager.cs" />

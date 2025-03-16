@@ -29,11 +29,11 @@ namespace KFCommonUtilityLib
             FieldReference fldref_invdata_item = manipulator.module.ImportReference(typeof(ItemInventoryData).GetField(nameof(ItemInventoryData.item)));
             FieldReference fldref_item_actions = manipulator.module.ImportReference(typeof(ItemClass).GetField(nameof(ItemClass.Actions)));
             var il = mtddef_ctor.Body.GetILProcessor();
-            il.Append(il.Create(OpCodes.Ldarg_0));
-            il.Append(il.Create(OpCodes.Ldarg_1));
-            il.Append(il.Create(OpCodes.Ldarg_2));
-            il.Append(il.Create(OpCodes.Call, manipulator.module.ImportReference(manipulator.targetType.GetConstructor(new Type[] { typeof(ItemInventoryData), typeof(int) }))));
-            il.Append(il.Create(OpCodes.Nop));
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldarg_1);
+            il.Emit(OpCodes.Ldarg_2);
+            il.Emit(OpCodes.Call, manipulator.module.ImportReference(manipulator.targetType.GetConstructor(new Type[] { typeof(ItemInventoryData), typeof(int) })));
+            il.Emit(OpCodes.Nop);
             for (int i = 0, j = 0; i < arr_type_actions.Length; i++)
             {
                 if (!arr_hasdata[i])
@@ -42,9 +42,10 @@ namespace KFCommonUtilityLib
                     continue;
                 }
                 arr_flddef_actiondatas[i] = manipulator.arr_flddef_modules[j];
-                il.Append(il.Create(OpCodes.Ldarg_0));
-                il.Append(il.Create(OpCodes.Ldarg_1));
-                il.Append(il.Create(OpCodes.Ldarg_2));
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Dup);
+                il.Emit(OpCodes.Ldarg_1);
+                il.Emit(OpCodes.Ldarg_2);
                 il.Emit(OpCodes.Ldarg_1);
                 il.Emit(OpCodes.Ldfld, fldref_invdata_item);
                 il.Emit(OpCodes.Ldfld, fldref_item_actions);
@@ -53,12 +54,12 @@ namespace KFCommonUtilityLib
                 il.Emit(OpCodes.Castclass, typedef_newAction);
                 il.Emit(OpCodes.Ldfld, arr_flddef_actions[i]);
                 Log.Out($"data module {j} {manipulator.moduleTypes[j].FullName} action module {i} {arr_type_actions[i].FullName}");
-                il.Append(il.Create(OpCodes.Newobj, manipulator.module.ImportReference(manipulator.moduleTypes[j].GetConstructor(new Type[] { typeof(ItemInventoryData), typeof(int), arr_type_actions[i] }))));
-                il.Append(il.Create(OpCodes.Stfld, manipulator.arr_flddef_modules[j]));
-                il.Append(il.Create(OpCodes.Nop));
+                il.Emit(OpCodes.Newobj, manipulator.module.ImportReference(manipulator.moduleTypes[j].GetConstructor(new Type[] { typeof(ItemActionData), typeof(ItemInventoryData), typeof(int), arr_type_actions[i] })));
+                il.Emit(OpCodes.Stfld, manipulator.arr_flddef_modules[j]);
+                il.Emit(OpCodes.Nop);
                 j++;
             }
-            il.Append(il.Create(OpCodes.Ret));
+            il.Emit(OpCodes.Ret);
             return true;
         }
 

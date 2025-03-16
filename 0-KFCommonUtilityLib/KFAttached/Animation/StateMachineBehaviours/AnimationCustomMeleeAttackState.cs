@@ -3,6 +3,8 @@ using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.Animations;
+#else
+using KFCommonUtilityLib;
 #endif
 
 public class AnimationCustomMeleeAttackState : StateMachineBehaviour
@@ -22,6 +24,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
     public float SwingAngle = 0f;
     [Range(-180f, 180f)]
     public float SwingDegrees = 0f;
+    public bool IsAlternative = false;
 
     [SerializeField]
     private float ClipLength = 0f;
@@ -64,6 +67,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
     private float attacksPerMinute;
     private float speedMultiplierToKeep = 1f;
     private InventorySlotGurad slotGurad = new InventorySlotGurad();
+    private ItemModuleMultiItem.MultiItemInvData multiInvData;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -72,6 +76,10 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         //    return;
         //}
         hasFired = false;
+        if (IsAlternative)
+        {
+            animator.SetWrappedBool(Animator.StringToHash("UseAltMelee"), false);
+        }
         actionIndex = animator.GetWrappedInt(AvatarController.itemActionIndexHash);
         entity = animator.GetComponentInParent<EntityAlive>();
         if (!slotGurad.IsValid(entity))
@@ -105,6 +113,13 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         //length *= attackDurationNormalized;
         attacksPerMinute = 60f / length;
         FastTags<TagGroup.Global> fastTags = ((actionIndex != 1) ? ItemActionAttack.PrimaryTag : ItemActionAttack.SecondaryTag);
+        multiInvData = (entity.inventory.holdingItemData as IModuleContainerFor<ItemModuleMultiItem.MultiItemInvData>)?.Instance;
+        bool isValidAlternative = IsAlternative && multiInvData != null;
+        if (isValidAlternative)
+        {
+            multiInvData.useBound = true;
+            multiInvData.itemModule.SetBoundParams(entity.MinEventContext, multiInvData);
+        }
         ItemValue holdingItemItemValue = entity.inventory.holdingItemItemValue;
         ItemClass itemClass = holdingItemItemValue.ItemClass;
         if (itemClass != null)
@@ -146,6 +161,11 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         }
         GameManager.Instance.StartCoroutine(impactStart(animator, layerIndex, length));
         GameManager.Instance.StartCoroutine(customGrazeStart(length));
+        if (isValidAlternative)
+        {
+            multiInvData.useBound = false;
+            multiInvData.itemModule.RestoreParams(entity.MinEventContext, multiInvData);
+        }
     }
 
     private IEnumerator impactStart(Animator animator, int layer, float length)
@@ -156,6 +176,12 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             hasFired = true;
             if (entity != null && !entity.isEntityRemote && actionIndex >= 0)
             {
+                bool isValidAlternative = IsAlternative && multiInvData != null;
+                if (isValidAlternative)
+                {
+                    multiInvData.useBound = true;
+                    multiInvData.itemModule.SetBoundParams(entity.MinEventContext, multiInvData);
+                }
                 ItemActionDynamicMelee.ItemActionDynamicMeleeData itemActionDynamicMeleeData = entity.inventory.holdingItemData.actionData[actionIndex] as ItemActionDynamicMelee.ItemActionDynamicMeleeData;
                 if (itemActionDynamicMeleeData != null)
                 {
@@ -163,6 +189,11 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
                     {
                         GameManager.Instance.StartCoroutine(impactStop(animator, layer, length));
                     }
+                }
+                if (isValidAlternative)
+                {
+                    multiInvData.useBound = false;
+                    multiInvData.itemModule.RestoreParams(entity.MinEventContext, multiInvData);
                 }
             }
         }
@@ -199,10 +230,21 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         yield return new WaitForSeconds(calculatedGrazeTime);
         if (entity != null && !entity.isEntityRemote && actionIndex >= 0)
         {
+            bool isValidAlternative = IsAlternative && multiInvData != null;
+            if (isValidAlternative)
+            {
+                multiInvData.useBound = true;
+                multiInvData.itemModule.SetBoundParams(entity.MinEventContext, multiInvData);
+            }
             ItemActionDynamicMelee.ItemActionDynamicMeleeData itemActionDynamicMeleeData = entity.inventory.holdingItemData.actionData[actionIndex] as ItemActionDynamicMelee.ItemActionDynamicMeleeData;
             if (itemActionDynamicMeleeData != null)
             {
                 GameManager.Instance.StartCoroutine(customGrazeUpdate(itemActionDynamicMeleeData));
+            }
+            if (isValidAlternative)
+            {
+                multiInvData.useBound = false;
+                multiInvData.itemModule.RestoreParams(entity.MinEventContext, multiInvData);
             }
         }
     }
@@ -219,13 +261,24 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         }
         float grazeStart = Time.time;
         float normalizedTime = 0f;
-        var action = entity.inventory.holdingItem.Actions[actionIndex] as ItemActionDynamicMelee;
         while (normalizedTime <= 1)
         {
             if (!slotGurad.IsValid(data.invData.holdingEntity))
             {
                 Log.Out($"Invalid graze!");
                 yield break;
+            }
+            bool isValidAlternative = IsAlternative && multiInvData != null;
+            if (isValidAlternative)
+            {
+                multiInvData.useBound = true;
+                multiInvData.itemModule.SetBoundParams(entity.MinEventContext, multiInvData);
+            }
+            var action = entity.inventory.holdingItem.Actions[actionIndex] as ItemActionDynamicMelee;
+            if (isValidAlternative)
+            {
+                multiInvData.useBound = false;
+                multiInvData.itemModule.RestoreParams(entity.MinEventContext, multiInvData);
             }
             float originalSwingAngle = action.SwingAngle;
             float originalSwingDegrees = action.SwingDegrees;

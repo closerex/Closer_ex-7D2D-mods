@@ -8,7 +8,7 @@ using UniLinq;
 using UnityEngine;
 using static ActionModuleErgoAffected;
 
-[TypeTarget(typeof(ItemActionZoom)), ActionDataTarget(typeof(ErgoData))]
+[TypeTarget(typeof(ItemActionZoom)), TypeDataTarget(typeof(ErgoData))]
 public class ActionModuleErgoAffected
 {
     public static readonly int AimSpeedModifierHash = Animator.StringToHash("AimSpeedModifier");
@@ -69,7 +69,7 @@ public class ActionModuleErgoAffected
         public float curErgo;
         public float ModifiedErgo => Mathf.Lerp(0.2f, 1, curErgo);
 
-        public ErgoData(ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleErgoAffected _module)
+        public ErgoData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleErgoAffected _module)
         {
             aimStartTime = float.MaxValue;
             aimSet = false;

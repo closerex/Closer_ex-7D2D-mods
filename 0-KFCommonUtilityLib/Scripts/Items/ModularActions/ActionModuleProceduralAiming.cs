@@ -5,7 +5,7 @@ using KFCommonUtilityLib.Scripts.StaticManagers;
 using System.Collections.Generic;
 using UnityEngine;
 
-[TypeTarget(typeof(ItemActionZoom)), ActionDataTarget(typeof(ProceduralAimingData))]
+[TypeTarget(typeof(ItemActionZoom)), TypeDataTarget(typeof(ProceduralAimingData))]
 public class ActionModuleProceduralAiming
 {
     [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
@@ -134,7 +134,7 @@ public class ActionModuleProceduralAiming
 
         private AimReference CurAimRef => curAimRefIndex >= 0 && curAimRefIndex < registeredReferences.Count ? registeredReferences[curAimRefIndex] : null;
 
-        public ProceduralAimingData(ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleProceduralAiming _module)
+        public ProceduralAimingData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleProceduralAiming _module)
         {
             holdingEntity = _invData.holdingEntity as EntityPlayerLocal;
         }

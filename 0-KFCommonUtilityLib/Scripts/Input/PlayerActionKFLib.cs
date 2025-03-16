@@ -8,6 +8,7 @@ public class PlayerActionKFLib : CustomPlayerActionVersionBase
     public PlayerAction ToggleFireMode;
     public PlayerAction ToggleActionMode;
     public PlayerAction ToggleZoom;
+    public PlayerAction AltMelee;
 
     public PlayerActionKFLib()
     {
@@ -30,6 +31,8 @@ public class PlayerActionKFLib : CustomPlayerActionVersionBase
         ToggleActionMode.UserData = new PlayerActionData.ActionUserData("inpActToggleWeaponModeName", "inpActToggleWeaponModeDesc", PlayerActionData.GroupPlayerControl);
         ToggleZoom = CreatePlayerAction("ToggleZoomLevel");
         ToggleZoom.UserData = new PlayerActionData.ActionUserData("inpActToggleZoomLevelName", "inpActToggleZoomLevelDesc", PlayerActionData.GroupPlayerControl);
+        AltMelee = CreatePlayerAction("PerformAltMelee");
+        AltMelee.UserData = new PlayerActionData.ActionUserData("inpActPerformAltMeleeName", "inpActPerformAltMeleeDesc", PlayerActionData.GroupPlayerControl);
     }
 
     public override void CreateDefaultJoystickBindings()
@@ -42,5 +45,6 @@ public class PlayerActionKFLib : CustomPlayerActionVersionBase
         ToggleFireMode.AddDefaultBinding(new Key[] { Key.Z });
         ToggleActionMode.AddDefaultBinding(new Key[] { Key.X });
         ToggleZoom.AddDefaultBinding(Mouse.MiddleButton);
+        AltMelee.AddDefaultBinding(new Key[] { Key.V });
     }
 }

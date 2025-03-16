@@ -4,7 +4,7 @@ using KFCommonUtilityLib.Scripts.Utilities;
 using UnityEngine;
 using static ItemActionRanged;
 
-[TypeTarget(typeof(ItemActionRanged)), ActionDataTarget(typeof(RampUpData))]
+[TypeTarget(typeof(ItemActionRanged)), TypeDataTarget(typeof(RampUpData))]
 public class ActionModuleRampUp
 {
     public enum State
@@ -268,7 +268,7 @@ public class ActionModuleRampUp
 
         public ActionModuleRampUp rampUpModule;
 
-        public RampUpData(ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleRampUp _module)
+        public RampUpData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleRampUp _module)
         {
             rampUpModule = _module;
         }

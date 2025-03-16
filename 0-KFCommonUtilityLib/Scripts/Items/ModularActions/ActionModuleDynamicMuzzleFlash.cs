@@ -2,7 +2,7 @@
 using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.Utilities;
 
-[TypeTarget(typeof(ItemActionAttack)), ActionDataTarget(typeof(DynamicMuzzleFlashData))]
+[TypeTarget(typeof(ItemActionAttack)), TypeDataTarget(typeof(DynamicMuzzleFlashData))]
 public class ActionModuleDynamicMuzzleFlash
 {
     private struct State
@@ -76,7 +76,7 @@ public class ActionModuleDynamicMuzzleFlash
         public string particlesMuzzleSmoke;
         public string particlesMuzzleSmokeFpv;
 
-        public DynamicMuzzleFlashData(ItemInventoryData _invData, int _indexOfAction, ActionModuleDynamicMuzzleFlash _module)
+        public DynamicMuzzleFlashData(ItemActionData actionData, ItemInventoryData _invData, int _indexOfAction, ActionModuleDynamicMuzzleFlash _module)
         {
 
         }

@@ -6,7 +6,7 @@ using KFCommonUtilityLib.Scripts.Utilities;
 using System.Collections;
 using Unity.Mathematics;
 
-[TypeTarget(typeof(ItemActionAttack)), ActionDataTarget(typeof(AlternativeData))]
+[TypeTarget(typeof(ItemActionAttack)), TypeDataTarget(typeof(AlternativeData))]
 public class ActionModuleAlternative
 {
     internal static ItemValue InventorySetItemTemp;
@@ -150,7 +150,7 @@ public class ActionModuleAlternative
         //public Transform[] altMuzzleTrans = new Transform[MultiActionIndice.MAX_ACTION_COUNT];
         //public Transform[] altMuzzleTransDBarrel = new Transform[MultiActionIndice.MAX_ACTION_COUNT];
 
-        public AlternativeData(ItemInventoryData invData, int actionIndex, ActionModuleAlternative module)
+        public AlternativeData(ItemActionData actionData, ItemInventoryData invData, int actionIndex, ActionModuleAlternative module)
         {
             this.invData = invData;
             Init();

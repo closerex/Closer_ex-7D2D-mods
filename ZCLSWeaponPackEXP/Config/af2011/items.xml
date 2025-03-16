@@ -1,8 +1,117 @@
 ﻿<configs>
 	<append xpath="/items">
+		<item name="meleeWpnHandBashAF2011">
+			<property name="Tags" value="blunt,melee,grunting,light,perkFlurryOfFortitude,weapon,attFortitude,perkBrawler,noBlades,canHaveCosmetic,knuckleSkill"/>
+			<property name="CreativeMode" value="None"/>
+			<property name="Material" value="Mmetal"/>
+			<property name="TintColor" value="191, 172, 95"/>
+			<property name="Meshfile" value="@:Other/Items/Weapons/Melee/Knuckles/knucklesRight_Prefab.prefab"/>
+			<property name="HoldType" value="61"/>
+			<property name="ScrapTimeOverride" value="10.0"/>
+			<property name="RepairTools" value="resourceRepairKit"/>
+			<property name="DegradationBreaksAfter" value="false"/>
+			<property name="SoundJammed" value="ItemNeedsRepair"/>
+			<property name="SoundDestroy" value="wooddestroy1"/>
+			<property name="DisplayType" value="melee"/>
+			<property name="Canhold" value="true"/>
+			<property name="Group" value="Ammo/Weapons,Melee Weapons"/>
+			<property name="EconomicValue" value="500"/>
+			<property name="TraderStageTemplate" value="baseTier1"/><!-- meleeWpnKnucklesT1IronKnuckles -->
+			<property name="UnlockedBy" value="craftingKnuckles"/><!-- perkBrawler,meleeWpnKnucklesT1IronKnucklesSchematic, -->
+			<property name="ShowQuality" value="true"/>
+			<property name="SoundUnholster" value="weapon_unholster"/>
+			<property name="SoundHolster" value="weapon_holster"/>
+			<property name="SoundPickup" value="knuckles_iron_grab"/>
+			<property name="SoundPlace" value="knuckles_iron_place"/>
+			
+			<property class="Action0">
+				<property name="Class" value="DynamicMelee"/>
+				<property name="Sphere" value=".1"/>
+				<property name="Damage_type" value="Bashing"/>
+				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="DynamicSoundStart" value="bashSwingLight"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
+				<property name="UseGrazingHits" value="true"/>
+				<property name="GrazeStart" value=".3"/>
+				<property name="GrazeEnd" value=".5"/>
+				<property name="SwingDegrees" value="90"/>
+				<property name="SwingAngle" value="-90"/>
+				<property class="HitSounds">
+					<property name="Override0" value="organic" param1="metalhitorganic"/>
+				</property>
+				<property class="GrazeSounds">
+					<property name="Override0" value="organic" param1="metalhitcloth"/>
+				</property>
+			</property>
+			<property class="Action1"> <!-- UseAction -->
+				<property name="Class" value="DynamicMelee"/>
+				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
+				<property name="Sphere" value=".1"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
+				<property name="Damage_type" value="Bashing"/>
+				<property name="UsePowerAttackAnimation" value="true"/>
+				<property name="UseGrazingHits" value="true"/>
+				<property name="GrazeStart" value=".35"/>
+				<property name="GrazeEnd" value=".4"/>
+				<property name="SwingDegrees" value="30"/>
+				<property name="SwingAngle" value="90"/>
+				<property class="HitSounds">
+					<property name="Override0" value="organic" param1="metalhitorganic"/>
+				</property>
+				<property class="GrazeSounds">
+					<property name="Override0" value="organic" param1="metalhitcloth"/>
+				</property>
+			</property>
+			<effect_group name="meleeWpnHandBashAF2011">
+				<passive_effect name="AttacksPerMinute" operation="base_set" value="60" tags="perkBrawler,perkFlurryOfFortitude"/>
+				<passive_effect name="StaminaLoss" operation="base_set" value="15" tags="primary"/>
+				<passive_effect name="DegradationMax" operation="base_set" value="300,700" tier="1,6" tags="perkBrawler"/>
+				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkBrawler"/>
+				<passive_effect name="MaxRange" operation="base_set" value="2.0" tags="perkBrawler"/>
+				<passive_effect name="BlockRange" operation="base_set" value="3" tags="perkBrawler"/>
+				<passive_effect name="ModSlots" operation="base_set" value="2,2,2,3,3,4" tier="1,2,3,4,5,6"/>
+				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+				<passive_effect name="EntityDamage" operation="base_set" value="20" tags="perkBrawler"/>
+				<passive_effect name="EntityDamage" operation="perc_add" value="-.04,.04" tags="perkBrawler"/> <!-- random EntityDmg -->
+				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkBrawler"/> <!-- tier bonus -->
+				<passive_effect name="BlockDamage" operation="base_set" value="3.5" tags="perkBrawler"/>
+				<passive_effect name="BlockDamage" operation="perc_add" value="-.04,.04" tags="perkBrawler"/> <!-- random BlockDmg -->
+				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkBrawler"/> <!-- tier bonus -->
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="earth"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="stone"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="metal"/>
+			</effect_group>
+			<effect_group name="Knockdown">
+				<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+				<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="1" />
+				<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="10" />
+				</triggered_effect>
+				<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+				<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="2" />
+				<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="20" />
+				</triggered_effect>
+				<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+				<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="3" />
+				<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="30" />
+				</triggered_effect>
+				<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+				<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="4" />
+				<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="40" />
+				</triggered_effect>
+				<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+				<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="5" />
+				<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="50" />
+				</triggered_effect>
+			</effect_group>
+		</item>
+		
 		<item name="gunHandgunT3DualAF2011A1S">
 			<property name="Tags" value="weapon,ranged,revolver,44enforcer,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,attAgility,perkGunslinger,attachmentsIncluded,canHaveCosmetic,handgunSkill,enforcerReload,dualaf2011,dualwield"/>
 			<property name="DisplayType" value="rangedGun"/>
+			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib"/>
+			<property name="BoundItemName" value="meleeWpnHandBashAF2011"/>
 			<property name="HoldType" value="75"/>
 			<property name="Meshfile" value="#@modfolder:Resources/AF2011A1S.unity3d?af2011_dual_m.prefab"/>
 			<property name="Material" value="MHandGunParts"/>
@@ -33,8 +142,9 @@
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;DynamicMuzzleFlash,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;DynamicMuzzleFlash,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
+				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="MuzzleIsPerRound" value="true"/>
 				<property name="OneRoundMultiShot" value="false"/>
 				<property name="RoundsPerShot" value="2"/>
@@ -144,6 +254,8 @@
 		<item name="gunHandgunT3AF2011A1S">
 			<property name="Tags" value="weapon,ranged,revolver,44enforcer,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,sideAttachments,attAgility,perkGunslinger,attachmentsIncluded,canHaveCosmetic,handgunSkill,enforcerReload,af2011"/>
 			<property name="DisplayType" value="rangedGun"/>
+			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib"/>
+			<property name="BoundItemName" value="meleeWpnHandBashAF2011"/>
 			<property name="HoldType" value="75"/>
 			<property name="Meshfile" value="#@modfolder:Resources/AF2011A1S.unity3d?af2011_m.prefab"/>
 			<property name="Material" value="MHandGunParts"/>
@@ -174,8 +286,9 @@
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;DynamicMuzzleFlash,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;DynamicMuzzleFlash,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
+				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="MuzzleIsPerRound" value="true"/>
 				<property name="OneRoundMultiShot" value="false"/>
 				<property name="RoundsPerShot" value="2"/>

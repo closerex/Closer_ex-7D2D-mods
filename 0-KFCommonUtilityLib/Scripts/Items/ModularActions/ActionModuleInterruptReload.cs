@@ -4,7 +4,7 @@ using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using UnityEngine;
 
-[TypeTarget(typeof(ItemActionRanged)), ActionDataTarget(typeof(InterruptData))]
+[TypeTarget(typeof(ItemActionRanged)), TypeDataTarget(typeof(InterruptData))]
 public class ActionModuleInterruptReload
 {
     public float holdBeforeCancel = 0.06f;
@@ -12,21 +12,21 @@ public class ActionModuleInterruptReload
     public bool instantFiringCancel = false;
 
     [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPrefix]
-    private bool Prefix_StartHolding(InterruptData __customData)
+    public bool Prefix_StartHolding(InterruptData __customData)
     {
         __customData.Reset();
         return true;
     }
 
     [HarmonyPatch(nameof(ItemAction.ReadFrom)), MethodTargetPostfix]
-    private void Postfix_ReadFrom(DynamicProperties _props)
+    public void Postfix_ReadFrom(DynamicProperties _props)
     {
         firingStateName = _props.GetString("FiringStateFullName");
         instantFiringCancel = _props.GetBool("InstantFiringCancel");
     }
 
     [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
-    private void Postfix_OnModificationsChanged(ItemActionData _data, InterruptData __customData)
+    public void Postfix_OnModificationsChanged(ItemActionData _data, InterruptData __customData)
     {
         var invData = _data.invData;
         __customData.itemAnimator = AnimationGraphBuilder.DummyWrapper;
@@ -41,7 +41,7 @@ public class ActionModuleInterruptReload
         }
     }
 
-    private struct State
+    public struct State
     {
         public bool executed;
         public bool isReloading;
@@ -50,13 +50,13 @@ public class ActionModuleInterruptReload
     }
 
     [HarmonyPatch(nameof(ItemAction.IsActionRunning)), MethodTargetPostfix]
-    private void Postfix_IsActionRunning(ref bool __result, InterruptData __customData)
+    public void Postfix_IsActionRunning(ref bool __result, InterruptData __customData)
     {
         __result &= !__customData.instantFiringRequested;
     }
 
     [HarmonyPatch(nameof(ItemAction.ExecuteAction)), MethodTargetPrefix]
-    private bool Prefix_ExecuteAction(ItemActionData _actionData, bool _bReleased, InterruptData __customData, out State __state)
+    public bool Prefix_ExecuteAction(ItemActionData _actionData, bool _bReleased, InterruptData __customData, out State __state)
     {
         __state = default;
         if (!_bReleased && __customData.isInterruptRequested && __customData.instantFiringRequested)
@@ -86,7 +86,7 @@ public class ActionModuleInterruptReload
     }
 
     [HarmonyPatch(nameof(ItemAction.ExecuteAction)), MethodTargetPostfix]
-    private void Postfix_ExecuteAction(ItemActionData _actionData, InterruptData __customData, State __state)
+    public void Postfix_ExecuteAction(ItemActionData _actionData, InterruptData __customData, State __state)
     {
         if (__state.executed)
         {
@@ -116,7 +116,7 @@ public class ActionModuleInterruptReload
     }
 
     [HarmonyPatch(nameof(ItemAction.ItemActionEffects)), MethodTargetPrefix]
-    private bool Prefix_ItemActionEffects(ItemActionData _actionData, int _firingState, InterruptData __customData)
+    public bool Prefix_ItemActionEffects(ItemActionData _actionData, int _firingState, InterruptData __customData)
     {
         var rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
         if (_firingState != 0 && (rangedData.isReloading || rangedData.isWeaponReloading) && !(rangedData.invData.holdingEntity is EntityPlayerLocal) && __customData.eventBridge)
@@ -140,7 +140,7 @@ public class ActionModuleInterruptReload
         public AnimationReloadEvents eventBridge;
         public IAnimatorWrapper itemAnimator;
 
-        public InterruptData(ItemInventoryData invData, int actionIndex, ActionModuleInterruptReload module)
+        public InterruptData(ItemActionData actionData, ItemInventoryData invData, int actionIndex, ActionModuleInterruptReload module)
         {
             //if (invData.model && invData.model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
             //{

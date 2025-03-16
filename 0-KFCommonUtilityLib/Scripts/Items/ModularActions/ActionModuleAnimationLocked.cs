@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using KFCommonUtilityLib.Scripts.Attributes;
 
-[TypeTarget(typeof(ItemAction)), ActionDataTarget(typeof(AnimationLockedData))]
+[TypeTarget(typeof(ItemAction)), TypeDataTarget(typeof(AnimationLockedData))]
 public class ActionModuleAnimationLocked
 {
     [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPostfix]
@@ -28,7 +28,7 @@ public class ActionModuleAnimationLocked
         public bool isLocked = false;
         public bool isReloadLocked = false;
 
-        public AnimationLockedData(ItemInventoryData invData, int actionIndex, ActionModuleAnimationLocked module)
+        public AnimationLockedData(ItemActionData actionData, ItemInventoryData invData, int actionIndex, ActionModuleAnimationLocked module)
         {
             
         }

@@ -2,12 +2,9 @@
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Scripts.Attributes;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
 using UnityEngine;
 
-[TypeTarget(typeof(ItemActionZoom)), ActionDataTarget(typeof(VariableZoomData))]
+[TypeTarget(typeof(ItemActionZoom)), TypeDataTarget(typeof(VariableZoomData))]
 public class ActionModuleVariableZoom
 {
     private const string METASAVENAME = "CurZoomStep";
@@ -141,7 +138,7 @@ public class ActionModuleVariableZoom
         }
         public ItemInventoryData invData = null;
 
-        public VariableZoomData(ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleVariableZoom _module)
+        public VariableZoomData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleVariableZoom _module)
         {
             invData = _invData;
         }

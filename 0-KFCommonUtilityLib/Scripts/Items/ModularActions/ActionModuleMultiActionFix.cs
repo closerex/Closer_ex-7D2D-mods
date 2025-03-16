@@ -3,7 +3,7 @@ using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 
-[TypeTarget(typeof(ItemActionAttack)), ActionDataTarget(typeof(MultiActionData))]
+[TypeTarget(typeof(ItemActionAttack)), TypeDataTarget(typeof(MultiActionData))]
 public class ActionModuleMultiActionFix
 {
     private int actionIndex;
@@ -214,7 +214,7 @@ public class ActionModuleMultiActionFix
     {
         public float lastAccuracy;
 
-        public MultiActionData(ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleMultiActionFix _module)
+        public MultiActionData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleMultiActionFix _module)
         {
 
         }

@@ -5,7 +5,7 @@ using System;
 using UniLinq;
 using UnityEngine;
 
-[TypeTarget(typeof(ItemActionRanged)), ActionDataTarget(typeof(MetaRechargerData))]
+[TypeTarget(typeof(ItemActionRanged)), TypeDataTarget(typeof(MetaRechargerData))]
 public class ActionModuleMetaRecharger
 {
     public struct RechargeTags
@@ -78,7 +78,7 @@ public class ActionModuleMetaRecharger
 
         public int Index => indexOfAction;
 
-        public MetaRechargerData(ItemInventoryData _invData, int _indexOfAction, ActionModuleMetaRecharger _rechargeModule)
+        public MetaRechargerData(ItemActionData actionData, ItemInventoryData _invData, int _indexOfAction, ActionModuleMetaRecharger _rechargeModule)
         {
             module = _rechargeModule;
             indexOfAction = _indexOfAction;

@@ -1,0 +1,18 @@
+<configs>
+    <SoundDataNode name="bashSwingReal"> <AudioSource name="Sounds/AudioSource_Melee"/> <NetworkAudioSource name="Sounds/AudioSource_Melee"/>
+        <AudioClip ClipName="#@modfolder:Resources/BashSound.unity3d?PC_Movement_Bash_01"/>
+        <AudioClip ClipName="#@modfolder:Resources/BashSound.unity3d?PC_Movement_Bash_02"/>
+        <AudioClip ClipName="#@modfolder:Resources/BashSound.unity3d?PC_Movement_Bash_03"/>
+        <AudioClip ClipName="#@modfolder:Resources/BashSound.unity3d?PC_Movement_Bash_04"/>
+        <AudioClip ClipName="#@modfolder:Resources/BashSound.unity3d?PC_Movement_Bash_05"/>
+        <LocalCrouchVolumeScale value="0.25"/> <CrouchNoiseScale value="0.05"/> <NoiseScale value=".15"/> <MaxVoices value="3"/> <MaxRepeatRate value="0.01"/>
+    </SoundDataNode>
+    <SoundDataNode name="bashSwingLight"> <AudioSource name="Sounds/AudioSource_Melee"/> <NetworkAudioSource name="Sounds/AudioSource_Melee"/>
+        <AudioClip ClipName="none"/>
+        <LocalCrouchVolumeScale value="0.25"/> <CrouchNoiseScale value="0.05"/> <NoiseScale value=".15"/> <MaxVoices value="3"/> <MaxRepeatRate value="0.01"/>
+    </SoundDataNode>
+    <SoundDataNode name="bashSwingHeavy"> <AudioSource name="Sounds/AudioSource_Melee"/> <NetworkAudioSource name="Sounds/AudioSource_Melee"/>
+        <AudioClip ClipName="none"/>
+        <LocalCrouchVolumeScale value="0.25"/> <CrouchNoiseScale value="0.05"/> <NoiseScale value=".2"/> <MaxVoices value="3"/> <MaxRepeatRate value="0.01"/>
+    </SoundDataNode>
+</configs>

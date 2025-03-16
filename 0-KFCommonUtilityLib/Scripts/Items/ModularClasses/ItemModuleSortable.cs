@@ -17,10 +17,10 @@ public class ItemModuleSortable
 
 public struct ItemModuleSortableComparer : IComparer<ItemValue>
 {
-    private string itemName;
+    private int itemId;
     public ItemModuleSortableComparer(ItemValue item)
     {
-        itemName = item.ItemClass.Name;
+        itemId = item.ItemClass.Id;
     }
 
     public int Compare(ItemValue x, ItemValue y)
@@ -33,7 +33,7 @@ public struct ItemModuleSortableComparer : IComparer<ItemValue>
         if (itemValue.ItemClass is ItemClassModifier modifierClass)
         {
             string str = null;
-            if (modifierClass.GetPropertyOverride("ModSortPriority", itemName, ref str) && int.TryParse(str, out int priority))
+            if (modifierClass.GetPropertyOverride("ModSortPriority", ItemClass.GetForId(itemId).GetItemName(), ref str) && int.TryParse(str, out int priority))
             {
                 return priority;
             }

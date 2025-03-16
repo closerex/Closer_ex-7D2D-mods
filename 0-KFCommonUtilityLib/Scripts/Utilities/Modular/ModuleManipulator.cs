@@ -576,7 +576,14 @@ namespace KFCommonUtilityLib
                     break;
                 //load return value
                 case "__result":
-                    list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldloca_S : OpCodes.Ldloc_S, mtddef_derived.Body.Variables[1]));
+                    if (mtddef_derived.ReturnType.MetadataType != MetadataType.Void)
+                    {
+                        list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldloca_S : OpCodes.Ldloc_S, mtddef_derived.Body.Variables[1]));
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"{mtddef_target.DeclaringType.FullName}.{mtddef_target.Name} does not have a return value!");
+                    }
                     break;
                 //for postfix only, indicates whether original method is executed
                 case "__runOriginal":

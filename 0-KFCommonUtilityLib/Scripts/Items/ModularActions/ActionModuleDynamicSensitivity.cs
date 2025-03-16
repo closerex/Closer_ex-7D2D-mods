@@ -3,7 +3,7 @@ using KFCommonUtilityLib;
 using KFCommonUtilityLib.Scripts.Attributes;
 using UnityEngine;
 
-[TypeTarget(typeof(ItemActionZoom)), ActionDataTarget(typeof(DynamicSensitivityData))]
+[TypeTarget(typeof(ItemActionZoom)), TypeDataTarget(typeof(DynamicSensitivityData))]
 public class ActionModuleDynamicSensitivity
 {
     [HarmonyPatch(nameof(ItemAction.AimingSet)), MethodTargetPostfix]
@@ -85,7 +85,7 @@ public class ActionModuleDynamicSensitivity
             set => zoomRatio = value;
         }
 
-        public DynamicSensitivityData(ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleDynamicSensitivity _module)
+        public DynamicSensitivityData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleDynamicSensitivity _module)
         {
 
         }

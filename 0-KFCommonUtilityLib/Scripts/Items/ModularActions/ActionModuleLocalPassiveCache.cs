@@ -4,7 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-[TypeTarget(typeof(ItemAction)), ActionDataTarget(typeof(LocalPassiveCacheData))]
+[TypeTarget(typeof(ItemAction)), TypeDataTarget(typeof(LocalPassiveCacheData))]
 public class ActionModuleLocalPassiveCache
 {
     //public int[] nameHashes;
@@ -60,7 +60,7 @@ public class ActionModuleLocalPassiveCache
         private Dictionary<int, float> dict_hash_value = new Dictionary<int, float>();
         private Dictionary<int, string> dict_hash_name = new Dictionary<int, string>();
 
-        public LocalPassiveCacheData(ItemInventoryData _invData, int _indexOfAction, ActionModuleLocalPassiveCache _cacheModule)
+        public LocalPassiveCacheData(ItemActionData actionData, ItemInventoryData _invData, int _indexOfAction, ActionModuleLocalPassiveCache _cacheModule)
         {
             //this._cacheModule = _cacheModule;
             this.invData = _invData;

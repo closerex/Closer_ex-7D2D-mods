@@ -8,7 +8,7 @@ using System.Reflection.Emit;
 using UniLinq;
 using UnityEngine;
 
-[TypeTarget(typeof(ItemActionRanged)), ActionDataTarget(typeof(MultiBarrelData))]
+[TypeTarget(typeof(ItemActionRanged)), TypeDataTarget(typeof(MultiBarrelData))]
 public class ActionModuleMultiBarrel
 {
     [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
@@ -209,7 +209,7 @@ public class ActionModuleMultiBarrel
         public Transform[] muzzles;
         public Transform[] projectileJoints;
 
-        public MultiBarrelData(ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleMultiBarrel _module)
+        public MultiBarrelData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleMultiBarrel _module)
         {
             invData = _invData;
             actionIndex = _indexInEntityOfAction;

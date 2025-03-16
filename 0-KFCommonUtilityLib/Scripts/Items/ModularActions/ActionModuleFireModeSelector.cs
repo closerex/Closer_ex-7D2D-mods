@@ -7,7 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[TypeTarget(typeof(ItemActionRanged)), ActionDataTarget(typeof(FireModeData))]
+[TypeTarget(typeof(ItemActionRanged)), TypeDataTarget(typeof(FireModeData))]
 public class ActionModuleFireModeSelector
 {
     public struct FireMode
@@ -179,7 +179,7 @@ public class ActionModuleFireModeSelector
         public float burstDelay;
         public bool inputReleased;
 
-        public FireModeData(ItemInventoryData invData, int actionIndex, ActionModuleFireModeSelector module)
+        public FireModeData(ItemActionData actionData, ItemInventoryData invData, int actionIndex, ActionModuleFireModeSelector module)
         {
 
         }

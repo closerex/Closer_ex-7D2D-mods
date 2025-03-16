@@ -3,7 +3,7 @@ using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.Utilities;
 using UniLinq;
 
-[TypeTarget(typeof(ItemAction)), ActionDataTarget(typeof(TaggedData))]
+[TypeTarget(typeof(ItemAction)), TypeDataTarget(typeof(TaggedData))]
 public class ActionModuleTagged
 {
     [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
@@ -22,7 +22,7 @@ public class ActionModuleTagged
     public class TaggedData
     {
         public FastTags<TagGroup.Global> tags;
-        public TaggedData(ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleTagged _module)
+        public TaggedData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleTagged _module)
         {
 
         }
