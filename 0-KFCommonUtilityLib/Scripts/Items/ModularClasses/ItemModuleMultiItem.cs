@@ -362,6 +362,17 @@ public static class MultiItemPatches
         return true;
     }
 
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SwapSelectedAmmo))]
+    [HarmonyPrefix]
+    private static bool Prefix_SwapSelectedAmmo_ItemActionRanged(EntityAlive _entity, int _ammoIndex)
+    {
+        if (_entity.inventory?.holdingItemData is IModuleContainerFor<MultiItemInvData> dataModule && dataModule.Instance.itemModule.IsBoundActionRunning(dataModule.Instance))
+        {
+            return false;
+        }
+        return true;
+    }
+
     [HarmonyPatch(typeof(PlayerMoveController), nameof(PlayerMoveController.Update))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_Update_PlayerMoveController(IEnumerable<CodeInstruction> instructions)
@@ -426,6 +437,7 @@ public static class MultiItemPatches
                         isWeaponReloading = true,
                     });
                 }
+                player.emodel.avatarController.UpdateBool(AvatarController.reloadHash, false);
                 multiInvData.boundInvData.itemStack.itemValue.UseTimes = 0;
                 multiInvData.useBound = true;
                 multiInvData.itemModule.SetBoundParams(player.MinEventContext, multiInvData);
