@@ -1,7 +1,7 @@
 ﻿<configs>
 	<append xpath="/items">
 		<item name="meleeWpnBladeBashKatana">
-			<property name="Tags" value="knife,melee,grunting,light,perkFlurryOfAgility,weapon,meleeWeapon,attAgility,perkDeepCuts,perkTheHuntsman,canHaveCosmetic,bladeSkill,corpseRemoval"/>
+			<property name="Tags" value="machete,melee,grunting,light,perkFlurryOfAgility,weapon,meleeWeapon,attAgility,perkDeepCuts,perkTheHuntsman,canHaveCosmetic,bladeSkill,corpseRemoval"/>
 			<property name="CreativeMode" value="None"/>
 			<property name="DisplayType" value="meleeKnife"/>
 			<property name="HoldType" value="36"/>
@@ -63,17 +63,19 @@
 					<property name="Override0" value="organic" param1="metalgrazeorganic"/>
 				</property>
 			</property>
-			<effect_group name="meleeWpnBladeT1HuntingKnife">
+			<effect_group name="meleeWpnBladeBashKatana">
 				<passive_effect name="AttacksPerMinute" operation="base_set" value="44" tags="perkDeepCuts,perkFlurryOfAgility"/>
-				<passive_effect name="StaminaLoss" operation="base_set" value="10" tags="primary"/>
+				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".8" tags="primary"/>
+				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value="1" tags="primary"/>
+				<passive_effect name="StaminaLoss" operation="base_set" value="13" tags="primary"/>
 				<passive_effect name="DegradationMax" operation="base_set" value="500,1000" tier="1,6" tags="perkDeepCuts"/>
 				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkDeepCuts"/>
-				<passive_effect name="MaxRange" operation="base_set" value="2.0" tags="perkDeepCuts"/>
-				<passive_effect name="BlockRange" operation="base_set" value="2.5" tags="perkDeepCuts"/>
+				<passive_effect name="MaxRange" operation="base_set" value="3.2" tags="perkDeepCuts"/>
+				<passive_effect name="BlockRange" operation="base_set" value="3.5" tags="perkDeepCuts"/>
 				<passive_effect name="ModSlots" operation="base_set" value="2,2,2,3,3,4" tier="1,2,3,4,5,6"/>
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
-				<passive_effect name="EntityDamage" operation="base_set" value="32" tags="perkDeepCuts,knife"/> <!-- meleeWpnBladeT1HuntingKnife -->
+				<passive_effect name="EntityDamage" operation="base_set" value="32" tags="perkDeepCuts"/> <!-- meleeWpnBladeT1HuntingKnife -->
 				<passive_effect name="EntityDamage" operation="perc_add" value="-.04,.04" tags="perkDeepCuts"/> <!-- random EntityDmg -->
 				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDeepCuts"/> <!-- tier bonus -->
 				<passive_effect name="BlockDamage" operation="base_set" value="6.5" tags="perkDeepCuts"/>

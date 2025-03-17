@@ -7,6 +7,8 @@
 			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,sideAttachments,barrelAttachments,noSilencer,magazine,firingMode,noScopes,attAgility,perkGunslinger,9mmGun,attachmentsIncluded,canHaveCosmetic,handgunSkill,medicWeapon"/>
 			<property name="DisplayType" value="rangedGun"/>
 			<property name="CustomIcon" value="medic_pistol"/>
+			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib"/>
+			<property name="BoundItemName" value="meleeWpnStockBashMedicPistol101"/>
 			<property name="HoldType" value="1"/>
 			<property name="Meshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_pistol.prefab"/>
 			<property name="Material" value="MHandGunParts"/>
@@ -36,8 +38,10 @@
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
+				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
+				<property name="InternalCancelOnly" value="true"/>
 				<property name="ToggleActionSound" value="Medic_Mode_Switch"/>
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
 				<property name="Sound_start" value="Medic_Pistol_Fire"/>
@@ -66,8 +70,10 @@
 				<property name="Class" value="Ranged"/>
 				<property name="ActionUnlocked" value="false"/>
 				<property name="ActionTags" value="medicAction"/>
-				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
+				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
+				<property name="InternalCancelOnly" value="true"/>
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>
@@ -187,6 +193,8 @@
 			<property name="CustomIcon" value="medic_smg"/>
 			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shortRange,magazine,drumMagazine,firingMode,attAgility,noScopes,sideAttachments,barrelAttachments,noSilencer,stock,attachmentsIncluded,canHaveCosmetic,9mmGun,perkGunslinger,medicWeapon"/>
 			<property name="DisplayType" value="rangedGun"/>
+			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib"/>
+			<property name="BoundItemName" value="meleeWpnStockBashMedicSMG201"/>
 			<property name="HoldType" value="6"/>
 			<property name="Meshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_smg.prefab"/>
 			<property name="DropMeshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_smg.prefab"/>
@@ -219,8 +227,10 @@
 
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
+				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
+				<property name="InternalCancelOnly" value="true"/>
 				<property name="ToggleActionSound" value="Medic_Mode_Switch"/>
 				<property name="Delay" value=".150"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
@@ -254,8 +264,10 @@
 				<property name="Class" value="Ranged"/>
 				<property name="ActionUnlocked" value="false"/>
 				<property name="ActionTags" value="medicAction"/>
-				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
+				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
+				<property name="InternalCancelOnly" value="true"/>
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>
@@ -377,6 +389,8 @@
 		<item name="gunMedicShotgun301">
 			<property name="Tags" value="weapon,medicWeapon,ranged,holdBreathAiming,reloadPenalty,gun,shotgun,shortRange,sideAttachments,barrelAttachments,noSilencer,noScopes,stock,magazine,drumMagazine,firingMode,bottomAttachments,attStrength,perkBoomstick,attachmentsIncluded,canHaveCosmetic,shotgunSkill"/>
 			<property name="DisplayType" value="rangedShotgun"/>
+			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib"/>
+			<property name="BoundItemName" value="meleeWpnStockBashMedicSG301"/>
 			<property name="CustomIcon" value="medic_sg301"/>
 			<property name="HoldType" value="71"/>
 			<property name="Meshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_shotgun.prefab"/>
@@ -408,8 +422,10 @@
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
+				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
+				<property name="InternalCancelOnly" value="true"/>
 				<property name="ToggleActionSound" value="Medic_Mode_Switch"/>
 				<property name="Delay" value=".8"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug"/>
@@ -443,8 +459,10 @@
 				<property name="Class" value="Ranged"/>
 				<property name="ActionUnlocked" value="false"/>
 				<property name="ActionTags" value="medicAction"/>
-				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
+				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
+				<property name="InternalCancelOnly" value="true"/>
 				<property name="Magazine_items" value="ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>
@@ -561,6 +579,8 @@
 			<property name="CustomIcon" value="medic_ar401"/>
 			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,bottomAttachments,barrelAttachments,noSilencer,sideAttachments,noScopes,stock,magazine,drumMagazine,firingMode,attFortitude,perkMachineGunner,perkBookAutoWeapons,canHaveCosmetic,attachmentsIncluded,machinegunSkill,medicWeapon"/><!-- attachmentsIncluded -->
 			<property name="DisplayType" value="rangedGun"/>
+			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib"/>
+			<property name="BoundItemName" value="meleeWpnStockBashMedicAR401"/>
 			<property name="HoldType" value="71"/>
 			<property name="Meshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_ar.prefab"/>
 			<property name="Material" value="MMachineGunParts"/>
@@ -585,8 +605,10 @@
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
+				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
+				<property name="InternalCancelOnly" value="true"/>
 				<property name="ToggleActionSound" value="Medic_Mode_Switch"/>
 				<property name="Delay" value=".150"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammo762mmBulletBall,ammo762mmBulletHP,ammo762mmBulletAP"/>
@@ -614,8 +636,10 @@
 				<property name="Class" value="Ranged"/>
 				<property name="ActionUnlocked" value="false"/>
 				<property name="ActionTags" value="medicAction"/>
-				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
+				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
+				<property name="InternalCancelOnly" value="true"/>
 				<property name="Magazine_items" value="ammo762mmBulletBall,ammo762mmBulletHP,ammo762mmBulletAP"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>
@@ -794,6 +818,411 @@
 			</property>
 		</item>
 		
+		<item name="meleeWpnStockBashMedicPistol101">
+			<property name="Tags" value="blunt,melee,grunting,light,perkFlurryOfFortitude,weapon,attFortitude,perkBrawler,noBlades,canHaveCosmetic,knuckleSkill"/>
+			<property name="CreativeMode" value="None"/>
+			<property name="Material" value="Mmetal"/>
+			<property name="TintColor" value="191, 172, 95"/>
+			<property name="Meshfile" value="@:Other/Items/Weapons/Melee/Knuckles/knucklesRight_Prefab.prefab"/>
+			<property name="HoldType" value="61"/>
+			<property name="ScrapTimeOverride" value="10.0"/>
+			<property name="RepairTools" value="resourceRepairKit"/>
+			<property name="DegradationBreaksAfter" value="false"/>
+			<property name="SoundJammed" value="ItemNeedsRepair"/>
+			<property name="SoundDestroy" value="wooddestroy1"/>
+			<property name="DisplayType" value="melee"/>
+			<property name="Canhold" value="true"/>
+			<property name="Group" value="Ammo/Weapons,Melee Weapons"/>
+			<property name="EconomicValue" value="500"/>
+			<property name="TraderStageTemplate" value="baseTier1"/><!-- meleeWpnKnucklesT1IronKnuckles -->
+			<property name="UnlockedBy" value="craftingKnuckles"/><!-- perkBrawler,meleeWpnKnucklesT1IronKnucklesSchematic, -->
+			<property name="ShowQuality" value="true"/>
+			<property name="SoundUnholster" value="weapon_unholster"/>
+			<property name="SoundHolster" value="weapon_holster"/>
+			<property name="SoundPickup" value="knuckles_iron_grab"/>
+			<property name="SoundPlace" value="knuckles_iron_place"/>
+			
+			<property class="Action0">
+				<property name="Class" value="DynamicMelee"/>
+				<property name="Sphere" value=".1"/>
+				<property name="Damage_type" value="Bashing"/>
+				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="DynamicSoundStart" value="bashSwingLight"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
+				<property name="UseGrazingHits" value="true"/>
+				<property name="GrazeStart" value=".3"/>
+				<property name="GrazeEnd" value=".5"/>
+				<property name="SwingDegrees" value="90"/>
+				<property name="SwingAngle" value="-90"/>
+				<property class="HitSounds">
+					<property name="Override0" value="organic" param1="metalhitorganic"/>
+				</property>
+				<property class="GrazeSounds">
+					<property name="Override0" value="organic" param1="metalhitcloth"/>
+				</property>
+			</property>
+			<property class="Action1"> <!-- UseAction -->
+				<property name="Class" value="DynamicMelee"/>
+				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
+				<property name="Sphere" value=".1"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
+				<property name="Damage_type" value="Bashing"/>
+				<property name="UsePowerAttackAnimation" value="true"/>
+				<property name="UseGrazingHits" value="true"/>
+				<property name="GrazeStart" value=".35"/>
+				<property name="GrazeEnd" value=".4"/>
+				<property name="SwingDegrees" value="30"/>
+				<property name="SwingAngle" value="90"/>
+				<property class="HitSounds">
+					<property name="Override0" value="organic" param1="metalhitorganic"/>
+				</property>
+				<property class="GrazeSounds">
+					<property name="Override0" value="organic" param1="metalhitcloth"/>
+				</property>
+			</property>
+			<effect_group name="meleeWpnStockBashMedicPistol101">
+				<passive_effect name="AttacksPerMinute" operation="base_set" value="60" tags="perkBrawler,perkFlurryOfFortitude"/>
+				<passive_effect name="StaminaLoss" operation="base_set" value="22" tags="primary"/>
+				<passive_effect name="DegradationMax" operation="base_set" value="300,700" tier="1,6" tags="perkBrawler"/>
+				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkBrawler"/>
+				<passive_effect name="MaxRange" operation="base_set" value="2.0" tags="perkBrawler"/>
+				<passive_effect name="BlockRange" operation="base_set" value="3" tags="perkBrawler"/>
+				<passive_effect name="ModSlots" operation="base_set" value="2,2,2,3,3,4" tier="1,2,3,4,5,6"/>
+				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+				<passive_effect name="EntityDamage" operation="base_set" value="20" tags="perkBrawler"/>
+				<passive_effect name="EntityDamage" operation="perc_add" value="-.04,.04" tags="perkBrawler"/> <!-- random EntityDmg -->
+				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkBrawler"/> <!-- tier bonus -->
+				<passive_effect name="BlockDamage" operation="base_set" value="3.5" tags="perkBrawler"/>
+				<passive_effect name="BlockDamage" operation="perc_add" value="-.04,.04" tags="perkBrawler"/> <!-- random BlockDmg -->
+				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkBrawler"/> <!-- tier bonus -->
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="earth"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="stone"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="metal"/>
+			</effect_group>
+			<effect_group name="Knockdown">
+				<requirement name="!EntityTagCompare" target="other" tags="player"/>
+					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="Ragdoll" duration="0" force="40" target="other"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="Ragdoll" duration="0" force="60" target="other"/>
+					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="1" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="10" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="2" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="20" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="3" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="30" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="4" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="40" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="5" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="50" />
+					</triggered_effect>
+			</effect_group>
+		</item>
+		
+		<item name="meleeWpnStockBashMedicSMG201">
+			<property name="Tags" value="blunt,club,melee,grunting,light,longShaft,perkFlurryOfStrength,weapon,meleeWeapon,attStrength,perkPummelPete,canHaveCosmetic,clubSkill"/>
+			<property name="CreativeMode" value="None"/>
+			<property name="DisplayType" value="melee"/>
+			<property name="Group" value="Ammo/Weapons,Basics,Melee Weapons"/>
+			<property name="Meshfile" value="@:Other/Items/Weapons/Melee/ClubWood/clubWoodPrefab.prefab"/>
+			<property name="HoldType" value="2"/>
+			<property name="Material" value="Mmetal"/>
+			<property name="ScrapTimeOverride" value="10.0"/>
+			<property name="RepairTools" value="resourceWood"/>
+			<property name="SoundDestroy" value="wooddestroy1"/>
+			<property name="RepairExpMultiplier" value="5.5"/>
+			<property name="SellableToTrader" value="false"/>
+			<property name="EconomicBundleSize" value="1"/>
+			<property name="EconomicValue" value="200"/>
+			<property name="TraderStageTemplate" value="baseTier0"/><!-- meleeWpnClubT0WoodenClub -->
+			<property name="ShowQuality" value="true"/>
+			<property name="SoundUnholster" value="weapon_unholster"/>
+			<property name="SoundHolster" value="weapon_holster"/>
+			<property name="SoundPickup" value="club_wood_grab"/>
+			<property name="SoundPlace" value="club_wood_place"/>
+		
+			<property class="Action0">
+				<property name="Class" value="DynamicMelee"/>
+				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="DynamicSoundStart" value="bashSwingLight"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
+				<property name="Sphere" value=".1"/>
+				<property name="UseGrazingHits" value="true"/>
+				<property name="GrazeStart" value=".25"/>
+				<property name="GrazeEnd" value=".32"/>
+				<property name="SwingDegrees" value="65"/>
+				<property name="SwingAngle" value="180"/>
+			</property>
+			<property class="Action1">
+				<property name="Class" value="DynamicMelee"/>
+				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
+				<property name="Sphere" value=".15"/>
+				<property name="UsePowerAttackAnimation" value="true"/>
+				<property name="UseGrazingHits" value="true"/>
+				<property name="IsHorizontalSwing" value="true"/>
+				<property name="GrazeStart" value=".25"/>
+				<property name="GrazeEnd" value=".32"/>
+				<property name="SwingDegrees" value="120"/>
+				<property name="SwingAngle" value="90"/>
+			</property>
+			<effect_group name="meleeWpnStockBashMedicSMG">
+				<passive_effect name="AttacksPerMinute" operation="base_set" value="55" tags="perkPummelPete,perkFlurryOfStrength"/>
+				<passive_effect name="StaminaLoss" operation="base_set" value="32" tags="primary"/>
+				<passive_effect name="DegradationMax" operation="base_set" value="100,200" tier="1,6" tags="perkPummelPete"/>
+				<passive_effect name="DegradationPerUse" operation="base_set" value="0" tags="perkPummelPete"/>
+				<passive_effect name="MaxRange" operation="base_set" value="2.4" tags="perkPummelPete"/>
+				<passive_effect name="BlockRange" operation="base_set" value="3" tags="perkPummelPete"/>
+				<passive_effect name="ModSlots" operation="base_set" value="1,1,1,2,2,3" tier="1,2,3,4,5,6"/>
+				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+				<passive_effect name="EntityDamage" operation="base_set" value="30"/> <!-- meleeWpnClubT0WoodenClub -->
+				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkPummelPete"/> <!-- tier bonus -->
+				<passive_effect name="BlockDamage" operation="base_set" value="11"/>
+				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkPummelPete"/> <!-- tier bonus -->
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="earth"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="stone"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="metal"/>
+				<passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="allHarvest"/>
+				<passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="allToolsHarvest"/>
+				<passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="oreWoodHarvest"/>
+			</effect_group>
+			<effect_group name="Knockdown">
+				<requirement name="!EntityTagCompare" target="other" tags="player"/>
+					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="Ragdoll" duration="0" force="40" target="other"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="Ragdoll" duration="0" force="60" target="other"/>
+					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="1" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="15" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="2" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="30" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="3" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="45" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="4" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="60" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="5" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="75" />
+					</triggered_effect>
+			</effect_group>
+		</item>
+		
+		<item name="meleeWpnStockBashMedicSG301">
+			<property name="Tags" value="blunt,club,melee,grunting,light,longShaft,perkFlurryOfStrength,weapon,meleeWeapon,attStrength,perkPummelPete,canHaveCosmetic,clubSkill"/>
+			<property name="CreativeMode" value="None"/>
+			<property name="DisplayType" value="melee"/>
+			<property name="Group" value="Ammo/Weapons,Basics,Melee Weapons"/>
+			<property name="Meshfile" value="@:Other/Items/Weapons/Melee/ClubWood/clubWoodPrefab.prefab"/>
+			<property name="HoldType" value="2"/>
+			<property name="Material" value="Mmetal"/>
+			<property name="ScrapTimeOverride" value="10.0"/>
+			<property name="RepairTools" value="resourceWood"/>
+			<property name="SoundDestroy" value="wooddestroy1"/>
+			<property name="RepairExpMultiplier" value="5.5"/>
+			<property name="SellableToTrader" value="false"/>
+			<property name="EconomicBundleSize" value="1"/>
+			<property name="EconomicValue" value="200"/>
+			<property name="TraderStageTemplate" value="baseTier0"/><!-- meleeWpnClubT0WoodenClub -->
+			<property name="ShowQuality" value="true"/>
+			<property name="SoundUnholster" value="weapon_unholster"/>
+			<property name="SoundHolster" value="weapon_holster"/>
+			<property name="SoundPickup" value="club_wood_grab"/>
+			<property name="SoundPlace" value="club_wood_place"/>
+		
+			<property class="Action0">
+				<property name="Class" value="DynamicMelee"/>
+				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="DynamicSoundStart" value="bashSwingLight"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
+				<property name="Sphere" value=".1"/>
+				<property name="UseGrazingHits" value="true"/>
+				<property name="GrazeStart" value=".25"/>
+				<property name="GrazeEnd" value=".32"/>
+				<property name="SwingDegrees" value="65"/>
+				<property name="SwingAngle" value="180"/>
+			</property>
+			<property class="Action1">
+				<property name="Class" value="DynamicMelee"/>
+				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
+				<property name="Sphere" value=".15"/>
+				<property name="UsePowerAttackAnimation" value="true"/>
+				<property name="UseGrazingHits" value="true"/>
+				<property name="IsHorizontalSwing" value="true"/>
+				<property name="GrazeStart" value=".25"/>
+				<property name="GrazeEnd" value=".32"/>
+				<property name="SwingDegrees" value="120"/>
+				<property name="SwingAngle" value="90"/>
+			</property>
+			<effect_group name="meleeWpnStockBashMedicSG">
+				<passive_effect name="AttacksPerMinute" operation="base_set" value="55" tags="perkPummelPete,perkFlurryOfStrength"/>
+				<passive_effect name="StaminaLoss" operation="base_set" value="35" tags="primary"/>
+				<passive_effect name="DegradationMax" operation="base_set" value="100,200" tier="1,6" tags="perkPummelPete"/>
+				<passive_effect name="DegradationPerUse" operation="base_set" value="0" tags="perkPummelPete"/>
+				<passive_effect name="MaxRange" operation="base_set" value="2.4" tags="perkPummelPete"/>
+				<passive_effect name="BlockRange" operation="base_set" value="3" tags="perkPummelPete"/>
+				<passive_effect name="ModSlots" operation="base_set" value="1,1,1,2,2,3" tier="1,2,3,4,5,6"/>
+				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+				<passive_effect name="EntityDamage" operation="base_set" value="30"/> <!-- meleeWpnClubT0WoodenClub -->
+				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkPummelPete"/> <!-- tier bonus -->
+				<passive_effect name="BlockDamage" operation="base_set" value="11"/>
+				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkPummelPete"/> <!-- tier bonus -->
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="earth"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="stone"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="metal"/>
+				<passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="allHarvest"/>
+				<passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="allToolsHarvest"/>
+				<passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="oreWoodHarvest"/>
+			</effect_group>
+			<effect_group name="Knockdown">
+				<requirement name="!EntityTagCompare" target="other" tags="player"/>
+					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="Ragdoll" duration="0" force="40" target="other"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="Ragdoll" duration="0" force="60" target="other"/>
+					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="1" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="15" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="2" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="30" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="3" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="45" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="4" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="60" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="5" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="75" />
+					</triggered_effect>
+			</effect_group>
+		</item>
+		
+		<item name="meleeWpnStockBashMedicAR401">
+			<property name="Tags" value="blunt,club,melee,grunting,light,longShaft,perkFlurryOfStrength,weapon,meleeWeapon,attStrength,perkPummelPete,canHaveCosmetic,clubSkill"/>
+			<property name="CreativeMode" value="None"/>
+			<property name="DisplayType" value="melee"/>
+			<property name="Group" value="Ammo/Weapons,Basics,Melee Weapons"/>
+			<property name="Meshfile" value="@:Other/Items/Weapons/Melee/ClubWood/clubWoodPrefab.prefab"/>
+			<property name="HoldType" value="2"/>
+			<property name="Material" value="Mmetal"/>
+			<property name="ScrapTimeOverride" value="10.0"/>
+			<property name="RepairTools" value="resourceWood"/>
+			<property name="SoundDestroy" value="wooddestroy1"/>
+			<property name="RepairExpMultiplier" value="5.5"/>
+			<property name="SellableToTrader" value="false"/>
+			<property name="EconomicBundleSize" value="1"/>
+			<property name="EconomicValue" value="200"/>
+			<property name="TraderStageTemplate" value="baseTier0"/><!-- meleeWpnClubT0WoodenClub -->
+			<property name="ShowQuality" value="true"/>
+			<property name="SoundUnholster" value="weapon_unholster"/>
+			<property name="SoundHolster" value="weapon_holster"/>
+			<property name="SoundPickup" value="club_wood_grab"/>
+			<property name="SoundPlace" value="club_wood_place"/>
+		
+			<property class="Action0">
+				<property name="Class" value="DynamicMelee"/>
+				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="DynamicSoundStart" value="bashSwingLight"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
+				<property name="Sphere" value=".1"/>
+				<property name="UseGrazingHits" value="true"/>
+				<property name="GrazeStart" value=".25"/>
+				<property name="GrazeEnd" value=".32"/>
+				<property name="SwingDegrees" value="65"/>
+				<property name="SwingAngle" value="180"/>
+			</property>
+			<property class="Action1">
+				<property name="Class" value="DynamicMelee"/>
+				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
+				<property name="Sphere" value=".15"/>
+				<property name="UsePowerAttackAnimation" value="true"/>
+				<property name="UseGrazingHits" value="true"/>
+				<property name="IsHorizontalSwing" value="true"/>
+				<property name="GrazeStart" value=".25"/>
+				<property name="GrazeEnd" value=".32"/>
+				<property name="SwingDegrees" value="120"/>
+				<property name="SwingAngle" value="90"/>
+			</property>
+			<effect_group name="meleeWpnStockBashMedicAR">
+				<passive_effect name="AttacksPerMinute" operation="base_set" value="55" tags="perkPummelPete,perkFlurryOfStrength"/>
+				<passive_effect name="StaminaLoss" operation="base_set" value="35" tags="primary"/>
+				<passive_effect name="DegradationMax" operation="base_set" value="100,200" tier="1,6" tags="perkPummelPete"/>
+				<passive_effect name="DegradationPerUse" operation="base_set" value="0" tags="perkPummelPete"/>
+				<passive_effect name="MaxRange" operation="base_set" value="2.4" tags="perkPummelPete"/>
+				<passive_effect name="BlockRange" operation="base_set" value="3" tags="perkPummelPete"/>
+				<passive_effect name="ModSlots" operation="base_set" value="1,1,1,2,2,3" tier="1,2,3,4,5,6"/>
+				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+				<passive_effect name="EntityDamage" operation="base_set" value="30"/> <!-- meleeWpnClubT0WoodenClub -->
+				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkPummelPete"/> <!-- tier bonus -->
+				<passive_effect name="BlockDamage" operation="base_set" value="11"/>
+				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkPummelPete"/> <!-- tier bonus -->
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="earth"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="stone"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="metal"/>
+				<passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="allHarvest"/>
+				<passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="allToolsHarvest"/>
+				<passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="oreWoodHarvest"/>
+			</effect_group>
+			<effect_group name="Knockdown">
+				<requirement name="!EntityTagCompare" target="other" tags="player"/>
+					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="Ragdoll" duration="0" force="40" target="other"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="Ragdoll" duration="0" force="60" target="other"/>
+					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="1" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="15" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="2" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="30" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="3" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="45" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="4" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="60" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="5" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="75" />
+					</triggered_effect>
+			</effect_group>
+		</item>
 	</append>
 
 	<conditional>

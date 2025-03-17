@@ -52,7 +52,7 @@
 			</property>
 			<effect_group name="meleeWpnStockBashKaboomstick">
 				<passive_effect name="AttacksPerMinute" operation="base_set" value="55" tags="perkPummelPete,perkFlurryOfStrength"/>
-				<passive_effect name="StaminaLoss" operation="base_set" value="23" tags="primary"/>
+				<passive_effect name="StaminaLoss" operation="base_set" value="33" tags="primary"/>
 				<passive_effect name="DegradationMax" operation="base_set" value="100,200" tier="1,6" tags="perkPummelPete"/>
 				<passive_effect name="DegradationPerUse" operation="base_set" value="0" tags="perkPummelPete"/>
 				<passive_effect name="MaxRange" operation="base_set" value="2.4" tags="perkPummelPete"/>
@@ -72,26 +72,31 @@
 				<passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="oreWoodHarvest"/>
 			</effect_group>
 			<effect_group name="Knockdown">
-				<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-				<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="1" />
-				<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="15" />
-				</triggered_effect>
-				<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-				<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="2" />
-				<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="30" />
-				</triggered_effect>
-				<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-				<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="3" />
-				<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="45" />
-				</triggered_effect>
-				<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-				<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="4" />
-				<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="60" />
-				</triggered_effect>
-				<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-				<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="5" />
-				<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="75" />
-				</triggered_effect>
+				<requirement name="!EntityTagCompare" target="other" tags="player"/>
+					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="Ragdoll" duration="0" force="40" target="other"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="Ragdoll" duration="0" force="60" target="other"/>
+					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="1" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="15" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="2" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="30" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="3" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="45" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="4" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="60" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="5" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="75" />
+					</triggered_effect>
 			</effect_group>
 		</item>
 		<item name="gunKaboomstick">
@@ -126,6 +131,7 @@
 				<!-- <property name="Class" value="Launcher"/> -->
 				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
+				<property name="InternalCancelOnly" value="true"/>
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="Delay" value=".2"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammoKaboomstickShellHE,ammoKaboomstickShellFrag"/>
@@ -295,4 +301,9 @@
 			</effect_group>
 		</item>
 	</append>
+	<conditional>
+		<if cond="mod_loaded('EFT2_DVS_Items')">
+			<set xpath="/items/item[@name='gunKaboomstick']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
+		</if>
+	</conditional>
 </configs>

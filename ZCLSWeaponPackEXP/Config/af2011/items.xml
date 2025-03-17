@@ -65,7 +65,7 @@
 			</property>
 			<effect_group name="meleeWpnHandBashAF2011">
 				<passive_effect name="AttacksPerMinute" operation="base_set" value="60" tags="perkBrawler,perkFlurryOfFortitude"/>
-				<passive_effect name="StaminaLoss" operation="base_set" value="15" tags="primary"/>
+				<passive_effect name="StaminaLoss" operation="base_set" value="25" tags="primary"/>
 				<passive_effect name="DegradationMax" operation="base_set" value="300,700" tier="1,6" tags="perkBrawler"/>
 				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkBrawler"/>
 				<passive_effect name="MaxRange" operation="base_set" value="2.0" tags="perkBrawler"/>
@@ -84,26 +84,31 @@
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="metal"/>
 			</effect_group>
 			<effect_group name="Knockdown">
-				<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-				<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="1" />
-				<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="10" />
-				</triggered_effect>
-				<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-				<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="2" />
-				<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="20" />
-				</triggered_effect>
-				<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-				<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="3" />
-				<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="30" />
-				</triggered_effect>
-				<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-				<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="4" />
-				<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="40" />
-				</triggered_effect>
-				<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-				<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="5" />
-				<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="50" />
-				</triggered_effect>
+				<requirement name="!EntityTagCompare" target="other" tags="player"/>
+					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="Ragdoll" duration="0" force="40" target="other"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="Ragdoll" duration="0" force="60" target="other"/>
+					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="1" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="10" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="2" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="20" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="3" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="30" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="4" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="40" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="5" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="50" />
+					</triggered_effect>
 			</effect_group>
 		</item>
 		
@@ -145,6 +150,7 @@
 				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;DynamicMuzzleFlash,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
+				<property name="InternalCancelOnly" value="true"/>
 				<property name="MuzzleIsPerRound" value="true"/>
 				<property name="OneRoundMultiShot" value="false"/>
 				<property name="RoundsPerShot" value="2"/>
@@ -289,6 +295,7 @@
 				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;DynamicMuzzleFlash,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
+				<property name="InternalCancelOnly" value="true"/>
 				<property name="MuzzleIsPerRound" value="true"/>
 				<property name="OneRoundMultiShot" value="false"/>
 				<property name="RoundsPerShot" value="2"/>
@@ -398,6 +405,12 @@
 			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='DegradationMax']/@value">1200,2400</set>
 			<append xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/property[@name='Tags']/@value">,CompactReflexSight</append>
 			<append xpath="/items/item[@name='gunHandgunT3AF2011A1S']/property[@name='Tags']/@value">,CompactReflexSight</append>
+		</if>
+	</conditional>
+	<conditional>
+		<if cond="mod_loaded('EFT2_DVS_Items')">
+			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
+			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
 		</if>
 	</conditional>
 </configs>
