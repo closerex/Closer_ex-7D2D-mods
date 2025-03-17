@@ -35,7 +35,7 @@ public static class FLARMultiBarrelExt
         if (_actionData is ItemActionBetterLauncher.ItemActionDataBetterLauncher launcherData)
         {
             launcherData.projectileJoint = __customData.projectileJoints[(byte)(_userData >> 8)];
-            if (launcherData.projectileJoint == null)
+            if (launcherData.projectileJoint == null && ConsoleCmdReloadLog.LogInfo)
             {
                 Log.Warning($"null projectile joint on inventory slot {launcherData.invData.slotIdx}!!\n{StackTraceUtility.ExtractStackTrace()}");
             }
@@ -58,7 +58,7 @@ public static class FLARMultiActionFixExt
             string indexExtension = (_data.indexInEntityOfAction > 0 ? _data.indexInEntityOfAction.ToString() : "");
             string jointName = _data.invData.itemValue.GetPropertyOverrideForAction($"ProjectileJoint_Name", $"ProjectileJoint{indexExtension}", _data.indexInEntityOfAction);
             launcherData.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName(launcherData.invData.model, jointName) ?? launcherData.projectileJoint;
-            if (launcherData.projectileJoint == null)
+            if (launcherData.projectileJoint == null && ConsoleCmdReloadLog.LogInfo)
             {
                 Log.Warning($"null projectile joint on inventory slot {launcherData.invData.slotIdx}!\n{StackTraceUtility.ExtractStackTrace()}");
             }
@@ -182,7 +182,7 @@ public static class FLARPatch
     {
         ItemActionBetterLauncher.ItemActionDataBetterLauncher ItemActionDataBetterLauncher = (ItemActionBetterLauncher.ItemActionDataBetterLauncher)_data;
         ItemActionDataBetterLauncher.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName(ItemActionDataBetterLauncher.invData.model, "ProjectileJoint");
-        if (!ItemActionDataBetterLauncher.projectileJoint)
+        if (!ItemActionDataBetterLauncher.projectileJoint && ConsoleCmdReloadLog.LogInfo)
         {
             Log.Warning($"null projectile joint on inventory slot {ItemActionDataBetterLauncher.invData.slotIdx}!\n{StackTraceUtility.ExtractStackTrace()}");
         }

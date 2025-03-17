@@ -106,7 +106,7 @@ public class TransformActivationBinding : MonoBehaviour
     internal IEnumerator UpdateBool(bool enabled)
     {
         yield return new WaitForEndOfFrame();
-        if (animatorParamBindings != null && targets && targets.IsAnimationSet)
+        if (animatorParamBindings != null && targets)
         {
             foreach (string str in animatorParamBindings)
             {
@@ -120,7 +120,7 @@ public class TransformActivationBinding : MonoBehaviour
 #else
     internal void UpdateBoolEditor(bool enabled)
     {
-        if (animatorParamBindings != null && targets && targets.IsAnimationSet)
+        if (animatorParamBindings != null && targets)
         {
             IAnimatorWrapper animator = targets.GraphBuilder.WeaponWrapper;
             if (animator == null || !animator.IsValid)

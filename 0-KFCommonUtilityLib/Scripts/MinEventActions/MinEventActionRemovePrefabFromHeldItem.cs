@@ -22,7 +22,7 @@ public class MinEventActionRemovePrefabFromHeldItem : MinEventActionRemovePrefab
             string prefabName = "tempPrefab_" + base.prefabName;
             if (_params.Transform.TryGetComponent<AnimationTargetsAbs>(out var targets))
             {
-                GameObject prefab = targets.GetPrefab(prefabName);
+                GameObject prefab = targets.RemovePrefab(prefabName);
                 if (prefab)
                 {
                     child = prefab.transform;
@@ -34,10 +34,6 @@ public class MinEventActionRemovePrefabFromHeldItem : MinEventActionRemovePrefab
             }
             if (child)
             {
-                if (child.TryGetComponent<AttachmentReferenceAppended>(out var reference))
-                {
-                    reference.Remove();
-                }
                 child.parent = null;
                 GameObject.Destroy(child.gameObject);
             }

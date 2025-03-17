@@ -10,6 +10,7 @@ public class ActionModuleInterruptReload
     public float holdBeforeCancel = 0.06f;
     public string firingStateName = "";
     public bool instantFiringCancel = false;
+    public bool internalCancelOnly = false;
 
     [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPrefix]
     public bool Prefix_StartHolding(InterruptData __customData)
@@ -23,6 +24,7 @@ public class ActionModuleInterruptReload
     {
         firingStateName = _props.GetString("FiringStateFullName");
         instantFiringCancel = _props.GetBool("InstantFiringCancel");
+        internalCancelOnly = _props.GetBool("InternalCancelOnly");
     }
 
     [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
@@ -175,7 +177,7 @@ internal static class ReloadInterruptionPatches
             int curActionIndex = MultiActionManager.GetActionIndexForEntity(_data.holdingEntity);
             var rangedAction = __instance.Actions[curActionIndex] as ItemActionRanged;
             var rangedData = _data.actionData[curActionIndex] as ItemActionRanged.ItemActionDataRanged;
-            if (rangedData != null && rangedData is IModuleContainerFor<ActionModuleInterruptReload.InterruptData> dataModule && rangedAction is IModuleContainerFor<ActionModuleInterruptReload> actionModule)
+            if (rangedData != null && rangedData is IModuleContainerFor<ActionModuleInterruptReload.InterruptData> dataModule && rangedAction is IModuleContainerFor<ActionModuleInterruptReload> actionModule && !actionModule.Instance.internalCancelOnly)
             {
                 if (!_bReleased && _playerActions != null && actionModule.Instance.IsRequestPossible(dataModule.Instance) && ((_playerActions.Primary.IsPressed && _actionIdx == curActionIndex && _data.itemValue.Meta > 0) || (_playerActions.Secondary.IsPressed && curAction is ItemActionZoom)) && (rangedData.isReloading || rangedData.isWeaponReloading) && !dataModule.Instance.isInterruptRequested)
                 {

@@ -26,6 +26,9 @@ public class RigTargets : AnimationTargetsAbs
     public override Transform ItemFpv { get => itemFpv; protected set => itemFpv = value; }
     public override Transform AttachmentRef { get => attachmentReference; protected set => attachmentReference = value; }
     protected override Animator ItemAnimatorFpv => itemAnimator;
+
+    public override bool UseGraph => IsFpv ? false : ItemTpv;
+
     protected override void Awake()
     {
         base.Awake();

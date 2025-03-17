@@ -466,7 +466,7 @@ namespace KFCommonUtilityLib
             for (int i = 0; i < mtddef_derived.Parameters.Count; i++)
             {
                 var par = mtddef_derived.Parameters[i];
-                il.Emit(par.ParameterType.IsByReference ? OpCodes.Ldarga_S : OpCodes.Ldarg_S, par);
+                il.Emit(OpCodes.Ldarg_S, par);
             }
             il.Emit(OpCodes.Call, mtddef_base_override ?? module.ImportReference(mtdref_base));
             if (hasReturnVal)
@@ -557,7 +557,8 @@ namespace KFCommonUtilityLib
                         list_inst_pars.Add(il.Create(OpCodes.Ldarg_S, mtddef_derived.Parameters[index]));
                         if (!par.ParameterType.IsByReference)
                         {
-                            list_inst_pars.Add(il.Create(OpCodes.Ldind_Ref));
+                            var opcode = par.ParameterType.LoadRefAsValue(out bool isStruct);
+                            list_inst_pars.Add(isStruct ? il.Create(opcode, par.ParameterType) : il.Create(opcode));
                         }
                     }
                 }

@@ -231,6 +231,7 @@ public class AnimationGraphBuilder : MonoBehaviour
     private void DestroyWeapon()
     {
         CleanupBehaviours();
+        Destroy(weaponMask);
         weaponMask = null;
         if (weaponControllerPlayable.IsValid())
         {
@@ -239,6 +240,7 @@ public class AnimationGraphBuilder : MonoBehaviour
         }
         animator.avatar = vanillaAvatar;
         Destroy(weaponAvatar);
+        weaponAvatar = null;
         animator.runtimeAnimatorController = vanillaRuntimeController;
     }
 
@@ -257,12 +259,18 @@ public class AnimationGraphBuilder : MonoBehaviour
 #endif
         //var rb = animator.transform.AddMissingComponent<RigBuilder>();
         //rb.enabled = false;
+        bool curTargetValid = CurrentTarget && CurrentTarget.IsAnimationSet;
         if (CurrentTarget)
+        {
+            CurrentTarget.IsCurrent = false;
+        }
+        if (curTargetValid)
         {
             CurrentTarget.SetEnabled(false);
         }
 
-        bool useGraph = target && (target is PlayGraphTargets || (target.ItemTpv && !isFpv));
+        bool useGraph = target && target.UseGraph;
+        bool nextTargetValid = target && target.ItemCurrent;
         if (HasWeaponOverride)
         {
             if (useGraph)
@@ -277,6 +285,10 @@ public class AnimationGraphBuilder : MonoBehaviour
 
         CurrentTarget = target;
         if (target)
+        {
+            target.IsCurrent = true;
+        }
+        if (nextTargetValid)
         {
             target.SetEnabled(true);
         }
@@ -299,7 +311,7 @@ public class AnimationGraphBuilder : MonoBehaviour
         else
         {
             VanillaWrapper = new AnimatorWrapper(animator);
-            if (target)
+            if (nextTargetValid)
             {
                 WeaponWrapper = new AnimatorWrapper(target.ItemAnimator);
             }
@@ -312,15 +324,18 @@ public class AnimationGraphBuilder : MonoBehaviour
         UpdateChildAnimatorArray(target);
         UpdateParamMapping();
 #if NotEditor
-        animator.SetWrappedBool(AvatarController.isCrouchingHash, wasCrouching);
-        if (isFpv)
+        if (curTargetValid || nextTargetValid)
         {
-            VanillaWrapper.Play("idle", 0, 0f);
-            VanillaWrapper.SetInteger(AvatarController.weaponHoldTypeHash, -1);
-        }
-        if (wasCrouching && !isFpv && VanillaWrapper.GetLayerCount() > 4)
-        {
-            VanillaWrapper.Play("2HGeneric", 4, 0);
+            animator.SetWrappedBool(AvatarController.isCrouchingHash, wasCrouching);
+            if (isFpv)
+            {
+                VanillaWrapper.Play("idle", 0, 0f);
+                VanillaWrapper.SetInteger(AvatarController.weaponHoldTypeHash, -1);
+            }
+            if (wasCrouching && !isFpv && VanillaWrapper.GetLayerCount() > 4)
+            {
+                VanillaWrapper.Play("2HGeneric", 4, 0);
+            }
         }
 #endif
         sw.Stop();
@@ -340,6 +355,10 @@ public class AnimationGraphBuilder : MonoBehaviour
             if (target.ItemAnimator)
             {
                 animators.Remove(target.ItemAnimator);
+            }
+            else if (!target.ItemCurrent && target.TryGetComponent<Animator>(out Animator vanillaAnimator))
+            {
+                animators.Remove(vanillaAnimator);
             }
             childAnimators = animators.ToArray();
         }

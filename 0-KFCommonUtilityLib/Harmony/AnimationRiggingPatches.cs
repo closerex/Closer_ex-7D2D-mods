@@ -659,7 +659,7 @@ static class AnimationRiggingPatches
     private static bool Prefix_SetFirstPersonView_EntityPlayerLocal(EntityPlayerLocal __instance, bool _bFirstPersonView)
     {
         var targets = AnimationRiggingManager.GetRigTargetsFromPlayer(__instance);
-        if (_bFirstPersonView != __instance.bFirstPersonView && targets && !targets.Destroyed && targets.IsAnimationSet)
+        if (_bFirstPersonView != __instance.bFirstPersonView && targets && !targets.Destroyed)
         {
             //targets.SetEnabled(false);
             //targets.GraphBuilder.SetCurrentTarget(null);
@@ -683,7 +683,7 @@ static class AnimationRiggingPatches
     [HarmonyPostfix]
     private static void Postfix_SetInRightHand_AvatarLocalPlayerController(Transform _transform, AvatarLocalPlayerController __instance)
     {
-        if (_transform != null && _transform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed && targets.ItemCurrent)
+        if (_transform != null && _transform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
         {
             //targets.SetEnabled(true);
             targets.GraphBuilder.SetCurrentTarget(targets);
@@ -698,7 +698,7 @@ static class AnimationRiggingPatches
     [HarmonyPostfix]
     private static void Postfix_SetInRightHand_LegacyAvatarController(Transform _transform, LegacyAvatarController __instance)
     {
-        if (_transform != null && _transform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed && targets.ItemCurrent)
+        if (_transform != null && _transform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
         {
             //targets.SetEnabled(true);
             targets.GraphBuilder.SetCurrentTarget(targets);

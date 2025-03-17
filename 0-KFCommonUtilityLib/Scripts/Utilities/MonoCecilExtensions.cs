@@ -1682,4 +1682,42 @@ public static class MonoCecilExtensions
     }
 
     #endregion InstructionOptimizations
+
+    public static OpCode LoadRefAsValue(this TypeReference type, out bool isStruct)
+    {
+        isStruct = false;
+        if (!type.IsValueType)
+        {
+            return OpCodes.Ldind_Ref;
+        }
+
+        switch (type.MetadataType)
+        {
+            case MetadataType.Boolean:
+            case MetadataType.SByte:
+                return OpCodes.Ldind_I1;
+            case MetadataType.Byte:
+                return OpCodes.Ldind_U1;
+            case MetadataType.Int16:
+                return OpCodes.Ldind_I2;
+            case MetadataType.UInt16:
+                return OpCodes.Ldind_U2;
+            case MetadataType.Int32:
+            case MetadataType.UInt32:
+                return OpCodes.Ldind_I4;
+            case MetadataType.Int64:
+            case MetadataType.UInt64:
+                return OpCodes.Ldind_I8;
+            case MetadataType.Single:
+                return OpCodes.Ldind_R4;
+            case MetadataType.Double:
+                return OpCodes.Ldind_R8;
+            case MetadataType.IntPtr:
+            case MetadataType.UIntPtr:
+                return OpCodes.Ldind_I;
+            default:
+                isStruct = true;
+                return OpCodes.Ldobj;
+        }
+    }
 }

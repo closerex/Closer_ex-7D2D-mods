@@ -302,6 +302,12 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 return onlyActive ? GameUtils.FindDeepChildActive(itemModel, name) : GameUtils.FindDeepChild(itemModel, name);
             }
 
+            var attachmentOverride = targets.GetAttachmentPathOverride(name, onlyActive);
+            if (attachmentOverride)
+            {
+                return attachmentOverride;
+            }
+
             Transform targetRoot = targets.ItemCurrentOrDefault;
             if (string.IsNullOrEmpty(name))
                 return targetRoot;

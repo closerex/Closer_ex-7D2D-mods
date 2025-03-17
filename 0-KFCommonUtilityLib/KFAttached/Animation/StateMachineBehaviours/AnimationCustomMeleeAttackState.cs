@@ -13,6 +13,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
 #endif
 {
     public float RaycastTime = 0.3f;
+    public bool UseGraze = true;
     public float CustomGrazeCastTime = 0.3f;
     public float CustomGrazeCastDuration = 0f;
     public float ImpactDuration = 0.01f;
@@ -160,7 +161,10 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             Log.Out($"calculated: raycast time {calculatedRaycastTime} impact duration {calculatedImpactDuration} impact playback speed {calculatedImpactPlaybackSpeed} speed multiplier {originalMeleeAttackSpeed}");
         }
         GameManager.Instance.StartCoroutine(impactStart(animator, layerIndex, length));
-        GameManager.Instance.StartCoroutine(customGrazeStart(length));
+        if (UseGraze)
+        {
+            GameManager.Instance.StartCoroutine(customGrazeStart(length));
+        }
         if (isValidAlternative)
         {
             multiInvData.useBound = false;
@@ -187,7 +191,18 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
                 {
                     if ((entity.inventory.holdingItem.Actions[actionIndex] as ItemActionDynamicMelee).Raycast(itemActionDynamicMeleeData))
                     {
+                        if (ConsoleCmdReloadLog.LogInfo)
+                        {
+                            Log.Out("Raycast hit!");
+                        }
                         GameManager.Instance.StartCoroutine(impactStop(animator, layer, length));
+                    }
+                    else
+                    {
+                        if (ConsoleCmdReloadLog.LogInfo)
+                        {
+                            Log.Out("Raycast miss!");
+                        }
                     }
                 }
                 if (isValidAlternative)
@@ -275,11 +290,6 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
                 multiInvData.itemModule.SetBoundParams(entity.MinEventContext, multiInvData);
             }
             var action = entity.inventory.holdingItem.Actions[actionIndex] as ItemActionDynamicMelee;
-            if (isValidAlternative)
-            {
-                multiInvData.useBound = false;
-                multiInvData.itemModule.RestoreParams(entity.MinEventContext, multiInvData);
-            }
             float originalSwingAngle = action.SwingAngle;
             float originalSwingDegrees = action.SwingDegrees;
             action.SwingAngle = SwingAngle;
@@ -291,6 +301,11 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             }
             action.SwingAngle = originalSwingAngle;
             action.SwingDegrees = originalSwingDegrees;
+            if (isValidAlternative)
+            {
+                multiInvData.useBound = false;
+                multiInvData.itemModule.RestoreParams(entity.MinEventContext, multiInvData);
+            }
             yield return null;
             normalizedTime = (Time.time - grazeStart) / calculatedGrazeDuration;
         }

@@ -31,6 +31,8 @@ public class PlayGraphTargets : AnimationTargetsAbs
 
     protected override Animator ItemAnimatorFpv => itemAnimatorFpv;
 
+    public override bool UseGraph => ItemCurrent;
+
     protected override void Awake()
     {
         base.Awake();

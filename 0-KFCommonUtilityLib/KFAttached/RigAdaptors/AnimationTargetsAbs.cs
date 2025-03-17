@@ -37,7 +37,9 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     protected Animator itemAnimatorTpv;
     protected bool fpvSet = false;
     protected bool tpvSet = false;
+
     private Dictionary<string, GameObject> dict_attachments = new Dictionary<string, GameObject>();
+    private List<GameObject> list_attachments = new List<GameObject>();
 
     public abstract Transform ItemFpv { get; protected set; }
     public abstract Transform AttachmentRef { get; protected set; }
@@ -45,12 +47,14 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     public Transform ItemTpvOrSelf => itemTpv ? itemTpv : transform;
     public bool IsFpv { get; set; }
     public bool IsAnimationSet => (IsFpv && fpvSet) || (!IsFpv && tpvSet);
+    public bool IsCurrent { get; internal set; }
     public bool Destroyed { get; protected set; }
     public Transform PlayerAnimatorTrans { get; private set; }
     public Animator ItemAnimator => IsFpv ? ItemAnimatorFpv : ItemAnimatorTpv;
     public Transform ItemCurrent => IsFpv ? ItemFpv : ItemTpv;
     public Transform ItemCurrentOrDefault => IsFpv ? ItemFpv : ItemTpvOrSelf;
     public AnimationGraphBuilder GraphBuilder { get; private set; }
+    public abstract bool UseGraph { get; }
 
     protected abstract Animator ItemAnimatorFpv { get; }
     protected virtual Animator ItemAnimatorTpv => itemAnimatorTpv;
@@ -85,13 +89,18 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
         }
     }
 
+#if NotEditor
     //attaching the same prefab multiple times is not allowed!
     public void AttachPrefab(GameObject prefab)
     {
         if (!Destroyed && dict_attachments != null && prefab.TryGetComponent<AttachmentReferenceAppended>(out var appended))
         {
             appended.Merge(this);
-            dict_attachments[prefab.name] = prefab.gameObject;
+        }
+        dict_attachments[prefab.name] = prefab.gameObject;
+        if (!list_attachments.Contains(prefab))
+        {
+            list_attachments.Add(prefab);
         }
     }
 
@@ -103,6 +112,35 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
         }
         return prefab;
     }
+
+    public GameObject RemovePrefab(string name)
+    {
+        if (Destroyed || dict_attachments == null || !dict_attachments.TryGetValue(name, out var prefab))
+        {
+            return null;
+        }
+        if (prefab.TryGetComponent<AttachmentReferenceAppended>(out var reference))
+        {
+            reference.Remove();
+        }
+        dict_attachments.Remove(name);
+        list_attachments.Remove(prefab);
+        return prefab;
+    }
+
+    public Transform GetAttachmentPathOverride(string path, bool onlyActive)
+    {
+        for (int i = list_attachments.Count - 1; i >= 0; i--)
+        {
+            Transform child = onlyActive ? GameUtils.FindDeepChildActive(list_attachments[i].transform, path) : GameUtils.FindDeepChild(list_attachments[i].transform, path);
+            if (child)
+            {
+                return child;
+            }
+        }
+        return null;
+    }
+#endif
 
     public void Init(Transform playerAnimatorTrans, bool isFpv)
     {
@@ -320,6 +358,10 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
             AttachmentRef = null;
         }
 
+        if (IsCurrent)
+        {
+            GraphBuilder.SetCurrentTarget(null);
+        }
         DestroyFpv();
         DestroyTpv();
 #if NotEditor
@@ -327,6 +369,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
 #endif
         PlayerAnimatorTrans = null;
         dict_attachments = null;
+        list_attachments = null;
 
         Component.Destroy(this);
         //Log.Out(StackTraceUtility.ExtractStackTrace());
@@ -336,10 +379,6 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     {
         if (ItemFpv)
         {
-            if (IsFpv && fpvSet && PlayerAnimatorTrans)
-            {
-                GraphBuilder.SetCurrentTarget(null);
-            }
             ItemFpv.parent = null;
             GameObject.Destroy(ItemFpv.gameObject);
         }
@@ -352,10 +391,6 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     {
         if (ItemTpv)
         {
-            if (!IsFpv && tpvSet && PlayerAnimatorTrans)
-            {
-                GraphBuilder.SetCurrentTarget(null);
-            }
             ItemTpv.parent = null;
             GameObject.Destroy(ItemTpv.gameObject);
         }
