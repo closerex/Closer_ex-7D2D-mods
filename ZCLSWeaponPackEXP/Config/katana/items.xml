@@ -96,10 +96,20 @@
 					<passive_effect name="EntityDamage" operation="perc_add" value="5" tags="perkDeepCuts"/>
 					<display_value name="dEntityDamageSneak" value="5"/>
 			</effect_group>
+			<effect_group name="blood">
+				<requirements compare_type="or">
+					<requirement name="IsAlive" target="other"/>
+					<requirement name="IsCorpse" target="other"/>
+				</requirements>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="Blood"/>
+					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="Blood"/>
+					<triggered_effect trigger="onSelfSecondaryActionRayHit" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="Blood"/>
+					<triggered_effect trigger="onSelfSecondaryActionGrazeHit" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="Blood"/>
+			</effect_group>
 		</item>
 
 		<item name="meleeWpnBladeT3KF2Katana">
-			<property name="Tags" value="machete,melee,grunting,light,longShaft,perkFlurryOfAgility,weapon,meleeWeapon,attAgility,perkDeepCuts,perkTheHuntsman,canHaveCosmetic,bladeSkill,corpseRemoval"/>
+			<property name="Tags" value="machete,melee,grunting,light,longShaft,weapon,meleeWeapon,attAgility,perkDeepCuts,perkTheHuntsman,canHaveCosmetic,bladeSkill,corpseRemoval"/>
 			<property name="DisplayType" value="meleeKnife"/>
 			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib"/>
 			<property name="BoundItemName" value="meleeWpnBladeBashKatana"/>
@@ -176,7 +186,7 @@
 				</property>
 			</property>
 			<effect_group name="meleeWpnBladeT3KF2Katana">
-				<passive_effect name="AttacksPerMinute" operation="base_set" value="115" tags="primary"/>
+				<passive_effect name="AttacksPerMinute" operation="base_set" value="120" tags="primary"/>
 				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".4" tags="primary"/>
 				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value=".8" tags="primary"/>
 				<passive_effect name="StaminaLoss" operation="base_set" value="18" tags="primary"/> <!-- - 10% -->
@@ -200,7 +210,7 @@
 				<passive_effect name="DismemberChance" operation="base_add" value="1.8" tags="primary"/>
 			</effect_group>
 			<effect_group name="Power Attack">
-				<passive_effect name="AttacksPerMinute" operation="base_set" value="60" tags="secondary"/>
+				<passive_effect name="AttacksPerMinute" operation="base_set" value="63" tags="secondary"/>
 				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".8" tags="secondary"/>
 				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value="1" tags="secondary"/>
 				<passive_effect name="EntityDamage" operation="perc_add" value="1" tags="secondary"/>

@@ -1,10 +1,12 @@
 Key,File,Type,UsedInMainMenu,english,schinese
-inpGrpMultiActionName,UI,Controls Dialog,x,Multi Action,武器模式
 inpActToggleWeaponModeName,UI,Controls Dialog,x,Toggle Weapon Mode,切换武器模式
 inpActToggleWeaponModeDesc,UI,Controls Dialog,x,"For weapons with multiple modes, cycle between them with this key",使用有多种模式的武器时，在不同模式间循环切换
-inpGrpFireModeName,UI,Controls Dialog,x,Firing Mode,射击模式
 inpActToggleFireModeName,UI,Controls Dialog,x,Toggle Firing Mode,切换射击模式
 inpActToggleFireModeDesc,UI,Controls Dialog,x,"For weapons with multiple firing modes, cycle between them with this key",使用有多种射击模式的武器时，在不同模式间循环切换
+inpActToggleZoomLevelName,UI,Controls Dialog,x,Toggle Zoom Level,切换放大倍率
+inpActToggleZoomLevelDesc,UI,Controls Dialog,x,"Toggle between min/max zoom level on supported scopes",使用支持该功能的瞄具时，在最小和最大倍率之间切换
+inpActPerformAltMeleeName,UI,Controls Dialog,x,Use Alt Melee,使用次要近战攻击
+inpActPerformAltMeleeDesc,UI,Controls Dialog,x,"Perform a special melee attack on supported weapons",使用支持该功能的武器时，触发一次特殊的近战攻击
 ttCurrentFiringMode,UI,Controls Dialog,x,"Firing Mode: {0}","射击模式：{0}"
 ttFiringModeSemiAuto,UI,Controls Dialog,x,Single,半自动
 ttFiringModeBurst2,UI,Controls Dialog,x,2-round Burst,两连发
