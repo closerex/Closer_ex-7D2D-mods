@@ -1,5 +1,4 @@
 ﻿using DG.Tweening;
-using Unity.Mathematics;
 using UnityEngine;
 
 [AddComponentMenu("KFAttachments/Binding Helpers/Animation Random Recoil")]

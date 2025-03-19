@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering;
+#if NotEditor
 using UnityEngine.Rendering.PostProcessing;
+#endif
 
 [AddComponentMenu("")]
 public class WeaponCameraFollow : MonoBehaviour
