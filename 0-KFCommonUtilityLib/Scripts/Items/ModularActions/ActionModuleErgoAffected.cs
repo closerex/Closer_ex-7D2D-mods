@@ -22,6 +22,8 @@ public class ActionModuleErgoAffected
         __instance.Properties.ParseFloat("ZoomInTimeBase", ref zoomInTimeBase);
         aimSpeedModifierBase = 1f;
         __instance.Properties.ParseFloat("AimSpeedModifierBase", ref aimSpeedModifierBase);
+        __customData.minErgo = 0.2f;
+        __instance.Properties.ParseFloat("MinErgoPerc", ref __customData.minErgo);
         __customData.aimStartTime = float.MaxValue;
         __customData.aimSet = false;
     }
@@ -67,7 +69,9 @@ public class ActionModuleErgoAffected
         public bool aimSet;
         public ActionModuleErgoAffected module;
         public float curErgo;
-        public float ModifiedErgo => Mathf.Lerp(0.2f, 1, curErgo);
+        public float minErgo = 0.2f;
+
+        public float ModifiedErgo => Mathf.Lerp(minErgo, 1, curErgo);
 
         public ErgoData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleErgoAffected _module)
         {
