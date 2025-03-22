@@ -24,6 +24,7 @@ public class ActionModuleErgoAffected
         __instance.Properties.ParseFloat("AimSpeedModifierBase", ref aimSpeedModifierBase);
         __customData.minErgo = 0.2f;
         __instance.Properties.ParseFloat("MinErgoPerc", ref __customData.minErgo);
+        __customData.minErgo = float.Parse(_data.invData.itemValue.GetPropertyOverride("MinErgoPerc", __customData.minErgo.ToString()));
         __customData.aimStartTime = float.MaxValue;
         __customData.aimSet = false;
     }
