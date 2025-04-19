@@ -12,7 +12,7 @@ public class ActionModuleDynamicSensitivity
         float originalSensitivity = GamePrefs.GetFloat(EnumGamePrefs.OptionsZoomSensitivity);
         if (_isAiming)
         {
-            PlayerMoveController.Instance.mouseZoomSensitivity = originalSensitivity / Mathf.Sqrt(__customData.ZoomRatio);
+            PlayerMoveController.Instance.mouseZoomSensitivity = originalSensitivity / __customData.ZoomRatio;
         }
         else
         {
@@ -37,7 +37,7 @@ public class ActionModuleDynamicSensitivity
             __customData.ZoomRatio = StringParsers.ParseFloat(_data.invData.itemValue.GetPropertyOverride("ZoomRatio", str));
         }
 
-        __customData.dsRangeOverride = StringParsers.ParseVector2(_data.invData.itemValue.GetPropertyOverride("DynamicSensitivityRange", "0,0"));
+        StringParsers.TryParseRange(_data.invData.itemValue.GetPropertyOverride("DynamicSensitivityRange", "0,0"), out __customData.dsRangeOverride);
     }
 
     [HarmonyPatch(nameof(ItemAction.OnHoldingUpdate)), MethodTargetPostfix]
@@ -48,7 +48,7 @@ public class ActionModuleDynamicSensitivity
             float originalSensitivity = GamePrefs.GetFloat(EnumGamePrefs.OptionsZoomSensitivity);
             if (__customData.activated)
             {
-                PlayerMoveController.Instance.mouseZoomSensitivity = originalSensitivity / Mathf.Sqrt(__customData.ZoomRatio);
+                PlayerMoveController.Instance.mouseZoomSensitivity = originalSensitivity / __customData.ZoomRatio;
             }
             else
             {
@@ -61,7 +61,7 @@ public class ActionModuleDynamicSensitivity
     {
         public ActionModuleVariableZoom.VariableZoomData variableZoomData = null;
         private float zoomRatio = 1.0f;
-        public Vector2 dsRangeOverride = Vector2.zero;
+        public FloatRange dsRangeOverride;
         public bool activated = false;
 
         public float ZoomRatio
@@ -70,9 +70,9 @@ public class ActionModuleDynamicSensitivity
             {
                 if (variableZoomData != null)
                 {
-                    if (dsRangeOverride.x > 0 && dsRangeOverride.y >= dsRangeOverride.x)
+                    if (dsRangeOverride.min > 0 && dsRangeOverride.max >= dsRangeOverride.min)
                     {
-                        return Mathf.Lerp(dsRangeOverride.x, dsRangeOverride.y, Mathf.InverseLerp(variableZoomData.minScale, variableZoomData.maxScale, variableZoomData.curScale));
+                        return Mathf.Lerp(dsRangeOverride.min, dsRangeOverride.max, Mathf.InverseLerp(variableZoomData.minScale, variableZoomData.maxScale, variableZoomData.curScale));
                     }
                     if (!variableZoomData.forceFov)
                     {

@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using KFCommonUtilityLib;
 using KFCommonUtilityLib.Scripts.Attributes;
 
 [TypeTarget(typeof(ItemAction)), TypeDataTarget(typeof(AnimationLockedData))]
@@ -32,5 +33,27 @@ public class ActionModuleAnimationLocked
         {
             
         }
+    }
+}
+
+public static class AnimationLockedExtension
+{
+    public static bool IsAnyActionLocked(this ItemInventoryData self)
+    {
+        if (self == null || self.actionData == null)
+        {
+            return false;
+        }
+        foreach (var actionData in self.actionData)
+        {
+            if (actionData is IModuleContainerFor<ActionModuleAnimationLocked.AnimationLockedData> lockData)
+            {
+                if (lockData.Instance.isLocked)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

@@ -1,6 +1,5 @@
 ﻿#if NotEditor
 using KFCommonUtilityLib;
-using KFCommonUtilityLib.Scripts.StaticManagers;
 #endif
 using UnityEngine;
 
@@ -14,12 +13,15 @@ public class AnimationLockAction : StateMachineBehaviour
         var player = animator.GetComponentInParent<EntityAlive>();
         if (slotGuard.IsValid(player))
         {
-            if (player.inventory.holdingItemData.actionData[MultiActionManager.GetActionIndexForEntity(player)] is IModuleContainerFor<ActionModuleAnimationLocked.AnimationLockedData> lockData)
+            foreach (var actionData in player.inventory.holdingItemData.actionData)
             {
-                lockData.Instance.isLocked = true;
-                if (lockReload)
+                if (actionData is IModuleContainerFor<ActionModuleAnimationLocked.AnimationLockedData> lockData)
                 {
-                    lockData.Instance.isReloadLocked = true;
+                    lockData.Instance.isLocked = true;
+                    if (lockReload)
+                    {
+                        lockData.Instance.isReloadLocked = true;
+                    }
                 }
             }
         }
@@ -30,10 +32,13 @@ public class AnimationLockAction : StateMachineBehaviour
         var player = animator.GetComponentInParent<EntityAlive>();
         if (slotGuard.IsValid(player))
         {
-            if (player.inventory.holdingItemData.actionData[MultiActionManager.GetActionIndexForEntity(player)] is IModuleContainerFor<ActionModuleAnimationLocked.AnimationLockedData> lockData)
+            foreach (var actionData in player.inventory.holdingItemData.actionData)
             {
-                lockData.Instance.isLocked = false;
-                lockData.Instance.isReloadLocked = false;
+                if (actionData is IModuleContainerFor<ActionModuleAnimationLocked.AnimationLockedData> lockData)
+                {
+                    lockData.Instance.isLocked = false;
+                    lockData.Instance.isReloadLocked = false;
+                }
             }
         }
     }

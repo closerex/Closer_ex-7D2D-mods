@@ -580,6 +580,7 @@
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMultiActionFix.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMultiBarrel.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleProceduralAiming.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleProceduralRecoil.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleRampUp.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMetaRecharger.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleTagged.cs" />

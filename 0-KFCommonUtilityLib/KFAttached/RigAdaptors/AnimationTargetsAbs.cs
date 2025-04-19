@@ -93,10 +93,11 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     //attaching the same prefab multiple times is not allowed!
     public void AttachPrefab(GameObject prefab)
     {
-        if (!Destroyed && dict_attachments != null && prefab.TryGetComponent<AttachmentReferenceAppended>(out var appended))
+        if (Destroyed || dict_attachments == null || !prefab.TryGetComponent<AttachmentReferenceAppended>(out var appended))
         {
-            appended.Merge(this);
+            return;
         }
+        appended.Merge(this);
         dict_attachments[prefab.name] = prefab.gameObject;
         if (!list_attachments.Contains(prefab))
         {
@@ -164,6 +165,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
         playerAnimatorTrans = animator.transform;
         PlayerAnimatorTrans = playerAnimatorTrans;
         GraphBuilder = playerAnimatorTrans.AddMissingComponent<AnimationGraphBuilder>();
+        GraphBuilder.Init();
         IsFpv = isFpv;
         if (!isFpv)
         {

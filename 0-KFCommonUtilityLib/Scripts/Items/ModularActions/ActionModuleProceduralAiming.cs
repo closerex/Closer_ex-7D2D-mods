@@ -117,7 +117,7 @@ public class ActionModuleProceduralAiming
         private Quaternion targetSwitchRotVelocity;
         public List<AimReference> registeredReferences = new List<AimReference>();
         private EntityPlayerLocal holdingEntity;
-        private int CurAimRefIndex
+        public int CurAimRefIndex
         {
             get
             {
@@ -132,7 +132,7 @@ public class ActionModuleProceduralAiming
             }
         }
 
-        private AimReference CurAimRef => curAimRefIndex >= 0 && curAimRefIndex < registeredReferences.Count ? registeredReferences[curAimRefIndex] : null;
+        public AimReference CurAimRef => curAimRefIndex >= 0 && curAimRefIndex < registeredReferences.Count ? registeredReferences[curAimRefIndex] : null;
 
         public ProceduralAimingData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleProceduralAiming _module)
         {

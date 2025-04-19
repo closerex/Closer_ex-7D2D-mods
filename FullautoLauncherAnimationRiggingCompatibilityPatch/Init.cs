@@ -4,7 +4,7 @@ using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System.Collections.Generic;
-using System.Linq;
+using UniLinq;
 using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
@@ -47,7 +47,6 @@ public static class FLARMultiBarrelExt
 [TypeTargetExtension(typeof(ActionModuleMultiActionFix))]
 public static class FLARMultiActionFixExt
 {
-
     [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemAction.OnModificationsChanged))]
     [MethodTargetPostfix]
     private static void Postfix_OnModificationChanged_ActionModuleMultiActionFix(ActionModuleMultiActionFix self, ItemActionData _data, ItemActionAttack __instance)
@@ -63,6 +62,32 @@ public static class FLARMultiActionFixExt
                 Log.Warning($"null projectile joint on inventory slot {launcherData.invData.slotIdx}!\n{StackTraceUtility.ExtractStackTrace()}");
             }
         }
+    }
+}
+
+[TypeTargetExtension(typeof(ActionModuleProceduralRecoil))]
+public static class FLARProceduralRecoilExt
+{
+    [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemActionBetterLauncher.getImageActionEffectsStartPosAndDirection))]
+    [MethodTargetTranspiler]
+    public static IEnumerable<CodeInstruction> Transpiler_ItemActionBetterLauncher_getImageActionEffectsStartPosAndDirection(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+        var mtd_ray = AccessTools.Method(typeof(EntityAlive), nameof(EntityAlive.GetLookRay));
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_ray))
+            {
+                codes.RemoveRange(i - 3, 4);
+                codes.InsertRange(i - 3, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_1),
+                    CodeInstruction.Call(typeof(ActionModuleProceduralRecoil), nameof(ActionModuleProceduralRecoil.GetLookRayOverride))
+                });
+                break;
+            }
+        }
+        return codes;
     }
 }
 

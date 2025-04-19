@@ -11,7 +11,7 @@ using System;
 [HarmonyPatch]
 class RecoilPatch
 {
-    [HarmonyPatch(typeof(EntityPlayerLocal), "Awake")]
+    [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.Awake))]
     [HarmonyPostfix]
     private static void Postfix_Awake_EntityPlayerLocal(EntityPlayerLocal __instance)
     {

@@ -127,6 +127,10 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         public static void AddRecoil(Vector2 recoilRangeHor, Vector2 recoilRangeVer)
         {
             if (player == null) { return; }
+            if (player.inventory?.holdingItemData?.actionData?[MultiActionManager.GetActionIndexForEntity(player)] is IModuleContainerFor<ActionModuleProceduralRecoil.EFTProceduralRecoilData>)
+            {
+                return;
+            }
             state = RecoilState.Recoil;
             //recoilScaledDelta = 0;
             returnSpeedCur = Vector3.zero;

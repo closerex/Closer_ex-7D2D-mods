@@ -18,6 +18,7 @@ public class AnimationGraphBuilder : MonoBehaviour
         Attachments,
         Both
     }
+    private bool inited = false;
     private Animator animator;
     private RuntimeAnimatorController vanillaRuntimeController;
     private Avatar vanillaAvatar;
@@ -48,8 +49,12 @@ public class AnimationGraphBuilder : MonoBehaviour
     public EntityPlayer Player { get; private set; }
 #endif
 
-    private void Awake()
+    public void Init()
     {
+        if (inited)
+        {
+            return;
+        }
         isFpv = transform.name == "baseRigFP";
         animator = GetComponent<Animator>();
         animator.logWarnings = false;
@@ -60,10 +65,11 @@ public class AnimationGraphBuilder : MonoBehaviour
         vanillaAvatar = animator.avatar;
 #if NotEditor
         vanillaRuntimeController = isFpv ? SDCSUtils.FPAnimController : SDCSUtils.TPAnimController;
-        isLocalPlayer = (Player = GetComponentInParent<EntityPlayer>()) is EntityPlayerLocal;
+        isLocalPlayer = (Player = GetComponentInParent<EntityPlayer>(true)) is EntityPlayerLocal;
 #else
         vanillaRuntimeController = animator.runtimeAnimatorController;
 #endif
+        inited = true;
     }
 
     private void UpdateParamMapping()

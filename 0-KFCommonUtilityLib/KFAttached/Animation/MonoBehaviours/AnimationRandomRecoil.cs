@@ -38,7 +38,7 @@ public class AnimationRandomRecoil : AnimationProceduralRecoildAbs, IPlayableGra
 
     public override void AddRecoil(Vector3 positionMultiplier, Vector3 rotationMultiplier)
     {
-        if (target && pivot)
+        if (enabled && target && pivot)
         {
             targetPosition = Vector3.Scale(KFExtensions.Random(randomKickbackMin, randomKickbackMax), positionMultiplier);
             targetRotation = Vector3.Scale(KFExtensions.Random(randomRotationMin, randomRotationMax), rotationMultiplier);

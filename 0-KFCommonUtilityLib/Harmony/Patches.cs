@@ -10,6 +10,7 @@ using System.Xml.Linq;
 using UnityEngine;
 using KFCommonUtilityLib.Scripts.NetPackages;
 using KFCommonUtilityLib;
+using static ItemActionRanged;
 
 [HarmonyPatch]
 public static class CommonUtilityPatch
@@ -63,6 +64,7 @@ public static class CommonUtilityPatch
         var mtd_fire_event = AccessTools.Method(typeof(EntityAlive), nameof(EntityAlive.FireEvent));
         var mtd_get_model_layer = AccessTools.Method(typeof(EntityAlive), nameof(EntityAlive.GetModelLayer));
         var mtd_get_perc_left = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.PercentUsesLeft));
+        var mtd_check_ammo = AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.checkAmmo));
 
         int take = -1, insert = -1;
         for (int i = 0; i < codes.Count; ++i)
@@ -78,6 +80,20 @@ public static class CommonUtilityPatch
             var list = codes.GetRange(take, 6);
             codes.InsertRange(insert, list);
             codes.RemoveRange(take, 6);
+        }
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_check_ammo))
+            {
+                codes.InsertRange(i + 2, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldloc_0),
+                    new CodeInstruction(OpCodes.Ldc_I4_0),
+                    CodeInstruction.StoreField(typeof(ItemActionDataRanged), nameof(ItemActionDataRanged.state))
+                });
+                break;
+            }
         }
 
         return codes;
@@ -316,6 +332,19 @@ public static class CommonUtilityPatch
         }
 
         return codes;
+    }
+
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.OnHoldingUpdate))]
+    [HarmonyPostfix]
+    private static void Postfix_OnHoldingUpdate_ItemActionRanged(ItemActionRanged __instance, ItemActionData _actionData)
+    {
+        ItemActionDataRanged itemActionDataRanged = (ItemActionDataRanged)_actionData;
+
+        if (itemActionDataRanged.state != 0 && itemActionDataRanged.m_LastShotTime > 0f && Time.time > itemActionDataRanged.m_LastShotTime + itemActionDataRanged.Delay * 2f)
+        {
+            itemActionDataRanged.invData.gameManager.ItemActionEffectsServer(itemActionDataRanged.invData.holdingEntity.entityId, itemActionDataRanged.invData.slotIdx, itemActionDataRanged.indexInEntityOfAction, 0, Vector3.zero, Vector3.zero);
+            itemActionDataRanged.state = ItemActionFiringState.Off;
+        }
     }
 
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.triggerReleased))]

@@ -245,6 +245,7 @@ public class ItemModuleMultiItem
             SetBoundParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
             boundItemClass.StopHolding(__customData.boundInvData, _modelTransform);
             RestoreParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
+            MultiActionManager.SetMappingForEntity(__customData.originalData.holdingEntity.entityId, null);
             __customData.useBound = useBound;
         }
     }
@@ -407,15 +408,15 @@ public static class MultiItemPatches
             return;
         }
 
-        if (PlayerActionKFLib.Instance.Enabled && (PlayerActionKFLib.Instance.AltMelee.WasPressed || PlayerActionKFLib.Instance.AltMelee.WasReleased))
+        EntityPlayerLocal player = controller.entityPlayerLocal;
+        if (PlayerActionKFLib.Instance.Enabled && (PlayerActionKFLib.Instance.AltMelee.WasPressed || PlayerActionKFLib.Instance.AltMelee.WasReleased) && player.inventory.holdingItemData is IModuleContainerFor<MultiItemInvData> dataModule)
         {
-            EntityPlayerLocal player = controller.entityPlayerLocal;
             bool isReloading = player.IsReloading();
             int actionIndex = MultiActionManager.GetActionIndexForEntity(player);
             var reloadModule = player.inventory.holdingItem.Actions[actionIndex] as IModuleContainerFor<ActionModuleInterruptReload>;
-            if (player.inventory.holdingItemData is IModuleContainerFor<MultiItemInvData> dataModule && dataModule.Instance.itemModule.BoundItemClass?.Actions?[0] is ItemActionDynamicMelee dynamicAction && !dataModule.Instance.itemModule.IsBoundActionRunning(dataModule.Instance) && ((player.inventory.IsHoldingGun() && (!isReloading || reloadModule != null)) || !player.inventory.IsHoldingItemActionRunning()) && !player.AimingGun)
+            MultiItemInvData multiInvData = dataModule.Instance;
+            if (multiInvData.itemModule.BoundItemClass?.Actions?[0] is ItemActionDynamicMelee dynamicAction && !multiInvData.itemModule.IsBoundActionRunning(multiInvData) && ((player.inventory.IsHoldingGun() && (!isReloading || reloadModule != null)) || !player.inventory.IsHoldingItemActionRunning()) && !player.AimingGun && !multiInvData.originalData.IsAnyActionLocked())
             {
-                MultiItemInvData multiInvData = dataModule.Instance;
                 multiInvData.useBound = true;
                 multiInvData.itemModule.SetBoundParams(player.MinEventContext, multiInvData);
                 bool canRun = dynamicAction.canStartAttack(multiInvData.boundInvData.actionData[0] as ItemActionDynamicMelee.ItemActionDynamicMeleeData);

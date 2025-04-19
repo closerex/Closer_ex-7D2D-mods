@@ -135,7 +135,6 @@ namespace KFCommonUtilityLib
             //<derived method name, method patch info>
             Dictionary<string, MethodPatchInfo> dict_overrides = new Dictionary<string, MethodPatchInfo>();
             //<derived method name, transpiler stub methods in inheritance order>
-            //TODO: USE TREE INSTEAD OF LIST
             Dictionary<string, List<TranspilerTarget>> dict_transpilers = new Dictionary<string, List<TranspilerTarget>>();
             //<derived method name, <module type name, local variable>>
             Dictionary<string, Dictionary<string, VariableDefinition>> dict_all_states = new Dictionary<string, Dictionary<string, VariableDefinition>>();
@@ -145,13 +144,14 @@ namespace KFCommonUtilityLib
             {
                 Type moduleType = moduleTypes[i];
                 const BindingFlags searchFlags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+                //search all methods from module and extension
                 foreach (var mtd in moduleType.GetMethods(searchFlags).Concat(moduleExtensionTypes[i].SelectMany(t => t.GetMethods(searchFlags))))
                 {
                     var attr = mtd.GetCustomAttribute<MethodTargetTranspilerAttribute>();
                     foreach (var hp in mtd.GetCustomAttributes<HarmonyPatch>())
                     {
                         //make sure the transpiler has a target method to apply, otherwise skip it
-                        if (attr != null && hp != null && hp.info.declaringType != null)
+                        if (attr != null && hp != null && hp.info.declaringType != null && hp.info.declaringType.IsAssignableFrom(targetType))
                         {
                             var hm = hp.info;
                             hm.methodType = hm.methodType ?? MethodType.Normal;
