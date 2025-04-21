@@ -134,6 +134,8 @@ public class ActionModuleProceduralAiming
 
         public AimReference CurAimRef => curAimRefIndex >= 0 && curAimRefIndex < registeredReferences.Count ? registeredReferences[curAimRefIndex] : null;
 
+        public float AimRefOffset { get; private set; }
+
         public ProceduralAimingData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleProceduralAiming _module)
         {
             holdingEntity = _invData.holdingEntity as EntityPlayerLocal;
@@ -160,6 +162,7 @@ public class ActionModuleProceduralAiming
                 playerOriginTransform.localPosition = rigWeaponLocalPosition;
                 playerOriginTransform.localRotation = rigWeaponLocalRotation;
             }
+            AimRefOffset = 0;
         }
 
         public bool RegisterGroup(AimReference[] group, string name)
@@ -191,7 +194,13 @@ public class ActionModuleProceduralAiming
                 aimRefRotOffset = curAimRef.rotationOffset;
                 if (curAimRef.asReference)
                 {
-                    aimRefPosOffset -= Vector3.Project(aimRefPosOffset - aimRefTransform.parent.InverseTransformPoint(playerCameraPosRef.position), aimRefRotOffset * Vector3.forward);
+                    Vector3 byReferenceOffset = Vector3.Project(aimRefPosOffset - aimRefTransform.parent.InverseTransformPoint(playerCameraPosRef.position), aimRefRotOffset * Vector3.forward);
+                    aimRefPosOffset -= byReferenceOffset;
+                    AimRefOffset = byReferenceOffset.magnitude;
+                }
+                else
+                {
+                    AimRefOffset = 0;
                 }
                 if (snapTo)
                 {

@@ -6,6 +6,7 @@ using KFCommonUtilityLib;
 using System.Reflection.Emit;
 using System.Collections.Generic;
 using UniLinq;
+using static ActionModuleTagged;
 
 [TypeTarget(typeof(ItemActionRanged)), TypeDataTarget(typeof(EFTProceduralRecoilData))]
 public class ActionModuleProceduralRecoil
@@ -339,7 +340,6 @@ public class ActionModuleProceduralRecoil
         public bool IsCamRotDirty;
         public Vector2 CamRotValue, CamRotVelocity, CamRotForce;
 
-
         public EFTProceduralRecoilData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleProceduralRecoil _module)
         {
             rangedData = actionData as ItemActionRanged.ItemActionDataRanged;
@@ -416,7 +416,13 @@ public class ActionModuleProceduralRecoil
             var aimingData = ((IModuleContainerFor<ActionModuleProceduralAiming.ProceduralAimingData>)invData.actionData[1]).Instance;
             //ProceduralRecoilUpdater.InverseWorldCamKickOffsetCur.ToAngleAxis(out float camRotAngle, out Vector3 camRotAxis);
             //playerOriginTransform.RotateAround(aimingData.aimRefTransform.position, camRotAxis, camRotAngle);
-            Vector3 prevAimRefPos = playerOriginTransform.InverseTransformPoint(aimingData.aimRefTransform.position);
+            AimReference aimref = aimingData.CurAimRef;
+            Transform aimRefTransform = aimref?.transform ?? aimingData.aimRefTransform;
+            if (!aimRefTransform)
+            {
+                return;
+            }
+            Vector3 prevAimRefPos = aimRefTransform.position;
 
             // right hand forward = right, right = -up, up = -forward
             Vector3 targetHandPosOffset = -playerCameraTransform.forward * HandPosValue;
@@ -435,12 +441,13 @@ public class ActionModuleProceduralRecoil
                 playerOriginTransform.position += targetHandPosOffset;
                 playerOriginTransform.RotateAround(playerHandTransform.position, worldRotAxis, worldAngleOffset);
             }
-            playerOriginTransform.RotateAround(aimingData.aimRefTransform.position, playerCameraTransform.right, ProceduralRecoilUpdater.CamAimRecoilRotOffsetHorCur);
-            ProceduralRecoilUpdater.LateUpdateCamRecoilPosOffset(playerOriginTransform.TransformDirection(playerOriginTransform.InverseTransformPoint(aimingData.aimRefTransform.position) - prevAimRefPos), dt, invData.holdingEntity.AimingGun);
-            playerOriginTransform.position += ProceduralRecoilUpdater.GetCurRecoilPosOffset();
+            Vector3 alignmentPos = aimref?.alignmentTarget?.position ?? (aimRefTransform.position - aimingData.AimRefOffset * aimRefTransform.forward);
+            playerOriginTransform.RotateAround(alignmentPos, aimRefTransform.right, ProceduralRecoilUpdater.CamAimRecoilRotOffsetHorCur);
+            ProceduralRecoilUpdater.LateUpdateCamRecoilPosOffset(aimRefTransform.position - prevAimRefPos, dt, invData.holdingEntity.AimingGun);
+            playerOriginTransform.position -= ProceduralRecoilUpdater.GetCurRecoilPosOffset();
 
-            ProceduralRecoilUpdater.InverseWorldCamKickOffsetCur.ToAngleAxis(out float camRotAngle, out Vector3 camRotAxis);
-            playerOriginTransform.RotateAround(playerCameraTransform.position, camRotAxis, camRotAngle);
+            //ProceduralRecoilUpdater.InverseWorldCamKickOffsetCur.ToAngleAxis(out float camRotAngle, out Vector3 camRotAxis);
+            //playerOriginTransform.RotateAround(aimRefTransform.position - aimingData.AimRefOffset * aimRefTransform.forward, camRotAxis, camRotAngle);
         }
 
         private void FixedUpdateHandRot(float dt)
@@ -643,18 +650,20 @@ public static class ProceduralRecoilUpdater
     }
 
     //====== cam rotation apply
+    public static Vector3 PreUpdateCamFwd;
     public static float CamRecoilLerpSpeed, CamRecoilLerpSpeedStep = 0.1f;
     public static Vector2 CamRecoilLerpSpeedRange = new Vector2(0.1f, 0.2f);
     public static Vector2 CamRecoilOffsetStable, CamRecoilOffsetCur;
     public static Quaternion LocalCamRotOffsetCur, InverseWorldCamShakeOffsetCur, InverseWorldCamKickOffsetCur, InverseWorldCamTotalOffsetCur;
     public static float CamAimRecoilPosSmoothIn = 8f, CamAimRecoilPosSmoothOut = 6f;
-    private static Vector3 CamAimRecoilPosOffsetCur/*, CamAimRecoilPosOffsetTarget*/;
+    private static Vector3 CamAimRecoilPosOffsetCur, CamAimRecoilPosOffsetStable/*, CamAimRecoilPosOffsetTarget*/;
     public static float LastShotTime, CamAimRecoilPosLerpSpeedXYMin = 7, CamAimRecoilPosLerpSpeedXYMax = 8, CamAimRecoilPosLerpSpeedStep = 5;
     public static float CamAimRecoilRotOffsetHorCur;
 
     public static void InitPlayer(EntityPlayerLocal player)
     {
         ProceduralRecoilUpdater.player = player;
+        PreUpdateCamFwd = player.cameraTransform?.forward ?? Vector3.forward;
         CamRecoilLerpSpeed = 0.01f;
         CamRecoilOffsetCur = Vector2.zero;
         CamRecoilOffsetStable = Vector2.zero;
@@ -663,6 +672,7 @@ public static class ProceduralRecoilUpdater
         InverseWorldCamKickOffsetCur = Quaternion.identity;
         InverseWorldCamTotalOffsetCur = Quaternion.identity;
         CamAimRecoilPosOffsetCur = Vector3.zero;
+        CamAimRecoilPosOffsetStable = Vector3.zero;
         //CamAimRecoilPosOffsetTarget = Vector3.zero;
         LastShotTime = 0;
         CamAimRecoilRotOffsetHorCur = 0;
@@ -697,6 +707,7 @@ public static class ProceduralRecoilUpdater
         {
             return;
         }
+        PreUpdateCamFwd = player.cameraTransform.forward;
         ActionModuleProceduralRecoil.EFTProceduralRecoilData recoilData = RecoilData;
         if (recoilData != null)
         {
@@ -729,6 +740,11 @@ public static class ProceduralRecoilUpdater
                 }
             }
 
+            //if (CamRecoilOffsetCur.sqrMagnitude > 0.0001f)
+            //{
+            //    Log.Out($"CamRecoilOffsetCur {CamRecoilOffsetCur}, CamRecoilOffsetStable {CamRecoilOffsetStable}, HandRotValueCur {recoilData.HandRotValueCur}");
+            //}
+
             if (aiming)
             {
                 CamAimRecoilRotOffsetHorCur = Mathf.Lerp(CamAimRecoilRotOffsetHorCur, -CamRecoilOffsetCur.x, 5 * dt);
@@ -742,7 +758,7 @@ public static class ProceduralRecoilUpdater
         {
             CamRecoilLerpSpeed = Mathf.Clamp(CamRecoilLerpSpeed - CamRecoilLerpSpeedStep * dt, CamRecoilLerpSpeedRange.x, CamRecoilLerpSpeedRange.y);
             CamRecoilOffsetStable = CamRecoilOffsetCur = Vector2.Lerp(CamRecoilOffsetCur, Vector2.zero, CamRecoilLerpSpeed);
-            CamAimRecoilPosOffsetCur = Vector3.Lerp(CamAimRecoilPosOffsetCur, Vector3.zero, CamAimRecoilPosSmoothOut * dt);
+            CamAimRecoilPosOffsetStable = CamAimRecoilPosOffsetCur = Vector3.Lerp(CamAimRecoilPosOffsetCur, Vector3.zero, CamAimRecoilPosSmoothOut * dt);
             CamAimRecoilRotOffsetHorCur = Mathf.Lerp(CamAimRecoilRotOffsetHorCur, 0, 5 * dt);
         }
         Vector2 realCamRecoilOffset = CamRecoilOffsetCur;
@@ -750,6 +766,7 @@ public static class ProceduralRecoilUpdater
         {
             realCamRecoilOffset += recoilData.CamRotValue;
         }
+        //realCamRecoilOffset.x = Mathf.Min(0, realCamRecoilOffset.x);
         LocalCamRotOffsetCur = Quaternion.Euler(realCamRecoilOffset);
         Quaternion targetCameraRotation = Quaternion.Euler(CamRecoilOffsetCur) * player.cameraTransform.localRotation;
         InverseWorldCamKickOffsetCur = player.cameraTransform.rotation * Quaternion.Inverse(player.cameraTransform.parent.rotation * targetCameraRotation);
@@ -773,13 +790,36 @@ public static class ProceduralRecoilUpdater
         if (CamAimRecoilPosOffsetTarget != Vector3.zero && aiming)
         {
             float lerpStepXY = Mathf.Lerp(CamAimRecoilPosLerpSpeedXYMin, CamAimRecoilPosLerpSpeedXYMax, (Time.time - LastShotTime) * CamAimRecoilPosLerpSpeedStep);
-            CamAimRecoilPosOffsetCur = new Vector3(Mathf.Lerp(CamAimRecoilPosOffsetCur.x, CamAimRecoilPosOffsetTarget.x, lerpStepXY * dt),
-                                                   Mathf.Lerp(CamAimRecoilPosOffsetCur.y, CamAimRecoilPosOffsetTarget.y, lerpStepXY * dt),
-                                                   Mathf.Lerp(CamAimRecoilPosOffsetCur.z, CamAimRecoilPosOffsetTarget.z, CamAimRecoilPosSmoothIn * dt));
+            ActionModuleProceduralRecoil.EFTProceduralRecoilData recoilData = RecoilData;
+            ItemActionRanged.ItemActionDataRanged rangedData = recoilData.rangedData;
+            if (rangedData.state == ItemActionFiringState.Loop && aiming)
+            {
+                if (!recoilData.IsStable)
+                {
+                    CamAimRecoilPosOffsetStable = CamAimRecoilPosOffsetTarget;
+                }
+                CamAimRecoilPosOffsetCur = new Vector3(Mathf.Lerp(CamAimRecoilPosOffsetCur.x, CamAimRecoilPosOffsetTarget.x, lerpStepXY * dt),
+                                                       Mathf.Lerp(CamAimRecoilPosOffsetCur.y, CamAimRecoilPosOffsetTarget.y, lerpStepXY * dt),
+                                                       Mathf.Lerp(CamAimRecoilPosOffsetCur.z, CamAimRecoilPosOffsetTarget.z, CamAimRecoilPosSmoothIn * dt));
+            }
+            else
+            {
+                if (rangedData.state != ItemActionFiringState.Loop && aiming)
+                {
+                    CamAimRecoilPosOffsetCur = new Vector3(Mathf.Lerp(CamAimRecoilPosOffsetCur.x, CamAimRecoilPosOffsetTarget.x, lerpStepXY * dt),
+                                                           Mathf.Lerp(CamAimRecoilPosOffsetCur.y, CamAimRecoilPosOffsetTarget.y, lerpStepXY * dt),
+                                                           Mathf.Lerp(CamAimRecoilPosOffsetCur.z, CamAimRecoilPosOffsetTarget.z, CamAimRecoilPosSmoothIn * dt));
+                }
+                else
+                {
+                    CamAimRecoilPosOffsetCur = Vector3.Lerp(CamAimRecoilPosOffsetCur, Vector3.zero, CamAimRecoilPosSmoothOut * dt);
+                }
+                CamAimRecoilPosOffsetStable = CamAimRecoilPosOffsetCur;
+            }
         }
         else
         {
-            CamAimRecoilPosOffsetCur = Vector3.Lerp(CamAimRecoilPosOffsetCur, Vector3.zero, CamAimRecoilPosSmoothOut * dt);
+            CamAimRecoilPosOffsetStable = CamAimRecoilPosOffsetCur = Vector3.Lerp(CamAimRecoilPosOffsetCur, Vector3.zero, CamAimRecoilPosSmoothOut * dt);
         }
     }
 
@@ -790,6 +830,7 @@ public static class ProceduralRecoilUpdater
             return;
         }
         player.cameraTransform.localRotation *= LocalCamRotOffsetCur;
+        player.cameraTransform.localPosition += CamAimRecoilPosOffsetCur;
     }
 }
 

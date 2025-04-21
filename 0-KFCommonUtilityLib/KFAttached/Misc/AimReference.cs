@@ -15,6 +15,7 @@ public class AimReference : MonoBehaviour
     public ScopeBase scopeBase;
     [SerializeField]
     private GameObject scopeBindingObject;
+    public Transform alignmentTarget;
     public bool asReference;
 
     private void OnEnable()

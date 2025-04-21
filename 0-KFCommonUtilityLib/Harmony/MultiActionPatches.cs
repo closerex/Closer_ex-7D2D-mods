@@ -2210,6 +2210,28 @@ namespace KFCommonUtilityLib.Harmony
 
             return codes;
         }
+
+        [HarmonyPatch(typeof(PassiveEffect), nameof(PassiveEffect.ModifyValue))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_ModifyValue_PassiveEffect(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            for (int i = 0; i < codes.Count - 1; i++)
+            {
+                if (codes[i].opcode == OpCodes.Ldloc_1 && codes[i + 1].Branches(out var lbl) && lbl != null)
+                {
+                    codes.InsertRange(i + 2, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_1),
+                        new CodeInstruction(OpCodes.Brfalse_S, lbl)
+                    });
+                    break;
+                }
+            }
+
+            return codes;
+        }
         #endregion
 
         #region ItemAction exclude tags
