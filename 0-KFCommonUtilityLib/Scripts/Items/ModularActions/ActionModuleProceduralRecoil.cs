@@ -116,8 +116,23 @@ public class ActionModuleProceduralRecoil
         if (_data.invData.holdingEntity is EntityPlayerLocal player && player.bFirstPersonView)
         {
             __customData.playerCameraTransform = player.cameraTransform;
-            __customData.playerHandTransform = player.cameraTransform.FindInAllChildren("RightHand");
             var targets = AnimationRiggingManager.GetRigTargetsFromPlayer(_data.invData.holdingEntity);
+
+            __customData.recoilPivotTransform = null;
+            __customData.hasPivotOverride = false;
+            if (targets)
+            {
+                __customData.recoilPivotTransform = AnimationRiggingManager.GetAddPartTransformOverride(targets.transform, "RecoilPivot");
+            }
+            if (__customData.recoilPivotTransform)
+            {
+                __customData.hasPivotOverride = true;
+            }
+            else
+            {
+                __customData.recoilPivotTransform = player.cameraTransform.FindInAllChildren("RightHand");
+            }
+
             if (targets && targets.ItemFpv && targets is RigTargets)
             {
                 __customData.playerOriginTransform = targets.ItemAnimator.transform;
@@ -271,9 +286,10 @@ public class ActionModuleProceduralRecoil
         public ActionModuleProceduralRecoil module;
         public ItemInventoryData invData;
         public Transform playerOriginTransform;
-        public Transform playerHandTransform;
+        public Transform recoilPivotTransform;
         public Transform playerCameraTransform;
         public bool isRigWeapon;
+        public bool hasPivotOverride;
         public int actionIndex;
 
         //====== temp
@@ -431,18 +447,18 @@ public class ActionModuleProceduralRecoil
 
             //Quaternion.FromToRotation(playerCameraTransform.forward, targetHandForward).ToAngleAxis(out float worldAngleOffset, out Vector3 worldRotAxis);
             ((playerCameraTransform.rotation * Quaternion.Euler(HandRotValueCur)) * Quaternion.Inverse(playerCameraTransform.rotation)).ToAngleAxis(out float worldAngleOffset, out Vector3 worldRotAxis);
-            if (isRigWeapon)
+            if (isRigWeapon && !hasPivotOverride)
             {
-                playerOriginTransform.RotateAround(playerHandTransform.position, worldRotAxis, worldAngleOffset);
+                playerOriginTransform.RotateAround(recoilPivotTransform.position, worldRotAxis, worldAngleOffset);
                 playerOriginTransform.position += targetHandPosOffset;
             }
             else
             {
                 playerOriginTransform.position += targetHandPosOffset;
-                playerOriginTransform.RotateAround(playerHandTransform.position, worldRotAxis, worldAngleOffset);
+                playerOriginTransform.RotateAround(recoilPivotTransform.position, worldRotAxis, worldAngleOffset);
             }
             Vector3 alignmentPos = aimref?.alignmentTarget?.position ?? (aimRefTransform.position - aimingData.AimRefOffset * aimRefTransform.forward);
-            playerOriginTransform.RotateAround(alignmentPos, aimRefTransform.right, ProceduralRecoilUpdater.CamAimRecoilRotOffsetHorCur);
+            playerOriginTransform.RotateAround(alignmentPos, playerCameraTransform.right, ProceduralRecoilUpdater.CamAimRecoilRotOffsetHorCur);
             ProceduralRecoilUpdater.LateUpdateCamRecoilPosOffset(aimRefTransform.position - prevAimRefPos, dt, invData.holdingEntity.AimingGun);
             playerOriginTransform.position -= ProceduralRecoilUpdater.GetCurRecoilPosOffset();
 
