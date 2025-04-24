@@ -153,6 +153,7 @@ public class ActionModuleProceduralRecoil
 
         __customData.ResetRecoil();
         CalcRecoilParams(__customData, _data as ItemActionRanged.ItemActionDataRanged);
+        __customData.isHolding = true;
         //CalcDampFactors(__customData, _data as ItemActionRanged.ItemActionDataRanged);
     }
 
@@ -160,6 +161,7 @@ public class ActionModuleProceduralRecoil
     public void Postfix_StopHolding(EFTProceduralRecoilData __customData)
     {
         __customData.ResetRecoil();
+        __customData.isHolding = false;
     }
 
     [HarmonyPatch(nameof(ItemAction.OnHoldingUpdate)), MethodTargetPostfix]
@@ -291,6 +293,7 @@ public class ActionModuleProceduralRecoil
         public bool isRigWeapon;
         public bool hasPivotOverride;
         public int actionIndex;
+        public bool isHolding;
 
         //====== temp
         // modifier for the weapon recoil force
@@ -418,6 +421,10 @@ public class ActionModuleProceduralRecoil
 
         public void FixedUpdate(float dt)
         {
+            if (!isHolding)
+            {
+                return;
+            }
             if (rangedData.state != ItemActionFiringState.Loop)
             {
                 SetStable(false);
@@ -429,6 +436,10 @@ public class ActionModuleProceduralRecoil
 
         public void LateUpdate(float dt)
         {
+            if (!isHolding)
+            {
+                return;
+            }
             var aimingData = ((IModuleContainerFor<ActionModuleProceduralAiming.ProceduralAimingData>)invData.actionData[1]).Instance;
             //ProceduralRecoilUpdater.InverseWorldCamKickOffsetCur.ToAngleAxis(out float camRotAngle, out Vector3 camRotAxis);
             //playerOriginTransform.RotateAround(aimingData.aimRefTransform.position, camRotAxis, camRotAngle);
