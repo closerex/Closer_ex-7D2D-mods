@@ -1,6 +1,8 @@
-﻿using HarmonyLib;
+﻿using GUI_2;
+using HarmonyLib;
 using Platform;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection.Emit;
 
 [HarmonyPatch]
@@ -134,6 +136,29 @@ public class Patches
                 __result = actionSet;
             }
         }
+    }
+
+    //disable "No device binding source" warning
+    [HarmonyPatch(typeof(UIUtils), nameof(UIUtils.GetButtonIconForAction))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_GetButtonIconForAction_UIUtils(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        for (int i = 1; i < codes.Count; i++)
+        {
+            if (codes[i].opcode == OpCodes.Ldstr && codes[i - 1].Branches(out _))
+            {
+                codes.InsertRange(i, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldc_I4_S, (int)UIUtils.ButtonIcon.None),
+                    new CodeInstruction(OpCodes.Ret)
+                });
+                break;
+            }
+        }
+
+        return codes;
     }
 }
 
