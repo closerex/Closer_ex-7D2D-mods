@@ -132,7 +132,12 @@ namespace KFCommonUtilityLib.KFAttached.Render
                 Log.Out($"Scope shader script: Expecting holding item idx {itemSlot} but getting {player.inventory.holdingItemIdx}!");
                 return;
             }
-            var zoomAction = (ItemActionZoom)((ActionModuleAlternative.InventorySetItemTemp?.ItemClass ?? player.inventory.holdingItem).Actions[1]);
+            var zoomAction = ((ActionModuleAlternative.InventorySetItemTemp?.ItemClass ?? player.inventory.holdingItem).Actions[1]) as ItemActionZoom;
+            if (zoomAction == null)
+            {
+                Destroy(gameObject);
+                return;
+            }
             zoomActionData = (ItemActionZoom.ItemActionDataZoom)player.inventory.holdingItemData.actionData[1];
             variableZoomData = (zoomActionData as IModuleContainerFor<ActionModuleVariableZoom.VariableZoomData>)?.Instance;
             if (variableZoomData != null && (variableZoom || variableZoomData.forceFov))

@@ -195,6 +195,10 @@ public class ActionModuleProceduralAiming
                 if (curAimRef.asReference)
                 {
                     Vector3 byReferenceOffset = Vector3.Project(aimRefPosOffset - aimRefTransform.parent.InverseTransformPoint(playerCameraPosRef.position), aimRefRotOffset * Vector3.forward);
+                    if (curAimRef.scopeBase?.defaultReference)
+                    {
+                        byReferenceOffset -= Vector3.Project(curAimRef.scopeBase.defaultReference.positionOffset - aimRefTransform.parent.InverseTransformPoint(playerCameraPosRef.position), aimRefRotOffset * Vector3.forward);
+                    }
                     aimRefPosOffset -= byReferenceOffset;
                     AimRefOffset = byReferenceOffset.magnitude;
                 }
