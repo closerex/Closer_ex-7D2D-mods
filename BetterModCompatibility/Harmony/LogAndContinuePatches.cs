@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -25,7 +24,6 @@ static class LogAndContinuePatches
             AccessTools.Method(typeof(TradersFromXml), nameof(TradersFromXml.ParseTraderInfo)),
             AccessTools.Method(typeof(TradersFromXml), nameof(TradersFromXml.ParseTraderItemGroup)),
             AccessTools.Method(typeof(TradersFromXml), nameof(TradersFromXml.ParseTraderStageTemplate)),
-
         };
     }
 
@@ -61,7 +59,7 @@ static class LogAndContinuePatches1
 {
     [HarmonyPatch(typeof(RecipesFromXml), nameof(RecipesFromXml.LoadRecipies), MethodType.Enumerator)]
     [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    private static IEnumerable<CodeInstruction> Transpiler_RecipesFromXml_LoadRecipies(IEnumerable<CodeInstruction> instructions)
     {
         var codes = instructions.ToList();
 
@@ -92,6 +90,37 @@ static class LogAndContinuePatches1
                 }
             }
         }
+        return codes;
+    }
+}
+
+[HarmonyPatch]
+static class LogAndContinuePatches2
+{
+    private static IEnumerable<MethodBase> TargetMethods()
+    {
+        return new[]
+        {
+            AccessTools.Method(typeof(UIDisplayInfoFromXml), nameof(UIDisplayInfoFromXml.ParseItemDisplayInfo)),
+            AccessTools.Method(typeof(UIDisplayInfoFromXml), nameof(UIDisplayInfoFromXml.ParseCraftingCategoryList)),
+        };
+    }
+
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].opcode == OpCodes.Throw)
+            {
+                codes.RemoveRange(i - 1, 2);
+                codes.Insert(i - 1, CodeInstruction.Call(typeof(XmlPatchHelpers), nameof(XmlPatchHelpers.LogInsteadOfThrow)));
+                codes.Insert(i, new CodeInstruction(OpCodes.Ret));
+            }
+        }
+
         return codes;
     }
 }
