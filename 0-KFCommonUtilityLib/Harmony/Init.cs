@@ -25,6 +25,7 @@ public class CommonUtilityLibInit : IModApi
         }
         //QualitySettings.streamingMipmapsMemoryBudget = 4096;
         DelayLoadModuleManager.RegisterDelayloadDll("FullautoLauncher", "FullautoLauncherAnimationRiggingCompatibilityPatch");
+        DelayLoadModuleManager.RegisterDelayloadDll("Quartz", "QuartzUIPatch");
         //DelayLoadModuleManager.RegisterDelayloadDll("SMXcore", "SMXMultiActionCompatibilityPatch");
         //DelayLoadModuleManager.RegisterDelayloadDll("SCore", "SCoreEntityHitCompatibilityPatch");
         CustomEffectEnumManager.RegisterEnumType<MinEventTypes>();

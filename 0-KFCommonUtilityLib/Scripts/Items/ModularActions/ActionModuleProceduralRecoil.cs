@@ -8,6 +8,76 @@ using System.Collections.Generic;
 using UniLinq;
 using static ActionModuleTagged;
 
+public struct ShotIndexRange
+{
+    public IntRange IndexRange;
+    public Vector2 RecoilPositionStrength;
+    public Vector2 RecoilRotationStrength;
+    public Vector2 RecoilAngleRange;
+
+    public static ShotIndexRange Parse(DynamicProperties prop)
+    {
+        var ret = new ShotIndexRange();
+        StringParsers.TryParseRange(prop.GetString("IndexRange"), out ret.IndexRange);
+        prop.ParseVec("RecoilPositionStrength", ref ret.RecoilPositionStrength);
+        prop.ParseVec("RecoilRotationStrength", ref ret.RecoilRotationStrength);
+        prop.ParseVec("RecoilAngleRange", ref ret.RecoilAngleRange);
+        return ret;
+    }
+}
+
+public class ShotIndexRangeGroup
+{
+    private ShotIndexRange[] shotRange;
+
+    private ShotIndexRangeGroup()
+    {
+
+    }
+
+    public static ShotIndexRangeGroup Parse(DynamicProperties props)
+    {
+        ShotIndexRangeGroup group = new ShotIndexRangeGroup();
+        List<ShotIndexRange> list = new List<ShotIndexRange>();
+        for (int i = 0; i < 99; i++)
+        {
+            if (props.Classes.TryGetValue($"ShotsGroupSettings{i}", out var shotProps))
+            {
+                list.Add(ShotIndexRange.Parse(shotProps));
+            }
+            else
+            {
+                break;
+            }
+        }
+        if (list.Count > 0)
+        {
+            group.shotRange = list.ToArray();
+        }
+        return group;
+    }
+
+    public bool FindIndexGroup(int index, out ShotIndexRange range)
+    {
+        range = default;
+        if (shotRange == null)
+        {
+            return false;
+        }
+
+        foreach (var shotRange in shotRange)
+        {
+            if (shotRange.IndexRange.min <= index && shotRange.IndexRange.max >= index)
+            {
+                range = shotRange;
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
 [TypeTarget(typeof(ItemActionRanged)), TypeDataTarget(typeof(EFTProceduralRecoilData))]
 public class ActionModuleProceduralRecoil
 {
@@ -38,6 +108,7 @@ public class ActionModuleProceduralRecoil
         public FastTags<TagGroup.Global> CameraRotationForceReturnSpeed;
         public FastTags<TagGroup.Global> RecoilReturnBias;
         public FastTags<TagGroup.Global> RecoilReturnBiasDamping;
+        public FastTags<TagGroup.Global> RecoilForceStrength;
     }
 
     public static readonly FastTags<TagGroup.Global> WeaponRecoilModifer = FastTags<TagGroup.Global>.Parse("RecoilIntensityModifier");
@@ -61,6 +132,8 @@ public class ActionModuleProceduralRecoil
 
     // initial weapon recoil property
     public float WeaponRecoilForceUp, WeaponRecoilForceBack;
+    public ShotIndexRangeGroup ShotRangeGroup;
+
 
     //======
     // the recoil angle range in radian, where 90 is up and 0 is right
@@ -95,6 +168,7 @@ public class ActionModuleProceduralRecoil
             CameraRotationForceReturnSpeed = itemTags | CameraRotationForceReturnSpeed,
             RecoilReturnBias = itemTags | RecoilReturnBias,
             RecoilReturnBiasDamping = itemTags | RecoilReturnBiasDamping,
+            RecoilForceStrength = FastTags<TagGroup.Global>.Parse("RecoilForceStrength")
         };
         Vector2 recoilForce = default;
         _props.ParseVec("WeaponRecoilForce", ref recoilForce);
@@ -107,6 +181,7 @@ public class ActionModuleProceduralRecoil
         _props.ParseInt("StableShotIndex", ref StableShotIndex);
         _props.ParseBool("RampUpRecoil", ref RampRecoil);
         _props.ParseInt("RampRecoilIndex", ref RampRecoilIndex);
+        ShotRangeGroup = ShotIndexRangeGroup.Parse(_props);
     }
 
     [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
@@ -189,7 +264,7 @@ public class ActionModuleProceduralRecoil
         if (_actionData.invData.holdingEntity is EntityPlayerLocal player && player.bFirstPersonView)
         {
             CalcRecoilParams(__customData, __customData.rangedData);
-            __customData.AddRecoilForce();
+            __customData.AddRecoilForce(EffectManager.GetValue(CustomEnums.CustomTaggedEffect, _actionData.invData.itemValue, 1, player, null, tags.RecoilForceStrength, false, true, false, false, false, 1, false, false));
         }
     }
 
@@ -583,13 +658,24 @@ public class ActionModuleProceduralRecoil
         private void CalcRecoilForceStr(float forceStr, out float rotStr, out float posStr)
         {
             //todo: random range according to burst count
+            Vector2 rotRange = BaseWeaponRecoilStrRot;
+            Vector2 posRange = BaseWeaponRecoilStrPos;
+            if (module.ShotRangeGroup.FindIndexGroup(rangedData.curBurstCount, out var range))
+            {
+                rotRange += range.RecoilRotationStrength;
+                posRange += range.RecoilPositionStrength;
+            }
             rotStr = Random.Range(BaseWeaponRecoilStrRot.x, BaseWeaponRecoilStrRot.y) * forceStr;
             posStr = Random.Range(BaseWeaponRecoilStrPos.x, BaseWeaponRecoilStrPos.y) * forceStr;
         }
 
         private void CalcRecoilDirRadian(out Vector2 dirRad)
         {
-            Vector2 randomRange = new(6, -6);
+            Vector2 randomRange = default;
+            if (module.ShotRangeGroup.FindIndexGroup(rangedData.curBurstCount, out var range))
+            {
+                randomRange = range.RecoilAngleRange;
+            }
             if (IsStable)
             {
                 CurrentRotationAccumulated = Mathf.Clamp(CurrentRotationAccumulated + DeltaAnglePerShot, DeltaAngleRange.x, DeltaAngleRange.y);
@@ -765,6 +851,11 @@ public static class ProceduralRecoilUpdater
                         CamRecoilOffsetStable = CamRecoilOffsetCur = Vector2.Lerp(CamRecoilOffsetCur, Vector2.zero, CamRecoilLerpSpeed);
                     }
                 }
+            }
+            else
+            {
+                CamRecoilLerpSpeed = Mathf.Clamp(CamRecoilLerpSpeed - CamRecoilLerpSpeedStep * dt, CamRecoilLerpSpeedRange.x, CamRecoilLerpSpeedRange.y);
+                CamRecoilOffsetStable = CamRecoilOffsetCur = Vector2.Lerp(CamRecoilOffsetCur, Vector2.zero, CamRecoilLerpSpeed);
             }
 
             //if (CamRecoilOffsetCur.sqrMagnitude > 0.0001f)

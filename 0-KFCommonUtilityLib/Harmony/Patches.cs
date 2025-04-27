@@ -385,40 +385,26 @@ public static class CommonUtilityPatch
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_ParsePassiveEffect_PassiveEffect(IEnumerable<CodeInstruction> instructions)
     {
-        var codes = instructions.ToList();
-        MethodInfo mtd_enum_parse = AccessTools.Method(typeof(EnumUtils), nameof(EnumUtils.Parse), new[] { typeof(string), typeof(bool) }, new[] { typeof(PassiveEffects) });
+        return instructions.MethodReplacer(AccessTools.Method(typeof(EnumUtils), nameof(EnumUtils.Parse), new[] { typeof(string), typeof(bool) }, new[] { typeof(PassiveEffects) }),
+                                           AccessTools.Method(typeof(CustomEffectEnumManager), nameof(CustomEffectEnumManager.RegisterOrGetEnum), new[] { typeof(string), typeof(bool) }, new[] { typeof(PassiveEffects) }));
 
-        for (int i = 0; i < codes.Count; i++)
-        {
-            if (codes[i].Calls(mtd_enum_parse))
-            {
-                codes.Insert(i + 1, CodeInstruction.Call(typeof(CustomEffectEnumManager), nameof(CustomEffectEnumManager.RegisterOrGetEnum), new[] { typeof(string), typeof(bool) }, new[] { typeof(PassiveEffects) }));
-                codes.RemoveAt(i);
-                break;
-            }
-        }
-
-        return codes;
     }
 
     [HarmonyPatch(typeof(MinEventActionBase), nameof(MinEventActionBase.ParseXmlAttribute))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_ParseXmlAttribute_MinEventActionBase(IEnumerable<CodeInstruction> instructions)
     {
-        var codes = instructions.ToList();
-        MethodInfo mtd_enum_parse = AccessTools.Method(typeof(EnumUtils), nameof(EnumUtils.Parse), new[] { typeof(string), typeof(bool) }, new[] { typeof(MinEventTypes) });
+        return instructions.MethodReplacer(AccessTools.Method(typeof(EnumUtils), nameof(EnumUtils.Parse), new[] { typeof(string), typeof(bool) }, new[] { typeof(MinEventTypes) }),
+                                           AccessTools.Method(typeof(CustomEffectEnumManager), nameof(CustomEffectEnumManager.RegisterOrGetEnum), new[] { typeof(string), typeof(bool) }, new[] { typeof(MinEventTypes) }));
+    }
 
-        for (int i = 0; i < codes.Count; i++)
-        {
-            if (codes[i].Calls(mtd_enum_parse))
-            {
-                codes.Insert(i + 1, CodeInstruction.Call(typeof(CustomEffectEnumManager), nameof(CustomEffectEnumManager.RegisterOrGetEnum), new[] { typeof(string), typeof(bool) }, new[] { typeof(MinEventTypes) }));
-                codes.RemoveAt(i);
-                break;
-            }
-        }
-
-        return codes;
+    //todo: patch Quartz
+    [HarmonyPatch(typeof(UIDisplayInfoFromXml), nameof(UIDisplayInfoFromXml.ParseDisplayInfoEntry))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_ParseDisplayInfoEntry_UIDisplayInfoFromXml(IEnumerable<CodeInstruction> instructions)
+    {
+        return instructions.MethodReplacer(AccessTools.Method(typeof(EnumUtils), nameof(EnumUtils.Parse), new[] { typeof(string), typeof(bool) }, new[] { typeof(PassiveEffects) }), 
+                                           AccessTools.Method(typeof(CustomEffectEnumManager), nameof(CustomEffectEnumManager.GetEnumOrThrow), new[] { typeof(string), typeof(bool) }, new[] { typeof(PassiveEffects) }));
     }
 
     [HarmonyPatch(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.OnHoldingUpdate))]

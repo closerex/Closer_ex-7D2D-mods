@@ -1,0 +1,52 @@
+<configs>
+    <append xpath="//item_display">
+		<item_display_info display_type="rangedGunPR" display_group="groupRanged">
+			<display_entry name="EntityDamage" display_type="Decimal1" title_key="statEntityDamageRanged" tags="perkGunslinger,revolver,perkBoomstick,perkDeadEye,perkMachineGunner,perkBookAutoWeapons,perkTurrets,perkArchery,admin"/>
+			<display_entry name="MagazineSize" title_key="statMagazineSize" tags="perkGunslinger,perkBoomstick,perkDeadEye,perkMachineGunner,perkBookAutoWeapons,perkTurrets,perkArchery,admin"/>
+			<display_entry name="RoundsPerMinute" title_key="statRoundsPerMinute" tags="perkGunslinger,perkBoomstick,perkDeadEye,perkMachineGunner,perkBookAutoWeapons,perkTurrets,perkArchery,admin"/>
+			<display_entry name="DegradationMax" title_key="statDegradationMax" tags="perkGunslinger,perkBoomstick,perkDeadEye,perkMachineGunner,perkBookAutoWeapons,perkTurrets,perkArchery,admin"/>
+            <display_entry name="CustomTaggedEffect" title_key="statRecoilForceUp" tags="dRecoilForceUp"/>
+            <display_entry name="CustomTaggedEffect" title_key="statRecoilForceBack" tags="dRecoilForceBack"/>
+            <display_entry name="CustomTaggedEffect" title_key="statRecoilForceModifier" tags="RecoilIntensityModifier" display_type="Percent" negative_preferred="true"/>
+		</item_display_info>
+
+		<item_display_info display_type="rangedGunNoMagPR" display_group="groupRanged">
+			<display_entry name="EntityDamage" display_type="Decimal1" title_key="statEntityDamageRanged" tags="perkGunslinger,revolver,perkBoomstick,perkDeadEye,perkMachineGunner,perkBookAutoWeapons,perkTurrets,perkArchery,admin"/>
+			<display_entry name="MagazineSize" title_key="statMagazineSize" tags="perkGunslinger,perkBoomstick,perkDeadEye,perkMachineGunner,perkBookAutoWeapons,perkTurrets,perkArchery,admin"/>
+			<display_entry name="DegradationMax" title_key="statDegradationMax" tags="perkGunslinger,perkBoomstick,perkDeadEye,perkMachineGunner,perkBookAutoWeapons,perkTurrets,perkArchery,admin"/>
+            <display_entry name="CustomTaggedEffect" title_key="statRecoilForceUp" tags="dRecoilForceUp"/>
+            <display_entry name="CustomTaggedEffect" title_key="statRecoilForceBack" tags="dRecoilForceBack"/>
+            <display_entry name="CustomTaggedEffect" title_key="statRecoilForceModifier" tags="RecoilIntensityModifier" display_type="Percent" negative_preferred="true"/>
+		</item_display_info>
+
+		<item_display_info display_type="rangedShotgunPR" display_group="groupRanged">
+			<display_entry name="EntityDamage" display_type="Decimal1" title_key="statEntityDamageShotgun" tags="perkGunslinger,perkBoomstick,perkDeadEye,perkMachineGunner,perkBookAutoWeapons,perkTurrets,perkArchery,admin"/>
+			<display_entry name="RoundRayCount" title_key="statRoundRayCount" tags="perkGunslinger,perkBoomstick,perkDeadEye,perkMachineGunner,perkBookAutoWeapons,perkTurrets,perkArchery,admin"/>
+			<display_entry name="MagazineSize" title_key="statMagazineSize" tags="perkGunslinger,perkBoomstick,perkDeadEye,perkMachineGunner,perkBookAutoWeapons,perkTurrets,perkArchery,admin"/>
+			<!-- <display_entry name="RoundsPerMinute" title_key="statRoundsPerMinute" tags="perkGunslinger,perkBoomstick,perkDeadEye,perkMachineGunner,perkBookAutoWeapons,perkTurrets,perkArchery,admin"/> -->
+			<display_entry name="DegradationMax" title_key="statDegradationMax" tags="perkGunslinger,perkBoomstick,perkDeadEye,perkMachineGunner,perkBookAutoWeapons,perkTurrets,perkArchery,admin"/>
+            <display_entry name="CustomTaggedEffect" title_key="statRecoilForceUp" tags="dRecoilForceUp"/>
+            <display_entry name="CustomTaggedEffect" title_key="statRecoilForceBack" tags="dRecoilForceBack"/>
+            <display_entry name="CustomTaggedEffect" title_key="statRecoilForceModifier" tags="RecoilIntensityModifier" display_type="Percent" negative_preferred="true"/>
+		</item_display_info>
+
+		<item_display_info display_type="rangedShotgunNoMagPR" display_group="groupRanged">
+			<display_entry name="EntityDamage" display_type="Decimal1" title_key="statEntityDamageShotgun" tags="perkGunslinger,perkBoomstick,perkDeadEye,perkMachineGunner,perkBookAutoWeapons,perkTurrets,perkArchery,admin"/>
+			<display_entry name="RoundRayCount" title_key="statRoundRayCount" tags="perkGunslinger,perkBoomstick,perkDeadEye,perkMachineGunner,perkBookAutoWeapons,perkTurrets,perkArchery,admin"/>
+			<display_entry name="MagazineSize" title_key="statMagazineSize" tags="perkGunslinger,perkBoomstick,perkDeadEye,perkMachineGunner,perkBookAutoWeapons,perkTurrets,perkArchery,admin"/>
+			<display_entry name="DegradationMax" title_key="statDegradationMax" tags="perkGunslinger,perkBoomstick,perkDeadEye,perkMachineGunner,perkBookAutoWeapons,perkTurrets,perkArchery,admin"/>
+            <display_entry name="CustomTaggedEffect" title_key="statRecoilForceUp" tags="dRecoilForceUp"/>
+            <display_entry name="CustomTaggedEffect" title_key="statRecoilForceBack" tags="dRecoilForceBack"/>
+            <display_entry name="CustomTaggedEffect" title_key="statRecoilForceModifier" tags="RecoilIntensityModifier" display_type="Percent" negative_preferred="true"/>
+		</item_display_info>
+
+		<item_display_info display_type="rangedLauncherPR" display_group="groupRanged">
+			<display_entry name="MagazineSize" title_key="statMagazineSize" tags="perkDemolitionsExpert,admin"/>
+			<display_entry name="ProjectileVelocity" title_key="statProjectileVelocity" tags="perkDemolitionsExpert,admin"/>
+			<display_entry name="DegradationMax" title_key="statDegradationMax" tags="perkDemolitionsExpert,admin"/>
+            <display_entry name="CustomTaggedEffect" title_key="statRecoilForceUp" tags="dRecoilForceUp"/>
+            <display_entry name="CustomTaggedEffect" title_key="statRecoilForceBack" tags="dRecoilForceBack"/>
+            <display_entry name="CustomTaggedEffect" title_key="statRecoilForceModifier" tags="RecoilIntensityModifier" display_type="Percent" negative_preferred="true"/>
+		</item_display_info>
+    </append>
+</configs>

@@ -50,6 +50,15 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             return EnumHolder<T>.RegisterOrGetEnum(name, ignoreCase);
         }
 
+        public static T GetEnumOrThrow<T>(string name, bool ignoreCase = false) where T : struct, Enum
+        {
+            if (!EnumHolder<T>.Registered)
+            {
+                throw new Exception($"Enum not registered: {typeof(T).Name}");
+            }
+            return EnumHolder<T>.GetEnumOrThrow(name, ignoreCase);
+        }
+
         //public static PassiveEffects RegisterOrGetPassive(string passive)
         //{
         //    if (!dict_final_passive.TryGetValue(passive, out var value))
@@ -191,17 +200,17 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 //Log.Out($"{typeof(T).Name}:\n" + string.Join("\n", dict_final_enums.Select(p => $"name: {p.Key} value: {p.Value}")));
             }
 
-            public static T RegisterOrGetEnum(string passive, bool ignoreCase = false)
+            public static T RegisterOrGetEnum(string name, bool ignoreCase = false)
             {
-                if (!(ignoreCase ? dict_final_enums_lower : dict_final_enums).TryGetValue(ignoreCase ? passive.ToLower() : passive, out var value))
+                if (!(ignoreCase ? dict_final_enums_lower : dict_final_enums).TryGetValue(ignoreCase ? name.ToLower() : name, out var value))
                 {
                     if (link_final_holes.Count == 0)
                         throw new OverflowException($"Enum count exceeds limit {max}!");
                     (int start, int end) = link_final_holes.First.Value;
                     link_final_holes.RemoveFirst();
                     value = (T)Enum.ToObject(typeof(T), Convert.ChangeType(start, typecode));
-                    dict_final_enums.Add(passive, value);
-                    dict_final_enums_lower.Add(passive.ToLower(), value);
+                    dict_final_enums.Add(name, value);
+                    dict_final_enums_lower.Add(name.ToLower(), value);
                     if (start < end)
                     {
                         start++;
@@ -209,6 +218,15 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                     }
                 }
                 return value;
+            }
+
+            public static T GetEnumOrThrow(string name, bool ignoreCase = false)
+            {
+                if ((ignoreCase ? dict_final_enums_lower : dict_final_enums).TryGetValue(ignoreCase ? name.ToLower() : name, out var value))
+                {
+                    return value;
+                }
+                throw new Exception($"Enum not registered: {name} type: {typeof(T).ToString()}");
             }
         }
     }
