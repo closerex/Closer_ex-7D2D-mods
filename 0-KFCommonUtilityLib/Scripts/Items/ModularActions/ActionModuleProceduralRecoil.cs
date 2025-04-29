@@ -544,7 +544,8 @@ public class ActionModuleProceduralRecoil
                 playerOriginTransform.RotateAround(recoilPivotTransform.position, worldRotAxis, worldAngleOffset);
             }
             Vector3 alignmentPos = aimref?.alignmentTarget?.position ?? (aimRefTransform.position - aimingData.AimRefOffset * aimRefTransform.forward);
-            playerOriginTransform.RotateAround(alignmentPos, playerCameraTransform.right, ProceduralRecoilUpdater.CamAimRecoilRotOffsetHorCur);
+            ((playerCameraTransform.rotation * Quaternion.Euler(ProceduralRecoilUpdater.CamAimRecoilRotOffsetHorCur)) * Quaternion.Inverse(playerCameraTransform.rotation)).ToAngleAxis(out worldAngleOffset, out worldRotAxis);
+            playerOriginTransform.RotateAround(alignmentPos, worldRotAxis, worldAngleOffset);
             ProceduralRecoilUpdater.LateUpdateCamRecoilPosOffset(aimRefTransform.position - prevAimRefPos, dt, invData.holdingEntity.AimingGun);
             playerOriginTransform.position -= ProceduralRecoilUpdater.GetCurRecoilPosOffset();
 
@@ -771,7 +772,7 @@ public static class ProceduralRecoilUpdater
     public static float CamAimRecoilPosSmoothIn = 8f, CamAimRecoilPosSmoothOut = 6f;
     private static Vector3 CamAimRecoilPosOffsetCur, CamAimRecoilPosOffsetStable/*, CamAimRecoilPosOffsetTarget*/;
     public static float LastShotTime, CamAimRecoilPosLerpSpeedXYMin = 7, CamAimRecoilPosLerpSpeedXYMax = 8, CamAimRecoilPosLerpSpeedStep = 5;
-    public static float CamAimRecoilRotOffsetHorCur;
+    public static Vector2 CamAimRecoilRotOffsetHorCur;
 
     public static void InitPlayer(EntityPlayerLocal player)
     {
@@ -788,7 +789,7 @@ public static class ProceduralRecoilUpdater
         CamAimRecoilPosOffsetStable = Vector3.zero;
         //CamAimRecoilPosOffsetTarget = Vector3.zero;
         LastShotTime = 0;
-        CamAimRecoilRotOffsetHorCur = 0;
+        CamAimRecoilRotOffsetHorCur = Vector2.zero;
     }
 
     //public static void SetTargetRecoilPosOffset(Vector3 offset)
@@ -865,11 +866,11 @@ public static class ProceduralRecoilUpdater
 
             if (aiming)
             {
-                CamAimRecoilRotOffsetHorCur = Mathf.Lerp(CamAimRecoilRotOffsetHorCur, -CamRecoilOffsetCur.x, 5 * dt);
+                CamAimRecoilRotOffsetHorCur = Vector2.Lerp(CamAimRecoilRotOffsetHorCur, -recoilData.HandRotValueCur, 8 * dt);
             }
             else
             {
-                CamAimRecoilRotOffsetHorCur = Mathf.Lerp(CamAimRecoilRotOffsetHorCur, 0, 5 * dt);
+                CamAimRecoilRotOffsetHorCur = Vector2.Lerp(CamAimRecoilRotOffsetHorCur, Vector2.zero, 5 * dt);
             }
         }
         else
@@ -877,7 +878,7 @@ public static class ProceduralRecoilUpdater
             CamRecoilLerpSpeed = Mathf.Clamp(CamRecoilLerpSpeed - CamRecoilLerpSpeedStep * dt, CamRecoilLerpSpeedRange.x, CamRecoilLerpSpeedRange.y);
             CamRecoilOffsetStable = CamRecoilOffsetCur = Vector2.Lerp(CamRecoilOffsetCur, Vector2.zero, CamRecoilLerpSpeed);
             CamAimRecoilPosOffsetStable = CamAimRecoilPosOffsetCur = Vector3.Lerp(CamAimRecoilPosOffsetCur, Vector3.zero, CamAimRecoilPosSmoothOut * dt);
-            CamAimRecoilRotOffsetHorCur = Mathf.Lerp(CamAimRecoilRotOffsetHorCur, 0, 5 * dt);
+            CamAimRecoilRotOffsetHorCur = Vector2.Lerp(CamAimRecoilRotOffsetHorCur, Vector2.zero, 5 * dt);
         }
         Vector2 realCamRecoilOffset = CamRecoilOffsetCur;
         if (recoilData != null)
