@@ -7,6 +7,7 @@ using System.Reflection.Emit;
 using System.Collections.Generic;
 using UniLinq;
 using static ActionModuleTagged;
+using KFCommonUtilityLib.Scripts.Utilities;
 
 public struct ShotIndexRange
 {
@@ -109,6 +110,7 @@ public class ActionModuleProceduralRecoil
         public FastTags<TagGroup.Global> RecoilReturnBias;
         public FastTags<TagGroup.Global> RecoilReturnBiasDamping;
         public FastTags<TagGroup.Global> RecoilForceStrength;
+        public FastTags<TagGroup.Global> RecoilAimingIntensity;
     }
 
     public static readonly FastTags<TagGroup.Global> WeaponRecoilModifer = FastTags<TagGroup.Global>.Parse("RecoilIntensityModifier");
@@ -128,22 +130,8 @@ public class ActionModuleProceduralRecoil
     public static readonly FastTags<TagGroup.Global> CameraRotationForceReturnSpeed = FastTags<TagGroup.Global>.Parse("RecoilReturnSpeedCameraRotation");
     public static readonly FastTags<TagGroup.Global> RecoilReturnBias = FastTags<TagGroup.Global>.Parse("RecoilReturnPathOffsetHandRotation");
     public static readonly FastTags<TagGroup.Global> RecoilReturnBiasDamping = FastTags<TagGroup.Global>.Parse("RecoilReturnPathDampingHandRotation");
+    public static readonly FastTags<TagGroup.Global> RecoilAimingIntensity = FastTags<TagGroup.Global>.Parse("RecoilAimingIntensity");
     public RecoilPassiveTags tags;
-
-    // initial weapon recoil property
-    public float WeaponRecoilForceUp, WeaponRecoilForceBack;
-    public ShotIndexRangeGroup ShotRangeGroup;
-
-
-    //======
-    // the recoil angle range in radian, where 90 is up and 0 is right
-    public Vector2 BaseRecoilRadianRange;
-    // the amount of shots before recoil state is considered stable
-    public int StableShotIndex = 3;
-    // whether there is a ramping stage after reaching RampRecoilIndex
-    // where the recoil force is multiplied by clamp(1, StableShotIndex) / StableShotIndex
-    public bool RampRecoil = true;
-    public int RampRecoilIndex = 1;
 
     [HarmonyPatch(nameof(ItemAction.ReadFrom)), MethodTargetPostfix]
     public void Postfix_ReadFrom(DynamicProperties _props, ItemAction __instance)
@@ -168,25 +156,41 @@ public class ActionModuleProceduralRecoil
             CameraRotationForceReturnSpeed = itemTags | CameraRotationForceReturnSpeed,
             RecoilReturnBias = itemTags | RecoilReturnBias,
             RecoilReturnBiasDamping = itemTags | RecoilReturnBiasDamping,
-            RecoilForceStrength = FastTags<TagGroup.Global>.Parse("RecoilForceStrength")
+            RecoilForceStrength = FastTags<TagGroup.Global>.Parse("RecoilForceStrength"),
+            RecoilAimingIntensity = itemTags | RecoilAimingIntensity
         };
-        Vector2 recoilForce = default;
-        _props.ParseVec("WeaponRecoilForce", ref recoilForce);
-        WeaponRecoilForceUp = recoilForce.x;
-        WeaponRecoilForceBack = recoilForce.y;
-        
-        _props.ParseVec("RecoilAngleRange", ref BaseRecoilRadianRange);
-        BaseRecoilRadianRange *= Mathf.Deg2Rad;
-
-        _props.ParseInt("StableShotIndex", ref StableShotIndex);
-        _props.ParseBool("RampUpRecoil", ref RampRecoil);
-        _props.ParseInt("RampRecoilIndex", ref RampRecoilIndex);
-        ShotRangeGroup = ShotIndexRangeGroup.Parse(_props);
     }
 
     [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
-    public void Postfix_OnModificationChanged(ItemActionData _data, EFTProceduralRecoilData __customData)
+    public void Postfix_OnModificationChanged(ItemActionRanged __instance, ItemActionData _data, EFTProceduralRecoilData __customData)
     {
+        Vector2 recoilForce = default;
+        string originalValue = "0,0";
+        DynamicProperties props = __instance.Properties;
+        props.ParseString("WeaponRecoilForce", ref originalValue);
+        recoilForce = StringParsers.ParseVector2(_data.invData.itemValue.GetPropertyOverrideForAction("WeaponRecoilForce", originalValue, __instance.ActionIndex));
+
+        __customData.WeaponRecoilForceUp = recoilForce.x;
+        __customData.WeaponRecoilForceBack = recoilForce.y;
+
+        originalValue = "80,100";
+        props.ParseString("RecoilAngleRange", ref originalValue);
+        __customData.BaseRecoilRadianRange = StringParsers.ParseVector2(_data.invData.itemValue.GetPropertyOverrideForAction("RecoilAngleRange", originalValue, __instance.ActionIndex)) * Mathf.Deg2Rad;
+
+        originalValue = "5";
+        props.ParseString("StableShotIndex", ref originalValue);
+        __customData.StableShotIndex = StringParsers.ParseSInt32(_data.invData.itemValue.GetPropertyOverrideForAction("StableShotIndex", originalValue, __instance.ActionIndex));
+
+        originalValue = "true";
+        props.ParseString("RampUpRecoil", ref originalValue);
+        __customData.RampRecoil = StringParsers.ParseBool(_data.invData.itemValue.GetPropertyOverrideForAction("RampUpRecoil", originalValue, __instance.ActionIndex));
+
+        originalValue = "3";
+        props.ParseString("RampRecoilIndex", ref originalValue);
+        __customData.RampRecoilIndex = StringParsers.ParseSInt32(_data.invData.itemValue.GetPropertyOverrideForAction("RampRecoilIndex", originalValue, __instance.ActionIndex));
+
+        __customData.ShotRangeGroup = ShotIndexRangeGroup.Parse(props);
+
         __customData.playerOriginTransform = null;
         if (_data.invData.holdingEntity is EntityPlayerLocal player && player.bFirstPersonView)
         {
@@ -227,7 +231,11 @@ public class ActionModuleProceduralRecoil
         }
 
         __customData.ResetRecoil();
-        CalcRecoilParams(__customData, _data as ItemActionRanged.ItemActionDataRanged);
+        if (!EFTProceduralRecoilData.dontUpdateParam || (EFTProceduralRecoilData.dontUpdateParam && !__customData.passivesInited))
+        {
+            CalcRecoilParams(__customData, _data as ItemActionRanged.ItemActionDataRanged);
+            __customData.passivesInited = true;
+        }
         __customData.isHolding = true;
         //CalcDampFactors(__customData, _data as ItemActionRanged.ItemActionDataRanged);
     }
@@ -263,7 +271,10 @@ public class ActionModuleProceduralRecoil
     {
         if (_actionData.invData.holdingEntity is EntityPlayerLocal player && player.bFirstPersonView)
         {
-            CalcRecoilParams(__customData, __customData.rangedData);
+            if (!EFTProceduralRecoilData.dontUpdateParam)
+            {
+                CalcRecoilParams(__customData, __customData.rangedData);
+            }
             __customData.AddRecoilForce(EffectManager.GetValue(CustomEnums.CustomTaggedEffect, _actionData.invData.itemValue, 1, player, null, tags.RecoilForceStrength, false, true, false, false, false, 1, false, false));
         }
     }
@@ -330,8 +341,8 @@ public class ActionModuleProceduralRecoil
     public void CalcRecoilParams(EFTProceduralRecoilData recoilData, ItemActionRanged.ItemActionDataRanged rangedData)
     {
         recoilData.WeaponRecoilModifier = Mathf.Max(0, EffectManager.GetValue(CustomEnums.CustomTaggedEffect, rangedData.invData.itemValue, 1, rangedData.invData.holdingEntity, null, tags.WeaponRecoilModifier));
-        recoilData.BaseWeaponRecoilStrRot = new Vector2(BASE_RECOIL_ROTATION_STR_MIN, BASE_RECOIL_ROTATION_STR_MAX) * (WeaponRecoilForceUp * recoilData.WeaponRecoilModifier + 20) * CONSTANT_ROTATION_STR_MULTIPLIER;
-        recoilData.BaseWeaponRecoilStrPos = new Vector2(BASE_RECOIL_POSITION_STR_MIN, BASE_RECOIL_POSITION_STR_MAX) * (WeaponRecoilForceBack *  recoilData.WeaponRecoilModifier + 20) * CONSTANT_ROTATION_STR_MULTIPLIER;
+        recoilData.BaseWeaponRecoilStrRot = new Vector2(BASE_RECOIL_ROTATION_STR_MIN, BASE_RECOIL_ROTATION_STR_MAX) * (recoilData.WeaponRecoilForceUp * recoilData.WeaponRecoilModifier + 20) * CONSTANT_ROTATION_STR_MULTIPLIER;
+        recoilData.BaseWeaponRecoilStrPos = new Vector2(BASE_RECOIL_POSITION_STR_MIN, BASE_RECOIL_POSITION_STR_MAX) * (recoilData.WeaponRecoilForceBack *  recoilData.WeaponRecoilModifier + 20) * CONSTANT_ROTATION_STR_MULTIPLIER;
 
         recoilData.DeltaAnglePerShot = EffectManager.GetValue(CustomEnums.CustomTaggedEffect, rangedData.invData.itemValue, 2.5f, rangedData.invData.holdingEntity, null, tags.DeltaAnglePerShot);
         recoilData.DeltaAngleRange.x = EffectManager.GetValue(CustomEnums.CustomTaggedEffect, rangedData.invData.itemValue, 0, rangedData.invData.holdingEntity, null, tags.DeltaAngleMin);
@@ -349,6 +360,7 @@ public class ActionModuleProceduralRecoil
         recoilData.CameraRotationForceReturnSpeed = EffectManager.GetValue(CustomEnums.CustomTaggedEffect, rangedData.invData.itemValue, 0.05f, rangedData.invData.holdingEntity, null, tags.CameraRotationForceReturnSpeed);
         recoilData.RecoilReturnBias = EffectManager.GetValue(CustomEnums.CustomTaggedEffect, rangedData.invData.itemValue, 0.01f, rangedData.invData.holdingEntity, null, tags.RecoilReturnBias);
         recoilData.BiasDamping = EffectManager.GetValue(CustomEnums.CustomTaggedEffect, rangedData.invData.itemValue, 0.48f, rangedData.invData.holdingEntity, null, tags.RecoilReturnBiasDamping);
+        recoilData.HandRotValueAimIntensity = EffectManager.GetValue(CustomEnums.CustomTaggedEffect, rangedData.invData.itemValue, 1f, rangedData.invData.holdingEntity, null, tags.RecoilAimingIntensity);
     }
 
     //public void CalcDampFactors(ProceduralRecoilData recoilData, ItemActionRanged.ItemActionDataRanged rangedData)
@@ -369,6 +381,22 @@ public class ActionModuleProceduralRecoil
         public bool hasPivotOverride;
         public int actionIndex;
         public bool isHolding;
+        public static bool dontUpdateParam;
+        public bool passivesInited;
+
+        // initial weapon recoil property
+        public float WeaponRecoilForceUp, WeaponRecoilForceBack;
+        public ShotIndexRangeGroup ShotRangeGroup;
+
+        //======
+        // the recoil angle range in radian, where 90 is up and 0 is right
+        public Vector2 BaseRecoilRadianRange;
+        // the amount of shots before recoil state is considered stable
+        public int StableShotIndex = 3;
+        // whether there is a ramping stage after reaching RampRecoilIndex
+        // where the recoil force is multiplied by clamp(1, StableShotIndex) / StableShotIndex
+        public bool RampRecoil = true;
+        public int RampRecoilIndex = 1;
 
         //====== temp
         // modifier for the weapon recoil force
@@ -411,7 +439,8 @@ public class ActionModuleProceduralRecoil
         public float RampMultiplier;
         public Vector2 CurrentRotationOffset;
         public float CurrentRotationAccumulated;
-        public Vector2 HandRotValueCur, HandRotValuePrev, HandRotVelocity, HandRotForce;
+        public float HandRotValueAimIntensity = 1f;
+        public Vector2 HandRotValueCur, HandRotValuePrev, HandRotValueApply, HandRotVelocity, HandRotForce;
         public AnimationCurve HandRotReturnSpeedCurve = new AnimationCurve(new Keyframe(0, 0.008f, 0.0002f, 0.0002f) { inWeight = 0, outWeight = 0.0775f },
                                                                            new Keyframe(2.5f, 0.008f, 0.0001f, 0.0001f) { inWeight = 0.0717f, outWeight = 0 })
         {
@@ -444,14 +473,14 @@ public class ActionModuleProceduralRecoil
 
         public void AddRecoilForce(float forceStr = 1)
         {
-            if (rangedData.curBurstCount >= module.StableShotIndex)
+            if (rangedData.curBurstCount >= StableShotIndex)
             {
                 SetStable(true);
             }
 
-            if (module.RampRecoil && rangedData.curBurstCount >= module.RampRecoilIndex)
+            if (RampRecoil && rangedData.curBurstCount >= RampRecoilIndex)
             {
-                RampMultiplier = Mathf.Clamp01((float)rangedData.curBurstCount / module.StableShotIndex);
+                RampMultiplier = Mathf.Clamp01((float)rangedData.curBurstCount / StableShotIndex);
             }
             else
             {
@@ -468,13 +497,10 @@ public class ActionModuleProceduralRecoil
 
         public void ResetRecoil()
         {
-            WeaponRotIntensity = WeaponPosIntensity = CameraRotIntensity = 1f;
-
             IsStable = false;
             IsReturning = false;
             IsHandRotDirty = false;
             CurrentStableRotationOffset = Vector2.zero;
-            RampMultiplier = 1;
             CurrentRotationOffset = Vector2.zero;
             CurrentRotationAccumulated = 0;
             HandRotValueCur = HandRotValuePrev = HandRotVelocity = HandRotForce = Vector2.zero;
@@ -482,7 +508,6 @@ public class ActionModuleProceduralRecoil
             TargetStableRotationOffset = Vector2.zero;
             AutoFireReturnSpeed = 0f;
             LastReturnOffsetSign = 0;
-            RecoilOffsetImpulse = 0f;
 
             IsHandPosDirty = false;
             HandPosValue = HandPosVelocity = HandPosForce = 0f;
@@ -532,7 +557,7 @@ public class ActionModuleProceduralRecoil
             //                            * (Quaternion.AngleAxis(HandRotValueCur.y, playerCameraTransform.up) * playerCameraTransform.forward);
 
             //Quaternion.FromToRotation(playerCameraTransform.forward, targetHandForward).ToAngleAxis(out float worldAngleOffset, out Vector3 worldRotAxis);
-            ((playerCameraTransform.rotation * Quaternion.Euler(HandRotValueCur)) * Quaternion.Inverse(playerCameraTransform.rotation)).ToAngleAxis(out float worldAngleOffset, out Vector3 worldRotAxis);
+            ((playerCameraTransform.rotation * Quaternion.Euler(HandRotValueApply)) * Quaternion.Inverse(playerCameraTransform.rotation)).ToAngleAxis(out float worldAngleOffset, out Vector3 worldRotAxis);
             if (isRigWeapon && !hasPivotOverride)
             {
                 playerOriginTransform.RotateAround(recoilPivotTransform.position, worldRotAxis, worldAngleOffset);
@@ -544,7 +569,7 @@ public class ActionModuleProceduralRecoil
                 playerOriginTransform.RotateAround(recoilPivotTransform.position, worldRotAxis, worldAngleOffset);
             }
             Vector3 alignmentPos = aimref?.alignmentTarget?.position ?? (aimRefTransform.position - aimingData.AimRefOffset * aimRefTransform.forward);
-            ((playerCameraTransform.rotation * Quaternion.Euler(ProceduralRecoilUpdater.CamAimRecoilRotOffsetHorCur)) * Quaternion.Inverse(playerCameraTransform.rotation)).ToAngleAxis(out worldAngleOffset, out worldRotAxis);
+            ((playerCameraTransform.rotation * Quaternion.Euler(ProceduralRecoilUpdater.CamAimRecoilRotOffsetCur)) * Quaternion.Inverse(playerCameraTransform.rotation)).ToAngleAxis(out worldAngleOffset, out worldRotAxis);
             playerOriginTransform.RotateAround(alignmentPos, worldRotAxis, worldAngleOffset);
             ProceduralRecoilUpdater.LateUpdateCamRecoilPosOffset(aimRefTransform.position - prevAimRefPos, dt, invData.holdingEntity.AimingGun);
             playerOriginTransform.position -= ProceduralRecoilUpdater.GetCurRecoilPosOffset();
@@ -610,6 +635,17 @@ public class ActionModuleProceduralRecoil
                 }
             }
             HandRotValuePrev = HandRotValueCur;
+
+            if (invData.holdingEntity.AimingGun)
+            {
+                //HandRotValueApply = Vector2.Lerp(HandRotValueApply, new Vector2(HandRotValueCur.x * HandRotValueAimIntensity, HandRotValueCur.y), 8 * dt);
+                HandRotValueApply = new Vector2(HandRotValueCur.x * HandRotValueAimIntensity, HandRotValueCur.y);
+            }
+            else
+            {
+                //HandRotValueApply = Vector2.Lerp(HandRotValueApply, HandRotValueCur, 8 * dt);
+                HandRotValueApply = HandRotValueCur;
+            }
         }
 
         private void FixedUpdateHandPos(float dt)
@@ -661,7 +697,7 @@ public class ActionModuleProceduralRecoil
             //todo: random range according to burst count
             Vector2 rotRange = BaseWeaponRecoilStrRot;
             Vector2 posRange = BaseWeaponRecoilStrPos;
-            if (module.ShotRangeGroup.FindIndexGroup(rangedData.curBurstCount, out var range))
+            if (ShotRangeGroup.FindIndexGroup(rangedData.curBurstCount, out var range))
             {
                 rotRange += range.RecoilRotationStrength;
                 posRange += range.RecoilPositionStrength;
@@ -673,7 +709,7 @@ public class ActionModuleProceduralRecoil
         private void CalcRecoilDirRadian(out Vector2 dirRad)
         {
             Vector2 randomRange = default;
-            if (module.ShotRangeGroup.FindIndexGroup(rangedData.curBurstCount, out var range))
+            if (ShotRangeGroup.FindIndexGroup(rangedData.curBurstCount, out var range))
             {
                 randomRange = range.RecoilAngleRange;
             }
@@ -682,7 +718,7 @@ public class ActionModuleProceduralRecoil
                 CurrentRotationAccumulated = Mathf.Clamp(CurrentRotationAccumulated + DeltaAnglePerShot, DeltaAngleRange.x, DeltaAngleRange.y);
                 randomRange += new Vector2(CurrentRotationAccumulated, -CurrentRotationAccumulated);
             }
-            dirRad = module.BaseRecoilRadianRange + randomRange * Mathf.Deg2Rad;
+            dirRad = BaseRecoilRadianRange + randomRange * Mathf.Deg2Rad;
         }
 
         private void CalcFinalRecoilDirection(Vector2 recoilDirRad, float recoilRotStr, float recoilPosStr)
@@ -763,6 +799,17 @@ public static class ProceduralRecoilUpdater
         }
     }
 
+    private static float SetAimIntensity
+    {
+        set
+        {
+            if (RecoilData != null)
+            {
+                RecoilData.HandRotValueAimIntensity = value;
+            }
+        }
+    }
+
     //====== cam rotation apply
     public static Vector3 PreUpdateCamFwd;
     public static float CamRecoilLerpSpeed, CamRecoilLerpSpeedStep = 0.1f;
@@ -772,7 +819,8 @@ public static class ProceduralRecoilUpdater
     public static float CamAimRecoilPosSmoothIn = 8f, CamAimRecoilPosSmoothOut = 6f;
     private static Vector3 CamAimRecoilPosOffsetCur, CamAimRecoilPosOffsetStable/*, CamAimRecoilPosOffsetTarget*/;
     public static float LastShotTime, CamAimRecoilPosLerpSpeedXYMin = 7, CamAimRecoilPosLerpSpeedXYMax = 8, CamAimRecoilPosLerpSpeedStep = 5;
-    public static Vector2 CamAimRecoilRotOffsetHorCur;
+    public static Vector2 CamAimRecoilRotOffsetCur;
+    public static float CamAimRecoilRotOffsetLerpSpeed = 8f;
 
     public static void InitPlayer(EntityPlayerLocal player)
     {
@@ -789,7 +837,7 @@ public static class ProceduralRecoilUpdater
         CamAimRecoilPosOffsetStable = Vector3.zero;
         //CamAimRecoilPosOffsetTarget = Vector3.zero;
         LastShotTime = 0;
-        CamAimRecoilRotOffsetHorCur = Vector2.zero;
+        CamAimRecoilRotOffsetCur = Vector2.zero;
     }
 
     //public static void SetTargetRecoilPosOffset(Vector3 offset)
@@ -866,11 +914,11 @@ public static class ProceduralRecoilUpdater
 
             if (aiming)
             {
-                CamAimRecoilRotOffsetHorCur = Vector2.Lerp(CamAimRecoilRotOffsetHorCur, -recoilData.HandRotValueCur, 8 * dt);
+                CamAimRecoilRotOffsetCur = Vector2.Lerp(CamAimRecoilRotOffsetCur, -recoilData.HandRotValueApply, CamAimRecoilRotOffsetLerpSpeed * dt);
             }
             else
             {
-                CamAimRecoilRotOffsetHorCur = Vector2.Lerp(CamAimRecoilRotOffsetHorCur, Vector2.zero, 5 * dt);
+                CamAimRecoilRotOffsetCur = Vector2.Lerp(CamAimRecoilRotOffsetCur, Vector2.zero, 5 * dt);
             }
         }
         else
@@ -878,7 +926,7 @@ public static class ProceduralRecoilUpdater
             CamRecoilLerpSpeed = Mathf.Clamp(CamRecoilLerpSpeed - CamRecoilLerpSpeedStep * dt, CamRecoilLerpSpeedRange.x, CamRecoilLerpSpeedRange.y);
             CamRecoilOffsetStable = CamRecoilOffsetCur = Vector2.Lerp(CamRecoilOffsetCur, Vector2.zero, CamRecoilLerpSpeed);
             CamAimRecoilPosOffsetStable = CamAimRecoilPosOffsetCur = Vector3.Lerp(CamAimRecoilPosOffsetCur, Vector3.zero, CamAimRecoilPosSmoothOut * dt);
-            CamAimRecoilRotOffsetHorCur = Vector2.Lerp(CamAimRecoilRotOffsetHorCur, Vector2.zero, 5 * dt);
+            CamAimRecoilRotOffsetCur = Vector2.Lerp(CamAimRecoilRotOffsetCur, Vector2.zero, 5 * dt);
         }
         Vector2 realCamRecoilOffset = CamRecoilOffsetCur;
         if (recoilData != null)
