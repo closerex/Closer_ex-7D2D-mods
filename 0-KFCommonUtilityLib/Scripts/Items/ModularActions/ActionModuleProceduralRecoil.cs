@@ -88,7 +88,7 @@ public class ActionModuleProceduralRecoil
     public const float BASE_RECOIL_POSITION_STR_MIN = 0.65f;
     public const float BASE_RECOIL_POSITION_STR_MAX = 1.05f;
     public const float CONSTANT_ROTATION_STR_MULTIPLIER = 0.1399f;
-    public const float INTENSITY_MULTIPLIER_CROUCHING = 0.7f;
+    public const float INTENSITY_MULTIPLIER_CROUCHING = 0.85f;
 
     public struct RecoilPassiveTags
     {
@@ -247,24 +247,24 @@ public class ActionModuleProceduralRecoil
         __customData.isHolding = false;
     }
 
-    [HarmonyPatch(nameof(ItemAction.OnHoldingUpdate)), MethodTargetPostfix]
-    public void Postfix_OnHoldingUpdate(EFTProceduralRecoilData __customData, ItemActionData _actionData)
-    {
-        if (_actionData.invData.holdingEntity is EntityPlayerLocal player && player.bFirstPersonView)
-        {
-            bool aimingGun = player.AimingGun;
-            if (aimingGun)
-            {
-                __customData.WeaponRotIntensity = 0.75f;
-                //__customData.WeaponPosIntensity = 0f;
-            }
-            else
-            {
-                __customData.WeaponRotIntensity = 1f;
-                //__customData.WeaponPosIntensity = 1f;
-            }
-        }
-    }
+    //[HarmonyPatch(nameof(ItemAction.OnHoldingUpdate)), MethodTargetPostfix]
+    //public void Postfix_OnHoldingUpdate(EFTProceduralRecoilData __customData, ItemActionData _actionData)
+    //{
+    //    if (_actionData.invData.holdingEntity is EntityPlayerLocal player && player.bFirstPersonView)
+    //    {
+    //        bool aimingGun = player.AimingGun;
+    //        if (aimingGun)
+    //        {
+    //            __customData.WeaponRotIntensity = 0.75f;
+    //            //__customData.WeaponPosIntensity = 0f;
+    //        }
+    //        else
+    //        {
+    //            __customData.WeaponRotIntensity = 1f;
+    //            //__customData.WeaponPosIntensity = 1f;
+    //        }
+    //    }
+    //}
 
     [HarmonyPatch(nameof(ItemActionRanged.onHoldingEntityFired)), MethodTargetPostfix]
     public void Postfix_onHoldingEntityFired(ItemActionData _actionData, EFTProceduralRecoilData __customData)
@@ -441,6 +441,7 @@ public class ActionModuleProceduralRecoil
         public float CurrentRotationAccumulated;
         public float HandRotValueAimIntensity = 1f;
         public Vector2 HandRotValueCur, HandRotValuePrev, HandRotValueApply, HandRotVelocity, HandRotForce;
+        public float HandRotValueXAfterRecoil = 0.01f;
         public AnimationCurve HandRotReturnSpeedCurve = new AnimationCurve(new Keyframe(0, 0.008f, 0.0002f, 0.0002f) { inWeight = 0, outWeight = 0.0775f },
                                                                            new Keyframe(2.5f, 0.008f, 0.0001f, 0.0001f) { inWeight = 0.0717f, outWeight = 0 })
         {
@@ -504,6 +505,7 @@ public class ActionModuleProceduralRecoil
             CurrentRotationOffset = Vector2.zero;
             CurrentRotationAccumulated = 0;
             HandRotValueCur = HandRotValuePrev = HandRotVelocity = HandRotForce = Vector2.zero;
+            HandRotValueXAfterRecoil = 0.01f;
             HandRotCurveTime = 0f;
             TargetStableRotationOffset = Vector2.zero;
             AutoFireReturnSpeed = 0f;
@@ -525,7 +527,7 @@ public class ActionModuleProceduralRecoil
             {
                 return;
             }
-            if (rangedData.state != ItemActionFiringState.Loop)
+            if (rangedData.state == ItemActionFiringState.Off)
             {
                 SetStable(false);
             }
@@ -580,9 +582,15 @@ public class ActionModuleProceduralRecoil
 
         private void FixedUpdateHandRot(float dt)
         {
+            bool isAiming = invData.holdingEntity.AimingGun;
             if (IsHandRotDirty)
             {
-                HandRotVelocity += HandRotForce * WeaponRotIntensity;
+                float weaponRotIntensity = WeaponRotIntensity;
+                if (isAiming)
+                {
+                    weaponRotIntensity *= 0.75f;
+                }
+                HandRotVelocity += HandRotForce * weaponRotIntensity;
                 HandRotForce = Vector2.zero;
                 HandRotCurveTime = Mathf.Min(HandRotValueCur.magnitude, HandRotCurveTime);
                 if (IsStable)
@@ -599,13 +607,13 @@ public class ActionModuleProceduralRecoil
                 IsHandRotDirty = false;
             }
 
-            if (rangedData.state != ItemActionFiringState.Loop)
+            if (rangedData.state == ItemActionFiringState.Off)
             {
                 AutoFireReturnSpeed = WeaponRotationForceReturnSpeed * HandRotReturnSpeedCurve.Evaluate(HandRotCurveTime);
                 //mount?
             }
 
-            if (IsHandRotDirty && rangedData.state == ItemActionFiringState.Loop && !IsStable)
+            if (IsHandRotDirty && rangedData.state != ItemActionFiringState.Off && !IsStable)
             {
                 AutoFireReturnSpeed *= RampMultiplier;
             }
@@ -624,19 +632,19 @@ public class ActionModuleProceduralRecoil
 
             UpdateReturnBias(dt);
 
-            if (rangedData.state != ItemActionFiringState.Loop)
+            if (rangedData.state == ItemActionFiringState.Off)
             {
-                if (HandRotValueCur.x != 0)
+                if (HandRotValueXAfterRecoil != 0)
                 {
-                    float speedDamp = Mathf.Abs(Mathf.Min(HandRotValueCur.x, -0.01f) / HandRotValueCur.x);
-                    RecoilOffsetLerpSpeed = 1 - speedDamp;
-                    RecoilOffsetLerpSpeed = Mathf.Clamp(RecoilOffsetLerpSpeed, 0.01f, 1f) * 0.01f;
-                    HandRotValueCur = new Vector2(Mathf.Lerp(HandRotValueCur.x, 0, RecoilOffsetLerpSpeed), Mathf.Lerp(HandRotValueCur.y, 0, RecoilOffsetLerpSpeed));
+                    float speedDamp = Mathf.Abs(Mathf.Clamp(HandRotValueCur.x, HandRotValueXAfterRecoil, -0.01f) / HandRotValueXAfterRecoil);
+                    RecoilOffsetLerpSpeed = Mathf.Clamp(1 - speedDamp, 0.01f, 1f) * 0.01f;
+                    HandRotValueCur = Vector2.Lerp(HandRotValueCur, Vector2.zero, RecoilOffsetLerpSpeed);
+                    //Log.Out($"LerpBack RecoilOffsetLerpSpeed {RecoilOffsetLerpSpeed} HandRotValueCurY {HandRotValueCur.y}");
                 }
             }
             HandRotValuePrev = HandRotValueCur;
 
-            if (invData.holdingEntity.AimingGun)
+            if (isAiming)
             {
                 //HandRotValueApply = Vector2.Lerp(HandRotValueApply, new Vector2(HandRotValueCur.x * HandRotValueAimIntensity, HandRotValueCur.y), 8 * dt);
                 HandRotValueApply = new Vector2(HandRotValueCur.x * HandRotValueAimIntensity, HandRotValueCur.y);
@@ -702,8 +710,8 @@ public class ActionModuleProceduralRecoil
                 rotRange += range.RecoilRotationStrength;
                 posRange += range.RecoilPositionStrength;
             }
-            rotStr = Random.Range(BaseWeaponRecoilStrRot.x, BaseWeaponRecoilStrRot.y) * forceStr;
-            posStr = Random.Range(BaseWeaponRecoilStrPos.x, BaseWeaponRecoilStrPos.y) * forceStr;
+            rotStr = Random.Range(rotRange.x, rotRange.y) * forceStr;
+            posStr = Random.Range(posRange.x, posRange.y) * forceStr;
         }
 
         private void CalcRecoilDirRadian(out Vector2 dirRad)
@@ -753,6 +761,7 @@ public class ActionModuleProceduralRecoil
             if (HandRotValueCur.x < HandRotValuePrev.x && IsReturning)
             {
                 //skipped the random offset
+                HandRotValueXAfterRecoil = HandRotValueCur.x;
                 RecoilOffsetImpulse = Mathf.Abs(HandRotValueCur.x * WeaponRotationForceReturnSpeed) * 0.01f;
                 //mount?
 
@@ -766,13 +775,14 @@ public class ActionModuleProceduralRecoil
                 }
                 else
                 {
-                    LastReturnOffsetSign = 0;
+                    LastReturnOffsetSign = Random.Range(-1f, 1f) >= 0f ? 1 : -1;
                 }
+                //Log.Out($"Upkick RecoilOffsetImpulse {RecoilOffsetImpulse} Sign {LastReturnOffsetSign} HandRotVelocityY {HandRotVelocity.y} HandRotValueCurY {HandRotValueCur.y}");
 
                 return;
             }
 
-            if (rangedData.state != ItemActionFiringState.Loop && IsReturning)
+            if (rangedData.state == ItemActionFiringState.Off && IsReturning)
             {
                 RecoilOffsetImpulse *= BiasDamping;
                 if (RecoilOffsetImpulse <= 0.001f)
@@ -783,6 +793,7 @@ public class ActionModuleProceduralRecoil
                     return;
                 }
                 HandRotVelocity.y += RecoilOffsetImpulse * LastReturnOffsetSign;
+                //Log.Out($"Apply RecoilOffsetImpulse {RecoilOffsetImpulse} Sign {LastReturnOffsetSign} HandRotVelocityY {HandRotVelocity.y} HandRotValueCurY {HandRotValueCur.y}");
             }
         }
     }
@@ -810,6 +821,14 @@ public static class ProceduralRecoilUpdater
         }
     }
 
+    private static bool SetDontUpdate
+    {
+        set
+        {
+            ActionModuleProceduralRecoil.EFTProceduralRecoilData.dontUpdateParam = value;
+        }
+    }
+
     //====== cam rotation apply
     public static Vector3 PreUpdateCamFwd;
     public static float CamRecoilLerpSpeed, CamRecoilLerpSpeedStep = 0.1f;
@@ -820,7 +839,7 @@ public static class ProceduralRecoilUpdater
     private static Vector3 CamAimRecoilPosOffsetCur, CamAimRecoilPosOffsetStable/*, CamAimRecoilPosOffsetTarget*/;
     public static float LastShotTime, CamAimRecoilPosLerpSpeedXYMin = 7, CamAimRecoilPosLerpSpeedXYMax = 8, CamAimRecoilPosLerpSpeedStep = 5;
     public static Vector2 CamAimRecoilRotOffsetCur;
-    public static float CamAimRecoilRotOffsetLerpSpeed = 8f;
+    public static float CamAimRecoilRotOffsetLerpSpeed = 15f;
 
     public static void InitPlayer(EntityPlayerLocal player)
     {
@@ -879,7 +898,7 @@ public static class ProceduralRecoilUpdater
             {
                 //when shooting while aiming, adds a portion of hand rot to camera;
                 //return to 0 when not aiming or shooting
-                if (rangedData.state == ItemActionFiringState.Loop && aiming)
+                if (rangedData.state != ItemActionFiringState.Off && aiming)
                 {
                     CamRecoilLerpSpeed = Mathf.Clamp(CamRecoilLerpSpeed + CamRecoilLerpSpeedStep * dt, CamRecoilLerpSpeedRange.x, CamRecoilLerpSpeedRange.y);
                     if (!recoilData.IsStable)
@@ -891,7 +910,7 @@ public static class ProceduralRecoilUpdater
                 else
                 {
                     CamRecoilLerpSpeed = Mathf.Clamp(CamRecoilLerpSpeed - CamRecoilLerpSpeedStep * dt, CamRecoilLerpSpeedRange.x, CamRecoilLerpSpeedRange.y);
-                    if (rangedData.state != ItemActionFiringState.Loop && aiming)
+                    if (rangedData.state == ItemActionFiringState.Off && aiming)
                     {
                         CamRecoilOffsetStable = CamRecoilOffsetCur = Vector2.Lerp(CamRecoilOffsetCur, recoilData.HandRotValueCur, CamRecoilLerpSpeed);
                     }
@@ -912,7 +931,7 @@ public static class ProceduralRecoilUpdater
             //    Log.Out($"CamRecoilOffsetCur {CamRecoilOffsetCur}, CamRecoilOffsetStable {CamRecoilOffsetStable}, HandRotValueCur {recoilData.HandRotValueCur}");
             //}
 
-            if (aiming)
+            if (aiming && rangedData.state != ItemActionFiringState.Off)
             {
                 CamAimRecoilRotOffsetCur = Vector2.Lerp(CamAimRecoilRotOffsetCur, -recoilData.HandRotValueApply, CamAimRecoilRotOffsetLerpSpeed * dt);
             }
@@ -936,19 +955,20 @@ public static class ProceduralRecoilUpdater
         //realCamRecoilOffset.x = Mathf.Min(0, realCamRecoilOffset.x);
         LocalCamRotOffsetCur = Quaternion.Euler(realCamRecoilOffset);
         Quaternion targetCameraRotation = Quaternion.Euler(CamRecoilOffsetCur) * player.cameraTransform.localRotation;
-        InverseWorldCamKickOffsetCur = player.cameraTransform.rotation * Quaternion.Inverse(player.cameraTransform.parent.rotation * targetCameraRotation);
+        Quaternion cameraParentRotation = player.cameraTransform.parent?.rotation ?? Quaternion.identity;
+        InverseWorldCamKickOffsetCur = player.cameraTransform.rotation * Quaternion.Inverse(cameraParentRotation * targetCameraRotation);
 
         if (recoilData != null)
         {
             targetCameraRotation = Quaternion.Euler(recoilData.CamRotValue) * player.cameraTransform.localRotation;
-            InverseWorldCamShakeOffsetCur = player.cameraTransform.rotation * Quaternion.Inverse(player.cameraTransform.parent.rotation * targetCameraRotation);
+            InverseWorldCamShakeOffsetCur = player.cameraTransform.rotation * Quaternion.Inverse(cameraParentRotation * targetCameraRotation);
         }
         else
         {
             InverseWorldCamShakeOffsetCur = Quaternion.identity;
         }
         targetCameraRotation = LocalCamRotOffsetCur * player.cameraTransform.localRotation;
-        InverseWorldCamTotalOffsetCur = player.cameraTransform.rotation * Quaternion.Inverse(player.cameraTransform.parent.rotation * targetCameraRotation);
+        InverseWorldCamTotalOffsetCur = player.cameraTransform.rotation * Quaternion.Inverse(cameraParentRotation * targetCameraRotation);
     }
 
     public static void LateUpdateCamRecoilPosOffset(Vector3 CamAimRecoilPosOffsetTarget, float dt, bool aiming)
