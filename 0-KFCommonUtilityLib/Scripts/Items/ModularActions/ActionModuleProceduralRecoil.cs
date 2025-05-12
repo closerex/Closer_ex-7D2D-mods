@@ -1017,6 +1017,11 @@ public static class ProceduralRecoilUpdater
             return;
         }
         player.cameraTransform.localRotation *= LocalCamRotOffsetCur;
+        if (!player.vp_FPController.enabled)
+        {
+            player.cameraTransform.position = player.vp_FPController.SmoothPosition;
+            player.cameraTransform.localPosition += player.vp_FPCamera.m_PositionSpring.State + player.vp_FPCamera.m_PositionSpring2.State;
+        }
         player.cameraTransform.localPosition += CamAimRecoilPosOffsetCur;
     }
 }

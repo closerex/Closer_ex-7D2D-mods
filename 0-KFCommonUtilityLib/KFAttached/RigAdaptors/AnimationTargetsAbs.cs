@@ -93,7 +93,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     //attaching the same prefab multiple times is not allowed!
     public void AttachPrefab(GameObject prefab)
     {
-        if (Destroyed || dict_attachments == null || !prefab.TryGetComponent<AttachmentReferenceAppended>(out var appended))
+        if (Destroyed || dict_attachments == null || !prefab.TryGetComponent<AttachmentReferenceAppended>(out var appended) || !appended)
         {
             return;
         }

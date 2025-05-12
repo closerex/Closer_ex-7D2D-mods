@@ -289,7 +289,7 @@ static class AnimationRiggingPatches
 
     private static void CheckAttachmentRefMerge(AnimationTargetsAbs targets, GameObject attachmentReference)
     {
-        if (targets)
+        if (targets && attachmentReference)
         {
             targets.AttachPrefab(attachmentReference);
         }
