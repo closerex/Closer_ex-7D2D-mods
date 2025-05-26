@@ -198,7 +198,7 @@ namespace CustomFPVFov
         {
             if (!player)
             {
-                player = GameManager.Instance.World.GetPrimaryPlayer();
+                player = GameManager.Instance?.World?.GetPrimaryPlayer();
                 if (!player)
                 {
                     return;
