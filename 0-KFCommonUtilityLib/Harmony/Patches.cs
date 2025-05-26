@@ -1268,6 +1268,29 @@ public static class CommonUtilityPatch
         }
     }
 
+    //fix vanilla nre where take all button is missing and player presses R
+    [HarmonyPatch(typeof(XUiC_WorkstationOutputWindow), nameof(XUiC_WorkstationOutputWindow.Update))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_Update_XUiC_WorkstationOutputWindow(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+        var mtd_update = AccessTools.Method(typeof(XUiController), nameof(XUiController.Update));
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_update))
+            {
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    CodeInstruction.LoadField(typeof(XUiC_WorkstationOutputWindow), nameof(XUiC_WorkstationOutputWindow.controls)),
+                    new CodeInstruction(OpCodes.Brfalse_S, codes[codes.Count - 1].labels[0]),
+                });
+                break;
+            }
+        }
+        return codes;
+    }
+
     //[HarmonyPatch(typeof(EntityBuffs), nameof(EntityBuffs.AddBuff), typeof(string), typeof(Vector3i), typeof(int), typeof(bool), typeof(bool), typeof(float))]
     //[HarmonyPostfix]
     //private static void Postfix_AddBuff_EntityBuffs(string _name, EntityBuffs __instance, EntityBuffs.BuffStatus __result, bool _netSync)
