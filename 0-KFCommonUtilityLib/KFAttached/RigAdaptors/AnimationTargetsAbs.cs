@@ -495,7 +495,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
         if (IsFpv && fpvSet)
         {
             GraphBuilder.VanillaWrapper.Play("idle", 0, 0f);
-            avatarController.UpdateInt(AvatarController.weaponHoldTypeHash, -1, false);
+            GraphBuilder.VanillaWrapper.SetInteger(AvatarController.weaponHoldTypeHash, -1);
         }
         else if (!IsFpv && tpvSet)
         {

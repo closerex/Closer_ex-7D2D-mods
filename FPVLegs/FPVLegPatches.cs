@@ -1,0 +1,232 @@
+﻿using HarmonyLib;
+using System;
+using UnityEngine;
+
+namespace FPVLegs
+{
+    [HarmonyPatch]
+    public static class FPVLegPatches
+    {
+        [HarmonyPatch(typeof(SDCSUtils), nameof(SDCSUtils.CreateVizTP))]
+        [HarmonyPrefix]
+        private static void Prefix_SDCSUtils_CreateTP(EntityAlive entity, ref bool isFPV, out bool __state)
+        {
+            __state = isFPV;
+            if (entity is EntityPlayerLocal)
+            {
+                entity.emodel.IsFPV = false;
+                isFPV = false;
+            }
+        }
+
+        [HarmonyPatch(typeof(SDCSUtils), nameof(SDCSUtils.CreateVizTP))]
+        [HarmonyPostfix]
+        private static void Postfix_SDCSUtils_CreateTP(EntityAlive entity, ref bool isFPV, bool __state)
+        {
+            if (entity is EntityPlayerLocal)
+            {
+                entity.emodel.IsFPV = __state;
+                isFPV = __state;
+                if (__state)
+                {
+                    UpdateTPVMeshState(entity, false);
+                }
+            }
+        }
+
+        private static void UpdateTPVMeshState(EntityAlive entity, bool enabled)
+        {
+            //Log.Out($"[FPVLegs] EntityPlayerLocal.UpdateTPVMeshState called - enabled {enabled}\n{StackTraceUtility.ExtractStackTrace()}");
+            var model = entity.emodel.GetModelTransform();
+            if (!model)
+            {
+                return;
+            }
+            foreach (Transform child in model)
+            {
+                if (child.name.Contains("head", StringComparison.OrdinalIgnoreCase) || child.name == "hands" || child.name.Contains("hair", StringComparison.OrdinalIgnoreCase))
+                {
+                    child.gameObject.SetActive(enabled);
+                    //Log.Out($"[FPVLegs] Set {child.name} active: {enabled}");
+                }
+            }
+        }
+
+        private static void UpdateTPVAnimatorState(EntityPlayerLocal player)
+        {
+            var animator = player.emodel?.GetModelTransform()?.GetComponent<Animator>();
+            if (animator)
+            {
+                animator.enabled = true;
+                animator.gameObject.GetOrAddComponent<FPVLegHelper>().Init(player);
+            }
+        }
+
+        [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.switchModelView))]
+        [HarmonyPostfix]
+        private static void Postfix_EntityPlayerLocal_switchModelView(EntityPlayerLocal __instance, EnumEntityModelView modelView)
+        {
+            UpdateTPVAnimatorState(__instance);
+            if (modelView == EnumEntityModelView.ThirdPerson)
+            {
+                var model = __instance.emodel?.GetModelTransform();
+                if (model)
+                {
+                    model.localPosition = Vector3.zero;
+                }
+            }
+            //UpdateTPVMeshState(__instance, modelView != EnumEntityModelView.FirstPerson);
+        }
+
+        [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.AfterPlayerRespawn))]
+        [HarmonyPostfix]
+        private static void Postfix_EntityPlayerLocal_AfterPlayerRespawn(EntityPlayerLocal __instance)
+        {
+            UpdateTPVAnimatorState(__instance);
+            UpdateTPVMeshState(__instance, !__instance.bFirstPersonView);
+        }
+
+        [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.SetAlive))]
+        [HarmonyPostfix]
+        private static void Postfix_EntityPlayerLocal_SetAlive(EntityPlayerLocal __instance)
+        {
+            UpdateTPVAnimatorState(__instance);
+            UpdateTPVMeshState(__instance, !__instance.bFirstPersonView);
+        }
+
+        [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.Kill))]
+        [HarmonyPostfix]
+        private static void Postfix_EntityPlayerLocal_Kill(EntityPlayerLocal __instance)
+        {
+            UpdateTPVMeshState(__instance, true);
+        }
+
+        [HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.FixedUpdate))]
+        [HarmonyPrefix]
+        private static void Prefix_vp_FPCamera_FixedUpdate(vp_FPCamera __instance, out (bool, Vector3) __state)
+        {
+            __state = (__instance.hasLateUpdateRan, __instance.transform.position);
+        }
+
+        [HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.FixedUpdate))]
+        [HarmonyPostfix]
+        private static void Postfix_vp_FPCamera_FixedUpdate(vp_FPCamera __instance, (bool executed, Vector3 prevPos) __state)
+        {
+            if (__state.executed && __instance.FPController?.localPlayer && __instance.FPController.localPlayer.bFirstPersonView)
+            {
+                var model = __instance.FPController.localPlayer.emodel?.GetModelTransform();
+                if (model)
+                {
+                    model.localPosition = Vector3.zero;
+                    model.position += __instance.transform.parent.TransformDirection(__instance.transform.localPosition - __instance.m_PositionSpring.RestState);
+                }
+            }
+        }
+
+        private static Vector3 legOffset = new Vector3(0f, 0.25f, -0.4f);
+
+        [HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.LateUpdate))]
+        [HarmonyPostfix]
+        private static void Postfix_vp_FPCamera_LateUpdate(vp_FPCamera __instance)
+        {
+            if (__instance.FPController?.localPlayer && __instance.FPController.localPlayer.bFirstPersonView)
+            {
+                var model = __instance.FPController.localPlayer.emodel?.GetModelTransform();
+                if (model)
+                {
+                    model.localPosition = legOffset;
+                    model.position += __instance.transform.parent.TransformDirection(__instance.transform.localPosition - __instance.m_PositionSpring.RestState);
+                }
+            }
+        }
+    }
+
+    public class FPVLegHelper : MonoBehaviour
+    {
+        private Animator animator;
+        private (int stateID, int layerID)[] layersToDisable;
+        private EntityPlayerLocal player;
+        private Transform spine, spine1, spine2, spine3, lShoulder, rShoulder, lUpperArm, rUpperArm, lUpperArmRoll, rUpperArmRoll, lLowerArmRoll, rLowerArmRoll, lLowerArm, rLowerArm, lHand, rHand;
+        private float spineAngle = -10, spine1Angle = 0, spine2Angle = 0, spine3Angle = -30;
+
+        public void Init(EntityPlayerLocal player)
+        {
+            this.player = player;
+        }
+
+        private void Awake()
+        {
+            animator = GetComponent<Animator>();
+            layersToDisable = new[]
+            {
+                (Animator.StringToHash("Empty"), animator.GetLayerIndex("RightHandHoldPoses")),
+                (Animator.StringToHash("Empty"), animator.GetLayerIndex("RangedRightHandHoldPoses")),
+                (Animator.StringToHash("Empty"), animator.GetLayerIndex("AdditiveOffsetHoldPoses")),
+                (Animator.StringToHash("Empty"), animator.GetLayerIndex("RightArmHoldPoses")),
+                (Animator.StringToHash("Empty"), animator.GetLayerIndex("BothArmsHoldPoses")),
+                (Animator.StringToHash("Empty"), animator.GetLayerIndex("UpperBodyAttack")),
+                (Animator.StringToHash("Empty"), animator.GetLayerIndex("BowDrawAndFire")),
+                (Animator.StringToHash("Empty"), animator.GetLayerIndex("UpperBodyUseAndReload")),
+                (Animator.StringToHash("Empty"), animator.GetLayerIndex("AdditiveRangedAttack")),
+            };
+            spine = transform.FindInChilds("Spine");
+            spine1 = spine.Find("Spine1");
+            spine2 = spine1.Find("Spine2");
+            spine3 = spine2.Find("Spine3");
+            lShoulder = spine3.Find("LeftShoulder");
+            rShoulder = spine3.Find("RightShoulder");
+            lUpperArm = lShoulder.Find("LeftArm");
+            rUpperArm = rShoulder.Find("RightArm");
+            lUpperArmRoll = lUpperArm.Find("LeftArmRoll");
+            rUpperArmRoll = rUpperArm.Find("RightArmRoll");
+            lLowerArmRoll = lUpperArmRoll.Find("LeftForeArm");
+            rLowerArmRoll = rUpperArmRoll.Find("RightForeArm");
+            lLowerArm = lLowerArmRoll.Find("LeftForeArmRoll");
+            rLowerArm = rLowerArmRoll.Find("RightForeArmRoll");
+            lHand = lLowerArm.Find("LeftHand");
+            rHand = rLowerArm.Find("RightHand");
+        }
+
+        private void LateUpdate()
+        {
+            if (animator && player)
+            {
+                if (player.IsAlive())
+                {
+                    if (player.bFirstPersonView)
+                    {
+                        foreach (var layer in layersToDisable)
+                        {
+                            animator.Play(layer.stateID, layer.layerID, 0f);
+                        }
+
+                        spine.localEulerAngles = new Vector3(spineAngle, 0f, 0f);
+                        spine1.localEulerAngles = new Vector3(spine1Angle, 0f, 0f);
+                        spine2.localEulerAngles = new Vector3(spine2Angle, 0f, 0f);
+                        spine3.localEulerAngles = new Vector3(spine3Angle, 0f, 0f);
+                        lShoulder.localEulerAngles = new Vector3(0f, -7f, 0f);
+                        rShoulder.localEulerAngles = new Vector3(0f, 187f, 180f);
+                        lUpperArm.localScale = Vector3.zero;
+                        rUpperArm.localScale = Vector3.zero;
+                    }
+                }
+                else
+                {
+                    lUpperArm.localScale = Vector3.one;
+                    rUpperArm.localScale = Vector3.one;
+                }
+
+                //lUpperArm.localEulerAngles = new Vector3(0f, 0f, 45f);
+                //rUpperArm.localEulerAngles = new Vector3(0f, 0f, 45f);
+                //lUpperArmRoll.localEulerAngles = new Vector3(0f, 0f, 0f);
+                //rUpperArmRoll.localEulerAngles = new Vector3(0f, 0f, 0f);
+                //lLowerArmRoll.localEulerAngles = new Vector3(0f, 45f, 0f);
+                //rLowerArmRoll.localEulerAngles = new Vector3(0f, 45f, 0f);
+                //lLowerArm.localEulerAngles = new Vector3(0f, 0f, 0f);
+                //rLowerArm.localEulerAngles = new Vector3(0f, 0f, 0f);
+                //lHand.localEulerAngles = new Vector3(0f, 0f, 0f);
+                //rHand.localEulerAngles = new Vector3(0f, 0f, 0f);
+            }
+        }
+    }
+}

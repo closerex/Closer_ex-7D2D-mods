@@ -21,6 +21,8 @@ desktop.ini
 !CustomPlayerActionManager/**
 !GearsSettingsSave/
 !GearsSettingsSave/**
+!FPVLegs/
+!FPVLegs/**
 !FullautoLauncher/
 !FullautoLauncher/**
 !FullautoLauncherAnimationRiggingCompatibilityPatch/
