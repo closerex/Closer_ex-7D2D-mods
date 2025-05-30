@@ -1,5 +1,7 @@
 ﻿using HarmonyLib;
 using System;
+using System.Collections.Generic;
+using System.Reflection.Emit;
 using UnityEngine;
 
 namespace FPVLegs
@@ -138,6 +140,57 @@ namespace FPVLegs
                     model.position += __instance.transform.parent.TransformDirection(__instance.transform.localPosition - __instance.m_PositionSpring.RestState);
                 }
             }
+        }
+
+        [HarmonyPatch(typeof(MinEventActionAttachPrefabToHeldItem), nameof(MinEventActionAttachPrefabToHeldItem.Execute))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_MinEventActionAttachPrefabToHeldItem_Execute(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = new List<CodeInstruction>(instructions);
+
+            var fld_pos = AccessTools.Field(typeof(MinEventActionAttachPrefabToHeldItem), nameof(MinEventActionAttachPrefabToHeldItem.local_offset));
+            var prop_scale = AccessTools.PropertySetter(typeof(Transform), nameof(Transform.localScale));
+            var prop_one = AccessTools.PropertyGetter(typeof(Vector3), nameof(Vector3.one));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].LoadsField(fld_pos))
+                {
+                    codes.InsertRange(i - 2, new[]
+                    {
+                        new CodeInstruction(codes[i - 2].opcode, codes[i - 2].operand),
+                        new CodeInstruction(OpCodes.Callvirt, prop_one),
+                        new CodeInstruction(OpCodes.Callvirt, prop_scale)
+                    });
+                    break;
+                }
+            }
+
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(Inventory), nameof(Inventory.setHoldingItemTransform))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_Inventory_setHoldingItemTransform(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = new List<CodeInstruction>(instructions);
+            var prop_pos = AccessTools.PropertySetter(typeof(Transform), nameof(Transform.position));
+            var prop_scale = AccessTools.PropertySetter(typeof(Transform), nameof(Transform.localScale));
+            var prop_one = AccessTools.PropertyGetter(typeof(Vector3), nameof(Vector3.one));
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].Calls(prop_pos))
+                {
+                    codes.InsertRange(i + 1, new[]
+                    {
+                        new CodeInstruction(codes[i - 2].opcode, codes[i - 2].operand),
+                        new CodeInstruction(OpCodes.Callvirt, prop_one),
+                        new CodeInstruction(OpCodes.Callvirt, prop_scale)
+                    });
+                    break;
+                }
+            }
+            return codes;
         }
     }
 
