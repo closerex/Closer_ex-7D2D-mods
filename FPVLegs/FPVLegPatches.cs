@@ -52,6 +52,11 @@ namespace FPVLegs
                     //Log.Out($"[FPVLegs] Set {child.name} active: {enabled}");
                 }
             }
+
+            foreach (var renderer in model.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+            {
+                renderer.shadowCastingMode = enabled ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
+            }
         }
 
         private static void UpdateTPVAnimatorState(EntityPlayerLocal player)
