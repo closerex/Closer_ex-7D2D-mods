@@ -2096,7 +2096,7 @@ namespace KFCommonUtilityLib.Harmony
             {
                 GameManager.Instance.StopCoroutine(switchHoldingItemCo);
                 switchHoldingItemCo = null;
-                __instance.SetIsFinishedSwitchingHeldItem();
+                __instance.delayedShowHideHeldItem(true, 0f);
             }
             return true;
         }
