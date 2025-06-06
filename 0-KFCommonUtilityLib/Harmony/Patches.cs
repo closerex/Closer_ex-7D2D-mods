@@ -58,7 +58,7 @@ public static class CommonUtilityPatch
 
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ExecuteAction))]
     [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_ExecuteAction_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
+    private static IEnumerable<CodeInstruction> Transpiler_ExecuteAction_ItemActionRanged(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
     {
         var codes = new List<CodeInstruction>(instructions);
         var mtd_fire_event = AccessTools.Method(typeof(EntityAlive), nameof(EntityAlive.FireEvent));
@@ -86,9 +86,31 @@ public static class CommonUtilityPatch
         {
             if (codes[i].Calls(mtd_check_ammo))
             {
+                var lbl = generator.DefineLabel();
+                codes[i + 2].WithLabels(lbl);
                 codes.InsertRange(i + 2, new[]
                 {
-                    new CodeInstruction(OpCodes.Ldloc_0),
+                    CodeInstruction.LoadLocal(0),
+                    CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.state)),
+                    new CodeInstruction(OpCodes.Brfalse, lbl),
+                    CodeInstruction.LoadLocal(0),
+                    CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.invData)),
+                    CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.gameManager)),
+                    CodeInstruction.LoadLocal(0),
+                    CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.invData)),
+                    CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity)),
+                    CodeInstruction.LoadField(typeof(Entity), nameof(Entity.entityId)),
+                    CodeInstruction.LoadLocal(0),
+                    CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.invData)),
+                    CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.slotIdx)),
+                    CodeInstruction.LoadLocal(0),
+                    CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.indexInEntityOfAction)),
+                    new CodeInstruction(OpCodes.Ldc_I4_0),
+                    CodeInstruction.Call(typeof(Vector3), "get_zero"),
+                    CodeInstruction.Call(typeof(Vector3), "get_zero"),
+                    new CodeInstruction(OpCodes.Ldc_I4_0),
+                    new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(IGameManager), nameof(IGameManager.ItemActionEffectsServer))),
+                    CodeInstruction.LoadLocal(0),
                     new CodeInstruction(OpCodes.Ldc_I4_0),
                     CodeInstruction.StoreField(typeof(ItemActionDataRanged), nameof(ItemActionDataRanged.state))
                 });
@@ -98,6 +120,7 @@ public static class CommonUtilityPatch
 
         return codes;
     }
+
     //fix recoil animation does not match weapon RPM
     private static int weaponFireHash = Animator.StringToHash("WeaponFire");
     private static int aimHash = Animator.StringToHash("IsAiming");
@@ -1193,6 +1216,9 @@ public static class CommonUtilityPatch
     {
         var codes = instructions.ToList();
 
+        var fld_end = AccessTools.Field(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.SoundEnd));
+        var fld_meta = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Meta));
+
         for (int i = 0; i < codes.Count - 2; i++)
         {
             if (codes[i].opcode == OpCodes.Ldloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 9 && codes[i + 2].Branches(out _))
@@ -1212,6 +1238,18 @@ public static class CommonUtilityPatch
                     CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(AddTmpMuzzleFlash)),
                 });
                 i += 5;
+            }
+            else if (codes[i].LoadsField(fld_end))
+            {
+                for (int j = i - 1; j >= 0; j--)
+                {
+                    if (codes[j].LoadsField(fld_meta))
+                    {
+                        codes.RemoveRange(j - 3, 5);
+                        i -= 5;
+                        break;
+                    }
+                }
             }
         }
         return codes;
