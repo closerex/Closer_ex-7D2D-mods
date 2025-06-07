@@ -14,11 +14,12 @@ public class PIGGameObject : ProjectileItemGroupAbs<PHGameObject>
 
     public override void Cleanup()
     {
-        foreach (var proj in queue_pool)
+        base.Cleanup();
+        foreach (var proj in queue_pool_projectile)
         {
             proj.Dispose();
         }
-        queue_pool.Clear();
+        queue_pool_projectile.Clear();
 
         foreach (var set in dict_fired_projectiles.Values)
         {
@@ -34,6 +35,7 @@ public class PIGGameObject : ProjectileItemGroupAbs<PHGameObject>
     {
         base.Pool(par);
         par.Transform.gameObject.SetActive(false);
+        par.Transform.parent = CustomProjectileManager.CustomProjectileParent;
     }
 
     public override void Update()
@@ -43,7 +45,8 @@ public class PIGGameObject : ProjectileItemGroupAbs<PHGameObject>
 
     protected override PHGameObject Create(ProjectileParams par)
     {
-        return new PHGameObject(item.CloneModel(GameManager.Instance.World, new ItemValue(item.Id), Vector3.zero, null), par);
+        var trans = item.CloneModel(GameManager.Instance.World, new ItemValue(item.Id), Vector3.zero, CustomProjectileManager.CustomProjectileParent);
+        return new PHGameObject(trans, par);
     }
 }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace FullautoLauncher.Scripts.ProjectileManager
 {
@@ -10,7 +11,20 @@ namespace FullautoLauncher.Scripts.ProjectileManager
     {
         private static readonly Dictionary<string, IProjectileItemGroup> dict_item_groups = new Dictionary<string, IProjectileItemGroup>();
 
-        public static IProjectileItemGroup Get(string name) => dict_item_groups[name];
+        public static IProjectileItemGroup Get(string name) => dict_item_groups.TryGetValue(name, out var group) ? group : null;
+        public static Transform CustomProjectileParent
+        {
+            get
+            {
+                if (!parent)
+                {
+                    parent = new GameObject("CustomProjectilesHolder").transform;
+                    parent.gameObject.SetActive(false);
+                }
+                return parent;
+            }
+        }
+        private static Transform parent;
 
         public static void InitClass(ItemClass item, string typename)
         {

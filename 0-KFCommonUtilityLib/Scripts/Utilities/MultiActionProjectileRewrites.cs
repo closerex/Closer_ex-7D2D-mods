@@ -122,7 +122,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                         {
                             if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, itemValueProjectile, 0.5f, firingEntity, null, itemProjectile.ItemTags | FastTags<TagGroup.Global>.Parse(Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory), true, false))
                             {
-                                RestoreProjectileValue();
+                                MultiActionProjectileRewrites.RestoreProjectileValue(itemValueProjectile);
                                 ProjectileID = ProjectileManager.AddProjectileItem(transform, -1, Voxel.voxelRayHitInfo.hit.pos, dir.normalized, itemValueProjectile.type);
                                 SetState(State.Sticky);
                             }
@@ -134,7 +134,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                         }
                         else if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, itemValueProjectile, 0.5f, firingEntity, null, itemProjectile.ItemTags, true, false))
                         {
-                            RestoreProjectileValue();
+                            MultiActionProjectileRewrites.RestoreProjectileValue(itemValueProjectile);
                             ProjectileID = ProjectileManager.AddProjectileItem(transform, -1, Voxel.voxelRayHitInfo.hit.pos, dir.normalized, itemValueProjectile.type);
                             Utils.SetLayerRecursively(ProjectileManager.GetProjectile(ProjectileID).gameObject, 14, null);
                             SetState(State.Sticky);
@@ -162,8 +162,11 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             }
             previousPosition = checkPos;
         }
+    }
 
-        private void RestoreProjectileValue()
+    public static class MultiActionProjectileRewrites
+    {
+        public static void RestoreProjectileValue(ItemValue itemValueProjectile)
         {
             itemValueProjectile.Modifications = ItemValue.emptyItemValueArray;
             itemValueProjectile.CosmeticMods = ItemValue.emptyItemValueArray;
@@ -172,10 +175,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             itemValueProjectile.Meta = 0;
             itemValueProjectile.SelectedAmmoTypeIndex = 0;
         }
-    }
 
-    public static class MultiActionProjectileRewrites
-    {
         public static void ProjectileHit(WorldRayHitInfo hitInfo, int _attackerEntityId, EnumDamageTypes _damageType, float _blockDamage,
                                float _entityDamage, float _staminaDamageMultiplier, float _weaponCondition, float _criticalHitChanceOLD,
                                float _dismemberChance, string _attackingDeviceMadeOf, DamageMultiplier _damageMultiplier,

@@ -17,6 +17,7 @@ namespace FullautoLauncher.Scripts.ProjectileManager
 
         public override void Fire()
         {
+            Transform.parent = null;
             Transform.gameObject.SetActive(true);
             UpdatePosition();
         }

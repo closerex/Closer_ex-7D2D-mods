@@ -153,7 +153,7 @@ namespace FullautoLauncher.Scripts.ProjectileManager
                         {
                             if (gameRandom.RandomFloat < EffectManager.GetValue(PassiveEffects.ProjectileStickChance, info.itemValueLauncher, 0.5f, entityAlive, null, info.itemProjectile.ItemTags | FastTags<TagGroup.Global>.Parse(Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory)))
                             {
-                                global::ProjectileManager.AddProjectileItem(null, -1, Voxel.voxelRayHitInfo.hit.pos, dirNorm, info.itemValueProjectile.type);
+                                global::ProjectileManager.AddProjectileItem(CreateStickyProjectile(info, entityAlive, this), -1, Voxel.voxelRayHitInfo.hit.pos, dirNorm, info.itemValueProjectile.type);
                             }
                             else
                             {
@@ -162,7 +162,7 @@ namespace FullautoLauncher.Scripts.ProjectileManager
                         }
                         else if (gameRandom.RandomFloat < EffectManager.GetValue(PassiveEffects.ProjectileStickChance, info.itemValueLauncher, 0.5f, entityAlive, null, info.itemProjectile.ItemTags))
                         {
-                            int id = global::ProjectileManager.AddProjectileItem(null, -1, Voxel.voxelRayHitInfo.hit.pos, dirNorm, info.itemValueProjectile.type);
+                            int id = global::ProjectileManager.AddProjectileItem(CreateStickyProjectile(info, entityAlive, this), -1, Voxel.voxelRayHitInfo.hit.pos, dirNorm, info.itemValueProjectile.type);
                             Utils.SetLayerRecursively(global::ProjectileManager.GetProjectile(id).gameObject, 14, null);
                         }
                         else
@@ -176,6 +176,22 @@ namespace FullautoLauncher.Scripts.ProjectileManager
             return false;
         }
 
+        public static Transform CreateStickyProjectile(ItemInfo info, EntityAlive entity, ProjectileParams par)
+        {
+            Transform trans = info.group.GetStickyTransform();
+            trans.gameObject.SetActive(true);
+            trans.position = par.currentPosition;
+            trans.forward = par.velocity.normalized;
+            var script = trans.gameObject.GetOrAddComponent<ProjectileMoveScript>();
+            script.itemActionProjectile = info.itemActionProjectile;
+            script.itemValueProjectile = info.itemValueProjectile;
+            script.itemValueLauncher = info.itemValueLauncher;
+            script.actionData = info.actionData as ItemActionLauncher.ItemActionDataLauncher;
+            script.itemProjectile = info.itemProjectile;
+            script.ProjectileOwnerID = entity.entityId;
+            return trans;
+        }
+
         public class ItemInfo
         {
             public ItemActionProjectile itemActionProjectile;
@@ -183,6 +199,7 @@ namespace FullautoLauncher.Scripts.ProjectileManager
             public ItemValue itemValueProjectile;
             public ItemValue itemValueLauncher;
             public ItemActionData actionData;
+            public IProjectileItemGroup group;
         }
     }
 }

@@ -230,6 +230,12 @@ public static class FLARPatch
     {
         if (_firingEntity is EntityAlive entityAlive)
             entityAlive.MinEventContext.ItemActionData = _info.actionData;
+        if (_info.itemProjectile.IsSticky)
+        {
+            var projectileValue = _info.itemValueProjectile;
+            var launcherValue = _info.itemValueLauncher;
+            MultiActionUtils.CopyLauncherValueToProjectile(launcherValue, projectileValue, _info.actionData.indexInEntityOfAction);
+        }
         return true;
     }
 
@@ -339,7 +345,8 @@ public static class FLARPatch
                     {
                         if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, info.itemValueProjectile, 0.5f, entityAlive, null, info.itemProjectile.ItemTags | FastTags<TagGroup.Global>.Parse(Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory), true, false))
                         {
-                            ProjectileManager.AddProjectileItem(null, -1, Voxel.voxelRayHitInfo.hit.pos, dir.normalized, info.itemValueProjectile.type);
+                            MultiActionProjectileRewrites.RestoreProjectileValue(info.itemValueProjectile);
+                            ProjectileManager.AddProjectileItem(ProjectileParams.CreateStickyProjectile(info, entityAlive, __instance), -1, Voxel.voxelRayHitInfo.hit.pos, dir.normalized, info.itemValueProjectile.type);
                         }
                         else
                         {
@@ -348,7 +355,8 @@ public static class FLARPatch
                     }
                     else if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, info.itemValueProjectile, 0.5f, entityAlive, null, info.itemProjectile.ItemTags, true, false))
                     {
-                        int ProjectileID = ProjectileManager.AddProjectileItem(null, -1, Voxel.voxelRayHitInfo.hit.pos, dir.normalized, info.itemValueProjectile.type);
+                        MultiActionProjectileRewrites.RestoreProjectileValue(info.itemValueProjectile);
+                        int ProjectileID = ProjectileManager.AddProjectileItem(ProjectileParams.CreateStickyProjectile(info, entityAlive, __instance), -1, Voxel.voxelRayHitInfo.hit.pos, dir.normalized, info.itemValueProjectile.type);
                         Utils.SetLayerRecursively(ProjectileManager.GetProjectile(ProjectileID).gameObject, 14, null);
                     }
                     else

@@ -185,10 +185,61 @@ class ItemActionLauncherProjectilePatch
         ItemClass item = ItemClass.GetItemClass(itemName);
         for (int i = 0; i < item.Actions.Length; i++)
         {
-            if (item.Actions[i] is ItemActionProjectile proj && proj.Properties.Contains("CustomProjectileType"))
+            if (item.Actions[i] is ItemActionProjectile proj)
             {
-                CustomProjectileManager.InitClass(item, proj.Properties.GetString("CustomProjectileType"));
+                if (proj.Properties.Contains("CustomProjectileType"))
+                {
+                    CustomProjectileManager.InitClass(item, proj.Properties.GetString("CustomProjectileType"));
+                }
+                else
+                {
+                    CustomProjectileManager.InitClass(item, "GameObject,FullautoLauncher");
+                }
+                break;
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayerMoveController), nameof(PlayerMoveController.Update))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_Update_PlayerMoveController(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = new List<CodeInstruction>(instructions);
+        var fld_pid = AccessTools.Field(typeof(ProjectileMoveScript), nameof(ProjectileMoveScript.ProjectileID));
+        var mtd_add = AccessTools.Method(typeof(XUiM_PlayerInventory), nameof(XUiM_PlayerInventory.AddItem), new[] {typeof(ItemStack)} );
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].StoresField(fld_pid))
+            {
+                for (int j = i - 1; j >= 0; j--)
+                {
+                    if (codes[j].Calls(mtd_add))
+                    {
+                        codes.RemoveRange(i + 2, 2);
+                        codes.InsertRange(i + 2, new CodeInstruction[]
+                        {
+                            new CodeInstruction(OpCodes.Ldloc_S, codes[j - 1].operand),
+                            CodeInstruction.Call(typeof(ItemActionLauncherProjectilePatch), nameof(DestroyOrPool)),
+                        });
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        return codes;
+    }
+
+    private static void DestroyOrPool(ProjectileMoveScript script, ItemStack stack)
+    {
+        var group = CustomProjectileManager.Get(stack.itemValue.ItemClass.Name);
+        if (group != null)
+        {
+            group.PoolStickyTransform(script.transform);
+        }
+        else
+        {
+            GameObject.Destroy(script.gameObject);
         }
     }
 

@@ -5,5 +5,5 @@
 	<DisplayName value="Fullauto Launcher" />
 	<Description value="Change the way Launcher class fires and initializes projectile, so that making a full automatic launcher is possible." />
 	<Author value="closer_ex" />
-	<Version value="1.3.3" />
+	<Version value="1.3.4" />
 </xml>

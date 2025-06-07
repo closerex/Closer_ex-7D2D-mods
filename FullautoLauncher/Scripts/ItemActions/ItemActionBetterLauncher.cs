@@ -41,7 +41,8 @@ public class ItemActionBetterLauncher : ItemActionRanged
             itemProjectile = forId,
             itemActionProjectile = (ItemActionProjectile)((forId.Actions[0] is ItemActionProjectile) ? forId.Actions[0] : forId.Actions[1]),
             itemValueLauncher = launcherValue,
-            itemValueProjectile = new ItemValue(forId.Id)
+            itemValueProjectile = new ItemValue(forId.Id),
+            group = group
         };
     }
 
@@ -70,7 +71,8 @@ public class ItemActionBetterLauncher : ItemActionRanged
             itemProjectile = forId,
             itemActionProjectile = (ItemActionProjectile)((forId.Actions[0] is ItemActionProjectile) ? forId.Actions[0] : forId.Actions[1]),
             itemValueLauncher = itemValue,
-            itemValueProjectile = new ItemValue(forId.Id)
+            itemValueProjectile = new ItemValue(forId.Id),
+            group = group
         };
     }
 
