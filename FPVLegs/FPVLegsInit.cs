@@ -29,7 +29,7 @@ namespace FPVLegs
 
         public void OnGlobalSettingsLoaded(IModGlobalSettings modSettings)
         {
-            ISwitchGlobalSetting modeSettings = modSettings.GetTab("FovSettings").GetCategory("Main").GetSetting("FovValue") as ISwitchGlobalSetting;
+            ISwitchGlobalSetting modeSettings = modSettings.GetTab("ModeSetting").GetCategory("Main").GetSetting("Mode") as ISwitchGlobalSetting;
             if (modeSettings.CurrentValue == "Old")
             {
                 FPVLegMode.newMode = false;
