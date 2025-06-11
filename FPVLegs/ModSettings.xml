@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModSettings>
+  <Global>
+    <Tab name="FovSettings" displayKey="CustomFovSettingsTabName" tooltipKey="">
+      <Category name="Main" displayKey="CustomFovSettingsMainCategoryName" tooltipKey="">
+        <Switch name="FovValue" displayKey="CustomFovSettingsValueName" tooltipKey="CustomFovSettingsValueDesc" value="Old" defaultValue="New" leftValue="Old" rightValue="New" />
+      </Category>
+    </Tab>
+  </Global>
+  <World />
+</ModSettings>

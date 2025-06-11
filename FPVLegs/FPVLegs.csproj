@@ -32,6 +32,11 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GearsAPI, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\GearsAPI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="mscorlib">
       <HintPath>..\..\7DaysToDie_Data\Managed\mscorlib.dll</HintPath>
       <Private>False</Private>
@@ -72,6 +77,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ModInfo.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ModSettings.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
