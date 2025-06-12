@@ -30,6 +30,7 @@ namespace FPVLegs
         public void OnGlobalSettingsLoaded(IModGlobalSettings modSettings)
         {
             ISwitchGlobalSetting modeSettings = modSettings.GetTab("ModeSetting").GetCategory("Main").GetSetting("Mode") as ISwitchGlobalSetting;
+            ISwitchGlobalSetting shadowSettings = modSettings.GetTab("ModeSetting").GetCategory("Main").GetSetting("Shadow") as ISwitchGlobalSetting;
             if (modeSettings.CurrentValue == "Old")
             {
                 FPVLegMode.newMode = false;
@@ -37,6 +38,14 @@ namespace FPVLegs
             else
             {
                 FPVLegMode.newMode = true;
+            }
+            if (shadowSettings.CurrentValue == "Yes")
+            {
+                FPVLegMode.disableShadow = true;
+            }
+            else
+            {
+                FPVLegMode.disableShadow = false;
             }
             modeSettings.OnSettingChanged += (settings, value) =>
             {
@@ -47,6 +56,22 @@ namespace FPVLegs
                 else
                 {
                     FPVLegMode.newMode = true;
+                }
+            };
+            shadowSettings.OnSettingChanged += (settings, value) =>
+            {
+                if (shadowSettings.CurrentValue == "Yes")
+                {
+                    FPVLegMode.disableShadow = true;
+                }
+                else
+                {
+                    FPVLegMode.disableShadow = false;
+                }
+                var player = GameManager.Instance?.World?.GetPrimaryPlayer();
+                if (player)
+                {
+                    FPVLegPatches.UpdateTPVMeshState(player, !player.bFirstPersonView);
                 }
             };
         }
@@ -60,6 +85,7 @@ namespace FPVLegs
     {
         public static bool gearsLoaded = false;
         public static bool newMode = true;
+        public static bool disableShadow = true;
     }
 
     public class ConsoleCmdToggleLegMode : ConsoleCmdAbstract

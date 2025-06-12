@@ -36,7 +36,7 @@ namespace FPVLegs
             }
         }
 
-        private static void UpdateTPVMeshState(EntityAlive entity, bool enabled)
+        public static void UpdateTPVMeshState(EntityAlive entity, bool enabled)
         {
             //Log.Out($"[FPVLegs] EntityPlayerLocal.UpdateTPVMeshState called - enabled {enabled}\n{StackTraceUtility.ExtractStackTrace()}");
             var model = entity.emodel.GetModelTransform();
@@ -55,7 +55,7 @@ namespace FPVLegs
 
             foreach (var renderer in model.GetComponentsInChildren<SkinnedMeshRenderer>(true))
             {
-                renderer.shadowCastingMode = enabled ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
+                renderer.shadowCastingMode = (enabled || !FPVLegMode.disableShadow) ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
             }
         }
 
