@@ -15,6 +15,15 @@ public class RandomBackgroundLoader
             return;
     }
 
+    public static string modWindowName(string name)
+    {
+        if (name == prefix_name)
+            return prefix_name + getName();
+        if (name == prefix_logo)
+            return prefix_logo + getLogo();
+        return name;
+    }
+
     public static string getName()
     {
         string str;

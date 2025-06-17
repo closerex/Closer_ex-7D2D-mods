@@ -42,33 +42,19 @@ class Patches
         return true;
     }
 
-    [HarmonyPatch(typeof(XUiC_MainMenu), nameof(XUiC_MainMenu.OnOpen))]
+    [HarmonyPatch(typeof(XUiC_MainMenu), nameof(XUiC_MainMenu.OpenGlobalMenuWindows))]
     [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_OnOpen_XUiC_MainMenu(IEnumerable<CodeInstruction> instructions)
+    private static IEnumerable<CodeInstruction> Transpiler_OpenGlobalMenuWindows_XUiC_MainMenu(IEnumerable<CodeInstruction> instructions)
     {
         var codes = new List<CodeInstruction>(instructions);
 
         for (int i = 0, totali = codes.Count; i < totali; i++)
         {
             CodeInstruction code = codes[i];
-            if (code.opcode == OpCodes.Ldstr && code.OperandIs("menuBackground"))
+            if (code.opcode == OpCodes.Ldloc_2)
             {
-                codes.InsertRange(i + 1, new CodeInstruction[]
-                {
-                    CodeInstruction.Call(typeof(RandomBackgroundLoader), nameof(RandomBackgroundLoader.getName)),
-                    CodeInstruction.Call(typeof(string), nameof(string.Concat), new Type[] { typeof(string), typeof(string) })
-                });
-                i += 2;
-                totali += 2;
-            }else if(code.opcode == OpCodes.Ldstr && code.OperandIs("mainMenuLogo"))
-            {
-                codes.InsertRange(i + 1, new CodeInstruction[]
-                {
-                    CodeInstruction.Call(typeof(RandomBackgroundLoader), nameof(RandomBackgroundLoader.getLogo)),
-                    CodeInstruction.Call(typeof(string), nameof(string.Concat), new Type[] { typeof(string), typeof(string) })
-                });
-                i += 2;
-                totali += 2;
+                codes.Insert(i + 1, CodeInstruction.Call(typeof(RandomBackgroundLoader), nameof(RandomBackgroundLoader.modWindowName)));
+                break;
             }
         }
 
