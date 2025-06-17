@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using static ModEvents;
 
 public static class CustomExplosionManager
 {
@@ -53,7 +54,7 @@ public static class CustomExplosionManager
         }
     }
 
-    internal static void CreatePropertyParsers()
+    internal static void CreatePropertyParsers(ref ModEvents.SGameAwakeData _)
     {
         var assemblies = ModManager.GetLoadedAssemblies();
         string iname = nameof(IExplosionPropertyParser);

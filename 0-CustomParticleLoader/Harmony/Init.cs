@@ -9,7 +9,7 @@ public class CustomParticleEffectLoaderInit : IModApi
             return;
         inited = true;
         Log.Out(" Loading Patch: " + GetType());
-        ModEvents.GameAwake.RegisterHandler(CustomExplosionManager.CreatePropertyParsers);
+        ModEvents.GameAwake.RegisterHandler(new ModEvents.ModEventHandlerDelegate<ModEvents.SGameAwakeData>(CustomExplosionManager.CreatePropertyParsers));
         var harmony = new HarmonyLib.Harmony(GetType().ToString());
         harmony.PatchAll(Assembly.GetExecutingAssembly());
     }

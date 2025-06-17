@@ -73,12 +73,12 @@ internal class ExplosionEffectPatch
         return true;
     }
 
-    [HarmonyPatch("explode")]
+    [HarmonyPatch(nameof(GameManager.explode))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> explode_Transpiler(IEnumerable<CodeInstruction> instructions)
     {
         var codes = new List<CodeInstruction>(instructions);
-        MethodInfo mtd_sendpackage = AccessTools.Method(typeof(ConnectionManager), nameof(ConnectionManager.SendPackage), new Type[] { typeof(NetPackage), typeof(bool), typeof(int), typeof(int), typeof(int), typeof(Vector3?), typeof(int) });
+        MethodInfo mtd_sendpackage = AccessTools.Method(typeof(ConnectionManager), nameof(ConnectionManager.SendPackage), new Type[] { typeof(NetPackage), typeof(bool), typeof(int), typeof(int), typeof(int), typeof(Vector3?), typeof(int), typeof(bool) });
 
         for (int i = 0, totali = codes.Count; i < totali; i++)
         {
@@ -98,7 +98,7 @@ internal class ExplosionEffectPatch
                     new CodeInstruction(OpCodes.Ldloc_1),
                     CodeInstruction.Call(typeof(ExplosionEffectPatch), nameof(SendCustomExplosionPackage))
                 });
-                codes.RemoveRange(i - 26, 27);
+                codes.RemoveRange(i - 27, 28);
                 break;
             }
         }
@@ -348,7 +348,7 @@ internal class ItemHasTagsPatch : HarmonyPatch
 }
 
 //MinEventParams workarounds
-[HarmonyPatch(typeof(ItemActionRanged), "fireShot")]
+[HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.fireShot))]
 internal class ItemActionRangedFireShotPatch
 {
     private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
