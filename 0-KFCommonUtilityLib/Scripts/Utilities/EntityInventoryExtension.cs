@@ -46,7 +46,7 @@
             return;
         }
 
-        if (self.itemValue.type != other.itemValue.type || self.itemValue.Texture != other.itemValue.Texture || self.count >= maxStackCount)
+        if (self.itemValue.type != other.itemValue.type || self.itemValue.IsShapeHelperBlock || self.itemValue.TextureFullArray != other.itemValue.TextureFullArray || self.count >= maxStackCount)
             return;
 
         int add = Utils.FastMin(maxStackCount - self.count, other.count);

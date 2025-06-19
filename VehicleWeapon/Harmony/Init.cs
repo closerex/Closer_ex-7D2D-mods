@@ -9,7 +9,7 @@ public class VehicleWeaponInit : IModApi
             return;
         inited = true;
         Log.Out(" Loading Patch: " + GetType());
-        ModEvents.GameAwake.RegisterHandler(() =>
+        ModEvents.GameAwake.RegisterHandler((ref ModEvents.SGameAwakeData _) =>
         {
             XUiC_OptionsVideo.OnSettingsChanged += VehicleWeaponBase.OnVideoSettingChanged;
             VehicleWeaponBase.OnVideoSettingChanged();

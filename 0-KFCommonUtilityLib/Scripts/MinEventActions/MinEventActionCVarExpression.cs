@@ -24,7 +24,7 @@ public class MinEventActionCVarExpression : MinEventActionTargetedBase
         public float randomMax;
     }
     public string cvarName;
-    public MinEventActionModifyCVar.OperationTypes operation;
+    public CVarOperation operation;
     private bool isValid = false;
     private ExpressionContext<float> context;
     private Expression<float> compiledExpr; 
@@ -65,26 +65,26 @@ public class MinEventActionCVarExpression : MinEventActionTargetedBase
             float value = compiledExpr.Invoke();
             switch (operation)
             {
-                case MinEventActionModifyCVar.OperationTypes.set:
-                case MinEventActionModifyCVar.OperationTypes.setvalue:
+                case CVarOperation.set:
+                case CVarOperation.setvalue:
                     cvar = value;
                     break;
-                case MinEventActionModifyCVar.OperationTypes.add:
+                case CVarOperation.add:
                     cvar += value;
                     break;
-                case MinEventActionModifyCVar.OperationTypes.subtract:
+                case CVarOperation.subtract:
                     cvar -= value;
                     break;
-                case MinEventActionModifyCVar.OperationTypes.multiply:
+                case CVarOperation.multiply:
                     cvar *= value;
                     break;
-                case MinEventActionModifyCVar.OperationTypes.divide:
+                case CVarOperation.divide:
                     cvar /= ((value == 0f) ? 0.0001f : value);
                     break;
-                case MinEventActionModifyCVar.OperationTypes.percentadd:
+                case CVarOperation.percentadd:
                     cvar += cvar * value;
                     break;
-                case MinEventActionModifyCVar.OperationTypes.percentsubtract:
+                case CVarOperation.percentsubtract:
                     cvar -= cvar * value;
                     break;
             }
@@ -201,7 +201,7 @@ public class MinEventActionCVarExpression : MinEventActionTargetedBase
                     flag = true;
                     break;
                 case "operation":
-                    this.operation = EnumUtils.Parse<MinEventActionModifyCVar.OperationTypes>(_attribute.Value, true);
+                    this.operation = EnumUtils.Parse<CVarOperation>(_attribute.Value, true);
                     flag = true;
                     break;
             }

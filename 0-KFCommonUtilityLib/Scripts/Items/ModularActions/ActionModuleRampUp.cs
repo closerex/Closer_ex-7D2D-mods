@@ -30,7 +30,7 @@ public class ActionModuleRampUp
             return;
 
         bool aiming = rangedData.invData.holdingEntity.AimingGun;
-        bool isRampUp = ((rangedData.bPressed && !rangedData.bReleased && __instance.notReloading(rangedData) && rangedData.curBurstCount < __instance.GetBurstCount(rangedData)) || (__customData.zoomPrepare && aiming)) && (__instance.InfiniteAmmo || _actionData.invData.itemValue.Meta > 0) && _actionData.invData.itemValue.PercentUsesLeft > 0;
+        bool isRampUp = ((rangedData.bPressed && !rangedData.bReleased && ItemActionRanged.NotReloading(rangedData) && rangedData.curBurstCount < __instance.GetBurstCount(rangedData)) || (__customData.zoomPrepare && aiming)) && (__instance.InfiniteAmmo || _actionData.invData.itemValue.Meta > 0) && _actionData.invData.itemValue.PercentUsesLeft > 0;
         UpdateTick(__customData, _actionData, isRampUp);
         if (__customData.rampRatio > 0)
         {

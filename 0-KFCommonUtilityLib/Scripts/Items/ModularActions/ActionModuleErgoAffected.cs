@@ -91,18 +91,24 @@ public static class ErgoPatches
     private static IEnumerable<CodeInstruction> Transpiler_ItemActionRanged_updateAccuracy(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
     {
         var codes = instructions.ToList();
-        var mtd_lerp = AccessTools.Method(typeof(Mathf), nameof(Mathf.Lerp), new[] { typeof(float), typeof(float), typeof(float) });
 
         for (int i = 0; i < codes.Count; i++)
         {
-            if (codes[i].Calls(mtd_lerp))
+            if (codes[i].opcode == OpCodes.Stloc_3)
             {
-                codes.InsertRange(i, new[]
+                var lbl = generator.DefineLabel();
+                codes[i + 1].WithLabels(lbl);
+                codes.InsertRange(i + 1, new[]
                 {
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    new CodeInstruction(OpCodes.Ldarg_1),
+                    new CodeInstruction(OpCodes.Dup),
+                    new CodeInstruction(OpCodes.Dup),
+                    CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.lastAccuracy), true),
+                    new CodeInstruction(OpCodes.Ldloc_2),
                     new CodeInstruction(OpCodes.Ldarg_2),
                     CodeInstruction.Call(typeof(ErgoPatches), nameof(CalcErgoModifier)),
+                    new CodeInstruction(OpCodes.Brfalse_S, lbl),
+                    CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.lastAccuracy)),
+                    new CodeInstruction(OpCodes.Ret)
                 });
                 break;
             }
@@ -111,7 +117,7 @@ public static class ErgoPatches
         return codes;
     }
 
-    private static float CalcErgoModifier(float originalValue, ItemAction action, ItemActionData actionData, bool aiming)
+    private static bool CalcErgoModifier(ItemActionData actionData, ref float accuracy, float targetValue, bool aiming)
     {
         ItemActionRanged.ItemActionDataRanged rangedData = actionData as ItemActionRanged.ItemActionDataRanged;
         if (aiming && rangedData.invData.actionData[1] is IModuleContainerFor<ActionModuleErgoAffected.ErgoData> dataModule && !dataModule.Instance.aimSet && Time.time - dataModule.Instance.aimStartTime > 0)
@@ -128,10 +134,11 @@ public static class ErgoPatches
                 ergoData.aimSet = true;
                 perc = 1;
             }
+            accuracy = Mathf.Lerp(accuracy, targetValue, perc);
             //Log.Out($"Time passed {Time.time - dataModule.Instance.aimStartTime} base time {baseAimTime} perc {perc}");
-            return perc;
+            return true;
         }
-        return originalValue;
+        return false;
     }
 
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.onHoldingEntityFired))]

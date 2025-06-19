@@ -6,39 +6,9 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
 {
     public static class AnimationRiggingManager
     {
-        //public class FpvTransformRef
-        //{
-        //    public Animator fpvAnimator;
-        //    public RigTargets targets;
-        //    public ItemInventoryData invData;
-        //    //public Transform muzzle;
-        //    //public Transform muzzle2;
-        //    //public bool isDoubleBarrel;
-
-        //    public FpvTransformRef(RigTargets targets, ItemInventoryData invData)
-        //    {
-        //        this.targets = targets;
-        //        this.invData = invData;
-        //        //this.isDoubleBarrel = isDoubleBarrel;
-        //        fpvAnimator = targets.itemFpv.GetComponentInChildren<Animator>();
-        //        //if (isDoubleBarrel)
-        //        //{
-        //        //    muzzle = targets.itemFpv.transform.FindInChildren("Muzzle_L");
-        //        //    muzzle2 = targets.itemFpv.transform.FindInChildren("Muzzle_R");
-        //        //}
-        //        //else
-        //        //    muzzle = targets.itemFpv.transform.FindInChilds("Muzzle");
-        //    }
-
-        //    public bool IsRanged(out ItemActionRanged.ItemActionDataRanged rangedData)
-        //    {
-        //        return (rangedData = invData.actionData[MultiActionManager.GetActionIndexForEntity(GameManager.Instance.World.GetPrimaryPlayer())] as ItemActionRanged.ItemActionDataRanged) != null;
-        //    }
-        //}
-
         public static bool IsHoldingRiggedWeapon(EntityPlayer player)
         {
-            AnimationTargetsAbs targets = GetRigTargetsFromPlayer(player);
+            AnimationTargetsAbs targets = GetActiveRigTargetsFromPlayer(player);
             return targets && !targets.Destroyed;
         }
 
@@ -103,16 +73,31 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             return hash_items_take_over_reload_time.Contains(id);
         }
 
-        public static AnimationTargetsAbs GetRigTargetsFromPlayer(EntityAlive player)
+        public static AnimationTargetsAbs GetActiveRigTargetsFromPlayer(EntityAlive entity)
         {
-            if (player is not EntityPlayer)
+            if (entity is not EntityPlayer player || !player?.emodel?.avatarController)
                 return null;
-            Transform holdingItemTransform = player.inventory?.GetHoldingItemTransform();
-            if (holdingItemTransform)
+            AnimationGraphBuilder graphBuilder;
+            if (player.emodel.avatarController is AvatarMultiBodyController multiBodyController)
             {
-                return holdingItemTransform.GetComponent<AnimationTargetsAbs>();
+                graphBuilder = multiBodyController.PrimaryBody?.Animator?.GetComponent<AnimationGraphBuilder>();
+            }
+            else
+            {
+                graphBuilder = player.emodel.avatarController.GetAnimator()?.GetComponent<AnimationGraphBuilder>();
+            }
+            if (graphBuilder)
+            {
+                return graphBuilder.CurrentTarget;
             }
             return null;
+        }
+
+        public static AnimationTargetsAbs GetHoldingRigTargetsFromPlayer(EntityAlive entity)
+        {
+            if (entity is not EntityPlayer player)
+                return null;
+            return GetRigTargetsFromInventory(player.inventory);
         }
 
         public static AnimationTargetsAbs GetRigTargetsFromInventory(Inventory inventory)
@@ -133,10 +118,10 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             {
                 return;
             }
-            AnimationTargetsAbs targets = GetRigTargetsFromPlayer(controller.Entity as EntityPlayer);
-            bool RigItemChangedThisFrame = hash_rig_changed_players.Remove(controller.Entity.entityId);
+            AnimationTargetsAbs targets = GetActiveRigTargetsFromPlayer(controller.Entity);
             if (targets && !targets.Destroyed)
             {
+                bool RigItemChangedThisFrame = hash_rig_changed_players.Remove(controller.Entity.entityId);
                 targets.UpdatePlayerAvatar(controller, RigItemChangedThisFrame);
             }
             controller.UpdateBool(AvatarController.isCrouchingHash, controller.entity.IsCrouching, true);
@@ -221,7 +206,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             //    hash_rig_changed_players.Add(player.entityId);
             //    return;
             //}
-            targets = GetRigTargetsFromPlayer(player);
+            targets = GetHoldingRigTargetsFromPlayer(player);
             if (targets && !targets.Destroyed && targets.IsAnimationSet)
             {
                 //RigItemChangedThisFrame = true;

@@ -46,19 +46,19 @@ public class WeaponCameraFollow : MonoBehaviour
     }
 
 #if NotEditor
-    public void UpdateAntialiasing()
-    {
-        var pipCamera = GetComponent<Camera>();
-        var layer = GetComponent<PostProcessLayer>();
-        var prevFsr = player.renderManager.fsr;
-        int num = player.renderManager.dlssEnabled ? 0 : GamePrefs.GetInt(EnumGamePrefs.OptionsGfxAA);
-        float @float = GamePrefs.GetFloat(EnumGamePrefs.OptionsGfxAASharpness);
-        player.renderManager.FSRInit(layer.superResolution);
-        player.renderManager.SetAntialiasing(num, @float, layer);
-        Rect rect = pipCamera.rect;
-        rect.x = ((layer.antialiasingMode == PostProcessLayer.Antialiasing.SuperResolution) ? 1E-07f : 0f);
-        pipCamera.rect = rect;
-        player.renderManager.fsr = prevFsr;
-    }
+    //public void UpdateAntialiasing()
+    //{
+    //    var pipCamera = GetComponent<Camera>();
+    //    var layer = GetComponent<PostProcessLayer>();
+    //    var prevFsr = player.renderManager.fsr;
+    //    int num = player.renderManager.dlssEnabled ? 0 : GamePrefs.GetInt(EnumGamePrefs.OptionsGfxAA);
+    //    float @float = GamePrefs.GetFloat(EnumGamePrefs.OptionsGfxAASharpness);
+    //    player.renderManager.FSRInit(layer.superResolution);
+    //    player.renderManager.SetAntialiasing(num, @float, layer);
+    //    Rect rect = pipCamera.rect;
+    //    rect.x = ((layer.antialiasingMode == PostProcessLayer.Antialiasing.SuperResolution) ? 1E-07f : 0f);
+    //    pipCamera.rect = rect;
+    //    player.renderManager.fsr = prevFsr;
+    //}
 #endif
 }

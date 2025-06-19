@@ -4,8 +4,14 @@ public class PercentInHoldingItem : RoundsInHoldingItem
 {
     public override bool IsValid(MinEventParams _params)
     {
-        if (!ParamsValid(_params))
+        if (!base.IsValid(_params))
+        {
             return false;
+        }
+        if (cvarName != null)
+        {
+            value = _params.Self.Buffs.GetCustomVar(cvarName);
+        }
 
         ItemValue holdingItemValue = _params.Self.inventory.holdingItemItemValue;
         int actionIndex = MultiActionManager.GetActionIndexForEntity(_params.Self);

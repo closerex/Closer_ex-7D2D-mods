@@ -7,8 +7,22 @@ public class AmmoIndexIs : RequirementBase
     protected int actionIndex;
     protected ItemValue itemValueCache;
 
+    public virtual bool CacheItem(MinEventParams _params)
+    {
+        if (_params.ItemValue == null)
+        {
+            return false;
+        }
+        itemValueCache = _params.ItemValue;
+        return true;
+    }
+
     public override bool IsValid(MinEventParams _params)
     {
+        if (!base.IsValid(_params) || !CacheItem(_params))
+        {
+            return false;
+        }
         bool res = false;
         int parAmmoIndex = itemValueCache.GetSelectedAmmoIndexByActionIndex(actionIndex);
         res = parAmmoIndex == ammoIndex;
@@ -18,12 +32,6 @@ public class AmmoIndexIs : RequirementBase
             return !res;
         }
         return res;
-    }
-
-    public override bool ParamsValid(MinEventParams _params)
-    {
-        itemValueCache = _params.ItemValue;
-        return itemValueCache != null;
     }
 
     public override bool ParseXAttribute(XAttribute _attribute)

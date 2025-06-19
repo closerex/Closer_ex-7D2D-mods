@@ -18,6 +18,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
     {
         public override void checkCollision()
         {
+            GameManager gameManager = GameManager.Instance;
             if (this.firingEntity == null || state != State.Active || gameManager == null)
                 return;
             World world = gameManager?.World;
@@ -26,7 +27,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 return;
             }
             Vector3 checkPos;
-            if (bOnIdealPos)
+            if (isOnIdealPos)
             {
                 checkPos = transform.position + Origin.position;
             }
@@ -49,8 +50,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 prevLayer = firingEntity.GetModelLayer();
                 firingEntity.SetModelLayer(2);
             }
-            int hitmask = ((hmOverride == 0) ? 80 : hmOverride);
-            bool flag = Voxel.Raycast(world, ray, magnitude, -538750997, hitmask, 0);
+            bool flag = Voxel.Raycast(world, ray, magnitude, -538750997, hitMask, 0);
             if (firingEntity != null && firingEntity.emodel != null)
             {
                 firingEntity.SetModelLayer(prevLayer);
@@ -321,7 +321,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 if (_attackDetails.damage > 0f)
                 {
                     BlockFace blockFaceFromHitInfo = GameUtils.GetBlockFaceFromHitInfo(hitBlockPos, hitBlockValue, hitInfo.hitCollider, hitInfo.hitTriangleIdx, out _, out _);
-                    int blockFaceTexture = hittedChunk.GetBlockFaceTexture(hitBlockPos, blockFaceFromHitInfo);
+                    int blockFaceTexture = hittedChunk.GetBlockFaceTexture(hitBlockPos, blockFaceFromHitInfo, 0);
                     int blockCurDamage = hitBlockValue.damage;
                     bool isBlockBroken = blockCurDamage >= hitBlock.MaxDamage;
                     int ownerAttackerID = ((ownedEntityId != -1 && ownedEntityId != -2) ? ownedEntityId : _attackerEntityId);
