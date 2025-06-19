@@ -40,7 +40,7 @@ public class AnimationGraphBuilder : MonoBehaviour
     //public AnimatorControllerPlayable VanillaPlayable => vanillaControllerPlayable;
     //public AnimatorControllerPlayable WeaponPlayable => weaponControllerPlayable;
     public AnimatorControllerParameter[] Parameters => parameters;
-    private AnimationTargetsAbs CurrentTarget { get; set; }
+    public AnimationTargetsAbs CurrentTarget { get; private set; }
     public IAnimatorWrapper VanillaWrapper { get; private set; }
     public IAnimatorWrapper WeaponWrapper { get; private set; }
     public AttachmentWrapper AttachmentWrapper { get; private set; }
@@ -343,6 +343,19 @@ public class AnimationGraphBuilder : MonoBehaviour
                 VanillaWrapper.Play("2HGeneric", 4, 0);
             }
         }
+
+        //if (isFpv)
+        //{
+        //    if (!nextTargetValid)
+        //    {
+        //        VanillaWrapper.SetLayerWeight(1, 1f);
+        //    }
+        //    else
+        //    {
+        //        VanillaWrapper.SetLayerWeight(1, 0f);
+        //    }
+        //}
+
 #endif
         sw.Stop();
         Log.Out($"changing animation target to {(target ? target.name : "null")} took {sw.ElapsedMilliseconds}");

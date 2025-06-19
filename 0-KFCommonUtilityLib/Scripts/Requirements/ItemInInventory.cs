@@ -7,14 +7,7 @@ public class ItemInInventory : RequirementBase
 
     public override bool IsValid(MinEventParams _params)
     {
-        return base.IsValid(_params) && compareValues(_params.Self.GetItemCount(itemValueCache), operation, value) ^ invert;
-    }
-
-    public override bool ParamsValid(MinEventParams _params)
-    {
-        if (itemValueCache == null)
-            itemValueCache = ItemClass.GetItem(itemName);
-        return base.ParamsValid(_params) && itemValueCache != null;
+        return base.IsValid(_params) && (itemValueCache != null || (itemValueCache = ItemClass.GetItem(itemName)) != null) && compareValues(_params.Self.GetItemCount(itemValueCache), operation, value) ^ invert;
     }
 
     public override bool ParseXAttribute(XAttribute _attribute)

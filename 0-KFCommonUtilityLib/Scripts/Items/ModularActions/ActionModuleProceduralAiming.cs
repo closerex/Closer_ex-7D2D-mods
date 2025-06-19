@@ -28,7 +28,7 @@ public class ActionModuleProceduralAiming
 
         __customData.playerOriginTransform = null;
         __customData.playerCameraPosRef = _data.invData.holdingEntity is EntityPlayerLocal player && player.bFirstPersonView ? player.cameraTransform : null;
-        var targets = AnimationRiggingManager.GetRigTargetsFromPlayer(_data.invData.holdingEntity);
+        var targets = AnimationRiggingManager.GetHoldingRigTargetsFromPlayer(_data.invData.holdingEntity);
         if (__customData.playerCameraPosRef)
         {
             if (targets.ItemFpv)

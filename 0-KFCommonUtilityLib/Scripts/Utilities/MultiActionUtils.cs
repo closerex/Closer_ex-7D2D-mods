@@ -25,7 +25,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
         };
         public static readonly int ExecutingActionIndexHash = Animator.StringToHash("ExecutingActionIndex");
 
-        public static void SetMinEventArrays()
+        public static void SetMinEventArrays(ref ModEvents.SGameAwakeData _)
         {
             MinEvent.Start = new[]
             {
@@ -315,7 +315,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
 
         public static void SetMinEventParamsByEntityInventory(EntityAlive entity)
         {
-            if (entity != null && entity.MinEventContext != null)
+            if (entity != null && entity.IsAlive() && entity.MinEventContext != null)
             {
                 entity.MinEventContext.ItemActionData = entity.inventory?.holdingItemData?.actionData[MultiActionManager.GetActionIndexForEntity(entity)];
             }
@@ -399,14 +399,14 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             return ret;
         }
 
-        public static void SetCachedEventParamsDummyAction(ItemStack itemStack)
+        public static void SetCachedEventParamsDummyAction(ItemValue itemValue)
         {
-            ItemClass itemClass = itemStack?.itemValue?.ItemClass;
+            ItemClass itemClass = itemValue?.ItemClass;
             if (itemClass != null)
             {
-                MinEventParams.CachedEventParam.ItemActionData = MultiActionUtils.DummyActionDatas[itemStack.itemValue.GetMode()];
-                MinEventParams.CachedEventParam.ItemValue = itemStack.itemValue;
-                MinEventParams.CachedEventParam.Seed = itemStack.itemValue.Seed;
+                MinEventParams.CachedEventParam.ItemActionData = MultiActionUtils.DummyActionDatas[itemValue.GetMode()];
+                MinEventParams.CachedEventParam.ItemValue = itemValue;
+                MinEventParams.CachedEventParam.Seed = itemValue.Seed;
             }
         }
 

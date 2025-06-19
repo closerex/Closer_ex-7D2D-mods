@@ -148,15 +148,15 @@ namespace KFCommonUtilityLib.Harmony
 
         //KEEP
         #region Cancel bow draw
-        [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.TryCancelBowDraw))]
+        [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.TryCancelChargedAction))]
         [HarmonyPrefix]
-        private static bool Prefix_TryCancelBowDraw(EntityPlayerLocal __instance)
+        private static bool Prefix_TryCancelChargedAction_EntityPlayerLocal(EntityPlayerLocal __instance)
         {
             for (int i = 0; i < __instance.inventory.holdingItem.Actions.Length; i++)
             {
                 ItemAction action = __instance.inventory.holdingItem.Actions[i];
                 ItemActionData actionData = __instance.inventory.holdingItemData.actionData[i];
-                if (action is ItemActionCatapult catapult)
+                if (action is ItemActionCatapult || action is ItemActionThrowAway)
                 {
                     action.CancelAction(actionData);
                     actionData.HasExecuted = false;
@@ -323,9 +323,10 @@ namespace KFCommonUtilityLib.Harmony
         #endregion
 
         #region GameManager.ItemReload*
-        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SetAmmoType))]
+
+        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.requestReload))]
         [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_SetAmmoType_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
+        private static IEnumerable<CodeInstruction> Transpiler_requestReload_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
 
@@ -343,7 +344,7 @@ namespace KFCommonUtilityLib.Harmony
                         CodeInstruction.LoadField(typeof(ItemAction), nameof(ItemAction.ActionIndex)),
                         CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.FixedItemReloadServer))
                     });
-                    codes.RemoveAt(i - 3);
+                    codes.RemoveAt(i - 5);
                     break;
                 }
             }
@@ -357,26 +358,12 @@ namespace KFCommonUtilityLib.Harmony
         {
             var codes = instructions.ToList();
 
-            MethodInfo mtd_reloadserver = AccessTools.Method(typeof(GameManager), nameof(GameManager.ItemReloadServer));
             FieldInfo fld_actiondata = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.actionData));
 
             for (int i = 0; i < codes.Count; i++)
             {
                 var code = codes[i];
-                if (code.Calls(mtd_reloadserver))
-                {
-                    codes.RemoveAt(i);
-                    codes.InsertRange(i, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(ItemAction), nameof(ItemAction.ActionIndex)),
-                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.FixedItemReloadServer))
-                    });
-                    codes[i - 4].MoveLabelsFrom(codes[i - 5]);
-                    codes.RemoveAt(i - 5);
-                    break;
-                }
-                else if (code.LoadsField(fld_actiondata))
+                if (code.LoadsField(fld_actiondata))
                 {
                     codes.RemoveAt(i + 1);
                     codes.InsertRange(i + 1, new[]
@@ -384,7 +371,7 @@ namespace KFCommonUtilityLib.Harmony
                         new CodeInstruction(OpCodes.Ldarg_0),
                         CodeInstruction.LoadField(typeof(ItemAction), nameof(ItemAction.ActionIndex))
                     });
-                    i += 1;
+                    break;
                 }
             }
 
@@ -423,35 +410,27 @@ namespace KFCommonUtilityLib.Harmony
         {
             var codes = instructions.ToList();
 
-            MethodInfo mtd_reloadserver = AccessTools.Method(typeof(GameManager), nameof(GameManager.ItemReloadServer));
+            FieldInfo fld_actiondata = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.actionData));
             MethodInfo mtd_canreload = AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.CanReload));
 
             for (int i = 0; i < codes.Count; i++)
             {
                 var code = codes[i];
-                if (code.Calls(mtd_reloadserver))
+                if (code.LoadsField(fld_actiondata))
                 {
-                    codes.RemoveAt(i);
-                    codes.InsertRange(i, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(ItemAction), nameof(ItemAction.ActionIndex)),
-                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.FixedItemReloadServer))
-                    });
-                    codes.RemoveAt(i - 3);
-                    break;
-                }
-                else if (code.Calls(mtd_canreload))
-                {
-                    codes.RemoveAt(i - 2);
-                    codes.InsertRange(i - 2, new[]
+                    codes.RemoveAt(i + 1);
+                    codes.InsertRange(i + 1, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_0),
                         CodeInstruction.LoadField(typeof(ItemAction), nameof(ItemAction.ActionIndex))
                     });
-                    codes.RemoveRange(i - 9, 3);
-                    codes.Insert(i - 9, new CodeInstruction(OpCodes.Ldarg_0));
-                    i--;
+                    i++;
+                }
+                else if (code.Calls(mtd_canreload))
+                {
+                    codes.RemoveRange(i - 4, 3);
+                    codes.Insert(i - 4, new CodeInstruction(OpCodes.Ldarg_0));
+                    break;
                 }
             }
 
@@ -473,8 +452,8 @@ namespace KFCommonUtilityLib.Harmony
                     codes.RemoveAt(i + 1);
                     codes.InsertRange(i + 1, new[]
                     {
-                        new CodeInstruction(OpCodes.Ldarg_3),
-                        CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.GetActionIndexForEntity))
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(ItemAction), nameof(ItemAction.ActionIndex))
                     });
                     break;
                 }
@@ -585,13 +564,13 @@ namespace KFCommonUtilityLib.Harmony
         //
         [HarmonyPatch(typeof(ProjectileMoveScript), nameof(ProjectileMoveScript.Fire))]
         [HarmonyPrefix]
-        private static bool Prefix_Fire_ProjectileMoveScript(ProjectileMoveScript __instance, Vector3 _idealStartPosition, Vector3 _flyDirection, Entity _firingEntity, int _hmOverride, float _radius)
+        private static bool Prefix_Fire_ProjectileMoveScript(ProjectileMoveScript __instance, Vector3 _idealStartPos, Vector3 _dirOrPos, Entity _firingEntity, int _hmOverride, float _radius, bool _isBallistic)
         {
             if (_firingEntity is EntityAlive entityAlive)
                 entityAlive.MinEventContext.ItemActionData = __instance.actionData;
             if (__instance is CustomProjectileMoveScript)
             {
-                __instance.ProjectileFire(_idealStartPosition, _flyDirection, _firingEntity, _hmOverride, _radius);
+                __instance.ProjectileFire(_idealStartPos, _dirOrPos, _firingEntity, _hmOverride, _radius, _isBallistic);
                 return false;
             }
 
@@ -1006,9 +985,9 @@ namespace KFCommonUtilityLib.Harmony
 
         #region EffectManager.GetValuesAndSources patches, set params
 
-        [HarmonyPatch(typeof(EntityStats), nameof(EntityStats.Update))]
+        [HarmonyPatch(typeof(EntityStats), nameof(EntityStats.Tick))]
         [HarmonyPrefix]
-        private static bool Prefix_Update_EntityStats(EntityStats __instance)
+        private static bool Prefix_Tick_EntityStats(EntityStats __instance)
         {
             MultiActionUtils.SetMinEventParamsByEntityInventory(__instance.m_entity);
             return true;
@@ -1794,14 +1773,13 @@ namespace KFCommonUtilityLib.Harmony
         {
             var codes = instructions.ToList();
 
-            var fld_entityid = AccessTools.Field(typeof(NetPackagePlayerStats), nameof(NetPackagePlayerStats.entityId));
-            var fld_itemstack = AccessTools.Field(typeof(NetPackagePlayerStats), nameof(NetPackagePlayerStats.holdingItemStack));
             codes.InsertRange(codes.Count - 1, new[]
             {
                 new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Ldfld, fld_entityid),
+                CodeInstruction.LoadField(typeof(NetPackagePlayerStats), nameof(NetPackagePlayerStats.entityId)),
                 new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Ldfld, fld_itemstack),
+                CodeInstruction.LoadField(typeof(NetPackagePlayerStats), nameof(NetPackagePlayerStats.entityNetworkStats)),
+                CodeInstruction.LoadField(typeof(EntityAlive.EntityNetworkStats), nameof(EntityAlive.EntityNetworkStats.holdingItemStack)),
                 CodeInstruction.Call(typeof(MultiActionPatches), nameof(CheckItemValueMode))
             });
 
@@ -1813,8 +1791,8 @@ namespace KFCommonUtilityLib.Harmony
         {
             var codes = instructions.ToList();
 
-            var fld_entityid = AccessTools.Field(typeof(NetPackagePlayerStats), nameof(NetPackageHoldingItem.entityId));
-            var fld_itemstack = AccessTools.Field(typeof(NetPackagePlayerStats), nameof(NetPackageHoldingItem.holdingItemStack));
+            var fld_entityid = AccessTools.Field(typeof(NetPackageHoldingItem), nameof(NetPackageHoldingItem.entityId));
+            var fld_itemstack = AccessTools.Field(typeof(NetPackageHoldingItem), nameof(NetPackageHoldingItem.holdingItemStack));
             codes.InsertRange(codes.Count - 1, new[]
             {
                 new CodeInstruction(OpCodes.Ldarg_0),
@@ -2089,10 +2067,10 @@ namespace KFCommonUtilityLib.Harmony
         private static Coroutine switchHoldingItemCo;
         [HarmonyPatch(typeof(Inventory), nameof(Inventory.ShowHeldItem))]
         [HarmonyPrefix]
-        private static bool Prefix_ShowHeldItem_Inventory(bool show, Inventory __instance)
+        private static bool Prefix_ShowHeldItem_Inventory(bool hideFirst, Inventory __instance)
         {
             //Log.Out($"ShowHeldItem {show} on entity {__instance.entity.entityName}\n{StackTraceUtility.ExtractStackTrace()}");
-            if (show && __instance.entity is EntityPlayerLocal && switchHoldingItemCo != null)
+            if (hideFirst && __instance.entity is EntityPlayerLocal && switchHoldingItemCo != null)
             {
                 GameManager.Instance.StopCoroutine(switchHoldingItemCo);
                 switchHoldingItemCo = null;
@@ -2115,7 +2093,7 @@ namespace KFCommonUtilityLib.Harmony
                     codes[i].WithLabels(label);
                     codes.InsertRange(i, new[]
                     {
-                        new CodeInstruction(OpCodes.Ldarg_1),
+                        new CodeInstruction(OpCodes.Ldarg_2),
                         new CodeInstruction(OpCodes.Brfalse_S, label),
                         new CodeInstruction(OpCodes.Ldarg_0),
                         CodeInstruction.LoadField(typeof(Inventory), nameof(Inventory.entity)),
@@ -2136,15 +2114,15 @@ namespace KFCommonUtilityLib.Harmony
         [HarmonyPrefix]
         private static bool Prefix_GetStatItemValueTextWithModInfo_XUiM_ItemStack(ItemStack itemStack)
         {
-            MultiActionUtils.SetCachedEventParamsDummyAction(itemStack);
+            MultiActionUtils.SetCachedEventParamsDummyAction(itemStack?.itemValue);
             return true;
         }
 
         [HarmonyPatch(typeof(XUiM_ItemStack), nameof(XUiM_ItemStack.GetStatItemValueTextWithModColoring))]
         [HarmonyPrefix]
-        private static bool Prefix_GetStatItemValueTextWithModColoring_XUiM_ItemStack(ItemStack itemStack)
+        private static bool Prefix_GetStatItemValueTextWithModColoring_XUiM_ItemStack(ItemValue itemValue)
         {
-            MultiActionUtils.SetCachedEventParamsDummyAction(itemStack);
+            MultiActionUtils.SetCachedEventParamsDummyAction(itemValue);
             return true;
         }
 
@@ -2175,7 +2153,7 @@ namespace KFCommonUtilityLib.Harmony
                                 new CodeInstruction(OpCodes.Ldarg_0),
                                 CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.SetCachedEventParamsDummyAction))
                             });
-                            codes.RemoveRange(j - 8, 9);
+                            codes.RemoveRange(j - 6, 7);
                             break;
                         }
                     }
@@ -2202,6 +2180,7 @@ namespace KFCommonUtilityLib.Harmony
                     {
                         new CodeInstruction(OpCodes.Ldarg_0),
                         CodeInstruction.LoadField(typeof(XUiC_ItemStack), nameof(XUiC_ItemStack.itemStack)),
+                        CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)),
                         CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.SetCachedEventParamsDummyAction))
                     });
                     break;

@@ -73,7 +73,7 @@ public class MinEventActionOverrideZoomFOV : MinEventActionBase
             {
                 zoomActionData.bZoomInProgress = true;
                 zoomActionData.timeZoomStarted = Time.time;
-                target.updateCameraPosition(true);
+                target.UpdateCameraFOV(true);
             }
             //if already in progress, set end value
             else

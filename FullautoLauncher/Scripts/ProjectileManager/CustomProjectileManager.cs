@@ -37,7 +37,7 @@ namespace FullautoLauncher.Scripts.ProjectileManager
             dict_item_groups.Add(item.Name, group);
         }
 
-        public static void Update()
+        public static void Update(ref ModEvents.SUnityUpdateData _)
         {
             foreach (var group in dict_item_groups.Values)
             {

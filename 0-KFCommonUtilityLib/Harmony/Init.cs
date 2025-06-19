@@ -50,7 +50,7 @@ public class CommonUtilityLibInit : IModApi
         HarmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
     }
 
-    private static void RegisterKFEnums()
+    private static void RegisterKFEnums(ref ModEvents.SGameStartDoneData _)
     {
         CustomEnums.onSelfMagzineDeplete = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onSelfMagzineDeplete");
         CustomEnums.onReloadAboutToStart = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onReloadAboutToStart");

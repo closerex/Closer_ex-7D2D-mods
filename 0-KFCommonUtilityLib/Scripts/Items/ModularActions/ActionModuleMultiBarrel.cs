@@ -53,27 +53,27 @@ public class ActionModuleMultiBarrel
     public void Prefix_StartHolding_ItemActionLauncher(ItemActionData _data, ItemActionLauncher __instance, MultiBarrelData __customData)
     {
         ItemActionLauncher.ItemActionDataLauncher launcherData = _data as ItemActionLauncher.ItemActionDataLauncher;
-        launcherData.projectileJoint = __customData.projectileJoints[0];
+        launcherData.projectileJointT = __customData.projectileJoints[0];
     }
 
     [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemAction.StartHolding)), MethodTargetPostfix]
     public void Postfix_StartHolding_ItemActionLauncher(ItemActionData _data, ItemActionLauncher __instance, MultiBarrelData __customData)
     {
         ItemActionLauncher.ItemActionDataLauncher launcherData = _data as ItemActionLauncher.ItemActionDataLauncher;
-        if (launcherData?.projectileInstance != null && __customData.oneRoundMultishot && __customData.roundsPerShot > 1)
+        if (launcherData?.projectileTs != null && __customData.oneRoundMultishot && __customData.roundsPerShot > 1)
         {
-            int count = launcherData.projectileInstance.Count;
+            int count = launcherData.projectileTs.Count;
             int times = __customData.roundsPerShot - 1;
             for (int i = 0; i < times; i++)
             {
-                launcherData.projectileJoint = __customData.projectileJoints[i + 1];
+                launcherData.projectileJointT = __customData.projectileJoints[i + 1];
                 for (int j = 0; j < count; j++)
                 {
-                    launcherData.projectileInstance.Add(__instance.instantiateProjectile(_data));
+                    launcherData.projectileTs.Add(__instance.instantiateProjectile(_data));
                 }
             }
         }
-        launcherData.projectileJoint = __customData.projectileJoints[__customData.curBarrelIndex];
+        launcherData.projectileJointT = __customData.projectileJoints[__customData.curBarrelIndex];
     }
 
     [HarmonyPatch(nameof(ItemActionRanged.getUserData)), MethodTargetPostfix]
@@ -101,7 +101,7 @@ public class ActionModuleMultiBarrel
         ItemActionLauncher.ItemActionDataLauncher launcherData = _actionData as ItemActionLauncher.ItemActionDataLauncher;
         if (launcherData != null)
         {
-            launcherData.projectileJoint = __customData.projectileJoints[(byte)(_userData >> 8)];
+            launcherData.projectileJointT = __customData.projectileJoints[(byte)(_userData >> 8)];
         }
         return Prefix_ItemActionEffects_ItemActionRanged(_actionData, _userData, _firingState, __customData);
     }
@@ -277,14 +277,14 @@ public class MultiBarrelPatches
         ItemActionLauncher.ItemActionDataLauncher launcherData = __instance.actionData as ItemActionLauncher.ItemActionDataLauncher;
         if (launcherData != null && launcherData is IModuleContainerFor<ActionModuleMultiBarrel.MultiBarrelData> dataModule && dataModule.Instance.oneRoundMultishot && dataModule.Instance.roundsPerShot > 1)
         {
-            int count = launcherData.projectileInstance.Count;
+            int count = launcherData.projectileTs.Count;
             int times = dataModule.Instance.roundsPerShot - 1;
             for (int i = 0; i < count; i++)
             {
                 for (int j = 0; j < times; j++)
                 {
-                    launcherData.projectileJoint = dataModule.Instance.projectileJoints[j + 1];
-                    launcherData.projectileInstance.Insert(i * (times + 1) + j + 1, ((ItemActionLauncher)__instance.actionRanged).instantiateProjectile(launcherData));
+                    launcherData.projectileJointT = dataModule.Instance.projectileJoints[j + 1];
+                    launcherData.projectileTs.Insert(i * (times + 1) + j + 1, ((ItemActionLauncher)__instance.actionRanged).instantiateProjectile(launcherData));
                 }
             }
         }

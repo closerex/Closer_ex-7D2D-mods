@@ -46,7 +46,7 @@ public class ActionModuleAlternative
     }
 
     [HarmonyPatch(nameof(ItemActionRanged.CancelReload)), MethodTargetPrefix]
-    private bool Prefix_CancelReload(ItemActionData _actionData, AlternativeData __customData)
+    private bool Prefix_CancelReload(ItemActionData _actionData, AlternativeData __customData, bool holsterWeapon)
     {
         if (__customData.mapping == null)
             return true;
@@ -55,7 +55,7 @@ public class ActionModuleAlternative
             Log.Out($"cancel reload {actionIndex}");
         if (actionIndex == 0)
             return true;
-        _actionData.invData.holdingEntity.inventory.holdingItem.Actions[actionIndex].CancelReload(_actionData.invData.holdingEntity.inventory.holdingItemData.actionData[actionIndex]);
+        _actionData.invData.holdingEntity.inventory.holdingItem.Actions[actionIndex].CancelReload(_actionData.invData.holdingEntity.inventory.holdingItemData.actionData[actionIndex], holsterWeapon);
         return false;
     }
 

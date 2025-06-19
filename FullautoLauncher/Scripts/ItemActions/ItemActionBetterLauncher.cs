@@ -122,11 +122,12 @@ public class ItemActionBetterLauncher : ItemActionRanged
         }
     }
 
-    public override void getImageActionEffectsStartPosAndDirection(ItemActionData _actionData, out Vector3 _startPos, out Vector3 _direction)
+    public override int GetActionEffectsValues(ItemActionData _actionData, out Vector3 _startPos, out Vector3 _direction)
     {
         Ray lookRay = _actionData.invData.holdingEntity.GetLookRay();
         _startPos = lookRay.origin;
         _direction = lookRay.direction;//getDirectionOffset(ItemActionDataBetterLauncher, lookRay.direction, 0);
+        return 0;
     }
 
     public class ItemActionDataBetterLauncher : ItemActionDataRanged

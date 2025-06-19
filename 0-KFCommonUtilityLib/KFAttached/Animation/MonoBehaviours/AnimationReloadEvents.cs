@@ -207,15 +207,15 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
             {
                 times = dataModule.Instance.roundsPerShot;
             }
-            for (int j = itemActionDataLauncher.projectileInstance.Count; j < projectileCount; j++)
+            for (int j = itemActionDataLauncher.projectileTs.Count; j < projectileCount; j++)
             {
                 for (int i = 0; i < times; i++)
                 {
                     if (dataModule != null)
                     {
-                        itemActionDataLauncher.projectileJoint = dataModule.Instance.projectileJoints[i];
+                        itemActionDataLauncher.projectileJointT = dataModule.Instance.projectileJoints[i];
                     }
-                    itemActionDataLauncher.projectileInstance.Add(itemActionLauncher.instantiateProjectile(actionData, Vector3.zero));
+                    itemActionDataLauncher.projectileTs.Add(itemActionLauncher.instantiateProjectile(actionData, Vector3.zero));
                 }
             }
         }

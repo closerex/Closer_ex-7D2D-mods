@@ -90,7 +90,7 @@ static class AnimationRiggingPatches
         ItemActionLauncher.ItemActionDataLauncher launcherData = _data as ItemActionLauncher.ItemActionDataLauncher;
         if (launcherData != null)
         {
-            launcherData.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName(launcherData.invData.model, "ProjectileJoint");
+            launcherData.projectileJointT = AnimationRiggingManager.GetTransformOverrideByName(launcherData.invData.model, "ProjectileJoint");
         }
     }
 
@@ -178,7 +178,7 @@ static class AnimationRiggingPatches
         var codes = instructions.ToList();
         var mtd_find = AccessTools.Method(typeof(GameUtils), nameof(GameUtils.FindDeepChild));
         var fld_trans = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.Transform));
-        var mtd_layer = AccessTools.Method(typeof(Utils), nameof(Utils.SetLayerRecursively));
+        var mtd_layer = AccessTools.Method(typeof(Utils), nameof(Utils.SetLayerRecursively), new[] {typeof(GameObject), typeof(int), typeof(string[])} );
 
         var lbd_targets = generator.DeclareLocal(typeof(AnimationTargetsAbs));
 
@@ -509,6 +509,37 @@ static class AnimationRiggingPatches
         }
     }
 
+    [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.Update))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_Update_EntityPlayerLocal(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+    {
+        var codes = instructions.ToList();
+        var mtd_update = AccessTools.Method(typeof(AvatarController), nameof(AvatarController.UpdateBool), new[] {typeof(string), typeof(bool), typeof(bool)} );
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_update))
+            {
+                var lbl = generator.DefineLabel();
+                codes[i + 1].WithLabels(lbl);
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    CodeInstruction.Call(typeof(AnimationRiggingManager), nameof(AnimationRiggingManager.IsHoldingRiggedWeapon)),
+                    new CodeInstruction(OpCodes.Brfalse_S, lbl),
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    CodeInstruction.LoadField(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.emodel)),
+                    CodeInstruction.LoadField(typeof(EModelBase), nameof(EModelBase.avatarController)),
+                    new CodeInstruction(OpCodes.Ldstr, "Holstered"),
+                    new CodeInstruction(OpCodes.Ldc_I4_0),
+                    new CodeInstruction(OpCodes.Ldc_I4_0),
+                    new CodeInstruction(codes[i].opcode, codes[i].operand)
+                });
+                break;
+            }
+        }
+        return codes;
+    }
+
     //[HarmonyPatch(typeof(AvatarLocalPlayerController), nameof(AvatarLocalPlayerController.LateUpdate))]
     //[HarmonyPostfix]
     //private static void Postfix_LateUpdate_AvatarLocalPlayerController(AvatarLocalPlayerController __instance)
@@ -658,7 +689,7 @@ static class AnimationRiggingPatches
     [HarmonyPrefix]
     private static bool Prefix_SetFirstPersonView_EntityPlayerLocal(EntityPlayerLocal __instance, bool _bFirstPersonView)
     {
-        var targets = AnimationRiggingManager.GetRigTargetsFromPlayer(__instance);
+        var targets = AnimationRiggingManager.GetHoldingRigTargetsFromPlayer(__instance);
         if (_bFirstPersonView != __instance.bFirstPersonView && targets && !targets.Destroyed)
         {
             //targets.SetEnabled(false);

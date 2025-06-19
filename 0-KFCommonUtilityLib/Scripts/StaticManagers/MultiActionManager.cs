@@ -346,7 +346,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         //if true, send local curIndex to other clients in updateSendClientPlayerPositionToServer.
         public static bool LocalModeChanged { get; set; }
 
-        public static void PostloadCleanup()
+        public static void PostloadCleanup(ref ModEvents.SGameStartDoneData _)
         {
             dict_mappings.Clear();
             dict_indice.Clear();

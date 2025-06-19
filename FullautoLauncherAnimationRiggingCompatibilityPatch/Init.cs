@@ -68,7 +68,7 @@ public static class FLARMultiActionFixExt
 [TypeTargetExtension(typeof(ActionModuleProceduralRecoil))]
 public static class FLARProceduralRecoilExt
 {
-    [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemActionBetterLauncher.getImageActionEffectsStartPosAndDirection))]
+    [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemActionBetterLauncher.GetActionEffectsValues))]
     [MethodTargetTranspiler]
     public static IEnumerable<CodeInstruction> Transpiler_ItemActionBetterLauncher_getImageActionEffectsStartPosAndDirection(IEnumerable<CodeInstruction> instructions)
     {

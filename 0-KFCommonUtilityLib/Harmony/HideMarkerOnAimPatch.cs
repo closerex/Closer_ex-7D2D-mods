@@ -13,13 +13,13 @@ public class HideMarkerOnAimPatch
         iconParent.transform.localScale = Vector3.one;
     }
 
-    [HarmonyPatch(typeof(XUiC_OnScreenIcons), nameof(XUiC_OnScreenIcons.CreateIcon))]
+    [HarmonyPatch(typeof(XUiC_OnScreenIcons), nameof(XUiC_OnScreenIcons.RegisterIcon))]
     [HarmonyPostfix]
-    private static void Postfix_CreateIcon_XUiC_OnScreenIcons(XUiC_OnScreenIcons __instance)
+    private static void Postfix_RegisterIcon_XUiC_OnScreenIcons(XUiC_OnScreenIcons __instance, NavObject newNavObject)
     {
         if (__instance.ViewComponent?.UiTransform)
         {
-            __instance.screenIconList[__instance.screenIconList.Count - 1].Transform.SetParent(__instance.ViewComponent.UiTransform.Find("AllIconParent"));
+            newNavObject.TrackedTransform?.SetParent(__instance.ViewComponent.UiTransform.Find("AllIconParent"));
         }
     }
 

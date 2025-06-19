@@ -1,13 +1,17 @@
 ﻿using HarmonyLib;
+using KFCommonUtilityLib;
 using KFCommonUtilityLib.Scripts.Attributes;
 using System.Collections.Generic;
 using System.Reflection.Emit;
+using UAI;
 using UniLinq;
 using static AnimationDelayData;
 
-[TypeTarget(typeof(ItemAction))]
+[TypeTarget(typeof(ItemAction)), TypeDataTarget(typeof(CustomAnimationDelayData))]
 public class ActionModuleCustomAnimationDelay
 {
+    public bool tpvUseCustomDelay = false;
+
     [HarmonyPatch(typeof(ItemActionEat), nameof(ItemAction.OnHoldingUpdate))]
     [HarmonyPatch(typeof(ItemActionGainSkill), nameof(ItemAction.OnHoldingUpdate))]
     [HarmonyPatch(typeof(ItemActionLearnRecipe), nameof(ItemAction.OnHoldingUpdate))]
@@ -35,8 +39,14 @@ public class ActionModuleCustomAnimationDelay
                         codes.RemoveRange(flag ? i - 1 : i, j - i + (flag ? 3 : 1));
                         codes.InsertRange(flag ? i - 1 : i, new[]
                         {
+                            new CodeInstruction(OpCodes.Ldarg_1),
+                            new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<CustomAnimationDelayData>)),
+                            new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(IModuleContainerFor<CustomAnimationDelayData>), nameof(IModuleContainerFor<CustomAnimationDelayData>.Instance))),
+                            new CodeInstruction(OpCodes.Ldarg_1),
                             new CodeInstruction(OpCodes.Ldarg_0),
-                            CodeInstruction.LoadField(typeof(ItemAction), nameof(ItemAction.Delay))
+                            CodeInstruction.LoadField(typeof(ItemAction), nameof(ItemAction.Delay)),
+                            new CodeInstruction(flag ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0),
+                            CodeInstruction.Call(typeof(CustomAnimationDelayData), nameof(CustomAnimationDelayData.GetDelayOverride))
                         });
                         break;
                     }
@@ -48,45 +58,18 @@ public class ActionModuleCustomAnimationDelay
         return codes;
     }
 
-    //[HarmonyPatch(nameof(ItemAction.OnHoldingUpdate)), MethodTargetPrefix]
-    //private bool Prefix_OnHoldingUpdate(ItemAction __instance, ItemActionData _actionData, out AnimationDelays __state)
-    //{
-    //    __state = AnimationDelayData.AnimationDelay[_actionData.invData.item.HoldType.Value];
-    //    if (!__instance.UseAnimation)
-    //        return true;
-    //    var modifiedData = __state;
-    //    modifiedData.RayCast = __instance.Delay;
-    //    AnimationDelayData.AnimationDelay[_actionData.invData.item.HoldType.Value] = modifiedData;
-    //    return true;
-    //}
+    [HarmonyPatch(nameof(ItemAction.ReadFrom)), MethodTargetPostfix]
+    public void Postfix_ReadFrom(DynamicProperties _props)
+    {
+        tpvUseCustomDelay = false;
+        _props.ParseBool("tpvUseCustomDelay", ref tpvUseCustomDelay);
+    }
 
-    //[HarmonyPatch(nameof(ItemAction.OnHoldingUpdate)), MethodTargetPostfix]
-    //private void Postfix_OnHoldingUpdate(ItemAction __instance, ItemActionData _actionData, AnimationDelays __state)
-    //{
-    //    if (!__instance.UseAnimation)
-    //        return;
-    //    AnimationDelayData.AnimationDelay[_actionData.invData.item.HoldType.Value] = __state;
-    //}
-
-    //[HarmonyPatch(nameof(ItemAction.IsActionRunning)), MethodTargetPrefix]
-    //private bool Prefix_IsActionRunning(ItemAction __instance, ItemActionData _actionData, out AnimationDelays __state)
-    //{
-    //    __state = AnimationDelayData.AnimationDelay[_actionData.invData.item.HoldType.Value];
-    //    if (!__instance.UseAnimation)
-    //        return true;
-    //    var modifiedData = __state;
-    //    modifiedData.RayCast = __instance.Delay * .5f;
-    //    AnimationDelayData.AnimationDelay[_actionData.invData.item.HoldType.Value] = modifiedData;
-    //    return true;
-    //}
-
-    //[HarmonyPatch(nameof(ItemAction.IsActionRunning)), MethodTargetPostfix]
-    //private void Postfix_IsActionRunning(ItemAction __instance, ItemActionData _actionData, AnimationDelays __state)
-    //{
-    //    if (!__instance.UseAnimation)
-    //        return;
-    //    AnimationDelayData.AnimationDelay[_actionData.invData.item.HoldType.Value] = __state;
-    //}
+    [HarmonyPatch(nameof(ItemAction.StopHolding)), MethodTargetPostfix]
+    public void Postfix_StopHolding(ItemActionData _data)
+    {
+        _data.lastUseTime = 0f;
+    }
 
     //following are fix for item use time from menu entry
     //when IsActionRunning is called from coroutine which is started by menu entry,
@@ -94,9 +77,8 @@ public class ActionModuleCustomAnimationDelay
     //so we call OnHoldingUpdate to properly consume the item
     //vanilla method on the other hand, is forcing double delay in IsActionRunning
     [HarmonyPatch(typeof(ItemActionEat), nameof(ItemAction.IsActionRunning)), MethodTargetPostfix]
-    private void Postfix_IsActionRunning_ItemActionEat(ItemActionEat __instance, ItemActionData _actionData/*, AnimationDelays __state*/, bool __result)
+    private void Postfix_IsActionRunning_ItemActionEat(ItemActionEat __instance, ItemActionData _actionData, bool __result)
     {
-        //Postfix_IsActionRunning(__instance, _actionData, __state);
         if (!__result && ((ItemActionEat.MyInventoryData)_actionData).bEatingStarted)
         {
             __instance.OnHoldingUpdate(_actionData);
@@ -104,9 +86,8 @@ public class ActionModuleCustomAnimationDelay
     }
 
     [HarmonyPatch(typeof(ItemActionGainSkill), nameof(ItemAction.IsActionRunning)), MethodTargetPostfix]
-    private void Postfix_IsActionRunning_ItemActionGainSkill(ItemActionGainSkill __instance, ItemActionData _actionData/*, AnimationDelays __state*/, bool __result)
+    private void Postfix_IsActionRunning_ItemActionGainSkill(ItemActionGainSkill __instance, ItemActionData _actionData, bool __result)
     {
-        //Postfix_IsActionRunning(__instance, _actionData, __state);
         if (!__result && ((ItemActionGainSkill.MyInventoryData)_actionData).bReadingStarted)
         {
             __instance.OnHoldingUpdate(_actionData);
@@ -114,9 +95,8 @@ public class ActionModuleCustomAnimationDelay
     }
 
     [HarmonyPatch(typeof(ItemActionLearnRecipe), nameof(ItemAction.IsActionRunning)), MethodTargetPostfix]
-    private void Postfix_IsActionRunning_ItemActionLearnRecipe(ItemActionLearnRecipe __instance, ItemActionData _actionData/*, AnimationDelays __state*/, bool __result)
+    private void Postfix_IsActionRunning_ItemActionLearnRecipe(ItemActionLearnRecipe __instance, ItemActionData _actionData, bool __result)
     {
-        //Postfix_IsActionRunning(__instance, _actionData, __state);
         if (!__result && ((ItemActionLearnRecipe.MyInventoryData)_actionData).bReadingStarted)
         {
             __instance.OnHoldingUpdate(_actionData);
@@ -124,12 +104,29 @@ public class ActionModuleCustomAnimationDelay
     }
 
     [HarmonyPatch(typeof(ItemActionQuest), nameof(ItemAction.IsActionRunning)), MethodTargetPostfix]
-    private void Postfix_IsActionRunning_ItemActionQuest(ItemActionQuest __instance, ItemActionData _actionData/*, AnimationDelays __state*/, bool __result)
+    private void Postfix_IsActionRunning_ItemActionQuest(ItemActionQuest __instance, ItemActionData _actionData, bool __result)
     {
-        //Postfix_IsActionRunning(__instance, _actionData, __state);
         if (!__result && ((ItemActionQuest.MyInventoryData)_actionData).bQuestAccept)
         {
             __instance.OnHoldingUpdate(_actionData);
+        }
+    }
+
+    public class CustomAnimationDelayData : AnimationDelayData
+    {
+        ActionModuleCustomAnimationDelay module;
+        public CustomAnimationDelayData(ItemActionData actionData, ItemInventoryData invData, int actionIndex, ActionModuleCustomAnimationDelay module)
+        {
+            this.module = module;
+        }
+
+        public float GetDelayOverride(ItemActionData actionData, float customDelay, bool conditionCheck)
+        {
+            if ((actionData.invData.holdingEntity is EntityPlayerLocal player && player.bFirstPersonView) || module.tpvUseCustomDelay)
+            {
+                return customDelay;
+            }
+            return AnimationDelayData.AnimationDelay[actionData.invData.item.HoldType.Value].RayCast * (conditionCheck ? 2f : 1f);
         }
     }
 }

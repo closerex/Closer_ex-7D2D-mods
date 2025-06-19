@@ -9,6 +9,10 @@ public class IsHoldingItemModificationActivated : RequirementBase
 
     public override bool IsValid(MinEventParams _params)
     {
+        if (!base.IsValid(_params))
+        {
+            return false;
+        }
         if (modId < 0)
         {
             modId = ItemClass.GetItemClass(modName)?.Id ?? -1;

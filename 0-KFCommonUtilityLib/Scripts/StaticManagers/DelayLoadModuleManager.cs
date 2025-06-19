@@ -26,7 +26,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             dlls.Add(dllNameWithoutExtension);
         }
 
-        public static void DelayLoad()
+        public static void DelayLoad(ref ModEvents.SGameAwakeData _)
         {
             Assembly assembly = Assembly.GetAssembly(typeof(DelayLoadModuleManager));
             Mod mod = ModManager.GetModForAssembly(assembly);

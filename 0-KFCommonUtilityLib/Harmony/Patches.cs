@@ -127,7 +127,7 @@ public static class CommonUtilityPatch
     private static HashSet<int> hash_shot_state = new HashSet<int>();
     private static HashSet<int> hash_aimshot_state = new HashSet<int>();
 
-    public static void InitShotStates()
+    public static void InitShotStates(ref ModEvents.SGameAwakeData _)
     {
         string[] weapons =
         {
@@ -789,6 +789,7 @@ public static class CommonUtilityPatch
         MethodInfo mtd_get_item_class = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.ItemClass));
         MethodInfo mtd_get_cur_item = AccessTools.PropertyGetter(typeof(XUiM_AssembleItem), nameof(XUiM_AssembleItem.CurrentItem));
         MethodInfo mtd_get_xui = AccessTools.PropertyGetter(typeof(XUiController), nameof(XUiController.xui));
+        FieldInfo fld_tags = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.ItemTags));
 
         for (int i = 3; i < codes.Count; i++)
         {
@@ -808,7 +809,7 @@ public static class CommonUtilityPatch
                 i += 7;
             }
             //do not touch check on the modification item
-            else if (codes[i].Calls(mtd_has_any_tags) && codes[i - 3].Calls(mtd_get_item_class))
+            else if (codes[i].Calls(mtd_has_any_tags) && codes[i - 3].Calls(mtd_get_item_class) && !codes[i - 1].LoadsField(fld_tags))
             {
                 codes[i].opcode = OpCodes.Call;
                 codes[i].operand = mtd_test_any_set;

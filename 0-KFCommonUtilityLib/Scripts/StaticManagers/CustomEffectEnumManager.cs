@@ -23,7 +23,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         }
 
         //hooked to GameAwake
-        public static void InitDefault()
+        public static void InitDefault(ref ModEvents.SGameAwakeData _)
         {
             OnInitDefault?.Invoke();
         }

@@ -703,7 +703,9 @@
   <ItemGroup>
     <Content Include="ModSettings.xml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <AttachedScriptFolder>KFAttached</AttachedScriptFolder>

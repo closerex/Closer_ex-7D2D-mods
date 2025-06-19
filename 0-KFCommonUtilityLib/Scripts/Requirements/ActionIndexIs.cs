@@ -10,13 +10,11 @@ public class ActionIndexIs : RequirementBase
         //{
         //    Log.Out($"Action index is not {index} : {(_params.ItemActionData == null ? "null" : _params.ItemActionData.indexInEntityOfAction.ToString())}\n{StackTraceUtility.ExtractStackTrace()}");
         //}
+        if (!base.IsValid(_params))
+            return false;
+
         var res = (_params.ItemActionData == null && index == 0) || _params.ItemActionData?.indexInEntityOfAction == index;
         return invert ? !res : res;
-    }
-
-    public override bool ParamsValid(MinEventParams _params)
-    {
-        return true;
     }
 
     public override bool ParseXAttribute(XAttribute _attribute)

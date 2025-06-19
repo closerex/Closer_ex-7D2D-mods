@@ -17,8 +17,14 @@ public class RoundsInInventory : RequirementBase
     }
     public override bool IsValid(MinEventParams _params)
     {
-        if (!this.ParamsValid(_params))
-            return invert;
+        if (!base.IsValid(_params))
+        {
+            return false;
+        }
+        if (cvarName != null)
+        {
+            value = _params.Self.Buffs.GetCustomVar(cvarName);
+        }
 
         ItemValue itemValue = _params.ItemValue;
         if (itemValue.IsEmpty() || !(_params.ItemActionData is ItemActionRanged.ItemActionDataRanged _rangedData))

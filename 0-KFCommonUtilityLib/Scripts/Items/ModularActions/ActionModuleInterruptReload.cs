@@ -188,9 +188,9 @@ internal static class ReloadInterruptionPatches
                     }
                     if (Time.time - dataModule.Instance.holdStartTime >= actionModule.Instance.holdBeforeCancel)
                     {
-                        if (!rangedAction.reloadCancelled(rangedData))
+                        if (!ItemActionRanged.ReloadCancelled(rangedData))
                         {
-                            rangedAction.CancelReload(rangedData);
+                            rangedAction.CancelReload(rangedData, false);
                         }
                         if (ConsoleCmdReloadLog.LogInfo)
                             Log.Out($"interrupt requested!");

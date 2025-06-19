@@ -2,8 +2,14 @@
 {
     public override bool IsValid(MinEventParams _params)
     {
-        if (!ParamsValid(_params))
+        if (!base.IsValid(_params))
+        {
             return false;
+        }
+        if (cvarName != null)
+        {
+            value = _params.Self.Buffs.GetCustomVar(cvarName);
+        }
 
         if (_params.ItemValue.IsEmpty() || !(_params.ItemActionData is ItemActionRanged.ItemActionDataRanged _rangedData) || _params.ItemActionData.invData == null)
             return false;

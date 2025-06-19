@@ -21,20 +21,20 @@ class MinEventActionModifyCVarWithSelfRef : MinEventActionModifyCVar
                 float num = targets[i].Buffs.GetCustomVar(cvarName);
                 switch (operation)
                 {
-                    case OperationTypes.set:
-                    case OperationTypes.setvalue:
+                    case CVarOperation.set:
+                    case CVarOperation.setvalue:
                         num = value;
                         break;
-                    case OperationTypes.add:
+                    case CVarOperation.add:
                         num += value;
                         break;
-                    case OperationTypes.subtract:
+                    case CVarOperation.subtract:
                         num -= value;
                         break;
-                    case OperationTypes.multiply:
+                    case CVarOperation.multiply:
                         num *= value;
                         break;
-                    case OperationTypes.divide:
+                    case CVarOperation.divide:
                         num /= ((value == 0f) ? 0.0001f : value);
                         break;
                 }

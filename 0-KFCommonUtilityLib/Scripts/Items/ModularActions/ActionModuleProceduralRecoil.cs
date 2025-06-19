@@ -195,7 +195,7 @@ public class ActionModuleProceduralRecoil
         if (_data.invData.holdingEntity is EntityPlayerLocal player && player.bFirstPersonView)
         {
             __customData.playerCameraTransform = player.cameraTransform;
-            var targets = AnimationRiggingManager.GetRigTargetsFromPlayer(_data.invData.holdingEntity);
+            var targets = AnimationRiggingManager.GetHoldingRigTargetsFromPlayer(_data.invData.holdingEntity);
 
             __customData.recoilPivotTransform = null;
             __customData.hasPivotOverride = false;
@@ -303,7 +303,7 @@ public class ActionModuleProceduralRecoil
         return codes;
     }
 
-    [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.getImageActionEffectsStartPosAndDirection)), MethodTargetTranspiler]
+    [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.GetActionEffectsValues)), MethodTargetTranspiler]
     public static IEnumerable<CodeInstruction> Transpiler_ItemActionLauncher_getImageActionEffectsStartPosAndDirection(IEnumerable<CodeInstruction> instructions)
     {
         var codes = instructions.ToList();

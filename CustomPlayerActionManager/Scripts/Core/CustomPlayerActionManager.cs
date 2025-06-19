@@ -44,7 +44,7 @@ public class CustomPlayerActionManager
         }
     }
 
-    public static void InitCustomControls()
+    public static void InitCustomControls(ref ModEvents.SGameAwakeData _)
     {
         if (GameManager.IsDedicatedServer || inited)
             return;
