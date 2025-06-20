@@ -74,6 +74,7 @@
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>
+				<property name="Show_ammo_force" value="true"/>
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>
@@ -268,6 +269,7 @@
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>
+				<property name="Show_ammo_force" value="true"/>
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>
@@ -463,6 +465,7 @@
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>
+				<property name="Show_ammo_force" value="true"/>
 				<property name="Magazine_items" value="ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>
@@ -640,6 +643,7 @@
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>
+				<property name="Show_ammo_force" value="true"/>
 				<property name="Magazine_items" value="ammo762mmBulletBall,ammo762mmBulletHP,ammo762mmBulletAP"/>
 				<property name="ShareMetaWith" value="0"/>
 				<property name="ConsumeData" value="MedicStock"/>
