@@ -1,8 +1,8 @@
 <configs>
 	<append xpath="/Sounds">
 		<SoundDataNode name="kaboomstick_fire">
-			<AudioSource name="Sounds/AudioSource_WeaponFire"/>
-			<NetworkAudioSource name="Sounds/AudioSource_WeaponFire_Network"/>
+			<AudioSource name="@:Sounds/Prefabs/AudioSource_WeaponFire"/>
+			<NetworkAudioSource name="@:Sounds/Prefabs/AudioSource_WeaponFire_Network"/>
 			<Noise ID="0" noise="52" time="2" muffled_when_crouched="0.8" heat_map_strength="1" heat_map_time="180"/>
 				<AudioClip ClipName="#@modfolder:Resources/Kaboomstick_firingsound.unity3d?Boomstick_Shot_Out_1"/>
 				<AudioClip ClipName="#@modfolder:Resources/Kaboomstick_firingsound.unity3d?Boomstick_Shot_Out_2"/>
@@ -16,7 +16,7 @@
 			<MaxRepeatRate value="0.001"/>
 		</SoundDataNode>
 		<SoundDataNode name="kaboomstick_explosion">
-			<AudioSource name="Sounds/AudioSource_Explosion"/>
+			<AudioSource name="@:Sounds/Prefabs/AudioSource_Explosion.prefab"/>
 			<Noise ID="0" noise="52" time="2" muffled_when_crouched="0.8" heat_map_strength="1" heat_map_time="180"/>
 				<AudioClip ClipName="#@modfolder:Resources/Kaboomstick_sound.unity3d?kaboomstick_shoot01"/>
 				<AudioClip ClipName="#@modfolder:Resources/Kaboomstick_sound.unity3d?kaboomstick_shoot02"/>

@@ -1,14 +1,14 @@
 <configs>
 	<append xpath="/Sounds">
-		<SoundDataNode name="katanaEmptySwingLight"> <AudioSource name="Sounds/AudioSource_Melee"/> <NetworkAudioSource name="Sounds/AudioSource_Melee"/>
+		<SoundDataNode name="katanaEmptySwingLight"> <AudioSource name="@:Sounds/Prefabs/AudioSource_Melee.prefab"/> <NetworkAudioSource name="@:Sounds/Prefabs/AudioSource_Melee.prefab"/>
 			<AudioClip ClipName="none"/>
 			<LocalCrouchVolumeScale value="0.25"/> <CrouchNoiseScale value="0.05"/> <NoiseScale value=".15"/> <MaxVoices value="3"/> <MaxRepeatRate value="0.01"/>
 		</SoundDataNode>
-		<SoundDataNode name="katanaEmptySwingHeavy"> <AudioSource name="Sounds/AudioSource_Melee"/> <NetworkAudioSource name="Sounds/AudioSource_Melee"/>
+		<SoundDataNode name="katanaEmptySwingHeavy"> <AudioSource name="@:Sounds/Prefabs/AudioSource_Melee.prefab"/> <NetworkAudioSource name="@:Sounds/Prefabs/AudioSource_Melee.prefab"/>
 			<AudioClip ClipName="none"/>
 			<LocalCrouchVolumeScale value="0.25"/> <CrouchNoiseScale value="0.05"/> <NoiseScale value=".2"/> <MaxVoices value="3"/> <MaxRepeatRate value="0.01"/>
 		</SoundDataNode>
-		<SoundDataNode name="katanaslashorganic"> <AudioSource name="Sounds/AudioSource_Impact"/>
+		<SoundDataNode name="katanaslashorganic"> <AudioSource name="@:Sounds/Prefabs/AudioSource_Impact_Large.prefab"/>
 			<Noise ID="2" noise="11" time="3" muffled_when_crouched="0.5"/>
 			<AudioClip ClipName="#@modfolder:Resources/Katana_Sounds.unity3d?MEL_Katana_Impact_Flesh_Gib_01"/>
 			<AudioClip ClipName="#@modfolder:Resources/Katana_Sounds.unity3d?MEL_Katana_Impact_Flesh_Gib_02"/>
