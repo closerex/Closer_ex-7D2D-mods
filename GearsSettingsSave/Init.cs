@@ -44,7 +44,7 @@ namespace GearsSettingsSave
             SaveModSettingsToJson(___gearsMod);
         }
 
-        internal static void LoadModSettingsFromJson()
+        internal static void LoadModSettingsFromJson(ref ModEvents.SGameAwakeData _)
         {
             if (!Directory.Exists(SavePath))
             {
