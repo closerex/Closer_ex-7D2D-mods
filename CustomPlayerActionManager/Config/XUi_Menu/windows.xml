@@ -92,9 +92,9 @@
 			</scrollview>
 		</rect>
 	</insertAfter>
-	<remove xpath="/windows/window[@name='optionsController']/rect[@name='tabs']/rect[@name='tabsContents']/rect[not(@*)]"/>
+	<remove xpath="/windows/window[@name='optionsController']/rect[@name='tabs']/rect[@name='tabsContents']/rect[not(@tab_key)]"/>
 	<insertAfter xpath="/windows/window[@name='optionsController']/rect[@name='tabs']/rect[@name='tabsContents']/rect[@tab_key='xuiOptionsControlsGeneric']">
-		<rect>
+		<rect controller="TabSelectorTab">
 			<scrollbar name="bar" width="20" height="550" pos="15,-320" pivot="center" foregroundname="handler" backgroundname="background" depth="10">
 				<button name="handler" sprite="menu_empty3px" pivot="center" pos="0,0" hovercolor="[white]" color="[white]" defaultcolor="[white]" hoverscale="1" />
 				<button name="background" sprite="menu_empty3px" pivot="center" pos="0,0" hovercolor="[black]" color="[black]" defaultcolor="[black]" hoverscale="1" />
@@ -105,7 +105,7 @@
 				</grid>
 			</scrollview>
 		</rect>
-		<rect>
+		<rect controller="TabSelectorTab">
 			<scrollbar name="bar" width="20" height="550" pos="15,-320" pivot="center" foregroundname="handler" backgroundname="background" depth="10">
 				<button name="handler" sprite="menu_empty3px" pivot="center" pos="0,0" hovercolor="[white]" color="[white]" defaultcolor="[white]" hoverscale="1" />
 				<button name="background" sprite="menu_empty3px" pivot="center" pos="0,0" hovercolor="[black]" color="[black]" defaultcolor="[black]" hoverscale="1" />
