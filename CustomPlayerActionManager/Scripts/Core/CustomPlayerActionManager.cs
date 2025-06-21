@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
 using InControl;
-using Platform;
 
 public class CustomPlayerActionManager
 {
@@ -74,10 +73,12 @@ public class CustomPlayerActionManager
         {
             if (!File.Exists(saveFile))
             {
+                Log.Out("Moving previous save file from" + prevSaveFile + " to new location: " + saveFile);
                 File.Move(prevSaveFile, saveFile);
             }
             else
             {
+                Log.Out("Save file already exists at " + saveFile + ", deleting old save file: " + prevSaveFile);
                 File.Delete(prevSaveFile);
             }
         }
