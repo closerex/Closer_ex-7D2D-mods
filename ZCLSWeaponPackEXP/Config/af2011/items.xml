@@ -391,26 +391,28 @@
 	</append>
 
 	<conditional>
-		<if cond="mod_loaded('EFT3_DVS_Ammo')">
+		<if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
 			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft45ACP,ammoEft45ACPAP,ammoEft45ACPRIP</set>
-			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/effect_group[@name='gunHandgunT3DualAF2011A1S']/passive_effect[@name='EntityDamage']/@value">0</set>
-			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/effect_group[@name='gunHandgunT3DualAF2011A1S']/passive_effect[@name='BlockDamage']/@value">0</set>
-			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/effect_group[@name='gunHandgunT3DualAF2011A1S']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
 			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/effect_group[@name='gunHandgunT3DualAF2011A1S']/passive_effect[@name='DegradationMax']/@value">2400,4800</set>
 
 			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft45ACP,ammoEft45ACPAP,ammoEft45ACPRIP</set>
-			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='EntityDamage']/@value">0</set>
-			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='BlockDamage']/@value">0</set>
-			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
 			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='DegradationMax']/@value">1200,2400</set>
 			<append xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/property[@name='Tags']/@value">,CompactReflexSight</append>
 			<append xpath="/items/item[@name='gunHandgunT3AF2011A1S']/property[@name='Tags']/@value">,CompactReflexSight</append>
+
+			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
+			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
 		</if>
 	</conditional>
 	<conditional>
-		<if cond="mod_loaded('EFT2_DVS_Items')">
-			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
-			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/effect_group[@name='gunHandgunT3DualAF2011A1S']/passive_effect[@name='EntityDamage']/@value">0</set>
+			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/effect_group[@name='gunHandgunT3DualAF2011A1S']/passive_effect[@name='BlockDamage']/@value">0</set>
+			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/effect_group[@name='gunHandgunT3DualAF2011A1S']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
+			
+			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='EntityDamage']/@value">0</set>
+			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='BlockDamage']/@value">0</set>
+			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
 		</if>
 	</conditional>
 </configs>

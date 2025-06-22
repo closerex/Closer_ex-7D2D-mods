@@ -216,19 +216,19 @@
 	</append>
 
 	<conditional>
-		<if cond="mod_loaded('EFT3_DVS_Ammo')">
+		<if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
 			<set xpath="/items/item[@name='gunT3M4Benelli']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug,ammoEftRIPSlug</set>
 			<set xpath="/items/item[@name='gunT3M4Benelli']/effect_group[@name='gunT3M4Benelli']/passive_effect[@name='ReloadSpeedMultiplier']/@value">0.8</set>
-			<set xpath="/items/item[@name='gunT3M4Benelli']/effect_group[@name='gunT3M4Benelli']/passive_effect[@name='EntityDamage']/@value">0</set>
-			<set xpath="/items/item[@name='gunT3M4Benelli']/effect_group[@name='gunT3M4Benelli']/passive_effect[@name='BlockDamage']/@value">0</set>
-			<set xpath="/items/item[@name='gunT3M4Benelli']/effect_group[@name='gunT3M4Benelli']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
 			<set xpath="/items/item[@name='gunT3M4Benelli']/effect_group[@name='gunT3M4Benelli']/passive_effect[@name='DegradationMax']/@value">1200,2400</set>
 			<append xpath="/items/item[@name='gunT3M4Benelli']/property[@name='Tags']/@value">,AssaultScope,ReflexSight,CompactReflexSight,AssaultScopeCompact,Scope30mm</append>
+			<set xpath="/items/item[@name='gunT3M4Benelli']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
 		</if>
 	</conditional>
 	<conditional>
-		<if cond="mod_loaded('EFT2_DVS_Items')">
-			<set xpath="/items/item[@name='gunT3M4Benelli']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<set xpath="/items/item[@name='gunT3M4Benelli']/effect_group[@name='gunT3M4Benelli']/passive_effect[@name='EntityDamage']/@value">0</set>
+			<set xpath="/items/item[@name='gunT3M4Benelli']/effect_group[@name='gunT3M4Benelli']/passive_effect[@name='BlockDamage']/@value">0</set>
+			<set xpath="/items/item[@name='gunT3M4Benelli']/effect_group[@name='gunT3M4Benelli']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
 		</if>
 	</conditional>
 </configs>

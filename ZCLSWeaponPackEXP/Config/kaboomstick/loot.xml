@@ -34,7 +34,28 @@
 	</append>
 	
 	<conditional>
-		<if cond="!mod_loaded('EFT8_DVS_Configs')">
+		<if cond="mod_loaded('EFT8_DVS_Configs')">
+			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3']">
+				<item group="groupWeapons_ExplT2" loot_prob_template="med"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT4']">
+				<item group="groupWeapons_ExplT2" loot_prob_template="medLow"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupExplosives']">
+				<item group="groupKBSammoSmall" loot_prob_template="medLow"/>
+				<item group="groupKBSammoMedium" loot_prob_template="low"/>
+				<item group="groupKBSammoLarge" loot_prob_template="veryLow"/>
+			</append>
+		</if>
+		<if cond="mod_loaded('EFTX_Pack_Core')">
+			<append xpath="//lootgroup[@name='groupQuestWeaponsRangedT3']">
+				<item name="gunKaboomstick" loot_prob_template="QuestT3Prob"/>
+			</append>
+			<append xpath="//lootgroup[@name='groupSpecialGuns']">
+				<item name="gunKaboomstick" count="1" quality="1"/>
+			</append>
+		</if>
+		<else>
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT1_Demolitionist']">
 				<item group="groupWeapons_ExplT2" loot_prob_template="veryLow"/>
 				<item group="groupKBSammoSmall" loot_prob_template="low"/>
@@ -58,19 +79,6 @@
 			</append>
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3_Ranged']">
 				<item group="groupWeapons_ExplT2" loot_prob_template="medLow"/>
-			</append>
-		</if>
-		<else>
-			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3']">
-				<item group="groupWeapons_ExplT2" loot_prob_template="med"/>
-			</append>
-			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT4']">
-				<item group="groupWeapons_ExplT2" loot_prob_template="medLow"/>
-			</append>
-			<append xpath="/lootcontainers/lootgroup[@name='groupExplosives']">
-				<item group="groupKBSammoSmall" loot_prob_template="medLow"/>
-				<item group="groupKBSammoMedium" loot_prob_template="low"/>
-				<item group="groupKBSammoLarge" loot_prob_template="veryLow"/>
 			</append>
 		</else>
 	</conditional>

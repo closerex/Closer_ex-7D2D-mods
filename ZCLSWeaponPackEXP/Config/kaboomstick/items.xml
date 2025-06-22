@@ -302,7 +302,7 @@
 		</item>
 	</append>
 	<conditional>
-		<if cond="mod_loaded('EFT2_DVS_Items')">
+		<if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
 			<set xpath="/items/item[@name='gunKaboomstick']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
 		</if>
 	</conditional>

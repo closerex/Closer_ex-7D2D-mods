@@ -1,6 +1,126 @@
 <configs>
+	<append xpath="/recipes">
+		<!-- Dual attachments -->
+		<recipe name="modGunDualAF2011OspreySilencer" count="1">
+			<ingredient name="modGunAF2011OspreySilencer" count="2"/>
+		</recipe>
+		<recipe name="modGunAF2011OspreySilencer" count="2">
+			<ingredient name="modGunDualAF2011OspreySilencer" count="1"/>
+		</recipe>
+		<recipe name="modGunDualAF2011MuzzleBrake" count="1">
+			<ingredient name="modGunAF2011MuzzleBrake" count="2"/>
+		</recipe>
+		<recipe name="modGunAF2011MuzzleBrake" count="2">
+			<ingredient name="modGunDualAF2011MuzzleBrake" count="1"/>
+		</recipe>
+		<recipe name="modDualGunLaserSight" count="1">
+			<ingredient name="modGunLaserSight" count="2"/>
+		</recipe>
+		<recipe name="modGunLaserSight" count="2">
+			<ingredient name="modDualGunLaserSight" count="1"/>
+		</recipe>
+		<recipe name="modDualGunFlashlight" count="1">
+			<ingredient name="modGunFlashlight" count="2"/>
+		</recipe>
+		<recipe name="modGunFlashlight" count="2">
+			<ingredient name="modDualGunFlashlight" count="1"/>
+		</recipe>
+	</append>
 	<conditional>
-		<if cond="!mod_loaded('EFT8_DVS_Configs')">
+		<if cond="mod_loaded('EFT8_DVS_Configs')">
+			<append xpath="/recipes">
+				<recipe name="gunHandgunT3DualAF2011A1S" count="1" craft_area="workbench" tags="learnable,perkGunslinger,workbenchCrafting">
+					<ingredient name="gunHandgunT1PistolParts" count="4" />
+					<ingredient name="resourceWeaponParts" count="2" />
+					<ingredient name="resourceDuctTape" count="2" />
+					<ingredient name="resourceSpring" count="2" />
+					<ingredient name="resourceLegendaryParts" count="0"/>
+					<effect_group>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="8,44" tags="gunHandgunT1PistolParts,resourceDuctTape" />
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="resourceWeaponParts" />
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="4,20" tags="resourceSpring" />
+						<passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="2" tags="resourceLegendaryParts" />
+					</effect_group>
+				</recipe>
+				<recipe name="gunHandgunT3AF2011A1S" count="1" craft_area="workbench" tags="learnable,perkGunslinger,workbenchCrafting">
+					<ingredient name="gunHandgunT1PistolParts" count="2" />
+					<ingredient name="resourceWeaponParts" count="1" />
+					<ingredient name="resourceDuctTape" count="1" />
+					<ingredient name="resourceSpring" count="1" />
+					<ingredient name="resourceLegendaryParts" count="0" />
+					<effect_group>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="4,22" tags="gunHandgunT1PistolParts,resourceDuctTape" />
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="0.5,2.5" tags="resourceWeaponParts" />
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceSpring" />
+						<passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts" />
+					</effect_group>
+				</recipe>
+				<!-- Silencer -->
+				<recipe name="modGunAF2011OspreySilencer" count="1" craft_area="workbench" tags="workbenchCrafting">
+					<ingredient name="modsilencerco9osprey" count="2"/>
+					<ingredient name="resourceScrapPolymers" count="2"/>
+					<ingredient name="resourceDuctTape" count="1"/>
+				</recipe>
+				<recipe name="modsilencerco9osprey" count="2" craft_area="workbench">
+					<ingredient name="modGunAF2011OspreySilencer" count="1"/>
+				</recipe>
+
+				<!-- Muzzle Brake -->
+				<recipe name="modGunAF2011MuzzleBrake" count="1" craft_area="workbench" tags="workbenchCrafting">
+					<ingredient name="modmuzzle1911anarchyoutdoors" count="2"/>
+					<ingredient name="resourceScrapPolymers" count="2"/>
+					<ingredient name="resourceDuctTape" count="1"/>
+				</recipe>
+				<recipe name="modmuzzle1911anarchyoutdoors" count="2" craft_area="workbench">
+					<ingredient name="modGunAF2011MuzzleBrake" count="1"/>
+				</recipe>
+			</append>
+		</if>
+		<if cond="mod_loaded('EFTX_Pack_Core')">
+			<append xpath="/recipes">
+				<recipe name="gunHandgunT3AF2011A1S" count="1" craft_area="workbench" tags="learnable">
+					<ingredient name="gunHandgunT1PistolParts" count="2"/>
+					<ingredient name="resourceWeaponParts" count="2"/>
+					<ingredient name="resourceMetalPipe" count="2"/>
+					<ingredient name="resourceSpring" count="2"/>
+					<ingredient name="resourceOil" count="1"/>
+					<effect_group>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="gunHandgunT1PistolParts"/>
+					</effect_group>
+				</recipe>
+				<recipe name="gunHandgunT3DualAF2011A1S" count="1" craft_area="workbench" tags="learnable">
+					<ingredient name="gunHandgunT1PistolParts" count="4"/>
+					<ingredient name="resourceWeaponParts" count="4"/>
+					<ingredient name="resourceMetalPipe" count="4"/>
+					<ingredient name="resourceSpring" count="4"/>
+					<ingredient name="resourceOil" count="2"/>
+					<effect_group>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="4,20" tags="gunHandgunT1PistolParts"/>
+					</effect_group>
+				</recipe>
+
+				<!-- Silencer -->
+				<recipe name="modGunAF2011OspreySilencer" count="1" craft_area="workbench" tags="workbenchCrafting">
+					<ingredient name="modsilencerco9osprey" count="2"/>
+					<ingredient name="resourceScrapPolymers" count="2"/>
+					<ingredient name="resourceDuctTape" count="1"/>
+				</recipe>
+				<recipe name="modsilencerco9osprey" count="2" craft_area="workbench">
+					<ingredient name="modGunAF2011OspreySilencer" count="1"/>
+				</recipe>
+
+				<!-- Muzzle Brake -->
+				<recipe name="modGunAF2011MuzzleBrake" count="1" craft_area="workbench" tags="workbenchCrafting">
+					<ingredient name="modmuzzle1911anarchyoutdoors" count="2"/>
+					<ingredient name="resourceScrapPolymers" count="2"/>
+					<ingredient name="resourceDuctTape" count="1"/>
+				</recipe>
+				<recipe name="modmuzzle1911anarchyoutdoors" count="2" craft_area="workbench">
+					<ingredient name="modGunAF2011MuzzleBrake" count="1"/>
+				</recipe>
+			</append>
+		</if>
+		<else>
 			<append xpath="/recipes">
 				<recipe name="gunHandgunT3DualAF2011A1S" count="1" craft_area="workbench" tags="learnable,perkGunslinger,workbenchCrafting">
 					<ingredient name="gunHandgunT1PistolParts" count="26"/>
@@ -57,110 +177,11 @@
 				</recipe>
 
 				<!-- Dual attachments -->
-				<recipe name="modGunDualAF2011OspreySilencer" count="1">
-					<ingredient name="modGunAF2011OspreySilencer" count="2"/>
-				</recipe>
-				<recipe name="modGunAF2011OspreySilencer" count="2">
-					<ingredient name="modGunDualAF2011OspreySilencer" count="1"/>
-				</recipe>
-				<recipe name="modGunDualAF2011MuzzleBrake" count="1">
-					<ingredient name="modGunAF2011MuzzleBrake" count="2"/>
-				</recipe>
-				<recipe name="modGunAF2011MuzzleBrake" count="2">
-					<ingredient name="modGunDualAF2011MuzzleBrake" count="1"/>
-				</recipe>
-				<recipe name="modDualGunLaserSight" count="1">
-					<ingredient name="modGunLaserSight" count="2"/>
-				</recipe>
-				<recipe name="modGunLaserSight" count="2">
-					<ingredient name="modDualGunLaserSight" count="1"/>
-				</recipe>
-				<recipe name="modDualGunFlashlight" count="1">
-					<ingredient name="modGunFlashlight" count="2"/>
-				</recipe>
-				<recipe name="modGunFlashlight" count="2">
-					<ingredient name="modDualGunFlashlight" count="1"/>
-				</recipe>
 				<recipe name="modGunDualAF2011ReflexSight" count="1">
 					<ingredient name="modGunAF2011ReflexSight" count="2"/>
 				</recipe>
 				<recipe name="modGunAF2011ReflexSight" count="2">
 					<ingredient name="modGunDualAF2011ReflexSight" count="1"/>
-				</recipe>
-			</append>
-		</if>
-		<else>
-			<append xpath="/recipes">
-				<recipe name="gunHandgunT3DualAF2011A1S" count="1" craft_area="workbench" tags="learnable,perkGunslinger,workbenchCrafting">
-					<ingredient name="gunHandgunT1PistolParts" count="4" />
-					<ingredient name="resourceWeaponParts" count="2" />
-					<ingredient name="resourceDuctTape" count="2" />
-					<ingredient name="resourceSpring" count="2" />
-					<ingredient name="resourceLegendaryParts" count="0"/>
-					<effect_group>
-						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="8,44" tags="gunHandgunT1PistolParts,resourceDuctTape" />
-						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="resourceWeaponParts" />
-						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="4,20" tags="resourceSpring" />
-						<passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="2" tags="resourceLegendaryParts" />
-					</effect_group>
-				</recipe>
-				<recipe name="gunHandgunT3AF2011A1S" count="1" craft_area="workbench" tags="learnable,perkGunslinger,workbenchCrafting">
-					<ingredient name="gunHandgunT1PistolParts" count="2" />
-					<ingredient name="resourceWeaponParts" count="1" />
-					<ingredient name="resourceDuctTape" count="1" />
-					<ingredient name="resourceSpring" count="1" />
-					<ingredient name="resourceLegendaryParts" count="0" />
-					<effect_group>
-						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="4,22" tags="gunHandgunT1PistolParts,resourceDuctTape" />
-						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="0.5,2.5" tags="resourceWeaponParts" />
-						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceSpring" />
-						<passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts" />
-					</effect_group>
-				</recipe>
-				<!-- Silencer -->
-				<recipe name="modGunAF2011OspreySilencer" count="1" craft_area="workbench" tags="workbenchCrafting">
-					<ingredient name="modsilencerco9osprey" count="2"/>
-					<ingredient name="resourceScrapPolymers" count="2"/>
-					<ingredient name="resourceDuctTape" count="1"/>
-				</recipe>
-				<recipe name="modsilencerco9osprey" count="2" craft_area="workbench">
-					<ingredient name="modGunAF2011OspreySilencer" count="1"/>
-				</recipe>
-
-				<!-- Muzzle Brake -->
-				<recipe name="modGunAF2011MuzzleBrake" count="1" craft_area="workbench" tags="workbenchCrafting">
-					<ingredient name="modmuzzle1911anarchyoutdoors" count="2"/>
-					<ingredient name="resourceScrapPolymers" count="2"/>
-					<ingredient name="resourceDuctTape" count="1"/>
-				</recipe>
-				<recipe name="modmuzzle1911anarchyoutdoors" count="2" craft_area="workbench">
-					<ingredient name="modGunAF2011MuzzleBrake" count="1"/>
-				</recipe>
-
-				<!-- Dual attachments -->
-				<recipe name="modGunDualAF2011OspreySilencer" count="1">
-					<ingredient name="modGunAF2011OspreySilencer" count="2"/>
-				</recipe>
-				<recipe name="modGunAF2011OspreySilencer" count="2">
-					<ingredient name="modGunDualAF2011OspreySilencer" count="1"/>
-				</recipe>
-				<recipe name="modGunDualAF2011MuzzleBrake" count="1">
-					<ingredient name="modGunAF2011MuzzleBrake" count="2"/>
-				</recipe>
-				<recipe name="modGunAF2011MuzzleBrake" count="2">
-					<ingredient name="modGunDualAF2011MuzzleBrake" count="1"/>
-				</recipe>
-				<recipe name="modDualGunLaserSight" count="1">
-					<ingredient name="modGunLaserSight" count="2"/>
-				</recipe>
-				<recipe name="modGunLaserSight" count="2">
-					<ingredient name="modDualGunLaserSight" count="1"/>
-				</recipe>
-				<recipe name="modDualGunFlashlight" count="1">
-					<ingredient name="modGunFlashlight" count="2"/>
-				</recipe>
-				<recipe name="modGunFlashlight" count="2">
-					<ingredient name="modDualGunFlashlight" count="1"/>
 				</recipe>
 			</append>
 		</else>

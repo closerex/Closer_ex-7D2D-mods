@@ -4,7 +4,6 @@
 			<property name="Extends" value="modGeneralMaster"/>
 			<property name="CustomIcon" value="medic_module"/>
 			<property name="EconomicValue" value="100"/>
-			<property name="UnlockedBy" value="modMedicModuleSchematic"/>
 			<property name="TraderStageTemplate" value="modsTier1"/>
             <item_property_overrides name="*">
                 <property name="ActionUnlocked_3" value="true"/>

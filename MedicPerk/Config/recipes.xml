@@ -1,58 +1,117 @@
 <configs>
 	<append xpath="/recipes">
-		<recipe name="gunMedicPistol" count="1" craft_area="workbench" tags="learnable,perkMedic">
-			<ingredient name="gunBotRoboticsParts" count="1"/>
-			<ingredient name="resourceForgedSteel" count="5"/>
-			<ingredient name="resourceMechanicalParts" count="4"/>
-			<ingredient name="resourceElectricParts" count="2"/>
-			<ingredient name="resourceLegendaryParts" count="0"/>
-			<effect_group>
-				<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunBotRoboticsParts,resourceForgedSteel,resourceElectricParts"/>
-				<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceMechanicalParts"/>
-				<passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
-			</effect_group>
-		</recipe>
+		<conditional>
+			<if cond="mod_loaded('EFTX_Pack_Core')">
+				<recipe name="gunMedicPistol" count="1" craft_area="workbench" tags="learnable,perkMedic">
+					<ingredient name="gunBotRoboticsParts" count="1"/>
+					<ingredient name="resourceWeaponParts" count="1"/>
+					<ingredient name="resourceMechanicalParts" count="4"/>
+					<ingredient name="resourceElectricParts" count="2"/>
+					<ingredient name="resourceOil" count="1"/>
+					<effect_group>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunBotRoboticsParts,resourceElectricParts"/>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceMechanicalParts"/>
+					</effect_group>
+				</recipe>
 
-		<recipe name="gunMedicSMG201" count="1" craft_area="workbench" tags="learnable,perkMedic">
-			<ingredient name="gunBotRoboticsParts" count="1"/>
-			<ingredient name="resourceForgedSteel" count="5"/>
-			<ingredient name="resourceMechanicalParts" count="4"/>
-			<ingredient name="resourceElectricParts" count="2"/>
-			<ingredient name="resourceLegendaryParts" count="0"/>
-			<effect_group>
-				<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunBotRoboticsParts,resourceForgedSteel,resourceElectricParts"/>
-				<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceMechanicalParts"/>
-				<passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
-			</effect_group>
-		</recipe>
+				<recipe name="gunMedicSMG201" count="1" craft_area="workbench" tags="learnable,perkMedic">
+					<ingredient name="gunBotRoboticsParts" count="1"/>
+					<ingredient name="resourceWeaponParts" count="2"/>
+					<ingredient name="resourceMechanicalParts" count="6"/>
+					<ingredient name="resourceElectricParts" count="3"/>
+					<ingredient name="resourceWD40" count="1"/>
+					<effect_group>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunBotRoboticsParts,resourceElectricParts"/>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceMechanicalParts"/>
+						<passive_effect name="CraftingIngredientCount" level="1,6" operation="perc_add" value="0,2" tags="resourceWeaponParts"/>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="resourceWD40"/>
+					</effect_group>
+				</recipe>
+				
+				<recipe name="gunMedicShotgun301" count="1" craft_area="workbench" tags="learnable,perkMedic">
+					<ingredient name="gunBotRoboticsParts" count="1"/>
+					<ingredient name="resourceWeaponParts" count="5"/>
+					<ingredient name="resourceMechanicalParts" count="8"/>
+					<ingredient name="resourceElectricParts" count="4"/>
+					<ingredient name="resourceLegendaryParts" count="1"/>
+					<effect_group>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunBotRoboticsParts,resourceElectricParts"/>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceMechanicalParts"/>
+						<passive_effect name="CraftingIngredientCount" level="1,6" operation="perc_add" value="0,2" tags="resourceWeaponParts"/>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="resourceLegendaryParts"/>
+					</effect_group>
+				</recipe>
 
-		<recipe name="gunMedicShotgun301" count="1" craft_area="workbench" tags="learnable,perkMedic">
-			<ingredient name="gunBotRoboticsParts" count="1"/>
-			<ingredient name="resourceForgedSteel" count="5"/>
-			<ingredient name="resourceMechanicalParts" count="4"/>
-			<ingredient name="resourceElectricParts" count="2"/>
-			<ingredient name="resourceLegendaryParts" count="0"/>
-			<effect_group>
-				<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunBotRoboticsParts,resourceForgedSteel,resourceElectricParts"/>
-				<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceMechanicalParts"/>
-				<passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
-			</effect_group>
-		</recipe>
+				<recipe name="gunMedicAssaultRifle401" count="1" craft_area="workbench" tags="learnable,perkMedic">
+					<ingredient name="gunBotRoboticsParts" count="1"/>
+					<ingredient name="resourceWeaponParts" count="1"/>
+					<ingredient name="resourceMechanicalParts" count="8"/>
+					<ingredient name="resourceElectricParts" count="4"/>
+					<ingredient name="resourceMultitool" count="1"/>
+					<effect_group>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunBotRoboticsParts,resourceElectricParts"/>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceMechanicalParts"/>
+						<passive_effect name="CraftingIngredientCount" level="1,6" operation="perc_add" value="0,2" tags="resourceWeaponParts"/>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="resourceMultitool"/>
+					</effect_group>
+				</recipe>
+			</if>
+			<else>
+				<recipe name="gunMedicPistol" count="1" craft_area="workbench" tags="learnable,perkMedic">
+					<ingredient name="gunBotRoboticsParts" count="1"/>
+					<ingredient name="resourceForgedSteel" count="5"/>
+					<ingredient name="resourceMechanicalParts" count="4"/>
+					<ingredient name="resourceElectricParts" count="2"/>
+					<ingredient name="resourceLegendaryParts" count="0"/>
+					<effect_group>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunBotRoboticsParts,resourceForgedSteel,resourceElectricParts"/>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceMechanicalParts"/>
+						<passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
+					</effect_group>
+				</recipe>
 
-		<recipe name="gunMedicAssaultRifle401" count="1" craft_area="workbench" tags="learnable,perkMedic">
-			<ingredient name="gunBotRoboticsParts" count="1"/>
-			<ingredient name="resourceForgedSteel" count="5"/>
-			<ingredient name="resourceMechanicalParts" count="4"/>
-			<ingredient name="resourceElectricParts" count="2"/>
-			<ingredient name="resourceLegendaryParts" count="0"/>
-			<effect_group>
-				<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunBotRoboticsParts,resourceForgedSteel,resourceElectricParts"/>
-				<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceMechanicalParts"/>
-				<passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
-			</effect_group>
-		</recipe>
+				<recipe name="gunMedicSMG201" count="1" craft_area="workbench" tags="learnable,perkMedic">
+					<ingredient name="gunBotRoboticsParts" count="1"/>
+					<ingredient name="resourceForgedSteel" count="5"/>
+					<ingredient name="resourceMechanicalParts" count="4"/>
+					<ingredient name="resourceElectricParts" count="2"/>
+					<ingredient name="resourceLegendaryParts" count="0"/>
+					<effect_group>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunBotRoboticsParts,resourceForgedSteel,resourceElectricParts"/>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceMechanicalParts"/>
+						<passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
+					</effect_group>
+				</recipe>
 
-		<recipe name="modMedicModule" count="1" craft_area="workbench" tags="learnable,workbenchCrafting">
+				<recipe name="gunMedicShotgun301" count="1" craft_area="workbench" tags="learnable,perkMedic">
+					<ingredient name="gunBotRoboticsParts" count="1"/>
+					<ingredient name="resourceForgedSteel" count="5"/>
+					<ingredient name="resourceMechanicalParts" count="4"/>
+					<ingredient name="resourceElectricParts" count="2"/>
+					<ingredient name="resourceLegendaryParts" count="0"/>
+					<effect_group>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunBotRoboticsParts,resourceForgedSteel,resourceElectricParts"/>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceMechanicalParts"/>
+						<passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
+					</effect_group>
+				</recipe>
+
+				<recipe name="gunMedicAssaultRifle401" count="1" craft_area="workbench" tags="learnable,perkMedic">
+					<ingredient name="gunBotRoboticsParts" count="1"/>
+					<ingredient name="resourceForgedSteel" count="5"/>
+					<ingredient name="resourceMechanicalParts" count="4"/>
+					<ingredient name="resourceElectricParts" count="2"/>
+					<ingredient name="resourceLegendaryParts" count="0"/>
+					<effect_group>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunBotRoboticsParts,resourceForgedSteel,resourceElectricParts"/>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceMechanicalParts"/>
+						<passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
+					</effect_group>
+				</recipe>
+			</else>
+		</conditional>
+
+		<recipe name="modMedicModule" count="1" craft_area="workbench" tags="workbenchCrafting">
 			<ingredient name="resourceForgedSteel" count="10"/>
 			<ingredient name="resourceScrapPolymers" count="5"/>
 			<ingredient name="medicalBloodBag" count="1"/>
