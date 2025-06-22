@@ -34,6 +34,9 @@ public class AnimationGraphBuilder : MonoBehaviour
     private AnimatorControllerParameter[] parameters;
     private readonly Dictionary<int, ParamInWrapper> paramMapping = new Dictionary<int, ParamInWrapper>();
     private readonly Dictionary<string, ParamInWrapper> paramMappingDebug = new Dictionary<string, ParamInWrapper>();
+
+    //only set in Unity Explorer
+    private static bool debugLog = false;
     //private Animator[] childAnimators = Array.Empty<Animator>();
 
     public bool HasWeaponOverride => graph.IsValid();
@@ -359,6 +362,10 @@ public class AnimationGraphBuilder : MonoBehaviour
 #endif
         sw.Stop();
         Log.Out($"changing animation target to {(target ? target.name : "null")} took {sw.ElapsedMilliseconds}");
+        if (debugLog)
+        {
+            Log.Out(StackTraceUtility.ExtractStackTrace());
+        }
     }
 
     private void UpdateChildAnimatorArray(AnimationTargetsAbs target)

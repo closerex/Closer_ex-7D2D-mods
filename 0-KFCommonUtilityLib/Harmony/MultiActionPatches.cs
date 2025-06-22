@@ -2069,7 +2069,7 @@ namespace KFCommonUtilityLib.Harmony
         [HarmonyPrefix]
         private static bool Prefix_ShowHeldItem_Inventory(bool hideFirst, Inventory __instance)
         {
-            //Log.Out($"ShowHeldItem {show} on entity {__instance.entity.entityName}\n{StackTraceUtility.ExtractStackTrace()}");
+            //Log.Out($"ShowHeldItem {hideFirst} on entity {__instance.entity.entityName}\n{StackTraceUtility.ExtractStackTrace()}");
             if (hideFirst && __instance.entity is EntityPlayerLocal && switchHoldingItemCo != null)
             {
                 GameManager.Instance.StopCoroutine(switchHoldingItemCo);
