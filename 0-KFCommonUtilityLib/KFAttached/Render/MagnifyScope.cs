@@ -84,6 +84,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
             {
                 renderTarget.material.shader = newShader;
             }
+            renderTarget.material.renderQueue = 3100;
             initialReticleScale = renderTarget.material.GetFloat("_ReticleScale");
 #else
             if(debugCamera == null)
