@@ -85,7 +85,7 @@ static class AnimationRiggingPatches
         {
             rangedData.muzzle = AnimationRiggingManager.GetTransformOverrideByName(rangedData.invData.model, "Muzzle");
         }
-        rangedData.Laser = AnimationRiggingManager.GetTransformOverrideByName(rangedData.invData.model, "laser");
+        rangedData.Laser = AnimationRiggingManager.GetTransformOverrideByName(rangedData.invData.model, "laser", false);
 
         ItemActionLauncher.ItemActionDataLauncher launcherData = _data as ItemActionLauncher.ItemActionDataLauncher;
         if (launcherData != null)

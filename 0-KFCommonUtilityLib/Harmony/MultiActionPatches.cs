@@ -1813,8 +1813,8 @@ namespace KFCommonUtilityLib.Harmony
         {
             var codes = instructions.ToList();
 
-            var fld_entityid = AccessTools.Field(typeof(NetPackagePlayerStats), nameof(NetPackageHoldingItem.entityId));
-            var fld_itemstack = AccessTools.Field(typeof(NetPackagePlayerStats), nameof(NetPackageHoldingItem.holdingItemStack));
+            var fld_entityid = AccessTools.Field(typeof(NetPackageHoldingItem), nameof(NetPackageHoldingItem.entityId));
+            var fld_itemstack = AccessTools.Field(typeof(NetPackageHoldingItem), nameof(NetPackageHoldingItem.holdingItemStack));
             codes.InsertRange(codes.Count - 1, new[]
             {
                 new CodeInstruction(OpCodes.Ldarg_0),
