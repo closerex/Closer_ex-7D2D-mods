@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
+using UniLinq;
 using UnityEngine;
 
 namespace FPVLegs
@@ -61,12 +62,37 @@ namespace FPVLegs
 
         private static void UpdateTPVAnimatorState(EntityPlayerLocal player)
         {
-            var animator = player.emodel?.GetModelTransform()?.GetComponent<Animator>();
+            //var animator = player.emodel?.GetModelTransform()?.GetComponent<Animator>();
+            var animator = player.emodel?.avatarController?.GetAnimator();
             if (animator)
             {
                 animator.enabled = true;
                 animator.gameObject.GetOrAddComponent<FPVLegHelper>().Init(player);
             }
+            else
+            {
+                Log.Warning($"TPV animator null {StackTraceUtility.ExtractStackTrace()}");
+            }
+        }
+
+        [HarmonyPatch(typeof(AvatarLocalPlayerController), nameof(AvatarLocalPlayerController.TPVResetAnimPose))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_AvatarLocalPlayerController_TPVResetAnimPose(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var fld_frames = AccessTools.Field(typeof(AvatarLocalPlayerController), nameof(AvatarLocalPlayerController.tpvDisableInFrames));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].StoresField(fld_frames))
+                {
+                    codes[i - 1].opcode = OpCodes.Ldc_I4_0;
+                    break;
+                }
+            }
+
+            return codes;
         }
 
         [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.switchModelView))]
