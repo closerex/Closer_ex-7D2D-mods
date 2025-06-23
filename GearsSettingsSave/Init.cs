@@ -60,47 +60,55 @@ namespace GearsSettingsSave
                 string settingFilePath = Path.Combine(SavePath, mod.Mod.Name, "ModSettings.json");
                 if (File.Exists(settingFilePath))
                 {
-                    Dictionary<string, IGlobalModSetting> dict_settings = mod.GlobalSettings.GetAllGlobalSettings().ToDictionary(setting => setting.UniqueSettingName());
-                    using (StreamReader reader = File.OpenText(settingFilePath))
+                    try
                     {
-                        JObject saveObj = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
-                        foreach (JProperty tabProp in saveObj.Properties())
+                        Dictionary<string, IGlobalModSetting> dict_settings = mod.GlobalSettings.GetAllGlobalSettings().ToDictionary(setting => setting.UniqueSettingName());
+                        using (StreamReader reader = File.OpenText(settingFilePath))
                         {
-                            var tab = mod.GlobalSettings.GetTab(tabProp.Name);
-                            if (tab != null && tabProp.Value is JObject tabObj)
+                            JObject saveObj = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
+                            foreach (JProperty tabProp in saveObj.Properties())
                             {
-                                foreach (JProperty catProp in tabObj.Properties())
+                                var tab = mod.GlobalSettings.GetTab(tabProp.Name);
+                                if (tab != null && tabProp.Value is JObject tabObj)
                                 {
-                                    var cat = tab.GetCategory(catProp.Name);
-                                    if (cat != null && catProp.Value is JObject catObj)
+                                    foreach (JProperty catProp in tabObj.Properties())
                                     {
-                                        foreach (JProperty settingProp in catObj.Properties())
+                                        var cat = tab.GetCategory(catProp.Name);
+                                        if (cat != null && catProp.Value is JObject catObj)
                                         {
-                                            var setting = cat.GetSetting(settingProp.Name);
-                                            if(setting != null)
+                                            foreach (JProperty settingProp in catObj.Properties())
                                             {
-                                                switch (setting)
+                                                var setting = cat.GetSetting(settingProp.Name);
+                                                if(setting != null)
                                                 {
-                                                    case IGlobalValueSetting globalValueSetting:
-                                                        globalValueSetting.CurrentValue = (string)settingProp.Value;
-                                                        break;
-                                                    case ColorSelectorSetting colorSelectorSetting:
-                                                        colorSelectorSetting.CurrentColor = StringParsers.ParseHexColor((string)settingProp.Value);
-                                                        break;
-                                                    default:
-                                                        break;
+                                                    switch (setting)
+                                                    {
+                                                        case IGlobalValueSetting globalValueSetting:
+                                                            globalValueSetting.CurrentValue = (string)settingProp.Value;
+                                                            break;
+                                                        case ColorSelectorSetting colorSelectorSetting:
+                                                            colorSelectorSetting.CurrentColor = StringParsers.ParseHexColor((string)settingProp.Value);
+                                                            break;
+                                                        default:
+                                                            break;
+                                                    }
+                                                    dict_settings.Remove(setting.UniqueSettingName());
                                                 }
-                                                dict_settings.Remove(setting.UniqueSettingName());
                                             }
                                         }
                                     }
                                 }
                             }
                         }
+                        foreach (var setting in dict_settings.Values)
+                        {
+                            ResetSetting(setting);
+                        }
                     }
-                    foreach (var setting in dict_settings.Values)
+                    catch (Exception e)
                     {
-                        ResetSetting(setting);
+                        Log.Error($"Failed to load settings from {settingFilePath}: {e.Message}");
+                        continue;
                     }
                 }
                 else
@@ -152,36 +160,43 @@ namespace GearsSettingsSave
                 Directory.CreateDirectory(SavePath);
             }
 
-            JObject saveObj = new JObject();
-            foreach (var tab in mod.GlobalSettings.GetTabs())
+            try
             {
-                JObject tabObj = new JObject();
-                saveObj.Add(new JProperty(tab.Name, tabObj));
-                foreach (var cat in tab.GetAllCategories())
+                JObject saveObj = new JObject();
+                foreach (var tab in mod.GlobalSettings.GetTabs())
                 {
-                    JObject catObj = new JObject();
-                    tabObj.Add(new JProperty(cat.Name, catObj));
-                    foreach (var setting in cat.GetAllSettings())
+                    JObject tabObj = new JObject();
+                    saveObj.Add(new JProperty(tab.Name, tabObj));
+                    foreach (var cat in tab.GetAllCategories())
                     {
-                        string value = setting switch
+                        JObject catObj = new JObject();
+                        tabObj.Add(new JProperty(cat.Name, catObj));
+                        foreach (var setting in cat.GetAllSettings())
                         {
-                            IGlobalValueSetting globalValueSetting => globalValueSetting.CurrentValue,
-                            ColorSelectorSetting colorSelectorSetting => colorSelectorSetting.CurrentColor.ToHexCode(),
-                            _ => null
-                        };
-                        if (value != null)
-                        {
-                            catObj.Add(new JProperty(setting.Name, value));
+                            string value = setting switch
+                            {
+                                IGlobalValueSetting globalValueSetting => globalValueSetting.CurrentValue,
+                                ColorSelectorSetting colorSelectorSetting => colorSelectorSetting.CurrentColor.ToHexCode(),
+                                _ => null
+                            };
+                            if (value != null)
+                            {
+                                catObj.Add(new JProperty(setting.Name, value));
+                            }
                         }
                     }
                 }
+                string path = Path.Combine(SavePath, mod.Mod.Name);
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+                File.WriteAllText(Path.Combine(path, "ModSettings.json"), saveObj.ToString());
             }
-            string path = Path.Combine(SavePath, mod.Mod.Name);
-            if (!Directory.Exists(path))
+            catch (Exception e)
             {
-                Directory.CreateDirectory(path);
+                Log.Error($"Failed to save settings for mod {mod.Mod.Name}: {e.Message}");
             }
-            File.WriteAllText(Path.Combine(path, "ModSettings.json"), saveObj.ToString());
         }
     }
 }
