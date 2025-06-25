@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xml>
+	<Name value="KeepReloading" />
+	<DisplayName value="Keep Reloading" />
+	<Description value="Continues to reload when opening windows." />
+	<Author value="closer_ex" />
+	<Version value="1.0.0" />
+</xml>

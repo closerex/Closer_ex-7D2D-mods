@@ -21,6 +21,8 @@ desktop.ini
 !CustomPlayerActionManager/**
 !GearsSettingsSave/
 !GearsSettingsSave/**
+!KeepReloading/
+!KeepReloading/**
 !FPVLegs/
 !FPVLegs/**
 !FullautoLauncher/
