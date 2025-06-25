@@ -25,7 +25,7 @@ namespace KeepReloading
     [HarmonyPatch]
     public static class KeepReloadingPatches
     {
-        [HarmonyPatch(typeof(XUiC_CameraWindow), nameof(XUiC_CameraWindow.OnOpen))]
+        //[HarmonyPatch(typeof(XUiC_CameraWindow), nameof(XUiC_CameraWindow.OnOpen))]
         [HarmonyPatch(typeof(XUiC_BackpackWindow), nameof(XUiC_BackpackWindow.OnOpen))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_XUiC_CameraWindow_OnOpen(IEnumerable<CodeInstruction> instructions)
