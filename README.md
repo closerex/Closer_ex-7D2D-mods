@@ -8,10 +8,17 @@ For non modders, you can download release version without source code on [Nexus]
 
 [Discord](https://discord.com/channels/243577046616375297/945694105923616779) to find me.
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/I2I41H1U9Z)
+
 ### Description of each mod:
 
 |Required on|Mod name|Description| 
 |:---:|:---:|:---|
+|Server & Client|[BetterModCompatibility](https://www.nexusmods.com/7daystodie/mods/6097) |A temporary fix for xml conflict between mods.|
+|Client Only|[CustomFPVFov](https://www.nexusmods.com/7daystodie/mods/7127) |Allow setting first person arm fov.|
+|Client Only|[GearsSettingsSave](https://www.nexusmods.com/7daystodie/mods/7030) |Save Gears setting values in external save files.|
+|Client Only|[FPVLegs](https://www.nexusmods.com/7daystodie/mods/7524) |Enable legs in fpv.|
+|Client Only|[KeepReloading](https://www.nexusmods.com/7daystodie/mods/7727) |Stop the game from interrupting your reload when opening backpack window.|
 |Server & Client|[CustomMuzzleFlash](https://www.nexusmods.com/7daystodie/mods/2063) |A simple patch allowing modders to add custom muzzle flash particle in vanilla manner. **Check Nexus mod page for instructions.**|
 |Server & Client|[CustomParticleLoader](https://www.nexusmods.com/7daystodie/mods/2036) |A patch on explosion particles, empowering modders to use custom prefabs as explosion particle, with both attached and runtime custom script support. Also updated with custom property support. **Check out the [tutorial](https://community.7daystodie.com/topic/27941-using-custom-explosion-particles-with-working-scripts-in-a20/) .**|
 |Server & Client|[CustomParticleLoaderMultiExplosion](https://www.nexusmods.com/7daystodie/mods/2250) |A patch on CustomParticleLoader takeing advantage of particle collision message to trigger another explosion.|
