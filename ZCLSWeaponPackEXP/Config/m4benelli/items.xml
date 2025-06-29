@@ -100,7 +100,7 @@
 
 		<item name="gunT3M4Benelli">
 			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shotgun,shortRange,barrelAttachments,sideAttachments,smallTopAttachments,mediumTopAttachments,stock,bottomAttachments,attStrength,perkBoomstick,modGunShotgunTubeExtenderMagazine,attachmentsIncluded,canHaveCosmetic,shotgunSkill"/>
-			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib"/>
+			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
 			<property name="BoundItemName" value="meleeWpnStockBashM4Benelli"/>
 			<property name="DisplayType" value="rangedShotgun"/>
 			<property name="CustomIcon" value="BenelliM4"/>

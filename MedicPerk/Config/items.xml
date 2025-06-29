@@ -7,7 +7,7 @@
 			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,sideAttachments,barrelAttachments,noSilencer,magazine,firingMode,noScopes,attAgility,perkGunslinger,9mmGun,attachmentsIncluded,canHaveCosmetic,handgunSkill,medicWeapon"/>
 			<property name="DisplayType" value="rangedGun"/>
 			<property name="CustomIcon" value="medic_pistol"/>
-			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib"/>
+			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
 			<property name="BoundItemName" value="meleeWpnStockBashMedicPistol101"/>
 			<property name="HoldType" value="1"/>
 			<property name="Meshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_pistol.prefab"/>
@@ -194,7 +194,7 @@
 			<property name="CustomIcon" value="medic_smg"/>
 			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shortRange,magazine,drumMagazine,firingMode,attAgility,noScopes,sideAttachments,barrelAttachments,noSilencer,stock,attachmentsIncluded,canHaveCosmetic,9mmGun,perkGunslinger,medicWeapon"/>
 			<property name="DisplayType" value="rangedGun"/>
-			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib"/>
+			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
 			<property name="BoundItemName" value="meleeWpnStockBashMedicSMG201"/>
 			<property name="HoldType" value="6"/>
 			<property name="Meshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_smg.prefab"/>
@@ -391,7 +391,7 @@
 		<item name="gunMedicShotgun301">
 			<property name="Tags" value="weapon,medicWeapon,ranged,holdBreathAiming,reloadPenalty,gun,shotgun,shortRange,sideAttachments,barrelAttachments,noSilencer,noScopes,stock,magazine,drumMagazine,firingMode,bottomAttachments,attStrength,perkBoomstick,attachmentsIncluded,canHaveCosmetic,shotgunSkill"/>
 			<property name="DisplayType" value="rangedShotgun"/>
-			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib"/>
+			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
 			<property name="BoundItemName" value="meleeWpnStockBashMedicSG301"/>
 			<property name="CustomIcon" value="medic_sg301"/>
 			<property name="HoldType" value="71"/>
@@ -582,7 +582,7 @@
 			<property name="CustomIcon" value="medic_ar401"/>
 			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,bottomAttachments,barrelAttachments,noSilencer,sideAttachments,noScopes,stock,magazine,drumMagazine,firingMode,attFortitude,perkMachineGunner,perkBookAutoWeapons,canHaveCosmetic,attachmentsIncluded,machinegunSkill,medicWeapon"/><!-- attachmentsIncluded -->
 			<property name="DisplayType" value="rangedGun"/>
-			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib"/>
+			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
 			<property name="BoundItemName" value="meleeWpnStockBashMedicAR401"/>
 			<property name="HoldType" value="71"/>
 			<property name="Meshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_ar.prefab"/>

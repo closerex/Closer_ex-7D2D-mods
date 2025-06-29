@@ -111,7 +111,8 @@
 		<item name="meleeWpnBladeT3KF2Katana">
 			<property name="Tags" value="machete,melee,grunting,light,longShaft,weapon,meleeWeapon,attAgility,perkDeepCuts,perkTheHuntsman,canHaveCosmetic,bladeSkill,corpseRemoval"/>
 			<property name="DisplayType" value="meleeKnife"/>
-			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib"/>
+			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
+			<property name="UnholsterDelayActive" value="false"/>
 			<property name="BoundItemName" value="meleeWpnBladeBashKatana"/>
 			<property name="CustomIcon" value="meleeWpnBladeT3KF2Katana"/>
 			<property name="HoldType" value="65"/>

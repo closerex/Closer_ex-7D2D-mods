@@ -102,7 +102,7 @@
 		<item name="gunKaboomstick">
 			<property name="CustomIcon" value="UI_WeaponSelect_HRG_Kaboomstick"/>
 			<property name="Tags" value="weapon,ranged,shotgun,holdBreathAiming,reloadPenalty,launcher,attPerception,dBarrel,perkDemolitionsExpert,canHaveCosmetic,noSilencer,kaboomstick,explosivesSkill"/>
-			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib"/>
+			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
 			<property name="BoundItemName" value="meleeWpnStockBashKaboomstick"/>
 			<property name="DisplayType" value="rangedLauncher"/>
 			<property name="HoldType" value="56"/>
