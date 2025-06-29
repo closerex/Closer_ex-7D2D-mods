@@ -128,4 +128,5 @@ public class AnimatorWrapper : IAnimatorWrapper
     public void SetTrigger(string name) => animator.SetTrigger(name);
 
     public void SetTrigger(int id) => animator.SetTrigger(id);
+    public void Update(float deltaTime) => animator.Update(deltaTime);
 }

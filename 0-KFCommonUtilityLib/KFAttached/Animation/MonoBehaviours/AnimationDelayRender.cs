@@ -63,6 +63,19 @@ public class AnimationDelayRender : MonoBehaviour
             }
         }
     }
+
+    private struct TransformSaveJobs : IJobParallelForTransform
+    {
+        public NativeArray<TransformLocalData> data;
+        public void Execute(int index, TransformAccess transform)
+        {
+            if (transform.isValid)
+            {
+                data[index] = new TransformLocalData(transform.localPosition, transform.localRotation, transform.localScale);
+            }
+        }
+    }
+
     [NonSerialized]
     private Transform[] delayTargets;
 
@@ -73,17 +86,21 @@ public class AnimationDelayRender : MonoBehaviour
     TransformAccessArray transArr;
     private JobHandle restoreJob, restoreAndSaveJob;
     private bool dataInitialized = false;
+    private bool skipNextUpdate = false;
+
+    public void SkipNextUpdate()
+    {
+        skipNextUpdate = true;
+    }
 
     private void Awake()
     {
-#if NotEditor
         player = GameManager.Instance?.World?.GetPrimaryPlayer();
         if (player == null)
         {
             Destroy(this);
             return;
         }
-#endif
     }
 
     internal void InitializeTarget()
@@ -115,6 +132,7 @@ public class AnimationDelayRender : MonoBehaviour
 
     private void OnEnable()
     {
+        skipNextUpdate = false;
         InitializeTarget();
         player.playerCamera?.gameObject.GetOrAddComponent<AnimationDelayRenderReference>().targets.Add(this);
         //var preAnimatorUpdateJob = new TransformRestoreJobs
@@ -132,6 +150,7 @@ public class AnimationDelayRender : MonoBehaviour
         player.playerCamera?.gameObject.GetOrAddComponent<AnimationDelayRenderReference>().targets.Remove(this);
         StopAllCoroutines();
         dataInitialized = false;
+        skipNextUpdate = false;
     }
 
     private void Update()
@@ -157,11 +176,23 @@ public class AnimationDelayRender : MonoBehaviour
     {
         if (!dataInitialized)
             return;
-        var postAnimationUpdateJob = new TransformRestoreAndSaveJobs
+        if (skipNextUpdate)
         {
-            data = data
-        };
-        restoreAndSaveJob = postAnimationUpdateJob.Schedule(transArr);
+            var postAnimationUpdateJob = new TransformSaveJobs
+            {
+                data = data
+            };
+            restoreAndSaveJob = postAnimationUpdateJob.Schedule(transArr);
+        }
+        else
+        {
+            var postAnimationUpdateJob = new TransformRestoreAndSaveJobs
+            {
+                data = data
+            };
+            restoreAndSaveJob = postAnimationUpdateJob.Schedule(transArr);
+        }
+
         //for (int i = 0; i < delayTargets.Length; i++)
         //{
         //    Transform target = delayTargets[i];
@@ -192,6 +223,11 @@ public class AnimationDelayRender : MonoBehaviour
         while (true)
         {
             yield return new WaitForEndOfFrame();
+            if (skipNextUpdate)
+            {
+                skipNextUpdate = false;
+                continue;
+            }
             var eofUpdateJob = new TransformRestoreJobs { data = data };
             restoreJob = eofUpdateJob.Schedule(transArr);
         }

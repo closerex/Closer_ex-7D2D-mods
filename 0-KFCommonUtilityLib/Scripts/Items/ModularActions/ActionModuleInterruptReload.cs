@@ -2,6 +2,10 @@
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.StaticManagers;
+using System;
+using System.Collections.Generic;
+using System.Reflection.Emit;
+using UniLinq;
 using UnityEngine;
 
 [TypeTarget(typeof(ItemActionRanged)), TypeDataTarget(typeof(InterruptData))]
@@ -105,6 +109,8 @@ public class ActionModuleInterruptReload
                         Log.Out($"executed!");
                     __customData.eventBridge.OnReloadEnd();
                     __customData.itemAnimator.Play(firingStateName, -1, 0f);
+                    __customData.itemAnimator.Update(0f);
+                    //__customData.eventBridge.GetComponent<AnimationDelayRender>()?.SkipNextUpdate();
                 }
                 else
                 {
@@ -223,5 +229,41 @@ internal static class ReloadInterruptionPatches
             return false;
         }
         return true;
+    }
+
+    [HarmonyPatch(typeof(PlayerMoveController), nameof(PlayerMoveController.Update))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_Update_PlayerMoveController(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var mtd_isrunning = AccessTools.Method(typeof(ItemAction), nameof(ItemAction.IsActionRunning));
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 38)
+            {
+                for (int j = i - 1; j >= 0; j--)
+                {
+                    if (codes[j].Calls(mtd_isrunning))
+                    {
+                        codes.InsertRange(i - 2, new[]
+                        {
+                            new CodeInstruction(OpCodes.Brfalse_S, codes[i - 1].labels[0]),
+                            new CodeInstruction(OpCodes.Ldarg_0),
+                            CodeInstruction.LoadField(typeof(PlayerMoveController), nameof(PlayerMoveController.entityPlayerLocal)),
+                            new CodeInstruction(codes[j - 2].opcode, codes[j - 2].operand),
+                            CodeInstruction.CallClosure<Func<EntityPlayerLocal, int, bool>>(static (player, actionIndex) =>
+                            {
+                                return !(player.inventory.holdingItem.Actions[actionIndex] is IModuleContainerFor<ActionModuleInterruptReload> module) || module.Instance.internalCancelOnly;
+                            })
+                        });
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        return codes;
     }
 }

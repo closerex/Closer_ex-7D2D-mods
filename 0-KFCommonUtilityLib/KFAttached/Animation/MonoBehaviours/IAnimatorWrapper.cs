@@ -70,4 +70,5 @@ public interface IAnimatorWrapper
     void Play(int stateNameHash, int layer);
     void Play(int stateNameHash, int layer, float normalizedTime);
     bool HasState(int layerIndex, int stateID);
+    void Update(float deltaTime);
 }

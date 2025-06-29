@@ -383,7 +383,7 @@ public static class MultiItemPatches
         for (int i = 0; i < codes.Count; i++)
         {
             //ItemAction
-            if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 39)
+            if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 37)
             {
                 codes.InsertRange(i + 1, new[]
                 {
@@ -409,7 +409,9 @@ public static class MultiItemPatches
         }
 
         EntityPlayerLocal player = controller.entityPlayerLocal;
-        if (PlayerActionKFLib.Instance.Enabled && (PlayerActionKFLib.Instance.AltMelee.WasPressed || PlayerActionKFLib.Instance.AltMelee.WasReleased) && player.inventory.holdingItemData is IModuleContainerFor<MultiItemInvData> dataModule)
+        bool wasPressed = PlayerActionKFLib.Instance.AltMelee.WasPressed;
+        bool wasReleased = PlayerActionKFLib.Instance.AltMelee.WasReleased;
+        if (PlayerActionKFLib.Instance.Enabled && player.inventory.GetIsFinishedSwitchingHeldItem() && (wasPressed || wasReleased) && player.inventory.holdingItemData is IModuleContainerFor<MultiItemInvData> dataModule)
         {
             bool isReloading = player.IsReloading();
             int actionIndex = MultiActionManager.GetActionIndexForEntity(player);
@@ -417,35 +419,42 @@ public static class MultiItemPatches
             MultiItemInvData multiInvData = dataModule.Instance;
             if (multiInvData.itemModule.BoundItemClass?.Actions?[0] is ItemActionDynamicMelee dynamicAction && !multiInvData.itemModule.IsBoundActionRunning(multiInvData) && ((player.inventory.IsHoldingGun() && (!isReloading || reloadModule != null)) || !player.inventory.IsHoldingItemActionRunning()) && !player.AimingGun && !multiInvData.originalData.IsAnyActionLocked())
             {
-                multiInvData.useBound = true;
-                multiInvData.itemModule.SetBoundParams(player.MinEventContext, multiInvData);
-                bool canRun = dynamicAction.canStartAttack(multiInvData.boundInvData.actionData[0] as ItemActionDynamicMelee.ItemActionDynamicMeleeData);
-                multiInvData.itemModule.RestoreParams(player.MinEventContext, multiInvData);
-                multiInvData.useBound = false;
-                if (!canRun)
+                if (wasPressed)
                 {
-                    return;
-                }
-                if (isReloading)
-                {
-                    var itemActionData = player.inventory.holdingItemData.actionData[actionIndex] as ItemActionRanged.ItemActionDataRanged;
-                    itemActionData.m_LastShotTime = Time.time;
-                    reloadModule.Instance.Postfix_ExecuteAction(itemActionData, ((IModuleContainerFor<ActionModuleInterruptReload.InterruptData>)itemActionData).Instance, new ActionModuleInterruptReload.State
+                    multiInvData.useBound = true;
+                    multiInvData.itemModule.SetBoundParams(player.MinEventContext, multiInvData);
+                    ItemActionDynamicMelee.ItemActionDynamicMeleeData meleeData = multiInvData.boundInvData.actionData[0] as ItemActionDynamicMelee.ItemActionDynamicMeleeData;
+                    bool canRun = dynamicAction.canStartAttack(meleeData);
+                    multiInvData.itemModule.RestoreParams(player.MinEventContext, multiInvData);
+                    multiInvData.useBound = false;
+                    if (!canRun)
                     {
-                        executed = true,
-                        lastShotTime = -1,
-                        isReloading = true,
-                        isWeaponReloading = true,
-                    });
+                        //Log.Out($"Fail to run alt melee on slot {player.inventory.holdingItemIdx} released {wasReleased} is switching item {player.inventory.isSwitchingHeldItem} is attacking {meleeData.Attacking} execute time elapsed {Time.time - meleeData.lastUseTime}");
+                        return;
+                    }
+                    if (isReloading)
+                    {
+                        var itemActionData = player.inventory.holdingItemData.actionData[actionIndex] as ItemActionRanged.ItemActionDataRanged;
+                        itemActionData.m_LastShotTime = Time.time;
+                        reloadModule.Instance.Postfix_ExecuteAction(itemActionData, ((IModuleContainerFor<ActionModuleInterruptReload.InterruptData>)itemActionData).Instance, new ActionModuleInterruptReload.State
+                        {
+                            executed = true,
+                            lastShotTime = -1,
+                            isReloading = true,
+                            isWeaponReloading = true,
+                        });
+                    }
+                    player.emodel.avatarController.UpdateBool(AvatarController.reloadHash, false);
+                    multiInvData.boundInvData.itemStack.itemValue.UseTimes = 0;
                 }
-                player.emodel.avatarController.UpdateBool(AvatarController.reloadHash, false);
-                multiInvData.boundInvData.itemStack.itemValue.UseTimes = 0;
+
                 multiInvData.useBound = true;
                 multiInvData.itemModule.SetBoundParams(player.MinEventContext, multiInvData);
-                multiInvData.itemModule.BoundItemClass.ExecuteAction(0, multiInvData.boundInvData, PlayerActionKFLib.Instance.AltMelee.WasReleased, controller.playerInput);
+                multiInvData.itemModule.BoundItemClass.ExecuteAction(0, multiInvData.boundInvData, wasReleased, controller.playerInput);
                 player.emodel.avatarController.UpdateBool("UseAltMelee", true);
                 multiInvData.itemModule.RestoreParams(player.MinEventContext, multiInvData);
                 multiInvData.useBound = false;
+                //Log.Out($"Execute alt melee on slot {player.inventory.holdingItemIdx} released {wasReleased}");
             }
         }
     }

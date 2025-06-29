@@ -97,15 +97,25 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         {
             if (entity is not EntityPlayer player)
                 return null;
-            return GetRigTargetsFromInventory(player.inventory);
+            return GetCurRigTargetsFromInventory(player.inventory);
         }
 
-        public static AnimationTargetsAbs GetRigTargetsFromInventory(Inventory inventory)
+        public static AnimationTargetsAbs GetCurRigTargetsFromInventory(Inventory inventory)
         {
             Transform holdingItemTransform = inventory?.GetHoldingItemTransform();
             if (holdingItemTransform)
             {
                 return holdingItemTransform.GetComponent<AnimationTargetsAbs>();
+            }
+            return null;
+        }
+
+        public static AnimationTargetsAbs GetLastRigTargetsFromInventory(Inventory inventory)
+        {
+            Transform lastHoldingItemTransform = inventory?.lastdrawnHoldingItemTransform;
+            if (lastHoldingItemTransform)
+            {
+                return lastHoldingItemTransform.GetComponent<AnimationTargetsAbs>();
             }
             return null;
         }
@@ -307,7 +317,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         //patched to ItemActionRanged.ItemActionEffect
         public static bool SpawnFpvParticles(bool isLocalFpv, ItemActionData _actionData, string particlesMuzzleFire, string particlesMuzzleFireFpv, string particlesMuzzleSmoke, string particlesMuzzleSmokeFpv)
         {
-            if (!isLocalFpv || !GetRigTargetsFromInventory(_actionData.invData.holdingEntity.inventory))
+            if (!isLocalFpv || !GetCurRigTargetsFromInventory(_actionData.invData.holdingEntity.inventory))
                 return false;
             var itemActionDataRanged = _actionData as ItemActionRanged.ItemActionDataRanged;
             EntityPlayerLocal player = GameManager.Instance.World.GetPrimaryPlayer();

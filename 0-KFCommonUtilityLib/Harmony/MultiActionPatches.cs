@@ -4,6 +4,7 @@ using KFCommonUtilityLib.Scripts.NetPackages;
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -1956,13 +1957,15 @@ namespace KFCommonUtilityLib.Harmony
         //may change in the future
         [HarmonyPatch(typeof(PlayerMoveController), nameof(PlayerMoveController.Update))]
         [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_Update_PlayerMoveController(IEnumerable<CodeInstruction> instructions)
+        private static IEnumerable<CodeInstruction> Transpiler_Update_PlayerMoveController(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             var codes = instructions.ToList();
 
             MethodInfo mtd_getgun = AccessTools.Method(typeof(Inventory), nameof(Inventory.GetHoldingGun));
             MethodInfo mtd_getprimary = AccessTools.Method(typeof(Inventory), nameof(Inventory.GetHoldingPrimary));
             FieldInfo fld_reload = AccessTools.Field(typeof(PlayerActionsPermanent), nameof(PlayerActionsPermanent.Reload));
+            FieldInfo fld_action = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
+            FieldInfo fld_data = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.actionData));
             for (int i = 0; i < codes.Count; i++)
             {
                 if (codes[i].Calls(mtd_getgun))
@@ -1989,6 +1992,28 @@ namespace KFCommonUtilityLib.Harmony
                         new CodeInstruction(OpCodes.Brfalse, label)
                     });
                     i += 5;
+                }
+                // holding item
+                else if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 35)
+                {
+                    var lbd_index = generator.DeclareLocal(typeof(int));
+                    codes.InsertRange(i + 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(PlayerMoveController), nameof(PlayerMoveController.entityPlayerLocal)),
+                        CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.GetActionIndexForEntity)),
+                        new CodeInstruction(OpCodes.Stloc_S, lbd_index)
+                    });
+                    i += 4;
+
+                    for (int j = i + 1; j < codes.Count - 1; j++)
+                    {
+                        if ((codes[j].LoadsField(fld_action) || codes[j].LoadsField(fld_data)) && codes[j + 1].opcode == OpCodes.Ldc_I4_0)
+                        {
+                            codes[j + 1].opcode = OpCodes.Ldloc_S;
+                            codes[j + 1].operand = lbd_index;
+                        }
+                    }
                 }
             }
 
@@ -2065,16 +2090,16 @@ namespace KFCommonUtilityLib.Harmony
 
         #region fast toolbelt item switching issue fix
         private static Coroutine switchHoldingItemCo;
+
         [HarmonyPatch(typeof(Inventory), nameof(Inventory.ShowHeldItem))]
         [HarmonyPrefix]
         private static bool Prefix_ShowHeldItem_Inventory(bool hideFirst, Inventory __instance)
         {
-            //Log.Out($"ShowHeldItem {hideFirst} on entity {__instance.entity.entityName}\n{StackTraceUtility.ExtractStackTrace()}");
-            if (hideFirst && __instance.entity is EntityPlayerLocal && switchHoldingItemCo != null)
+            if (__instance.entity is EntityPlayerLocal && switchHoldingItemCo != null)
             {
+                //Log.Out($"ShowHeldItem {hideFirst}\n{StackTraceUtility.ExtractStackTrace()}");
                 GameManager.Instance.StopCoroutine(switchHoldingItemCo);
                 switchHoldingItemCo = null;
-                GameManager.Instance.StartCoroutine(__instance.delayedShowHideHeldItem(true, 0f));
             }
             return true;
         }
@@ -2106,6 +2131,256 @@ namespace KFCommonUtilityLib.Harmony
                 }
             }
             return codes;
+        }
+
+        private static Coroutine swapItemCo;
+
+        [HarmonyPatch(typeof(PlayerMoveController), nameof(PlayerMoveController.swapItem))]
+        [HarmonyPrefix]
+        private static void Prefix_swapItem_PlayerMoveController(PlayerMoveController __instance)
+        {
+            if (__instance.entityPlayerLocal != null && swapItemCo != null)
+            {
+                GameManager.Instance.StopCoroutine(swapItemCo);
+                swapItemCo = null;
+            }
+        }
+
+        [HarmonyPatch(typeof(PlayerMoveController), nameof(PlayerMoveController.swapItem))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_swapItem_PlayerMoveController(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            var codes = instructions.ToList();
+
+            var mtd_begin = AccessTools.Method(typeof(Inventory), nameof(Inventory.BeginSwapHoldingItem));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].opcode == OpCodes.Pop)
+                {
+                    codes[i] = CodeInstruction.StoreField(typeof(MultiActionPatches), nameof(swapItemCo));
+                    break;
+                }
+            }
+            return codes;
+        }
+
+        //[HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.HolsterWeapon))]
+        //[HarmonyPostfix]
+        //private static void Postfix_HolsterWeapon_EntityPlayerLocal(EntityPlayerLocal __instance, bool holster)
+        //{
+        //    if(holster && __instance.inventory.lastdrawnHoldingItemData is IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData> data)
+        //    {
+        //        Log.Out($"HolsterWeapon {holster} on entity {__instance.entityName}\n{StackTraceUtility.ExtractStackTrace()}");
+        //        data.Instance.IsHolstering = true;
+        //    }
+        //}
+
+        //[HarmonyPatch(typeof(Inventory), nameof(Inventory.SetIsFinishedSwitchingHeldItem))]
+        //[HarmonyPostfix]
+        //private static void Postfix_SetIsFinishedSwitchingHeldItem_Inventory(Inventory __instance)
+        //{
+        //    Log.Out($"SetIsFinishedSwitchingHeldItem holding index {__instance.holdingItemIdx} last index {__instance.m_LastDrawnHoldingItemIndex} cur item is unholstering {__instance.holdingItemData is IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData> module && module.Instance.IsUnholstering} last item is holstering {__instance.lastdrawnHoldingItemData is IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData> module1 && module1.Instance.IsHolstering}\n{StackTraceUtility.ExtractStackTrace()}");
+        //}
+
+        [HarmonyPatch(typeof(Inventory), nameof(Inventory.OnUpdate))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_OnUpdate_Inventory(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            var codes = instructions.ToList();
+
+            var mtd_cancel = AccessTools.Method(typeof(AvatarController), nameof(AvatarController.CancelEvent), new[] {typeof(int)});
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].Calls(mtd_cancel))
+                {
+                    for (int j = i - 1; j >= 0; j--)
+                    {
+                        if (codes[j].Branches(out var lbl))
+                        {
+                            codes.InsertRange(j + 1, new[]
+                            {
+                                new CodeInstruction(OpCodes.Ldarg_0),
+                                CodeInstruction.CallClosure<Func<Inventory, bool>>(static (inv) =>
+                                {
+                                    return !inv.GetIsFinishedSwitchingHeldItem() &&
+                                    ((inv.holdingItemData is IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData> data && data.Instance.IsUnholstering) ||
+                                     (inv.lastdrawnHoldingItemData is IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData> data1 && data1.Instance.IsHolstering));
+                                }),
+                                new CodeInstruction(OpCodes.Brtrue_S, lbl),
+                            });
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(Inventory), nameof(Inventory.delayedShowHideHeldItem), MethodType.Enumerator)]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_delayedShowHideHeldItem_Inventory(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            var codes = instructions.ToList();
+
+            var mtd_holster = AccessTools.Method(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.HolsterWeapon));
+
+            for (int i = 0; i < codes.Count - 1; i++)
+            {
+                if (codes[i].Calls(mtd_holster) && codes[i - 1].opcode == OpCodes.Ldc_I4_1)
+                {
+                    codes.InsertRange(i + 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldloc_1),
+                        CodeInstruction.CallClosure<Action<Inventory>>(static (Inventory inv) =>
+                        {
+                            if(inv.lastdrawnHoldingItemData is IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData> data)
+                            {
+                                if (data.Instance.module.holsterDelayActive)
+                                {
+                                    var targets = AnimationRiggingManager.GetLastRigTargetsFromInventory(inv);
+                                    if (targets && targets.IsAnimationSet)
+                                    {
+                                        //Log.Out($"HolsterWeapon\n{StackTraceUtility.ExtractStackTrace()}");
+                                        data.Instance.IsHolstering = true;
+                                    }
+                                }
+                                data.Instance.IsUnholstering = false;
+                            }
+                        })
+                    });
+                    i += 2;
+                }
+                else if (codes[i].LoadsConstant(0.15f) && codes[i + 1].opcode == OpCodes.Stfld)
+                {
+                    for (int j = i + 1; j < codes.Count; j++)
+                    {
+                        if (codes[j].opcode == OpCodes.Ret)
+                        {
+                            // the current enumerator field to store
+                            var fld_current = codes[i + 6].operand;
+
+                            // jump to the next iteration if wait time is 0
+                            codes[i - 3].operand = 0f;
+                            codes[i - 2].opcode = OpCodes.Ble_Un_S;
+                            codes[i - 2].operand = codes[j + 1].labels[0];
+
+                            // mark the end of current iteration
+                            var lbl_end = generator.DefineLabel();
+                            codes[i + 7].WithLabels(lbl_end);
+
+                            // define and exchange labels on the beginning of the current iteration
+                            var lbl_new = generator.DefineLabel();
+                            var lbl_prev = codes[i - 5].ExtractLabels();
+                            codes[i - 5].WithLabels(lbl_new);
+
+                            // update the target item index
+                            codes.InsertRange(j + 4, new[]
+                            {
+                                new CodeInstruction(OpCodes.Ldloc_1),
+                                CodeInstruction.CallClosure<Action<Inventory>>(static (Inventory inv) =>
+                                {
+                                    var player = inv.entity as EntityPlayerLocal;
+                                    inv.m_HoldingItemIdx = inv.m_FocusedItemIdx;
+                                    player.MoveController.nextHeldItem?.Clear();
+                                })
+                            });
+
+                            // remove unwanted wait time change
+                            codes.RemoveRange(i - 1, 3);
+
+                            // insert at the beginning of the current iteration
+                            var lbd_prev = generator.DeclareLocal(typeof(ItemModuleTrueHolster.TrueHolsterData));
+                            codes.InsertRange(i - 5, new[]
+                            {
+                                new CodeInstruction(OpCodes.Ldnull).WithLabels(lbl_prev),
+                                new CodeInstruction(OpCodes.Stloc_S, lbd_prev),
+                                // check if use true holster
+                                new CodeInstruction(OpCodes.Ldloc_1),
+                                new CodeInstruction(OpCodes.Ldc_I4_1),
+                                new CodeInstruction(OpCodes.Ldloca_S, lbd_prev),
+                                CodeInstruction.Call(typeof(MultiActionPatches), nameof(IsTrueHolster)),
+                                // if not, continue with vanilla wait time
+                                new CodeInstruction(OpCodes.Brfalse_S, lbl_new),
+                                // wait for holster
+                                new CodeInstruction(OpCodes.Ldarg_0),
+                                new CodeInstruction(OpCodes.Ldloc_S, lbd_prev),
+                                CodeInstruction.Call(typeof(ItemModuleTrueHolster.TrueHolsterData), nameof(ItemModuleTrueHolster.TrueHolsterData.WaitForHolster)),
+                                new CodeInstruction(OpCodes.Stfld, fld_current),
+                                // jump to the end of the current iteration
+                                new CodeInstruction(OpCodes.Br_S, lbl_end)
+                            });
+
+                            break;
+                        }
+                    }
+
+                    for (int j = i + 1; j < codes.Count; j++)
+                    {
+                        if (codes[j].LoadsConstant(0.3f))
+                        {
+                            // define and exchange labels on the beginning of the current iteration
+                            var fld_current = codes[j + 3].operand;
+                            var fld_wait = codes[j - 1].operand;
+                            var lbl_next = codes[j + 9].labels[0];
+                            var lbl_new = generator.DefineLabel();
+
+                            // mark the end of current iteration
+                            var lbl_end = generator.DefineLabel();
+                            codes[j + 4].WithLabels(lbl_end);
+
+                            // delay finish switching item
+                            codes.InsertRange(j + 12, new[]
+                            {
+                                new CodeInstruction(OpCodes.Ldloc_1),
+                                CodeInstruction.Call(typeof(Inventory), nameof(Inventory.SetIsFinishedSwitchingHeldItem)),
+                            });
+
+                            // insert before the yield wait
+                            var lbd_new = generator.DeclareLocal(typeof(ItemModuleTrueHolster.TrueHolsterData));
+                            codes.InsertRange(j - 3, new[]
+                            {
+                                new CodeInstruction(OpCodes.Ldnull),
+                                new CodeInstruction(OpCodes.Stloc_S, lbd_new),
+                                // check if use true holster
+                                new CodeInstruction(OpCodes.Ldloc_1),
+                                new CodeInstruction(OpCodes.Ldc_I4_0),
+                                new CodeInstruction(OpCodes.Ldloca_S, lbd_new),
+                                CodeInstruction.Call(typeof(MultiActionPatches), nameof(IsTrueHolster)),
+                                // if not, continue with vanilla wait time
+                                new CodeInstruction(OpCodes.Brfalse_S, lbl_new),
+                                // wait for unholster
+                                new CodeInstruction(OpCodes.Ldarg_0),
+                                new CodeInstruction(OpCodes.Ldloc_S, lbd_new),
+                                CodeInstruction.Call(typeof(ItemModuleTrueHolster.TrueHolsterData), nameof(ItemModuleTrueHolster.TrueHolsterData.WaitForUnholster)),
+                                new CodeInstruction(OpCodes.Stfld, fld_current),
+                                // jump to the end of the current iteration
+                                new CodeInstruction(OpCodes.Br_S, lbl_end),
+                                new CodeInstruction(OpCodes.Ldarg_0).WithLabels(lbl_new),
+                                new CodeInstruction(OpCodes.Ldfld, fld_wait),
+                                new CodeInstruction(OpCodes.Ldc_R4, 0f),
+                                new CodeInstruction(OpCodes.Ble_Un_S, lbl_next)
+                            });
+
+                            codes[j - 7].WithLabels(codes[j - 9].ExtractLabels());
+                            codes.RemoveRange(j - 9, 2);
+                            break;
+                        }
+                    }
+                    break;
+                }
+
+            }
+            return codes;
+        }
+
+        private static bool IsTrueHolster(Inventory inv, bool lastHolding, out ItemModuleTrueHolster.TrueHolsterData data)
+        {
+            data = ((lastHolding ? inv.lastdrawnHoldingItemData : inv.holdingItemData) as IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData>)?.Instance;
+            var targets = lastHolding ? AnimationRiggingManager.GetLastRigTargetsFromInventory(inv) : AnimationRiggingManager.GetCurRigTargetsFromInventory(inv);
+            return data != null && targets && targets.IsAnimationSet;
         }
         #endregion
 

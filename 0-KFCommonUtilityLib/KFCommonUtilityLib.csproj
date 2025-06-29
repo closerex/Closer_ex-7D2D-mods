@@ -442,6 +442,7 @@
     <Compile Include="KFAttached\Animation\MonoBehaviours\IPlayableGraphRelated.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationAmmoUpdateState.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationCustomMeleeAttackState.cs" />
+    <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationHolsterState.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationInspectFix.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationLockAction.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationMultiStageReloadState.cs" />
@@ -587,6 +588,7 @@
     <Compile Include="Scripts\Items\ModularActions\ActionModuleVariableZoom.cs" />
     <Compile Include="Scripts\Items\ModularClasses\ItemModuleMultiItem.cs" />
     <Compile Include="Scripts\Items\ModularClasses\ItemModuleSortable.cs" />
+    <Compile Include="Scripts\Items\ModularClasses\ItemModuleTrueHolster.cs" />
     <Compile Include="Scripts\Items\ModularClasses\ItemModuleVariableZoom.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionAttachPrefabToEntitySync.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionCVarExpression.cs" />

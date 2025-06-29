@@ -88,5 +88,6 @@ public class PlayableWrapper : IAnimatorWrapper
     public void Play(int stateNameHash, int layer, float normalizedTime) => playable.Play(stateNameHash, layer, normalizedTime);
 
     public bool HasState(int layerIndex, int stateID) => playable.HasState(layerIndex, stateID);
+    public void Update(float deltaTime) { }
 }
 
