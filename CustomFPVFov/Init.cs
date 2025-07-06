@@ -102,6 +102,13 @@ namespace CustomFPVFov
         {
             FovOverrides.UpdatePlayerFov(__instance);
         }
+
+        [HarmonyPatch(typeof(SDCSUtils), nameof(SDCSUtils.CreateVizFP))]
+        [HarmonyPostfix]
+        private static void Postfix_SDCSUtils_CreateVizFP(EntityAlive entity)
+        {
+            (entity as EntityPlayerLocal)?.vp_FPWeapon?.CacheRenderers();
+        }
     }
 
     public class GearsImpl : IGearsModApi

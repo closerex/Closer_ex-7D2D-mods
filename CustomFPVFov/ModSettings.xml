@@ -3,7 +3,7 @@
   <Global>
     <Tab name="FovSettings" displayKey="CustomFovSettingsTabName" tooltipKey="">
       <Category name="Main" displayKey="CustomFovSettingsMainCategoryName" tooltipKey="">
-        <Slider name="FovValue" displayKey="CustomFovSettingsValueName" tooltipKey="CustomFovSettingsValueDesc" value="45.00" defaultValue="45.00">
+        <Slider name="FovValue" displayKey="CustomFovSettingsValueName" tooltipKey="CustomFovSettingsValueDesc" value="60.25" defaultValue="45.00">
           <Property increment="0.01" minValue="15.00" maxValue="75.00" type="incrementalValuesFloat" />
           <Property type="formatter" formatString="0.00" />
         </Slider>
