@@ -1267,6 +1267,16 @@ public static class CommonUtilityPatch
         tmp.life = 5f;
     }
 
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.onHoldingEntityFired))]
+    [HarmonyPostfix]
+    private static void Postfix_onHoldingEntityFired_ItemActionRanged(ItemActionData _actionData)
+    {
+        if (!_actionData.invData.holdingEntity.isEntityRemote)
+        {
+            AnimationAmmoUpdateState.SetAmmoCountForEntity(_actionData.invData.holdingEntity, _actionData.invData.slotIdx);
+        }
+    }
+
     [HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.UpdateShakes))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_UpdateShakes_vp_FPCamera(IEnumerable<CodeInstruction> instructions)
@@ -1329,6 +1339,43 @@ public static class CommonUtilityPatch
         }
         return codes;
     }
+
+    [HarmonyPatch(typeof(XUiC_SkillPerkLevel), nameof(XUiC_SkillPerkLevel.btnBuy_OnPress))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_btnBuy_OnPress(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var mtd_fire = AccessTools.Method(typeof(EntityAlive), nameof(EntityAlive.FireEvent));
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_fire))
+            {
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Ldloc_0),
+                    CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.MinEventContext)),
+                    CodeInstruction.CallClosure<Action<XUiC_SkillPerkLevel, MinEventParams>>((xui, par) =>
+                    {
+                        xui.CurrentSkill.ProgressionClass.FireEvent(MinEventTypes.onPerkLevelChanged, par);
+                    }),
+                });
+                codes.RemoveRange(i - 3, 4);
+                break;
+            }
+        }
+
+        return codes;
+    }
+
+    //[HarmonyPatch(typeof(ProgressionValue), nameof(ProgressionValue.Level), MethodType.Setter)]
+    //[HarmonyPostfix]
+    //private static void Postfix_Level_ProgressionValue(int value, ProgressionValue __instance)
+    //{
+    //    Log.Out($"ProgressionValue Level set to {value} for {__instance.Name}\n{StackTraceUtility.ExtractStackTrace()}");
+    //}
 
     //[HarmonyPatch(typeof(EntityBuffs), nameof(EntityBuffs.AddBuff), typeof(string), typeof(Vector3i), typeof(int), typeof(bool), typeof(bool), typeof(float))]
     //[HarmonyPostfix]

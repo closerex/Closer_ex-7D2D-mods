@@ -1,4 +1,10 @@
 using System.Collections;
+using System.Collections.Generic;
+#if NotEditor
+using UniLinq;
+#else
+using System.Linq;
+#endif
 using UnityEngine;
 
 [AddComponentMenu("KFAttachments/Binding Helpers/Transform Activation Binding")]
@@ -19,6 +25,61 @@ public class TransformActivationBinding : MonoBehaviour
     [SerializeField]
     private string[] animatorParamBindings;
     internal AnimationTargetsAbs targets;
+
+    public IEnumerable<GameObject> AllBindings
+    {
+        get
+        {
+            if (bindings != null)
+            {
+                foreach (var binding in bindings)
+                {
+                    if (binding)
+                        yield return binding;
+                }
+            }
+            if (inverseBindings != null)
+            {
+                foreach (var binding in inverseBindings)
+                {
+                    if (binding)
+                        yield return binding;
+                }
+            }
+            if (enableOnDisable != null)
+            {
+                foreach (var binding in enableOnDisable)
+                {
+                    if (binding)
+                        yield return binding;
+                }
+            }
+            if (disableOnEnable != null)
+            {
+                foreach (var binding in disableOnDisable)
+                {
+                    if (binding)
+                        yield return binding;
+                }
+            }
+            if (enableOnEnable != null)
+            {
+                foreach (var binding in enableOnEnable)
+                {
+                    if (binding)
+                        yield return binding;
+                }
+            }
+            if (disableOnDisable != null)
+            {
+                foreach (var binding in disableOnDisable)
+                {
+                    if (binding)
+                        yield return binding;
+                }
+            }
+        }
+    }
 
     private void OnEnable()
     {

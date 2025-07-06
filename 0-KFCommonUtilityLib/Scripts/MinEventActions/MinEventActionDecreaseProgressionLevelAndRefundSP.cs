@@ -18,6 +18,7 @@
                     entityPlayerLocal.Progression.SkillPoints += spcount;
                     entityPlayerLocal.Progression.bProgressionStatsChanged = true;
                     entityPlayerLocal.bPlayerStatsChanged = true;
+                    //Log.Out($"[MinEventActionDecreaseProgressionLevelAndRefundSP] Decreased progression level of {this.progressionName} to {this.level} and refunded {spcount} SP. Current perk: {_params.ProgressionValue.Name} level {_params.ProgressionValue.Level}");
                 }
             }
         }

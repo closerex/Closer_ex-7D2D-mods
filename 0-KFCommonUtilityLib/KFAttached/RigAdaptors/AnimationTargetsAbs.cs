@@ -39,7 +39,8 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     protected bool tpvSet = false;
 
     private Dictionary<string, GameObject> dict_attachments = new Dictionary<string, GameObject>();
-    private List<GameObject> list_attachments = new List<GameObject>();
+    private List<GameObject> list_attached_attachments = new List<GameObject>();
+    private List<GameObject> list_activate_attachments = new List<GameObject>();
 
     public abstract Transform ItemFpv { get; protected set; }
     public abstract Transform AttachmentRef { get; protected set; }
@@ -66,6 +67,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
         foreach (var bindings in GetComponentsInChildren<TransformActivationBinding>(true))
         {
             bindings.targets = this;
+            list_activate_attachments.AddRange(bindings.AllBindings);
         }
 #if NotEditor
         gameObject.GetOrAddComponent<AttachmentReference>().attachmentReference = AttachmentRef;
@@ -99,9 +101,9 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
         }
         appended.Merge(this);
         dict_attachments[prefab.name] = prefab.gameObject;
-        if (!list_attachments.Contains(prefab))
+        if (!list_attached_attachments.Contains(prefab))
         {
-            list_attachments.Add(prefab);
+            list_attached_attachments.Add(prefab);
         }
     }
 
@@ -125,15 +127,31 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
             reference.Remove();
         }
         dict_attachments.Remove(name);
-        list_attachments.Remove(prefab);
+        list_attached_attachments.Remove(prefab);
         return prefab;
     }
 
     public Transform GetAttachmentPathOverride(string path, bool onlyActive)
     {
-        for (int i = list_attachments.Count - 1; i >= 0; i--)
+        for (int i = list_activate_attachments.Count - 1; i >= 0; i--)
         {
-            Transform child = onlyActive ? GameUtils.FindDeepChildActive(list_attachments[i].transform, path) : GameUtils.FindDeepChild(list_attachments[i].transform, path);
+            if (!list_activate_attachments[i].activeInHierarchy)
+            {
+                continue;
+            }
+            Transform child = onlyActive ? GameUtils.FindDeepChildActive(list_activate_attachments[i].transform, path) : GameUtils.FindDeepChild(list_activate_attachments[i].transform, path);
+            if (child)
+            {
+                return child;
+            }
+        }
+        for (int i = list_attached_attachments.Count - 1; i >= 0; i--)
+        {
+            if (!list_attached_attachments[i].activeInHierarchy)
+            {
+                continue;
+            }
+            Transform child = onlyActive ? GameUtils.FindDeepChildActive(list_attached_attachments[i].transform, path) : GameUtils.FindDeepChild(list_attached_attachments[i].transform, path);
             if (child)
             {
                 return child;
@@ -371,7 +389,8 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
 #endif
         PlayerAnimatorTrans = null;
         dict_attachments = null;
-        list_attachments = null;
+        list_attached_attachments = null;
+        list_activate_attachments = null;
 
         Component.Destroy(this);
         //Log.Out(StackTraceUtility.ExtractStackTrace());

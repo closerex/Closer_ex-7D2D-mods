@@ -446,12 +446,12 @@ public static class MultiItemPatches
                     }
                     player.emodel.avatarController.UpdateBool(AvatarController.reloadHash, false);
                     multiInvData.boundInvData.itemStack.itemValue.UseTimes = 0;
+                    player.emodel.avatarController.UpdateBool("UseAltMelee", true);
                 }
 
                 multiInvData.useBound = true;
                 multiInvData.itemModule.SetBoundParams(player.MinEventContext, multiInvData);
                 multiInvData.itemModule.BoundItemClass.ExecuteAction(0, multiInvData.boundInvData, wasReleased, controller.playerInput);
-                player.emodel.avatarController.UpdateBool("UseAltMelee", true);
                 multiInvData.itemModule.RestoreParams(player.MinEventContext, multiInvData);
                 multiInvData.useBound = false;
                 //Log.Out($"Execute alt melee on slot {player.inventory.holdingItemIdx} released {wasReleased}");

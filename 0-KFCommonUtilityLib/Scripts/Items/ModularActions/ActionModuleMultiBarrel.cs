@@ -235,9 +235,9 @@ public class ActionModuleMultiBarrel
                 {
                     totalSwitches = roundLeft;
                 }
-                int lastCycleSwitches = totalSwitches % barrelCount;
-                int barrelGroup = barrelCount / roundsPerShot;
-                curBarrelIndex = (barrelCount - lastCycleSwitches) / barrelGroup * barrelGroup;
+                int groupsPerCycle = barrelCount / roundsPerShot;
+                int totalGroupCount = (totalSwitches + roundsPerShot - 1) / roundsPerShot;
+                curBarrelIndex = (totalGroupCount % groupsPerCycle) * roundsPerShot;
             }
             else
             {

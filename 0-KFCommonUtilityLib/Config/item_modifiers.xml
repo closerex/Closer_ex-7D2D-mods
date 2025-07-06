@@ -1,0 +1,3 @@
+<configs>
+    <set xpath="/item_modifiers/item_modifier[@name='modGunSoundSuppressorSilencer']/effect_group/triggered_effect[@trigger='onSelfHoldingItemCreated']/@trigger">onSelfHoldingItemAssemble</set>
+</configs>

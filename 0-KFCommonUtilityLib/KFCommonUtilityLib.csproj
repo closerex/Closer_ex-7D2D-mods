@@ -511,6 +511,7 @@
     <Compile Include="KFAttached\Misc\AttachmentReferenceAppended.cs" />
     <Compile Include="KFAttached\Misc\IgnoreTint.cs" />
     <Compile Include="KFAttached\Misc\ItemAnimatorUpdate.cs" />
+    <Compile Include="KFAttached\Misc\Laser.cs" />
     <Compile Include="KFAttached\Misc\PlayerRigLateUpdate.cs" />
     <Compile Include="KFAttached\Misc\ScopeBase.cs" />
     <Compile Include="KFAttached\Misc\WeaponCameraFollow.cs" />
