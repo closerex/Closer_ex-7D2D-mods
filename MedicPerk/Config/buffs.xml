@@ -3,16 +3,20 @@
 	<append xpath="/buffs/buff[@name='buffStatusCheck01']/effect_group">
 		<triggered_effect trigger="onSelfEnteredGame" action="ModifyCVar" cvar="$medicBuffRegen" operation="set" value="2"/>
 		<triggered_effect trigger="onSelfEnteredGame" action="ModifyCVar" cvar="$medicHealSpeed" operation="set" value="1"/>
+		<triggered_effect trigger="onSelfRespawn" action="ModifyCVar" cvar="$medicBuffRegen" operation="set" value="2"/>
+		<triggered_effect trigger="onSelfRespawn" action="ModifyCVar" cvar="$medicHealSpeed" operation="set" value="1"/>
+		<triggered_effect trigger="onSelfTeleported" action="ModifyCVar" cvar="$medicBuffRegen" operation="set" value="2"/>
+		<triggered_effect trigger="onSelfTeleported" action="ModifyCVar" cvar="$medicHealSpeed" operation="set" value="1"/>
 	</append>
 
-<conditional>
-	<if cond="mod_loaded('0-XNPCCore')">
-	<append xpath="/buffs/buff[@name='buffNPCStatusCheck']/effect_group">
-		<triggered_effect trigger="onSelfFirstSpawn" action="ModifyCVar" cvar="$medicBuffRegen" operation="set" value="2"/>
-		<triggered_effect trigger="onSelfFirstSpawn" action="ModifyCVar" cvar="$medicHealSpeed" operation="set" value="1"/>
-	</append>
-	</if>
-</conditional>
+	<conditional>
+		<if cond="mod_loaded('0-XNPCCore')">
+			<append xpath="/buffs/buff[@name='buffNPCStatusCheck']/effect_group">
+				<triggered_effect trigger="onSelfFirstSpawn" action="ModifyCVar" cvar="$medicBuffRegen" operation="set" value="2"/>
+				<triggered_effect trigger="onSelfFirstSpawn" action="ModifyCVar" cvar="$medicHealSpeed" operation="set" value="1"/>
+			</append>
+		</if>
+	</conditional>
 		
 	<append xpath="/buffs/buff[@name='buffZedTimeCooldown']/effect_group[@name='zedtime']">
 	</append>
@@ -33,12 +37,12 @@
 					<triggered_effect trigger="onSelfBuffUpdate" action="ModifyStats" stat="Health" operation="add" value="@medicHealAmount">
 						<requirement name="CVarCompare" cvar=".medicHealDelta" operation="GT" value="0"/>
 					</triggered_effect>
-					<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" cvar="medicHealAmount" operation="subtract" value="@$medicHealSpeed"/>
-					<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" cvar="medicHealAmount" operation="set" value="0">
-						<requirement name="CVarCompare" cvar="medicHealAmount" operation="LT" value="0"/>
-					</triggered_effect>
 			</effect_group>
 			<effect_group>
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" cvar="medicHealAmount" operation="subtract" value="@$medicHealSpeed"/>
+				<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" cvar="medicHealAmount" operation="set" value="0">
+					<requirement name="CVarCompare" cvar="medicHealAmount" operation="LT" value="0"/>
+				</triggered_effect>
 				<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffMedicHeal">
 					<requirement name="CVarCompare" cvar="medicHealAmount" operation="LTE" value="0"/>
 				</triggered_effect>
