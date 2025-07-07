@@ -113,7 +113,7 @@
 		</item>
 		
 		<item name="gunHandgunT3DualAF2011A1S">
-			<property name="Tags" value="weapon,ranged,revolver,44enforcer,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,attAgility,perkGunslinger,attachmentsIncluded,canHaveCosmetic,handgunSkill,enforcerReload,dualaf2011,dualwield"/>
+			<property name="Tags" value="weapon,ranged,revolver,44enforcer,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,noSilencer,attAgility,perkGunslinger,attachmentsIncluded,canHaveCosmetic,handgunSkill,enforcerReload,dualaf2011,dualwield"/>
 			<property name="DisplayType" value="rangedGun"/>
 			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
 			<property name="BoundItemName" value="meleeWpnHandBashAF2011"/>
@@ -258,7 +258,7 @@
 			</effect_group>
 		</item>
 		<item name="gunHandgunT3AF2011A1S">
-			<property name="Tags" value="weapon,ranged,revolver,44enforcer,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,sideAttachments,attAgility,perkGunslinger,attachmentsIncluded,canHaveCosmetic,handgunSkill,enforcerReload,af2011"/>
+			<property name="Tags" value="weapon,ranged,revolver,44enforcer,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,sideAttachments,noSilencer,attAgility,perkGunslinger,attachmentsIncluded,canHaveCosmetic,handgunSkill,enforcerReload,af2011"/>
 			<property name="DisplayType" value="rangedGun"/>
 			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
 			<property name="BoundItemName" value="meleeWpnHandBashAF2011"/>
