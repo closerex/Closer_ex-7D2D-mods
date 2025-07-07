@@ -60,12 +60,12 @@
 			</effect_group> -->
 		<effect_group>
 			<!-- Increase the chance to find medic gun crafting skill magazines with each perk rank up to crafting skill 75 -->
-			<passive_effect name="LootProb" operation="perc_add" level="1,6" value="2,10" tags="medicgunsCSM">
+			<passive_effect name="LootProb" operation="perc_add" level="2,6" value="2,10" tags="medicgunsCSM">
 				<requirement name="ProgressionLevel" progression_name="craftingMedicGuns" operation="LT" value="75"/>
 			</passive_effect>
 
 			<!-- Once medic gun crafting skill reaches 75, set the probability bonus of finding medic gun crafting skill magazines to 0 -->
-			<passive_effect name="LootProb" operation="base_set" level="1,6" value="1,1" tags="medicgunsCSM">
+			<passive_effect name="LootProb" operation="base_set" level="2,6" value="1,1" tags="medicgunsCSM">
 				<requirement name="ProgressionLevel" progression_name="craftingMedicGuns" operation="Equals" value="75"/>
 			</passive_effect>
 		</effect_group>
