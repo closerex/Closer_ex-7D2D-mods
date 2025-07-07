@@ -141,4 +141,11 @@
 			<property name="CrosshairOnAim" value="false"/>
 		</item_property_overrides>
 	</append>
+
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
+			<set xpath="//item_modifier[@name='modDualGunLaserSight']/@modifier_tags">dualLaserSight</set>
+			<set xpath="//item_modifier[@name='modDualGunFlashlight']/@modifier_tags">dualFlashlight</set>
+		</if>
+	</conditional>
 </configs>
