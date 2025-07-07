@@ -1,0 +1,99 @@
+<config>
+	<append xpath="/item_modifiers/item_modifier[@name='modGunSoundSuppressorSilencer']">
+		<item_property_overrides name="gunKF9mm">
+			<property name="Sound_start" value="pistol_s_fire"/>
+			<property name="Sound_end" value=""/>
+			<property name="Sound_loop" value="pistol_s_fire"/>
+			<property name="Particles_muzzle_fire" value="#@modfolder:Resources/9mm.unity3d?9mm_muzzle_flash_silenced.prefab"/>
+			<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/9mm.unity3d?9mm_muzzle_flash_silenced_fpv.prefab"/>
+		</item_property_overrides>
+	</append>
+
+	<append xpath="/item_modifiers/item_modifier[@name='modGunMuzzleBrake']/effect_group[1]">
+		<triggered_effect trigger="onSelfHoldingItemAssemble" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="muzzlebrake"/>
+	</append>
+	
+	<append xpath="/item_modifiers/item_modifier[@name='modGunLaserSight']">
+		<item_property_overrides name="gunKF9mm">
+			<property name="CrosshairOnAim" value="false"/>
+		</item_property_overrides>
+	</append>
+
+	<append xpath="/item_modifiers">
+		<item_modifier name="modGunDualWieldSilencer" installable_tags="dualwield" modifier_tags="barrelAttachment" blocked_tags="noMods,noDualSilencer" type="attachment">
+			<property name="Extends" value="modGeneralMaster" param1="CustomIcon"/>
+			<property name="UnlockedBy" value="modGunSoundSuppressorSilencerSchematic"/>
+			<property name="TraderStageTemplate" value="modsTier2"/>
+			<item_property_overrides name="*">
+				<property name="Sound_start" value="pistol_s_fire"/>
+				<property name="Sound_end" value=""/>
+				<property name="Sound_loop" value="pistol_s_fire"/>
+			</item_property_overrides>
+			<item_property_overrides name="gunKFDual9mm">
+				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/9mm.unity3d?9mm_muzzle_flash_silenced.prefab"/>
+				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/9mm.unity3d?9mm_muzzle_flash_silenced_fpv.prefab"/>
+			</item_property_overrides>
+			<effect_group tiered="false" name="internal attachment prefab (A19)">
+				<triggered_effect trigger="onSelfHoldingItemAssemble" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="silencer"/>
+			</effect_group>
+			<effect_group tiered="false" name="mod effects">
+				<passive_effect name="EntityDamage" operation="perc_add" value="-.15">
+					<requirement name="ProgressionLevel" progression_name="perkUrbanCombatComplete" operation="LT" value="1"/>
+				</passive_effect>
+				<passive_effect name="DamageFalloffRange" operation="perc_add" value="-.2"/>
+				<passive_effect name="MaxRange" operation="perc_add" value="-.25"/>
+			</effect_group>
+		</item_modifier>
+		
+		<item_modifier name="modGunDualWieldMuzzleBrake" installable_tags="dualwield" modifier_tags="barrelAttachment" blocked_tags="noMods,shotgun,noDualMuzzleBrake" type="attachment">
+			<property name="Extends" value="modGeneralMaster" param1="CustomIcon"/>
+			<property name="UnlockedBy" value="modGunMuzzleBrakeSchematic"/>
+			<property name="TraderStageTemplate" value="modsTier1"/>
+			<effect_group tiered="false">
+				<triggered_effect trigger="onSelfHoldingItemAssemble" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="muzzlebrake"/>
+				<passive_effect name="KickDegreesVerticalMin" operation="perc_add" value="-.25"/>
+				<passive_effect name="KickDegreesVerticalMax" operation="perc_add" value="-.25"/>
+				<passive_effect name="KickDegreesHorizontalMin" operation="perc_add" value="-.15"/>
+				<passive_effect name="KickDegreesHorizontalMax" operation="perc_add" value="-.15"/>
+				<passive_effect name="WeaponHandling" operation="perc_add" value=".08"/>
+			</effect_group>
+		</item_modifier>
+	</append>
+
+	<conditional>
+		<if cond="!mod_loaded('CLSWeaponPackEXP')">
+			<append xpath="/item_modifiers">
+				<item_modifier name="modDualGunLaserSight" installable_tags="dualwield" modifier_tags="sideAttachment" blocked_tags="noMods,noDualLaser" type="attachment">
+					<property name="Extends" value="modGeneralMaster" param1="CustomIcon"/>
+					<property name="UnlockedBy" value="modGunLaserSightSchematic"/>
+					<property name="TraderStageTemplate" value="modsTier2"/>
+					<effect_group tiered="false" name="internal attachment prefab (A19)">
+						<triggered_effect trigger="onSelfHoldingItemCreated" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="gunlaser"/>
+						<triggered_effect trigger="onSelfItemActivate" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="gunlaser/gunlaser"/>
+						<triggered_effect trigger="onSelfItemDeactivate" action="SetTransformActive" active="false" parent_transform="#HeldItemRoot" transform_path="gunlaser/gunlaser"/>
+						<triggered_effect trigger="onSelfEquipStop" action="SetTransformActive" active="false" parent_transform="#HeldItemRoot" transform_path="gunlaser/gunlaser"/>
+					</effect_group>
+					<effect_group tiered="false" name="mod effects">
+						<passive_effect name="SpreadMultiplierHip" operation="perc_add" value="-.2"/>
+						<passive_effect name="WeaponHandling" operation="perc_add" value=".2"/>
+					</effect_group>
+				</item_modifier>
+
+				<item_modifier name="modDualGunFlashlight" installable_tags="dualwield" modifier_tags="sideAttachment" blocked_tags="noMods,noDualFlashlight" type="attachment">
+					<property name="Extends" value="modGeneralMaster" param1="CustomIcon"/>
+					<property name="UnlockedBy" value="modGunFlashlightSchematic"/>
+					<property name="TraderStageTemplate" value="modsTier1"/>
+					<property name="LightValue" value=".5"/>
+					<property name="Material" value="Mplastics"/>
+
+					<effect_group tiered="false" name="internal attachment prefab (A19)">
+						<triggered_effect trigger="onSelfHoldingItemCreated" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="flashlight"/>
+						<triggered_effect trigger="onSelfItemActivate" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="flashlight_lightSource"/>
+						<triggered_effect trigger="onSelfItemDeactivate" action="SetTransformActive" active="false" parent_transform="#HeldItemRoot" transform_path="flashlight_lightSource"/>
+						<triggered_effect trigger="onSelfEquipStop" action="SetTransformActive" active="false" parent_transform="#HeldItemRoot" transform_path="flashlight_lightSource"/>
+					</effect_group>
+				</item_modifier>
+			</append>
+		</if>
+	</conditional>
+</config>

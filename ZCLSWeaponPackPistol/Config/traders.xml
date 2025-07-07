@@ -1,0 +1,12 @@
+<configs>
+	<conditional>
+		<if cond="mod_loaded('EFT8_Overhaul')">
+        </if>
+		<else>
+            <append xpath="/traders/trader_item_groups/trader_item_group[@name='groupRangedAll']">
+                <item name="gunKF9mm" quality="1,5"/>
+                <item name="gunKFDual9mm" quality="1,5"/>
+            </append>
+        </else>
+    </conditional>
+</configs>

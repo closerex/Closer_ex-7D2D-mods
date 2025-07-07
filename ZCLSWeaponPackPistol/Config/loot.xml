@@ -1,0 +1,29 @@
+<config>
+	<conditional>
+		<if cond="mod_loaded('EFTX_Pack_Core')">
+			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT1']">
+				<item name="gunKF9mm"/>
+				<item name="gunKFDual9mm"/>
+			</append>
+			<append xpath="//lootgroup[@name='groupQuestWeaponsRangedT1']">
+				<item name="gunKF9mm" loot_prob_template="QuestT1Prob"/>
+				<item name="gunKFDual9mm" loot_prob_template="QuestT1Prob"/>
+			</append>
+		</if>
+		<else>
+			<insertAfter xpath="/lootcontainers/lootgroup[@name='empty']">
+				<lootgroup name="groupWeaponsT1_GunslingerKF9mm" count="1" loot_quality_template="QLTemplateT1">
+                    <item name="gunKF9mm"/>
+                    <item name="gunKFDual9mm" loot_prob_template="low"/>
+				</lootgroup>
+			</insertAfter>
+			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT1_Gunslinger']">
+				<item group="groupWeaponsT1_GunslingerKF9mm"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsRangedT1']">
+				<item name="gunKF9mm"/>
+				<item name="gunKFDual9mm" loot_prob_template="low"/>
+			</append>
+		</else>
+	</conditional>
+</config>

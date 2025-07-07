@@ -56,6 +56,8 @@ desktop.ini
 !M16M203/**
 !QuartzUIPatch
 !QuartzUIPatch/**
+!ZCLSWeaponPackPistol
+!ZCLSWeaponPackPistol/**
 !ZCLSWeaponPackEXP
 !ZCLSWeaponPackEXP/**
 !ZZCustomPlayerActionManagerSMXPatch/

@@ -1,0 +1,92 @@
+<config>
+    <conditional>
+        <if cond="mod_loaded('EFTX_Pack_Core')">
+            <append xpath="/recipes">
+				<!-- Silencer -->
+				<recipe name="modGunDualWieldSilencer" count="1">
+					<ingredient name="modGunSoundSuppressorSilencer" count="2"/>
+				</recipe>
+				<recipe name="modGunSoundSuppressorSilencer" count="2">
+					<ingredient name="modGunDualWieldSilencer" count="1"/>
+				</recipe>
+
+				<!-- Muzzle Brake -->
+				<recipe name="modGunDualWieldMuzzleBrake" count="1">
+					<ingredient name="modGunMuzzleBrake" count="2"/>
+				</recipe>
+				<recipe name="modGunMuzzleBrake" count="2">
+					<ingredient name="modGunDualWieldMuzzleBrake" count="1"/>
+				</recipe>
+                
+                <recipe name="gunKF9mm" count="1" craft_area="workbench" tags="learnable">
+                    <ingredient name="gunHandgunT1PistolParts" count="1"/>
+                    <ingredient name="resourceWeaponParts" count="1"/>
+                    <ingredient name="resourceMetalPipe" count="1"/>
+                    <ingredient name="resourceSpring" count="1"/>
+                    <ingredient name="resourceOil" count="1"/>
+                    <effect_group>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunHandgunT1PistolParts"/>
+                    </effect_group>
+                </recipe>
+
+                <recipe name="gunKFDual9mm" count="1" craft_area="workbench" tags="learnable">
+                    <ingredient name="gunHandgunT1PistolParts" count="2"/>
+                    <ingredient name="resourceWeaponParts" count="2"/>
+                    <ingredient name="resourceMetalPipe" count="2"/>
+                    <ingredient name="resourceSpring" count="2"/>
+                    <ingredient name="resourceOil" count="2"/>
+                    <effect_group>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="gunHandgunT1PistolParts"/>
+                    </effect_group>
+                </recipe>
+            </append>
+        </if>
+        <else>
+            <append xpath="/recipes">
+				<!-- Silencer -->
+				<recipe name="modGunDualWieldSilencer" count="1">
+					<ingredient name="modGunSoundSuppressorSilencer" count="2"/>
+				</recipe>
+				<recipe name="modGunSoundSuppressorSilencer" count="2">
+					<ingredient name="modGunDualWieldSilencer" count="1"/>
+				</recipe>
+
+				<!-- Muzzle Brake -->
+				<recipe name="modGunDualWieldMuzzleBrake" count="1">
+					<ingredient name="modGunMuzzleBrake" count="2"/>
+				</recipe>
+				<recipe name="modGunMuzzleBrake" count="2">
+					<ingredient name="modGunDualWieldMuzzleBrake" count="1"/>
+				</recipe>
+
+                <recipe name="gunKF9mm" count="1" craft_area="workbench" tags="learnable,perkGunslinger,workbenchCrafting">
+                    <ingredient name="gunHandgunT1PistolParts" count="4"/>
+                    <ingredient name="resourceForgedIron" count="10"/>
+                    <ingredient name="resourceDuctTape" count="1"/>
+                    <ingredient name="resourceSpring" count="4"/>
+                    <ingredient name="resourceLegendaryParts" count="0"/>
+                    <effect_group>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunHandgunT1PistolParts,resourceDuctTape"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="4,24" tags="resourceSpring"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="5,25" tags="resourceForgedIron"/>
+                        <passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
+                    </effect_group>
+                </recipe>
+
+                <recipe name="gunKFDual9mm" count="1" craft_area="workbench" tags="learnable,perkGunslinger,workbenchCrafting">
+                    <ingredient name="gunHandgunT1PistolParts" count="8"/>
+                    <ingredient name="resourceForgedIron" count="20"/>
+                    <ingredient name="resourceDuctTape" count="2"/>
+                    <ingredient name="resourceSpring" count="8"/>
+                    <ingredient name="resourceLegendaryParts" count="0"/>
+                    <effect_group>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="gunHandgunT1PistolParts,resourceDuctTape"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="8,48" tags="resourceSpring"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="10,50" tags="resourceForgedIron"/>
+                        <passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="2" tags="resourceLegendaryParts"/>
+                    </effect_group>
+                </recipe>
+            </append>
+        </else>
+    </conditional>
+</config>
