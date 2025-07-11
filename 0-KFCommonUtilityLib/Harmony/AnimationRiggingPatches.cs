@@ -364,7 +364,7 @@ static class AnimationRiggingPatches
 
     [HarmonyPatch(typeof(Inventory), nameof(Inventory.createHeldItem))]
     [HarmonyPostfix]
-    private static void Postfix_createHeldItem_Inventory(Inventory __instance, Transform __result)
+    private static void Postfix_createHeldItem_Inventory(Inventory __instance, Transform __result, int _idx)
     {
         if (__result && __result.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
         {
@@ -376,12 +376,12 @@ static class AnimationRiggingPatches
             {
                 if (player is EntityPlayerLocal localPlayer)
                 {
-                    targets.Init(localPlayer.emodel.avatarController.GetActiveModelRoot(), localPlayer.bFirstPersonView);
+                    targets.Init(localPlayer.emodel.avatarController.GetActiveModelRoot(), localPlayer.bFirstPersonView, _idx);
                 }
                 else
                 {
                     targets.DestroyFpv();
-                    targets.Init(player.emodel.avatarController.GetActiveModelRoot(), false);
+                    targets.Init(player.emodel.avatarController.GetActiveModelRoot(), false, _idx);
                 }
             }
         }
@@ -769,7 +769,7 @@ static class AnimationRiggingPatches
                     }
                     else
                     {
-                        targets.Init(__instance.transform, true);
+                        targets.Init(__instance.transform, true, i);
                     }
                 }
             }
@@ -994,12 +994,13 @@ static class AnimationRiggingPatches
     {
         if (_entity is EntityPlayer player && !(_entity is EntityPlayerLocal) && player.inventory != null)
         {
-            foreach (var model in player.inventory.models)
+            for (int i = 0; i < player.inventory.models.Length; i++)
             {
+                Transform model = player.inventory.models[i];
                 if (model && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
                 {
                     targets.DestroyFpv();
-                    targets.Init(player.emodel.avatarController.GetActiveModelRoot(), false);
+                    targets.Init(player.emodel.avatarController.GetActiveModelRoot(), false, i);
                 }
             }
         }
@@ -1037,11 +1038,12 @@ static class AnimationRiggingPatches
     {
         if (__instance.entity is EntityPlayerLocal player && player.inventory != null)
         {
-            foreach (var model in player.inventory.models)
+            for (int i = 0; i < player.inventory.models.Length; i++)
             {
+                Transform model = player.inventory.models[i];
                 if (model && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
                 {
-                    targets.Init(player.emodel.avatarController.GetActiveModelRoot(), player.bFirstPersonView);
+                    targets.Init(player.emodel.avatarController.GetActiveModelRoot(), player.bFirstPersonView, i);
                 }
             }
         }
@@ -1077,11 +1079,12 @@ static class AnimationRiggingPatches
         }
         if (__instance.inventory != null)
         {
-            foreach (var model in __instance.inventory.models)
+            for (int i = 0; i < __instance.inventory.models.Length; i++)
             {
+                Transform model = __instance.inventory.models[i];
                 if (model && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
                 {
-                    targets.Init(__instance.emodel.avatarController.GetActiveModelRoot(), player is EntityPlayerLocal localPlayer ? localPlayer.bFirstPersonView : false);
+                    targets.Init(__instance.emodel.avatarController.GetActiveModelRoot(), player is EntityPlayerLocal localPlayer ? localPlayer.bFirstPersonView : false, i);
                 }
             }
         }

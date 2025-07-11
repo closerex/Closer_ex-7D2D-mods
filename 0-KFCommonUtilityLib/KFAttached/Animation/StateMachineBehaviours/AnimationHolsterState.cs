@@ -1,5 +1,8 @@
 ﻿using KFCommonUtilityLib;
 using UnityEngine;
+#if NotEditor
+using KFCommonUtilityLib.Scripts.StaticManagers;
+#endif
 
 public class AnimationHolsterState : StateMachineBehaviour
 {
@@ -23,7 +26,8 @@ public class AnimationHolsterState : StateMachineBehaviour
                 return;
             }
         }
-        holsterData = ((isHolstering ? player.inventory?.lastdrawnHoldingItemData : player.inventory?.holdingItemData) as IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData>)?.Instance;
+        //holsterData = ((isHolstering ? player.inventory?.lastdrawnHoldingItemData : player.inventory?.holdingItemData) as IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData>)?.Instance;
+        holsterData = (player.inventory.GetItemDataInSlot(AnimationRiggingManager.GetActiveRigTargetsFromPlayer(player).SlotIndex) as IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData>)?.Instance;
         if (holsterData != null)
         {
             if (isHolstering && holsterData.module.holsterDelayActive)
@@ -48,11 +52,13 @@ public class AnimationHolsterState : StateMachineBehaviour
                 {
                     if (isHolstering)
                     {
-                        holsterData.IsHolstering = false;
+                        if (holsterData.IsHolstering)
+                            holsterData.IsHolstering = false;
                     }
                     else
                     {
-                        holsterData.IsUnholstering = false;
+                        if (holsterData.IsUnholstering)
+                            holsterData.IsUnholstering = false;
                     }
                 }
             }

@@ -56,6 +56,9 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     public Transform ItemCurrentOrDefault => IsFpv ? ItemFpv : ItemTpvOrSelf;
     public AnimationGraphBuilder GraphBuilder { get; private set; }
     public abstract bool UseGraph { get; }
+#if NotEditor
+    public int SlotIndex { get; private set; } = -1;
+#endif
 
     protected abstract Animator ItemAnimatorFpv { get; }
     protected virtual Animator ItemAnimatorTpv => itemAnimatorTpv;
@@ -161,7 +164,11 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     }
 #endif
 
-    public void Init(Transform playerAnimatorTrans, bool isFpv)
+    public void Init(Transform playerAnimatorTrans, bool isFpv
+#if NotEditor
+        , int idx
+#endif
+        )
     {
         if (Destroyed || (isFpv && fpvSet) || (!isFpv && tpvSet))
         {
@@ -178,6 +185,9 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
             Destroy();
             return;
         }
+#if NotEditor
+        SlotIndex = idx;
+#endif
         fpvSet = false;
         tpvSet = false;
         playerAnimatorTrans = animator.transform;

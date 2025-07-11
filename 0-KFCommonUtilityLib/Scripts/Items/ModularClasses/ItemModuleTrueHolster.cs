@@ -8,10 +8,12 @@ public class ItemModuleTrueHolster
 {
     public bool holsterDelayActive = true;
     public bool unholsterDelayActive = true;
+    public ItemClass item;
 
     [HarmonyPatch(nameof(ItemClass.Init)), MethodTargetPostfix]
     public void Postfix_Init(ItemClass __instance)
     {
+        item = __instance;
         __instance.Properties.ParseBool("HolsterDelayActive", ref holsterDelayActive);
         __instance.Properties.ParseBool("UnholsterDelayActive", ref unholsterDelayActive);
     }
@@ -32,7 +34,6 @@ public class ItemModuleTrueHolster
     }
 
     [HarmonyPatch(nameof(ItemClass.StopHolding))]
-    [HarmonyPatch(nameof(ItemClass.OnHoldingReset))]
     [MethodTargetPostfix]
     public void Postfix_Reset(ItemClass __instance, TrueHolsterData __customData)
     {
@@ -40,10 +41,15 @@ public class ItemModuleTrueHolster
         __customData.IsUnholstering = false;
     }
 
-    public void Postfix_OnHoldingReset(ItemClass __instance, TrueHolsterData __customData)
+    [HarmonyPatch(nameof(ItemClass.OnHoldingReset))]
+    [MethodTargetPostfix]
+    public void Postfix_OnHoldingReset(ItemClass __instance, ItemInventoryData _data, TrueHolsterData __customData)
     {
         __customData.IsHolstering = false;
-        __customData.IsUnholstering = false;
+        if (_data.holdingEntity && _data.holdingEntity.emodel.avatarController)
+        {
+            _data.holdingEntity.emodel.avatarController.CancelEvent(AvatarController.itemHasChangedTriggerHash);
+        }
     }
 
     [HarmonyPatch(nameof(ItemClass.IsActionRunning)), MethodTargetPostfix]
@@ -55,10 +61,30 @@ public class ItemModuleTrueHolster
     public class TrueHolsterData
     {
         public bool IsSwapping => IsHolstering || IsUnholstering;
-        public bool IsHolstering { get; internal set; }
-        public bool IsUnholstering { get; internal set; }
+        public bool IsHolstering
+        {
+            get { return isHolstering; }
+
+            internal set
+            {
+                //Log.Out($"TrueHolsterData: IsHolstering set from {IsHolstering} to {value} for item {module.item.Name}\n{StackTraceUtility.ExtractStackTrace()}");
+                isHolstering = value;
+            }
+        }
+        public bool IsUnholstering
+        {
+            get { return isUnholstering; }
+
+            internal set
+            {
+                //Log.Out($"TrueHolsterData: IsUnholstering set from {isUnholstering} to {value} for item {module.item.Name}\n{StackTraceUtility.ExtractStackTrace()}");
+                isUnholstering = value;
+            }
+        }
 
         public ItemModuleTrueHolster module;
+        private bool isHolstering;
+        private bool isUnholstering;
 
         public TrueHolsterData(ItemInventoryData _invData, ItemClass _item, ItemStack _itemStack, IGameManager _gameManager, EntityAlive _holdingEntity, int _slotIdx, ItemModuleTrueHolster module)
         {
