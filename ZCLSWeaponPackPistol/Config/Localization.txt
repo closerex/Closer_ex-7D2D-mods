@@ -1,0 +1,9 @@
+Key,File,Type,english,schinese
+gunKF9mm,items,gun,9mm Pistol,9毫米手枪
+gunKF9mmDesc,items,gun,"Fire mode is semi-auto only.\n\nThis is the standard 9mm pistol. Simple and cheap (very cheap, frankly, to you), it is the basic sidearm for all Horzine operatives.\n\nUse [action:KFLibPlayerActions:PerformAltMelee] to bash. Bashing is Brawler type.","开火模式只有半自动。\n\n这是标准的9毫米手枪。简单又便宜（老实说，非常便宜），是所有霍因行动的基本装备。\n\n使用[action:KFLibPlayerActions:PerformAltMelee]推击。推击为搏斗类型。"
+gunKFDual9mm,items,gun,Dual 9mm Pistols,双持9毫米手枪
+gunKFDual9mmDesc,items,gun,"Fire mode is semi-auto only. Activating weapon switches aiming styles when in Ironsights.\n\nUse [action:KFLibPlayerActions:PerformAltMelee] to bash. Bashing is Brawler type.","开火模式只有半自动。激活武器可以切换瞄准模式。\n\n使用[action:KFLibPlayerActions:PerformAltMelee]推击。推击为搏斗类型。"
+gunKFHRGSW500,items,gun,HRG Buckshot,HRG大号铅弹
+gunKFHRGSW500Desc,items,gun,"Fire mode is single shot only.\n\nTaking spray and pray to a whole new level.\n\nUse [action:KFLibPlayerActions:PerformAltMelee] to bash. Bashing is Brawler type.","只有单发射击模式。\n\n让扫射效果达到全新境界。\n\n使用[action:KFLibPlayerActions:PerformAltMelee]推击。推击为搏斗类型。"
+gunKFDualHRGSW500,items,gun,Dual HRG Buckshots,双持HRG大号铅弹
+gunKFDualHRGSW500Desc,items,gun,"Fire mode is single shot only. Activating weapon switches aiming styles when using iron sights.\n\nTaking spray and pray to a whole new level and then some.\n\nUse [action:KFLibPlayerActions:PerformAltMelee] to bash. Bashing is Brawler type.","只有单发射击模式。激活武器可以切换瞄准模式。\n\n让扫射效果达到全新境界。\n\n使用[action:KFLibPlayerActions:PerformAltMelee]推击。推击为搏斗类型。"

@@ -8,6 +8,15 @@
 			<AudioClip ClipName="#@modfolder:Resources/Pistol9mm_Sound.unity3d?9mm_V1_4"/>
 			<LocalCrouchVolumeScale value="1"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="120"/> <MaxVoicesPerEntity value="60"/> <MaxRepeatRate value="0.001"/>
 		</SoundDataNode>
+		<SoundDataNode name="HRG_SW_500_Fire"> <AudioSource name="#@modfolder:Resources/KFPistolAudioSources.unity3d?AudioSource_KFWeaponFire_Pistol"/> <NetworkAudioSource name="#@modfolder:Resources/KFPistolAudioSources.unity3d?AudioSource_KFWeaponFire_Network_Pistol"/>
+			<Noise ID="0" noise="52" time="2" muffled_when_crouched="0.8" heat_map_strength="0.85" heat_map_time="180"/>
+			<AudioClip ClipName="#@modfolder:Resources/SW500_Sound.unity3d?WEP_HRG_BuckshotRevolver_Shot_01"/>
+			<AudioClip ClipName="#@modfolder:Resources/SW500_Sound.unity3d?WEP_HRG_BuckshotRevolver_Shot_02"/>
+			<AudioClip ClipName="#@modfolder:Resources/SW500_Sound.unity3d?WEP_HRG_BuckshotRevolver_Shot_03"/>
+			<AudioClip ClipName="#@modfolder:Resources/SW500_Sound.unity3d?WEP_HRG_BuckshotRevolver_Shot_04"/>
+			<AudioClip ClipName="#@modfolder:Resources/SW500_Sound.unity3d?WEP_HRG_BuckshotRevolver_Shot_05"/>
+			<LocalCrouchVolumeScale value="1"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="240"/> <MaxVoicesPerEntity value="60"/> <MaxRepeatRate value="0.001"/>
+		</SoundDataNode>
 		<SoundDataNode name="KFdryfire"> <AudioSource name="@:Sounds/Prefabs/AudioSource_Reloads.prefab"/>
 			<Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5"/>
 			<AudioClip ClipName="#@modfolder:Resources/Pistol9mm_Sound.unity3d?WEP_SA_AK12_Handling_DryFire_01"/>
