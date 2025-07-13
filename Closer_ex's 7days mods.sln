@@ -60,6 +60,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FPVLegs", "FPVLegs\FPVLegs.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeepReloading", "KeepReloading\KeepReloading.csproj", "{D8B0F818-E8C5-476A-B156-80C80E2E33F0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoHentai", "NoHentai\NoHentai.csproj", "{8FCC00B5-B516-4B09-A857-381F658CDED0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -170,6 +172,10 @@ Global
 		{D8B0F818-E8C5-476A-B156-80C80E2E33F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8B0F818-E8C5-476A-B156-80C80E2E33F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8B0F818-E8C5-476A-B156-80C80E2E33F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FCC00B5-B516-4B09-A857-381F658CDED0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FCC00B5-B516-4B09-A857-381F658CDED0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FCC00B5-B516-4B09-A857-381F658CDED0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FCC00B5-B516-4B09-A857-381F658CDED0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
