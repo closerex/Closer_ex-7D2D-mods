@@ -10,7 +10,7 @@ ammoKaboomstickShellFrag,item,Ammo,HRG Kaboomstick Shell Frag,HRG大爆炸射手
 gunHandgunT3AF2011A1S,item,Gun,AF2011-A1,AF2011-A1
 gunHandgunT3AF2011A1SDesc,item,Gun,"Fire mode is semi-auto only.\n\nEverything is better when you put more barrels on it. It's like adding more bacon.\n\nUse [action:KFLibPlayerActions:PerformAltMelee] to bash. Bashing is Brawler type.","开火模式只有半自动。\n\n如果你多装一个枪管，一切都会好起来，就像多加了一些培根。\n\n使用[action:KFLibPlayerActions:PerformAltMelee]推击。推击为搏斗类型。"
 gunHandgunT3DualAF2011A1S,item,Gun,Dual AF2011-A1s,双持AF2011-A1
-gunHandgunT3DualAF2011A1SDesc,item,Gun,"Fire mode is semi-auto only. Activating weapon switches aiming styles when in Ironsights.\n\nTwo guns with two barrels each. Four times the firepower. That's math. You can't argue with math.\n\nUse [action:KFLibPlayerActions:PerformAltMelee] to bash. Bashing is Brawler type.","开火模式只有半自动。\n\n两支枪各配有两个弹筒。四倍火力。这就是数学。你不能不信数学。\n\n使用[action:KFLibPlayerActions:PerformAltMelee]推击。推击为搏斗类型。"
+gunHandgunT3DualAF2011A1SDesc,item,Gun,"Fire mode is semi-auto only. Activating weapon switches aiming styles when in Ironsights.\n\nTwo guns with two barrels each. Four times the firepower. That's math. You can't argue with math.\n\nUse [action:KFLibPlayerActions:PerformAltMelee] to bash. Bashing is Brawler type.","开火模式只有半自动。激活武器可以切换瞄准模式。\n\n两支枪各配有两个弹筒。四倍火力。这就是数学。你不能不信数学。\n\n使用[action:KFLibPlayerActions:PerformAltMelee]推击。推击为搏斗类型。"
 modGunAF2011OspreySilencer,item_modifiers,mod,Osprey Silencer for AF2011,"AF2011专用鱼鹰消音器"
 modGunDualAF2011OspreySilencer,item_modifiers,mod,Osprey Silencer for Dual AF2011s,"双持AF2011专用鱼鹰消音器"
 modGunAF2011MuzzleBrake,item_modifiers,mod,Muzzle Brake for AF2011,"AF2011专用制退器"
