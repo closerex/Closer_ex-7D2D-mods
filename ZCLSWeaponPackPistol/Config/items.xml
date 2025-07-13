@@ -864,4 +864,13 @@
 		</item>
         <!-- #endregion -->
     </append>
+    
+    <!-- #region scope patches -->
+    <conditional>
+        <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
+            <append xpath="/items/item[@name='gunKFHRGSW500']/property[@name='Tags']/@value">,CompactReflexSight</append>
+            <append xpath="/items/item[@name='gunKFDualHRGSW500']/property[@name='Tags']/@value">,CompactReflexSight</append>
+        </if>
+    </conditional>
+    <!-- #endregion -->
 </configs>
