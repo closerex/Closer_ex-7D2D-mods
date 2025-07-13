@@ -3,3 +3,5 @@ CustomFovSettingsTabName,UI,Menu,x,Fov Setting,Fov设置
 CustomFovSettingsMainCategoryName,UI,Menu,x,Main,设置
 CustomFovSettingsValueName,UI,Menu,x,Fov Value,Fov值
 CustomFovSettingsValueDesc,UI,Menu,x,Desired Fov value.,设置想要的Fov值。
+CustomAimFovSettingsValueName,UI,Menu,x,Aim Fov Value,瞄准Fov值
+CustomAimFovSettingsValueDesc,UI,Menu,x,Desired Aim Fov value.,设置想要的瞄准Fov值。

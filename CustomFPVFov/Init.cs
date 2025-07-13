@@ -48,14 +48,24 @@ namespace CustomFPVFov
             var fld_original = AccessTools.Field(typeof(vp_FPWeapon), nameof(vp_FPWeapon.originalRenderingFieldOfView));
             var fld_cur = AccessTools.Field(typeof(vp_FPWeapon), nameof(vp_FPWeapon.RenderingFieldOfView));
             var prop_value = AccessTools.PropertyGetter(typeof(FovOverrides), nameof(FovOverrides.CurrentFov));
+            var prop_aimValue = AccessTools.PropertyGetter(typeof(FovOverrides), nameof(FovOverrides.CurrentAimFov));
 
             for (int i = 1; i < codes.Count; i++)
             {
-                if (codes[i - 1].LoadsField(fld_original) && codes[i].StoresField(fld_cur))
+                if (codes[i].StoresField(fld_cur))
                 {
-                    codes[i - 1] = new CodeInstruction(OpCodes.Call, prop_value);
-                    codes.RemoveAt(i - 2);
-                    break;
+                    if (codes[i - 1].LoadsField(fld_original))
+                    {
+                        codes[i - 1] = new CodeInstruction(OpCodes.Call, prop_value);
+                        codes.RemoveAt(i - 2);
+                        i--;
+                    }
+                    else if (codes[i - 1].opcode == OpCodes.Conv_R4)
+                    {
+                        codes[i - 8] = new CodeInstruction(OpCodes.Call, prop_aimValue);
+                        codes.Insert(i - 7, new CodeInstruction(OpCodes.Conv_R4));
+                        codes.RemoveAt(i - 9);
+                    }
                 }
             }
             return codes;
@@ -123,17 +133,30 @@ namespace CustomFPVFov
         public void OnGlobalSettingsLoaded(IModGlobalSettings modSettings)
         {
             ISliderGlobalSetting fovSettings = modSettings.GetTab("FovSettings").GetCategory("Main").GetSetting("FovValue") as ISliderGlobalSetting;
+            ISliderGlobalSetting aimFovSettings = modSettings.GetTab("FovSettings").GetCategory("Main").GetSetting("AimFovValue") as ISliderGlobalSetting;
             if (float.TryParse(fovSettings.CurrentValue, out float cur))
             {
                 FovOverrides.defaultFov = cur;
             }
-            fovSettings.OnSettingChanged += (settings, value) =>
+            if (int.TryParse(aimFovSettings.CurrentValue, out int aimCur))
+            {
+                FovOverrides.defaultAimFov = aimCur;
+            }
+            fovSettings.OnSettingChanged += static (settings, value) =>
             {
                 if (float.TryParse(value, out float curFov))
                 {
                     FovOverrides.defaultFov = curFov;
-                    FovOverrides.UpdatePlayerFov();
                 }
+                FovOverrides.UpdatePlayerFov();
+            };
+            aimFovSettings.OnSettingChanged += static (settings, value) =>
+            {
+                if (int.TryParse(value, out int curAimFov))
+                {
+                    FovOverrides.defaultAimFov = curAimFov;
+                }
+                FovOverrides.UpdatePlayerFov();
             };
         }
 
@@ -146,9 +169,11 @@ namespace CustomFPVFov
     public static class FovOverrides
     {
         public static float CurrentFov { get; set; } = 45f;
+        public static int CurrentAimFov { get; set; } = 45;
         public static float defaultFov = 45f;
+        public static int defaultAimFov = 45;
         public static string modPath = "";
-        public static Dictionary<int, float> dict_id_fov = new Dictionary<int, float>();
+        public static Dictionary<int, (float fov, int aimFov)> dict_id_fov = new Dictionary<int, (float, int)>();
 
         public static void LoadWeaponFovOverrides()
         {
@@ -172,7 +197,7 @@ namespace CustomFPVFov
                         if (line.Contains(","))
                         {
                             var parts = line.Split(new[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries);
-                            if (parts.Length == 2 && !string.IsNullOrWhiteSpace(parts[0]) && float.TryParse(parts[1].Trim(), out float fov))
+                            if (parts.Length >= 2 && !string.IsNullOrWhiteSpace(parts[0]) && float.TryParse(parts[1].Trim(), out float fov))
                             {
                                 parts[0] = parts[0].Trim();
                                 if (parts[0] == "*")
@@ -180,6 +205,14 @@ namespace CustomFPVFov
                                     if (!GearsImpl.gearsLoaded)
                                     {
                                         defaultFov = fov;
+                                        if (parts.Length > 2 && int.TryParse(parts[2].Trim(), out int aimFov))
+                                        {
+                                            defaultAimFov = aimFov;
+                                        }
+                                        else
+                                        {
+                                            defaultAimFov = 45;
+                                        }
                                     }
                                 }
                                 else
@@ -187,7 +220,7 @@ namespace CustomFPVFov
                                     ItemClass itemClass = ItemClass.GetItemClass(parts[0]);
                                     if (itemClass != null)
                                     {
-                                        dict_id_fov[itemClass.Id] = fov;
+                                        dict_id_fov[itemClass.Id] = (fov, (parts.Length > 2 && int.TryParse(parts[2].Trim(), out int aimFov) ? aimFov : -1));
                                     }
                                     else
                                     {
@@ -211,13 +244,15 @@ namespace CustomFPVFov
                     return;
                 }
             }
-            if (dict_id_fov.TryGetValue(player.inventory.holdingItem.Id, out float fov))
+            if (dict_id_fov.TryGetValue(player.inventory.holdingItem.Id, out var pair))
             {
-                CurrentFov = fov;
+                CurrentFov = pair.fov;
+                CurrentAimFov = pair.aimFov > 0 ? pair.aimFov : defaultAimFov;
             }
             else
             {
                 CurrentFov = defaultFov;
+                CurrentAimFov = defaultAimFov;
             }
             if (player.vp_FPWeapon)
             {
