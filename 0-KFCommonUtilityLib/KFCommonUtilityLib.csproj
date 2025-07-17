@@ -38,6 +38,10 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HBAO.Runtime">
+      <HintPath>..\..\7DaysToDie_Data\Managed\HBAO.Runtime.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="MonoMod.Utils">
       <HintPath>..\0_TFP_Harmony\MonoMod.Utils.dll</HintPath>
       <Private>False</Private>
@@ -56,10 +60,6 @@
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>..\..\7DaysToDie_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Autodesk.Fbx">
-      <HintPath>..\..\7DaysToDie_Data\Managed\Autodesk.Fbx.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="DOTween, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -96,6 +96,11 @@
       <HintPath>..\0_TFP_Harmony\Mono.Cecil.Rocks.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="ScreenSpaceReflections">
+      <HintPath>..\..\7DaysToDie_Data\Managed\ScreenSpaceReflections.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -115,10 +120,6 @@
     </Reference>
     <Reference Include="Unity.Burst">
       <HintPath>..\..\7DaysToDie_Data\Managed\Unity.Burst.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.Formats.Fbx.Runtime">
-      <HintPath>..\..\7DaysToDie_Data\Managed\Unity.Formats.Fbx.Runtime.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Mathematics">
@@ -171,6 +172,10 @@
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
       <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.StreamingModule">
+      <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.StreamingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
@@ -420,6 +425,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Harmony\BackgroundInventoryUpdatePatch.cs" />
+    <Compile Include="Harmony\CameraPatches.cs" />
     <Compile Include="Harmony\DamagePatches.cs" />
     <Compile Include="Harmony\HideMarkerOnAimPatch.cs" />
     <Compile Include="Harmony\DisplayMetaAsBuffPatch.cs" />
@@ -652,6 +658,7 @@
     <Compile Include="Scripts\Requirements\RoundsInInventory.cs" />
     <Compile Include="Scripts\Requirements\RoundsInMagazineBase.cs" />
     <Compile Include="Scripts\StaticManagers\DelayLoadModuleManager.cs" />
+    <Compile Include="Scripts\Utilities\LocalPlayerCameraUpdater.cs" />
     <Compile Include="Scripts\Utilities\Modular\ItemInventoryDataModuleProcessor.cs" />
     <Compile Include="Scripts\Utilities\Modular\ItemActionDataModuleProcessor.cs" />
     <Compile Include="Scripts\Utilities\Modular\ItemActionModuleManager.cs" />

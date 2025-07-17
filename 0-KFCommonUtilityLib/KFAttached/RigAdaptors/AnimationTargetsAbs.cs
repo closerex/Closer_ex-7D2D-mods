@@ -138,7 +138,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     {
         for (int i = list_activate_attachments.Count - 1; i >= 0; i--)
         {
-            if (!list_activate_attachments[i].activeInHierarchy)
+            if (!list_activate_attachments[i] || !list_activate_attachments[i].activeInHierarchy)
             {
                 continue;
             }
@@ -150,7 +150,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
         }
         for (int i = list_attached_attachments.Count - 1; i >= 0; i--)
         {
-            if (!list_attached_attachments[i].activeInHierarchy)
+            if (!list_attached_attachments[i] || !list_attached_attachments[i].activeInHierarchy)
             {
                 continue;
             }
