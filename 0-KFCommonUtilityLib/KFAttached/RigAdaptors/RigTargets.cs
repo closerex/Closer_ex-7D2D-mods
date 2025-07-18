@@ -29,12 +29,17 @@ public class RigTargets : AnimationTargetsAbs
 
     public override bool UseGraph => IsFpv ? false : ItemTpv;
 
+    public override Transform PlayerOriginTransform { get; protected set; }
+
+    public override bool IsRiggedWeapon => true;
+
     protected override void Awake()
     {
         base.Awake();
         if (!itemFpv)
             return;
         itemAnimator = itemFpv.GetComponentInChildren<Animator>(true);
+        PlayerOriginTransform = itemAnimator.transform;
 #if NotEditor
         itemAnimator.writeDefaultValuesOnDisable = true;
 #endif

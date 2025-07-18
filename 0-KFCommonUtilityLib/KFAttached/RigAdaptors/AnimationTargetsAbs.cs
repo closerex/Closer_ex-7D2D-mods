@@ -56,6 +56,8 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     public Transform ItemCurrentOrDefault => IsFpv ? ItemFpv : ItemTpvOrSelf;
     public AnimationGraphBuilder GraphBuilder { get; private set; }
     public abstract bool UseGraph { get; }
+    public abstract Transform PlayerOriginTransform { get; protected set; }
+    public abstract bool IsRiggedWeapon { get; }
 #if NotEditor
     public int SlotIndex { get; private set; } = -1;
 #endif

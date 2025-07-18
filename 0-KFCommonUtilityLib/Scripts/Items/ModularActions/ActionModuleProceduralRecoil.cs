@@ -195,13 +195,13 @@ public class ActionModuleProceduralRecoil
         if (_data.invData.holdingEntity is EntityPlayerLocal player && player.bFirstPersonView)
         {
             __customData.playerCameraTransform = player.cameraTransform;
-            var targets = AnimationRiggingManager.GetHoldingRigTargetsFromPlayer(_data.invData.holdingEntity);
+            __customData.targets = AnimationRiggingManager.GetHoldingRigTargetsFromPlayer(_data.invData.holdingEntity);
 
             __customData.recoilPivotTransform = null;
             __customData.hasPivotOverride = false;
-            if (targets)
+            if (__customData.targets)
             {
-                __customData.recoilPivotTransform = AnimationRiggingManager.GetAddPartTransformOverride(targets.transform, "RecoilPivot");
+                __customData.recoilPivotTransform = AnimationRiggingManager.GetAddPartTransformOverride(__customData.targets.transform, "RecoilPivot");
             }
             if (__customData.recoilPivotTransform)
             {
@@ -212,9 +212,9 @@ public class ActionModuleProceduralRecoil
                 __customData.recoilPivotTransform = player.cameraTransform.FindInAllChildren("RightHand");
             }
 
-            if (targets && targets.ItemFpv && targets is RigTargets)
+            if (__customData.targets && __customData.targets.ItemFpv && __customData.targets is RigTargets)
             {
-                __customData.playerOriginTransform = targets.ItemAnimator.transform;
+                __customData.playerOriginTransform = __customData.targets.ItemAnimator.transform;
                 __customData.isRigWeapon = true;
             }
             else
@@ -223,11 +223,13 @@ public class ActionModuleProceduralRecoil
                 __customData.isRigWeapon = false;
             }
 
-            var oldRecoil = targets.ItemAnimator?.GetComponent<AnimationRandomRecoil>();
+            var oldRecoil = __customData.targets.ItemAnimator?.GetComponent<AnimationRandomRecoil>();
             if (oldRecoil)
             {
                 oldRecoil.enabled = false;
             }
+
+            CameraLateUpdater.RegisterUpdater(__customData);
         }
 
         __customData.ResetRecoil();
@@ -245,6 +247,7 @@ public class ActionModuleProceduralRecoil
     {
         __customData.ResetRecoil();
         __customData.isHolding = false;
+        CameraLateUpdater.UnregisterUpdater(__customData);
     }
 
     //[HarmonyPatch(nameof(ItemAction.OnHoldingUpdate)), MethodTargetPostfix]
@@ -369,7 +372,7 @@ public class ActionModuleProceduralRecoil
     //    recoilData.recoilFollowReturnSpeed = EffectManager.GetValue(CustomEnums.PRReturnSpeed, rangedData.invData.itemValue, 1f, rangedData.invData.holdingEntity);
     //}
 
-    public class EFTProceduralRecoilData
+    public class EFTProceduralRecoilData : IRootMovementUpdater
     {
         public ItemActionRanged.ItemActionDataRanged rangedData;
         public ActionModuleProceduralRecoil module;
@@ -377,6 +380,7 @@ public class ActionModuleProceduralRecoil
         public Transform playerOriginTransform;
         public Transform recoilPivotTransform;
         public Transform playerCameraTransform;
+        public AnimationTargetsAbs targets;
         public bool isRigWeapon;
         public bool hasPivotOverride;
         public int actionIndex;
@@ -464,6 +468,8 @@ public class ActionModuleProceduralRecoil
         public bool IsCamRotDirty;
         public Vector2 CamRotValue, CamRotVelocity, CamRotForce;
 
+        public int Priority => 200;
+
         public EFTProceduralRecoilData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleProceduralRecoil _module)
         {
             rangedData = actionData as ItemActionRanged.ItemActionDataRanged;
@@ -536,7 +542,7 @@ public class ActionModuleProceduralRecoil
             FixedUpdateCamRot(dt);
         }
 
-        public void LateUpdate(float dt)
+        public void LateUpdate(Transform playerOriginTransform, bool isRigWeapon, float dt)
         {
             if (!isHolding)
             {
@@ -841,6 +847,8 @@ public static class ProceduralRecoilUpdater
     public static Vector2 CamAimRecoilRotOffsetCur;
     public static float CamAimRecoilRotOffsetLerpSpeed = 15f;
 
+    private static PRCameraUpdate PRCameraUpdater = new PRCameraUpdate();
+    private static PRApply PRApplyUpdater = new PRApply();
     public static void InitPlayer(EntityPlayerLocal player)
     {
         ProceduralRecoilUpdater.player = player;
@@ -857,6 +865,9 @@ public static class ProceduralRecoilUpdater
         //CamAimRecoilPosOffsetTarget = Vector3.zero;
         LastShotTime = 0;
         CamAimRecoilRotOffsetCur = Vector2.zero;
+
+        CameraLateUpdater.RegisterUpdater(PRCameraUpdater);
+        CameraLateUpdater.RegisterUpdater(PRApplyUpdater);
     }
 
     //public static void SetTargetRecoilPosOffset(Vector3 offset)
@@ -1026,6 +1037,25 @@ public static class ProceduralRecoilUpdater
     }
 }
 
+public class PRCameraUpdate : IRootMovementUpdater
+{
+    public int Priority => 150;
+    public void LateUpdate(Transform playerOriginTransform, bool isRiggedWeapon, float _dt)
+    {
+        ProceduralRecoilUpdater.LateUpdateCameraRot(_dt);
+    }
+}
+
+public class PRApply : IRootMovementUpdater
+{
+    public int Priority => 250;
+
+    public void LateUpdate(Transform playerOriginTransform, bool isRiggedWeapon, float _dt)
+    {
+        ProceduralRecoilUpdater.LateUpdateApplyCamRot();
+    }
+}
+
 [HarmonyPatch]
 public static class ProceduralRecoilPatches
 {
@@ -1036,23 +1066,23 @@ public static class ProceduralRecoilPatches
         ProceduralRecoilUpdater.InitPlayer(__instance);
     }
 
-    [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.LateUpdate))]
-    [HarmonyPostfix]
-    private static void Postfix_LateUpdate_EntityPlayerLocal(EntityPlayerLocal __instance)
-    {
-        ProceduralRecoilUpdater.LateUpdateCameraRot(Time.deltaTime);
-        if (__instance.bFirstPersonView)
-        {
-            ProceduralRecoilUpdater.RecoilData?.LateUpdate(Time.deltaTime);
-        }
-    }
+    //[HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.LateUpdate))]
+    //[HarmonyPostfix]
+    //private static void Postfix_LateUpdate_EntityPlayerLocal(EntityPlayerLocal __instance)
+    //{
+    //    ProceduralRecoilUpdater.LateUpdateCameraRot(Time.deltaTime);
+    //    if (__instance.bFirstPersonView)
+    //    {
+    //        ProceduralRecoilUpdater.RecoilData?.LateUpdate(Time.deltaTime);
+    //    }
+    //}
 
-    [HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.LateUpdate))]
-    [HarmonyPostfix]
-    private static void Postfix_LateUpdate_vp_FPCamera()
-    {
-        ProceduralRecoilUpdater.LateUpdateApplyCamRot();
-    }
+    //[HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.LateUpdate))]
+    //[HarmonyPostfix]
+    //private static void Postfix_LateUpdate_vp_FPCamera()
+    //{
+    //    ProceduralRecoilUpdater.LateUpdateApplyCamRot();
+    //}
 
     [HarmonyPatch(typeof(vp_FPWeapon), nameof(vp_FPWeapon.FixedUpdate))]
     [HarmonyPostfix]

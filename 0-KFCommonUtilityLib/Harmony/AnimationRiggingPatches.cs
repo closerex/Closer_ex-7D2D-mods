@@ -1027,9 +1027,9 @@ static class AnimationRiggingPatches
             {
                 targets.Destroy();
             }
+            __instance.meshRenderers = __instance.itemTransform.GetComponentsInChildren<Renderer>(true);
+            __instance.VisiblityCheck(0, false);
         }
-        __instance.meshRenderers = __instance.itemTransform.GetComponentsInChildren<Renderer>(true);
-        __instance.VisiblityCheck(0, false);
     }
 
     [HarmonyPatch(typeof(EModelBase), nameof(EModelBase.SwitchModelAndView))]

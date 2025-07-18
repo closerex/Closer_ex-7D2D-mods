@@ -33,6 +33,10 @@ public class PlayGraphTargets : AnimationTargetsAbs
 
     public override bool UseGraph => ItemCurrent;
 
+    public override Transform PlayerOriginTransform { get; protected set; }
+
+    public override bool IsRiggedWeapon => false;
+
     protected override void Awake()
     {
         base.Awake();
@@ -52,8 +56,8 @@ public class PlayGraphTargets : AnimationTargetsAbs
                 AnimationRiggingManager.AddRigExcludeName(rig.gameObject.name);
             }
         }
-        rigLayerFpv = new RigLayer[rigFpv.Length];
 #endif
+        rigLayerFpv = new RigLayer[rigFpv.Length];
         itemFpv.gameObject.SetActive(false);
     }
 
@@ -69,6 +73,8 @@ public class PlayGraphTargets : AnimationTargetsAbs
         itemFpv.position = Vector3.zero;
         itemFpv.localPosition = Vector3.zero;
         itemFpv.localRotation = Quaternion.identity;
+
+        PlayerOriginTransform = PlayerAnimatorTrans.FindInAllChildren("Hips");
 
         if (IsFpv)
         {

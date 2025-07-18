@@ -6,7 +6,7 @@ namespace CameraShake
     /// <summary>
     /// Camera shaker component registeres new shakes, holds a list of active shakes, and applies them to the camera additively.
     /// </summary>
-    public class CameraShaker : MonoBehaviour
+    public class CameraShaker : MonoBehaviour, IRootMovementUpdater
     {
         public static CameraShaker Instance;
         public static CameraShakePresets Presets;
@@ -24,6 +24,8 @@ namespace CameraShake
         public float StrengthMultiplier = 1;
 
         public CameraShakePresets ShakePresets;
+
+        public int Priority => 1000;
 
 
         /// <summary>
@@ -62,27 +64,7 @@ namespace CameraShake
             Presets = ShakePresets;
             if (cameraTransform == null)
                 cameraTransform = transform;
-        }
-
-        public void UpdateShake()
-        {
-            if (cameraTransform == null) return;
-
-            Displacement cameraDisplacement = Displacement.Zero;
-            for (int i = activeShakes.Count - 1; i >= 0; i--)
-            {
-                if (activeShakes[i].IsFinished)
-                {
-                    activeShakes.RemoveAt(i);
-                }
-                else
-                {
-                    activeShakes[i].Update(Time.deltaTime, cameraTransform.position, cameraTransform.rotation);
-                    cameraDisplacement += activeShakes[i].CurrentDisplacement;
-                }
-            }
-            cameraTransform.localPosition = transform.localPosition + StrengthMultiplier * cameraDisplacement.position;
-            cameraTransform.localRotation *= Quaternion.Euler(StrengthMultiplier * cameraDisplacement.eulerAngles);
+            CameraLateUpdater.RegisterUpdater(this);
         }
 
         private static bool IsInstanceNull()
@@ -93,6 +75,28 @@ namespace CameraShake
                 return true;
             }
             return false;
+        }
+
+        public void LateUpdate(Transform playerOriginTransform, bool isRiggedWeapon, float _dt)
+        {
+            if (cameraTransform == null)
+                return;
+
+            Displacement cameraDisplacement = Displacement.Zero;
+            for (int i = activeShakes.Count - 1; i >= 0; i--)
+            {
+                if (activeShakes[i].IsFinished)
+                {
+                    activeShakes.RemoveAt(i);
+                }
+                else
+                {
+                    activeShakes[i].Update(_dt, cameraTransform.position, cameraTransform.rotation);
+                    cameraDisplacement += activeShakes[i].CurrentDisplacement;
+                }
+            }
+            cameraTransform.localPosition += StrengthMultiplier * cameraDisplacement.position;
+            cameraTransform.localRotation *= Quaternion.Euler(StrengthMultiplier * cameraDisplacement.eulerAngles);
         }
     }
 }

@@ -28,15 +28,19 @@ public class ActionModuleProceduralAiming
 
         __customData.playerOriginTransform = null;
         __customData.playerCameraPosRef = _data.invData.holdingEntity is EntityPlayerLocal player && player.bFirstPersonView ? player.cameraTransform : null;
-        var targets = AnimationRiggingManager.GetHoldingRigTargetsFromPlayer(_data.invData.holdingEntity);
+        if (__customData.playerCameraPosRef != null)
+        {
+            CameraLateUpdater.RegisterUpdater(__customData);
+        }
+        __customData.targets = AnimationRiggingManager.GetHoldingRigTargetsFromPlayer(_data.invData.holdingEntity);
         if (__customData.playerCameraPosRef)
         {
-            if (targets.ItemFpv)
+            if (__customData.targets.ItemFpv)
             {
-                if (targets is RigTargets)
+                if (__customData.targets is RigTargets)
                 {
                     __customData.isRigWeapon = true;
-                    __customData.playerOriginTransform = targets.ItemAnimator.transform;
+                    __customData.playerOriginTransform = __customData.targets.ItemAnimator.transform;
                     __customData.rigWeaponLocalPosition = __customData.playerOriginTransform.localPosition;
                     __customData.rigWeaponLocalRotation = __customData.playerOriginTransform.localRotation;
                 }
@@ -45,7 +49,7 @@ public class ActionModuleProceduralAiming
                     __customData.isRigWeapon = false;
                     __customData.playerOriginTransform = __customData.playerCameraPosRef.FindInAllChildren("Hips");
                 }
-                __customData.playerCameraPosRef = targets.ItemFpv.Find("PlayerCameraPositionReference");
+                __customData.playerCameraPosRef = __customData.targets.ItemFpv.Find("PlayerCameraPositionReference");
             }
             else
             {
@@ -54,7 +58,7 @@ public class ActionModuleProceduralAiming
         }
         if (__customData.playerCameraPosRef)
         {
-            __customData.aimRefTransform = targets.ItemFpv.Find("ScopeBasePositionReference");
+            __customData.aimRefTransform = __customData.targets.ItemFpv.Find("ScopeBasePositionReference");
             if (__customData.aimRefTransform)
             {
                 var scopeRefTrans = __customData.aimRefTransform.Find("ScopePositionReference");
@@ -81,6 +85,7 @@ public class ActionModuleProceduralAiming
     public void Postfix_StopHolding(ProceduralAimingData __customData)
     {
         __customData.ResetAiming();
+        CameraLateUpdater.UnregisterUpdater(__customData);
     }
 
     //[HarmonyPatch(nameof(ItemAction.ExecuteAction)), MethodTargetPostfix]
@@ -93,8 +98,9 @@ public class ActionModuleProceduralAiming
     //    }
     //}
 
-    public class ProceduralAimingData
+    public class ProceduralAimingData : IRootMovementUpdater
     {
+        public AnimationTargetsAbs targets;
         public ActionModuleErgoAffected.ErgoData ergoData;
         public float zoomInTime;
         public Transform aimRefTransform;
@@ -135,6 +141,7 @@ public class ActionModuleProceduralAiming
         public AimReference CurAimRef => curAimRefIndex >= 0 && curAimRefIndex < registeredReferences.Count ? registeredReferences[curAimRefIndex] : null;
 
         public float AimRefOffset { get; private set; }
+        public int Priority => 100;
 
         public ProceduralAimingData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleProceduralAiming _module)
         {
@@ -219,8 +226,18 @@ public class ActionModuleProceduralAiming
             }
         }
 
-        public void LateUpdateAiming()
+        //public void LateUpdateAiming()
+        //{
+        //}
+
+        public void LateUpdate(Transform playerOriginTransform, bool isRigWeapon, float _dt)
         {
+            if (holdingEntity.AimingGun != isAiming)
+            {
+                isAiming = holdingEntity.AimingGun;
+                UpdateCurrentReference(true);
+            }
+
             if (aimRefTransform && playerCameraPosRef && playerOriginTransform && CurAimRef)
             {
                 if (isRigWeapon)
@@ -264,21 +281,16 @@ public class ActionModuleProceduralAiming
     }
 }
 
-[HarmonyPatch]
-public static class ProceduralAimingPatches
-{
-    [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.LateUpdate))]
-    [HarmonyPostfix]
-    private static void Postfix_LateUpdate_EntityPlayerLocal(EntityPlayerLocal __instance)
-    {
-        if (__instance.inventory?.holdingItemData?.actionData?[1] is IModuleContainerFor<ActionModuleProceduralAiming.ProceduralAimingData> module)
-        {
-            if (__instance.AimingGun != module.Instance.isAiming)
-            {
-                module.Instance.isAiming = __instance.AimingGun;
-                module.Instance.UpdateCurrentReference(true);
-            }
-            module.Instance.LateUpdateAiming();
-        }
-    }
-}
+//[HarmonyPatch]
+//public static class ProceduralAimingPatches
+//{
+//    [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.LateUpdate))]
+//    [HarmonyPostfix]
+//    private static void Postfix_LateUpdate_EntityPlayerLocal(EntityPlayerLocal __instance)
+//    {
+//        if (__instance.inventory?.holdingItemData?.actionData?[1] is IModuleContainerFor<ActionModuleProceduralAiming.ProceduralAimingData> module)
+//        {
+//            module.Instance.LateUpdateAiming();
+//        }
+//    }
+//}

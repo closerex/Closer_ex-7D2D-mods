@@ -99,6 +99,59 @@ namespace KFCommonUtilityLib.Harmony
         }
     }
 
+    [HarmonyPatch]
+    public static class CameraPatches
+    {
+        [HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.FixedUpdate))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_vp_FPCamera_FixedUpdate(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var fld_has_ran = AccessTools.Field(typeof(vp_FPCamera), nameof(vp_FPCamera.hasLateUpdateRan));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].LoadsField(fld_has_ran))
+                {
+                    codes[i + 3].ExtractLabels();
+                    codes.RemoveRange(i - 1, 4);
+                    break;
+                }
+            }
+
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.Awake))]
+        [HarmonyPostfix]
+        private static void Postfix_EntityPlayerLocal_Awake(EntityPlayerLocal __instance)
+        {
+            CameraLateUpdater.Init(__instance);
+        }
+
+        [HarmonyPatch(typeof(AvatarLocalPlayerController), nameof(AvatarLocalPlayerController.SetInRightHand))]
+        [HarmonyPostfix]
+        private static void Postfix_AvatarLocalPlayerController_SetInRightHand(Transform _transform)
+        {
+            CameraLateUpdater.UpdateHoldingItem(_transform);
+        }
+
+        [HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.LateUpdate))]
+        [HarmonyPostfix]
+        private static void Postfix_vp_FPCamera_LateUpdate()
+        {
+            CameraLateUpdater.LateUpdate(Time.deltaTime);
+        }
+
+        [HarmonyPatch(typeof(GameManager), nameof(GameManager.SaveAndCleanupWorld))]
+        [HarmonyPostfix]
+        private static void Postfix_SaveAndCleanupWorld_GameManager()
+        {
+            CameraLateUpdater.Cleanup();
+        }
+    }
+
     //[HarmonyPatch]
     public static class CameraClonePatches
     {
@@ -348,4 +401,85 @@ namespace KFCommonUtilityLib.Harmony
     }
 
     // ScreenEffects.SetScreenEffect?
+}
+public interface IRootMovementUpdater
+{
+    public void LateUpdate(Transform playerOriginTransform, bool isRiggedWeapon, float _dt);
+    public int Priority { get; }
+}
+
+public class RootMovementUpdaterComparer : IComparer<IRootMovementUpdater>
+{
+    public int Compare(IRootMovementUpdater x, IRootMovementUpdater y)
+    {
+        return x.Priority.CompareTo(y.Priority);
+    }
+}
+
+public static class CameraLateUpdater
+{
+    private static SortedSet<IRootMovementUpdater> sset_updaters = new SortedSet<IRootMovementUpdater>(new RootMovementUpdaterComparer());
+    private static EntityPlayerLocal player;
+    private static Transform playerOriginTransform;
+    private static bool isRigWeapon;
+
+    public static void Init(EntityPlayerLocal player)
+    {
+        CameraLateUpdater.player = player;
+    }
+
+    public static void Cleanup()
+    {
+        player = null;
+        playerOriginTransform = null;
+        isRigWeapon = false;
+        sset_updaters.Clear();
+    }
+
+    public static void UpdateHoldingItem(Transform transform)
+    {
+        if (!player)
+        {
+            return;
+        }
+        AnimationTargetsAbs targets = transform?.GetComponent<AnimationTargetsAbs>();
+
+        if (targets && !targets.Destroyed && targets.ItemFpv && targets is RigTargets)
+        {
+            playerOriginTransform = targets.ItemAnimator.transform;
+            isRigWeapon = true;
+        }
+        else
+        {
+            playerOriginTransform = player.cameraTransform.FindInAllChildren("Hips");
+            isRigWeapon = false;
+        }
+    }
+
+    public static void RegisterUpdater(IRootMovementUpdater updater)
+    {
+        //Log.Out($"added updater priority {updater.Priority} type {updater.GetType().FullName}\n{StackTraceUtility.ExtractStackTrace()}");
+        if (!sset_updaters.Contains(updater))
+        {
+            sset_updaters.Add(updater);
+        }
+    }
+
+    public static void UnregisterUpdater(IRootMovementUpdater updater)
+    {
+        sset_updaters.Remove(updater);
+        //Log.Out($"remove updater type {updater.GetType().FullName}\n{StackTraceUtility.ExtractStackTrace()}");
+    }
+
+    public static void LateUpdate(float _dt)
+    {
+        if (!player)
+        {
+            return;
+        }
+        foreach (var updater in sset_updaters)
+        {
+            updater?.LateUpdate(playerOriginTransform, isRigWeapon, _dt);
+        }
+    }
 }
