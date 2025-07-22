@@ -123,6 +123,7 @@
 				<passive_effect name="ModSlots" operation="base_set" value="1,2,3,4,4,4" tier="1,2,3,4,5,6"/>
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+                <passive_effect name="RecoilCameraShakeStrength" operation="base_set" value="0" tags="perkGunslinger"/>
 		
 				<passive_effect name="DegradationMax" operation="base_set" value="200,450" tier="1,6"/>
 				<triggered_effect trigger="onSelfHoldingItemCreated" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="AimRefGroupVanilla"/>
@@ -319,6 +320,7 @@
 				<passive_effect name="ModSlots" operation="base_set" value="1,2,3,4,5,5" tier="1,2,3,4,5,6"/>
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+                <passive_effect name="RecoilCameraShakeStrength" operation="base_set" value="0" tags="perkGunslinger"/>
 		
 				<passive_effect name="DegradationMax" operation="base_set" value="250,500" tier="1,6"/>
 				<triggered_effect trigger="onSelfHoldingItemCreated" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="AimRefGroupVanilla"/>
@@ -514,6 +516,7 @@
 				<passive_effect name="ModSlots" operation="base_set" value="1,2,3,4,5,6" tier="1,2,3,4,5,6"/>
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+                <passive_effect name="RecoilCameraShakeStrength" operation="base_set" value="0" tags="perkBoomstick"/>
 		
 				<passive_effect name="DegradationMax" operation="base_set" value="300,550" tier="1,6"/>
 				<triggered_effect trigger="onSelfHoldingItemCreated" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="AimRefGroupVanilla"/>
@@ -661,6 +664,42 @@
 				<property name="ExcludeMods" value="modGunSoundSuppressorSilencer,modGunTriggerGroupSemi,modGunTriggerGroupBurst3,modGunTriggerGroupAutomatic"/>
 				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
 			</property>
+			<effect_group name="Common">
+				<triggered_effect trigger="onSelfEquipStart" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
+				<triggered_effect trigger="onReloadStop" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
+
+				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="true">
+					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="GTE" value="5"/>
+				</triggered_effect>
+				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="false">
+					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="LT" value="5"/>
+				</triggered_effect>
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="0.733">
+					<requirement name="RoundsInMagazine" operation="LTE" value="0"/>
+					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="LT" value="5"/>
+				</passive_effect>
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="0.946">
+					<requirement name="RoundsInMagazine" operation="LTE" value="0"/>
+					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="GTE" value="5"/>
+				</passive_effect>
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="0.73">
+					<requirement name="RoundsInMagazine" operation="GT" value="0"/>
+					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="LT" value="5"/>
+				</passive_effect>
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="0.907">
+					<requirement name="RoundsInMagazine" operation="GT" value="0"/>
+					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="GTE" value="5"/>
+				</passive_effect>
+				<passive_effect name="MagazineSize" operation="base_set" value="40" tags="perkMachineGunner,medicWeapon"/>
+				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="0.733" tags="perkMachineGunner,medicWeapon"/> <!-- 4s -->
+				<passive_effect name="ModSlots" operation="base_set" value="1,2,3,4,5,5" tier="1,2,3,4,5,6"/>
+				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+                <passive_effect name="RecoilCameraShakeStrength" operation="base_set" value="0" tags="perkMachineGunner"/>
+		
+				<passive_effect name="DegradationMax" operation="base_set" value="300,600" tier="1,6"/>
+				<triggered_effect trigger="onSelfHoldingItemCreated" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="AimRefGroupVanilla"/>
+			</effect_group>
 			<effect_group name="Weapon mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="0"/>
 				<passive_effect name="RoundsPerMinute" operation="base_set" value="750" tags="perkMachineGunner"/>
@@ -697,41 +736,6 @@
 				<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1">
 					<requirement name="RoundsInMagazine" operation="LTE" value="6"/>
 				</triggered_effect>
-			</effect_group>
-			<effect_group name="Common">
-				<triggered_effect trigger="onSelfEquipStart" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
-				<triggered_effect trigger="onReloadStop" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
-
-				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="true">
-					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="GTE" value="5"/>
-				</triggered_effect>
-				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="false">
-					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="LT" value="5"/>
-				</triggered_effect>
-				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="0.733">
-					<requirement name="RoundsInMagazine" operation="LTE" value="0"/>
-					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="LT" value="5"/>
-				</passive_effect>
-				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="0.946">
-					<requirement name="RoundsInMagazine" operation="LTE" value="0"/>
-					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="GTE" value="5"/>
-				</passive_effect>
-				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="0.73">
-					<requirement name="RoundsInMagazine" operation="GT" value="0"/>
-					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="LT" value="5"/>
-				</passive_effect>
-				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="0.907">
-					<requirement name="RoundsInMagazine" operation="GT" value="0"/>
-					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="GTE" value="5"/>
-				</passive_effect>
-				<passive_effect name="MagazineSize" operation="base_set" value="40" tags="perkMachineGunner,medicWeapon"/>
-				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="0.733" tags="perkMachineGunner,medicWeapon"/> <!-- 4s -->
-				<passive_effect name="ModSlots" operation="base_set" value="1,2,3,4,5,5" tier="1,2,3,4,5,6"/>
-				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
-				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
-		
-				<passive_effect name="DegradationMax" operation="base_set" value="300,600" tier="1,6"/>
-				<triggered_effect trigger="onSelfHoldingItemCreated" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="AimRefGroupVanilla"/>
 			</effect_group>
 			<effect_group name="label color restore">
 				<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="GT" value="5"/>

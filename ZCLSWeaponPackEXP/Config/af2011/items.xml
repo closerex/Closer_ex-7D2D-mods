@@ -250,6 +250,7 @@
 		
 				<passive_effect name="DegradationMax" operation="base_set" value="1000,1400" tier="1,6" tags="perkGunslinger"/>
 				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkGunslinger"/>
+                <passive_effect name="RecoilCameraShakeStrength" operation="base_set" value="0" tags="perkGunslinger"/>
 
 				<triggered_effect trigger="onSelfHoldingItemCreated" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="AimRefGroupVanilla"/>
 				<triggered_effect trigger="onSelfEquipStart" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="AimRefGroupAltVanilla"/>
@@ -382,6 +383,7 @@
 		
 				<passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="3.2" tags="perkGunslinger"/>
 				<passive_effect name="WeaponHandling" operation="base_set" value=".6" tags="perkGunslinger"/>
+                <passive_effect name="RecoilCameraShakeStrength" operation="base_set" value="0" tags="perkGunslinger"/>
 		
 				<passive_effect name="DegradationMax" operation="base_set" value="500,700" tier="1,6" tags="perkGunslinger"/>
 				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkGunslinger"/>

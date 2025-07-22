@@ -206,6 +206,7 @@
 		
 				<passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="1.9" tags="perkBoomstick"/>
 				<passive_effect name="WeaponHandling" operation="base_set" value="1.7" tags="perkBoomstick"/>
+                <passive_effect name="RecoilCameraShakeStrength" operation="base_set" value="0" tags="perkBoomstick"/>
 		
 				<passive_effect name="DegradationMax" operation="base_set" value="400,700" tier="1,6" tags="perkBoomstick"/>
 				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkBoomstick"/>

@@ -107,6 +107,7 @@
                 <passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkGunslinger"/>
                 <passive_effect name="MagazineSize" operation="base_set" value="15" tags="perkGunslinger"/>
                 <passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="0.921" tags="perkGunslinger"/>
+                <passive_effect name="RecoilCameraShakeStrength" operation="base_set" value="0" tags="perkGunslinger"/>
 
                 <passive_effect name="SpreadDegreesVertical" operation="base_set" value="1.5" tags="perkGunslinger"/>
                 <passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="1.5" tags="perkGunslinger"/>
@@ -275,6 +276,7 @@
                 <passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkGunslinger"/>
                 <passive_effect name="MagazineSize" operation="base_set" value="30" tags="perkGunslinger"/>
                 <passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="0.647" tags="perkGunslinger"/>
+                <passive_effect name="RecoilCameraShakeStrength" operation="base_set" value="0" tags="perkGunslinger"/>
 
                 <passive_effect name="SpreadDegreesVertical" operation="base_set" value="1.6" tags="perkGunslinger"/>
                 <passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="1.6" tags="perkGunslinger"/>
@@ -547,7 +549,8 @@
                 <passive_effect name="WeaponHandling" operation="base_set" value=".55" tags="perkBoomstick"/> <!-- crosshair reset speed -->
                 <passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkBoomstick"/> <!-- random WeaponHandling -->
                 <passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkBoomstick"/>
-                <passive_effect name="RecoilCameraShakeStrength" operation="base_set" value="0.35" tags="perkBoomstick"/>
+                <!-- <passive_effect name="RecoilCameraShakeStrength" operation="base_set" value="0.35" tags="perkBoomstick"/> -->
+                <passive_effect name="RecoilCameraShakeStrength" operation="base_set" value="0" tags="perkBoomstick"/>
 
                 <passive_effect name="MaxRange" operation="perc_add" value="-.25" tags="perkBoomstick"/>
                 
@@ -717,7 +720,8 @@
                 <passive_effect name="WeaponHandling" operation="base_set" value=".5" tags="perkBoomstick"/> <!-- crosshair reset speed -->
                 <passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkBoomstick"/> <!-- random WeaponHandling -->
                 <passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkBoomstick"/>
-                <passive_effect name="RecoilCameraShakeStrength" operation="base_set" value="0.37" tags="perkBoomstick"/>
+                <!-- <passive_effect name="RecoilCameraShakeStrength" operation="base_set" value="0.37" tags="perkBoomstick"/> -->
+                <passive_effect name="RecoilCameraShakeStrength" operation="base_set" value="0" tags="perkBoomstick"/>
 
                 <passive_effect name="MaxRange" operation="perc_add" value="-.25" tags="perkBoomstick"/>
                 

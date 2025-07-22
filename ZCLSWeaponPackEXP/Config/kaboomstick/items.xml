@@ -205,6 +205,7 @@
 
 				<passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="2" tags="perkDemolitionsExpert"/>
 				<passive_effect name="WeaponHandling" operation="base_set" value="1.7" tags="perkDemolitionsExpert"/>
+                <passive_effect name="RecoilCameraShakeStrength" operation="base_set" value="0" tags="perkDemolitionsExpert"/>
 
 				<passive_effect name="DegradationMax" operation="base_set" value="150,300" tier="1,6" tags="perkDemolitionsExpert"/>
 				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkDemolitionsExpert"/>
