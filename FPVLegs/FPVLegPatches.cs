@@ -134,21 +134,42 @@ namespace FPVLegs
             UpdateTPVMeshState(__instance, true);
         }
 
-        [HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.FixedUpdate))]
-        [HarmonyPrefix]
-        private static void Prefix_vp_FPCamera_FixedUpdate(vp_FPCamera __instance, out (bool, Vector3) __state)
-        {
-            __state = (__instance.hasLateUpdateRan, __instance.transform.position);
-        }
+        //[HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.FixedUpdate))]
+        //[HarmonyPrefix]
+        //private static void Prefix_vp_FPCamera_FixedUpdate(vp_FPCamera __instance, out (bool, Vector3) __state)
+        //{
+        //    __state = (__instance.hasLateUpdateRan, __instance.transform.position);
+        //}
+
+        //[HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.FixedUpdate))]
+        //[HarmonyPostfix]
+        //private static void Postfix_vp_FPCamera_FixedUpdate(vp_FPCamera __instance, (bool executed, Vector3 prevPos) __state)
+        //{
+        //    if (__state.executed && __instance.FPController?.localPlayer && __instance.FPController.localPlayer.bFirstPersonView)
+        //    {
+        //        UpdateTpvPosition(__instance);
+        //    }
+        //}
 
         [HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.FixedUpdate))]
-        [HarmonyPostfix]
-        private static void Postfix_vp_FPCamera_FixedUpdate(vp_FPCamera __instance, (bool executed, Vector3 prevPos) __state)
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_vp_FPCamera_FixedUpdate(IEnumerable<CodeInstruction> instructions)
         {
-            if (__state.executed && __instance.FPController?.localPlayer && __instance.FPController.localPlayer.bFirstPersonView)
+            var codes = new List<CodeInstruction>(instructions);
+            var mtd_shake = AccessTools.Method(typeof(vp_FPCamera), nameof(vp_FPCamera.UpdateShakes));
+            for (int i = 0; i < codes.Count; i++)
             {
-                UpdateTpvPosition(__instance);
+                if (codes[i].Calls(mtd_shake))
+                {
+                    codes.InsertRange(i + 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.Call(typeof(FPVLegPatches), nameof(UpdateTpvPosition))
+                    });
+                    break;
+                }
             }
+            return codes;
         }
 
         private static Vector3 legOffset = new Vector3(0f, 0.25f, -0.4f);
@@ -158,14 +179,15 @@ namespace FPVLegs
         [HarmonyPostfix]
         private static void Postfix_vp_FPCamera_LateUpdate(vp_FPCamera __instance)
         {
-            if (__instance.FPController?.localPlayer && __instance.FPController.localPlayer.bFirstPersonView)
-            {
-                UpdateTpvPosition(__instance);
-            }
+            UpdateTpvPosition(__instance);
         }
 
         private static void UpdateTpvPosition(vp_FPCamera __instance)
         {
+            if (!__instance.FPController?.localPlayer || !__instance.FPController.localPlayer.bFirstPersonView)
+            {
+                return;
+            }
             var model = __instance.FPController.localPlayer.emodel?.GetModelTransform();
             if (model)
             {
@@ -306,9 +328,9 @@ namespace FPVLegs
 
         private void LateUpdate()
         {
-            if (animator && player)
+            if (animator && player && player.emodel)
             {
-                if (player.IsAlive())
+                if (!player.emodel.IsRagdollActive)
                 {
                     if (player.bFirstPersonView)
                     {
