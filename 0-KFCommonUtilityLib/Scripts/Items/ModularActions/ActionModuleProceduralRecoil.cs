@@ -542,7 +542,7 @@ public class ActionModuleProceduralRecoil
             FixedUpdateCamRot(dt);
         }
 
-        public void LateUpdate(Transform playerOriginTransform, bool isRigWeapon, float dt)
+        public void LateUpdateMovement(Transform playerCameraTransform, Transform playerOriginTransform, bool isRigWeapon, float dt)
         {
             if (!isHolding)
             {
@@ -1028,11 +1028,6 @@ public static class ProceduralRecoilUpdater
             return;
         }
         player.cameraTransform.localRotation *= LocalCamRotOffsetCur;
-        if (!player.vp_FPController.enabled)
-        {
-            player.cameraTransform.position = player.vp_FPController.SmoothPosition;
-            player.cameraTransform.localPosition += player.vp_FPCamera.m_PositionSpring.State + player.vp_FPCamera.m_PositionSpring2.State;
-        }
         player.cameraTransform.localPosition += CamAimRecoilPosOffsetCur;
     }
 }
@@ -1040,7 +1035,7 @@ public static class ProceduralRecoilUpdater
 public class PRCameraUpdate : IRootMovementUpdater
 {
     public int Priority => 150;
-    public void LateUpdate(Transform playerOriginTransform, bool isRiggedWeapon, float _dt)
+    public void LateUpdateMovement(Transform playerCameraTransform, Transform playerOriginTransform, bool isRiggedWeapon, float _dt)
     {
         ProceduralRecoilUpdater.LateUpdateCameraRot(_dt);
     }
@@ -1050,7 +1045,7 @@ public class PRApply : IRootMovementUpdater
 {
     public int Priority => 250;
 
-    public void LateUpdate(Transform playerOriginTransform, bool isRiggedWeapon, float _dt)
+    public void LateUpdateMovement(Transform playerCameraTransform, Transform playerOriginTransform, bool isRiggedWeapon, float _dt)
     {
         ProceduralRecoilUpdater.LateUpdateApplyCamRot();
     }

@@ -6,7 +6,10 @@ namespace CameraShake
     /// <summary>
     /// Camera shaker component registeres new shakes, holds a list of active shakes, and applies them to the camera additively.
     /// </summary>
-    public class CameraShaker : MonoBehaviour, IRootMovementUpdater
+    public class CameraShaker : MonoBehaviour
+#if NotEditor
+        , IRootMovementUpdater
+#endif
     {
         public static CameraShaker Instance;
         public static CameraShakePresets Presets;
@@ -64,7 +67,9 @@ namespace CameraShake
             Presets = ShakePresets;
             if (cameraTransform == null)
                 cameraTransform = transform;
+#if NotEditor
             CameraLateUpdater.RegisterUpdater(this);
+#endif
         }
 
         private static bool IsInstanceNull()
@@ -77,7 +82,7 @@ namespace CameraShake
             return false;
         }
 
-        public void LateUpdate(Transform playerOriginTransform, bool isRiggedWeapon, float _dt)
+        public void LateUpdateMovement(Transform playerCameraTransform, Transform playerOriginTransform, bool isRiggedWeapon, float _dt)
         {
             if (cameraTransform == null)
                 return;

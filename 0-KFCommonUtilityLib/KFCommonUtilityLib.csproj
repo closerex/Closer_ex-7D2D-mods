@@ -444,6 +444,7 @@
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimatorWrapper\AnimatorWrapper.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimatorWrapper\AttachmentWrapper.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimatorWrapper\PlayableWrapper.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\CameraAnimationEvents.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\IAnimatorWrapper.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\IPlayableGraphRelated.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationAmmoUpdateState.cs" />
@@ -453,6 +454,7 @@
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationLockAction.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationMultiStageReloadState.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationRigLayerController.cs" />
+    <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimatorCameraAnimationState.cs" />
     <Compile Include="KFAttached\FPSPack\Demo\FPSDemoGUI.cs" />
     <Compile Include="KFAttached\FPSPack\Demo\FPSDemoReactivator.cs" />
     <Compile Include="KFAttached\FPSPack\Demo\FPSFireManager.cs" />

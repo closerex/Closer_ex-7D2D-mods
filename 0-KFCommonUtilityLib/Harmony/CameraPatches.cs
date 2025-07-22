@@ -128,6 +128,7 @@ namespace KFCommonUtilityLib.Harmony
         private static void Postfix_EntityPlayerLocal_Awake(EntityPlayerLocal __instance)
         {
             CameraLateUpdater.Init(__instance);
+            CameraAnimationUpdater.Init();
         }
 
         [HarmonyPatch(typeof(AvatarLocalPlayerController), nameof(AvatarLocalPlayerController.SetInRightHand))]
@@ -404,7 +405,7 @@ namespace KFCommonUtilityLib.Harmony
 }
 public interface IRootMovementUpdater
 {
-    public void LateUpdate(Transform playerOriginTransform, bool isRiggedWeapon, float _dt);
+    public void LateUpdateMovement(Transform playerCameraTransform, Transform playerOriginTransform, bool isRiggedWeapon, float _dt);
     public int Priority { get; }
 }
 
@@ -421,11 +422,15 @@ public static class CameraLateUpdater
     private static SortedSet<IRootMovementUpdater> sset_updaters = new SortedSet<IRootMovementUpdater>(new RootMovementUpdaterComparer());
     private static EntityPlayerLocal player;
     private static Transform playerOriginTransform;
+    private static Transform vanillaOriginTransform;
     private static bool isRigWeapon;
+    private static Vector3 rigWeaponLocalPosition;
+    private static Quaternion rigWeaponLocalRotation;
 
     public static void Init(EntityPlayerLocal player)
     {
         CameraLateUpdater.player = player;
+        vanillaOriginTransform = player.cameraTransform.FindInAllChildren("Hips");
     }
 
     public static void Cleanup()
@@ -448,11 +453,15 @@ public static class CameraLateUpdater
         {
             playerOriginTransform = targets.ItemAnimator.transform;
             isRigWeapon = true;
+            rigWeaponLocalPosition = playerOriginTransform.localPosition;
+            rigWeaponLocalRotation = playerOriginTransform.localRotation;
         }
         else
         {
-            playerOriginTransform = player.cameraTransform.FindInAllChildren("Hips");
+            playerOriginTransform = vanillaOriginTransform;
             isRigWeapon = false;
+            rigWeaponLocalPosition = Vector3.zero;
+            rigWeaponLocalRotation = Quaternion.identity;
         }
     }
 
@@ -467,7 +476,7 @@ public static class CameraLateUpdater
 
     public static void UnregisterUpdater(IRootMovementUpdater updater)
     {
-        sset_updaters.Remove(updater);
+        sset_updaters.RemoveWhere(u => u == updater);
         //Log.Out($"remove updater type {updater.GetType().FullName}\n{StackTraceUtility.ExtractStackTrace()}");
     }
 
@@ -477,9 +486,84 @@ public static class CameraLateUpdater
         {
             return;
         }
+        if (isRigWeapon)
+        {
+            playerOriginTransform.SetLocalPositionAndRotation(rigWeaponLocalPosition, rigWeaponLocalRotation);
+        }
+        if (!player.vp_FPController.enabled)
+        {
+            player.cameraTransform.position = player.vp_FPController.SmoothPosition;
+            player.cameraTransform.localPosition += player.vp_FPCamera.m_PositionSpring.State + player.vp_FPCamera.m_PositionSpring2.State;
+        }
         foreach (var updater in sset_updaters)
         {
-            updater?.LateUpdate(playerOriginTransform, isRigWeapon, _dt);
+            updater?.LateUpdateMovement(player.cameraTransform, playerOriginTransform, isRigWeapon, _dt);
+        }
+    }
+}
+
+public static class CameraAnimationUpdater
+{
+    private static Vector3 camPosOffset;
+    private static Quaternion camRotOffset;
+    private static bool valueSuppliedThisFrame;
+
+    public static void SupplyCameraOffset(Vector3 camPosOffset,  Quaternion camRotOffset)
+    {
+        CameraAnimationUpdater.valueSuppliedThisFrame = true;
+        CameraAnimationUpdater.camPosOffset += camPosOffset;
+        CameraAnimationUpdater.camRotOffset *= camRotOffset;
+    }
+
+    public static void Init()
+    {
+        CameraLateUpdater.RegisterUpdater(new CameraAnimationMovementUpdater());
+    }
+
+    private class CameraAnimationMovementUpdater : IRootMovementUpdater
+    {
+        public int Priority => 900;
+        private Vector3 camPosOffsetCur;
+        private Quaternion camRotOffsetCur;
+        private float failsafeLerpTimeTotal = 0.2f, failsafeLerpTimeCur = 0f;
+
+        public void LateUpdateMovement(Transform playerCameraTransform, Transform playerOriginTransform, bool isRiggedWeapon, float _dt)
+        {
+            if (valueSuppliedThisFrame)
+            {
+                valueSuppliedThisFrame = false;
+                if (failsafeLerpTimeCur > 0)
+                {
+                    failsafeLerpTimeCur += _dt;
+                    float t = failsafeLerpTimeCur / failsafeLerpTimeTotal;
+                    camPosOffsetCur = Vector3.Lerp(camPosOffsetCur, camPosOffset, t);
+                    camRotOffsetCur = Quaternion.Slerp(camRotOffsetCur, camRotOffset, t);
+                    if (failsafeLerpTimeCur > failsafeLerpTimeTotal)
+                    {
+                        failsafeLerpTimeCur = 0;
+                    }
+                }
+                else
+                {
+                    camPosOffsetCur = camPosOffset;
+                    camRotOffsetCur = camRotOffset;
+                }
+            }
+            else
+            {
+                failsafeLerpTimeCur += _dt;
+                if (failsafeLerpTimeCur > failsafeLerpTimeTotal)
+                {
+                    failsafeLerpTimeCur = failsafeLerpTimeTotal;
+                }
+                float t = failsafeLerpTimeCur / failsafeLerpTimeTotal;
+                camPosOffsetCur = Vector3.Lerp(camPosOffsetCur, Vector3.zero, t);
+                camRotOffsetCur = Quaternion.Slerp(camRotOffsetCur, Quaternion.identity, t);
+            }
+            camPosOffset = Vector3.zero;
+            camRotOffset = Quaternion.identity;
+            playerCameraTransform.localPosition += camPosOffsetCur;
+            playerCameraTransform.localRotation *= camRotOffsetCur;
         }
     }
 }

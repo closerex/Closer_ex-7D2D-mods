@@ -230,7 +230,7 @@ public class ActionModuleProceduralAiming
         //{
         //}
 
-        public void LateUpdate(Transform playerOriginTransform, bool isRigWeapon, float _dt)
+        public void LateUpdateMovement(Transform playerCameraTransform, Transform playerOriginTransform, bool isRigWeapon, float _dt)
         {
             if (holdingEntity.AimingGun != isAiming)
             {
@@ -240,10 +240,10 @@ public class ActionModuleProceduralAiming
 
             if (aimRefTransform && playerCameraPosRef && playerOriginTransform && CurAimRef)
             {
-                if (isRigWeapon)
-                {
-                    playerOriginTransform.SetLocalPositionAndRotation(rigWeaponLocalPosition, rigWeaponLocalRotation);
-                }
+                //if (isRigWeapon)
+                //{
+                //    playerOriginTransform.SetLocalPositionAndRotation(rigWeaponLocalPosition, rigWeaponLocalRotation);
+                //}
                 float zoomInTimeMod = ergoData == null ? zoomInTime : zoomInTime / ergoData.ModifiedErgo;
                 zoomInTimeMod *= 0.25f;
                 //move aimRef towards target
