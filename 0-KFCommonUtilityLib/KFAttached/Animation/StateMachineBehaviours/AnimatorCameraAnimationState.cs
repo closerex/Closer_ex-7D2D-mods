@@ -3,26 +3,34 @@ using static CameraAnimationEvents;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.Animations;
+using System.Linq;
 #else
 #endif
 
+[DisallowMultipleComponent]
 public class AnimatorCameraAnimationState : StateMachineBehaviour
 #if UNITY_EDITOR
     , ISerializationCallbackReceiver
 #endif
 {
+#if UNITY_EDITOR
     [Header("Animation Input")]
     [SerializeField]
     private AnimationClip clip;
+    [SerializeField]
+    private string propertyPath;
+#endif
     [Header("Animation Data (read from input clip)")]
     [SerializeField]
     private string clipName;
+    [SerializeField]
+    private float clipLength;
     [SerializeField]
     private AnimationCurve[] positionCurves;
     [SerializeField]
     private AnimationCurve[] rotationCurves;
     [SerializeField]
-    private CameraAnimationEvents.CurveType rotationCurveType;
+    private CameraAnimationEvents.CurveType rotationCurveType = CurveType.Quaternion;
     [Header("State Data (read from animator)")]
     [SerializeField]
     private float stateDuration;
@@ -45,134 +53,173 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
     private float speedMultiplier = 1f;
     [SerializeField]
     private bool relative = true;
+    [SerializeField]
+    private bool normalizeLength = false;
 
-    private CameraAnimationEvents.CameraCurveData curvePositionData, curveRotationData;
+    private CameraCurveData curvePositionData, curveRotationData;
 
 #if UNITY_EDITOR
     public void OnBeforeSerialize()
     {
-        var context = AnimatorController.FindStateMachineBehaviourContext(this);
-        speedParam = null;
-        speedParamHash = 0;
-        speed = 1;
-        loop = false;
-        if (context != null && context.Length > 0)
+        try
         {
-            var state = context[0].animatorObject as AnimatorState;
-            if (state != null)
+            var context = AnimatorController.FindStateMachineBehaviourContext(this);
+            speedParam = null;
+            speedParamHash = 0;
+            speed = 1;
+            loop = false;
+            if (context != null && context.Length > 0)
             {
-                speed = state.speed;
-                if (state.speedParameterActive)
+                var state = context[0].animatorObject as AnimatorState;
+                if (state != null)
                 {
-                    speedParam = state.speedParameter;
-                    speedParamHash = Animator.StringToHash(speedParam);
+                    speed = state.speed;
+                    if (state.speedParameterActive)
+                    {
+                        speedParam = state.speedParameter;
+                        speedParamHash = Animator.StringToHash(speedParam);
+                    }
+                    var stateClip = state.motion as AnimationClip;
+                    if (stateClip != null)
+                    {
+                        stateDuration = stateClip.length;
+                        loop = stateClip.isLooping;
+                        if (!string.IsNullOrEmpty(propertyPath) && clip == null)
+                        {
+                            ExtractCurvesFromClip(stateClip, propertyPath);
+                        }
+                    }
                 }
-                var clip = state.motion as AnimationClip;
-                if (clip != null)
+            }
+
+            if (clip != null)
+            {
+                ExtractCurvesFromClip(clip);
+            }
+
+            if (clipLength <= 0)
+            {
+                if (positionCurves != null)
                 {
-                    stateDuration = clip.length;
-                    loop = clip.isLooping;
+                    clipLength = positionCurves.FirstOrDefault(curve => curve != null)?.keys?.Last().time ?? 0;
+                }
+                if (clipLength <= 0 && rotationCurves != null)
+                {
+                    clipLength = rotationCurves.FirstOrDefault(curve => curve != null)?.keys?.Last().time ?? 0;
                 }
             }
         }
-
-        if (clip != null)
+        finally
         {
-            clipName = clip.name;
-            positionCurves = new AnimationCurve[3];
-            rotationCurves = new AnimationCurve[4];
-            rotationCurveType = CameraAnimationEvents.CurveType.EularAngleRaw;
-
-            EditorCurveBinding[] bindings = AnimationUtility.GetCurveBindings(clip);
-            foreach (var binding in bindings)
-            {
-                string propertyName = binding.propertyName;
-                AnimationCurve curve = AnimationUtility.GetEditorCurve(clip, binding);
-                if (propertyName.StartsWith("m_LocalRotation", System.StringComparison.OrdinalIgnoreCase))
-                {
-                    rotationCurveType = CameraAnimationEvents.CurveType.Quaternion;
-                    if (propertyName.EndsWith("x", System.StringComparison.OrdinalIgnoreCase))
-                    {
-                        rotationCurves[0] = curve;
-                    }
-                    else if (propertyName.EndsWith("y", System.StringComparison.OrdinalIgnoreCase))
-                    {
-                        rotationCurves[1] = curve;
-                    }
-                    else if (propertyName.EndsWith("z", System.StringComparison.OrdinalIgnoreCase))
-                    {
-                        rotationCurves[2] = curve;
-                    }
-                    else if (propertyName.EndsWith("w", System.StringComparison.OrdinalIgnoreCase))
-                    {
-                        rotationCurves[3] = curve;
-                    }
-                }
-                else if (propertyName.StartsWith("localEulerAnglesBaked", System.StringComparison.OrdinalIgnoreCase))
-                {
-                    rotationCurveType = CameraAnimationEvents.CurveType.EularAngleBaked;
-                    if (propertyName.EndsWith("x", System.StringComparison.OrdinalIgnoreCase))
-                    {
-                        rotationCurves[0] = curve;
-                    }
-                    else if (propertyName.EndsWith("y", System.StringComparison.OrdinalIgnoreCase))
-                    {
-                        rotationCurves[1] = curve;
-                    }
-                    else if (propertyName.EndsWith("z", System.StringComparison.OrdinalIgnoreCase))
-                    {
-                        rotationCurves[2] = curve;
-                    }
-                }
-                else if (propertyName.StartsWith("localEulerAnglesRaw", System.StringComparison.OrdinalIgnoreCase))
-                {
-                    rotationCurveType = CameraAnimationEvents.CurveType.EularAngleRaw;
-                    if (propertyName.EndsWith("x", System.StringComparison.OrdinalIgnoreCase))
-                    {
-                        rotationCurves[0] = curve;
-                    }
-                    else if (propertyName.EndsWith("y", System.StringComparison.OrdinalIgnoreCase))
-                    {
-                        rotationCurves[1] = curve;
-                    }
-                    else if (propertyName.EndsWith("z", System.StringComparison.OrdinalIgnoreCase))
-                    {
-                        rotationCurves[2] = curve;
-                    }
-                }
-                else if (propertyName.Contains("m_LocalPosition", System.StringComparison.OrdinalIgnoreCase))
-                {
-                    if (propertyName.EndsWith("x", System.StringComparison.OrdinalIgnoreCase))
-                    {
-                        positionCurves[0] = curve;
-                    }
-                    else if (propertyName.EndsWith("y", System.StringComparison.OrdinalIgnoreCase))
-                    {
-                        positionCurves[1] = curve;
-                    }
-                    else if (propertyName.EndsWith("z", System.StringComparison.OrdinalIgnoreCase))
-                    {
-                        positionCurves[2] = curve;
-                    }
-                }
-            }
-
-            if (rotationCurveType != CameraAnimationEvents.CurveType.Quaternion)
-            {
-                rotationCurves = new AnimationCurve[]
-                {
-                    rotationCurves[0],
-                    rotationCurves[1],
-                    rotationCurves[2]
-                };
-            }
+            propertyPath = null;
             clip = null;
+            if (loop)
+            {
+                normalizeLength = true;
+            }
         }
     }
 
     public void OnAfterDeserialize()
     {
         
+    }
+
+    private void ExtractCurvesFromClip(AnimationClip clip, string propertyPath = null)
+    {
+        clipName = clip.name;
+        clipLength = clip.length;
+        positionCurves = new AnimationCurve[3];
+        rotationCurves = new AnimationCurve[4];
+        rotationCurveType = CurveType.EularAngleRaw;
+
+        EditorCurveBinding[] bindings = AnimationUtility.GetCurveBindings(clip);
+        foreach (var binding in bindings)
+        {
+            if (!string.IsNullOrEmpty(propertyPath) && binding.path != propertyPath)
+            {
+                continue;
+            }
+            string propertyName = binding.propertyName;
+            AnimationCurve curve = AnimationUtility.GetEditorCurve(clip, binding);
+            if (propertyName.StartsWith("m_LocalRotation", System.StringComparison.OrdinalIgnoreCase))
+            {
+                rotationCurveType = CurveType.Quaternion;
+                if (propertyName.EndsWith("x", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    rotationCurves[0] = curve;
+                }
+                else if (propertyName.EndsWith("y", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    rotationCurves[1] = curve;
+                }
+                else if (propertyName.EndsWith("z", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    rotationCurves[2] = curve;
+                }
+                else if (propertyName.EndsWith("w", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    rotationCurves[3] = curve;
+                }
+            }
+            else if (propertyName.StartsWith("localEulerAnglesBaked", System.StringComparison.OrdinalIgnoreCase))
+            {
+                rotationCurveType = CurveType.EularAngleBaked;
+                if (propertyName.EndsWith("x", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    rotationCurves[0] = curve;
+                }
+                else if (propertyName.EndsWith("y", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    rotationCurves[1] = curve;
+                }
+                else if (propertyName.EndsWith("z", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    rotationCurves[2] = curve;
+                }
+            }
+            else if (propertyName.StartsWith("localEulerAnglesRaw", System.StringComparison.OrdinalIgnoreCase))
+            {
+                rotationCurveType = CurveType.EularAngleRaw;
+                if (propertyName.EndsWith("x", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    rotationCurves[0] = curve;
+                }
+                else if (propertyName.EndsWith("y", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    rotationCurves[1] = curve;
+                }
+                else if (propertyName.EndsWith("z", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    rotationCurves[2] = curve;
+                }
+            }
+            else if (propertyName.Contains("m_LocalPosition", System.StringComparison.OrdinalIgnoreCase))
+            {
+                if (propertyName.EndsWith("x", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    positionCurves[0] = curve;
+                }
+                else if (propertyName.EndsWith("y", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    positionCurves[1] = curve;
+                }
+                else if (propertyName.EndsWith("z", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    positionCurves[2] = curve;
+                }
+            }
+        }
+
+        if (rotationCurveType != CurveType.Quaternion)
+        {
+            rotationCurves = new AnimationCurve[]
+            {
+                rotationCurves[0],
+                rotationCurves[1],
+                rotationCurves[2]
+            };
+        }
     }
 #endif
 
@@ -182,15 +229,15 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
         if (cameraEvents)
         {
             cameraEvents.Interrupt();
-            float baseSpeed = speed * speedMultiplier;
+            float baseSpeed = normalizeLength ? speed * clipLength / stateDuration : speed * speedMultiplier;
             if (positionCurves != null && positionCurves.Length == 3)
             {
-                curvePositionData = new CameraCurveData(positionCurves, stateDuration, blendInTime, blendOutTime, baseSpeed, weight, CurveType.Position, relative, loop, speedParamHash);
+                curvePositionData = new CameraCurveData(positionCurves, clipLength, blendInTime, blendOutTime, baseSpeed, weight, CurveType.Position, relative, loop, speedParamHash);
                 cameraEvents.Play(curvePositionData);
             }
-            if (rotationCurves != null && (((rotationCurveType == CameraAnimationEvents.CurveType.EularAngleRaw || rotationCurveType == CameraAnimationEvents.CurveType.EularAngleBaked) && rotationCurves.Length == 3) || (rotationCurveType == CameraAnimationEvents.CurveType.Quaternion && rotationCurves.Length == 4)))
+            if (rotationCurves != null && (((rotationCurveType == CurveType.EularAngleRaw || rotationCurveType == CurveType.EularAngleBaked) && rotationCurves.Length == 3) || (rotationCurveType == CurveType.Quaternion && rotationCurves.Length == 4)))
             {
-                curveRotationData = new CameraCurveData(rotationCurves, stateDuration, blendInTime, blendOutTime, baseSpeed, weight, rotationCurveType, relative, loop, speedParamHash);
+                curveRotationData = new CameraCurveData(rotationCurves, clipLength, blendInTime, blendOutTime, baseSpeed, weight, rotationCurveType, relative, loop, speedParamHash);
                 cameraEvents.Play(curveRotationData);
             }
         }
