@@ -711,10 +711,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>
-      if exist "$(UnityProjectPath)" (
-      echo Unity project found, copying attached scripts...
-      robocopy "$(ProjectDir)$(AttachedScriptFolder)" "$(UnityProjectPath)$(AttachedScriptFolder)"  /MIR || set errorlevel=0
-      )
     </PostBuildEvent>
   </PropertyGroup>
 </Project>

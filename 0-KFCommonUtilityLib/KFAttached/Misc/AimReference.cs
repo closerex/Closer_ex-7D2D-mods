@@ -20,24 +20,22 @@ public class AimReference : MonoBehaviour
 
     private void OnEnable()
     {
-        if (!group)
-        {
-            return;
-        }
         scopeBase = GetComponentInParent<ScopeBase>();
         Transform refTrans = scopeBase ? scopeBase.transform : transform.parent;
         rotationOffset = Quaternion.Inverse(refTrans.rotation) * transform.rotation;
         positionOffset = refTrans.InverseTransformDirection(transform.position - refTrans.position);
-        group.UpdateEnableStates();
+        if (group)
+        {
+            group.UpdateEnableStates();
+        }
     }
 
     private void OnDisable()
     {
-        if (!group)
+        if (group)
         {
-            return;
+            group.UpdateEnableStates();
         }
-        group.UpdateEnableStates();
     }
 
     public void UpdateEnableState(bool state)
