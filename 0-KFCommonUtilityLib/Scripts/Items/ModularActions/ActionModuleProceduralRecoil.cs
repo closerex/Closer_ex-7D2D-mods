@@ -468,7 +468,7 @@ public class ActionModuleProceduralRecoil
         public bool IsCamRotDirty;
         public Vector2 CamRotValue, CamRotVelocity, CamRotForce;
 
-        public int Priority => 200;
+        public int Priority => 200 + actionIndex;
 
         public EFTProceduralRecoilData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleProceduralRecoil _module)
         {

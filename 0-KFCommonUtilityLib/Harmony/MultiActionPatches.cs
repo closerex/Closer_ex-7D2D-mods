@@ -4,7 +4,6 @@ using KFCommonUtilityLib.Scripts.NetPackages;
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -142,26 +141,6 @@ namespace KFCommonUtilityLib.Harmony
                 ItemAction action = __instance.inventory.holdingItem.Actions[i];
                 ItemActionData actionData = __instance.inventory.holdingItemData.actionData[i];
                 __result &= (action == null || action.IsAimingGunPossible(actionData));
-            }
-            return false;
-        }
-        #endregion
-
-        //KEEP
-        #region Cancel bow draw
-        [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.TryCancelChargedAction))]
-        [HarmonyPrefix]
-        private static bool Prefix_TryCancelChargedAction_EntityPlayerLocal(EntityPlayerLocal __instance)
-        {
-            for (int i = 0; i < __instance.inventory.holdingItem.Actions.Length; i++)
-            {
-                ItemAction action = __instance.inventory.holdingItem.Actions[i];
-                ItemActionData actionData = __instance.inventory.holdingItemData.actionData[i];
-                if (action is ItemActionCatapult || action is ItemActionThrowAway)
-                {
-                    action.CancelAction(actionData);
-                    actionData.HasExecuted = false;
-                }
             }
             return false;
         }
@@ -1963,38 +1942,35 @@ namespace KFCommonUtilityLib.Harmony
 
             MethodInfo mtd_getgun = AccessTools.Method(typeof(Inventory), nameof(Inventory.GetHoldingGun));
             MethodInfo mtd_getprimary = AccessTools.Method(typeof(Inventory), nameof(Inventory.GetHoldingPrimary));
+            MethodInfo mtd_cancel = AccessTools.Method(typeof(ItemAction), nameof(ItemAction.CancelAction));
             FieldInfo fld_reload = AccessTools.Field(typeof(PlayerActionsPermanent), nameof(PlayerActionsPermanent.Reload));
             FieldInfo fld_action = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
             FieldInfo fld_data = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.actionData));
             for (int i = 0; i < codes.Count; i++)
             {
-                if (codes[i].Calls(mtd_getgun))
-                {
-                    codes[i].operand = mtd_getprimary;
-                    //codes.RemoveAt(i - 2);
-                    //codes.InsertRange(i - 2, new[]
-                    //{
-                    //    new CodeInstruction(OpCodes.Ldarg_0),
-                    //    CodeInstruction.LoadField(typeof(PlayerMoveController), "entityPlayerLocal"),
-                    //    CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.GetActionIndexForEntity))
-                    //});
-                    //i += 2;
-                }
-                else if (codes[i].LoadsField(fld_reload))
-                {
-                    var label = codes[i + 6].operand;
-                    codes.InsertRange(i + 7, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(PlayerMoveController), nameof(PlayerMoveController.entityPlayerLocal)),
-                        CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.inventory)),
-                        CodeInstruction.Call(typeof(Inventory), nameof(Inventory.GetIsFinishedSwitchingHeldItem)),
-                        new CodeInstruction(OpCodes.Brfalse, label)
-                    });
-                    i += 5;
-                }
+                // not present in v2.1
+                //if (codes[i].Calls(mtd_getgun))
+                //{
+                //    codes[i].operand = mtd_getprimary;
+                //}
+
+                // added by tfp?
+                //else if (codes[i].LoadsField(fld_reload))
+                //{
+                //    var label = codes[i + 6].operand;
+                //    codes.InsertRange(i + 7, new[]
+                //    {
+                //        new CodeInstruction(OpCodes.Ldarg_0),
+                //        CodeInstruction.LoadField(typeof(PlayerMoveController), nameof(PlayerMoveController.entityPlayerLocal)),
+                //        CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.inventory)),
+                //        CodeInstruction.Call(typeof(Inventory), nameof(Inventory.GetIsFinishedSwitchingHeldItem)),
+                //        new CodeInstruction(OpCodes.Brfalse, label)
+                //    });
+                //    i += 5;
+                //}
+
                 // holding item
-                else if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 35)
+                if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 35)
                 {
                     var lbd_index = generator.DeclareLocal(typeof(int));
                     codes.InsertRange(i + 1, new[]
@@ -2006,12 +1982,30 @@ namespace KFCommonUtilityLib.Harmony
                     });
                     i += 4;
 
-                    for (int j = i + 1; j < codes.Count - 1; j++)
+                    for (int j = i + 1; j < codes.Count - 3; j++)
                     {
                         if ((codes[j].LoadsField(fld_action) || codes[j].LoadsField(fld_data)) && codes[j + 1].opcode == OpCodes.Ldc_I4_0)
                         {
-                            codes[j + 1].opcode = OpCodes.Ldloc_S;
-                            codes[j + 1].operand = lbd_index;
+                            if (!codes[j + 3].Calls(mtd_cancel))
+                            {
+                                codes[j + 1].opcode = OpCodes.Ldloc_S;
+                                codes[j + 1].operand = lbd_index;
+                            }
+                            //else
+                            //{
+                            //    codes.InsertRange(j + 3, new[]
+                            //    {
+                            //        new CodeInstruction(OpCodes.Dup),
+                            //        new CodeInstruction(OpCodes.Ldarg_0),
+                            //        CodeInstruction.LoadField(typeof(PlayerMoveController), nameof(PlayerMoveController.entityPlayerLocal)),
+                            //        new CodeInstruction(OpCodes.Ldloc_S, lbd_index),
+                            //        CodeInstruction.CallClosure<Action<ItemActionData, EntityPlayerLocal, int>>(static(actionData, player, actionIndex) =>
+                            //        {
+                            //            Log.Out($"player action index: {actionIndex} holding item slot {player.inventory.holdingItemIdx} action item slot {actionData.invData.slotIdx}");
+                            //        })
+                            //    });
+                            //    j += 5;
+                            //}
                         }
                     }
                 }
