@@ -1,6 +1,5 @@
 */
-*.cs
-desktop.ini
+*
 !CustomMuzzleFlash/
 !CustomMuzzleFlash/**
 !0-CustomParticleLoader/
@@ -71,11 +70,7 @@ desktop.ini
 */.vs/**
 .gitattributes
 .editorconfig
-*.zip
-.fake
 *.unitypackage
 /AnimationRiggingWeaponTest/DemoScene.unitypackage
 readme.txt
 /0-KFCommonUtilityLib/DynamicFileNesting
-*.rar
-*.7z
