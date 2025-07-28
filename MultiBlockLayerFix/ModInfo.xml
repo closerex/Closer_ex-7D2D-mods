@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xml>
+	<Name value="MultiBlockLayerFix" />
+	<DisplayName value="MultiBlock Layer Fix" />
+	<Description value="Actually accurate multiblock space usage" />
+	<Author value="closer_ex" />
+	<Version value="1.0.0" />
+</xml>

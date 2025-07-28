@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xml>
+	<Name value="TrueNoRotation" />
+	<DisplayName value="True No Block Rotation" />
+	<Description value="AllowRotations = None actually doing its job." />
+	<Author value="closer_ex" />
+	<Version value="1.0.0" />
+</xml>

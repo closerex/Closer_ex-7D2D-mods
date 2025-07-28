@@ -62,6 +62,10 @@ desktop.ini
 !ZCLSWeaponPackEXP/**
 !ZZCustomPlayerActionManagerSMXPatch/
 !ZZCustomPlayerActionManagerSMXPatch/**
+!MultiBlockLayerFix
+!MultiBlockLayerFix/**
+!TrueNoRotation
+!TrueNoRotation/**
 !.gitignore
 !*/.gitignore
 */.vs/**
