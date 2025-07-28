@@ -101,6 +101,7 @@ public class PlayerActionsVehicleExtra : CustomPlayerActionVersionBase
     }
     public override void CreateDefaultJoystickBindings()
     {
+        ListenOptions.IncludeControllers = true;
         ActivateSlot1.AddDefaultBinding(InputControlType.DPadUp);
         ActivateSlot2.AddDefaultBinding(InputControlType.DPadRight);
         ActivateSlot3.AddDefaultBinding(InputControlType.DPadDown);
@@ -108,6 +109,9 @@ public class PlayerActionsVehicleExtra : CustomPlayerActionVersionBase
 
     public override void CreateDefaultKeyboardBindings()
     {
+        ListenOptions.IncludeKeys = true;
+        ListenOptions.IncludeMouseButtons = true;
+        ListenOptions.IncludeMouseScrollWheel = true;
         ActivateSlot1.AddDefaultBinding(new Key[] { Key.Key1 });
         ActivateSlot2.AddDefaultBinding(new Key[] { Key.Key2 });
         ActivateSlot3.AddDefaultBinding(new Key[] { Key.Key3 });

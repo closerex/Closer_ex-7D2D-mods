@@ -37,11 +37,14 @@ public class PlayerActionKFLib : CustomPlayerActionVersionBase
 
     public override void CreateDefaultJoystickBindings()
     {
-
+        ListenOptions.IncludeControllers = true;
     }
 
     public override void CreateDefaultKeyboardBindings()
     {
+        ListenOptions.IncludeKeys = true;
+        ListenOptions.IncludeMouseButtons = true;
+        ListenOptions.IncludeMouseScrollWheel = true;
         ToggleFireMode.AddDefaultBinding(new Key[] { Key.Z });
         ToggleActionMode.AddDefaultBinding(new Key[] { Key.X });
         ToggleZoom.AddDefaultBinding(Mouse.MiddleButton);

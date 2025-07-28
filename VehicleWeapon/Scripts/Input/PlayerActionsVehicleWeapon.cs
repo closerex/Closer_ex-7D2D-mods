@@ -38,12 +38,16 @@ public class PlayerActionsVehicleWeapon : CustomPlayerActionVersionBase
 
     public override void CreateDefaultJoystickBindings()
     {
+        ListenOptions.IncludeControllers = true;
         HoldToggleActivated.AddDefaultBinding(InputControlType.LeftStickButton);
         FireShot.AddDefaultBinding(InputControlType.DPadRight);
     }
 
     public override void CreateDefaultKeyboardBindings()
     {
+        ListenOptions.IncludeKeys = true;
+        ListenOptions.IncludeMouseButtons = true;
+        ListenOptions.IncludeMouseScrollWheel = true;
         HoldToggleActivated.AddDefaultBinding(new Key[] { Key.LeftControl });
         FireShot.AddDefaultBinding(new Key[] { Key.G });
         //Test1.AddDefaultBinding(new Key[] { Key.LeftAlt });
