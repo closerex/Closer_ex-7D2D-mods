@@ -310,7 +310,10 @@ public class AnimationGraphBuilder : MonoBehaviour
         //        rb.enabled = true;
         //        animator.Rebind();
         //        Log.Out($"#=================Rebuild Finish\n");
-        animator.WriteDefaultValues();
+        if (curTargetValid || nextTargetValid)
+        {
+            animator.WriteDefaultValues();
+        }
 
         if (useGraph)
         {
