@@ -27,7 +27,11 @@ public class AnimationHolsterState : StateMachineBehaviour
             }
         }
         //holsterData = ((isHolstering ? player.inventory?.lastdrawnHoldingItemData : player.inventory?.holdingItemData) as IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData>)?.Instance;
-        holsterData = (player.inventory.GetItemDataInSlot(AnimationRiggingManager.GetActiveRigTargetsFromPlayer(player).SlotIndex) as IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData>)?.Instance;
+        var activeRig = AnimationRiggingManager.GetActiveRigTargetsFromPlayer(player);
+        if (activeRig)
+        {
+            holsterData = (player.inventory?.GetItemDataInSlot(activeRig.SlotIndex) as IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData>)?.Instance;
+        }
         if (holsterData != null)
         {
             if (isHolstering && holsterData.module.holsterDelayActive)

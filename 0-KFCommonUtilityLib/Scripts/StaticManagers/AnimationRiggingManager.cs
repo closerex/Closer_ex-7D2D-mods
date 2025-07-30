@@ -134,7 +134,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 bool RigItemChangedThisFrame = hash_rig_changed_players.Remove(controller.Entity.entityId);
                 targets.UpdatePlayerAvatar(controller, RigItemChangedThisFrame);
             }
-            controller.UpdateBool(AvatarController.isCrouchingHash, controller.entity.IsCrouching, true);
+            controller.UpdateBool(AvatarController.isCrouchingHash, controller.entity.Crouching, false);
             //if ((controller.Entity as EntityPlayerLocal).bFirstPersonView && targets && !targets.Destroyed && targets.itemFpv)
             //{
             //    //workaround for animator bullshit
