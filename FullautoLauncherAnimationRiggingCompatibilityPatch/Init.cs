@@ -34,7 +34,7 @@ public static class FLARMultiBarrelExt
     {
         if (_actionData is ItemActionBetterLauncher.ItemActionDataBetterLauncher launcherData)
         {
-            launcherData.projectileJoint = __customData.projectileJoints[(byte)(_userData >> 8)];
+            launcherData.projectileJoint = __customData.projectileJoints[(byte)(_userData >> 8)] ?? launcherData.projectileJoint;
             if (launcherData.projectileJoint == null && ConsoleCmdReloadLog.LogInfo)
             {
                 Log.Warning($"null projectile joint on inventory slot {launcherData.invData.slotIdx}!!\n{StackTraceUtility.ExtractStackTrace()}");

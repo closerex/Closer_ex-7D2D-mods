@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UniLinq;
 using UnityEngine;
+using static ItemActionRanged;
 
 namespace KFCommonUtilityLib.Scripts.StaticManagers
 {
@@ -86,7 +87,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             {
                 graphBuilder = player.emodel.avatarController.GetAnimator()?.GetComponent<AnimationGraphBuilder>();
             }
-            if (graphBuilder)
+            if (graphBuilder && graphBuilder.CurrentTarget)
             {
                 return graphBuilder.CurrentTarget;
             }
@@ -323,66 +324,41 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             EntityPlayerLocal player = GameManager.Instance.World.GetPrimaryPlayer();
             if (itemActionDataRanged.muzzle != null)
             {
-                if (particlesMuzzleFire != null)
+                Transform parent = (itemActionDataRanged.IsDoubleBarrel && itemActionDataRanged.invData.itemValue.Meta == 0) ? itemActionDataRanged.muzzle2 : itemActionDataRanged.muzzle;
+                if (!itemActionDataRanged.IsFlashSuppressed && particlesMuzzleFire != null)
                 {
                     Transform fire = GameManager.Instance.SpawnParticleEffectClientForceCreation(new ParticleEffect(particlesMuzzleFireFpv != null ? particlesMuzzleFireFpv : particlesMuzzleFire, Vector3.zero, 1f, Color.clear, null, null, false), player.entityId, true);
-                    if (fire != null)
-                    {
-                        fire.transform.localPosition = Vector3.zero;
-                        //fire.transform.localEulerAngles = Vector3.zero;
-                        if (itemActionDataRanged.IsDoubleBarrel && itemActionDataRanged.invData.itemValue.Meta == 0)
-                            fire.transform.SetParent(itemActionDataRanged.muzzle2, false);
-                        else
-                            fire.transform.SetParent(itemActionDataRanged.muzzle, false);
-                        Utils.SetLayerRecursively(fire.gameObject, 10, null);
-                        //fire.transform.localPosition = Vector3.zero;
-                        //fire.transform.localEulerAngles = Vector3.zero;
-                        //fire.transform.localScale = Vector3.one;
-                        foreach (var particle in fire.GetComponentsInChildren<ParticleSystem>())
-                        {
-                            particle.gameObject.SetActive(true);
-                            particle.Clear();
-                            particle.Play();
-                        }
-                        var temp = fire.gameObject.GetOrAddComponent<TemporaryMuzzleFlash>();
-                        temp.life = 5;
-                        //temp.Restart();
-                        if (fire.TryGetComponent<LODGroup>(out var lod))
-                            lod.enabled = false;
-                        //Log.Out($"barrel position: {fire.transform.parent.parent.position}/{fire.transform.parent.parent.localPosition}, muzzle position: {fire.transform.parent.position}/{fire.transform.parent.localPosition}, particle position: {fire.transform.position}");
-                        //Log.Out($"particles: {string.Join("\n", fire.GetComponentsInChildren<ParticleSystem>().Select(ps => ps.name + " active: " + ps.gameObject.activeInHierarchy + " layer: " + ps.gameObject.layer + " position: " + ps.transform.position))}");
-                    }
+                    ProcessMuzzleFlashParticle(fire, parent);
                 }
-                if (particlesMuzzleSmoke != null && itemActionDataRanged.muzzle != null)
+                if (particlesMuzzleSmoke != null)
                 {
                     float num = GameManager.Instance.World.GetLightBrightness(World.worldToBlockPos(itemActionDataRanged.muzzle.transform.position)) / 2f;
-                    Color clear = Color.clear;
-                    Transform smoke = GameManager.Instance.SpawnParticleEffectClientForceCreation(new ParticleEffect(particlesMuzzleSmokeFpv != null ? particlesMuzzleSmokeFpv : particlesMuzzleSmoke, Vector3.zero, num, clear, null, null, false), player.entityId, true);
-                    if (smoke != null)
-                    {
-                        smoke.transform.localPosition = Vector3.zero;
-                        //smoke.transform.localEulerAngles = Vector3.zero;
-                        Utils.SetLayerRecursively(smoke.gameObject, 10, null);
-                        smoke.transform.SetParent(itemActionDataRanged.muzzle, false);
-                        //smoke.transform.localPosition = Vector3.zero;
-                        //smoke.transform.localEulerAngles = Vector3.zero;
-                        //smoke.transform.localScale = Vector3.one;
-                        foreach (var particle in smoke.GetComponentsInChildren<ParticleSystem>())
-                        {
-                            particle.gameObject.SetActive(true);
-                            particle.Clear();
-                            particle.Play();
-                        }
-                        var temp = smoke.gameObject.GetOrAddComponent<TemporaryMuzzleFlash>();
-                        temp.life = 5;
-                        //temp.Restart();
-                        if (smoke.TryGetComponent<LODGroup>(out var lod))
-                            lod.enabled = false;
-                    }
+                    Transform smoke = GameManager.Instance.SpawnParticleEffectClientForceCreation(new ParticleEffect(particlesMuzzleSmokeFpv != null ? particlesMuzzleSmokeFpv : particlesMuzzleSmoke, Vector3.zero, num, Color.clear, null, null, false), player.entityId, true);
+                    ProcessMuzzleFlashParticle(smoke, parent);
                 }
             }
 
             return true;
+        }
+
+        public static void ProcessMuzzleFlashParticle(Transform particlePrefab, Transform parent)
+        {
+            if (particlePrefab != null)
+            {
+                particlePrefab.transform.localPosition = Vector3.zero;
+                particlePrefab.transform.SetParent(parent, false);
+                Utils.SetLayerRecursively(particlePrefab.gameObject, 10, null);
+                foreach (var particle in particlePrefab.GetComponentsInChildren<ParticleSystem>())
+                {
+                    particle.gameObject.SetActive(true);
+                    particle.Clear();
+                    particle.Play();
+                }
+                var temp = particlePrefab.gameObject.GetOrAddComponent<TemporaryMuzzleFlash>();
+                temp.life = 5;
+                if (particlePrefab.TryGetComponent<LODGroup>(out var lod))
+                    lod.enabled = false;
+            }
         }
 
         //public static void SetTrigger(int _pid, EntityPlayer player)

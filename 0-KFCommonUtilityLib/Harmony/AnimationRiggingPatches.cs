@@ -403,26 +403,66 @@ static class AnimationRiggingPatches
         var codes = instructions.ToList();
 
         var fld_fpv = AccessTools.Field(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.bFirstPersonView));
+        var fld_suppressed = AccessTools.Field(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.IsFlashSuppressed));
+        var fld_smoke = AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.particlesMuzzleSmoke));
 
         for (int i = 0; i < codes.Count; i++)
         {
-            if (codes[i].LoadsField(fld_fpv))
+            if (codes[i].LoadsField(fld_suppressed))
             {
-                codes.InsertRange(i + 4, new[]
+                CodeInstruction jump_suppressed = codes[i + 1], jump_muzzle = codes[i + 5];
+                var takeif = codes.GetRange(i + 2, 4);
+                codes.RemoveRange(i + 2, 4);
+                takeif[0].WithLabels(codes[i - 1].ExtractLabels());
+                codes.InsertRange(i - 1, takeif);
+
+                for (int j = i + 1; j < codes.Count; j++)
                 {
-                    new CodeInstruction(OpCodes.Ldloc_S, codes[i + 3].operand),
-                    new CodeInstruction(OpCodes.Ldarg_2),
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.particlesMuzzleFire))),
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.particlesMuzzleFireFpv))),
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.particlesMuzzleSmoke))),
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.particlesMuzzleSmokeFpv))),
-                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(AnimationRiggingManager), nameof(AnimationRiggingManager.SpawnFpvParticles))),
-                    new CodeInstruction(OpCodes.Brtrue_S, codes[i - 5].operand)
-                });
+                    // don't skip smoke creation even if suppressed
+                    if (codes[j].LoadsField(fld_smoke))
+                    {
+                        jump_suppressed.operand = codes[j - 1].labels[0];
+                        break;
+                    }
+                }
+
+                for (int j = i + 1; j < codes.Count; j++)
+                {
+                    if (codes[j].opcode == OpCodes.Ldloc_2)
+                    {
+                        for (int k = j + 1; k < codes.Count; k++)
+                        {
+                            if (codes[k].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[k].operand).LocalIndex == 7)
+                            {
+                                var lbd = (LocalBuilder)codes[k].operand;
+                                var take = codes.GetRange(j, k - j + 1);
+                                codes.RemoveRange(j, k - j + 1);
+                                take[0].WithLabels(codes[i - 1].ExtractLabels());
+                                // spawn fpv particles
+                                codes.InsertRange(i - 1, new[]
+                                {
+                                    new CodeInstruction(OpCodes.Ldloc_S, lbd),
+                                    new CodeInstruction(OpCodes.Ldarg_2),
+                                    new CodeInstruction(OpCodes.Ldarg_0),
+                                    new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.particlesMuzzleFire))),
+                                    new CodeInstruction(OpCodes.Ldarg_0),
+                                    new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.particlesMuzzleFireFpv))),
+                                    new CodeInstruction(OpCodes.Ldarg_0),
+                                    new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.particlesMuzzleSmoke))),
+                                    new CodeInstruction(OpCodes.Ldarg_0),
+                                    new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.particlesMuzzleSmokeFpv))),
+                                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(AnimationRiggingManager), nameof(AnimationRiggingManager.SpawnFpvParticles))),
+                                    new CodeInstruction(OpCodes.Brtrue, jump_muzzle.operand)
+                                });
+                                // move fpv check before suppressed check
+                                codes.InsertRange(i - 1, take);
+                                i += take.Count + 12;
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
                 break;
             }
         }

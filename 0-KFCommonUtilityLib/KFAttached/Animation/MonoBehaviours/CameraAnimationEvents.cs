@@ -1,12 +1,27 @@
-﻿using System;
+﻿#if NotEditor
+using GearsAPI.Settings.Global;
+using KFCommonUtilityLib.Gears;
+using KFCommonUtilityLib.Scripts.StaticManagers;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+#endif
+using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor.Animations;
+using System.Linq;
+#endif
 
 [AddComponentMenu("KFAttachments/Utils/Camera Animation Events")]
 [DefaultExecutionOrder(0)]
 [RequireComponent(typeof(Animator))]
 [DisallowMultipleComponent]
 public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
+#if UNITY_EDITOR
+    , ISerializationCallbackReceiver
+#endif
 {
     [Serializable]
     public enum CurveType
@@ -28,8 +43,9 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
         bool relative;
         bool loop;
         bool interrupted;
+        public int weightTagHash;
 
-        public CameraCurveData(AnimationCurve[] curves, float clipLength, float blendInTime, float blendOutTime, float speed, float weight, CurveType curveType, bool relative, bool loop, int speedParamHash = 0)
+        public CameraCurveData(int weightTagHash, AnimationCurve[] curves, float clipLength, float blendInTime, float blendOutTime, float speed, float weight, CurveType curveType, bool relative, bool loop, int speedParamHash = 0)
         {
             this.curves = curves;
             this.clipLength = clipLength;
@@ -41,6 +57,7 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
             this.relative = relative;
             this.loop = loop;
             this.weight = weight;
+            this.weightTagHash = weightTagHash;
             values = new float[curves.Length];
             initialValues = new float[curves.Length];
             if (relative)
@@ -84,16 +101,21 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
             }
         }
 
-        public void Modify(ref Vector3 position, ref Quaternion rotation, Quaternion axisCorrection)
+        public void Modify(ref Vector3 position, ref Quaternion rotation, Quaternion axisCorrection, float weightMultiplier = 1f)
         {
-            float dynamicWeight = weight;
+            float dynamicWeight = weight * weightMultiplier;
             if (blendInTime > 0)
             {
-                dynamicWeight = Mathf.Lerp(0, weight, curBlendInTime / blendInTime);
+                dynamicWeight = Mathf.Lerp(0, dynamicWeight, curBlendInTime / blendInTime);
             }
             if (interrupted && blendOutTime > 0)
             {
                 dynamicWeight = Mathf.Lerp(dynamicWeight, 0, curBlendOutTime / blendOutTime);
+            }
+
+            if (dynamicWeight <= 0)
+            {
+                return;
             }
 
             switch (curveType)
@@ -109,15 +131,15 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
                     break;
                 }
                 case CurveType.EularAngleRaw:
-                {
-                    Vector3 eularRawValue = new Vector3(values[0], values[1], values[2]);
-                    if (relative)
-                    {
-                        eularRawValue -= new Vector3(initialValues[0], initialValues[1], initialValues[2]);
-                    }
-                    rotation *= Quaternion.Slerp(Quaternion.identity, axisCorrection * Quaternion.Euler(eularRawValue), dynamicWeight);
-                    break;
-                }
+                //{
+                //    Vector3 eularRawValue = new Vector3(values[0], values[1], values[2]);
+                //    if (relative)
+                //    {
+                //        eularRawValue -= new Vector3(initialValues[0], initialValues[1], initialValues[2]);
+                //    }
+                //    rotation *= Quaternion.Slerp(Quaternion.identity, axisCorrection * Quaternion.Euler(eularRawValue), dynamicWeight);
+                //    break;
+                //}
                 case CurveType.EularAngleBaked:
                 {
                     Quaternion eularBakedValue = axisCorrection * Quaternion.Euler(values[0], values[1], values[2]);
@@ -146,14 +168,55 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
             interrupted = true;
         }
     }
+
     [SerializeField]
     private Transform cameraOffsetTrans;
     [SerializeField]
     private float cameraAnimWeight = 1f;
     [SerializeField]
     private Quaternion axisCorrection = Quaternion.identity;
+    [SerializeField]
+    private string[] tags;
+
     private Animator animator;
+    private List<CameraCurveData> list_curves = new List<CameraCurveData>();
+    private static float defaultWeight = 1f;
 #if NotEditor
+    private class WeightHolder
+    {
+        public bool enabled = false;
+        public float weight = 1f;
+        public Dictionary<int, float> dict = new Dictionary<int, float>();
+
+        public float GetWeightRaw(int weightTagHash)
+        {
+            if (dict.TryGetValue(weightTagHash, out var weight))
+            {
+                return weight;
+            }
+            return 1f;
+        }
+
+        public float GetWeight(int weightTagHash)
+        {
+            if (dict.TryGetValue(weightTagHash, out var weight))
+            {
+                return weight * this.weight;
+            }
+            return this.weight;
+        }
+
+        public void SetWeight(int weightTagHash, float weight)
+        {
+            dict[weightTagHash] = weight;
+        }
+    }
+
+    private EntityPlayerLocal player;
+    private WeightHolder weightHolder;
+    private static readonly Dictionary<string, WeightHolder> dict_user_weights = new Dictionary<string, WeightHolder>();
+    private static readonly string SavePath = Path.Combine(GameIO.GetUserGameDataDir(), "KFLibSettings", "CameraAnimationIntensitySettings.json");
+    private static readonly string SavePathDir = Path.GetDirectoryName(SavePath);
 #else
     [SerializeField]
     private Camera debugCamera;
@@ -161,13 +224,241 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
     private Vector3 initialDebugCameraLocalPos;
     private Quaternion initialDebugCameraLocalRot;
 #endif
-    private List<CameraCurveData> list_curves = new List<CameraCurveData>();
+
+#if NotEditor
+    public static float GetUserWeight(string itemName, int weightTagHash)
+    {
+        if (weightTagHash != 0 && dict_user_weights.TryGetValue(itemName, out var holder) && holder != null)
+        {
+            return holder.GetWeight(weightTagHash);
+        }
+
+        return 1f;
+    }
+
+    public static void SetWeaponWeight(string itemName, float weight)
+    {
+        if (!dict_user_weights.TryGetValue(itemName, out var holder))
+        {
+            holder = new WeightHolder();
+            dict_user_weights[itemName] = holder;
+        }
+        holder.weight = weight;
+    }
+
+    public static void SetUserWeight(string itemName, string weightTag, float weight)
+    {
+        SetUserWeight(itemName, Animator.StringToHash(weightTag), weight);
+    }
+
+    public static void SetUserWeight(string itemName, int weightTagHash, float weight)
+    {
+        if (!dict_user_weights.TryGetValue(itemName, out var holder))
+        {
+            holder = new WeightHolder();
+            dict_user_weights[itemName] = holder;
+        }
+        holder.SetWeight(weightTagHash, weight);
+    }
+
+    public static void SetEnableUserWeight(string itemName, bool enabled)
+    {
+        if (!dict_user_weights.TryGetValue(itemName, out var holder))
+        {
+            holder = new WeightHolder();
+            dict_user_weights[itemName] = holder;
+        }
+        holder.enabled = enabled;
+    }
+
+    public static void InitModSettings(IModGlobalSettings modSettings)
+    {
+        var tab = modSettings.GetTab("CameraAnimationSettings");
+        var defaultWeightSetting = tab.GetCategory("Default").GetSetting("CameraAnimationIntensityMultiplier") as ISliderGlobalSetting;
+        if (float.TryParse(defaultWeightSetting?.CurrentValue, out var weight))
+        {
+            defaultWeight = weight;
+        }
+        else
+        {
+            defaultWeight = 1f;
+        }
+        defaultWeightSetting.OnSettingChanged += (settings, value) =>
+        {
+            if (float.TryParse(value, out var newWeight))
+            {
+                defaultWeight = newWeight;
+            }
+        };
+        GearsImpl.OnGlobalSettingsSaved += SaveUserWeights;
+        GearsImpl.OnGlobalSettingsOpened += CreateSettingEntries;
+        LoadUserWeights();
+    }
+
+    private static void LoadUserWeights()
+    {
+        if (!Directory.Exists(SavePathDir))
+        {
+            Directory.CreateDirectory(SavePathDir);
+        }
+
+        if (!File.Exists(SavePath))
+        {
+            return;
+        }
+
+        using (StreamReader reader = File.OpenText(SavePath))
+        {
+            JObject saveObj = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
+            foreach (JProperty itemProp in saveObj.Properties())
+            {
+                if (itemProp.Value is JObject itemObj)
+                {
+                    var itemName = itemProp.Name;
+                    foreach (var valueProp in itemObj.Properties())
+                    {
+                        switch (valueProp.Name)
+                        {
+                            case "__enabled":
+                                if (bool.TryParse((string)valueProp.Value, out var enabled))
+                                {
+                                    SetEnableUserWeight(itemName, enabled);
+                                }
+                                break;
+                            case "__weight":
+                                if (float.TryParse((string)valueProp.Value, out var weight))
+                                {
+                                    SetWeaponWeight(itemName, weight);
+                                }
+                                break;
+                            default:
+                                if (float.TryParse((string)valueProp.Value, out var tagWeight))
+                                {
+                                    int weightTagHash = Animator.StringToHash(valueProp.Name);
+                                    SetUserWeight(itemName, weightTagHash, tagWeight);
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private static void SaveUserWeights(IModGlobalSettings _)
+    {
+        if (!Directory.Exists(SavePathDir))
+        {
+            Directory.CreateDirectory(SavePathDir);
+        }
+
+        using (StreamWriter writer = File.CreateText(SavePath))
+        {
+            JObject saveObj = new JObject();
+            foreach (var kvp in dict_user_weights)
+            {
+                var itemName = kvp.Key;
+                var holder = kvp.Value;
+                JObject itemObj = new JObject
+                {
+                    ["__enabled"] = holder.enabled.ToString(),
+                    ["__weight"] = holder.weight.ToString()
+                };
+                foreach (var tagWeight in holder.dict)
+                {
+                    itemObj[tagWeight.Key.ToString()] = tagWeight.Value.ToString();
+                }
+                saveObj[itemName] = itemObj;
+            }
+            writer.Write(saveObj.ToString(Formatting.Indented));
+        }
+    }
+
+    private static void CreateSettingEntries(IModGlobalSettings modSettings)
+    {
+        var tab = modSettings.GetTab("CameraAnimationSettings");
+        tab.RemoveCategory("WeaponOverride");
+        var player = GameManager.Instance?.World?.GetPrimaryPlayer();
+        var targets = AnimationRiggingManager.GetActiveRigTargetsFromPlayer(player);
+        var script = targets?.ItemAnimator?.GetComponent<CameraAnimationEvents>();
+        ItemClass item = null;
+        if (script)
+        {
+            if (script.tags == null || script.tags.Length == 0)
+            {
+                return;
+            }
+            item = player.inventory?.slots?[targets.SlotIndex]?.item;
+        }
+        
+        if (string.IsNullOrEmpty(item?.Name))
+        {
+            return;
+        }
+
+        var category = tab.CreateCategory("WeaponOverride", "kflibCategoryWeaponOverrideName");
+
+        if (!dict_user_weights.TryGetValue(item.Name, out var holder))
+        {
+            holder = new WeightHolder();
+            dict_user_weights[item.Name] = holder;
+        }
+
+        string itemLocalizedName = item.GetLocalizedItemName();
+        var currentWeaponIndicator = category.CreateSetting<ISelectorGlobalSetting>("CurrentWeapon", "kflibSettingCurrentWeaponName");
+        currentWeaponIndicator.SetAllowedValues(itemLocalizedName);
+        currentWeaponIndicator.CurrentValue = itemLocalizedName;
+
+        var enableOverride = category.CreateSetting<ISwitchGlobalSetting>("EnableOverride", "kflibSettingEnableOverrideName");
+        enableOverride.TooltipKey = "kflibSettingEnableOverrideDesc";
+        enableOverride.SetSwitchValues("Disabled", "Enabled");
+        enableOverride.CurrentValue = holder.enabled ? "Enabled" : "Disabled";
+        enableOverride.OnSettingChanged += (_, value) =>
+        {
+            holder.enabled = value == "Enabled";
+        };
+
+        var defaultWeight = category.CreateSetting<ISliderGlobalSetting>("DefaultWeight", "kflibSettingCAIMultiplierName");
+        defaultWeight.TooltipKey = "kflibSettingDefaultWeightDesc";
+        defaultWeight.SetAllowedValues(0.01f, 0f, 1f);
+        defaultWeight.CurrentValue = holder.weight.ToString();
+        defaultWeight.FormatterString = "0.00";
+        defaultWeight.OnSettingChanged += (_, value) =>
+        {
+            if (float.TryParse(value, out var weight))
+            {
+                holder.weight = weight;
+            }
+        };
+
+        foreach (var tag in script.tags)
+        {
+            int tagHash = Animator.StringToHash(tag);
+            string descKey = $"kflibSettingCAI{tag}Name", tooltipKey = $"kflibSettingCAI{tag}Desc";
+            var tagOverride = category.CreateSetting<ISliderGlobalSetting>(tag, Localization.Exists(descKey) ? descKey : tag);
+            if (Localization.Exists(tooltipKey))
+            {
+                tagOverride.TooltipKey = tooltipKey;
+            }
+            tagOverride.SetAllowedValues(0.01f, 0f, 1f);
+            tagOverride.CurrentValue = holder.GetWeightRaw(tagHash).ToString();
+            tagOverride.FormatterString = "0.00";
+            tagOverride.OnSettingChanged += (_, value) =>
+            {
+                if (float.TryParse(value, out var weight))
+                {
+                    holder.SetWeight(tagHash, weight);
+                }
+            };
+        }
+    }
+#endif
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
 #if NotEditor
-        if (!GetComponentInParent<EntityPlayerLocal>())
+        if (!(player = GetComponentInParent<EntityPlayerLocal>()))
         {
             Destroy(this);
             return;
@@ -195,12 +486,37 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
     {
         Vector3 localPos = cameraOffsetTrans.localPosition;
         Quaternion localRot = cameraOffsetTrans.localRotation;
+#if NotEditor
+        if (weightHolder == null)
+        {
+            var targets = AnimationRiggingManager.GetActiveRigTargetsFromPlayer(player);
+            if (targets == null)
+            {
+                Log.Warning("CameraAnimationEvents: No active rig targets found.");
+            }
+            else
+            {
+                var itemName = player.inventory?.slots?[targets.SlotIndex]?.item?.Name;
+                if (!string.IsNullOrEmpty(itemName))
+                {
+                    dict_user_weights.TryGetValue(itemName, out weightHolder);
+                }
+            }
+        }
+#endif
         if (list_curves.Count > 0)
         {
             foreach (CameraCurveData curve in list_curves)
             {
+                float userWeight = defaultWeight;
+#if NotEditor
+                if (weightHolder != null && weightHolder.enabled)
+                {
+                    userWeight = weightHolder.GetWeight(curve.weightTagHash);
+                }
+#endif
                 curve.Update(animator, Time.deltaTime);
-                curve.Modify(ref localPos, ref localRot, axisCorrection);
+                curve.Modify(ref localPos, ref localRot, axisCorrection, userWeight);
             }
 
             for (int i = list_curves.Count - 1; i >= 0; i--)
@@ -259,4 +575,33 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
     {
         enabled = false;
     }
+
+#if UNITY_EDITOR
+    public void OnBeforeSerialize()
+    {
+        var animator = gameObject.GetComponent<Animator>()?.runtimeAnimatorController as AnimatorController;
+        var list = new List<string>();
+        if (animator != null)
+        {
+            var scripts = animator.GetBehaviours<AnimatorCameraAnimationState>();
+            foreach (var script in scripts)
+            {
+                var context = AnimatorController.FindStateMachineBehaviourContext(script);
+                if (context != null && context.Length > 0)
+                {
+                    var state = context[0].animatorObject as AnimatorState;
+                    if (state != null)
+                    {
+                        list.Add(string.IsNullOrEmpty(state.tag) ? state.name : state.tag);
+                    }
+                }
+            }
+        }
+        tags = list.Distinct().ToArray();
+    }
+
+    public void OnAfterDeserialize()
+    {
+    }
+#endif
 }

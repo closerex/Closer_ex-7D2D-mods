@@ -26,11 +26,13 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
     [SerializeField]
     private float clipLength;
     [SerializeField]
+    private string clipID;
+    [SerializeField]
     private AnimationCurve[] positionCurves;
     [SerializeField]
     private AnimationCurve[] rotationCurves;
     [SerializeField]
-    private CameraAnimationEvents.CurveType rotationCurveType = CurveType.Quaternion;
+    private CurveType rotationCurveType = CurveType.Quaternion;
     [Header("State Data (read from animator)")]
     [SerializeField]
     private float stateDuration;
@@ -42,6 +44,8 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
     private int speedParamHash;
     [SerializeField, HideInInspector]
     private bool loop;
+    [SerializeField]
+    private int tagOrNameHash = 0;
     [Header("Parameters")]
     [SerializeField]
     private float weight = 1;
@@ -61,6 +65,7 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
 #if UNITY_EDITOR
     public void OnBeforeSerialize()
     {
+        tagOrNameHash = 0;
         try
         {
             var context = AnimatorController.FindStateMachineBehaviourContext(this);
@@ -74,6 +79,7 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
                 if (state != null)
                 {
                     speed = state.speed;
+                    tagOrNameHash = string.IsNullOrEmpty(state.tag) ? state.nameHash : Animator.StringToHash(state.tag);
                     if (state.speedParameterActive)
                     {
                         speedParam = state.speedParameter;
@@ -87,6 +93,7 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
                         if (!string.IsNullOrEmpty(propertyPath) && clip == null)
                         {
                             ExtractCurvesFromClip(stateClip, propertyPath);
+                            clipID = null;
                         }
                     }
                 }
@@ -95,6 +102,20 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
             if (clip != null)
             {
                 ExtractCurvesFromClip(clip);
+                clipID = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(clip));
+            }
+            else if (!string.IsNullOrEmpty(clipID))
+            {
+                clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(clipID));
+                if (clip != null)
+                {
+                    ExtractCurvesFromClip(clip, propertyPath);
+                    Log.Out($"Loading Clip from GUID {clipID} - {clip.name}");
+                }
+                else
+                {
+                    clipID = null;
+                }
             }
 
             if (clipLength <= 0)
@@ -232,12 +253,12 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
             float baseSpeed = normalizeLength ? speed * clipLength / stateDuration : speed * speedMultiplier;
             if (positionCurves != null && positionCurves.Length == 3)
             {
-                curvePositionData = new CameraCurveData(positionCurves, clipLength, blendInTime, blendOutTime, baseSpeed, weight, CurveType.Position, relative, loop, speedParamHash);
+                curvePositionData = new CameraCurveData(tagOrNameHash, positionCurves, clipLength, blendInTime, blendOutTime, baseSpeed, weight, CurveType.Position, relative, loop, speedParamHash);
                 cameraEvents.Play(curvePositionData);
             }
             if (rotationCurves != null && (((rotationCurveType == CurveType.EularAngleRaw || rotationCurveType == CurveType.EularAngleBaked) && rotationCurves.Length == 3) || (rotationCurveType == CurveType.Quaternion && rotationCurves.Length == 4)))
             {
-                curveRotationData = new CameraCurveData(rotationCurves, clipLength, blendInTime, blendOutTime, baseSpeed, weight, rotationCurveType, relative, loop, speedParamHash);
+                curveRotationData = new CameraCurveData(tagOrNameHash, rotationCurves, clipLength, blendInTime, blendOutTime, baseSpeed, weight, rotationCurveType, relative, loop, speedParamHash);
                 cameraEvents.Play(curveRotationData);
             }
         }

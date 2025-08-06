@@ -213,7 +213,7 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
                 {
                     if (dataModule != null)
                     {
-                        itemActionDataLauncher.projectileJointT = dataModule.Instance.projectileJoints[i];
+                        itemActionDataLauncher.projectileJointT = dataModule.Instance.projectileJoints[i] ?? itemActionDataLauncher.projectileJointT;
                     }
                     itemActionDataLauncher.projectileTs.Add(itemActionLauncher.instantiateProjectile(actionData, Vector3.zero));
                 }

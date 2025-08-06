@@ -5,6 +5,7 @@ using HarmonyLib;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
+using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -26,6 +27,7 @@ public class CommonUtilityLibInit : IModApi
         //QualitySettings.streamingMipmapsMemoryBudget = 4096;
         DelayLoadModuleManager.RegisterDelayloadDll("FullautoLauncher", "FullautoLauncherAnimationRiggingCompatibilityPatch");
         DelayLoadModuleManager.RegisterDelayloadDll("Quartz", "QuartzUIPatch");
+        DelayLoadModuleManager.RegisterDelayloadDll("Gears", "GearsSavingPatch");
         //DelayLoadModuleManager.RegisterDelayloadDll("SMXcore", "SMXMultiActionCompatibilityPatch");
         //DelayLoadModuleManager.RegisterDelayloadDll("SCore", "SCoreEntityHitCompatibilityPatch");
         CustomEffectEnumManager.RegisterEnumType<MinEventTypes>();
@@ -77,21 +79,37 @@ public class CommonUtilityLibInit : IModApi
     }
 }
 
-public class GearsImpl : IGearsModApi
+namespace KFCommonUtilityLib.Gears
 {
-    public void InitMod(IGearsMod modInstance)
+    public class GearsImpl : IGearsModApi
     {
+        public static event Action<IModGlobalSettings> OnGlobalSettingsSaved;
+        public static event Action<IModGlobalSettings> OnGlobalSettingsOpened;
 
-    }
+        public static void SaveGlobalSettings(IModGlobalSettings modSettings)
+        {
+            OnGlobalSettingsSaved?.Invoke(modSettings);
+        }
 
-    public void OnGlobalSettingsLoaded(IModGlobalSettings modSettings)
-    {
-        RecoilManager.InitRecoilSettings(modSettings);
-    }
+        public static void OpenGlobalSettings(IModGlobalSettings modSettings)
+        {
+            OnGlobalSettingsOpened?.Invoke(modSettings);
+        }
 
-    public void OnWorldSettingsLoaded(IModWorldSettings worldSettings)
-    {
+        public void InitMod(IGearsMod modInstance)
+        {
 
+        }
+
+        public void OnGlobalSettingsLoaded(IModGlobalSettings modSettings)
+        {
+            RecoilManager.InitRecoilSettings(modSettings);
+            CameraAnimationEvents.InitModSettings(modSettings);
+        }
+
+        public void OnWorldSettingsLoaded(IModWorldSettings worldSettings)
+        {
+
+        }
     }
 }
-

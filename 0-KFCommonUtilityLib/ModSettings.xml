@@ -3,23 +3,61 @@
   <Global>
     <Tab name="RecoilSettings" displayKey="kflibTabRecoilSettingsName" tooltipKey="">
       <Category name="Capping" displayKey="kflibCategoryRecoilCappingName" tooltipKey="">
-        <Slider name="RecoilCompensationSensitivityMultiplier" displayKey="kflibSettingRecoilCSMName" tooltipKey="kflibSettingRecoilCSMDesc" value="0.00" defaultValue="0.00">
+        <Slider name="RecoilCompensationSensitivityMultiplier" displayKey="kflibSettingRecoilCSMName" tooltipKey="kflibSettingRecoilCSMDesc" defaultValue="0.00">
           <Property increment="0.01" minValue="0.00" maxValue="1.00" type="incrementalValuesFloat" />
           <Property type="formatter" formatString="0.00" />
         </Slider>
-        <Switch name="EnablePreRecoilCompensation" displayKey="kflibSettingEnablePreRecoilCompensationName" tooltipKey="kflibSettingEnablePreRecoilCompensationDesc" value="Disable" defaultValue="Disable" leftValue="Disable" rightValue="Enable" />
-        <Switch name="EnableCap" displayKey="kflibSettingEnableCapName" tooltipKey="kflibSettingEnableCapDesc" value="Disable" defaultValue="Disable" leftValue="Disable" rightValue="Enable" />
-        <Slider name="RecoilRemain" displayKey="kflibSettingRecoilRemainName" tooltipKey="kflibSettingRecoilRemainDesc" value="0.2" defaultValue="0.2">
+        <Switch name="EnablePreRecoilCompensation" displayKey="kflibSettingEnablePreRecoilCompensationName" tooltipKey="kflibSettingEnablePreRecoilCompensationDesc" defaultValue="Disable" leftValue="Disable" rightValue="Enable" />
+        <Switch name="EnableCap" displayKey="kflibSettingEnableCapName" tooltipKey="kflibSettingEnableCapDesc" defaultValue="Disable" leftValue="Disable" rightValue="Enable" />
+        <Slider name="RecoilRemain" displayKey="kflibSettingRecoilRemainName" tooltipKey="kflibSettingRecoilRemainDesc" defaultValue="0.2">
           <Property increment="0.01" minValue="0.00" maxValue="1.00" type="incrementalValuesFloat" />
           <Property type="formatter" formatString="0.00" />
         </Slider>
-        <Switch name="EnableSoftCap" displayKey="kflibSettingEnableSoftCapName" tooltipKey="kflibSettingEnableSoftCapDesc" value="Disable" defaultValue="Disable" leftValue="Disable" rightValue="Enable" />
-        <Slider name="MaxRecoilAngle" displayKey="kflibSettingMaxRecoilAngleName" tooltipKey="kflibSettingMaxRecoilAngleDesc" value="15" defaultValue="15">
+        <Switch name="EnableSoftCap" displayKey="kflibSettingEnableSoftCapName" tooltipKey="kflibSettingEnableSoftCapDesc" defaultValue="Disable" leftValue="Disable" rightValue="Enable" />
+        <Slider name="MaxRecoilAngle" displayKey="kflibSettingMaxRecoilAngleName" tooltipKey="kflibSettingMaxRecoilAngleDesc" defaultValue="15">
           <Property increment="1" minValue="0" maxValue="45" type="incrementalValuesInt" />
         </Slider>
-        <Switch name="EnableDynamicCap" displayKey="kflibSettingEnableDynamicCapName" tooltipKey="kflibSettingEnableDynamicCapDesc" value="Disable" defaultValue="Disable" leftValue="Disable" rightValue="Enable" />
-        <Slider name="MaxDynamicRecoilCapShots" displayKey="kflibSettingMaxDynamicRecoilCapShotsName" tooltipKey="kflibSettingMaxDynamicRecoilCapShotsDesc" value="6" defaultValue="6">
+        <Switch name="EnableDynamicCap" displayKey="kflibSettingEnableDynamicCapName" tooltipKey="kflibSettingEnableDynamicCapDesc" defaultValue="Disable" leftValue="Disable" rightValue="Enable" />
+        <Slider name="MaxDynamicRecoilCapShots" displayKey="kflibSettingMaxDynamicRecoilCapShotsName" tooltipKey="kflibSettingMaxDynamicRecoilCapShotsDesc" defaultValue="6">
           <Property increment="1" minValue="0" maxValue="30" type="incrementalValuesInt" />
+        </Slider>
+      </Category>
+    </Tab>
+    <Tab name="CameraAnimationSettings" displayKey="kflibTabCameraAnimationSettingsName" tooltipKey="">
+      <Category name="Default" displayKey="kflibCategoryCAIDefaultSettingsName" tooltipKey="">
+        <Slider name="CameraAnimationIntensityMultiplier" displayKey="kflibSettingCAIMultiplierName" tooltipKey="kflibSettingCAIMultiplierDesc" defaultValue="1.00">
+          <Property increment="0.01" minValue="0.00" maxValue="1.00" type="incrementalValuesFloat" />
+          <Property type="formatter" formatString="0.00" />
+        </Slider>
+      </Category>
+      <Category name="WeaponOverride" displayKey="kflibCategoryWeaponOverrideName">
+        <Selector name="CurrentWeapon" displayKey="kflibSettingCurrentWeaponName">
+          <Property type="arrayValues" allowedValues="Katana (Prototype 01)" />
+        </Selector>
+        <Switch name="EnableOverride" displayKey="kflibSettingEnableOverrideName" tooltipKey="kflibSettingEnableOverrideDesc" leftValue="Disabled" rightValue="Enabled" />
+        <Slider name="DefaultWeight" displayKey="kflibSettingCAIMultiplierName" tooltipKey="kflibSettingDefaultWeightDesc">
+          <Property increment="0.01" minValue="0.00" maxValue="1.00" type="incrementalValuesFloat" />
+          <Property type="formatter" formatString="0.00" />
+        </Slider>
+        <Slider name="Bashing" displayKey="Bashing">
+          <Property increment="0.01" minValue="0.00" maxValue="1.00" type="incrementalValuesFloat" />
+          <Property type="formatter" formatString="0.00" />
+        </Slider>
+        <Slider name="LightAttack" displayKey="LightAttack">
+          <Property increment="0.01" minValue="0.00" maxValue="1.00" type="incrementalValuesFloat" />
+          <Property type="formatter" formatString="0.00" />
+        </Slider>
+        <Slider name="HeavyAttack" displayKey="HeavyAttack">
+          <Property increment="0.01" minValue="0.00" maxValue="1.00" type="incrementalValuesFloat" />
+          <Property type="formatter" formatString="0.00" />
+        </Slider>
+        <Slider name="Inspect" displayKey="Inspect">
+          <Property increment="0.01" minValue="0.00" maxValue="1.00" type="incrementalValuesFloat" />
+          <Property type="formatter" formatString="0.00" />
+        </Slider>
+        <Slider name="Running" displayKey="Running">
+          <Property increment="0.01" minValue="0.00" maxValue="1.00" type="incrementalValuesFloat" />
+          <Property type="formatter" formatString="0.00" />
         </Slider>
       </Category>
     </Tab>

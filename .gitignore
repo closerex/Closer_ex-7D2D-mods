@@ -20,6 +20,8 @@
 !CustomPlayerActionManager/**
 !GearsSettingsSave/
 !GearsSettingsSave/**
+!GearsSavingPatch/
+!GearsSavingPatch/**
 !KeepReloading/
 !KeepReloading/**
 !FPVLegs/

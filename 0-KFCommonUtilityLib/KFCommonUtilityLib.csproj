@@ -96,6 +96,10 @@
       <HintPath>..\0_TFP_Harmony\Mono.Cecil.Rocks.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\7DaysToDie_Data\Managed\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="ScreenSpaceReflections">
       <HintPath>..\..\7DaysToDie_Data\Managed\ScreenSpaceReflections.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -439,6 +443,7 @@
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationDelayRenderReference.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationFiringEvents.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationGraphBuilder.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationInspectState.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationProceduralRecoildAbs.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationSmokeParticle.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimatorWrapper\AnimatorWrapper.cs" />
@@ -476,6 +481,7 @@
     <Compile Include="KFAttached\GG Camera Shake\Runtime\PerlinShake.cs" />
     <Compile Include="KFAttached\GG Camera Shake\Runtime\Power.cs" />
     <Compile Include="KFAttached\KFUtilAttached\ApexWeaponHudControllerBase.cs" />
+    <Compile Include="KFAttached\KFUtilAttached\LightController.cs" />
     <Compile Include="KFAttached\KFUtilAttached\MuzzlePositionBinding.cs" />
     <Compile Include="KFAttached\KFUtilAttached\RigActivationBinding.cs" />
     <Compile Include="KFAttached\KFUtilAttached\WeaponDataHandlerBase.cs" />
@@ -592,6 +598,7 @@
     <Compile Include="Scripts\Items\ModularActions\ActionModuleProceduralRecoil.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleRampUp.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMetaRecharger.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleShellEjector.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleTagged.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleTranspilerTest.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleVariableZoom.cs" />

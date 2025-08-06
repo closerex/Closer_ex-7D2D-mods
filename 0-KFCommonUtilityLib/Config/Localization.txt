@@ -34,3 +34,13 @@ kflibSettingEnableDynamicCapName,UI,Menu,x,Enable Dynamic Recoil Cap,启用动�
 kflibSettingEnableDynamicCapDesc,UI,Menu,x,Trigger recoil cap after certain shots.,设置基于射击次数的上限。
 kflibSettingMaxDynamicRecoilCapShotsName,UI,Menu,x,Max Shots Before Capping,最大射击次数
 kflibSettingMaxDynamicRecoilCapShotsDesc,UI,Menu,x,"Trigger recoil cap after certain shots. This is a rough value, and the actual cap angle is calculated by the max random kick angle per shot.",在射击指定次数后触发后坐力上限。上限角度是根据最大随机角度计算的，所以实际射击次数不一定与设置完全一致。
+
+kflibTabCameraAnimationSettingsName,UI,Menu,x,Camera Animation,相机动画
+kflibCategoryCAIDefaultSettingsName,UI,Menu,x,Default Settings,默认设置
+kflibSettingCAIMultiplierName,UI,Menu,x,Intensity Multiplier,动画强度
+kflibSettingCAIMultiplierDesc,UI,Menu,x,"The default intensity multiplier for all camera animations. This is overridden by the weapon intensity if enabled.",该设置会影响所有相机动画强度，但是会被武器设置覆盖。
+kflibCategoryWeaponOverrideName,UI,Menu,x,Weapon Settings,武器设置
+kflibSettingCurrentWeaponName,UI,Menu,x,Current Weapon,当前武器
+kflibSettingEnableOverrideName,UI,Menu,x,Enable Override,启用设置
+kflibSettingEnableOverrideDesc,UI,Menu,x,Enable intensity override for this weapon.,为当前武器启用动画强度设置。
+kflibSettingDefaultWeightDesc,UI,Menu,x,The overall intensity multiplier for this weapon. This is multiplied by the tag multipliers.,该设置会影响当前武器的所有相机动画强度，并与各个分类的动画强度相乘来计算对应动画的强度。

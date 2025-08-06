@@ -35,13 +35,20 @@ public class ActionModuleMultiBarrel
 
         __customData.muzzles = new Transform[__customData.barrelCount];
         __customData.projectileJoints = new Transform[__customData.barrelCount];
+        __customData.shellJoints = new Transform[__customData.barrelCount];
+        __customData.shellEffectJoints = new Transform[__customData.barrelCount];
 
+        string indexExt = (actionIndex > 0 ? $"_{actionIndex.ToString()}" : string.Empty);
         for (int i = 0; i < __customData.barrelCount; i++)
         {
-            string muzzleName = _data.invData.itemValue.GetPropertyOverrideForAction($"MBMuzzle{i}_Name", $"MBMuzzle{i}", actionIndex);
+            string muzzleName = _data.invData.itemValue.GetPropertyOverrideForAction($"MBMuzzle{i}_Name", $"MBMuzzle{i}{indexExt}", actionIndex);
             __customData.muzzles[i] = AnimationRiggingManager.GetTransformOverrideByName(_data.invData.model, muzzleName);
-            string jointName = _data.invData.itemValue.GetPropertyOverrideForAction($"MBProjectileJoint{i}_Name", $"MBProjectileJoint{i}", actionIndex);
-            __customData.projectileJoints[i] = AnimationRiggingManager.GetTransformOverrideByName(_data.invData.model, jointName);
+            string projectileJointName = _data.invData.itemValue.GetPropertyOverrideForAction($"MBProjectileJoint{i}_Name", $"MBProjectileJoint{i}{indexExt}", actionIndex);
+            __customData.projectileJoints[i] = AnimationRiggingManager.GetTransformOverrideByName(_data.invData.model, projectileJointName);
+            string shellJointName = _data.invData.itemValue.GetPropertyOverrideForAction($"MBShellJoint{i}_Name", $"MBShellJoint{i}{indexExt}", actionIndex);
+            __customData.shellJoints[i] = AnimationRiggingManager.GetTransformOverrideByName(_data.invData.model, shellJointName);
+            string shellEffectJointName = _data.invData.itemValue.GetPropertyOverrideForAction($"MBShellEffectJoint{i}_Name", $"MBShellEffectJoint{i}{indexExt}", actionIndex);
+            __customData.shellEffectJoints[i] = AnimationRiggingManager.GetTransformOverrideByName(_data.invData.model, shellEffectJointName);
         }
 
         int meta = MultiActionUtils.GetMetaByActionIndex(_data.invData.itemValue, actionIndex);
@@ -53,7 +60,7 @@ public class ActionModuleMultiBarrel
     public void Prefix_StartHolding_ItemActionLauncher(ItemActionData _data, ItemActionLauncher __instance, MultiBarrelData __customData)
     {
         ItemActionLauncher.ItemActionDataLauncher launcherData = _data as ItemActionLauncher.ItemActionDataLauncher;
-        launcherData.projectileJointT = __customData.projectileJoints[0];
+        launcherData.projectileJointT = __customData.projectileJoints[0] ?? launcherData.projectileJointT;
     }
 
     [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemAction.StartHolding)), MethodTargetPostfix]
@@ -63,17 +70,16 @@ public class ActionModuleMultiBarrel
         if (launcherData?.projectileTs != null && __customData.oneRoundMultishot && __customData.roundsPerShot > 1)
         {
             int count = launcherData.projectileTs.Count;
-            int times = __customData.roundsPerShot - 1;
-            for (int i = 0; i < times; i++)
+            for (int i = 1; i < __customData.roundsPerShot; i++)
             {
-                launcherData.projectileJointT = __customData.projectileJoints[i + 1];
+                launcherData.projectileJointT = __customData.projectileJoints[i] ?? launcherData.projectileJointT;
                 for (int j = 0; j < count; j++)
                 {
                     launcherData.projectileTs.Add(__instance.instantiateProjectile(_data));
                 }
             }
         }
-        launcherData.projectileJointT = __customData.projectileJoints[__customData.curBarrelIndex];
+        launcherData.projectileJointT = __customData.projectileJoints[__customData.curBarrelIndex] ?? launcherData.projectileJointT;
     }
 
     [HarmonyPatch(nameof(ItemActionRanged.getUserData)), MethodTargetPostfix]
@@ -89,7 +95,12 @@ public class ActionModuleMultiBarrel
         if (rangedData != null && _firingState != 0)
         {
             byte index = (byte)(_userData >> 8);
-            rangedData.muzzle = __customData.muzzles[index];
+            rangedData.muzzle = __customData.muzzles[index] ?? rangedData.muzzle;
+            if (_actionData is IModuleContainerFor<ActionModuleShellEjector.ShellEjectorData> dataModule)
+            {
+                dataModule.Instance.shellJoint = __customData.shellJoints[index] ?? dataModule.Instance.shellJoint;
+                dataModule.Instance.shellEffectJoint = __customData.shellEffectJoints[index] ?? dataModule.Instance.shellEffectJoint;
+            }
             __customData.SetAnimatorParam(index);
         }
         return true;
@@ -101,7 +112,7 @@ public class ActionModuleMultiBarrel
         ItemActionLauncher.ItemActionDataLauncher launcherData = _actionData as ItemActionLauncher.ItemActionDataLauncher;
         if (launcherData != null)
         {
-            launcherData.projectileJointT = __customData.projectileJoints[(byte)(_userData >> 8)];
+            launcherData.projectileJointT = __customData.projectileJoints[(byte)(_userData >> 8)] ?? launcherData.projectileJointT;
         }
         return Prefix_ItemActionEffects_ItemActionRanged(_actionData, _userData, _firingState, __customData);
     }
@@ -208,6 +219,8 @@ public class ActionModuleMultiBarrel
         public int curBarrelIndex;
         public Transform[] muzzles;
         public Transform[] projectileJoints;
+        public Transform[] shellJoints;
+        public Transform[] shellEffectJoints;
 
         public MultiBarrelData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleMultiBarrel _module)
         {
@@ -269,7 +282,6 @@ public class ActionModuleMultiBarrel
 [HarmonyPatch]
 public class MultiBarrelPatches
 {
-
     [HarmonyPatch(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.OnStateEnter))]
     [HarmonyPostfix]
     private static void Postfix_OnStateEnter_AnimatorRangedReloadState(AnimatorRangedReloadState __instance)
@@ -283,7 +295,7 @@ public class MultiBarrelPatches
             {
                 for (int j = 0; j < times; j++)
                 {
-                    launcherData.projectileJointT = dataModule.Instance.projectileJoints[j + 1];
+                    launcherData.projectileJointT = dataModule.Instance.projectileJoints[j + 1] ?? launcherData.projectileJointT;
                     launcherData.projectileTs.Insert(i * (times + 1) + j + 1, ((ItemActionLauncher)__instance.actionRanged).instantiateProjectile(launcherData));
                 }
             }
