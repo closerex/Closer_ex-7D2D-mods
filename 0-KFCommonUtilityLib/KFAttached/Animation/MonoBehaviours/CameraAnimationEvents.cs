@@ -214,6 +214,7 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
 
     private EntityPlayerLocal player;
     private WeightHolder weightHolder;
+    private bool weightHolderChecked;
     private static readonly Dictionary<string, WeightHolder> dict_user_weights = new Dictionary<string, WeightHolder>();
     private static readonly string SavePath = Path.Combine(GameIO.GetUserGameDataDir(), "KFLibSettings", "CameraAnimationIntensitySettings.json");
     private static readonly string SavePathDir = Path.GetDirectoryName(SavePath);
@@ -402,6 +403,7 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
         {
             holder = new WeightHolder();
             dict_user_weights[item.Name] = holder;
+            script.weightHolder = holder;
         }
 
         string itemLocalizedName = item.GetLocalizedItemName();
@@ -487,8 +489,9 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
         Vector3 localPos = cameraOffsetTrans.localPosition;
         Quaternion localRot = cameraOffsetTrans.localRotation;
 #if NotEditor
-        if (weightHolder == null)
+        if (weightHolder == null && !weightHolderChecked)
         {
+            weightHolderChecked = true;
             var targets = AnimationRiggingManager.GetActiveRigTargetsFromPlayer(player);
             if (targets == null)
             {
