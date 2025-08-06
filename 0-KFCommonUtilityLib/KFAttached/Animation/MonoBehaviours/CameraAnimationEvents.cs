@@ -486,8 +486,8 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
 
     private void LateUpdate()
     {
-        Vector3 localPos = cameraOffsetTrans.localPosition;
-        Quaternion localRot = cameraOffsetTrans.localRotation;
+        Vector3 localPos = cameraOffsetTrans?.localPosition ?? Vector3.zero;
+        Quaternion localRot = cameraOffsetTrans?.localRotation ?? Quaternion.identity;
 #if NotEditor
         if (weightHolder == null && !weightHolderChecked)
         {
