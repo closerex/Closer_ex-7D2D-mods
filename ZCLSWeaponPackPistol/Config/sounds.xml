@@ -24,5 +24,15 @@
 			<AudioClip ClipName="#@modfolder:Resources/Pistol9mm_Sound.unity3d?WEP_SA_AK12_Handling_DryFire_03"/>
 			<LocalCrouchVolumeScale value="0.5"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="30"/> <MaxVoicesPerEntity value="15"/> <MaxRepeatRate value="0.001"/>
 		</SoundDataNode>
+		<SoundDataNode name="KFPistol_silenced_fire"> <AudioSource name="@:Sounds/Prefabs/AudioSource_WeaponFire.prefab"/> <NetworkAudioSource name="@:Sounds/Prefabs/AudioSource_WeaponFire_Network.prefab"/>
+			<Noise ID="0" noise="17" time="2" muffled_when_crouched="0.8" heat_map_strength="0.4" heat_map_time="180"/>
+			<AudioClip ClipName="@:Sounds/Weapons/Ranged/Pistol/pistol_s_fire1.wav"/>
+			<AudioClip ClipName="@:Sounds/Weapons/Ranged/Pistol/pistol_s_fire2.wav"/>
+			<AudioClip ClipName="@:Sounds/Weapons/Ranged/Pistol/pistol_s_fire3.wav"/>
+			<AudioClip ClipName="@:Sounds/Weapons/Ranged/Pistol/pistol_s_fire4.wav"/>
+			<AudioClip ClipName="@:Sounds/Twitch/Silly/pistol_fire_silly1.wav" AltSound="true"/>
+			<AudioClip ClipName="@:Sounds/Twitch/Silly/pistol_fire_silly2.wav" AltSound="true"/>
+			<AudioClip ClipName="@:Sounds/Twitch/Silly/pistol_fire_silly3.wav" AltSound="true"/>
+		<LocalCrouchVolumeScale value="0.5"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="30"/> <MaxVoicesPerEntity value="10"/> <MaxRepeatRate value="0.001"/> </SoundDataNode>
     </append>
 </config>

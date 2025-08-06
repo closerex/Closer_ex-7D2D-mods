@@ -43,7 +43,7 @@
 
             <property class="Action0">
                 <property name="Class" value="Ranged"/>
-                <property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;DynamicMuzzleFlash,KFCommonUtilityLib"/>
+                <property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;DynamicMuzzleFlash,KFCommonUtilityLib"/>
                 <property name="allowEmptyInspect" value="true"/>
                 <property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
                 <property name="InternalCancelOnly" value="true"/>
@@ -52,8 +52,10 @@
                 <property name="Sound_end" value=""/>
                 <property name="Sound_empty" value="KFdryfire"/>
                 <property name="AutoReload" value="false"/>
-				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/9mm.unity3d?9mm_muzzle_flash.prefab"/>
-				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/9mm.unity3d?9mm_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?9mm_muzzle_flash.prefab"/>
+				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?9mm_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_smoke" value="#@modfolder:Resources/MuzzleFlashes.unity3d?9mm_muzzle_smoke.prefab"/>
+				<property name="Particles_shell" value="#@modfolder:Resources/MuzzleFlashes.unity3d?9mm_shell.prefab"/>
                 <property name="triggerEffectTriggerPullDualsense" value="PistolTrigger"/>
                 <property name="triggerEffectTriggerPullXbox" value="PistolTrigger"/>
                 <property name="triggerEffectShootDualsense" value="PistolShoot"/>
@@ -195,7 +197,7 @@
 
             <property class="Action0">
                 <property name="Class" value="Ranged"/>
-                <property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;DynamicMuzzleFlash,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
+                <property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;DynamicMuzzleFlash,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
                 <property name="allowEmptyInspect" value="true"/>
                 <property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="MuzzleIsPerRound" value="true"/>
@@ -208,8 +210,10 @@
                 <property name="Sound_end" value=""/>
                 <property name="Sound_empty" value="KFdryfire"/>
                 <property name="AutoReload" value="false"/>
-				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/9mm.unity3d?9mm_muzzle_flash.prefab"/>
-				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/9mm.unity3d?9mm_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?9mm_muzzle_flash.prefab"/>
+				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?9mm_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_smoke" value="#@modfolder:Resources/MuzzleFlashes.unity3d?9mm_muzzle_smoke.prefab"/>
+				<property name="Particles_shell" value="#@modfolder:Resources/MuzzleFlashes.unity3d?9mm_shell.prefab"/>
                 <property name="triggerEffectTriggerPullDualsense" value="PistolTrigger"/>
                 <property name="triggerEffectTriggerPullXbox" value="PistolTrigger"/>
                 <property name="triggerEffectShootDualsense" value="PistolShoot"/>
@@ -486,8 +490,8 @@
                 <property name="Sound_end" value=""/>
                 <property name="Sound_empty" value="KFdryfire"/>
                 <property name="AutoReload" value="false"/>
-				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/SW500.unity3d?hrg_sw_500_muzzle_flash.prefab"/>
-				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/SW500.unity3d?hrg_sw_500_muzzle_flash.prefab"/>
+				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?hrg_sw_500_muzzle_flash.prefab"/>
+				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?hrg_sw_500_muzzle_flash_fpv.prefab"/>
                 <property name="triggerEffectTriggerPullDualsense" value="ShotgunTrigger"/>
                 <property name="triggerEffectTriggerPullXbox" value="ShotgunTrigger"/>
                 <property name="triggerEffectShootDualsense" value="ShotgunShoot"/>
@@ -641,8 +645,8 @@
                 <property name="Sound_end" value=""/>
                 <property name="Sound_empty" value="KFdryfire"/>
                 <property name="AutoReload" value="false"/>
-				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/SW500.unity3d?hrg_sw_500_muzzle_flash.prefab"/>
-				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/SW500.unity3d?hrg_sw_500_muzzle_flash.prefab"/>
+				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?hrg_sw_500_muzzle_flash.prefab"/>
+				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?hrg_sw_500_muzzle_flash_fpv.prefab"/>
                 <property name="triggerEffectTriggerPullDualsense" value="ShotgunTrigger"/>
                 <property name="triggerEffectTriggerPullXbox" value="ShotgunTrigger"/>
                 <property name="triggerEffectShootDualsense" value="ShotgunShoot"/>

@@ -50,8 +50,9 @@
 				<property name="Sound_empty" value="dryfire"/>
 				<property name="Sound_reload" value=""/>
 				<property name="AutoReload" value="false"/>
-				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_pistol_muzzle_flash.prefab"/>
-				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_pistol_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_flash.prefab"/>
+				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_smoke" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_smoke.prefab"/>
 				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
 					<property name="triggerEffectTriggerPullDualsense" value="PistolTrigger"/>
 					<property name="triggerEffectTriggerPullXbox" value="PistolTrigger"/>
@@ -243,8 +244,9 @@
 				<property name="Sound_empty" value="dryfire"/>
 				<property name="Sound_reload" value=""/>
 				<property name="AutoReload" value="false"/>
-				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_smg_muzzle_flash.prefab"/>
-				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_smg_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_flash.prefab"/>
+				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_smoke" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_smoke.prefab"/>
 				<property name="ScopeOffset" value="0,0,0"/>
 				<property name="SideOffset" value="0,0,0"/>
 				<property name="BarrelOffset" value="0,0,0"/>
@@ -440,8 +442,9 @@
 				<property name="Sound_end" value=""/>
 				<property name="Sound_empty" value="dryfire"/>
 				<property name="AutoReload" value="false"/>
-				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_shotgun_muzzle_flash.prefab"/>
-				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_shotgun_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_shotgun_muzzle_flash.prefab"/>
+				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_shotgun_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_smoke" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_shotgun_muzzle_smoke.prefab"/>
 				<property name="SideOffset" value="0,0,0"/>
 				<property name="BarrelOffset" value="0,0,0"/>
 				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
@@ -622,8 +625,9 @@
 				<property name="Sound_loop" value="Medic_AR_Fire"/>
 				<property name="Sound_empty" value="dryfire"/>
 				<property name="AutoReload" value="false"/>
-				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_ar_muzzle_flash.prefab"/>
-				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_ar_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_ar_muzzle_flash.prefab"/>
+				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_ar_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_smoke" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_ar_muzzle_smoke.prefab"/>
 				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
 						<property name="triggerEffectTriggerPullDualsense" value="RifleTrigger"/>
 						<property name="triggerEffectTriggerPullXbox" value="PistolTrigger"/>

@@ -129,12 +129,16 @@
 			<property class="Action0">
 				<property name="Class" value="BetterLauncher,FullautoLauncher"/>
 				<!-- <property name="Class" value="Launcher"/> -->
-				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="Delay" value=".2"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammoKaboomstickShellHE,ammoKaboomstickShellFrag"/>
+				<property name="MuzzleIsPerRound" value="true"/>
+				<property name="OneRoundMultiShot" value="false"/>
+				<property name="RoundsPerShot" value="1"/>
+				<property name="BarrelCount" value="2"/>
 				<property name="Reload_time" value="2.6"/>
 				<property name="Sound_start" value="kaboomstick_fire"/>
 				<property name="Sound_loop" value="kaboomstick_fire"/>
@@ -142,8 +146,9 @@
 				<property name="Sound_end" value=""/>
 				<property name="Sound_empty" value="dryfire"/>
 				<property name="AutoReload" value="false"/>
-				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/Kaboomstick_prefab.unity3d?kaboomstick_muzzle_flash_fpv.prefab"/>
-				<property name="Particles_muzzle_smoke" value="nozzlesmoke_m136"/>
+				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?kaboomstick_muzzle_flash.prefab"/>
+				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?kaboomstick_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_smoke" value="#@modfolder:Resources/MuzzleFlashes.unity3d?kaboomstick_muzzle_smoke.prefab"/>
 				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
 			</property>
 			<property class="Action1">

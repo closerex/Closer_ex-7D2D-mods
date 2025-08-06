@@ -147,7 +147,7 @@
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;DynamicMuzzleFlash,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;DynamicMuzzleFlash,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>
@@ -161,8 +161,11 @@
 				<property name="Sound_end" value=""/>
 				<property name="Sound_empty" value="dryfire"/>
 				<property name="AutoReload" value="false"/>
-				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/AF2011A1S.unity3d?af2011_muzzle_flash.prefab"/>
-				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/AF2011A1S.unity3d?af2011_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?af2011_muzzle_flash.prefab"/>
+				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?af2011_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_smoke" value="#@modfolder:Resources/MuzzleFlashes.unity3d?af2011_muzzle_smoke.prefab"/>
+				<property name="Particles_shell" value="#@modfolder:Resources/MuzzleFlashes.unity3d?af2011_shell.prefab"/>
+				<property name="Particles_shell_effect" value="#@modfolder:Resources/MuzzleFlashes.unity3d?af2011_shell_effect.prefab"/>
 				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
 				<property name="triggerEffectTriggerPullDualsense" value="PistolTrigger"/>
 				<property name="triggerEffectTriggerPullXbox" value="PistolTrigger"/>
@@ -293,7 +296,7 @@
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;DynamicMuzzleFlash,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;DynamicMuzzleFlash,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>
@@ -307,8 +310,11 @@
 				<property name="Sound_end" value=""/>
 				<property name="Sound_empty" value="dryfire"/>
 				<property name="AutoReload" value="false"/>
-				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/AF2011A1S.unity3d?af2011_muzzle_flash.prefab"/>
-				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/AF2011A1S.unity3d?af2011_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?af2011_muzzle_flash.prefab"/>
+				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?af2011_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_smoke" value="#@modfolder:Resources/MuzzleFlashes.unity3d?af2011_muzzle_smoke.prefab"/>
+				<property name="Particles_shell" value="#@modfolder:Resources/MuzzleFlashes.unity3d?af2011_shell.prefab"/>
+				<property name="Particles_shell_effect" value="#@modfolder:Resources/MuzzleFlashes.unity3d?af2011_shell_effect.prefab"/>
 				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
 				<property name="triggerEffectTriggerPullDualsense" value="PistolTrigger"/>
 				<property name="triggerEffectTriggerPullXbox" value="PistolTrigger"/>
