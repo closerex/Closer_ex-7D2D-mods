@@ -11,31 +11,21 @@ using static ItemModuleMultiItem;
 [TypeTarget(typeof(ItemClass)), TypeDataTarget(typeof(MultiItemInvData))]
 public class ItemModuleMultiItem
 {
-    private string boundItemName;
-    private ItemClass boundItemClass;
-    private ItemClass itemClass;
-    public ItemClass BoundItemClass
-    {
-        get
-        {
-            if (boundItemClass == null && !string.IsNullOrEmpty(boundItemName))
-            {
-                boundItemClass = ItemClass.GetItemClass(boundItemName, true);
-            }
-            return boundItemClass;
-        }
-    }
+    //private ItemClass itemClass;
 
-    [HarmonyPatch(nameof(ItemClass.Init)), MethodTargetPostfix]
-    public void Postfix_Init(ItemClass __instance)
-    {
-        itemClass = __instance;
-        __instance.Properties.ParseString("BoundItemName", ref boundItemName);
-    }
+    //[HarmonyPatch(nameof(ItemClass.Init)), MethodTargetPostfix]
+    //public void Postfix_Init(ItemClass __instance)
+    //{
+    //    itemClass = __instance;
+    //    __instance.Properties.ParseString("BoundItemName", ref boundItemName);
+    //}
 
     [HarmonyPatch(nameof(ItemClass.StartHolding)), MethodTargetPrefix]
-    public bool Prefix_StartHolding(ItemInventoryData _data, MultiItemInvData __customData)
+    public bool Prefix_StartHolding(ItemClass __instance, ItemInventoryData _data, MultiItemInvData __customData)
     {
+        __instance.Properties.ParseString("BoundItemName", ref __customData.boundItemName);
+        __customData.boundItemName = _data.itemValue.GetPropertyOverride("BoundItemName", __customData.boundItemName);
+        __customData.UpdateBoundItem();
         var boundInvData = __customData.boundInvData;
         ItemValue boundItemValue = boundInvData.itemStack.itemValue;
         boundItemValue.Quality = _data.itemValue.Quality;
@@ -48,17 +38,17 @@ public class ItemModuleMultiItem
     [HarmonyPatch(nameof(ItemClass.CleanupHoldingActions)), MethodTargetPostfix]
     public void Postfix_CleanupHoldingActions(MultiItemInvData __customData)
     {
-        BoundItemClass?.CleanupHoldingActions(__customData.boundInvData);
+        __customData.boundItemClass?.CleanupHoldingActions(__customData.boundInvData);
     }
 
     [HarmonyPatch(nameof(ItemClass.ConsumeScrollWheel)), MethodTargetPrefix]
     public bool Prefix_ConsumeScrollWheel(MultiItemInvData __customData, float _scrollWheelInput, PlayerActionsLocal _playerInput, ref bool __result)
     {
-        if (__customData.useBound && BoundItemClass != null)
+        if (__customData.useBound && __customData.boundItemClass != null)
         {
-            SetBoundParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
-            __result = boundItemClass.ConsumeScrollWheel(__customData.boundInvData, _scrollWheelInput, _playerInput);
-            RestoreParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
+            __customData.SetBoundParams();
+            __result = __customData.boundItemClass.ConsumeScrollWheel(__customData.boundInvData, _scrollWheelInput, _playerInput);
+            __customData.RestoreParams(true);
             return false;
         }
         return true;
@@ -69,31 +59,20 @@ public class ItemModuleMultiItem
     {
         if (!_bReleased)
         {
-            bool flag = IsBoundActionRunning(__customData);
+            bool flag = __customData.IsBoundActionRunning();
             return !flag;
         }
         return true;
     }
 
-    public bool IsBoundActionRunning(MultiItemInvData __customData)
-    {
-        bool useBound = __customData.useBound;
-        __customData.useBound = true;
-        SetBoundParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
-        bool flag = __customData.boundInvData.item.IsActionRunning(__customData.boundInvData);
-        RestoreParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
-        __customData.useBound = useBound;
-        return flag;
-    }
-
     [HarmonyPatch(nameof(ItemClass.GetCameraShakeType)), MethodTargetPrefix]
     public bool Prefix_GetCameraShakeType(MultiItemInvData __customData, ref EnumCameraShake __result)
     {
-        if (__customData.useBound && BoundItemClass != null)
+        if (__customData.useBound && __customData.boundItemClass != null)
         {
-            SetBoundParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
-            __result = boundItemClass.GetCameraShakeType(__customData.boundInvData);
-            RestoreParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
+            __customData.SetBoundParams();
+            __result = __customData.boundItemClass.GetCameraShakeType(__customData.boundInvData);
+            __customData.RestoreParams(true);
             return false;
         }
         return true;
@@ -102,11 +81,11 @@ public class ItemModuleMultiItem
     [HarmonyPatch(nameof(ItemClass.GetFocusType)), MethodTargetPrefix]
     public bool Prefix_GetFocusType(MultiItemInvData __customData, ref RenderCubeType __result)
     {
-        if (__customData.useBound && BoundItemClass != null)
+        if (__customData.useBound && __customData.boundItemClass != null)
         {
-            SetBoundParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
-            __result = boundItemClass.GetFocusType(__customData.boundInvData);
-            RestoreParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
+            __customData.SetBoundParams();
+            __result = __customData.boundItemClass.GetFocusType(__customData.boundInvData);
+            __customData.RestoreParams(true);
             return false;
         }
         return true;
@@ -115,11 +94,11 @@ public class ItemModuleMultiItem
     [HarmonyPatch(nameof(ItemClass.GetIronSights)), MethodTargetPrefix]
     public bool Prefix_GetIronSights(MultiItemInvData __customData, ref float _fov)
     {
-        if (__customData.useBound && BoundItemClass != null)
+        if (__customData.useBound && __customData.boundItemClass != null)
         {
-            SetBoundParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
-            boundItemClass.GetIronSights(__customData.boundInvData, out _fov);
-            RestoreParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
+            __customData.SetBoundParams();
+            __customData.boundItemClass.GetIronSights(__customData.boundInvData, out _fov);
+            __customData.RestoreParams(true);
             return false;
         }
         return true;
@@ -128,81 +107,72 @@ public class ItemModuleMultiItem
     [HarmonyPatch(nameof(ItemClass.IsActionRunning)), MethodTargetPostfix]
     public void Postfix_IsActionRunning(MultiItemInvData __customData, ref bool __result)
     {
-        if (!__result && BoundItemClass != null)
+        if (!__result && __customData.boundItemClass != null)
         {
             bool useBound = __customData.useBound;
-            __customData.useBound = true;
-            SetBoundParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
-            __result |= boundItemClass.IsActionRunning(__customData.boundInvData);
-            RestoreParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
-            __customData.useBound = useBound;
+            __customData.SetBoundParams();
+            __result |= __customData.boundItemClass.IsActionRunning(__customData.boundInvData);
+            __customData.RestoreParams(useBound);
         }
     }
 
     [HarmonyPatch(nameof(ItemClass.IsHUDDisabled)), MethodTargetPostfix]
     public void Postfix_IsHUDDisabled(MultiItemInvData __customData, ref bool __result)
     {
-        if (!__result && BoundItemClass != null)
+        if (!__result && __customData.boundItemClass != null)
         {
             bool useBound = __customData.useBound;
-            __customData.useBound = true;
-            SetBoundParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
-            __result |= boundItemClass.IsHUDDisabled(__customData.boundInvData);
-            RestoreParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
-            __customData.useBound = useBound;
+            __customData.SetBoundParams();
+            __result |= __customData.boundItemClass.IsHUDDisabled(__customData.boundInvData);
+            __customData.RestoreParams(useBound);
         }
     }
 
     [HarmonyPatch(nameof(ItemClass.OnHoldingItemActivated)), MethodTargetPostfix]
     public void Postfix_OnHoldingItemActivated(MultiItemInvData __customData)
     {
-        if (BoundItemClass != null)
+        if (__customData.boundItemClass != null)
         {
             bool useBound = __customData.useBound;
-            __customData.useBound = true;
-            SetBoundParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
-            boundItemClass.OnHoldingItemActivated(__customData.boundInvData);
-            RestoreParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
-            __customData.useBound = useBound;
+            __customData.SetBoundParams();
+            __customData.boundItemClass.OnHoldingItemActivated(__customData.boundInvData);
+            __customData.RestoreParams(useBound);
         }
     }
 
     [HarmonyPatch(nameof(ItemClass.OnHoldingReset)), MethodTargetPostfix]
     public void Postfix_OnHoldingReset(MultiItemInvData __customData)
     {
-        if (BoundItemClass != null)
+        if (__customData.boundItemClass != null)
         {
             bool useBound = __customData.useBound;
-            __customData.useBound = true;
-            SetBoundParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
-            boundItemClass.OnHoldingReset(__customData.boundInvData);
-            RestoreParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
-            __customData.useBound = useBound;
+            __customData.SetBoundParams();
+            __customData.boundItemClass.OnHoldingReset(__customData.boundInvData);
+            __customData.RestoreParams(useBound);
         }
     }
 
     [HarmonyPatch(nameof(ItemClass.OnHoldingUpdate)), MethodTargetPostfix]
     public void Postfix_OnHoldingUpdate(MultiItemInvData __customData)
     {
-        if (BoundItemClass != null)
+        if (__customData.boundItemClass != null)
         {
             bool useBound = __customData.useBound;
-            __customData.useBound = true;
-            SetBoundParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
-            boundItemClass.OnHoldingUpdate(__customData.boundInvData);
-            RestoreParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
-            __customData.useBound = useBound;
+            __customData.SetBoundParams();
+            __customData.boundItemClass.OnHoldingUpdate(__customData.boundInvData);
+            __customData.RestoreParams(useBound);
         }
     }
 
     [HarmonyPatch(nameof(ItemClass.OnHUD)), MethodTargetPrefix]
     public bool Prefix_OnHUD(MultiItemInvData __customData, int _x, int _y)
     {
-        if (__customData.useBound && BoundItemClass != null)
+        if (__customData.useBound && __customData.boundItemClass != null)
         {
-            SetBoundParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
-            boundItemClass.OnHUD(__customData.boundInvData, _x, _y);
-            RestoreParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
+            bool useBound = __customData.useBound;
+            __customData.SetBoundParams();
+            __customData.boundItemClass.OnHUD(__customData.boundInvData, _x, _y);
+            __customData.RestoreParams(true);
             return false;
         }
         return true;
@@ -211,11 +181,11 @@ public class ItemModuleMultiItem
     [HarmonyPatch(nameof(ItemClass.OnScreenOverlay)), MethodTargetPrefix]
     public bool Prefix_OnScreenOverlay(MultiItemInvData __customData)
     {
-        if (__customData.useBound && BoundItemClass != null)
+        if (__customData.useBound && __customData.boundItemClass != null)
         {
-            SetBoundParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
-            boundItemClass.OnScreenOverlay(__customData.boundInvData);
-            RestoreParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
+            __customData.SetBoundParams();
+            __customData.boundItemClass.OnScreenOverlay(__customData.boundInvData);
+            __customData.RestoreParams(true);
             return false;
         }
         return true;
@@ -224,65 +194,106 @@ public class ItemModuleMultiItem
     [HarmonyPatch(nameof(ItemClass.StartHolding)), MethodTargetPostfix]
     public void Postfix_StartHolding(MultiItemInvData __customData, Transform _modelTransform)
     {
-        if (BoundItemClass != null)
+        if (__customData.boundItemClass != null)
         {
             bool useBound = __customData.useBound;
-            __customData.useBound = true;
-            SetBoundParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
-            boundItemClass.StartHolding(__customData.boundInvData, _modelTransform);
-            RestoreParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
-            __customData.useBound = useBound;
+            __customData.SetBoundParams();
+            __customData.boundItemClass.StartHolding(__customData.boundInvData, _modelTransform);
+            __customData.RestoreParams(useBound);
         }
     }
 
     [HarmonyPatch(nameof(ItemClass.StopHolding)), MethodTargetPostfix]
     public void Postfix_StopHolding(MultiItemInvData __customData, Transform _modelTransform)
     {
-        if (BoundItemClass != null)
+        if (__customData.boundItemClass != null)
         {
             bool useBound = __customData.useBound;
-            __customData.useBound = true;
-            SetBoundParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
-            boundItemClass.StopHolding(__customData.boundInvData, _modelTransform);
-            RestoreParams(__customData.originalData.holdingEntity.MinEventContext, __customData);
+            __customData.SetBoundParams();
+            __customData.boundItemClass.StopHolding(__customData.boundInvData, _modelTransform);
+            __customData.RestoreParams(useBound);
             MultiActionManager.SetMappingForEntity(__customData.originalData.holdingEntity.entityId, null);
-            __customData.useBound = useBound;
-        }
-    }
-
-    public void SetBoundParams(MinEventParams param, MultiItemInvData data)
-    {
-        param.ItemInventoryData = data.boundInvData;
-        param.ItemValue = data.boundInvData.itemStack.itemValue;
-        if (data.originalData.actionData[0] is IModuleContainerFor<ActionModuleAlternative.AlternativeData> dataModule)
-        {
-            MultiActionManager.SetMappingForEntity(data.originalData.holdingEntity.entityId, null);
-        }
-    }
-
-    public void RestoreParams(MinEventParams param, MultiItemInvData data)
-    {
-        param.ItemInventoryData = data.originalData;
-        param.ItemValue = data.originalData.itemStack.itemValue;
-        if (data.originalData.actionData[0] is IModuleContainerFor<ActionModuleAlternative.AlternativeData> dataModule)
-        {
-            MultiActionManager.SetMappingForEntity(data.originalData.holdingEntity.entityId, dataModule.Instance.mapping);
         }
     }
 
     public class MultiItemInvData
     {
+        public bool useBound;
         public ItemInventoryData originalData;
         public ItemInventoryData boundInvData;
         public ItemModuleMultiItem itemModule;
-        public bool useBound;
+        public string boundItemName;
+        public ItemClass boundItemClass;
+
         public MultiItemInvData(ItemInventoryData _invData, ItemClass _item, ItemStack _itemStack, IGameManager _gameManager, EntityAlive _holdingEntity, int _slotIdx, ItemModuleMultiItem module)
         {
             itemModule = module;
             originalData = _invData;
-            if (module.BoundItemClass != null)
+            boundInvData = null;
+            //if (module.boundItemClass != null)
+            //{
+            //    boundInvData = module.boundItemClass.CreateInventoryData(new ItemStack(new ItemValue(module.boundItemClass.Id), 1), _gameManager, _holdingEntity, _slotIdx);
+            //}
+        }
+
+        public void UpdateBoundItem()
+        {
+            if (boundItemClass == null || boundItemClass.Name != boundItemName)
             {
-                boundInvData = module.BoundItemClass.CreateInventoryData(new ItemStack(new ItemValue(module.BoundItemClass.Id), 1), _gameManager, _holdingEntity, _slotIdx);
+                boundItemClass = ItemClass.GetItemClass(boundItemName, true);
+                if (boundItemClass != null)
+                {
+                    boundInvData = boundItemClass.CreateInventoryData(new ItemStack(new ItemValue(boundItemClass.Id), 1), originalData.gameManager, originalData.holdingEntity, originalData.slotIdx);
+                }
+                else
+                {
+                    boundInvData = null;
+                }
+            }
+        }
+
+        public bool IsBoundActionRunning()
+        {
+            if (boundInvData == null)
+            {
+                return false;
+            }
+            bool useBound = this.useBound;
+            SetBoundParams();
+            bool flag = boundInvData.item.IsActionRunning(boundInvData);
+            RestoreParams(useBound);
+            return flag;
+        }
+
+        public void SetBoundParams()
+        {
+            if (boundInvData == null)
+            {
+                return;
+            }
+            useBound = true;
+            var param = originalData.holdingEntity.MinEventContext;
+            param.ItemInventoryData = boundInvData;
+            param.ItemValue = boundInvData.itemStack.itemValue;
+            if (originalData.actionData[0] is IModuleContainerFor<ActionModuleAlternative.AlternativeData> dataModule)
+            {
+                MultiActionManager.SetMappingForEntity(originalData.holdingEntity.entityId, null);
+            }
+        }
+
+        public void RestoreParams(bool prevUseBound)
+        {
+            if (boundInvData == null)
+            {
+                return;
+            }
+            this.useBound = prevUseBound;
+            var param = originalData.holdingEntity.MinEventContext;
+            param.ItemInventoryData = originalData;
+            param.ItemValue = originalData.itemStack.itemValue;
+            if (originalData.actionData[0] is IModuleContainerFor<ActionModuleAlternative.AlternativeData> dataModule)
+            {
+                MultiActionManager.SetMappingForEntity(originalData.holdingEntity.entityId, dataModule.Instance.mapping);
             }
         }
     }
@@ -295,7 +306,7 @@ public static class MultiItemPatches
     [HarmonyPrefix]
     public static bool Prefix_holdingCount_Inventory(ItemInventoryData[] ___slots, int ___m_HoldingItemIdx, ref int __result)
     {
-        if (___slots[___m_HoldingItemIdx] is IModuleContainerFor<MultiItemInvData> multiInvData && multiInvData.Instance.useBound)
+        if (___slots[___m_HoldingItemIdx] is IModuleContainerFor<MultiItemInvData> multiInvData && multiInvData.Instance.useBound && multiInvData.Instance.boundInvData != null)
         {
             __result = multiInvData.Instance.boundInvData.itemStack.count;
             return false;
@@ -307,7 +318,7 @@ public static class MultiItemPatches
     [HarmonyPrefix]
     public static bool Prefix_holdingItem_Inventory(ItemInventoryData[] ___slots, int ___m_HoldingItemIdx, ref ItemClass __result)
     {
-        if (___slots[___m_HoldingItemIdx] is IModuleContainerFor<MultiItemInvData> multiInvData && multiInvData.Instance.useBound)
+        if (___slots[___m_HoldingItemIdx] is IModuleContainerFor<MultiItemInvData> multiInvData && multiInvData.Instance.useBound && multiInvData.Instance.boundInvData != null)
         {
             __result = multiInvData.Instance.boundInvData.item;
             return false;
@@ -319,7 +330,7 @@ public static class MultiItemPatches
     [HarmonyPrefix]
     public static bool Prefix_holdingItemData_Inventory(ItemInventoryData[] ___slots, int ___m_HoldingItemIdx, ref ItemInventoryData __result)
     {
-        if (___slots[___m_HoldingItemIdx] is IModuleContainerFor<MultiItemInvData> multiInvData && multiInvData.Instance.useBound)
+        if (___slots[___m_HoldingItemIdx] is IModuleContainerFor<MultiItemInvData> multiInvData && multiInvData.Instance.useBound && multiInvData.Instance.boundInvData != null)
         {
             __result = multiInvData.Instance.boundInvData;
             return false;
@@ -331,7 +342,7 @@ public static class MultiItemPatches
     [HarmonyPrefix]
     public static bool Prefix_holdingItemItemValue_Inventory(ItemInventoryData[] ___slots, int ___m_HoldingItemIdx, ref ItemValue __result)
     {
-        if (___slots[___m_HoldingItemIdx] is IModuleContainerFor<MultiItemInvData> multiInvData && multiInvData.Instance.useBound)
+        if (___slots[___m_HoldingItemIdx] is IModuleContainerFor<MultiItemInvData> multiInvData && multiInvData.Instance.useBound && multiInvData.Instance.boundInvData != null)
         {
             __result = multiInvData.Instance.boundInvData.itemStack.itemValue;
             return false;
@@ -343,7 +354,7 @@ public static class MultiItemPatches
     [HarmonyPrefix]
     public static bool Prefix_holdingItemStack_Inventory(ItemInventoryData[] ___slots, int ___m_HoldingItemIdx, ref ItemStack __result)
     {
-        if (___slots[___m_HoldingItemIdx] is IModuleContainerFor<MultiItemInvData> multiInvData && multiInvData.Instance.useBound)
+        if (___slots[___m_HoldingItemIdx] is IModuleContainerFor<MultiItemInvData> multiInvData && multiInvData.Instance.useBound && multiInvData.Instance.boundInvData != null)
         {
             __result = multiInvData.Instance.boundInvData.itemStack;
             return false;
@@ -355,7 +366,7 @@ public static class MultiItemPatches
     [HarmonyPrefix]
     public static bool Prefix_Item_Inventory(ItemInventoryData[] ___slots, int _idx, ref ItemValue __result)
     {
-        if (___slots[_idx] is IModuleContainerFor<MultiItemInvData> multiInvData && multiInvData.Instance.useBound)
+        if (___slots[_idx] is IModuleContainerFor<MultiItemInvData> multiInvData && multiInvData.Instance.useBound && multiInvData.Instance.boundInvData != null)
         {
             __result = multiInvData.Instance.boundInvData.itemStack.itemValue;
             return false;
@@ -367,7 +378,7 @@ public static class MultiItemPatches
     [HarmonyPrefix]
     private static bool Prefix_SwapSelectedAmmo_ItemActionRanged(EntityAlive _entity, int _ammoIndex)
     {
-        if (_entity.inventory?.holdingItemData is IModuleContainerFor<MultiItemInvData> dataModule && dataModule.Instance.itemModule.IsBoundActionRunning(dataModule.Instance))
+        if (_entity.inventory?.holdingItemData is IModuleContainerFor<MultiItemInvData> dataModule && dataModule.Instance.IsBoundActionRunning())
         {
             return false;
         }
@@ -417,16 +428,14 @@ public static class MultiItemPatches
             int actionIndex = MultiActionManager.GetActionIndexForEntity(player);
             var reloadModule = player.inventory.holdingItem.Actions[actionIndex] as IModuleContainerFor<ActionModuleInterruptReload>;
             MultiItemInvData multiInvData = dataModule.Instance;
-            if (multiInvData.itemModule.BoundItemClass?.Actions?[0] is ItemActionDynamicMelee dynamicAction && !multiInvData.itemModule.IsBoundActionRunning(multiInvData) && ((player.inventory.IsHoldingGun() && (!isReloading || reloadModule != null)) || !player.inventory.IsHoldingItemActionRunning()) && !player.AimingGun && !multiInvData.originalData.IsAnyActionLocked())
+            if (multiInvData.boundItemClass?.Actions?[0] is ItemActionDynamicMelee dynamicAction && !multiInvData.IsBoundActionRunning() && ((player.inventory.IsHoldingGun() && (!isReloading || reloadModule != null)) || !player.inventory.IsHoldingItemActionRunning()) && !player.AimingGun && !multiInvData.originalData.IsAnyActionLocked())
             {
                 if (wasPressed)
                 {
-                    multiInvData.useBound = true;
-                    multiInvData.itemModule.SetBoundParams(player.MinEventContext, multiInvData);
+                    multiInvData.SetBoundParams();
                     ItemActionDynamicMelee.ItemActionDynamicMeleeData meleeData = multiInvData.boundInvData.actionData[0] as ItemActionDynamicMelee.ItemActionDynamicMeleeData;
                     bool canRun = dynamicAction.canStartAttack(meleeData);
-                    multiInvData.itemModule.RestoreParams(player.MinEventContext, multiInvData);
-                    multiInvData.useBound = false;
+                    multiInvData.RestoreParams(false);
                     if (!canRun)
                     {
                         //Log.Out($"Fail to run alt melee on slot {player.inventory.holdingItemIdx} released {wasReleased} is switching item {player.inventory.isSwitchingHeldItem} is attacking {meleeData.Attacking} execute time elapsed {Time.time - meleeData.lastUseTime}");
@@ -449,11 +458,9 @@ public static class MultiItemPatches
                     player.emodel.avatarController.UpdateBool("UseAltMelee", true);
                 }
 
-                multiInvData.useBound = true;
-                multiInvData.itemModule.SetBoundParams(player.MinEventContext, multiInvData);
-                multiInvData.itemModule.BoundItemClass.ExecuteAction(0, multiInvData.boundInvData, wasReleased, controller.playerInput);
-                multiInvData.itemModule.RestoreParams(player.MinEventContext, multiInvData);
-                multiInvData.useBound = false;
+                multiInvData.SetBoundParams();
+                multiInvData.boundItemClass.ExecuteAction(0, multiInvData.boundInvData, wasReleased, controller.playerInput);
+                multiInvData.RestoreParams(false);
                 //Log.Out($"Execute alt melee on slot {player.inventory.holdingItemIdx} released {wasReleased}");
             }
         }
