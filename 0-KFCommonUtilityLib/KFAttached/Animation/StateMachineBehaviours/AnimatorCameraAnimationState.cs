@@ -69,8 +69,38 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
     private CameraCurveData curvePositionData, curveRotationData;
 
 #if UNITY_EDITOR
+    public static bool IsReloading { get; private set; }
+    static AnimatorCameraAnimationState()
+    {
+        SubscribeEvents();
+    }
+
+    private static void SubscribeEvents()
+    {
+        AssemblyReloadEvents.beforeAssemblyReload -= OnBeforeAssemblyReload;
+        AssemblyReloadEvents.afterAssemblyReload -= OnAfterAssemblyReload;
+
+        AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
+        AssemblyReloadEvents.afterAssemblyReload += OnAfterAssemblyReload;
+
+        IsReloading = false;
+    }
+
+    private static void OnBeforeAssemblyReload()
+    {
+        IsReloading = true;
+    }
+
+    private static void OnAfterAssemblyReload()
+    {
+        IsReloading = false;
+    }
     public void OnBeforeSerialize()
     {
+        if (EditorApplication.isPlayingOrWillChangePlaymode || EditorApplication.isCompiling || EditorApplication.isUpdating || IsReloading)
+        {
+            return;
+        }
         tagOrNameHash = 0;
         try
         {
