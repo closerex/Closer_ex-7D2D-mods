@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using static CameraAnimationEvents;
+using System;
+
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.Animations;
@@ -27,6 +29,8 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
     private float clipLength;
     [SerializeField]
     private string clipID;
+    [SerializeField]
+    private string clipPropertyRemembered;
     [SerializeField]
     private AnimationCurve[] positionCurves;
     [SerializeField]
@@ -90,10 +94,19 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
                     {
                         stateDuration = stateClip.length;
                         loop = stateClip.isLooping;
-                        if (!string.IsNullOrEmpty(propertyPath) && clip == null)
+                        if (clip == null)
                         {
-                            ExtractCurvesFromClip(stateClip, propertyPath);
-                            clipID = null;
+                            if (!string.IsNullOrEmpty(propertyPath))
+                            {
+                                ExtractCurvesFromClip(stateClip, propertyPath);
+                                clipPropertyRemembered = propertyPath;
+                                clipID = null;
+                            }
+                            else if (!string.IsNullOrEmpty(clipPropertyRemembered) && string.IsNullOrEmpty(clipID))
+                            {
+                                ExtractCurvesFromClip(stateClip, clipPropertyRemembered);
+                                Log.Out($"Loading Clip from current state - {clipPropertyRemembered}");
+                            }
                         }
                     }
                 }
@@ -103,6 +116,7 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
             {
                 ExtractCurvesFromClip(clip);
                 clipID = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(clip));
+                clipPropertyRemembered = null;
             }
             else if (!string.IsNullOrEmpty(clipID))
             {
@@ -155,6 +169,24 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
         rotationCurveType = CurveType.EularAngleRaw;
 
         EditorCurveBinding[] bindings = AnimationUtility.GetCurveBindings(clip);
+        if (!string.IsNullOrEmpty(propertyPath))
+        {
+            bindings = bindings.Where(binding => binding.path == propertyPath).ToArray();
+            if (bindings.Length == 0)
+            {
+                positionCurves = null;
+                rotationCurves = null;
+                Debug.LogWarning($"No curves found for property path: {propertyPath} in clip: {clip.name}");
+                return;
+            }
+            EditorCurveBinding[] rotationRawBindings = bindings.Where(binding => binding.propertyName.StartsWith("localEulerAnglesRaw", System.StringComparison.OrdinalIgnoreCase)).ToArray();
+            if (rotationRawBindings.Length > 0)
+            {
+                Type.GetType("UnityEditor.RotationCurveInterpolation,UnityEditor.CoreModule").GetMethod("SetInterpolation", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public).Invoke(null, new object[] { clip, rotationRawBindings, 0 });
+                clip.EnsureQuaternionContinuity();
+                bindings = AnimationUtility.GetCurveBindings(clip).Where(binding => binding.path == propertyPath).ToArray();
+            }
+        }
         foreach (var binding in bindings)
         {
             if (!string.IsNullOrEmpty(propertyPath) && binding.path != propertyPath)
