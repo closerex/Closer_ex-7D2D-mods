@@ -32,6 +32,8 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
     [SerializeField]
     private string clipPropertyRemembered;
     [SerializeField]
+    private ulong clipLastModified;
+    [SerializeField]
     private AnimationCurve[] positionCurves;
     [SerializeField]
     private AnimationCurve[] rotationCurves;
@@ -104,8 +106,11 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
                             }
                             else if (!string.IsNullOrEmpty(clipPropertyRemembered) && string.IsNullOrEmpty(clipID))
                             {
-                                ExtractCurvesFromClip(stateClip, clipPropertyRemembered);
-                                Log.Out($"Loading Clip from current state - {clipPropertyRemembered}");
+                                if (CheckModified(stateClip))
+                                {
+                                    ExtractCurvesFromClip(stateClip, clipPropertyRemembered);
+                                    Log.Out($"Loading Clip from current state - {clipPropertyRemembered}");
+                                }
                             }
                         }
                     }
@@ -123,8 +128,11 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
                 clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(AssetDatabase.GUIDToAssetPath(clipID));
                 if (clip != null)
                 {
-                    ExtractCurvesFromClip(clip, propertyPath);
-                    Log.Out($"Loading Clip from GUID {clipID} - {clip.name}");
+                    if (CheckModified(clip))
+                    {
+                        ExtractCurvesFromClip(clip, propertyPath);
+                        Log.Out($"Loading Clip from GUID {clipID} - {clip.name}");
+                    }
                 }
                 else
                 {
@@ -160,6 +168,17 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
         
     }
 
+    private bool CheckModified(AnimationClip clip)
+    {
+        string stateClipPath = AssetDatabase.GetAssetPath(clip);
+        ulong lastModified = AssetImporter.GetAtPath(stateClipPath).assetTimeStamp;
+        if (lastModified != clipLastModified)
+        {
+            return true;
+        }
+        return false;
+    }
+
     private void ExtractCurvesFromClip(AnimationClip clip, string propertyPath = null)
     {
         clipName = clip.name;
@@ -167,6 +186,7 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
         positionCurves = new AnimationCurve[3];
         rotationCurves = new AnimationCurve[4];
         rotationCurveType = CurveType.EularAngleRaw;
+        clipLastModified = 0;
 
         EditorCurveBinding[] bindings = AnimationUtility.GetCurveBindings(clip);
         if (!string.IsNullOrEmpty(propertyPath))
@@ -273,6 +293,7 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
                 rotationCurves[2]
             };
         }
+        clipLastModified = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(clip)).assetTimeStamp;
     }
 #endif
 
