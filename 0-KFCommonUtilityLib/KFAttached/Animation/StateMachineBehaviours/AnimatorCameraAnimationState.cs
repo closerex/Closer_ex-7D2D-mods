@@ -22,6 +22,21 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
     [SerializeField]
     private string propertyPath;
 #endif
+    [Header("Parameters")]
+    [SerializeField]
+    private float weight = 1;
+    [SerializeField]
+    private float blendInTime = 0.2f;
+    [SerializeField]
+    private float blendOutTime = 0.2f;
+    [SerializeField]
+    private float speedMultiplier = 1f;
+    [SerializeField]
+    private bool relative = true;
+    [SerializeField]
+    private bool normalizeLength = false;
+    [SerializeField]
+    internal string tagOverride;
     [Header("Animation Data (read from input clip)")]
     [SerializeField]
     private string clipName;
@@ -52,19 +67,6 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
     private bool loop;
     [SerializeField]
     private int tagOrNameHash = 0;
-    [Header("Parameters")]
-    [SerializeField]
-    private float weight = 1;
-    [SerializeField]
-    private float blendInTime = 0.2f;
-    [SerializeField]
-    private float blendOutTime = 0.2f;
-    [SerializeField]
-    private float speedMultiplier = 1f;
-    [SerializeField]
-    private bool relative = true;
-    [SerializeField]
-    private bool normalizeLength = false;
 
     private CameraCurveData curvePositionData, curveRotationData;
 
@@ -115,7 +117,7 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
                 if (state != null)
                 {
                     speed = state.speed;
-                    tagOrNameHash = string.IsNullOrEmpty(state.tag) ? state.nameHash : Animator.StringToHash(state.tag);
+                    tagOrNameHash = string.IsNullOrEmpty(tagOverride) ? (string.IsNullOrEmpty(state.tag) ? state.nameHash : Animator.StringToHash(state.tag)) : Animator.StringToHash(tagOverride);
                     if (state.speedParameterActive)
                     {
                         speedParam = state.speedParameter;

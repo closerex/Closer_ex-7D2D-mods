@@ -6,6 +6,8 @@ using KFCommonUtilityLib.Scripts.Utilities;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 [TypeTarget(typeof(ItemActionRanged)), TypeDataTarget(typeof(FireModeData))]
 public class ActionModuleFireModeSelector
@@ -67,20 +69,34 @@ public class ActionModuleFireModeSelector
             });
             nameCache.Add(_data.invData.itemValue.GetPropertyOverrideForAction($"FireMode{i}.ModeName", modeName, actionIndex));
         }
-        for (int i = 0; i < 99; i++)
+        foreach (var modePlus in _data.invData.itemValue.GetAllPropertyOverridesForAction("FireModePlus", actionIndex))
         {
-            string burstCount = _data.invData.itemValue.GetPropertyOverrideForAction($"FireModePlus{i}.BurstCount", null, actionIndex);
-            if (burstCount == null)
+            JObject jsonData = (JObject)JToken.Parse(modePlus);
+            foreach (var modeProp in jsonData.Properties())
             {
-                break;
+                JObject modeValue = (JObject)modeProp.Value;
+                modeCache.Add(new FireMode
+                {
+                    burstCount = byte.Parse((string)modeValue.GetValue("BurstCount")),
+                    isFullAuto = bool.Parse((string)modeValue.GetValue("IsFullAuto"))
+                });
+                nameCache.Add(modeProp.Name);
             }
-            modeCache.Add(new FireMode
-            {
-                burstCount = byte.Parse(_data.invData.itemValue.GetPropertyOverrideForAction($"FireModePlus{i}.BurstCount", burstCount, actionIndex)),
-                isFullAuto = bool.Parse(_data.invData.itemValue.GetPropertyOverrideForAction($"FireModePlus{i}.IsFullAuto", "false", actionIndex))
-            });
-            nameCache.Add(_data.invData.itemValue.GetPropertyOverrideForAction($"FireModePlus{i}.ModeName", null, actionIndex));
         }
+        //for (int i = 0; i < 99; i++)
+        //{
+        //    string burstCount = _data.invData.itemValue.GetPropertyOverrideForAction($"FireModePlus{i}.BurstCount", null, actionIndex);
+        //    if (burstCount == null)
+        //    {
+        //        break;
+        //    }
+        //    modeCache.Add(new FireMode
+        //    {
+        //        burstCount = byte.Parse(_data.invData.itemValue.GetPropertyOverrideForAction($"FireModePlus{i}.BurstCount", burstCount, actionIndex)),
+        //        isFullAuto = bool.Parse(_data.invData.itemValue.GetPropertyOverrideForAction($"FireModePlus{i}.IsFullAuto", "false", actionIndex))
+        //    });
+        //    nameCache.Add(_data.invData.itemValue.GetPropertyOverrideForAction($"FireModePlus{i}.ModeName", null, actionIndex));
+        //}
         __customData.fireModes = modeCache.ToArray();
         modeCache.Clear();
         __customData.modeNames = nameCache.ToArray();

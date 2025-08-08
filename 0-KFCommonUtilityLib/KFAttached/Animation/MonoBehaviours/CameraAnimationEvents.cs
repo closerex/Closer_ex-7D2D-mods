@@ -594,6 +594,11 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
             var scripts = animator.GetBehaviours<AnimatorCameraAnimationState>();
             foreach (var script in scripts)
             {
+                if (!string.IsNullOrEmpty(script.tagOverride))
+                {
+                    list.Add(script.tagOverride);
+                    continue;
+                }
                 var context = AnimatorController.FindStateMachineBehaviourContext(script);
                 if (context != null && context.Length > 0)
                 {
