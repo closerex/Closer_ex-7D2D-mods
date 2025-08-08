@@ -77,8 +77,8 @@ public class ActionModuleFireModeSelector
                 JObject modeValue = (JObject)modeProp.Value;
                 modeCache.Add(new FireMode
                 {
-                    burstCount = byte.Parse((string)modeValue.GetValue("BurstCount")),
-                    isFullAuto = bool.Parse((string)modeValue.GetValue("IsFullAuto"))
+                    burstCount = (byte)modeValue.GetValue("BurstCount"),
+                    isFullAuto = (bool)modeValue.GetValue("IsFullAuto")
                 });
                 nameCache.Add(modeProp.Name);
             }
