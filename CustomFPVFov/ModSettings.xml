@@ -3,11 +3,11 @@
   <Global>
     <Tab name="FovSettings" displayKey="CustomFovSettingsTabName" tooltipKey="">
       <Category name="Main" displayKey="CustomFovSettingsMainCategoryName" tooltipKey="">
-        <Slider name="FovValue" displayKey="CustomFovSettingsValueName" tooltipKey="CustomFovSettingsValueDesc" value="45.00" defaultValue="45.00">
+        <Slider name="FovValue" displayKey="CustomFovSettingsValueName" tooltipKey="CustomFovSettingsValueDesc" defaultValue="45.00">
           <Property increment="0.25" minValue="15.00" maxValue="75.00" type="incrementalValuesFloat" />
           <Property type="formatter" formatString="0.00" />
         </Slider>
-        <Slider name="AimFovValue" displayKey="CustomAimFovSettingsValueName" tooltipKey="CustomAimFovSettingsValueDesc" value="45" defaultValue="45">
+        <Slider name="AimFovValue" displayKey="CustomAimFovSettingsValueName" tooltipKey="CustomAimFovSettingsValueDesc" defaultValue="45">
           <Property increment="1" minValue="15" maxValue="75" type="incrementalValuesInt" />
         </Slider>
       </Category>
