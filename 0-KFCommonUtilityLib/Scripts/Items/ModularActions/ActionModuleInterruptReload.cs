@@ -238,10 +238,18 @@ internal static class ReloadInterruptionPatches
         var codes = instructions.ToList();
 
         var mtd_isrunning = AccessTools.Method(typeof(ItemAction), nameof(ItemAction.IsActionRunning));
-
+        int localIndex;
+        if (Constants.cVersionMajor == 2 && Constants.cVersionMinor <= 1)
+        {
+            localIndex = 38;
+        }
+        else
+        {
+            localIndex = 40;
+        }
         for (int i = 0; i < codes.Count; i++)
         {
-            if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 38)
+            if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == localIndex)
             {
                 for (int j = i - 1; j >= 0; j--)
                 {

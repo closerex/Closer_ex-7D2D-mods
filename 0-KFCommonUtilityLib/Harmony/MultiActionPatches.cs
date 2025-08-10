@@ -1946,6 +1946,16 @@ namespace KFCommonUtilityLib.Harmony
             FieldInfo fld_reload = AccessTools.Field(typeof(PlayerActionsPermanent), nameof(PlayerActionsPermanent.Reload));
             FieldInfo fld_action = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
             FieldInfo fld_data = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.actionData));
+
+            int localIndex;
+            if (Constants.cVersionMajor <= 2 && Constants.cVersionMinor <= 1)
+            {
+                localIndex = 35;
+            }
+            else
+            {
+                localIndex = 37;
+            }
             for (int i = 0; i < codes.Count; i++)
             {
                 // not present in v2.1

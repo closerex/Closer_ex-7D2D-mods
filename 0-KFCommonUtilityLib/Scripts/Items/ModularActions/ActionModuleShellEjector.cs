@@ -3,6 +3,7 @@ using KFCommonUtilityLib;
 using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using UnityEngine;
@@ -21,6 +22,8 @@ public class ActionModuleShellEjector
         jointName = _data.invData.itemValue.GetPropertyOverrideForAction($"ShellEffectJoint_Name", $"ShellEffectJoint{indexExtension}", _data.indexInEntityOfAction);
         __customData.shellEffectJoint = AnimationRiggingManager.GetTransformOverrideByName(rangedData.invData.model, jointName);
 
+        __customData.manualEject = bool.Parse(_data.invData.itemValue.GetPropertyOverrideForAction($"ManualEject", "false", _data.indexInEntityOfAction));
+
         __customData.shellPrefabDefault = "";
         __instance.Properties.ParseString("Particles_shell", ref __customData.shellPrefabDefault);
         LoadPEAsset(__customData.shellPrefabDefault);
@@ -28,16 +31,17 @@ public class ActionModuleShellEjector
         __instance.Properties.ParseString("Particles_shell_Fpv", ref __customData.shellPrefabDefaultFpv);
         LoadPEAsset(__customData.shellPrefabDefaultFpv);
 
+        var ammoItems = Array.ConvertAll(__instance.MagazineItemNames, s => ItemClass.GetItemClass(s, true));
         __customData.ammoShellPrefabs = new string[__instance.MagazineItemNames.Length];
         __customData.ammoShellPrefabsFpv = new string[__instance.MagazineItemNames.Length];
         for (int i = 0; i < __instance.MagazineItemNames.Length; i++)
         {
-            var ammoItem = ItemClass.GetItemClass(__instance.MagazineItemNames[i]);
+            var ammoItem = ammoItems[i];
             if (ammoItem != null)
             {
-                ammoItem.Properties.ParseString("Particle_shell", ref __customData.ammoShellPrefabs[i]);
+                ammoItem.Properties.ParseString("Particles_shell", ref __customData.ammoShellPrefabs[i]);
                 LoadPEAsset(__customData.ammoShellPrefabs[i]);
-                ammoItem.Properties.ParseString("Particle_shell_Fpv", ref __customData.ammoShellPrefabsFpv[i]);
+                ammoItem.Properties.ParseString("Particles_shell_Fpv", ref __customData.ammoShellPrefabsFpv[i]);
                 LoadPEAsset(__customData.ammoShellPrefabsFpv[i]);
             }
         }
@@ -52,12 +56,12 @@ public class ActionModuleShellEjector
         __customData.ammoEffectPrefabsFpv = new string[__instance.MagazineItemNames.Length];
         for (int i = 0; i < __instance.MagazineItemNames.Length; i++)
         {
-            var ammoItem = ItemClass.GetItemClass(__instance.MagazineItemNames[i]);
+            var ammoItem = ammoItems[i];
             if (ammoItem != null)
             {
-                ammoItem.Properties.ParseString("Particle_shell_effect", ref __customData.ammoEffectPrefabs[i]);
+                ammoItem.Properties.ParseString("Particles_shell_effect", ref __customData.ammoEffectPrefabs[i]);
                 LoadPEAsset(__customData.ammoEffectPrefabs[i]);
-                ammoItem.Properties.ParseString("Particle_shell_effect_Fpv", ref __customData.ammoEffectPrefabsFpv[i]);
+                ammoItem.Properties.ParseString("Particles_shell_effect_Fpv", ref __customData.ammoEffectPrefabsFpv[i]);
                 LoadPEAsset(__customData.ammoEffectPrefabsFpv[i]);
             }
         }
@@ -75,9 +79,6 @@ public class ActionModuleShellEjector
                 codes.InsertRange(i + 1, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_2).WithLabels(codes[i + 1].ExtractLabels()),
-                    new CodeInstruction(OpCodes.Ldloc_1),
-                    new CodeInstruction(OpCodes.Ldloc_2),
-                    new CodeInstruction(OpCodes.Ldloc_S, codes[i].operand),
                     CodeInstruction.Call(typeof(ActionModuleShellEjector), nameof(SpawnShellParticle)),
                 });
                 break;
@@ -87,81 +88,12 @@ public class ActionModuleShellEjector
         return codes;
     }
 
-    private static void SpawnShellParticle(ItemActionData data, EntityAlive entity, EntityPlayerLocal player, bool isLocalFpv)
+    private static void SpawnShellParticle(ItemActionData data)
     {
-        var itemActionDataRanged = data as ItemActionRanged.ItemActionDataRanged;
         var customData = (data as IModuleContainerFor<ActionModuleShellEjector.ShellEjectorData>)?.Instance;
-        if (itemActionDataRanged != null && customData != null)
+        if (customData != null && !customData.manualEject)
         {
-            int ammoIndex = data.invData.itemValue.SelectedAmmoTypeIndex;
-            string shellPrefab = null, effectPrefab = null;
-            if (isLocalFpv)
-            {
-                if (customData.shellJoint != null)
-                {
-                    shellPrefab = customData.ammoShellPrefabsFpv[ammoIndex];
-                    if (string.IsNullOrEmpty(shellPrefab))
-                    {
-                        shellPrefab = customData.ammoShellPrefabs[ammoIndex];
-                        if (string.IsNullOrEmpty(shellPrefab))
-                        {
-                            shellPrefab = customData.shellPrefabDefaultFpv;
-                            if (string.IsNullOrEmpty(shellPrefab))
-                            {
-                                shellPrefab = customData.shellPrefabDefault;
-                            }
-                        }
-                    }
-                }
-
-                if (customData.shellEffectJoint != null)
-                {
-                    effectPrefab = customData.ammoEffectPrefabsFpv[ammoIndex];
-                    if (string.IsNullOrEmpty(effectPrefab))
-                    {
-                        effectPrefab = customData.ammoEffectPrefabs[ammoIndex];
-                        if (string.IsNullOrEmpty(effectPrefab))
-                        {
-                            effectPrefab = customData.effectPrefabDefaultFpv;
-                            if (string.IsNullOrEmpty(effectPrefab))
-                            {
-                                effectPrefab = customData.effectPrefabDefault;
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                if (customData.shellJoint != null)
-                {
-                    shellPrefab = customData.ammoShellPrefabs[ammoIndex];
-                    if (string.IsNullOrEmpty(shellPrefab))
-                    {
-                        shellPrefab = customData.shellPrefabDefault;
-                    }
-                }
-
-                if (customData.shellEffectJoint != null)
-                {
-                    effectPrefab = customData.ammoEffectPrefabs[ammoIndex];
-                    if (string.IsNullOrEmpty(effectPrefab))
-                    {
-                        effectPrefab = customData.effectPrefabDefault;
-                    }
-                }
-            }
-            if (!string.IsNullOrEmpty(shellPrefab))
-            {
-                float light = GameManager.Instance.World.GetLightBrightness(World.worldToBlockPos(customData.shellJoint.transform.position)) / 2f;
-                Transform shell = GameManager.Instance.SpawnParticleEffectClientForceCreation(new ParticleEffect(shellPrefab, Vector3.zero, light, Color.clear, null, null, false), entity.entityId, true);
-                AnimationRiggingManager.ProcessMuzzleFlashParticle(shell, customData.shellJoint);
-            }
-            if (!string.IsNullOrEmpty(effectPrefab))
-            {
-                Transform effect = GameManager.Instance.SpawnParticleEffectClientForceCreation(new ParticleEffect(effectPrefab, Vector3.zero, 1, Color.clear, null, null, false), entity.entityId, true);
-                AnimationRiggingManager.ProcessMuzzleFlashParticle(effect, customData.shellEffectJoint);
-            }
+            customData.SpawnBoth();
         }
     }
 
@@ -183,9 +115,125 @@ public class ActionModuleShellEjector
         public string effectPrefabDefault, effectPrefabDefaultFpv;
         public string[] ammoEffectPrefabs, ammoEffectPrefabsFpv;
 
+        public bool manualEject;
+
+        public ItemActionData actionData;
+        public ActionModuleShellEjector module;
+
         public ShellEjectorData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleShellEjector _module)
         {
+            this.actionData = actionData;
+            module = _module;
+        }
 
+        public void SpawnParticle()
+        {
+        }
+
+        public void SpawnShell()
+        {
+            var player = actionData.invData.holdingEntity as EntityPlayerLocal;
+            bool isLocalFpv = player != null && player.bFirstPersonView;
+            int ammoIndex = actionData.invData.itemValue.SelectedAmmoTypeIndex;
+            SpawnShell(ammoIndex, isLocalFpv);
+        }
+
+        public void SpawnEffect()
+        {
+            var player = actionData.invData.holdingEntity as EntityPlayerLocal;
+            bool isLocalFpv = player != null && player.bFirstPersonView;
+            int ammoIndex = actionData.invData.itemValue.SelectedAmmoTypeIndex;
+            SpawnEffect(ammoIndex, isLocalFpv);
+        }
+
+        public void SpawnBoth()
+        {
+            var player = actionData.invData.holdingEntity as EntityPlayerLocal;
+            bool isLocalFpv = player != null && player.bFirstPersonView;
+            int ammoIndex = actionData.invData.itemValue.SelectedAmmoTypeIndex;
+            SpawnShell(ammoIndex, isLocalFpv);
+            SpawnEffect(ammoIndex, isLocalFpv);
+        }
+
+        public void SpawnShell(int ammoIndex, bool isLocalFpv)
+        {
+            string shellPrefab = null;
+            if (isLocalFpv)
+            {
+                if (shellJoint != null)
+                {
+                    shellPrefab = ammoShellPrefabsFpv[ammoIndex];
+                    if (string.IsNullOrEmpty(shellPrefab))
+                    {
+                        shellPrefab = ammoShellPrefabs[ammoIndex];
+                        if (string.IsNullOrEmpty(shellPrefab))
+                        {
+                            shellPrefab = shellPrefabDefaultFpv;
+                            if (string.IsNullOrEmpty(shellPrefab))
+                            {
+                                shellPrefab = shellPrefabDefault;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (shellJoint != null)
+                {
+                    shellPrefab = ammoShellPrefabs[ammoIndex];
+                    if (string.IsNullOrEmpty(shellPrefab))
+                    {
+                        shellPrefab = shellPrefabDefault;
+                    }
+                }
+            }
+            if (!string.IsNullOrEmpty(shellPrefab))
+            {
+                float light = GameManager.Instance.World.GetLightBrightness(World.worldToBlockPos(shellJoint.transform.position)) / 2f;
+                Transform shell = GameManager.Instance.SpawnParticleEffectClientForceCreation(new ParticleEffect(shellPrefab, Vector3.zero, light, Color.clear, null, null, false), actionData.invData.holdingEntity.entityId, true);
+                AnimationRiggingManager.ProcessMuzzleFlashParticle(shell, shellJoint);
+            }
+        }
+
+        public void SpawnEffect(int ammoIndex, bool isLocalFpv)
+        {
+            string effectPrefab = null;
+            if (isLocalFpv)
+            {
+                if (shellEffectJoint != null)
+                {
+                    effectPrefab = ammoEffectPrefabsFpv[ammoIndex];
+                    if (string.IsNullOrEmpty(effectPrefab))
+                    {
+                        effectPrefab = ammoEffectPrefabs[ammoIndex];
+                        if (string.IsNullOrEmpty(effectPrefab))
+                        {
+                            effectPrefab = effectPrefabDefaultFpv;
+                            if (string.IsNullOrEmpty(effectPrefab))
+                            {
+                                effectPrefab = effectPrefabDefault;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (shellEffectJoint != null)
+                {
+                    effectPrefab = ammoEffectPrefabs[ammoIndex];
+                    if (string.IsNullOrEmpty(effectPrefab))
+                    {
+                        effectPrefab = effectPrefabDefault;
+                    }
+                }
+            }
+            if (!string.IsNullOrEmpty(effectPrefab))
+            {
+                Transform effect = GameManager.Instance.SpawnParticleEffectClientForceCreation(new ParticleEffect(effectPrefab, Vector3.zero, 1, Color.clear, null, null, false), actionData.invData.holdingEntity.entityId, true);
+                AnimationRiggingManager.ProcessMuzzleFlashParticle(effect, shellEffectJoint);
+            }
         }
     }
 }

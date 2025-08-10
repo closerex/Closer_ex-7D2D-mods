@@ -116,6 +116,43 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
         }
 #endif
     }
+    public void OnShellEject(int actionIndex)
+    {
+#if NotEditor
+        if (player == null)
+        {
+            player = GetComponentInParent<EntityAlive>();
+        }
+        if (!player)
+        {
+            return;
+        }
+        var shellEjectorData = (player.inventory.holdingItemData.actionData[actionIndex] as IModuleContainerFor<ActionModuleShellEjector.ShellEjectorData>)?.Instance;
+        if (shellEjectorData != null)
+        {
+            shellEjectorData.SpawnShell();
+        }
+#endif
+    }
+
+    public void OnEffectSpawn(int actionIndex)
+    {
+#if NotEditor
+        if (player == null)
+        {
+            player = GetComponentInParent<EntityAlive>();
+        }
+        if (!player)
+        {
+            return;
+        }
+        var shellEjectorData = (player.inventory.holdingItemData.actionData[actionIndex] as IModuleContainerFor<ActionModuleShellEjector.ShellEjectorData>)?.Instance;
+        if (shellEjectorData != null)
+        {
+            shellEjectorData.SpawnEffect();
+        }
+#endif
+    }
 
 #if NotEditor
     //public bool ReloadUpdatedThisFrame => reloadUpdatedThisFrame;

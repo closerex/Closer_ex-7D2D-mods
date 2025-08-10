@@ -12,6 +12,7 @@ using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor.Animations;
 using System.Linq;
+using UnityEditor;
 #endif
 
 [AddComponentMenu("KFAttachments/Utils/Camera Animation Events")]
@@ -587,6 +588,10 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
 #if UNITY_EDITOR
     public void OnBeforeSerialize()
     {
+        if (EditorApplication.isUpdating)
+        {
+            return;
+        }
         var animator = gameObject.GetComponent<Animator>()?.runtimeAnimatorController as AnimatorController;
         var list = new List<string>();
         if (animator != null)

@@ -1,4 +1,5 @@
 ﻿#if NotEditor
+using KFCommonUtilityLib;
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 #endif
@@ -15,15 +16,23 @@ public class AnimationAmmoUpdateState : StateMachineBehaviour
         Animator.StringToHash("ammoCount3"),
         Animator.StringToHash("ammoCount4")
     };
-    private InventorySlotGurad slotGuard = new InventorySlotGurad();
+    //private InventorySlotGurad slotGuard = new InventorySlotGurad();
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         //var player = GameManager.Instance.World?.GetPrimaryPlayer();
         var player = animator.GetComponentInParent<EntityAlive>();
-        if(slotGuard.IsValid(player))
+        //if(slotGuard.IsValid(player))
+        //{
+        //    SetAmmoCountForEntity(player, slotGuard.Slot);
+        //}
+        if (player)
         {
-            SetAmmoCountForEntity(player, slotGuard.Slot);
+            var targets = AnimationRiggingManager.GetActiveRigTargetsFromPlayer(player);
+            if (targets)
+            {
+                SetAmmoCountForEntity(player, targets.SlotIndex);
+            }
         }
     }
 
@@ -34,7 +43,8 @@ public class AnimationAmmoUpdateState : StateMachineBehaviour
             var invData = entity.inventory?.slots?[slot];
             if (invData?.actionData != null)
             {
-                var mapping = MultiActionManager.GetMappingForEntity(entity.entityId);
+                //var mapping = MultiActionManager.GetMappingForEntity(entity.entityId);
+                var mapping = (invData.actionData[0] as IModuleContainerFor<ActionModuleAlternative.AlternativeData>)?.Instance?.mapping;
                 if (mapping != null)
                 {
                     var metaIndices = mapping.indices;
