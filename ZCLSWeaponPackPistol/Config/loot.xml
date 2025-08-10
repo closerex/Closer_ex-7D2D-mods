@@ -9,6 +9,10 @@
 				<item name="gunKFHRGSW500"/>
 				<item name="gunKFDualHRGSW500" loot_prob_template="low"/>
 			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT4']">
+				<item name="gunKFSW500"/>
+				<item name="gunKFDualSW500"/>
+			</append>
 			<append xpath="//lootgroup[@name='groupQuestWeaponsRangedT1']">
 				<item name="gunKF9mm" loot_prob_template="QuestT1Prob"/>
 				<item name="gunKFDual9mm" loot_prob_template="QuestT1Prob"/>
@@ -17,6 +21,12 @@
 				<item name="gunKFHRGSW500" loot_prob_template="QuestT2Prob"/>
 				<item name="gunKFDualHRGSW500" loot_prob_template="QuestT2Prob"/>
 			</append>
+			<append xpath="//lootgroup[@name='groupQuestWeaponsRangedT3']">
+				<item name="gunKFHRGSW500" loot_prob_template="QuestT2Prob"/>
+				<item name="gunKFDualHRGSW500" loot_prob_template="QuestT2Prob"/>
+				<item name="gunKFSW500" loot_prob_template="QuestT4Prob"/>
+				<item name="gunKFDualSW500" loot_prob_template="QuestT4Prob"/>
+			</append>
 		</if>
 		<else>
 			<insertAfter xpath="/lootcontainers/lootgroup[@name='empty']">
@@ -24,9 +34,13 @@
                     <item name="gunKF9mm"/>
                     <item name="gunKFDual9mm" loot_prob_template="low"/>
 				</lootgroup>
-				<lootgroup name="groupWeaponsT2_BoomStickHRGSW500" count="1" loot_quality_template="QLTemplateT2">
+				<lootgroup name="groupWeaponsT2_BoomStickKFHRGSW500" count="1" loot_quality_template="QLTemplateT2">
                     <item name="gunKFHRGSW500"/>
                     <item name="gunKFDualHRGSW500" loot_prob_template="low"/>
+				</lootgroup>
+				<lootgroup name="groupWeaponsT3_GunslingerKFSW500" count="1" loot_quality_template="QLTemplateT3">
+                    <item name="gunKFSW500"/>
+                    <item name="gunKFDualSW500" loot_prob_template="low"/>
 				</lootgroup>
 			</insertAfter>
 
@@ -34,7 +48,10 @@
 				<item group="groupWeaponsT1_GunslingerKF9mm"/>
 			</append>
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT2_Ranged']">
-				<item group="groupWeaponsT2_BoomStickHRGSW500"/>
+				<item group="groupWeaponsT2_BoomStickKFHRGSW500"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3_Ranged']">
+				<item group="groupWeaponsT3_GunslingerKFSW500"/>
 			</append>
 
 			<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsRangedT1']">
@@ -44,6 +61,10 @@
 			<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsRangedT2']">
 				<item name="gunKFHRGSW500"/>
 				<item name="gunKFDualHRGSW500" loot_prob_template="low"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsRangedT3']">
+				<item name="gunKFSW500"/>
+				<item name="gunKFDualSW500" loot_prob_template="low"/>
 			</append>
 		</else>
 	</conditional>

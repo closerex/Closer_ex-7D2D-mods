@@ -63,6 +63,28 @@
                         <passive_effect name="CraftingIngredientCount" level="1,6" operation="perc_add" value="0,4" tags="resourceWeaponParts"/>
                     </effect_group>
                 </recipe>
+
+                <recipe name="gunKFSW500" count="1" craft_area="workbench" tags="learnable">
+                    <ingredient name="gunHandgunT1PistolParts" count="1"/>
+                    <ingredient name="resourceWeaponParts" count="1"/>
+                    <ingredient name="resourceMetalPipe" count="1"/>
+                    <ingredient name="resourceSpring" count="1"/>
+                    <ingredient name="resourceOil" count="2"/>
+                    <effect_group>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunHandgunT1PistolParts"/>
+                    </effect_group>
+                </recipe>
+
+                <recipe name="gunKFDualSW500" count="1" craft_area="workbench" tags="learnable">
+                    <ingredient name="gunHandgunT1PistolParts" count="2"/>
+                    <ingredient name="resourceWeaponParts" count="2"/>
+                    <ingredient name="resourceMetalPipe" count="2"/>
+                    <ingredient name="resourceSpring" count="2"/>
+                    <ingredient name="resourceOil" count="3"/>
+                    <effect_group>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="gunHandgunT1PistolParts"/>
+                    </effect_group>
+                </recipe>
             </append>
         </if>
         <else>
@@ -133,6 +155,34 @@
                     <effect_group>
                         <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="gunHandgunT1PistolParts,gunShotgunT1DoubleBarrelParts,resourceDuctTape"/>
                         <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="10,50" tags="resourceForgedSteel"/>
+                        <passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="2" tags="resourceLegendaryParts"/>
+                    </effect_group>
+                </recipe>
+
+                <recipe name="gunKFSW500" count="1" craft_area="workbench" tags="learnable,perkGunslinger,workbenchCrafting">
+                    <ingredient name="gunHandgunT1PistolParts" count="15"/>
+                    <ingredient name="resourceForgedSteel" count="120"/>
+                    <ingredient name="resourceDuctTape" count="16"/>
+                    <ingredient name="resourceSpring" count="15"/>
+                    <ingredient name="resourceLegendaryParts" count="0"/>
+                    <effect_group>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunHandgunT1PistolParts,resourceDuctTape"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="resourceSpring"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="10,50" tags="resourceForgedSteel"/>
+                        <passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
+                    </effect_group>
+                </recipe>
+
+                <recipe name="gunKFDualSW500" count="1" craft_area="workbench" tags="learnable,perkGunslinger,workbenchCrafting">
+                    <ingredient name="gunHandgunT1PistolParts" count="30"/>
+                    <ingredient name="resourceForgedSteel" count="240"/>
+                    <ingredient name="resourceDuctTape" count="32"/>
+                    <ingredient name="resourceSpring" count="30"/>
+                    <ingredient name="resourceLegendaryParts" count="0"/>
+                    <effect_group>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="gunHandgunT1PistolParts,resourceDuctTape"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceSpring"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="20,100" tags="resourceForgedSteel"/>
                         <passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="2" tags="resourceLegendaryParts"/>
                     </effect_group>
                 </recipe>

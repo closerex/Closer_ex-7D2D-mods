@@ -6,6 +6,7 @@
             <append xpath="/traders/trader_item_groups/trader_item_group[@name='groupRangedAll']">
                 <item name="gunKF9mm" quality="1,5"/>
                 <item name="gunKFHRGSW500" quality="1,5"/>
+                <item name="gunKFSW500" quality="1,5"/>
             </append>
         </else>
     </conditional>
