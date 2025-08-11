@@ -22,7 +22,9 @@ public class ActionModuleShellEjector
         jointName = _data.invData.itemValue.GetPropertyOverrideForAction($"ShellEffectJoint_Name", $"ShellEffectJoint{indexExtension}", _data.indexInEntityOfAction);
         __customData.shellEffectJoint = AnimationRiggingManager.GetTransformOverrideByName(rangedData.invData.model, jointName);
 
-        __customData.manualEject = bool.Parse(_data.invData.itemValue.GetPropertyOverrideForAction($"ManualEject", "false", _data.indexInEntityOfAction));
+        string str = "false";
+        __instance.Properties.ParseString($"ManualEject", ref str);
+        __customData.manualEject = bool.Parse(_data.invData.itemValue.GetPropertyOverrideForAction($"ManualEject", str, _data.indexInEntityOfAction));
 
         __customData.shellPrefabDefault = "";
         __instance.Properties.ParseString("Particles_shell", ref __customData.shellPrefabDefault);
