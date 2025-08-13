@@ -873,8 +873,8 @@
                 <passive_effect name="SpreadMultiplierWalking" operation="base_set" value="1.5" tags="perkGunslinger"/>
                 <passive_effect name="SpreadMultiplierRunning" operation="base_set" value="2.2" tags="perkGunslinger"/>
 
-				<passive_effect name="KickDegreesVerticalMin" operation="base_set" value="6.5" tags="perkGunslinger"/>
-				<passive_effect name="KickDegreesVerticalMax" operation="base_set" value="7.5" tags="perkGunslinger"/>
+				<passive_effect name="KickDegreesVerticalMin" operation="base_set" value="5.5" tags="perkGunslinger"/>
+				<passive_effect name="KickDegreesVerticalMax" operation="base_set" value="6.5" tags="perkGunslinger"/>
 				<passive_effect name="KickDegreesHorizontalMin" operation="base_set" value="-2" tags="perkGunslinger"/>
 				<passive_effect name="KickDegreesHorizontalMax" operation="base_set" value="2" tags="perkGunslinger"/>
 				<passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="2" tags="perkGunslinger"/>
@@ -892,12 +892,17 @@
 				        <passive_effect name="ModSlots" operation="base_set" value="1,2,3,4,5,6" tier="1,2,3,4,5,6"/>
                         <passive_effect name="SpreadDegreesVertical" operation="perc_add" value=".5" tags="perkGunslinger"/>
                         <passive_effect name="SpreadDegreesHorizontal" operation="perc_add" value=".5" tags="perkGunslinger"/>
+                        <passive_effect name="KickDegreesVerticalMin" operation="base_add" value=".5" tags="perkGunslinger"/>
+                        <passive_effect name="KickDegreesVerticalMax" operation="base_add" value=".5" tags="perkGunslinger"/>
                     </if>
                     <else>
                         <passive_effect name="DegradationMax" operation="base_set" value="300,400" tier="1,6" tags="perkGunslinger"/>
                         <passive_effect name="ModSlots" operation="base_set" value="2,2,2,3,3,4" tier="1,2,3,4,5,6"/>
                         <passive_effect name="SpreadDegreesVertical" operation="perc_add" value=".15" tags="perkGunslinger"/>
                         <passive_effect name="SpreadDegreesHorizontal" operation="perc_add" value=".15" tags="perkGunslinger"/>
+                        <passive_effect name="MaxRange" operation="base_set" value="50" tags="perkGunslinger"/>
+                        <passive_effect name="DamageFalloffRange" operation="base_set" value="35" tags="perkGunslinger"/>
+                        <passive_effect name="DamageFalloffRange" operation="perc_add" value="-.2,.2" tier="1,6" tags="perkGunslinger"/> <!-- random effective rng -->
                     </else>
                 </conditional>
                 <conditional>
@@ -1051,8 +1056,8 @@
                 <passive_effect name="SpreadMultiplierWalking" operation="base_set" value="1.6" tags="perkGunslinger"/>
                 <passive_effect name="SpreadMultiplierRunning" operation="base_set" value="2.4" tags="perkGunslinger"/>
 
-				<passive_effect name="KickDegreesVerticalMin" operation="base_set" value="6.6" tags="perkGunslinger"/>
-				<passive_effect name="KickDegreesVerticalMax" operation="base_set" value="7.6" tags="perkGunslinger"/>
+				<passive_effect name="KickDegreesVerticalMin" operation="base_set" value="5.6" tags="perkGunslinger"/>
+				<passive_effect name="KickDegreesVerticalMax" operation="base_set" value="6.6" tags="perkGunslinger"/>
 				<passive_effect name="KickDegreesHorizontalMin" operation="base_set" value="-2" tags="perkGunslinger"/>
 				<passive_effect name="KickDegreesHorizontalMax" operation="base_set" value="2" tags="perkGunslinger"/>
 				<passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="2" tags="perkGunslinger"/>
@@ -1070,12 +1075,17 @@
 				        <passive_effect name="ModSlots" operation="base_set" value="1,2,3,4,5,6" tier="1,2,3,4,5,6"/>
                         <passive_effect name="SpreadDegreesVertical" operation="perc_add" value=".5" tags="perkGunslinger"/>
                         <passive_effect name="SpreadDegreesHorizontal" operation="perc_add" value=".5" tags="perkGunslinger"/>
+                        <passive_effect name="KickDegreesVerticalMin" operation="base_add" value=".5" tags="perkGunslinger"/>
+                        <passive_effect name="KickDegreesVerticalMax" operation="base_add" value=".5" tags="perkGunslinger"/>
                     </if>
                     <else>
                         <passive_effect name="DegradationMax" operation="base_set" value="600,800" tier="1,6" tags="perkGunslinger"/>
                         <passive_effect name="ModSlots" operation="base_set" value="2,2,2,3,3,4" tier="1,2,3,4,5,6"/>
                         <passive_effect name="SpreadDegreesVertical" operation="perc_add" value=".15" tags="perkGunslinger"/>
                         <passive_effect name="SpreadDegreesHorizontal" operation="perc_add" value=".15" tags="perkGunslinger"/>
+                        <passive_effect name="MaxRange" operation="base_set" value="50" tags="perkGunslinger"/>
+                        <passive_effect name="DamageFalloffRange" operation="base_set" value="35" tags="perkGunslinger"/>
+                        <passive_effect name="DamageFalloffRange" operation="perc_add" value="-.2,.2" tier="1,6" tags="perkGunslinger"/> <!-- random effective rng -->
                     </else>
                 </conditional>
                 <conditional>
