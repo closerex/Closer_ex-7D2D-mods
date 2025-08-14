@@ -32,6 +32,8 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
     [SerializeField]
     private float speedMultiplier = 1f;
     [SerializeField]
+    private float targetStateFps = -1f;
+    [SerializeField]
     private bool relative = true;
     [SerializeField]
     private bool normalizeLength = false;
@@ -59,6 +61,8 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
     private float stateDuration;
     [SerializeField]
     private string speedParam;
+    [SerializeField]
+    private float initialFpsModifier = 1f;
     [SerializeField, HideInInspector]
     private float speed = 1f;
     [SerializeField, HideInInspector]
@@ -110,6 +114,7 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
             speedParam = null;
             speedParamHash = 0;
             speed = 1;
+            initialFpsModifier = 1f;
             loop = false;
             if (context != null && context.Length > 0)
             {
@@ -128,6 +133,10 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
                     {
                         stateDuration = stateClip.length;
                         loop = stateClip.isLooping;
+                        if (targetStateFps > 0)
+                        {
+                            initialFpsModifier = stateClip.frameRate / targetStateFps;
+                        }
                         if (clip == null)
                         {
                             if (!string.IsNullOrEmpty(propertyPath))
@@ -335,7 +344,7 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
         if (cameraEvents)
         {
             cameraEvents.Interrupt();
-            float baseSpeed = normalizeLength ? speed * clipLength / stateDuration : speed * speedMultiplier;
+            float baseSpeed = normalizeLength ? speed * clipLength / stateDuration : speed * speedMultiplier * initialFpsModifier;
             if (positionCurves != null && positionCurves.Length == 3)
             {
                 curvePositionData = new CameraCurveData(tagOrNameHash, positionCurves, clipLength, blendInTime, blendOutTime, baseSpeed, weight, CurveType.Position, relative, loop, speedParamHash);

@@ -127,6 +127,10 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
         {
             return;
         }
+        if (actionIndex < 0 || actionIndex > player.inventory.holdingItemData.actionData.Count)
+        {
+            return;
+        }
         var shellEjectorData = (player.inventory.holdingItemData.actionData[actionIndex] as IModuleContainerFor<ActionModuleShellEjector.ShellEjectorData>)?.Instance;
         if (shellEjectorData != null)
         {
@@ -146,10 +150,72 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
         {
             return;
         }
+        if (actionIndex < 0 || actionIndex > player.inventory.holdingItemData.actionData.Count)
+        {
+            return;
+        }
         var shellEjectorData = (player.inventory.holdingItemData.actionData[actionIndex] as IModuleContainerFor<ActionModuleShellEjector.ShellEjectorData>)?.Instance;
         if (shellEjectorData != null)
         {
             shellEjectorData.SpawnEffect();
+        }
+#endif
+    }
+
+    public void OnShellEjectWithOverride(AnimationEvent eventData)
+    {
+#if NotEditor
+        if (player == null)
+        {
+            player = GetComponentInParent<EntityAlive>();
+        }
+        if (!player)
+        {
+            return;
+        }
+        int actionIndex = eventData.intParameter;
+        if (actionIndex < 0 || actionIndex > player.inventory.holdingItemData.actionData.Count)
+        {
+            return;
+        }
+        int barrelIndex = (int)eventData.floatParameter;
+        var shellEjectorData = (player.inventory.holdingItemData.actionData[actionIndex] as IModuleContainerFor<ActionModuleShellEjector.ShellEjectorData>)?.Instance;
+        var multiBarrelData = (player.inventory.holdingItemData.actionData[actionIndex] as IModuleContainerFor<ActionModuleMultiBarrel.MultiBarrelData>)?.Instance;
+        if (shellEjectorData != null && multiBarrelData != null && barrelIndex >= 0 && barrelIndex < multiBarrelData.shellEffectJoints.Length)
+        {
+            var originalShellJoint = shellEjectorData.shellJoint;
+            shellEjectorData.shellJoint = multiBarrelData.shellJoints[barrelIndex];
+            shellEjectorData.SpawnShell();
+            shellEjectorData.shellJoint = originalShellJoint;
+        }
+#endif
+    }
+
+    public void OnEffectSpawnWithOverride(AnimationEvent eventData)
+    {
+#if NotEditor
+        if (player == null)
+        {
+            player = GetComponentInParent<EntityAlive>();
+        }
+        if (!player)
+        {
+            return;
+        }
+        int actionIndex = eventData.intParameter;
+        if (actionIndex < 0 || actionIndex > player.inventory.holdingItemData.actionData.Count)
+        {
+            return;
+        }
+        int barrelIndex = (int)eventData.floatParameter;
+        var shellEjectorData = (player.inventory.holdingItemData.actionData[actionIndex] as IModuleContainerFor<ActionModuleShellEjector.ShellEjectorData>)?.Instance;
+        var multiBarrelData = (player.inventory.holdingItemData.actionData[actionIndex] as IModuleContainerFor<ActionModuleMultiBarrel.MultiBarrelData>)?.Instance;
+        if (shellEjectorData != null && multiBarrelData != null && barrelIndex >= 0 && barrelIndex < multiBarrelData.shellEffectJoints.Length)
+        {
+            var originalShellJoint = shellEjectorData.shellEffectJoint;
+            shellEjectorData.shellEffectJoint = multiBarrelData.shellEffectJoints[barrelIndex];
+            shellEjectorData.SpawnEffect();
+            shellEjectorData.shellEffectJoint = originalShellJoint;
         }
 #endif
     }

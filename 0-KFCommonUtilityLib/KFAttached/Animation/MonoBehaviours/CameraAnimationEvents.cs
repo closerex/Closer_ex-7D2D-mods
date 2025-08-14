@@ -175,7 +175,7 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
     [SerializeField]
     private float cameraAnimWeight = 1f;
     [SerializeField]
-    private Quaternion axisCorrection = Quaternion.identity;
+    public Quaternion axisCorrection = Quaternion.identity;
     [SerializeField]
     private string[] tags;
 
@@ -221,7 +221,7 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
     private static readonly string SavePathDir = Path.GetDirectoryName(SavePath);
 #else
     [SerializeField]
-    private Camera debugCamera;
+    public Camera debugCamera;
 
     private Vector3 initialDebugCameraLocalPos;
     private Quaternion initialDebugCameraLocalRot;
