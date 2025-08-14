@@ -147,7 +147,7 @@
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;DynamicMuzzleFlash,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>
@@ -296,7 +296,7 @@
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;DynamicMuzzleFlash,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>

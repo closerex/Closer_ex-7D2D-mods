@@ -134,7 +134,7 @@
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;DynamicMuzzleFlash,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InstantFiringCancel" value="true"/>
 				<property name="Delay" value=".8"/> <!-- obsolete if rounds per minute exists -->
@@ -220,7 +220,7 @@
 
 	<conditional>
 		<if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
-			<set xpath="/items/item[@name='gunT3M4Benelli']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug,ammoEftRIPSlug</set>
+			<set xpath="/items/item[@name='gunT3M4Benelli']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug</set>
 			<set xpath="/items/item[@name='gunT3M4Benelli']/effect_group[@name='gunT3M4Benelli']/passive_effect[@name='ReloadSpeedMultiplier']/@value">0.8</set>
 			<set xpath="/items/item[@name='gunT3M4Benelli']/effect_group[@name='gunT3M4Benelli']/passive_effect[@name='DegradationMax']/@value">1200,2400</set>
 			<append xpath="/items/item[@name='gunT3M4Benelli']/property[@name='Tags']/@value">,AssaultScope,ReflexSight,CompactReflexSight,AssaultScopeCompact,Scope30mm</append>

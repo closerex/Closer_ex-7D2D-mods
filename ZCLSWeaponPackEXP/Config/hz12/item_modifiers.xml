@@ -1,0 +1,29 @@
+<configs>
+	<!-- Reflex -->
+	<append xpath="/item_modifiers/item_modifier[@name='modGunReflexSight']">
+		<item_property_overrides name="gunT3HZ12">
+			<property name="CrosshairOnAim" value="false"/>
+		</item_property_overrides>
+	</append>
+	<append xpath="/item_modifiers/item_modifier[@name='modGunScopeSmall']">
+		<item_property_overrides name="gunT3HZ12">
+			<property name="Zoom_max_out" value="55"/>
+			<property name="Zoom_max_in" value="55"/>
+			<property name="DynamicSensitivityRange" value="2,2"/>
+			<property name="ForceFovRange" value="10,10"/>
+			<property name="ZoomRatio" value="2"/>
+			<property name="CrosshairOnAim" value="false"/>
+			<property name="Zoom_overlay" value=""/>
+		</item_property_overrides>
+	</append>
+	<append xpath="/item_modifiers/item_modifier[@name='modGunScopeMedium']">
+		<item_property_overrides name="gunT3HZ12">
+			<property name="Zoom_max_out" value="55"/>
+			<property name="Zoom_max_in" value="55"/>
+			<property name="DynamicSensitivityRange" value="4,4"/>
+			<property name="ForceFovRange" value="6,6"/>
+			<property name="CrosshairOnAim" value="false"/>
+			<property name="Zoom_overlay" value=""/>
+		</item_property_overrides>
+	</append>
+</configs>

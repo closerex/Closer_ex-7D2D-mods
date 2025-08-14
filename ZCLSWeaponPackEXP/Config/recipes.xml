@@ -3,4 +3,5 @@
 	<include filename="m4benelli/recipes.xml"/>
 	<include filename="katana/recipes.xml"/>
 	<include filename="af2011/recipes.xml"/>
+	<include filename="hz12/recipes.xml"/>
 </configs>

@@ -1,0 +1,12 @@
+<configs>
+	<append xpath="/Sounds">
+		<SoundDataNode name="HZ12_Fire"> <AudioSource name="#@modfolder:Resources/KFAudioSources.unity3d?AudioSource_KFWeaponFire"/> <NetworkAudioSource name="#@modfolder:Resources/KFAudioSources.unity3d?AudioSource_KFWeaponFire_Network"/>
+			<Noise ID="0" noise="108" time="2" muffled_when_crouched="0.8" heat_map_strength="1.4" heat_map_time="180"/>
+			<AudioClip ClipName="#@modfolder:Resources/HZ12_Sound.unity3d?WEP_HZ12_Shot_1"/>
+			<AudioClip ClipName="#@modfolder:Resources/HZ12_Sound.unity3d?WEP_HZ12_Shot_2"/>
+			<AudioClip ClipName="#@modfolder:Resources/HZ12_Sound.unity3d?WEP_HZ12_Shot_3"/>
+			<AudioClip ClipName="#@modfolder:Resources/HZ12_Sound.unity3d?WEP_HZ12_Shot_4"/>
+			<LocalCrouchVolumeScale value="1"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="60"/> <MaxVoicesPerEntity value="30"/> <MaxRepeatRate value="0.001"/>
+		</SoundDataNode>
+	</append>
+</configs>

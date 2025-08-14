@@ -3,4 +3,5 @@
 	<include filename="m4benelli/progression.xml"/>
 	<include filename="katana/progression.xml"/>
 	<include filename="af2011/progression.xml"/>
+	<include filename="hz12/progression.xml"/>
 </configs>
