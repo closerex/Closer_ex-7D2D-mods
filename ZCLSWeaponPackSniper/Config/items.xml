@@ -266,4 +266,11 @@
             </effect_group>
         </item>
     </append>
+
+    <!-- #region scope patches -->
+    <conditional>
+        <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
+            <append xpath="/items/item[@name='gunKFM99']/property[@name='Tags']/@value">,AssaultScope,ReflexSight,CompactReflexSight,AssaultScopeCompact,Scope30mm,Scope34mm</append>
+        </if>
+    </conditional>
 </configs>
