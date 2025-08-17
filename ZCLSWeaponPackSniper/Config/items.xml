@@ -1,0 +1,269 @@
+<configs>
+    <append xpath="/items">
+		<item name="meleeWpnStockBashKFM99">
+			<property name="Tags" value="blunt,club,melee,grunting,light,longShaft,perkFlurryOfStrength,weapon,meleeWeapon,attStrength,perkPummelPete,canHaveCosmetic,clubSkill"/>
+			<property name="CreativeMode" value="None"/>
+			<property name="DisplayType" value="melee"/>
+			<property name="Group" value="Ammo/Weapons,Basics,Melee Weapons"/>
+			<property name="Meshfile" value="@:Other/Items/Weapons/Melee/ClubWood/clubWoodPrefab.prefab"/>
+			<property name="HoldType" value="2"/>
+			<property name="Material" value="Mmetal"/>
+			<property name="ScrapTimeOverride" value="10.0"/>
+			<property name="RepairTools" value="resourceWood"/>
+			<property name="SoundDestroy" value="wooddestroy1"/>
+			<property name="RepairExpMultiplier" value="5.5"/>
+			<property name="SellableToTrader" value="false"/>
+			<property name="EconomicBundleSize" value="1"/>
+			<property name="EconomicValue" value="200"/>
+			<property name="TraderStageTemplate" value="baseTier0"/><!-- meleeWpnClubT0WoodenClub -->
+			<property name="ShowQuality" value="true"/>
+			<property name="SoundUnholster" value="weapon_unholster"/>
+			<property name="SoundHolster" value="weapon_holster"/>
+			<property name="SoundPickup" value="club_wood_grab"/>
+			<property name="SoundPlace" value="club_wood_place"/>
+		
+			<property class="Action0">
+				<property name="Class" value="DynamicMelee"/>
+				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="DynamicSoundStart" value="bashSwingLight"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
+				<property name="Sphere" value=".1"/>
+				<property name="UseGrazingHits" value="true"/>
+				<property name="GrazeStart" value=".25"/>
+				<property name="GrazeEnd" value=".32"/>
+				<property name="SwingDegrees" value="65"/>
+				<property name="SwingAngle" value="180"/>
+			</property>
+			<property class="Action1">
+				<property name="Class" value="DynamicMelee"/>
+				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
+				<property name="Sphere" value=".15"/>
+				<property name="UsePowerAttackAnimation" value="true"/>
+				<property name="UseGrazingHits" value="true"/>
+				<property name="IsHorizontalSwing" value="true"/>
+				<property name="GrazeStart" value=".25"/>
+				<property name="GrazeEnd" value=".32"/>
+				<property name="SwingDegrees" value="120"/>
+				<property name="SwingAngle" value="90"/>
+			</property>
+			<effect_group name="meleeWpnStockBashKFM99">
+				<passive_effect name="AttacksPerMinute" operation="base_set" value="54" tags="perkPummelPete,perkFlurryOfStrength"/>
+				<passive_effect name="StaminaLoss" operation="base_set" value="40" tags="primary"/>
+				<passive_effect name="DegradationMax" operation="base_set" value="100,200" tier="1,6" tags="perkPummelPete"/>
+				<passive_effect name="DegradationPerUse" operation="base_set" value="0" tags="perkPummelPete"/>
+				<passive_effect name="MaxRange" operation="base_set" value="2.4" tags="perkPummelPete"/>
+				<passive_effect name="BlockRange" operation="base_set" value="3" tags="perkPummelPete"/>
+				<passive_effect name="ModSlots" operation="base_set" value="1,1,1,2,2,3" tier="1,2,3,4,5,6"/>
+				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+				<passive_effect name="EntityDamage" operation="base_set" value="30"/> <!-- meleeWpnClubT0WoodenClub -->
+				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkPummelPete"/> <!-- tier bonus -->
+				<passive_effect name="BlockDamage" operation="base_set" value="11"/>
+				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkPummelPete"/> <!-- tier bonus -->
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="earth"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="stone"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="metal"/>
+				<passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="allHarvest"/>
+				<passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="allToolsHarvest"/>
+				<passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="oreWoodHarvest"/>
+			</effect_group>
+			<effect_group name="Knockdown">
+				<requirement name="!EntityTagCompare" target="other" tags="player"/>
+					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="Ragdoll" duration="0" force="40" target="other"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="Ragdoll" duration="0" force="60" target="other"/>
+					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="1" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="15" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="2" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="30" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="3" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="45" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="4" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="60" />
+					</triggered_effect>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
+						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="5" />
+						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="75" />
+					</triggered_effect>
+			</effect_group>
+		</item>
+
+        <item name="gunKFM99">
+            <property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,barrelAttachments,noSilencer,smallTopAttachments,mediumTopAttachments,largeTopAttachments,attachmentsIncluded,attPerception,perkDeadEye,canHaveCosmetic,rifleSkill"/>
+            <property name="DisplayType" value="rangedGunNoMag"/>
+            <property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
+			<property name="BoundItemName" value="meleeWpnStockBashKFM99"/>
+            <property name="HoldType" value="82"/>
+            <property name="Meshfile" value="#@modfolder:Resources/M99.unity3d?m99_m.prefab"/>
+            <property name="Material" value="MRifleParts"/>
+            <property name="Weight" value="1"/>
+            <property name="ScrapTimeOverride" value="10.0"/>
+            <property name="DegradationBreaksAfter" value="false"/>
+            <property name="SoundJammed" value="weapon_jam"/>
+            <property name="Attachments" value="meleeToolFlashlight02"/>
+            <property name="CrosshairOnAim" value="false"/> <!-- aimTest -->
+            <property name="CrosshairUpAfterShot" value="false"/> <!-- aimTest -->
+            <property name="Sound_Sight_In" value="rifle_sight_in"/>
+            <property name="Sound_Sight_Out" value="rifle_sight_out"/>
+            <property name="LightSource" value="lightSource"/> <!-- Start: Needed for the attachment flashlight -->
+            <property name="ActivateObject" value="Attachments/flashlight/lightSource"/>
+            <property name="AttachmentFlashlight" value="flashlight02"/> <!-- End: Needed for the attachment flashlight -->
+            <property name="Group" value="Ammo/Weapons,Ranged Weapons"/>
+            <property name="RepairExpMultiplier" value="10.8"/>
+            <property name="LightValue" value=".45"/>
+            <property name="EconomicValue" value="500"/>
+            <property name="TraderStageTemplate" value="baseTier3"/>
+            <property name="UnlockedBy" value="craftingRifles"/>
+            <property name="ShowQuality" value="true"/>
+            <property name="SoundUnholster" value="weapon_unholster"/>
+            <property name="SoundHolster" value="weapon_holster"/>
+            <property name="SoundPickup" value="rifle_polymer_grab"/>
+            <property name="SoundPlace" value="rifle_polymer_place"/>
+            <conditional>
+                <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
+                    <property name="RepairTools" value="resourceWeaponRepairKit"/>
+                </if>
+                <else>
+                    <property name="RepairTools" value="resourceRepairKit"/>
+                </else>
+            </conditional>
+
+            <property class="Action0">
+                <property name="Class" value="Ranged"/>
+                <property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib"/>
+                <property name="allowEmptyInspect" value="true"/>
+                <property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
+                <property name="InternalCancelOnly" value="true"/>
+                <property name="Sound_start" value="M99_Fire"/>
+                <property name="Sound_loop" value="M99_Fire"/>
+                <property name="Sound_end" value=""/>
+                <property name="Sound_empty" value="M99_Dryfire"/>
+                <property name="AutoReload" value="false"/>
+				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?m99_muzzle_flash.prefab"/>
+				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?m99_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_smoke" value="#@modfolder:Resources/MuzzleFlashes.unity3d?m99_muzzle_smoke.prefab"/>
+                <property name="triggerEffectTriggerPullDualsense" value="RifleTrigger"/>
+                <property name="triggerEffectTriggerPullXbox" value="PistolTrigger"/>
+                <property name="triggerEffectTriggerShootDualsense" value="RifleShoot"/>
+                <property name="triggerEffectTriggerShootXbox" value="PistolShoot"/>
+                <conditional>
+                    <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
+				        <property name="Magazine_items" value="ammoKF50BMGBulletBall"/>
+                    </if>
+                    <else>
+                        <property name="Magazine_items" value="ammoKF50BMGBulletBall"/>
+                    </else>
+                </conditional>
+            </property>
+            <property class="Action1">
+                <property name="Class" value="Zoom"/>
+				<property name="ItemActionModules" value="DynamicSensitivity,KFCommonUtilityLib;VariableZoom,KFCommonUtilityLib;ProceduralAiming,KFCommonUtilityLib"/>
+                <property name="Zoom_max_out" value="55"/>
+                <property name="Zoom_max_in" value="55"/>
+                <property name="SightsCameraOffset" value="0,.0008,0"/>
+		        <property name="triggerEffectTriggerPullDualsense" value="PistolZoom"/>
+            </property>
+            <effect_group name="KF Weapon">
+				<triggered_effect trigger="onSelfHoldingItemCreated" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="AimRefGroupVanilla"/>
+				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="true">
+					<requirement name="ProgressionLevel" progression_name="perkDeadEye" operation="GTE" value="5"/>
+				</triggered_effect>
+				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="false">
+					<requirement name="ProgressionLevel" progression_name="perkDeadEye" operation="LT" value="5"/>
+				</triggered_effect>
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="1.657">
+					<requirement name="ProgressionLevel" progression_name="perkDeadEye" operation="LT" value="5"/>
+				</passive_effect>
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="2.145">
+					<requirement name="ProgressionLevel" progression_name="perkDeadEye" operation="GTE" value="5"/>
+				</passive_effect>
+                <passive_effect name="MaxRange" operation="base_set" value="1000" tags="perkDeadEye"/>
+                <passive_effect name="DamageFalloffRange" operation="base_set" value="300" tags="perkDeadEye"/>
+                <passive_effect name="DamageFalloffRange" operation="perc_add" value="-.2,.2" tier="1,6" tags="perkDeadEye"/> <!-- random effective rng -->
+                <passive_effect name="RoundsPerMinute" operation="base_set" value="250" tags="perkDeadEye"/>
+                <passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkDeadEye"/>
+                <passive_effect name="MagazineSize" operation="base_set" value="1" tags="perkDeadEye"/>
+                <passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1.33" tags="perkDeadEye"/>
+                <passive_effect name="RecoilCameraShakeStrength" operation="base_set" value="0" tags="perkDeadEye"/>
+
+                <passive_effect name="SpreadDegreesVertical" operation="base_set" value="5" tags="perkDeadEye"/>
+                <passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="5" tags="perkDeadEye"/>
+                <passive_effect name="SpreadMultiplierAiming" operation="base_set" value="0" tags="perkDeadEye"/>
+                <passive_effect name="SpreadMultiplierCrouching" operation="base_set" value=".8" tags="perkDeadEye"/>
+                <passive_effect name="SpreadMultiplierWalking" operation="base_set" value="1.5" tags="perkDeadEye"/>
+                <passive_effect name="SpreadMultiplierRunning" operation="base_set" value="2.2" tags="perkDeadEye"/>
+				<passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="8" tags="perkDeadEye"/>
+
+				<passive_effect name="KickDegreesVerticalMin" operation="base_set" value="6" tags="perkDeadEye"/>
+				<passive_effect name="KickDegreesVerticalMax" operation="base_set" value="7" tags="perkDeadEye"/>
+				<passive_effect name="KickDegreesHorizontalMin" operation="base_set" value="-.5" tags="perkDeadEye"/>
+				<passive_effect name="KickDegreesHorizontalMax" operation="base_set" value=".5" tags="perkDeadEye"/>
+
+                <passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+                <passive_effect name="WeaponHandling" operation="base_set" value=".95" tags="perkDeadEye"/> <!-- crosshair reset speed -->
+                <passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkDeadEye"/> <!-- random WeaponHandling -->
+                <passive_effect name="DegradationPerUse" operation="base_set" value="4" tags="perkDeadEye"/>
+		        <passive_effect name="DamageModifier" operation="base_add" value="600" tags="head"/>
+                
+                <conditional>
+                    <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
+				        <passive_effect name="DegradationMax" operation="base_set" value="900,1800" tier="1,6" tags="perkDeadEye"/>
+				        <passive_effect name="ModSlots" operation="base_set" value="1,2,3,4,5,6" tier="1,2,3,4,5,6"/>
+                    </if>
+                    <else>
+                        <passive_effect name="DegradationMax" operation="base_set" value="700,1100" tier="1,6" tags="perkDeadEye"/>
+                        <passive_effect name="ModSlots" operation="base_set" value="2,2,2,3,3,4" tier="1,2,3,4,5,6"/>
+                    </else>
+                </conditional>
+                <conditional>
+                    <if cond="mod_loaded('EFT_Overhaul')">
+                        
+                    </if>
+                    <else>
+                        <passive_effect name="EntityDamage" operation="perc_add" value="-.02,.02" tags="perkDeadEye"/> <!-- random EntityDmg -->
+                        <passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6" tags="perkDeadEye"/> <!-- tier bonus -->
+                        <passive_effect name="BlockDamage" operation="perc_add" value="-.08,.08" tags="perkDeadEye"/> <!-- random BlockDmg -->
+                        <passive_effect name="BlockDamage" operation="perc_add" value=".15,.75" tier="2,6" tags="perkDeadEye"/> <!-- tier bonus -->
+                        <passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+                    </else>
+                </conditional>
+            </effect_group>
+        </item>
+
+        <item name="ammoKF50BMGBulletBall">
+            <property name="Extends" value="ammo9mmBulletBall"/>
+            <property name="Tags" value="ammoKF50BMG"/>
+	        <property name="DisplayType" value="ammoBulletAP"/>
+            <property name="Stacknumber" value="50"/> <!-- STK ammo low -->
+            <property name="EconomicValue" value="1500"/>
+            <property name="TraderStageTemplate" value="ammoTier3"/>
+	        <property name="UnlockedBy" value="perkSniperAPAmmo"/> <!-- BOOK_PERK -->
+            <property name="SoundPickup" value="bullets_grab"/>
+            <property name="SoundPlace" value="bullets_place"/>
+            <effect_group name="ammoKF50BMGBulletBall" tiered="false">
+                <passive_effect name="EntityDamage" operation="base_set" value="600" tags="perkDeadEye"/>
+                <passive_effect name="BlockDamage" operation="base_set" value="300" tags="perkDeadEye"/>
+                <passive_effect name="BlockDamage" operation="base_add" value="16" tags="barrelExplosive"/>
+				<passive_effect name="BlockPenetrationFactor" operation="base_set" value="2500" tags="perkDeadEye"/>
+		        <passive_effect name="TargetArmor" operation="perc_add" value="-1" tags="perkDeadEye"/>
+		        <display_value name="dTargetArmor" value="-1"/>
+                <passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="earth"/>
+                <passive_effect name="DamageModifier" operation="perc_add" value="2" tags="wood"/>
+		        <passive_effect name="EntityPenetrationCount" operation="base_set" value="5"/>
+		        <display_value name="dTargetPenetration" value="5"/>
+				<passive_effect name="DismemberChance" operation="base_set" value="100" tags="arm"/>
+				<passive_effect name="DismemberChance" operation="base_set" value="100" tags="leg"/>
+            </effect_group>
+        </item>
+    </append>
+</configs>

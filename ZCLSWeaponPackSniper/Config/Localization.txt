@@ -1,0 +1,5 @@
+Key,File,Type,english,schinese
+gunKFM99,items,gun,M99 AMR,M99 AMR
+gunKFM99Desc,items,gun,"Fire mode is single shot only.\n\nEvery shot packs a punch...well, one really big bullet. High penetration, high pain.\n\nUse [action:KFLibPlayerActions:PerformAltMelee] to bash. Bashing is Club type.","射击模式只有单发。\n\n每一发都是蓄力一击……额，就是一发非常大的子弹。高穿透，高伤害。\n\n使用[action:KFLibPlayerActions:PerformAltMelee]推击。推击为棍棒类型。"
+ammoKF50BMG,items,gun,.50 BMG,.50 BMG
+ammoKF50BMGDesc,items,gun,,

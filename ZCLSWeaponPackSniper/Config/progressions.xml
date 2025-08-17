@@ -1,0 +1,19 @@
+<config>
+    <conditional>
+        <if cond="mod_loaded('EFT_Overhaul')">
+
+        </if>
+        <else>
+			<append xpath="/progression/perks/perk[@name='perkDeadEye']/effect_group[0]">
+			    <passive_effect name="LootProb" operation="perc_add" level="1,5" value="2,10" tags="ammoKF50BMG"/>
+            </append>
+			<append xpath="/progression/perks/perk[@name='perkSniperAPAmmo']/effect_group">
+			    <passive_effect name="RecipeTagUnlocked" operation="base_set" level="1" value="1" tags="ammoKF50BMGBulletBall"/>
+            </append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingRifles']/effect_group">
+			    <passive_effect name="RecipeTagUnlocked" operation="base_set" level="81,100" value="1" tags="gunKFM99"/>
+			    <passive_effect name="CraftingTier" operation="base_add" level="85,89,93,97,100" value="1,2,3,4,5" tags="gunKFM99"/>
+            </append>
+        </else>
+    </conditional>
+</config>

@@ -1,0 +1,47 @@
+<config>
+    <conditional>
+        <if cond="mod_loaded('EFTX_Pack_Core')">
+            <append xpath="/recipes">
+                <recipe name="gunKFM99" count="1" craft_area="workbench" tags="learnable">
+                    <ingredient name="gunRifleT1HuntingRifleParts" count="1"/>
+                    <ingredient name="resourceWeaponParts" count="15"/>
+                    <ingredient name="resourceMetalPipe" count="1"/>
+                    <ingredient name="resourceSpring" count="1"/>
+                    <ingredient name="resourceLegendaryParts" count="1"/>
+                    <effect_group>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunRifleT1HuntingRifleParts"/>
+                        <passive_effect name="CraftingIngredientCount" level="1,6" operation="perc_add" value="2,10" tags="resourceWeaponParts"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="resourceLegendaryParts"/>
+                    </effect_group>
+                </recipe>
+                <recipe name="ammoKF50BMGBulletBall" count="1" craft_area="workbench" tags="learnable,workbenchCrafting">
+                    <ingredient name="resourceHighCaliberBulletTip" count="3"/>
+                    <ingredient name="resource_item_other_powder_red" count="214"/>
+                    <ingredient name="resourceHighCaliberCasing" count="3"/>
+                </recipe>
+            </append>
+        </if>
+        <else>
+            <append xpath="/recipes">
+                <recipe name="gunKFM99" count="1" craft_area="workbench" tags="learnable,perkDeadEye,workbenchCrafting">
+                    <ingredient name="gunRifleT1HuntingRifleParts" count="35"/>
+                    <ingredient name="resourceForgedSteel" count="250"/>
+                    <ingredient name="resourceDuctTape" count="35"/>
+                    <ingredient name="resourceSpring" count="50"/>
+                    <ingredient name="resourceLegendaryParts" count="0"/>
+                    <effect_group>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="gunRifleT1HuntingRifleParts,resourceDuctTape"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="4,20" tags="resourceSpring"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="20,100" tags="resourceForgedSteel"/>
+                        <passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
+                    </effect_group>
+                </recipe>
+                <recipe name="ammoKF50BMGBulletBall" count="1" craft_area="workbench" tags="learnable,workbenchCrafting">
+                    <ingredient name="resourceBulletTip" count="6"/>
+                    <ingredient name="resourceGunPowder" count="30"/>
+                    <ingredient name="resourceBulletCasing" count="6"/>
+                </recipe>
+            </append>
+        </else>
+    </conditional>
+</config>

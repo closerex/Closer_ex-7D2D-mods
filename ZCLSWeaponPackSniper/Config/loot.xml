@@ -1,0 +1,56 @@
+<config>
+    <conditional>
+        <if cond="mod_loaded('EFTX_Pack_Core')">
+			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT4']">
+				<item name="gunKFM99"/>
+			</append>
+			<append xpath="//lootgroup[@name='groupQuestWeaponsRangedT3']">
+				<item name="gunKFM99" loot_prob_template="QuestT4Prob"/>
+			</append>
+        </if>
+        <else>
+			<insertAfter xpath="/lootcontainers/lootgroup[@name='empty']">
+				<lootgroup name="groupWeaponsT3_DeadEyeKFM99" count="1" loot_quality_template="QLTemplateT3">
+                    <item name="gunKFM99"/>
+				</lootgroup>
+                
+                <lootgroup name="groupKF50BMGSmall">
+                    <item name="ammoKF50BMGBulletBall" count="1,2" loot_stage_count_mod="0.01" loot_prob_template="ProbT3"/>
+                </lootgroup>
+                <lootgroup name="groupKF50BMGMedium">
+                    <item name="ammoKF50BMGBulletBall" count="3,4" loot_stage_count_mod="0.01" loot_prob_template="ProbT3"/>
+                </lootgroup>
+                <lootgroup name="groupKF50BMGLarge">
+                    <item name="ammoKF50BMGBulletBall" count="5,6" loot_stage_count_mod="0.01" loot_prob_template="ProbT3"/>
+                </lootgroup>
+            </insertAfter>
+            
+			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3_Ranged']">
+                <item group="groupWeaponsT3_DeadEyeKFM99" loot_prob_template="low"/>
+            </append>
+
+			<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsRangedT3']">
+				<item name="gunKFM99" loot_prob_template="low"/>
+			</append>
+
+            <append xpath="/lootcontainers/lootgroup[@name='groupQuestAmmo']">
+				<item name="ammoKF50BMGBulletBall" count="15" loot_prob_template="QuestT3Prob"/>
+            </append>
+            <append xpath="/lootcontainers/lootgroup[@name='groupAmmoSmall']">
+				<item group="groupKF50BMGSmall"/>
+            </append>
+            <append xpath="/lootcontainers/lootgroup[@name='groupAmmoMedium']">
+				<item group="groupKF50BMGMedium"/>
+            </append>
+            <append xpath="/lootcontainers/lootgroup[@name='groupAmmoSmallNoArrow']">
+				<item group="groupKF50BMGSmall"/>
+            </append>
+            <append xpath="/lootcontainers/lootgroup[@name='groupAmmoMediumNoArrow']">
+				<item group="groupKF50BMGMedium"/>
+            </append>
+            <append xpath="/lootcontainers/lootgroup[@name='groupAmmoLarge']">
+				<item group="groupKF50BMGLarge"/>
+            </append>
+        </else>
+    </conditional>
+</config>
