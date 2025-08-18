@@ -41,7 +41,7 @@ namespace CustomMuzzleFlash
         {
             var codes = instructions.ToList();
 
-            int smokeLocalIndex = GameManager.IsDedicatedServer ? 10 : 12;
+            int smokeLocalIndex = GameManager.IsDedicatedServer && Application.platform == RuntimePlatform.LinuxServer ? 10 : 12;
             for (int i = 0; i < codes.Count; i++)
             {
                 if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == smokeLocalIndex)

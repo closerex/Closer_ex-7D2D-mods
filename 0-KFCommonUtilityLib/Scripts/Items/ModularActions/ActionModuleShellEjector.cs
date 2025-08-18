@@ -74,7 +74,7 @@ public class ActionModuleShellEjector
     {
         var codes = new List<CodeInstruction>(instructions);
 
-        int fpvLocalIndex = GameManager.IsDedicatedServer ? 5 : 7;
+        int fpvLocalIndex = GameManager.IsDedicatedServer && Application.platform == RuntimePlatform.LinuxServer ? 5 : 7;
 
         for (int i = 0; i < codes.Count; i++)
         {

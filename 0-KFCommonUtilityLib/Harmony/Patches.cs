@@ -1220,8 +1220,8 @@ public static class CommonUtilityPatch
         var fld_end = AccessTools.Field(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.SoundEnd));
         var fld_meta = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Meta));
 
-        int flashLocalIndex = GameManager.IsDedicatedServer ? 7 : 9;
-        int smokeLocalIndex = GameManager.IsDedicatedServer ? 10 : 12;
+        int flashLocalIndex = GameManager.IsDedicatedServer && Application.platform == RuntimePlatform.LinuxServer ? 7 : 9;
+        int smokeLocalIndex = GameManager.IsDedicatedServer && Application.platform == RuntimePlatform.LinuxServer ? 10 : 12;
         for (int i = 0; i < codes.Count - 2; i++)
         {
             if (codes[i].opcode == OpCodes.Ldloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == flashLocalIndex && codes[i + 2].Branches(out _))
