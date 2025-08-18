@@ -492,4 +492,13 @@ public class AttachmentWrapper : IAnimatorWrapper
                 animator.Update(deltaTime);
         }
     }
+
+    public void WriteDefaultValues()
+    {
+        foreach (var animator in animators)
+        {
+            if (animator)
+                animator.WriteDefaultValues();
+        }
+    }
 }

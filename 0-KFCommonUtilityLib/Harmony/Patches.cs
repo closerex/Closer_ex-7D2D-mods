@@ -1220,9 +1220,11 @@ public static class CommonUtilityPatch
         var fld_end = AccessTools.Field(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.SoundEnd));
         var fld_meta = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Meta));
 
+        int flashLocalIndex = GameManager.IsDedicatedServer ? 7 : 9;
+        int smokeLocalIndex = GameManager.IsDedicatedServer ? 10 : 12;
         for (int i = 0; i < codes.Count - 2; i++)
         {
-            if (codes[i].opcode == OpCodes.Ldloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 9 && codes[i + 2].Branches(out _))
+            if (codes[i].opcode == OpCodes.Ldloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == flashLocalIndex && codes[i + 2].Branches(out _))
             {
                 codes.InsertRange(i + 3, new[]
                 {
@@ -1231,7 +1233,7 @@ public static class CommonUtilityPatch
                 });
                 i += 5;
             }
-            else if (codes[i].opcode == OpCodes.Ldloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 12 && codes[i + 2].Branches(out _))
+            else if (codes[i].opcode == OpCodes.Ldloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == smokeLocalIndex && codes[i + 2].Branches(out _))
             {
                 codes.InsertRange(i + 3, new[]
                 {

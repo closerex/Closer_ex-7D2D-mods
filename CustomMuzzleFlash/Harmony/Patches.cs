@@ -41,13 +41,14 @@ namespace CustomMuzzleFlash
         {
             var codes = instructions.ToList();
 
+            int smokeLocalIndex = GameManager.IsDedicatedServer ? 10 : 12;
             for (int i = 0; i < codes.Count; i++)
             {
-                if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 12)
+                if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == smokeLocalIndex)
                 {
                     for (int j = i + 1; j < codes.Count - 2; j++)
                     {
-                        if (codes[j].opcode == OpCodes.Ldloc_S && ((LocalBuilder)codes[j].operand).LocalIndex == 12 && codes[j + 2].Branches(out var lbl))
+                        if (codes[j].opcode == OpCodes.Ldloc_S && ((LocalBuilder)codes[j].operand).LocalIndex == smokeLocalIndex && codes[j + 2].Branches(out var lbl))
                         {
                             codes.InsertRange(j + 3, new[]
                             {

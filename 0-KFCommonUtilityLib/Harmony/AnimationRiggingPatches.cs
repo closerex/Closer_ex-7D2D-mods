@@ -430,9 +430,10 @@ static class AnimationRiggingPatches
                 {
                     if (codes[j].opcode == OpCodes.Ldloc_2)
                     {
+                        int fpvLocalIndex = GameManager.IsDedicatedServer ? 5 : 7;
                         for (int k = j + 1; k < codes.Count; k++)
                         {
-                            if (codes[k].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[k].operand).LocalIndex == 7)
+                            if (codes[k].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[k].operand).LocalIndex == fpvLocalIndex)
                             {
                                 var lbd = (LocalBuilder)codes[k].operand;
                                 var take = codes.GetRange(j, k - j + 1);

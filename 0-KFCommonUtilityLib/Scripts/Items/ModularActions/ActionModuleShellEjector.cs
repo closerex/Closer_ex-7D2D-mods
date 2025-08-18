@@ -74,9 +74,11 @@ public class ActionModuleShellEjector
     {
         var codes = new List<CodeInstruction>(instructions);
 
+        int fpvLocalIndex = GameManager.IsDedicatedServer ? 5 : 7;
+
         for (int i = 0; i < codes.Count; i++)
         {
-            if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 7)
+            if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == fpvLocalIndex)
             {
                 codes.InsertRange(i + 1, new[]
                 {
