@@ -243,6 +243,7 @@
         <item name="ammoKF50BMGBulletBall">
             <property name="Extends" value="ammo9mmBulletBall"/>
             <property name="Tags" value="ammoKF50BMG"/>
+            <property name="CustomIcon" value="ammoKF50BMG"/>
 	        <property name="DisplayType" value="ammoBulletAP"/>
             <property name="Stacknumber" value="50"/> <!-- STK ammo low -->
             <property name="EconomicValue" value="1500"/>
