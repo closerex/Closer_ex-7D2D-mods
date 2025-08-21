@@ -7,7 +7,7 @@
 			<append xpath="/progression/perks/perk[@name='perkDeadEye']/effect_group[1]">
 			    <passive_effect name="LootProb" operation="perc_add" level="1,5" value="2,10" tags="ammoKF50BMG"/>
             </append>
-			<append xpath="/progression/perks/perk[@name='perkSniperAPAmmo']/effect_group">
+			<append xpath="/progression/perks/book[@name='perkSniperAPAmmo']/effect_group">
 			    <passive_effect name="RecipeTagUnlocked" operation="base_set" level="1" value="1" tags="ammoKF50BMGBulletBall"/>
             </append>
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingRifles']/effect_group">
