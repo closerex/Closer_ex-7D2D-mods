@@ -201,7 +201,7 @@
 				<passive_effect name="RoundsPerMinute" operation="base_set" value="600" tags="perkBoomstick"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkBoomstick"/>
 				<passive_effect name="MagazineSize" operation="base_set" value="16" tags="perkBoomstick"/>
-				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1.116" tags="perkBoomstick"/> <!-- 2.3s -->
+				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkBoomstick"/> <!-- 2.3s -->
 				<passive_effect name="ModSlots" operation="base_set" value="1,2,3,4,5,6" tier="3,3,3,4,5,6"/>
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>

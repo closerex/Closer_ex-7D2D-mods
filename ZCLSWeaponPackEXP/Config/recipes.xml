@@ -4,4 +4,5 @@
 	<include filename="katana/recipes.xml"/>
 	<include filename="af2011/recipes.xml"/>
 	<include filename="hz12/recipes.xml"/>
+	<include filename="hrgblastbrawler/recipes.xml"/>
 </configs>

@@ -5,4 +5,5 @@
 	<include filename="af2011/items.xml"/>
 	<include filename="gshg762/items.xml"/>
 	<include filename="hz12/items.xml"/>
+	<include filename="hrgblastbrawler/items.xml"/>
 </configs>

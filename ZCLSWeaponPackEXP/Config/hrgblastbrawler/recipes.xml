@@ -1,0 +1,54 @@
+<configs>
+	<conditional>
+		<if cond="mod_loaded('EFT8_DVS_Configs')">
+            <append xpath="/recipes">
+                <recipe name="gunT3HRGBlastBrawler" count="1" craft_area="workbench" tags="learnable,perkBoomstick">
+                    <ingredient name="gunShotgunT1DoubleBarrelParts" count="2" />
+                    <ingredient name="resourceWeaponParts" count="4" />
+                    <ingredient name="resourceDuctTape" count="4" />
+                    <ingredient name="resourceSpring" count="4" />
+                    <ingredient name="resourceLegendaryParts" count="0" />
+                    <effect_group>
+                      <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="4,44" tags="gunShotgunT1DoubleBarrelParts,resourceDuctTape" />
+                      <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceWeaponParts" />
+                      <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="4,20" tags="resourceSpring" />
+                      <passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts" />
+                    </effect_group>
+                </recipe>
+            </append>
+        </if>
+        <if cond="mod_loaded('EFTX_Pack_Core')">
+            <append xpath="/recipes">
+                <recipe name="gunT3HRGBlastBrawler" count="1" craft_area="workbench" tags="learnable">
+                    <ingredient name="gunShotgunT1DoubleBarrelParts" count="2"/>
+                    <ingredient name="resourceWeaponParts" count="2"/>
+                    <ingredient name="resourceMetalPipe" count="6"/>
+                    <ingredient name="resourceSpring" count="4"/>
+                    <ingredient name="resourceWD40" count="4"/>
+                    <effect_group>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="gunShotgunT1DoubleBarrelParts"/>
+                        <passive_effect name="CraftingIngredientCount" level="1,6" operation="perc_add" value="0,2" tags="resourceWeaponParts"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceWD40"/>
+                    </effect_group>
+                </recipe>
+            </append>
+        </if>
+        <else>
+            <append xpath="/recipes">
+                <recipe name="gunT3HRGBlastBrawler" count="1" craft_area="workbench" tags="learnable,perkBoomstick">
+                    <ingredient name="gunShotgunT1DoubleBarrelParts" count="20"/>
+                    <ingredient name="resourceForgedSteel" count="120"/>
+                    <ingredient name="resourceDuctTape" count="25"/>
+                    <ingredient name="resourceSpring" count="40"/>
+                    <ingredient name="resourceLegendaryParts" count="0"/>
+                    <effect_group>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="gunShotgunT1DoubleBarrelParts,resourceDuctTape"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="4,20" tags="resourceSpring"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="10,50" tags="resourceForgedSteel"/>
+                        <passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
+                    </effect_group>
+                </recipe>
+            </append>
+        </else>
+    </conditional>
+</configs>
