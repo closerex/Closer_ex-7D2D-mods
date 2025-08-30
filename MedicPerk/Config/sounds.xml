@@ -48,5 +48,14 @@
 			<MaxEntities name="3"/>
 			<MaxRepeatRate value="0.01"/>
 		</SoundDataNode>
+		
+        <SoundDataNode name="bashSwingLightMedic"> <AudioSource name="@:Sounds/Prefabs/AudioSource_Melee.prefab"/> <NetworkAudioSource name="@:Sounds/Prefabs/AudioSource_Melee.prefab"/>
+            <AudioClip ClipName="none"/>
+            <LocalCrouchVolumeScale value="0.25"/> <CrouchNoiseScale value="0.05"/> <NoiseScale value=".15"/> <MaxVoices value="3"/> <MaxRepeatRate value="0.01"/>
+        </SoundDataNode>
+        <SoundDataNode name="bashSwingHeavyMedic"> <AudioSource name="@:Sounds/Prefabs/AudioSource_Melee.prefab"/> <NetworkAudioSource name="@:Sounds/Prefabs/AudioSource_Melee.prefab"/>
+            <AudioClip ClipName="none"/>
+            <LocalCrouchVolumeScale value="0.25"/> <CrouchNoiseScale value="0.05"/> <NoiseScale value=".2"/> <MaxVoices value="3"/> <MaxRepeatRate value="0.01"/>
+        </SoundDataNode>
 	</append>
 </configs>
