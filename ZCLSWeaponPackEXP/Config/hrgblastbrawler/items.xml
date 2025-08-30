@@ -267,8 +267,10 @@
 	</conditional>
 	<conditional>
 		<if cond="mod_loaded('EFT_Overhaul')">
-			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Primary']/passive_effect[@name='EntityDamage']/@value">0</set>
-			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Primary']/passive_effect[@name='BlockDamage']/@value">0</set>
+			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Primary']/passive_effect[@name='EntityDamage' and @operation='base_add']/@value">0</set>
+			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Primary']/passive_effect[@name='EntityDamage' and @operation='perc_add' and @tier='2,6']/@value">0</set>
+			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Primary']/passive_effect[@name='BlockDamage' and @operation='base_add']/@value">0</set>
+			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Primary']/passive_effect[@name='BlockDamage' and @operation='perc_add' and @tier='2,6']/@value">0</set>
 			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
 		</if>
 	</conditional>
