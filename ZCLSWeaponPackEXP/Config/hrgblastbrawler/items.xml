@@ -247,7 +247,6 @@
                 <passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="stone,perkBrawler" match_all_tags="true"/>
                 <passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="metal,perkBrawler" match_all_tags="true"/>
                 <passive_effect name="DamageModifier" operation="perc_add" value="1.7" tags="organic,perkBrawler" match_all_tags="true"/>
-
             </effect_group>
             <effect_group name="tpv mesh">
                 <requirement name="!IsFPV"/>
@@ -259,4 +258,18 @@
         </item>
     </append>
 
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
+			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug</set>
+			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Common']/passive_effect[@name='DegradationMax']/@value">1200,2400</set>
+			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
+		</if>
+	</conditional>
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Primary']/passive_effect[@name='EntityDamage']/@value">0</set>
+			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Primary']/passive_effect[@name='BlockDamage']/@value">0</set>
+			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
+		</if>
+	</conditional>
 </config>
