@@ -21,3 +21,5 @@ modGunAF2011ReflexSight,item_modifiers,mod,Reflex Sight for AF2011,"AF2011专用
 modGunDualAF2011ReflexSight,item_modifiers,mod,Reflex Sight for Dual AF2011s,"双持AF2011专用反射瞄具"
 gunT3HZ12,item,Gun,HZ12 Multi-Action,多动作 HZ12
 gunT3HZ12Desc,item,Gun,"Fire mode is a dual semi-auto/pump-action.\n\nThe HZ12 shotgun is an experimental prototype that is being tested by Horzine security forces. Zeds were harmed in the development of this weapon.\n\nUse [action:KFLibPlayerActions:PerformAltMelee] to bash. Bashing is Club type.",射击模式为双发泵动。\n\nHZ12霰弹枪是霍因安全部队测试的实验模型。丧尸在该武器研发的过程中受到了伤害。\n\n使用[action:KFLibPlayerActions:PerformAltMelee]推击。推击为棍棒类型。
+gunT3HRGBlastBrawler,item,Gun,HRG Blast Brawler,HRG 爆裂斗士
+gunT3HRGBlastBrawlerDesc,item,Gun,"Primary: Fire 2 shots, one with each fist. Secondary: Heavy melee attack.\n\nResearch team was out of ideas for any punchline.\n\nUse [action:KFLibPlayerActions:PerformAltMelee] to bash. Bashing is Brawler type.",主要攻击：射出两发霰弹，每只拳头各一次。次要攻击：强力近战攻击。\n\n研究团队也束手无策。\n\n使用[action:KFLibPlayerActions:PerformAltMelee]推击。推击为搏斗类型。
