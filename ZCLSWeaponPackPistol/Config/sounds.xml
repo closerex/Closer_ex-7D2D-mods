@@ -42,5 +42,14 @@
 			<AudioClip ClipName="@:Sounds/Twitch/Silly/pistol_fire_silly2.wav" AltSound="true"/>
 			<AudioClip ClipName="@:Sounds/Twitch/Silly/pistol_fire_silly3.wav" AltSound="true"/>
 		<LocalCrouchVolumeScale value="0.5"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="30"/> <MaxVoicesPerEntity value="10"/> <MaxRepeatRate value="0.001"/> </SoundDataNode>
+
+        <SoundDataNode name="bashSwingLightPistol"> <AudioSource name="@:Sounds/Prefabs/AudioSource_Melee.prefab"/> <NetworkAudioSource name="@:Sounds/Prefabs/AudioSource_Melee.prefab"/>
+            <AudioClip ClipName="none"/>
+            <LocalCrouchVolumeScale value="0.25"/> <CrouchNoiseScale value="0.05"/> <NoiseScale value=".15"/> <MaxVoices value="3"/> <MaxRepeatRate value="0.01"/>
+        </SoundDataNode>
+        <SoundDataNode name="bashSwingHeavyPistol"> <AudioSource name="@:Sounds/Prefabs/AudioSource_Melee.prefab"/> <NetworkAudioSource name="@:Sounds/Prefabs/AudioSource_Melee.prefab"/>
+            <AudioClip ClipName="none"/>
+            <LocalCrouchVolumeScale value="0.25"/> <CrouchNoiseScale value="0.05"/> <NoiseScale value=".2"/> <MaxVoices value="3"/> <MaxRepeatRate value="0.01"/>
+        </SoundDataNode>
     </append>
 </config>

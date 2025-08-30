@@ -354,7 +354,7 @@
 				<property name="Sphere" value=".1"/>
 				<property name="Damage_type" value="Bashing"/>
 				<property name="Sound_start" value="bashSwingReal"/>
-				<property name="DynamicSoundStart" value="bashSwingLight"/>
+				<property name="DynamicSoundStart" value="bashSwingLightPistol"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
 				<property name="UseGrazingHits" value="true"/>
 				<property name="GrazeStart" value=".3"/>
@@ -371,7 +371,7 @@
 			<property class="Action1"> <!-- UseAction -->
 				<property name="Class" value="DynamicMelee"/>
 				<property name="Sound_start" value="bashSwingReal"/>
-				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
+				<property name="DynamicSoundStart" value="bashSwingHeavyPistol"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
 				<property name="Sphere" value=".1"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
 				<property name="Damage_type" value="Bashing"/>
@@ -1133,7 +1133,7 @@
 				<property name="Sphere" value=".1"/>
 				<property name="Damage_type" value="Bashing"/>
 				<property name="Sound_start" value="bashSwingReal"/>
-				<property name="DynamicSoundStart" value="bashSwingLight"/>
+				<property name="DynamicSoundStart" value="bashSwingLightPistol"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
 				<property name="UseGrazingHits" value="true"/>
 				<property name="GrazeStart" value=".3"/>
@@ -1150,7 +1150,7 @@
 			<property class="Action1"> <!-- UseAction -->
 				<property name="Class" value="DynamicMelee"/>
 				<property name="Sound_start" value="bashSwingReal"/>
-				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
+				<property name="DynamicSoundStart" value="bashSwingHeavyPistol"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
 				<property name="Sphere" value=".1"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
 				<property name="Damage_type" value="Bashing"/>
