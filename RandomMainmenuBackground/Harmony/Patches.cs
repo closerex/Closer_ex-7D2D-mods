@@ -61,6 +61,25 @@ class Patches
         return codes;
     }
 
+    [HarmonyPatch(typeof(XUiC_MainMenu), nameof(XUiC_MainMenu.CloseGlobalMenuWindows))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_CloseGlobalMenuWindows_XUiC_MainMenu(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = new List<CodeInstruction>(instructions);
+
+        for (int i = 0, totali = codes.Count; i < totali; i++)
+        {
+            CodeInstruction code = codes[i];
+            if (code.opcode == OpCodes.Ldloc_2)
+            {
+                codes.Insert(i + 1, CodeInstruction.Call(typeof(RandomBackgroundLoader), nameof(RandomBackgroundLoader.modWindowName)));
+                break;
+            }
+        }
+
+        return codes;
+    }
+
     [HarmonyPatch(typeof(XUiC_MainMenu), nameof(XUiC_MainMenu.OnClose))]
     [HarmonyPostfix]
     private static void Postfix_OnClose_XUiC_MainMenu(XUiC_MainMenu __instance)
