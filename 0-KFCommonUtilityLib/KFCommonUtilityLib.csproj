@@ -444,6 +444,7 @@
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationFiringEvents.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationGraphBuilder.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationInspectState.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationParticleSpawner.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationProceduralRecoildAbs.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationSmokeParticle.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimatorWrapper\AnimatorWrapper.cs" />
@@ -457,6 +458,7 @@
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationHolsterState.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationInspectFix.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationLockAction.cs" />
+    <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationMeleeShooterState.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationMultiStageReloadState.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationRigLayerController.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimatorCameraAnimationState.cs" />
@@ -578,6 +580,7 @@
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPrintLocalCache.cs" />
     <Compile Include="Scripts\Input\PlayerActionKFLib.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAlternative.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleMeleeShooter.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationLocked.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleCustomAnimationDelay.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleDisplayAsBuff.cs" />

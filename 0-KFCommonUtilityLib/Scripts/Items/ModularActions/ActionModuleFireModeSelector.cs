@@ -3,11 +3,10 @@ using KFCommonUtilityLib;
 using KFCommonUtilityLib.Scripts.Attributes;
 using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
+using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 [TypeTarget(typeof(ItemActionRanged)), TypeDataTarget(typeof(FireModeData))]
 public class ActionModuleFireModeSelector
@@ -226,6 +225,7 @@ public class ActionModuleFireModeSelector
                 GameManager.ShowTooltip(_data.invData.holdingEntity as EntityPlayerLocal, "ttCurrentFiringMode", _fireMode.ToString(), null, null, true);
             }
             //GameManager.ShowTooltip(_data.invData.holdingEntity as EntityPlayerLocal, "ttCurrentFiringMode", string.IsNullOrEmpty(modeNames[_fireMode]) ? _fireMode.ToString() : Localization.Get(modeNames[_fireMode]), null, null, true);
+            _data.invData.holdingEntity.MinEventContext.ItemActionData = _data;
             _data.invData.holdingEntity.FireEvent(CustomEnums.onSelfBurstModeChanged);
             UpdateDelay(_data);
 
@@ -252,8 +252,15 @@ public class ActionModuleFireModeSelector
             {
                 return;
             }
+            float rpm = 1f;
+            float perc = 1f;
+            var tags = _data.invData.item.ItemTags;
+            MultiActionManager.ModifyItemTags(_data.invData.itemValue, _data, ref tags);
+            _data.invData.item.Effects.ModifyValue(_data.invData.holdingEntity, PassiveEffects.RoundsPerMinute, ref rpm, ref perc, _data.invData.itemValue.Quality, tags);
+
             float burstInterval = EffectManager.GetValue(CustomEnums.BurstShotInterval, _data.invData.itemValue, -1, _data.invData.holdingEntity);
             var rangedData = _data as ItemActionRanged.ItemActionDataRanged;
+            burstInterval *= 60f / (rpm * perc * rangedData.Delay);
             if (burstInterval > 0 && rangedData.Delay > burstInterval)
             {
                 shotDelay = burstInterval;

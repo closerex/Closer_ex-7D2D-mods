@@ -49,7 +49,7 @@ public class AnimationHolsterState : StateMachineBehaviour
     {
         if (holsterData != null && !string.IsNullOrEmpty(exitTransitionName))
         {
-            var info = animator.GetAnimatorTransitionInfo(0);
+            var info = animator.GetAnimatorTransitionInfo(layerIndex);
             if (info.IsUserName(exitTransitionName))
             {
                 if (holsterData != null)

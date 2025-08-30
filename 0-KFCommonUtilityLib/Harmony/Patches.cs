@@ -927,6 +927,7 @@ public static class CommonUtilityPatch
             bool isAimingGun = __instance.AimingGun;
             if (value != isAimingGun)
             {
+                MultiActionUtils.SetMinEventParamsByEntityInventory(__instance);
                 __instance.FireEvent(value ? MinEventTypes.onSelfAimingGunStart : MinEventTypes.onSelfAimingGunStop, true);
 #if DEBUG
                 Log.Out(value ? "START AIMING GUN FIRED" : "STOP AIMING GUN FIRED");

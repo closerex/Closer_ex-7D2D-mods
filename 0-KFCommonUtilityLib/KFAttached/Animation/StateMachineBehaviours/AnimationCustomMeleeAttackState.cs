@@ -116,10 +116,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         FastTags<TagGroup.Global> fastTags = ((actionIndex != 1) ? ItemActionAttack.PrimaryTag : ItemActionAttack.SecondaryTag);
         multiInvData = (entity.inventory.holdingItemData as IModuleContainerFor<ItemModuleMultiItem.MultiItemInvData>)?.Instance;
         bool isValidAlternative = IsAlternative && multiInvData != null;
-        if (isValidAlternative)
-        {
-            multiInvData.SetBoundParams();
-        }
+        var prevData = SetParams(isValidAlternative);
         ItemValue holdingItemItemValue = entity.inventory.holdingItemItemValue;
         ItemClass itemClass = holdingItemItemValue.ItemClass;
         if (itemClass != null)
@@ -164,10 +161,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         {
             GameManager.Instance.StartCoroutine(customGrazeStart(length));
         }
-        if (isValidAlternative)
-        {
-            multiInvData.RestoreParams(false);
-        }
+        RestoreParams(isValidAlternative, prevData);
     }
 
     private IEnumerator impactStart(Animator animator, int layer, float length)
@@ -179,10 +173,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             if (entity != null && !entity.isEntityRemote && actionIndex >= 0)
             {
                 bool isValidAlternative = IsAlternative && multiInvData != null && multiInvData.boundInvData != null;
-                if (isValidAlternative)
-                {
-                    multiInvData.SetBoundParams();
-                }
+                var prevData = SetParams(isValidAlternative);
                 ItemActionDynamicMelee.ItemActionDynamicMeleeData itemActionDynamicMeleeData = entity.inventory.holdingItemData.actionData[actionIndex] as ItemActionDynamicMelee.ItemActionDynamicMeleeData;
                 if (itemActionDynamicMeleeData != null)
                 {
@@ -202,10 +193,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
                         }
                     }
                 }
-                if (isValidAlternative)
-                {
-                    multiInvData.RestoreParams(false);
-                }
+                RestoreParams(isValidAlternative, prevData);
             }
         }
         yield break;
@@ -242,19 +230,13 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         if (entity != null && !entity.isEntityRemote && actionIndex >= 0)
         {
             bool isValidAlternative = IsAlternative && multiInvData != null && multiInvData.boundInvData != null;
-            if (isValidAlternative)
-            {
-                multiInvData.SetBoundParams();
-            }
+            var prevData = SetParams(isValidAlternative);
             ItemActionDynamicMelee.ItemActionDynamicMeleeData itemActionDynamicMeleeData = entity.inventory.holdingItemData.actionData[actionIndex] as ItemActionDynamicMelee.ItemActionDynamicMeleeData;
             if (itemActionDynamicMeleeData != null)
             {
                 GameManager.Instance.StartCoroutine(customGrazeUpdate(itemActionDynamicMeleeData));
             }
-            if (isValidAlternative)
-            {
-                multiInvData.RestoreParams(false);
-            }
+            RestoreParams(isValidAlternative, prevData);
         }
     }
 
@@ -278,10 +260,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
                 yield break;
             }
             bool isValidAlternative = IsAlternative && multiInvData != null && multiInvData.boundInvData != null;
-            if (isValidAlternative)
-            {
-                multiInvData.SetBoundParams();
-            }
+            var prevData = SetParams(isValidAlternative);
             var action = entity.inventory.holdingItem.Actions[actionIndex] as ItemActionDynamicMelee;
             float originalSwingAngle = action.SwingAngle;
             float originalSwingDegrees = action.SwingDegrees;
@@ -294,10 +273,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             }
             action.SwingAngle = originalSwingAngle;
             action.SwingDegrees = originalSwingDegrees;
-            if (isValidAlternative)
-            {
-                multiInvData.RestoreParams(false);
-            }
+            RestoreParams(isValidAlternative, prevData);
             yield return null;
             normalizedTime = (Time.time - grazeStart) / calculatedGrazeDuration;
         }
@@ -321,6 +297,26 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         //    animator.Play(animator.GetNextAnimatorStateInfo(layerIndex).shortNameHash, layerIndex);
         //}
         animator.SetWrappedFloat(AttackSpeedHash, speedMultiplierToKeep);
+    }
+
+    private ItemActionData SetParams(bool isValidAlternative)
+    {
+        ItemActionData prevData = entity.MinEventContext.ItemActionData;
+        if (isValidAlternative)
+        {
+            multiInvData.SetBoundParams();
+        }
+        entity.MinEventContext.ItemActionData = entity.inventory.holdingItemData.actionData[actionIndex];
+        return prevData;
+    }
+
+    private void RestoreParams(bool isValidAlternative, ItemActionData prevData)
+    {
+        if (isValidAlternative)
+        {
+            multiInvData.RestoreParams(false);
+        }
+        entity.MinEventContext.ItemActionData = prevData;
     }
 #endif
 }

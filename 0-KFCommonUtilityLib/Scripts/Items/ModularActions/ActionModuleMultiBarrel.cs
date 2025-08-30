@@ -27,6 +27,10 @@ public class ActionModuleMultiBarrel
         __instance.Properties.ParseString("RoundsPerShot", ref originalValue);
         __customData.roundsPerShot = int.Parse(_data.invData.itemValue.GetPropertyOverrideForAction("RoundsPerShot", originalValue, actionIndex));
 
+        originalValue = "1";
+        __instance.Properties.ParseString("RoundsCorrection", ref originalValue);
+        __customData.roundsCorrection = int.Parse(_data.invData.itemValue.GetPropertyOverrideForAction("RoundsCorrection", originalValue, actionIndex));
+
         originalValue = 1.ToString();
         __instance.Properties.ParseString("BarrelCount", ref originalValue);
         __customData.barrelCount = int.Parse(_data.invData.itemValue.GetPropertyOverrideForAction("BarrelCount", originalValue, actionIndex));
@@ -215,6 +219,7 @@ public class ActionModuleMultiBarrel
         public bool muzzleIsPerRound;
         public bool oneRoundMultishot;
         public int roundsPerShot;
+        public int roundsCorrection;
         public int barrelCount;
         public int curBarrelIndex;
         public Transform[] muzzles;
@@ -247,6 +252,10 @@ public class ActionModuleMultiBarrel
                 else
                 {
                     totalSwitches = roundLeft;
+                }
+                if (roundsCorrection > 0)
+                {
+                    totalSwitches *= roundsCorrection;
                 }
                 int groupsPerCycle = barrelCount / roundsPerShot;
                 int totalGroupCount = (totalSwitches + roundsPerShot - 1) / roundsPerShot;

@@ -385,6 +385,13 @@ namespace KFCommonUtilityLib.Harmony
         }
 
         [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SwapSelectedAmmo))]
+        [HarmonyPrefix]
+        private static void Prefix_SwapSelectedAmmo_ItemActionRanged(EntityAlive _entity, ItemActionRanged __instance)
+        {
+            _entity.MinEventContext.ItemActionData = _entity.inventory.holdingItemData.actionData[__instance.ActionIndex];
+        }
+
+        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SwapSelectedAmmo))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_SwapSelectedAmmo_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
         {
@@ -662,13 +669,14 @@ namespace KFCommonUtilityLib.Harmony
         #endregion
 
         #region Inventory.FireEvent, set current action
-        [HarmonyPatch(typeof(Inventory), nameof(Inventory.FireEvent))]
-        [HarmonyPrefix]
-        private static bool Prefix_FireEvent_Inventory(Inventory __instance)
-        {
-            MultiActionUtils.SetMinEventParamsByEntityInventory(__instance.entity);
-            return true;
-        }
+        // causing trouble with action0 ranged + action1 melee
+        //[HarmonyPatch(typeof(Inventory), nameof(Inventory.FireEvent))]
+        //[HarmonyPrefix]
+        //private static bool Prefix_FireEvent_Inventory(Inventory __instance)
+        //{
+        //    MultiActionUtils.SetMinEventParamsByEntityInventory(__instance.entity);
+        //    return true;
+        //}
         #endregion
 
         #region Inventory.syncHeldItem, set current action
@@ -1072,12 +1080,55 @@ namespace KFCommonUtilityLib.Harmony
                     codes.InsertRange(i, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(AnimatorMeleeAttackState), "entity"),
+                        CodeInstruction.LoadField(typeof(AnimatorMeleeAttackState), nameof(AnimatorMeleeAttackState.entity)),
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(AnimatorMeleeAttackState), "actionIndex"),
+                        CodeInstruction.LoadField(typeof(AnimatorMeleeAttackState), nameof(AnimatorMeleeAttackState.actionIndex)),
                         CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.SetMinEventParamsActionData))
                     });
                     i += 5;
+                }
+                else if (code.opcode == OpCodes.Stloc_S && ((LocalBuilder)code.operand).LocalIndex == 6)
+                {
+                    codes.InsertRange(i + 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0).WithLabels(codes[i + 1].ExtractLabels()),
+                        CodeInstruction.LoadField(typeof(AnimatorMeleeAttackState), nameof(AnimatorMeleeAttackState.entity)),
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(AnimatorMeleeAttackState), nameof(AnimatorMeleeAttackState.actionIndex)),
+                        CodeInstruction.CallClosure<Action<EntityAlive, int>>(static (entity, actionIndex) =>
+                        {
+                            entity.MinEventContext.ItemActionData = entity.inventory.holdingItemData.actionData[actionIndex];
+                        })
+                    });
+                    i += 5;
+                }
+            }
+
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(AnimatorMeleeAttackState), nameof(AnimatorMeleeAttackState.impactStart), MethodType.Enumerator)]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_impactStart_AnimatorMeleeAttackState(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].opcode == OpCodes.Stloc_2)
+                {
+                    codes.InsertRange(i + 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldloc_1).WithLabels(codes[i + 1].ExtractLabels()),
+                        CodeInstruction.LoadField(typeof(AnimatorMeleeAttackState), nameof(AnimatorMeleeAttackState.entity)),
+                        new CodeInstruction(OpCodes.Ldloc_1),
+                        CodeInstruction.LoadField(typeof(AnimatorMeleeAttackState), nameof(AnimatorMeleeAttackState.actionIndex)),
+                        CodeInstruction.CallClosure<Action<EntityAlive, int>>(static (entity, actionIndex) =>
+                        {
+                            entity.MinEventContext.ItemActionData = entity.inventory.holdingItemData.actionData[actionIndex];
+                        })
+                    });
+                    break;
                 }
             }
 
@@ -1093,6 +1144,34 @@ namespace KFCommonUtilityLib.Harmony
         }
 
         [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.StopHolding))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_StopHolding_ItemClass(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var mtd_stopholding = AccessTools.Method(typeof(ItemAction), nameof(ItemAction.StopHolding));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].Calls(mtd_stopholding))
+                {
+                    codes.InsertRange(i - 5, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_1).WithLabels(codes[i - 5].ExtractLabels()),
+                        new CodeInstruction(OpCodes.Ldloc_0),
+                        CodeInstruction.CallClosure<Action<ItemInventoryData, int>>(static (invData, actionIndex) =>
+                        {
+                            invData.holdingEntity.MinEventContext.ItemActionData = invData.actionData[actionIndex];
+                        })
+                    });
+                    break;
+                }
+            }
+
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.StopHolding))]
         [HarmonyPostfix]
         private static void Postfix_StopHolding_ItemClass(ItemInventoryData _data)
         {
@@ -1101,6 +1180,34 @@ namespace KFCommonUtilityLib.Harmony
                 MultiActionUtils.SetMinEventParamsByEntityInventory(_data.holdingEntity);
                 MultiActionManager.SetMappingForEntity(_data.holdingEntity.entityId, null);
             }
+        }
+
+        [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.StartHolding))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_StartHolding_ItemClass(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var mtd_startholding = AccessTools.Method(typeof(ItemAction), nameof(ItemAction.StartHolding));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].Calls(mtd_startholding))
+                {
+                    codes.InsertRange(i - 5, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_1).WithLabels(codes[i - 5].ExtractLabels()),
+                        new CodeInstruction(OpCodes.Ldloc_0),
+                        CodeInstruction.CallClosure<Action<ItemInventoryData, int>>(static (invData, actionIndex) =>
+                        {
+                            invData.holdingEntity.MinEventContext.ItemActionData = invData.actionData[actionIndex];
+                        })
+                    });
+                    break;
+                }
+            }
+
+            return codes;
         }
 
         [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.StartHolding))]
