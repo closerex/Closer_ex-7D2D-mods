@@ -25,7 +25,7 @@
 			<property class="Action0">
 				<property name="Class" value="DynamicMelee"/>
 				<property name="Sound_start" value="bashSwingReal"/>
-				<property name="DynamicSoundStart" value="bashSwingLight"/>
+				<property name="DynamicSoundStart" value="bashSwingLightSniper"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
 				<property name="Sphere" value=".1"/>
 				<property name="UseGrazingHits" value="true"/>
@@ -37,7 +37,7 @@
 			<property class="Action1">
 				<property name="Class" value="DynamicMelee"/>
 				<property name="Sound_start" value="bashSwingReal"/>
-				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
+				<property name="DynamicSoundStart" value="bashSwingHeavySniper"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
 				<property name="Sphere" value=".15"/>
 				<property name="UsePowerAttackAnimation" value="true"/>

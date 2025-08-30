@@ -15,5 +15,14 @@
         <AudioClip ClipName="#@modfolder:Resources/M99_Sounds.unity3d?WEP_M99_Handling_DryFire_03"/>
         <AudioClip ClipName="#@modfolder:Resources/M99_Sounds.unity3d?WEP_M99_Handling_DryFire_04"/>
         <LocalCrouchVolumeScale value="0.5"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="60"/> <MaxVoicesPerEntity value="12"/> <MaxRepeatRate value="0.001"/> </SoundDataNode>
+
+        <SoundDataNode name="bashSwingLightSniper"> <AudioSource name="@:Sounds/Prefabs/AudioSource_Melee.prefab"/> <NetworkAudioSource name="@:Sounds/Prefabs/AudioSource_Melee.prefab"/>
+            <AudioClip ClipName="none"/>
+            <LocalCrouchVolumeScale value="0.25"/> <CrouchNoiseScale value="0.05"/> <NoiseScale value=".15"/> <MaxVoices value="3"/> <MaxRepeatRate value="0.01"/>
+        </SoundDataNode>
+        <SoundDataNode name="bashSwingHeavySniper"> <AudioSource name="@:Sounds/Prefabs/AudioSource_Melee.prefab"/> <NetworkAudioSource name="@:Sounds/Prefabs/AudioSource_Melee.prefab"/>
+            <AudioClip ClipName="none"/>
+            <LocalCrouchVolumeScale value="0.25"/> <CrouchNoiseScale value="0.05"/> <NoiseScale value=".2"/> <MaxVoices value="3"/> <MaxRepeatRate value="0.01"/>
+        </SoundDataNode>
     </append>
 </config>

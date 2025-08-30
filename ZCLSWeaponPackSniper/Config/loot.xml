@@ -7,6 +7,33 @@
 			<append xpath="//lootgroup[@name='groupQuestWeaponsRangedT3']">
 				<item name="gunKFM99" loot_prob_template="QuestT4Prob"/>
 			</append>
+			<append xpath="//lootgroup[@name='groupEftAmmoSmallT3']">
+                <item name="ammoKF50BMGBulletBall" count="2,3" />
+			</append>
+			<append xpath="//lootgroup[@name='groupEftAmmoMediumT1']">
+                <item name="ammoKF50BMGBulletBall" count="1,3" />
+			</append>
+			<append xpath="//lootgroup[@name='groupEftAmmoMediumT2']">
+                <item name="ammoKF50BMGBulletBall" count="2,4" />
+			</append>
+			<append xpath="//lootgroup[@name='groupEftAmmoMediumT3']">
+                <item name="ammoKF50BMGBulletBall" count="3,5" />
+			</append>
+			<append xpath="//lootgroup[@name='groupEftAmmoLargeT0']">
+                <item name="ammoKF50BMGBulletBall" count="2,3" />
+			</append>
+			<append xpath="//lootgroup[@name='groupEftAmmoLargeT1']">
+                <item name="ammoKF50BMGBulletBall" count="2,4" />
+			</append>
+			<append xpath="//lootgroup[@name='groupEftAmmoLargeT2']">
+                <item name="ammoKF50BMGBulletBall" count="3,5" />
+			</append>
+			<append xpath="//lootgroup[@name='groupEftAmmoLargeT3']">
+                <item name="ammoKF50BMGBulletBall" count="4,6" />
+			</append>
+            <append xpath="//lootgroup[@name='groupQuestAmmo']">
+				<item name="ammoKF50BMGBulletBall" count="20,50" loot_prob_template="QuestT3Prob"/>
+            </append>
         </if>
         <else>
 			<insertAfter xpath="/lootcontainers/lootgroup[@name='empty']">
