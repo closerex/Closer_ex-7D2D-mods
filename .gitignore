@@ -1,5 +1,7 @@
 */
 *
+!AllowComboKeys/
+!AllowComboKeys/**
 !CustomMuzzleFlash/
 !CustomMuzzleFlash/**
 !0-CustomParticleLoader/

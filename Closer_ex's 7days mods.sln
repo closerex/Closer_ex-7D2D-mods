@@ -64,6 +64,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiBlockLayerFix", "Multi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GearsSavingPatch", "GearsSavingPatch\GearsSavingPatch.csproj", "{2D11EB35-A19C-471A-A53E-423125DB3818}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AllowComboKeys", "AllowComboKeys\AllowComboKeys.csproj", "{3DB91AEA-D99F-476F-AE44-501FD306CC48}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -182,6 +184,10 @@ Global
 		{2D11EB35-A19C-471A-A53E-423125DB3818}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D11EB35-A19C-471A-A53E-423125DB3818}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D11EB35-A19C-471A-A53E-423125DB3818}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DB91AEA-D99F-476F-AE44-501FD306CC48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DB91AEA-D99F-476F-AE44-501FD306CC48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DB91AEA-D99F-476F-AE44-501FD306CC48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DB91AEA-D99F-476F-AE44-501FD306CC48}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
