@@ -3,8 +3,8 @@
   <Global>
     <Tab name="ModeSetting" displayKey="FPV Leg Mode" tooltipKey="">
       <Category name="Main" displayKey="" tooltipKey="">
-        <Switch name="Mode" displayKey="Set Mode" tooltipKey="" value="New" defaultValue="New" leftValue="Old" rightValue="New" />
-        <Switch name="Shadow" displayKey="Turn Off Shadow" tooltipKey="" value="Yes" defaultValue="Yes" leftValue="No" rightValue="Yes" />
+        <Switch name="Mode" displayKey="Set Mode" tooltipKey="" defaultValue="New" leftValue="Old" rightValue="New" />
+        <Switch name="Shadow" displayKey="Turn Off Shadow" tooltipKey="" defaultValue="Yes" leftValue="No" rightValue="Yes" />
       </Category>
     </Tab>
   </Global>

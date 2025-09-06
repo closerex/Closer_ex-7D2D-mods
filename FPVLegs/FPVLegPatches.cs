@@ -57,6 +57,7 @@ namespace FPVLegs
             foreach (var renderer in model.GetComponentsInChildren<SkinnedMeshRenderer>(true))
             {
                 renderer.shadowCastingMode = (enabled || !FPVLegMode.disableShadow) ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
+                renderer.forceMatrixRecalculationPerRender = !enabled;
             }
         }
 
@@ -64,6 +65,7 @@ namespace FPVLegs
         {
             //var animator = player.emodel?.GetModelTransform()?.GetComponent<Animator>();
             var animator = player.emodel?.avatarController?.GetAnimator();
+            player.vp_FPCamera.gameObject.GetOrAddComponent<FPVLegCameraCallback>().enabled = player.bFirstPersonView;
             if (animator)
             {
                 animator.enabled = true;
@@ -135,77 +137,32 @@ namespace FPVLegs
         }
 
         //[HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.FixedUpdate))]
-        //[HarmonyPrefix]
-        //private static void Prefix_vp_FPCamera_FixedUpdate(vp_FPCamera __instance, out (bool, Vector3) __state)
+        //[HarmonyTranspiler]
+        //private static IEnumerable<CodeInstruction> Transpiler_vp_FPCamera_FixedUpdate(IEnumerable<CodeInstruction> instructions)
         //{
-        //    __state = (__instance.hasLateUpdateRan, __instance.transform.position);
-        //}
-
-        //[HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.FixedUpdate))]
-        //[HarmonyPostfix]
-        //private static void Postfix_vp_FPCamera_FixedUpdate(vp_FPCamera __instance, (bool executed, Vector3 prevPos) __state)
-        //{
-        //    if (__state.executed && __instance.FPController?.localPlayer && __instance.FPController.localPlayer.bFirstPersonView)
+        //    var codes = new List<CodeInstruction>(instructions);
+        //    var mtd_shake = AccessTools.Method(typeof(vp_FPCamera), nameof(vp_FPCamera.UpdateShakes));
+        //    for (int i = 0; i < codes.Count; i++)
         //    {
-        //        UpdateTpvPosition(__instance);
+        //        if (codes[i].Calls(mtd_shake))
+        //        {
+        //            codes.InsertRange(i + 1, new[]
+        //            {
+        //                new CodeInstruction(OpCodes.Ldarg_0),
+        //                CodeInstruction.Call(typeof(FPVLegPatches), nameof(UpdateTpvPosition))
+        //            });
+        //            break;
+        //        }
         //    }
+        //    return codes;
         //}
 
-        [HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.FixedUpdate))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_vp_FPCamera_FixedUpdate(IEnumerable<CodeInstruction> instructions)
-        {
-            var codes = new List<CodeInstruction>(instructions);
-            var mtd_shake = AccessTools.Method(typeof(vp_FPCamera), nameof(vp_FPCamera.UpdateShakes));
-            for (int i = 0; i < codes.Count; i++)
-            {
-                if (codes[i].Calls(mtd_shake))
-                {
-                    codes.InsertRange(i + 1, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.Call(typeof(FPVLegPatches), nameof(UpdateTpvPosition))
-                    });
-                    break;
-                }
-            }
-            return codes;
-        }
-
-        private static Vector3 legOffset = new Vector3(0f, 0.25f, -0.4f);
-        private static Vector3 headOffset = new Vector3(0f, 0.05f, -0.3f);
-
-        [HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.LateUpdate))]
-        [HarmonyPostfix]
-        private static void Postfix_vp_FPCamera_LateUpdate(vp_FPCamera __instance)
-        {
-            UpdateTpvPosition(__instance);
-        }
-
-        private static void UpdateTpvPosition(vp_FPCamera __instance)
-        {
-            if (!__instance.FPController?.localPlayer || !__instance.FPController.localPlayer.bFirstPersonView)
-            {
-                return;
-            }
-            var model = __instance.FPController.localPlayer.emodel?.GetModelTransform();
-            if (model)
-            {
-                var helper = model.GetComponent<FPVLegHelper>();
-                if (FPVLegMode.newMode)
-                {
-                    helper.LateUpdateTransform();
-                    var targetHeadPos = __instance.transform.parent.TransformPoint(__instance.transform.localPosition + headOffset);
-                    var headTrans = __instance.FPController.localPlayer.emodel.GetHeadTransform();
-                    model.position += targetHeadPos - headTrans.position;
-                }
-                else
-                {
-                    model.localPosition = legOffset;
-                    model.position += __instance.transform.parent.TransformDirection(__instance.transform.localPosition - __instance.m_PositionSpring.RestState);
-                }
-            }
-        }
+        //[HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.LateUpdate))]
+        //[HarmonyPostfix]
+        //private static void Postfix_vp_FPCamera_LateUpdate(vp_FPCamera __instance)
+        //{
+        //    UpdateTpvPosition(__instance);
+        //}
 
         [HarmonyPatch(typeof(MinEventActionAttachPrefabToHeldItem), nameof(MinEventActionAttachPrefabToHeldItem.Execute))]
         [HarmonyTranspiler]
@@ -370,6 +327,62 @@ namespace FPVLegs
                 //rLowerArm.localEulerAngles = new Vector3(0f, 0f, 0f);
                 //lHand.localEulerAngles = new Vector3(0f, 0f, 0f);
                 //rHand.localEulerAngles = new Vector3(0f, 0f, 0f);
+            }
+        }
+    }
+
+    public class FPVLegCameraCallback : MonoBehaviour
+    {
+        private static Vector3 legOffset = new Vector3(0f, 0.25f, -0.4f);
+        private static Vector3 headOffset = new Vector3(0f, 0.05f, -0.3f);
+        private vp_FPCamera vp_camera;
+
+        public void OnEnable()
+        {
+            vp_camera = GetComponent<vp_FPCamera>();
+            if (!vp_camera)
+            {
+                Destroy(this);
+            }
+        }
+
+        public void OnPreCull()
+        {
+            UpdateTpvPosition();
+        }
+
+        public void OnPostRender()
+        {
+            var model = vp_camera.FPController.localPlayer.emodel?.GetModelTransform();
+            if (model)
+            {
+                model.localPosition = Vector3.zero;
+            }
+        }
+
+        private void UpdateTpvPosition()
+        {
+            if (!vp_camera.FPController?.localPlayer)
+            {
+                return;
+            }
+            var model = vp_camera.FPController.localPlayer.emodel?.GetModelTransform();
+            if (model)
+            {
+                var helper = model.GetComponent<FPVLegHelper>();
+                if (FPVLegMode.newMode)
+                {
+                    helper.LateUpdateTransform();
+                    var originalModelPos = model.position;
+                    var targetHeadPos = vp_camera.transform.parent.TransformPoint(vp_camera.transform.localPosition + headOffset);
+                    var headTrans = vp_camera.FPController.localPlayer.emodel.GetHeadTransform();
+                    model.position += targetHeadPos - headTrans.position;
+                }
+                else
+                {
+                    model.localPosition = legOffset;
+                    model.position += vp_camera.transform.parent.TransformDirection(vp_camera.transform.localPosition - vp_camera.m_PositionSpring.RestState);
+                }
             }
         }
     }
