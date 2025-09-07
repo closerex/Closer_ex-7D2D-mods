@@ -26,7 +26,7 @@ namespace FPVLegs
         [HarmonyPostfix]
         private static void Postfix_SDCSUtils_CreateTP(EntityAlive entity, ref bool isFPV, bool __state)
         {
-            if (entity is EntityPlayerLocal)
+            if (entity is EntityPlayerLocal player)
             {
                 entity.emodel.IsFPV = __state;
                 isFPV = __state;
@@ -34,7 +34,16 @@ namespace FPVLegs
                 {
                     UpdateTPVMeshState(entity, false);
                 }
+
+                UpdateTPVRendererState(entity, !player.bFirstPersonView || !player.vp_FPCamera.Locked3rdPerson);
             }
+        }
+
+        [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.SetCameraAttachedToPlayer))]
+        [HarmonyPostfix]
+        private static void Postfix_EntityPlayerLocal_SetCameraAttachedToPlayer(EntityPlayerLocal __instance)
+        {
+            UpdateTPVRendererState(__instance, !__instance.bFirstPersonView || !__instance.vp_FPCamera.Locked3rdPerson);
         }
 
         public static void UpdateTPVMeshState(EntityAlive entity, bool enabled)
@@ -54,10 +63,26 @@ namespace FPVLegs
                 }
             }
 
-            foreach (var renderer in model.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+            foreach (var renderer in model.GetComponentsInChildren<Renderer>(true))
             {
                 renderer.shadowCastingMode = (enabled || !FPVLegMode.disableShadow) ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
-                renderer.forceMatrixRecalculationPerRender = !enabled;
+                if (renderer is SkinnedMeshRenderer skinnedMeshRenderer)
+                {
+                    skinnedMeshRenderer.forceMatrixRecalculationPerRender = !enabled;
+                }
+            }
+        }
+
+        public static void UpdateTPVRendererState(EntityAlive entity, bool enabled)
+        {
+            var model = entity.emodel.GetModelTransform();
+            if (!model)
+            {
+                return;
+            }
+            foreach (var renderer in model.GetComponentsInChildren<Renderer>(true))
+            {
+                renderer.forceRenderingOff = !enabled;
             }
         }
 
@@ -367,7 +392,7 @@ namespace FPVLegs
                 return;
             }
             var model = vp_camera.FPController.localPlayer.emodel?.GetModelTransform();
-            if (model)
+            if (model && vp_camera.transform.parent)
             {
                 var helper = model.GetComponent<FPVLegHelper>();
                 if (FPVLegMode.newMode)
