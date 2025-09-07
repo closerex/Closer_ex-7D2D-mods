@@ -152,6 +152,18 @@ public class CustomPlayerActionManager
         return true;
     }
 
+    public static void CacheCustomControls()
+    {
+        foreach(var set in dict_action_sets.Values)
+            set.CacheSavedData();
+    }
+
+    public static void RestoreCustomControls()
+    {
+        foreach (var set in dict_action_sets.Values)
+            set.RestoreSavedData();
+    }
+
     public static void SaveCustomControls()
     {
         if (dict_action_sets.Count <= 0)

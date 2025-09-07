@@ -1,9 +1,10 @@
 ﻿using GUI_2;
 using HarmonyLib;
 using Platform;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection.Emit;
+using UniLinq;
 
 [HarmonyPatch]
 public class Patches
@@ -88,24 +89,79 @@ public class Patches
         CustomPlayerActionManager.SaveCustomControls();
     }
 
-    [HarmonyPatch(typeof(GameOptionsManager), nameof(GameOptionsManager.ResetGameOptions))]
+    [HarmonyPatch(typeof(XUiC_OptionsControls), nameof(XUiC_OptionsControls.storeCurrentBindings))]
+    [HarmonyPostfix]
+    private static void Postfix_storeCurrentBindings_XUiC_OptionsControls()
+    {
+        CustomPlayerActionManager.CacheCustomControls();
+    }
+
+    [HarmonyPatch(typeof(XUiC_OptionsController), nameof(XUiC_OptionsController.storeCurrentBindings))]
+    [HarmonyPostfix]
+    private static void Postfix_storeCurrentBindings_XUiC_OptionsController()
+    {
+        CustomPlayerActionManager.CacheCustomControls();
+    }
+
+    [HarmonyPatch(typeof(XUiC_OptionsControls), nameof(XUiC_OptionsControls.OnClose))]
+    [HarmonyPostfix]
+    private static void Postfix_OnClose_XUiC_OptionsControls(bool ___closedForNewBinding)
+    {
+        if (!___closedForNewBinding)
+            CustomPlayerActionManager.RestoreCustomControls();
+    }
+
+    [HarmonyPatch(typeof(XUiC_OptionsController), nameof(XUiC_OptionsController.OnClose))]
+    [HarmonyPostfix]
+    private static void Postfix_OnClose_XUiC_OptionsController(bool ___closedForNewBinding)
+    {
+        if (!___closedForNewBinding)
+            CustomPlayerActionManager.RestoreCustomControls();
+    }
+
+    [HarmonyPatch(typeof(XUiC_OptionsControls), nameof(XUiC_OptionsControls.BtnDefaults_OnOnPressed))]
     [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_ResetGameOptions_GameOptionsManager(IEnumerable<CodeInstruction> instructions)
+    private static IEnumerable<CodeInstruction> Transpiler_BtnDefaults_OnOnPressed_XUiC_OptionsControls(IEnumerable<CodeInstruction> instructions)
     {
         var codes = new List<CodeInstruction>(instructions);
-        var mtd_save_controls = AccessTools.Method(typeof(GameOptionsManager), nameof(GameOptionsManager.SaveControls));
+
+        var prop_actionset = AccessTools.PropertyGetter(typeof(PlayerInputManager), nameof(PlayerInputManager.ActionSets));
 
         for (int i = 0; i < codes.Count; ++i)
         {
-            if (codes[i].Calls(mtd_save_controls))
+            if (codes[i].Calls(prop_actionset))
             {
-                codes.Insert(i + 1, CodeInstruction.Call(typeof(CustomPlayerActionManager), nameof(CustomPlayerActionManager.ResetCustomControls)));
-                i++;
+                codes[i + 1].operand = AccessTools.Method(typeof(IEnumerable<PlayerActionsBase>), nameof(IEnumerable<PlayerActionsBase>.GetEnumerator));
+                codes.InsertRange(i + 1, new[]
+                {
+                    CodeInstruction.Call(typeof(Enumerable), nameof(Enumerable.ToArray), null, new[] { typeof(PlayerActionsBase) }),
+                    CodeInstruction.Call(typeof(CustomPlayerActionManager), nameof(CustomPlayerActionManager.CreateActionArray)),
+                    CodeInstruction.Call(typeof(Enumerable), nameof(Enumerable.ToList), null, new[] { typeof(PlayerActionsBase) })
+                });
+                i += 3;
             }
         }
-
         return codes;
     }
+
+    //[HarmonyPatch(typeof(GameOptionsManager), nameof(GameOptionsManager.ResetGameOptions))]
+    //[HarmonyTranspiler]
+    //private static IEnumerable<CodeInstruction> Transpiler_ResetGameOptions_GameOptionsManager(IEnumerable<CodeInstruction> instructions)
+    //{
+    //    var codes = new List<CodeInstruction>(instructions);
+    //    var mtd_save_controls = AccessTools.Method(typeof(GameOptionsManager), nameof(GameOptionsManager.SaveControls));
+
+    //    for (int i = 0; i < codes.Count; ++i)
+    //    {
+    //        if (codes[i].Calls(mtd_save_controls))
+    //        {
+    //            codes.Insert(i + 1, CodeInstruction.Call(typeof(CustomPlayerActionManager), nameof(CustomPlayerActionManager.ResetCustomControls)));
+    //            i++;
+    //        }
+    //    }
+
+    //    return codes;
+    //}
 
     [HarmonyPatch(typeof(ActionSetManager), nameof(ActionSetManager.LogActionSets))]
     [HarmonyTranspiler]
