@@ -1,5 +1,4 @@
 #if NotEditor
-using KFCommonUtilityLib.Scripts.StaticManagers;
 using UniLinq;
 #else
 using System.Linq;
@@ -7,6 +6,7 @@ using System.Linq;
 using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
+using KFCommonUtilityLib;
 
 [AddComponentMenu("KFAttachments/RigAdaptors/Rig Targets")]
 public class RigTargets : AnimationTargetsAbs

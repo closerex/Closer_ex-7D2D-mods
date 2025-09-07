@@ -1,5 +1,4 @@
 ﻿#if NotEditor
-using KFCommonUtilityLib.Scripts.StaticManagers;
 using UniLinq;
 #else
 using System.Linq;
@@ -10,6 +9,7 @@ using UnityEngine.Animations;
 using UnityEngine.Animations.Rigging;
 using System;
 using System.Collections.Generic;
+using KFCommonUtilityLib;
 
 [AddComponentMenu("")]
 public abstract class AnimationTargetsAbs : MonoBehaviour

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UniLinq;
 
-namespace KFCommonUtilityLib.Scripts.StaticManagers
+namespace KFCommonUtilityLib
 {
     public static class CustomEffectEnumManager
     {
@@ -44,18 +44,14 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         public static T RegisterOrGetEnum<T>(string name, bool ignoreCase = false) where T : struct, Enum
         {
             if (!EnumHolder<T>.Registered)
-            {
                 throw new Exception($"Enum not registered: {typeof(T).Name}");
-            }
             return EnumHolder<T>.RegisterOrGetEnum(name, ignoreCase);
         }
 
         public static T GetEnumOrThrow<T>(string name, bool ignoreCase = false) where T : struct, Enum
         {
             if (!EnumHolder<T>.Registered)
-            {
                 throw new Exception($"Enum not registered: {typeof(T).Name}");
-            }
             return EnumHolder<T>.GetEnumOrThrow(name, ignoreCase);
         }
 
@@ -134,13 +130,9 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             public static void RequestMinMax(bool requestMin, int requestedMin, bool requestMax, int requestedMax)
             {
                 if (requestMin && requestedMin >= min)
-                {
                     min = requestedMin;
-                }
                 if (requestMax && requestedMax <= max)
-                {
                     max = requestedMax;
-                }
             }
 
             public static void InitDefault()
@@ -161,7 +153,6 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 var values = enums.Select(e => Convert.ToInt32(e)).OrderBy(i => i).ToArray();
                 int nextHole = min;
                 foreach (var value in values)
-                {
                     if (nextHole < value)
                     {
                         link_default_holes.AddLast((nextHole, Math.Min(value - 1, max)));
@@ -175,16 +166,11 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                     else if (nextHole == value)
                     {
                         if (value >= max)
-                        {
                             break;
-                        }
                         nextHole++;
                     }
-                }
                 if (nextHole <= max && values[values.Length - 1] < max)
-                {
                     link_default_holes.AddLast((nextHole, max));
-                }
                 DefaultInited = true;
             }
 
@@ -223,9 +209,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             public static T GetEnumOrThrow(string name, bool ignoreCase = false)
             {
                 if ((ignoreCase ? dict_final_enums_lower : dict_final_enums).TryGetValue(ignoreCase ? name.ToLower() : name, out var value))
-                {
                     return value;
-                }
                 throw new Exception($"Enum not registered: {name} type: {typeof(T).ToString()}");
             }
         }

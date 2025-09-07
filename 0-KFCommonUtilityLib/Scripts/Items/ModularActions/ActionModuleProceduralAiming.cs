@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using KFCommonUtilityLib;
-using KFCommonUtilityLib.Scripts.Attributes;
-using KFCommonUtilityLib.Scripts.StaticManagers;
+using KFCommonUtilityLib.Attributes;
 using System.Collections.Generic;
 using UnityEngine;
 

@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
-using KFCommonUtilityLib.Scripts.Attributes;
-using KFCommonUtilityLib.Scripts.StaticManagers;
+using KFCommonUtilityLib;
+using KFCommonUtilityLib.Attributes;
 
 [TypeTarget(typeof(ItemActionDynamic))]
 public class ActionModuleDynamicGraze

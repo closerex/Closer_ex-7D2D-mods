@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using KFCommonUtilityLib.Scripts.Attributes;
+using KFCommonUtilityLib.Attributes;
 using KFCommonUtilityLib.Scripts.Utilities;
 
 [TypeTarget(typeof(ItemActionAttack)), TypeDataTarget(typeof(DynamicMuzzleFlashData))]

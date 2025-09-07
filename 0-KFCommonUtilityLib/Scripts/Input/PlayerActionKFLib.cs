@@ -9,6 +9,7 @@ public class PlayerActionKFLib : CustomPlayerActionVersionBase
     public PlayerAction ToggleActionMode;
     public PlayerAction ToggleZoom;
     public PlayerAction AltMelee;
+    public PlayerAction AltInspect;
 
     public PlayerActionKFLib()
     {
@@ -33,6 +34,8 @@ public class PlayerActionKFLib : CustomPlayerActionVersionBase
         ToggleZoom.UserData = new PlayerActionData.ActionUserData("inpActToggleZoomLevelName", "inpActToggleZoomLevelDesc", PlayerActionData.GroupPlayerControl);
         AltMelee = CreatePlayerAction("PerformAltMelee");
         AltMelee.UserData = new PlayerActionData.ActionUserData("inpActPerformAltMeleeName", "inpActPerformAltMeleeDesc", PlayerActionData.GroupPlayerControl);
+        AltInspect = CreatePlayerAction("PerformAltInspect");
+        AltInspect.UserData = new PlayerActionData.ActionUserData("inpActPerformAltInspectName", "inpActPerformAltInspectDesc", PlayerActionData.GroupPlayerControl);
     }
 
     public override void CreateDefaultJoystickBindings()

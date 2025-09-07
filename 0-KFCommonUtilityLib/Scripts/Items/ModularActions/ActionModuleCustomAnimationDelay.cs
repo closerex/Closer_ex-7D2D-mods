@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 using KFCommonUtilityLib;
-using KFCommonUtilityLib.Scripts.Attributes;
+using KFCommonUtilityLib.Attributes;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using UAI;

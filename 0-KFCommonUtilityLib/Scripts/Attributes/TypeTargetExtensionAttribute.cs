@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace KFCommonUtilityLib.Scripts.Attributes
+namespace KFCommonUtilityLib.Attributes
 {
-    [AttributeUsage(System.AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
     public class TypeTargetExtensionAttribute :  Attribute
     {
         public Type ModuleType { get; }

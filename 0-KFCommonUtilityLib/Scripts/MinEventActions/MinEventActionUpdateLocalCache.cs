@@ -1,5 +1,4 @@
 ﻿using KFCommonUtilityLib;
-using KFCommonUtilityLib.Scripts.StaticManagers;
 using System;
 using System.Xml.Linq;
 

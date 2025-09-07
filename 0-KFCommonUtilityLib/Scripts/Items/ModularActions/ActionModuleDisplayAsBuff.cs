@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using KFCommonUtilityLib.Scripts.Attributes;
+using KFCommonUtilityLib.Attributes;
 
 //public class DisplayAsBuffEntityUINotification : BuffEntityUINotification
 //{

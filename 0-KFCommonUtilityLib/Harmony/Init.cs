@@ -3,7 +3,6 @@ using GearsAPI.Settings.Global;
 using GearsAPI.Settings.World;
 using HarmonyLib;
 using KFCommonUtilityLib;
-using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System;
 using System.Reflection;
@@ -85,6 +84,7 @@ namespace KFCommonUtilityLib.Gears
     {
         public static event Action<IModGlobalSettings> OnGlobalSettingsSaved;
         public static event Action<IModGlobalSettings> OnGlobalSettingsOpened;
+        public static event Action<IModGlobalSettings> OnGlobalSettingsClosed;
 
         public static void SaveGlobalSettings(IModGlobalSettings modSettings)
         {
@@ -96,6 +96,11 @@ namespace KFCommonUtilityLib.Gears
             OnGlobalSettingsOpened?.Invoke(modSettings);
         }
 
+        public static void CloseGlobalSettings(IModGlobalSettings modSettings)
+        {
+            OnGlobalSettingsClosed?.Invoke(modSettings);
+        }
+
         public void InitMod(IGearsMod modInstance)
         {
 
@@ -105,6 +110,7 @@ namespace KFCommonUtilityLib.Gears
         {
             RecoilManager.InitRecoilSettings(modSettings);
             CameraAnimationEvents.InitModSettings(modSettings);
+            InspectSettings.InitSettings(modSettings);
         }
 
         public void OnWorldSettingsLoaded(IModWorldSettings worldSettings)

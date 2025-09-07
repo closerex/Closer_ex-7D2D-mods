@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using UniLinq;
 using System.Reflection;
 using MethodAttributes = Mono.Cecil.MethodAttributes;
-using KFCommonUtilityLib.Scripts.Attributes;
 using Mono.Cecil.Rocks;
+using KFCommonUtilityLib.Attributes;
 
 namespace KFCommonUtilityLib
 {

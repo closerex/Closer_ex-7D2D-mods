@@ -1,4 +1,4 @@
-﻿using KFCommonUtilityLib.Scripts.StaticManagers;
+﻿using KFCommonUtilityLib;
 using Mono.Cecil.Cil;
 using Mono.Cecil;
 using System;

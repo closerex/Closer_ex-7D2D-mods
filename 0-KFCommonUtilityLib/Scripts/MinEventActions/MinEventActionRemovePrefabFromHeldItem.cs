@@ -1,4 +1,4 @@
-﻿using KFCommonUtilityLib.Scripts.StaticManagers;
+﻿using KFCommonUtilityLib;
 using UnityEngine;
 
 public class MinEventActionRemovePrefabFromHeldItem : MinEventActionRemovePrefabFromEntity

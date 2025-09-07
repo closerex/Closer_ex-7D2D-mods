@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace KFCommonUtilityLib.Scripts.Attributes
+namespace KFCommonUtilityLib.Attributes
 {
-    [System.AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
     public sealed class TypeTargetAttribute : Attribute
     {
         // This is a positional argument

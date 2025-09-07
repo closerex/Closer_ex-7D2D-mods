@@ -1,12 +1,10 @@
-﻿using KFCommonUtilityLib.Scripts.Attributes;
+﻿using KFCommonUtilityLib.Attributes;
 using HarmonyLib;
 using UnityEngine;
-using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib;
 using System.Reflection.Emit;
 using System.Collections.Generic;
 using UniLinq;
-using static ActionModuleTagged;
 using KFCommonUtilityLib.Scripts.Utilities;
 
 public struct ShotIndexRange

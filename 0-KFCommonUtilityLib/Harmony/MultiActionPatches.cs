@@ -1,7 +1,7 @@
 ﻿using GameEvent.SequenceActions;
 using HarmonyLib;
 using KFCommonUtilityLib.Scripts.NetPackages;
-using KFCommonUtilityLib.Scripts.StaticManagers;
+using KFCommonUtilityLib;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System;
 using System.Collections.Generic;
@@ -2330,6 +2330,34 @@ namespace KFCommonUtilityLib.Harmony
             return codes;
         }
 
+        [HarmonyPatch(typeof(Inventory), nameof(Inventory.updateHoldingItem))]
+        [HarmonyPrefix]
+        private static void Prefix_updateHoldingItem_Inventory(Inventory __instance)
+        {
+            __instance.m_HoldingItemIdx = __instance.m_FocusedItemIdx;
+        }
+
+        [HarmonyPatch(typeof(Inventory), nameof(Inventory.setHeldItemByIndex))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_setHeldItemByIndex_Inventory(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            var codes = instructions.ToList();
+
+            var fld_holdingidx = AccessTools.Field(typeof(Inventory), nameof(Inventory.m_HoldingItemIdx));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].StoresField(fld_holdingidx))
+                {
+                    codes[i + 1].WithLabels(codes[i - 2].ExtractLabels());
+                    codes.RemoveRange(i - 2, 3);
+                    break;
+                }
+            }
+
+            return codes;
+        }
+
         [HarmonyPatch(typeof(Inventory), nameof(Inventory.delayedShowHideHeldItem), MethodType.Enumerator)]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_delayedShowHideHeldItem_Inventory(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -2834,18 +2862,6 @@ namespace KFCommonUtilityLib.Harmony
             var mtd_invdata = AccessTools.Method(typeof(Inventory), nameof(Inventory.createInventoryData));
             for (int i = 0; i < codes.Count; i++)
             {
-                //if (codes[i].opcode == OpCodes.Ldarg_3 && (codes[i + 1].opcode == OpCodes.Brtrue_S || codes[i + 1].opcode == OpCodes.Brtrue))
-                //{
-                //    var label = codes[i + 4].ExtractLabels();
-                //    codes.InsertRange(i + 4, new[]
-                //    {
-                //        new CodeInstruction(OpCodes.Ldarg_2).WithLabels(label),
-                //        new CodeInstruction(OpCodes.Callvirt, mtd_clone),
-                //        new CodeInstruction(OpCodes.Starg_S, 2)
-                //    });
-                //    i += 7;
-                //}
-                //else 
                 if (codes[i].Calls(mtd_create))
                 {
                     codes.InsertRange(i - 12, new[]
@@ -2869,11 +2885,6 @@ namespace KFCommonUtilityLib.Harmony
                     }
                     break;
                 }
-                //else if (codes[i].Calls(mtd_clone))
-                //{
-                //    codes.RemoveAt(i);
-                //    break;
-                //}
             }
 
             return codes;
@@ -2914,17 +2925,8 @@ namespace KFCommonUtilityLib.Harmony
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_Update_XUiC_HUDStatBar(IEnumerable<CodeInstruction> instructions)
         {
-            MethodInfo mtd_getfocus = AccessTools.Method(typeof(Inventory), nameof(Inventory.GetFocusedItemIdx));
-            MethodInfo mtd_getholding = AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItemIdx));
-
-            foreach (var ins in instructions)
-            {
-                if (ins.Calls(mtd_getfocus))
-                {
-                    ins.operand = mtd_getholding;
-                }
-                yield return ins;
-            }
+            return instructions.MethodReplacer(AccessTools.Method(typeof(Inventory), nameof(Inventory.GetFocusedItemIdx)),
+                                               AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItemIdx)));
         }
         #endregion
     }

@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 using KFCommonUtilityLib;
-using KFCommonUtilityLib.Scripts.Attributes;
+using KFCommonUtilityLib.Attributes;
 using UnityEngine;
 
 [TypeTarget(typeof(ItemActionZoom)), TypeDataTarget(typeof(DynamicSensitivityData))]

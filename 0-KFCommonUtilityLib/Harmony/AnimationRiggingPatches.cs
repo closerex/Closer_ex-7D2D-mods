@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using KFCommonUtilityLib;
-using KFCommonUtilityLib.Scripts.StaticManagers;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System;
 using System.Collections.Generic;
@@ -1167,22 +1166,6 @@ static class AnimationRiggingPatches
         }
 
         return codes;
-    }
-
-    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SwapSelectedAmmo))]
-    [HarmonyPrefix]
-    private static bool Prefix_SwapSelectedAmmo_ItemActionRanged(ItemActionRanged __instance, EntityAlive _entity, int _ammoIndex)
-    {
-        if (_ammoIndex == (int)_entity.inventory.holdingItemItemValue.SelectedAmmoTypeIndex && __instance is IModuleContainerFor<ActionModuleInspectable> inspectable && _entity is EntityPlayerLocal player)
-        {
-            ItemActionRanged.ItemActionDataRanged _actionData = _entity.inventory.holdingItemData.actionData[__instance.ActionIndex] as ItemActionRanged.ItemActionDataRanged;
-            if (!_entity.MovementRunning && !_entity.AimingGun && !player.bLerpCameraFlag && _actionData != null && !_entity.inventory.holdingItem.IsActionRunning(_entity.inventory.holdingItemData) && !__instance.CanReload(_actionData) && (_entity.inventory.holdingItemItemValue.Meta > 0 || inspectable.Instance.allowEmptyInspect))
-            {
-                _entity.emodel.avatarController._setTrigger("weaponInspect", true);
-                return false;
-            }
-        }
-        return true;
     }
 
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ExecuteAction))]

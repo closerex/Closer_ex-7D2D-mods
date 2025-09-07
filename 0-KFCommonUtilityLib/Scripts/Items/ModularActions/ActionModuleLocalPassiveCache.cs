@@ -1,5 +1,5 @@
-﻿using KFCommonUtilityLib.Scripts.Attributes;
-using KFCommonUtilityLib.Scripts.StaticManagers;
+﻿using KFCommonUtilityLib.Attributes;
+using KFCommonUtilityLib;
 using System;
 using System.Collections;
 using System.Collections.Generic;

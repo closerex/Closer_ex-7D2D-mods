@@ -3,7 +3,7 @@ using UniLinq;
 using UnityEngine;
 using static ItemActionRanged;
 
-namespace KFCommonUtilityLib.Scripts.StaticManagers
+namespace KFCommonUtilityLib
 {
     public static class AnimationRiggingManager
     {
@@ -62,10 +62,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         public static void ParseItemIDs()
         {
             foreach (var name in hash_items_parse_later)
-            {
                 hash_items_take_over_reload_time.Add(ItemClass.GetItemClass(name).Id);
-                //Log.Out($"parse item id: {name} {ItemClass.GetItemClass(name).Id}");
-            }
             hash_items_parse_later.Clear();
         }
 
@@ -80,17 +77,11 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 return null;
             AnimationGraphBuilder graphBuilder;
             if (player.emodel.avatarController is AvatarMultiBodyController multiBodyController)
-            {
                 graphBuilder = multiBodyController.PrimaryBody?.Animator?.GetComponent<AnimationGraphBuilder>();
-            }
             else
-            {
                 graphBuilder = player.emodel.avatarController.GetAnimator()?.GetComponent<AnimationGraphBuilder>();
-            }
             if (graphBuilder && graphBuilder.CurrentTarget)
-            {
                 return graphBuilder.CurrentTarget;
-            }
             return null;
         }
 
@@ -105,9 +96,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         {
             Transform holdingItemTransform = inventory?.GetHoldingItemTransform();
             if (holdingItemTransform)
-            {
                 return holdingItemTransform.GetComponent<AnimationTargetsAbs>();
-            }
             return null;
         }
 
@@ -115,9 +104,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         {
             Transform lastHoldingItemTransform = inventory?.lastdrawnHoldingItemTransform;
             if (lastHoldingItemTransform)
-            {
                 return lastHoldingItemTransform.GetComponent<AnimationTargetsAbs>();
-            }
             return null;
         }
 
@@ -126,9 +113,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         public static void UpdatePlayerAvatar(AvatarController controller)
         {
             if (!controller?.Entity)
-            {
                 return;
-            }
             AnimationTargetsAbs targets = GetActiveRigTargetsFromPlayer(controller.Entity);
             if (targets && !targets.Destroyed)
             {
@@ -188,9 +173,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
                 //RigItemChangedThisFrame = true;
                 targets.Destroy();
                 if (slot == inv.holdingItemIdx && inv.entity is EntityPlayer)
-                {
                     hash_rig_changed_players.Add(inv.entity.entityId);
-                }
             }
         }
 
@@ -219,10 +202,8 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
             //}
             targets = GetHoldingRigTargetsFromPlayer(player);
             if (targets && !targets.Destroyed && targets.IsAnimationSet)
-            {
                 //RigItemChangedThisFrame = true;
                 hash_rig_changed_players.Add(player.entityId);
-            }
         }
 
         public static Transform GetAttachmentReferenceOverrideTransform(Transform transform, string transformPath, Entity entity)
@@ -300,9 +281,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
 
             var attachmentOverride = targets.GetAttachmentPathOverride(name, onlyActive);
             if (attachmentOverride)
-            {
                 return attachmentOverride;
-            }
 
             Transform targetRoot = targets.ItemCurrentOrDefault;
             if (string.IsNullOrEmpty(name))
@@ -320,11 +299,11 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
         {
             if (!isLocalFpv || !GetCurRigTargetsFromInventory(_actionData.invData.holdingEntity.inventory))
                 return false;
-            var itemActionDataRanged = _actionData as ItemActionRanged.ItemActionDataRanged;
+            var itemActionDataRanged = _actionData as ItemActionDataRanged;
             EntityPlayerLocal player = GameManager.Instance.World.GetPrimaryPlayer();
             if (itemActionDataRanged.muzzle != null)
             {
-                Transform parent = (itemActionDataRanged.IsDoubleBarrel && itemActionDataRanged.invData.itemValue.Meta == 0) ? itemActionDataRanged.muzzle2 : itemActionDataRanged.muzzle;
+                Transform parent = itemActionDataRanged.IsDoubleBarrel && itemActionDataRanged.invData.itemValue.Meta == 0 ? itemActionDataRanged.muzzle2 : itemActionDataRanged.muzzle;
                 if (!itemActionDataRanged.IsFlashSuppressed && particlesMuzzleFire != null)
                 {
                     Transform fire = GameManager.Instance.SpawnParticleEffectClientForceCreation(new ParticleEffect(particlesMuzzleFireFpv != null ? particlesMuzzleFireFpv : particlesMuzzleFire, Vector3.zero, 1f, Color.clear, null, null, false), player.entityId, true);

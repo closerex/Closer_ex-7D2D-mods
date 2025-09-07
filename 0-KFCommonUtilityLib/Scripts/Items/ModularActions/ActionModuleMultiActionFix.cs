@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
-using KFCommonUtilityLib.Scripts.Attributes;
-using KFCommonUtilityLib.Scripts.StaticManagers;
+using KFCommonUtilityLib;
+using KFCommonUtilityLib.Attributes;
 using KFCommonUtilityLib.Scripts.Utilities;
 
 [TypeTarget(typeof(ItemActionAttack)), TypeDataTarget(typeof(MultiActionData))]

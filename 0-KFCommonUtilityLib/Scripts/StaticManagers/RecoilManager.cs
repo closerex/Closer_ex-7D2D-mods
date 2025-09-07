@@ -2,7 +2,7 @@
 using GearsAPI.Settings.Global;
 using UnityEngine;
 
-namespace KFCommonUtilityLib.Scripts.StaticManagers
+namespace KFCommonUtilityLib
 {
     public static class RecoilManager
     {
@@ -59,15 +59,15 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
 
             var recoilCompensationSetting = capSetting.GetSetting("RecoilCompensationSensitivityMultiplier") as ISliderGlobalSetting;
             recoilCompensationSensitivityMultiplier = float.Parse(recoilCompensationSetting.CurrentValue);
-            recoilCompensationSetting.OnSettingChanged += (setting, newValue) => recoilCompensationSensitivityMultiplier = float.Parse(newValue);
+            recoilCompensationSetting.OnSettingChanged += static (setting, newValue) => recoilCompensationSensitivityMultiplier = float.Parse(newValue);
 
             var preRecoilCompensationSetting = capSetting.GetSetting("EnablePreRecoilCompensation") as ISwitchGlobalSetting;
             enablePreRecoilCompensation = preRecoilCompensationSetting.CurrentValue == "Enable";
-            preRecoilCompensationSetting.OnSettingChanged += (setting, newValue) => enablePreRecoilCompensation = newValue == "Enable";
+            preRecoilCompensationSetting.OnSettingChanged += static (setting, newValue) => enablePreRecoilCompensation = newValue == "Enable";
 
             var enableCapSetting = capSetting.GetSetting("EnableCap") as ISwitchGlobalSetting;
             enableCap = enableCapSetting.CurrentValue == "Enable";
-            enableCapSetting.OnSettingChanged += (setting, newValue) =>
+            enableCapSetting.OnSettingChanged += static (setting, newValue) =>
             {
                 enableCap = newValue == "Enable";
                 UpdateSettingState(setting.Category);
@@ -75,19 +75,19 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
 
             var recoilRemainSetting = capSetting.GetSetting("RecoilRemain") as ISliderGlobalSetting;
             recoilCapRemain = float.Parse(recoilRemainSetting.CurrentValue);
-            recoilRemainSetting.OnSettingChanged += (setting, newValue) => recoilCapRemain = float.Parse(newValue);
+            recoilRemainSetting.OnSettingChanged += static (setting, newValue) => recoilCapRemain = float.Parse(newValue);
 
             var enableSoftCapSetting = capSetting.GetSetting("EnableSoftCap") as ISwitchGlobalSetting;
             enableSoftCap = enableSoftCapSetting.CurrentValue == "Enable";
-            enableSoftCapSetting.OnSettingChanged += (setting, newValue) => enableSoftCap = newValue == "Enable";
+            enableSoftCapSetting.OnSettingChanged += static (setting, newValue) => enableSoftCap = newValue == "Enable";
 
             var maxRecoilAngleSetting = capSetting.GetSetting("MaxRecoilAngle") as ISliderGlobalSetting;
             maxRecoilAngle = float.Parse(maxRecoilAngleSetting.CurrentValue);
-            maxRecoilAngleSetting.OnSettingChanged += (setting, newValue) => maxRecoilAngle = float.Parse(newValue);
+            maxRecoilAngleSetting.OnSettingChanged += static (setting, newValue) => maxRecoilAngle = float.Parse(newValue);
 
             var enableDynamicCapSetting = capSetting.GetSetting("EnableDynamicCap") as ISwitchGlobalSetting;
             enableDynamicCap = enableDynamicCapSetting.CurrentValue == "Enable";
-            enableDynamicCapSetting.OnSettingChanged += (setting, newValue) =>
+            enableDynamicCapSetting.OnSettingChanged += static (setting, newValue) =>
             {
                 enableDynamicCap = newValue == "Enable";
                 UpdateSettingState(setting.Category);
@@ -95,7 +95,7 @@ namespace KFCommonUtilityLib.Scripts.StaticManagers
 
             var maxDynamicRecoilCapShotsSetting = capSetting.GetSetting("MaxDynamicRecoilCapShots") as ISliderGlobalSetting;
             maxDynamicRecoilCapShots = int.Parse(maxDynamicRecoilCapShotsSetting.CurrentValue);
-            maxDynamicRecoilCapShotsSetting.OnSettingChanged += (setting, newValue) => maxDynamicRecoilCapShots = int.Parse(newValue);
+            maxDynamicRecoilCapShotsSetting.OnSettingChanged += static (setting, newValue) => maxDynamicRecoilCapShots = int.Parse(newValue);
             UpdateSettingState(capSetting);
         }
 

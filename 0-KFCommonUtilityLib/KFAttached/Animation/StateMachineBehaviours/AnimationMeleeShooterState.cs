@@ -3,7 +3,6 @@ using UnityEngine;
 #if UNITY_EDITOR
 using System;
 #elif NotEditor
-using KFCommonUtilityLib.Scripts.StaticManagers;
 #endif
 
 public class AnimationMeleeShooterState : StateMachineBehaviour

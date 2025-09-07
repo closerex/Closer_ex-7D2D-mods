@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using KFCommonUtilityLib.Scripts.StaticManagers;
 
 namespace KFCommonUtilityLib.Harmony
 {

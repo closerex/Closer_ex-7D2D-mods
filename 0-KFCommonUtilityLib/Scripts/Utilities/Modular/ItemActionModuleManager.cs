@@ -1,4 +1,4 @@
-﻿using KFCommonUtilityLib.Scripts.Attributes;
+﻿using KFCommonUtilityLib.Attributes;
 using System;
 using System.Collections.Generic;
 using System.IO;

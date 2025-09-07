@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 using KFCommonUtilityLib;
-using KFCommonUtilityLib.Scripts.Attributes;
+using KFCommonUtilityLib.Attributes;
 
 [TypeTarget(typeof(ItemAction)), TypeDataTarget(typeof(AnimationLockedData))]
 public class ActionModuleAnimationLocked

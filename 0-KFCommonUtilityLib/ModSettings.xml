@@ -30,34 +30,13 @@
           <Property type="formatter" formatString="0.00" />
         </Slider>
       </Category>
-      <Category name="WeaponOverride" displayKey="kflibCategoryWeaponOverrideName">
-        <Selector name="CurrentWeapon" displayKey="kflibSettingCurrentWeaponName">
-          <Property type="arrayValues" allowedValues="Katana (Prototype 01)" />
-        </Selector>
-        <Switch name="EnableOverride" displayKey="kflibSettingEnableOverrideName" tooltipKey="kflibSettingEnableOverrideDesc" leftValue="Disabled" rightValue="Enabled" />
-        <Slider name="DefaultWeight" displayKey="kflibSettingCAIMultiplierName" tooltipKey="kflibSettingDefaultWeightDesc">
-          <Property increment="0.01" minValue="0.00" maxValue="1.00" type="incrementalValuesFloat" />
-          <Property type="formatter" formatString="0.00" />
-        </Slider>
-        <Slider name="Bashing" displayKey="Bashing">
-          <Property increment="0.01" minValue="0.00" maxValue="1.00" type="incrementalValuesFloat" />
-          <Property type="formatter" formatString="0.00" />
-        </Slider>
-        <Slider name="LightAttack" displayKey="LightAttack">
-          <Property increment="0.01" minValue="0.00" maxValue="1.00" type="incrementalValuesFloat" />
-          <Property type="formatter" formatString="0.00" />
-        </Slider>
-        <Slider name="HeavyAttack" displayKey="HeavyAttack">
-          <Property increment="0.01" minValue="0.00" maxValue="1.00" type="incrementalValuesFloat" />
-          <Property type="formatter" formatString="0.00" />
-        </Slider>
-        <Slider name="Inspect" displayKey="Inspect">
-          <Property increment="0.01" minValue="0.00" maxValue="1.00" type="incrementalValuesFloat" />
-          <Property type="formatter" formatString="0.00" />
-        </Slider>
-        <Slider name="Running" displayKey="Running">
-          <Property increment="0.01" minValue="0.00" maxValue="1.00" type="incrementalValuesFloat" />
-          <Property type="formatter" formatString="0.00" />
+    </Tab>
+    <Tab name="MiscSettings" displayKey="kflibTabMiscSettingsName" tooltipKey="">
+      <Category name="AutoInspect" displayKey="kflibCategoryAutoInspect" tooltipKey="">
+        <Switch name="EnableAutoInspect" displayKey="kflibSettingEnableAutoInspectName" tooltipKey="kflibSettingEnableAutoInspectDesc" defaultValue="Enabled" leftValue="Disabled" rightValue="Enabled" />
+        <Slider name="AutoInspectInterval" displayKey="kflibSettingAutoInspectIntervalName" tooltipKey="kflibSettingAutoInspectIntervalDesc" defaultValue="15">
+          <Property increment="1" minValue="5" maxValue="30" type="incrementalValuesFloat" />
+          <Property type="formatter" formatString="0" />
         </Slider>
       </Category>
     </Tab>

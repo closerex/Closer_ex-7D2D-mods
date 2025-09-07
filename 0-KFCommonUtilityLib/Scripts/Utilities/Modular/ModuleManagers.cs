@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using KFCommonUtilityLib.Scripts.Attributes;
+using KFCommonUtilityLib.Attributes;
 using Mono.Cecil;
 using System;
 using System.Collections.Generic;

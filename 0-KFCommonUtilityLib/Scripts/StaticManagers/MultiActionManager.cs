@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UniLinq;
 using UnityEngine;
 
-namespace KFCommonUtilityLib.Scripts.StaticManagers
+namespace KFCommonUtilityLib
 {
     //concept: maintain an entityID-AltActionIndice mapping on both server and client
     //and get the correct action before calling ItemAction.*

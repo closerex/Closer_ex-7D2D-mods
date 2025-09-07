@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KFCommonUtilityLib.Scripts.Attributes
+namespace KFCommonUtilityLib.Attributes
 {
-    [System.AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
     public class TypeDataTargetAttribute : Attribute
     {
         public TypeDataTargetAttribute(Type DataType)

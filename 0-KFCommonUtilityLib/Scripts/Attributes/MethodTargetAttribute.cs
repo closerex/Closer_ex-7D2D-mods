@@ -1,7 +1,7 @@
 ﻿using System;
 using HarmonyLib;
 
-namespace KFCommonUtilityLib.Scripts.Attributes
+namespace KFCommonUtilityLib.Attributes
 {
     public interface IMethodTarget
     {

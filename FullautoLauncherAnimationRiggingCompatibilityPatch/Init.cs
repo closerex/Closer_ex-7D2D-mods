@@ -1,7 +1,6 @@
 ﻿using FullautoLauncher.Scripts.ProjectileManager;
 using HarmonyLib;
-using KFCommonUtilityLib.Scripts.Attributes;
-using KFCommonUtilityLib.Scripts.StaticManagers;
+using KFCommonUtilityLib.Attributes;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System.Collections.Generic;
 using UniLinq;
@@ -9,6 +8,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
 using static ActionModuleMultiBarrel;
+using KFCommonUtilityLib;
 
 public class FLARCompatibilityPatchInit : IModApi
 {

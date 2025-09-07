@@ -1,6 +1,5 @@
 ﻿using HarmonyLib.Public.Patching;
 using HarmonyLib;
-using KFCommonUtilityLib.Scripts.Attributes;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
@@ -15,6 +14,7 @@ using TypeAttributes = Mono.Cecil.TypeAttributes;
 using MethodAttributes = Mono.Cecil.MethodAttributes;
 using FieldAttributes = Mono.Cecil.FieldAttributes;
 using Mono.Cecil.Rocks;
+using KFCommonUtilityLib.Attributes;
 
 namespace KFCommonUtilityLib
 {

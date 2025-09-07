@@ -1,5 +1,4 @@
 ﻿#if NotEditor
-using KFCommonUtilityLib.Scripts.StaticManagers;
 using UniLinq;
 #else
 using System.Linq;
@@ -8,6 +7,7 @@ using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using System;
+using KFCommonUtilityLib;
 
 [AddComponentMenu("KFAttachments/RigAdaptors/PlayGraph Targets")]
 public class PlayGraphTargets : AnimationTargetsAbs

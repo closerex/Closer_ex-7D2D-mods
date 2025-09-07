@@ -1,7 +1,5 @@
 ﻿#if NotEditor
-using KFCommonUtilityLib.Scripts.StaticManagers;
-using UAI;
-
+using KFCommonUtilityLib;
 #endif
 using UnityEngine;
 

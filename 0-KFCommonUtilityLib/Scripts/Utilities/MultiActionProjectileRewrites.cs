@@ -1,4 +1,4 @@
-﻿using KFCommonUtilityLib.Scripts.StaticManagers;
+﻿using KFCommonUtilityLib;
 using System.Collections.Generic;
 using UnityEngine;
 

@@ -1,4 +1,4 @@
-﻿using KFCommonUtilityLib.Scripts.StaticManagers;
+﻿using KFCommonUtilityLib;
 
 public class RoundsInHoldingItem : RoundsInMagazineBase
 {

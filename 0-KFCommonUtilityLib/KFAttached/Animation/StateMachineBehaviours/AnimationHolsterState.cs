@@ -1,7 +1,6 @@
 ﻿using KFCommonUtilityLib;
 using UnityEngine;
 #if NotEditor
-using KFCommonUtilityLib.Scripts.StaticManagers;
 #endif
 
 public class AnimationHolsterState : StateMachineBehaviour

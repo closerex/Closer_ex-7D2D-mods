@@ -1,4 +1,4 @@
-﻿using KFCommonUtilityLib.Scripts.Attributes;
+﻿using KFCommonUtilityLib.Attributes;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;

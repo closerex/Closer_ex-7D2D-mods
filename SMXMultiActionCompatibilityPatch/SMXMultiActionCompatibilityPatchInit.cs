@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using KFCommonUtilityLib.Scripts.StaticManagers;
+using KFCommonUtilityLib;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System;
 using System.Collections.Generic;

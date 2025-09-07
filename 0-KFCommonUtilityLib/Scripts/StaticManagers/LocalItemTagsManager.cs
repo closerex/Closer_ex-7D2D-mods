@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace KFCommonUtilityLib.Scripts.StaticManagers
+namespace KFCommonUtilityLib
 {
     /// <summary>
     /// only used for item modifier tags.

@@ -1,7 +1,7 @@
 ﻿#if NotEditor
 using GearsAPI.Settings.Global;
+using KFCommonUtilityLib;
 using KFCommonUtilityLib.Gears;
-using KFCommonUtilityLib.Scripts.StaticManagers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 #endif
@@ -285,7 +285,7 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
         {
             defaultWeight = 1f;
         }
-        defaultWeightSetting.OnSettingChanged += (settings, value) =>
+        defaultWeightSetting.OnSettingChanged += static (settings, value) =>
         {
             if (float.TryParse(value, out var newWeight))
             {
@@ -294,6 +294,7 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
         };
         GearsImpl.OnGlobalSettingsSaved += SaveUserWeights;
         GearsImpl.OnGlobalSettingsOpened += CreateSettingEntries;
+        GearsImpl.OnGlobalSettingsClosed += CleanupSettingEntries;
         LoadUserWeights();
     }
 
@@ -454,6 +455,12 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
                 }
             };
         }
+    }
+
+    private static void CleanupSettingEntries(IModGlobalSettings modSettings)
+    {
+        var tab = modSettings.GetTab("CameraAnimationSettings");
+        tab.RemoveCategory("WeaponOverride");
     }
 #endif
 

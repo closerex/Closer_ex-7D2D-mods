@@ -7,12 +7,16 @@ inpActToggleZoomLevelName,UI,Controls Dialog,x,Toggle Zoom Level,切换放大倍
 inpActToggleZoomLevelDesc,UI,Controls Dialog,x,"Toggle between min/max zoom level on supported scopes",使用支持该功能的瞄具时，在最小和最大倍率之间切换
 inpActPerformAltMeleeName,UI,Controls Dialog,x,Use Alt Melee,使用次要近战攻击
 inpActPerformAltMeleeDesc,UI,Controls Dialog,x,"Perform a special melee attack on supported weapons",使用支持该功能的武器时，触发一次特殊的近战攻击
+inpActPerformAltInspectName,UI,Controls Dialog,x,Trigger Alt Inspect,使用次要检视
+inpActPerformAltInspectDesc,UI,Controls Dialog,x,Individual keybind for inspect. Could also trigger special inspect animation on supported weapons.,武器检视的独立按键绑定。Mod作者可为其添加特殊的检视动画。
+
 ttCurrentFiringMode,UI,Controls Dialog,x,"Firing Mode: {0}","射击模式：{0}"
 ttFiringModeSemiAuto,UI,Controls Dialog,x,Single,半自动
 ttFiringModeBurst2,UI,Controls Dialog,x,2-round Burst,两连发
 ttFiringModeBurst3,UI,Controls Dialog,x,3-round Burst,三连发
 ttFiringModeFullAuto,UI,Controls Dialog,x,Full-Auto,全自动
 ttFiringModePumpAction,UI,Controls Dialog,x,Pump Action,泵动
+
 statRecoilForceUp,UI,Menu,x,Vertical Recoil,垂直后坐力
 statRecoilForceBack,UI,Menu,x,Horizontal Recoil,水平后坐力
 statRecoilForceModifier,UI,Menu,x,Current Recoil Modifier,当前后坐力减免
@@ -44,3 +48,10 @@ kflibSettingCurrentWeaponName,UI,Menu,x,Current Weapon,当前武器
 kflibSettingEnableOverrideName,UI,Menu,x,Enable Override,启用设置
 kflibSettingEnableOverrideDesc,UI,Menu,x,Enable intensity override for this weapon.,为当前武器启用动画强度设置。
 kflibSettingDefaultWeightDesc,UI,Menu,x,The overall intensity multiplier for this weapon. This is multiplied by the tag multipliers.,该设置会影响当前武器的所有相机动画强度，并与各个分类的动画强度相乘来计算对应动画的强度。
+
+kflibTabMiscSettingsName,UI,Menu,x,Misc,杂项
+kflibCategoryAutoInspect,UI,Menu,x,Auto Inspect,自动检视
+kflibSettingEnableAutoInspectName,UI,Menu,x,Enable Auto Inspect,启用自动检视
+kflibSettingEnableAutoInspectDesc,UI,Menu,x,Automatically triggers inspect animation after idling for specified interval on supported weapons.,待机一段时间后自动触发检视动画。
+kflibSettingAutoInspectIntervalName,UI,Menu,x,Auto Inspect Interval,自动检视延迟
+kflibSettingAutoInspectIntervalDesc,UI,Menu,x,The interval after which inspect animation is triggered.,自动触发检视动画的待机时间。

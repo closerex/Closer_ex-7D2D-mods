@@ -4,7 +4,7 @@ using System.IO;
 using System.Reflection;
 using UniLinq;
 
-namespace KFCommonUtilityLib.Scripts.StaticManagers
+namespace KFCommonUtilityLib
 {
     public static class DelayLoadModuleManager
     {
