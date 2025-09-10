@@ -497,7 +497,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     //VRoid switch view workaround
     public void OnEnable()
     {
-        var player = GetComponentInParent<EntityPlayerLocal>();
+        var player = this.GetLocalPlayerInParent();
         if ((player && player.bFirstPersonView) || ItemTpv)
         {
             gameObject.SetActive(false);

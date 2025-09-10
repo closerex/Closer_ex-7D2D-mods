@@ -104,7 +104,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
 #if NotEditor
         private void Start()
         {
-            var entity = GetComponentInParent<EntityPlayerLocal>();
+            var entity = this.GetLocalPlayerInParent();
             if (!entity)
             {
                 Destroy(gameObject);

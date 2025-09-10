@@ -37,8 +37,8 @@ namespace GearsSavingPatch
         }
 
         [HarmonyPatch(typeof(XUiC_ModSettings), "ClearSettings")]
-        [HarmonyPrefix]
-        private static void Prefix_XUiC_ModSettings_ClearSettings(GlobalModSettings ___modSettings)
+        [HarmonyPostfix]
+        private static void Postfix_XUiC_ModSettings_ClearSettings(GlobalModSettings ___modSettings)
         {
             if (___modSettings != null)
             {
@@ -46,6 +46,7 @@ namespace GearsSavingPatch
                 if (gearsMod.Mod.Name == "CommonUtilityLib")
                 {
                     GearsImpl.CloseGlobalSettings(___modSettings);
+                    ___modSettings.SaveSettings();
                     Log.Out("GearsSavingPatch: XUiC_ModSettings GlobalSettings cleared: " + gearsMod.Mod.Name);
                 }
             }
@@ -62,6 +63,7 @@ namespace GearsSavingPatch
                 if (curGearsMod?.Mod?.Name == "CommonUtilityLib" && curGearsMod?.Mod?.Name != nextGearsMod.Mod.Name)
                 {
                     GearsImpl.CloseGlobalSettings(___modSettings);
+                    ___modSettings.SaveSettings();
                     Log.Out("GearsSavingPatch: XUiC_ModSettings GlobalSettings closed on opening: " + nextGearsMod.Mod.Name);
                 }
             }

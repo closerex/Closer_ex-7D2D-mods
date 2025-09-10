@@ -434,10 +434,22 @@ public static class MultiItemPatches
     {
         var codes = instructions.ToList();
 
+        int localIndex;
+#pragma warning disable CS0162
+        if (Constants.cVersionMajor <= 2 && Constants.cVersionMinor <= 1)
+        {
+            localIndex = 35;
+        }
+        else
+        {
+            localIndex = 37;
+        }
+#pragma warning restore CS0162
+
         for (int i = 0; i < codes.Count; i++)
         {
             //ItemAction
-            if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 37)
+            if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == localIndex)
             {
                 codes.InsertRange(i + 1, new[]
                 {

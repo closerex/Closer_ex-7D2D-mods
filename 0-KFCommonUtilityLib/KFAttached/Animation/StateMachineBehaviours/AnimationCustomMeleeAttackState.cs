@@ -69,13 +69,21 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
     private float speedMultiplierToKeep = 1f;
     private InventorySlotGurad slotGurad = new InventorySlotGurad();
     private ItemModuleMultiItem.MultiItemInvData multiInvData;
+    private bool impactSpeedRestored;
+    private bool forceStopCalled;
+    private bool stateExited = true, stateGuarded = false;
+
+    private Coroutine impactCo, grazeCo;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        //if (playingImpact)
-        //{
-        //    return;
-        //}
+        if (!stateExited)
+        {
+            stateGuarded = true;
+        }
+        stateExited = false;
+        impactSpeedRestored = false;
+        forceStopCalled = false;
         hasFired = false;
         if (IsAlternative)
         {
@@ -87,36 +95,17 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         {
             return;
         }
-        //Log.Out("State entered!");
-        //AnimatorClipInfo[] array = animator.GetNextAnimatorClipInfo(layerIndex);
         float length = ClipLength * attackDurationNormalized;
-        ////if (array.Length == 0)
-        ////{
-        //    var array = animator.GetCurrentAnimatorClipInfo(layerIndex);
-        //    if (array.Length == 0)
-        //    {
-        //        if (float.IsInfinity(stateInfo.length))
-        //        {
-        //            Log.Out($"Invalid clips!");
-        //            return;
-        //        }
-        //        length = stateInfo.length;
-        //    }
-        //    else
-        //    {
-        //        length = array[0].clip.length;
-        //    }
-        ////}
-        ////else
-        ////{
-        ////    length = array[0].clip.length;
-        ////}
-        //length *= attackDurationNormalized;
         attacksPerMinute = 60f / length;
         FastTags<TagGroup.Global> fastTags = ((actionIndex != 1) ? ItemActionAttack.PrimaryTag : ItemActionAttack.SecondaryTag);
         multiInvData = (entity.inventory.holdingItemData as IModuleContainerFor<ItemModuleMultiItem.MultiItemInvData>)?.Instance;
         bool isValidAlternative = IsAlternative && multiInvData != null;
         var prevData = SetParams(isValidAlternative);
+        ItemActionDynamicMelee.ItemActionDynamicMeleeData itemActionDynamicMeleeData = entity.inventory.holdingItemData.actionData[actionIndex] as ItemActionDynamicMelee.ItemActionDynamicMeleeData;
+        if (itemActionDynamicMeleeData != null)
+        {
+            itemActionDynamicMeleeData.lastUseTime = Time.time;
+        }
         ItemValue holdingItemItemValue = entity.inventory.holdingItemItemValue;
         ItemClass itemClass = holdingItemItemValue.ItemClass;
         if (itemClass != null)
@@ -156,10 +145,10 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             Log.Out($"original: raycast time {RaycastTime} impact duration {ImpactDuration} impact playback speed {ImpactPlaybackSpeed} clip length {length}/{stateInfo.length}");
             Log.Out($"calculated: raycast time {calculatedRaycastTime} impact duration {calculatedImpactDuration} impact playback speed {calculatedImpactPlaybackSpeed} speed multiplier {originalMeleeAttackSpeed}");
         }
-        GameManager.Instance.StartCoroutine(impactStart(animator, layerIndex, length));
+        impactCo = ThreadManager.StartCoroutine(impactStart(animator, layerIndex, length));
         if (UseGraze)
         {
-            GameManager.Instance.StartCoroutine(customGrazeStart(length));
+            grazeCo = ThreadManager.StartCoroutine(customGrazeStart(length));
         }
         RestoreParams(isValidAlternative, prevData);
     }
@@ -167,6 +156,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
     private IEnumerator impactStart(Animator animator, int layer, float length)
     {
         yield return new WaitForSeconds(Mathf.Max(calculatedRaycastTime, 0));
+        impactCo = null;
         if (!hasFired)
         {
             hasFired = true;
@@ -183,7 +173,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
                         {
                             Log.Out("Raycast hit!");
                         }
-                        GameManager.Instance.StartCoroutine(impactStop(animator, layer, length));
+                        impactCo = ThreadManager.StartCoroutine(impactStop(animator, layer, length));
                     }
                     else
                     {
@@ -201,14 +191,13 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
 
     private IEnumerator impactStop(Animator animator, int layer, float length)
     {
-        //playingImpact = true;
-        //animator.Play(0, layer, Mathf.Min(1f, calculatedRaycastTime * attackDurationNormalized / length));
         if (animator)
         {
             //Log.Out("Impact start!");
             animator.SetWrappedFloat(AttackSpeedHash, calculatedImpactPlaybackSpeed);
         }
         speedMultiplierToKeep = calculatedImpactPlaybackSpeed;
+        animator.SetWrappedFloat(AttackSpeedHash, speedMultiplierToKeep);
         yield return new WaitForSeconds(calculatedImpactDuration);
         if (animator)
         {
@@ -216,7 +205,9 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             animator.SetWrappedFloat(AttackSpeedHash, originalMeleeAttackSpeed);
         }
         speedMultiplierToKeep = originalMeleeAttackSpeed;
-        //playingImpact = false;
+        animator.SetWrappedFloat(AttackSpeedHash, speedMultiplierToKeep);
+        impactSpeedRestored = true;
+        impactCo = null;
         yield break;
     }
 
@@ -227,6 +218,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             Log.Out($"Custom graze time: {calculatedGrazeTime} original {CustomGrazeCastTime}");
         }
         yield return new WaitForSeconds(calculatedGrazeTime);
+        grazeCo = null;
         if (entity != null && !entity.isEntityRemote && actionIndex >= 0)
         {
             bool isValidAlternative = IsAlternative && multiInvData != null && multiInvData.boundInvData != null;
@@ -234,7 +226,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             ItemActionDynamicMelee.ItemActionDynamicMeleeData itemActionDynamicMeleeData = entity.inventory.holdingItemData.actionData[actionIndex] as ItemActionDynamicMelee.ItemActionDynamicMeleeData;
             if (itemActionDynamicMeleeData != null)
             {
-                GameManager.Instance.StartCoroutine(customGrazeUpdate(itemActionDynamicMeleeData));
+                grazeCo = ThreadManager.StartCoroutine(customGrazeUpdate(itemActionDynamicMeleeData));
             }
             RestoreParams(isValidAlternative, prevData);
         }
@@ -248,7 +240,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         }
         if (calculatedGrazeDuration <= 0f)
         {
-            yield break;
+            goto Return;
         }
         float grazeStart = Time.time;
         float normalizedTime = 0f;
@@ -257,7 +249,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             if (!slotGurad.IsValid(data.invData.holdingEntity))
             {
                 Log.Out($"Invalid graze!");
-                yield break;
+                goto Return;
             }
             bool isValidAlternative = IsAlternative && multiInvData != null && multiInvData.boundInvData != null;
             var prevData = SetParams(isValidAlternative);
@@ -277,26 +269,71 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             yield return null;
             normalizedTime = (Time.time - grazeStart) / calculatedGrazeDuration;
         }
+        Return:
+        grazeCo = null;
         yield break;
+    }
+
+    private void ForceStopCoroutines()
+    {
+        if (forceStopCalled)
+        {
+            return;
+        }
+        if (impactCo != null)
+        {
+            ThreadManager.StopCoroutine(impactCo);
+            impactCo = null;
+        }
+        if (grazeCo != null)
+        {
+            ThreadManager.StopCoroutine(grazeCo);
+            grazeCo = null;
+        }
+        speedMultiplierToKeep = originalMeleeAttackSpeed;
+        if (entity != null && !entity.isEntityRemote && actionIndex >= 0)
+        {
+            bool isValidAlternative = IsAlternative && multiInvData != null && multiInvData.boundInvData != null;
+            var prevData = SetParams(isValidAlternative);
+            var itemActionDynamicMelee = entity.inventory.holdingItem.Actions[actionIndex] as ItemActionDynamicMelee;
+            var itemActionDynamicMeleeData = entity.inventory.holdingItemData.actionData[actionIndex] as ItemActionDynamicMelee.ItemActionDynamicMeleeData;
+            if (itemActionDynamicMelee != null && itemActionDynamicMeleeData != null)
+            {
+                itemActionDynamicMelee.SetAttackFinished(itemActionDynamicMeleeData);
+            }
+            RestoreParams(isValidAlternative, prevData);
+        }
+        forceStopCalled = true;
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        //if (entity != null && !entity.isEntityRemote && actionIndex >= 0 && entity.inventory.holdingItemData.actionData[actionIndex] is ItemActionDynamicMelee.ItemActionDynamicMeleeData)
-        //{
-        //    animator.SetFloat(AttackSpeedHash, originalMeleeAttackSpeed);
-        //}
-        animator.SetWrappedFloat(AttackSpeedHash, originalMeleeAttackSpeed);
+        if (!stateGuarded)
+        {
+            ForceStopCoroutines();
+            if (!impactSpeedRestored)
+            {
+                animator.SetWrappedFloat(AttackSpeedHash, originalMeleeAttackSpeed);
+                impactSpeedRestored = true;
+            }
+            stateExited = true;
+        }
+        else
+        {
+            stateGuarded = false;
+        }
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        //float normalizedTime = stateInfo.normalizedTime;
-        //if (float.IsInfinity(normalizedTime) || float.IsNaN(normalizedTime))
-        //{
-        //    animator.Play(animator.GetNextAnimatorStateInfo(layerIndex).shortNameHash, layerIndex);
-        //}
-        animator.SetWrappedFloat(AttackSpeedHash, speedMultiplierToKeep);
+        if (!stateGuarded)
+        {
+            if (stateInfo.normalizedTime >= attackDurationNormalized)
+            {
+                ForceStopCoroutines();
+            }
+            animator.SetWrappedFloat(AttackSpeedHash, speedMultiplierToKeep);
+        }
     }
 
     private ItemActionData SetParams(bool isValidAlternative)

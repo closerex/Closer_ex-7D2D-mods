@@ -60,7 +60,7 @@ public class AnimationMeleeShooterState : StateMachineBehaviour
     {
         if (player == null)
         {
-            player = animator.GetComponentInParent<EntityPlayerLocal>();
+            player = animator.GetLocalPlayerInParent();
             if (player == null)
             {
                 Log.Warning($"AnimationMeleeShooterState: Could not find EntityPlayerLocal. This state will not function correctly.");

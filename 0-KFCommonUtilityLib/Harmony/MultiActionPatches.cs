@@ -2010,31 +2010,49 @@ namespace KFCommonUtilityLib.Harmony
             return true;
         }
 
-        [HarmonyPatch(typeof(XUiC_ItemInfoWindow), nameof(XUiC_ItemInfoWindow.GetBindingValue))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_GetBindingValue_XUiC_ItemInfoWindow(IEnumerable<CodeInstruction> instructions)
+        [HarmonyPatch]
+        public static class GetBindingValuePatch1
         {
-            var codes = instructions.ToList();
-
-            var fld_actions = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
-
-            for (int i = 0; i < codes.Count; i++)
+#pragma warning disable CS0162
+            private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (codes[i].LoadsField(fld_actions) && codes[i + 1].opcode == OpCodes.Ldc_I4_0)
+                if (Constants.cVersionMajor <= 2 && Constants.cVersionMinor <= 2)
                 {
-                    codes.RemoveAt(i + 1);
-                    codes.InsertRange(i + 1, new[]
+                    Log.Out($"Choosing old GetBindingValue for XUiC_ItemInfoWindow for game version {Constants.cVersionMajor}.{Constants.cVersionMinor}");
+                    yield return AccessTools.Method(typeof(XUiC_ItemInfoWindow), "GetBindingValue");
+                }
+                else
+                {
+                    Log.Out($"Choosing new GetBindingValueInternal for XUiC_ItemInfoWindow for game version {Constants.cVersionMajor}.{Constants.cVersionMinor}");
+                    yield return AccessTools.Method(typeof(XUiC_ItemInfoWindow), "GetBindingValueInternal");
+                }
+            }
+#pragma warning restore CS0162
+
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                var codes = instructions.ToList();
+
+                var fld_actions = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
+
+                for (int i = 0; i < codes.Count; i++)
+                {
+                    if (codes[i].LoadsField(fld_actions) && codes[i + 1].opcode == OpCodes.Ldc_I4_0)
                     {
+                        codes.RemoveAt(i + 1);
+                        codes.InsertRange(i + 1, new[]
+                        {
                         new CodeInstruction(OpCodes.Ldarg_0),
                         CodeInstruction.LoadField(typeof(XUiC_ItemInfoWindow), nameof(XUiC_ItemInfoWindow.itemStack)),
                         CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)),
                         CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetActionIndexByMetaData))
                     });
-                    i += 3;
+                        i += 3;
+                    }
                 }
-            }
 
-            return codes;
+                return codes;
+            }
         }
         #endregion
 
@@ -2055,6 +2073,7 @@ namespace KFCommonUtilityLib.Harmony
             FieldInfo fld_data = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.actionData));
 
             int localIndex;
+#pragma warning disable CS0162
             if (Constants.cVersionMajor <= 2 && Constants.cVersionMinor <= 1)
             {
                 localIndex = 35;
@@ -2063,6 +2082,7 @@ namespace KFCommonUtilityLib.Harmony
             {
                 localIndex = 37;
             }
+#pragma warning restore CS0162
             for (int i = 0; i < codes.Count; i++)
             {
                 // not present in v2.1
@@ -2087,7 +2107,7 @@ namespace KFCommonUtilityLib.Harmony
                 //}
 
                 // holding item
-                if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 35)
+                if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == localIndex)
                 {
                     var lbd_index = generator.DeclareLocal(typeof(int));
                     codes.InsertRange(i + 1, new[]
@@ -2578,30 +2598,48 @@ namespace KFCommonUtilityLib.Harmony
             return codes.Manipulator(static ins => ins.IsLdarg(2), static ins => ins.opcode = OpCodes.Ldnull);
         }
 
-        [HarmonyPatch(typeof(XUiC_ItemStack), nameof(XUiC_ItemStack.GetBindingValue))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_GetBindingValue_XUiC_ItemStack(IEnumerable<CodeInstruction> instructions)
+        [HarmonyPatch]
+        public static class GetBindingValuePatch2
         {
-            var codes = instructions.ToList();
-
-            var prop_perc = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.PercentUsesLeft));
-
-            for (int i = 0; i < codes.Count; i++)
+#pragma warning disable CS0162
+            private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (codes[i].Calls(prop_perc))
+                if (Constants.cVersionMajor <= 2 && Constants.cVersionMinor <= 2)
                 {
-                    codes.InsertRange(i - 3, new[]
+                    Log.Out($"Choosing old GetBindingValue for XUiC_ItemStack for game version {Constants.cVersionMajor}.{Constants.cVersionMinor}");
+                    yield return AccessTools.Method(typeof(XUiC_ItemStack), "GetBindingValue");
+                }
+                else
+                {
+                    Log.Out($"Choosing new GetBindingValueInternal for XUiC_ItemStack for game version {Constants.cVersionMajor}.{Constants.cVersionMinor}");
+                    yield return AccessTools.Method(typeof(XUiC_ItemStack), "GetBindingValueInternal");
+                }
+            }
+#pragma warning restore CS0162
+
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                var codes = instructions.ToList();
+
+                var prop_perc = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.PercentUsesLeft));
+
+                for (int i = 0; i < codes.Count; i++)
+                {
+                    if (codes[i].Calls(prop_perc))
                     {
+                        codes.InsertRange(i - 3, new[]
+                        {
                         new CodeInstruction(OpCodes.Ldarg_0),
                         CodeInstruction.LoadField(typeof(XUiC_ItemStack), nameof(XUiC_ItemStack.itemStack)),
                         CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)),
                         CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.SetCachedEventParamsDummyAction))
                     });
-                    break;
+                        break;
+                    }
                 }
-            }
 
-            return codes;
+                return codes;
+            }
         }
 
         [HarmonyPatch(typeof(PassiveEffect), nameof(PassiveEffect.ModifyValue))]

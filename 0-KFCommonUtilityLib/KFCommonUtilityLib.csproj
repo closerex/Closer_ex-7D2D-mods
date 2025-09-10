@@ -580,6 +580,7 @@
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPrintLocalCache.cs" />
     <Compile Include="Scripts\Input\PlayerActionKFLib.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAlternative.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleLimitedCombo.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMeleeShooter.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationLocked.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleCustomAnimationDelay.cs" />
@@ -671,6 +672,7 @@
     <Compile Include="Scripts\Requirements\RoundsInMagazineBase.cs" />
     <Compile Include="Scripts\StaticManagers\DelayLoadModuleManager.cs" />
     <Compile Include="Scripts\Utilities\LocalPlayerCameraUpdater.cs" />
+    <Compile Include="Scripts\Utilities\MiscExtensions.cs" />
     <Compile Include="Scripts\Utilities\Modular\ItemInventoryDataModuleProcessor.cs" />
     <Compile Include="Scripts\Utilities\Modular\ItemActionDataModuleProcessor.cs" />
     <Compile Include="Scripts\Utilities\Modular\ItemActionModuleManager.cs" />
@@ -717,16 +719,17 @@
     <Compile Include="Scripts\Utilities\TypeBasedUID.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CustomPlayerActionManager\CustomPlayerActionManager.csproj">
-      <Project>{a32d3424-8454-4b87-9554-ab0734819328}</Project>
-      <Name>CustomPlayerActionManager</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="ModSettings.xml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\0-CustomPlayerActionManager\CustomPlayerActionManager.csproj">
+      <Project>{a32d3424-8454-4b87-9554-ab0734819328}</Project>
+      <Name>CustomPlayerActionManager</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

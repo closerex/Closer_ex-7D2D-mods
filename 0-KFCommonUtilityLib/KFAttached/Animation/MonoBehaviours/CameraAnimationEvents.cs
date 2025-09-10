@@ -468,7 +468,7 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
     {
         animator = GetComponent<Animator>();
 #if NotEditor
-        if (!(player = GetComponentInParent<EntityPlayerLocal>()))
+        if (!(player = this.GetLocalPlayerInParent()))
         {
             Destroy(this);
             return;
