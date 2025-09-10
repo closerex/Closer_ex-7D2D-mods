@@ -1,0 +1,18 @@
+<configs name="XUi_Menu/controls.xml">
+	<!-- <append xpath="/controls">
+		<custom_option_control_page>
+			<rect>
+				<grid name="controlsGrid" pos="8,-40" cols="2" rows="{keybindingEntryCount}" cell_width="700" cell_height="45" repeat_content="true" arrangement="horizontal" >
+					<keyboard_binding_entry name="bindingEntry"/>
+				</grid>
+				<scrollbar name="bar" width="20" height="550" pos="15,-320" pivot="center" foregroundname="handler" backgroundname="background" depth="10">
+					<button name="handler" sprite="menu_empty3px" pivot="center" pos="0,0" hovercolor="[white]" color="[white]" defaultcolor="[white]" hoverscale="1" />
+					<button name="background" sprite="menu_empty3px" pivot="center" pos="0,0" hovercolor="[black]" color="[black]" defaultcolor="[black]" hoverscale="1" />
+				</scrollbar>
+				<scrollview scroll_speed="0" scrollbar="bar" pos="0,-40" width="1408" height="550">
+					<grid name="controlsGrid" pos="8,-40" cols="2" cell_width="700" cell_height="45" repeat_content="false" arrangement="horizontal" />
+				</scrollview>
+			</rect>
+		</custom_option_control_page>
+	</append> -->
+</configs>
