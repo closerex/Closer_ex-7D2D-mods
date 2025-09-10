@@ -18,8 +18,8 @@
 !CustomParticleLoaderMultiExplosion/**
 !CustomParticleLoaderSpawnEntity/
 !CustomParticleLoaderSpawnEntity/**
-!CustomPlayerActionManager/
-!CustomPlayerActionManager/**
+!0-CustomPlayerActionManager/
+!0-CustomPlayerActionManager/**
 !GearsSettingsSave/
 !GearsSettingsSave/**
 !GearsSavingPatch/

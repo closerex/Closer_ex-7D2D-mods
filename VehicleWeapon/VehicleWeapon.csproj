@@ -48,7 +48,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="CustomPlayerActionManager">
-      <HintPath>..\CustomPlayerActionManager\CustomPlayerActionManager.dll</HintPath>
+      <HintPath>..\0-CustomPlayerActionManager\CustomPlayerActionManager.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="InControl">

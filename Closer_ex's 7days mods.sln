@@ -24,8 +24,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KFCommonUtilityLib", "0-KFC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehicleWeapon", "VehicleWeapon\VehicleWeapon.csproj", "{1C8B7EDE-9F45-4043-84B4-0544D0C0A633}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomPlayerActionManager", "CustomPlayerActionManager\CustomPlayerActionManager.csproj", "{A32D3424-8454-4B87-9554-AB0734819328}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomParticleLoader", "0-CustomParticleLoader\CustomParticleLoader.csproj", "{12A59F51-6655-49D7-BE95-F3E86A173979}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomPerk", "RandomPerk\RandomPerk.csproj", "{F195BF00-A88E-4DCF-B792-6B8DD1284B01}"
@@ -66,6 +64,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GearsSavingPatch", "GearsSa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AllowComboKeys", "AllowComboKeys\AllowComboKeys.csproj", "{3DB91AEA-D99F-476F-AE44-501FD306CC48}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomPlayerActionManager", "0-CustomPlayerActionManager\CustomPlayerActionManager.csproj", "{A32D3424-8454-4B87-9554-AB0734819328}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,10 +104,6 @@ Global
 		{1C8B7EDE-9F45-4043-84B4-0544D0C0A633}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C8B7EDE-9F45-4043-84B4-0544D0C0A633}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C8B7EDE-9F45-4043-84B4-0544D0C0A633}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A32D3424-8454-4B87-9554-AB0734819328}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A32D3424-8454-4B87-9554-AB0734819328}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A32D3424-8454-4B87-9554-AB0734819328}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A32D3424-8454-4B87-9554-AB0734819328}.Release|Any CPU.Build.0 = Release|Any CPU
 		{12A59F51-6655-49D7-BE95-F3E86A173979}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{12A59F51-6655-49D7-BE95-F3E86A173979}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12A59F51-6655-49D7-BE95-F3E86A173979}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -188,6 +184,10 @@ Global
 		{3DB91AEA-D99F-476F-AE44-501FD306CC48}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3DB91AEA-D99F-476F-AE44-501FD306CC48}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3DB91AEA-D99F-476F-AE44-501FD306CC48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A32D3424-8454-4B87-9554-AB0734819328}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A32D3424-8454-4B87-9554-AB0734819328}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A32D3424-8454-4B87-9554-AB0734819328}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A32D3424-8454-4B87-9554-AB0734819328}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
