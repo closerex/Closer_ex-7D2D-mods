@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Reflection.Emit;
 using UniLinq;
 
@@ -102,19 +103,36 @@ namespace BetterModCompatibility.Harmony
             }
         }
 
-        [HarmonyPatch(typeof(XUiC_CraftingInfoWindow), nameof(XUiC_CraftingInfoWindow.GetBindingValue))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_XUiC_CraftingInfoWindow_GetBindingValue(IEnumerable<CodeInstruction> instructions)
+        [HarmonyPatch]
+        public static class GetBindingValuePatch
         {
-            var codes = instructions.ToList();
-
-            var mtd_getvalue = AccessTools.Method(typeof(EffectManager), nameof(EffectManager.GetValue));
-            for (int i = 0; i < codes.Count; i++)
+#pragma warning disable CS0162
+            private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (codes[i].Calls(mtd_getvalue))
+                if (Constants.cVersionMajor <= 2 && Constants.cVersionMinor <= 2)
                 {
-                    codes.InsertRange(i + 2, new[]
+                    Log.Out($"Choosing old GetBindingValue for XUiC_CraftingInfoWindow for game version {Constants.cVersionMajor}.{Constants.cVersionMinor}");
+                    yield return AccessTools.Method(typeof(XUiC_CraftingInfoWindow), "GetBindingValue");
+                }
+                else
+                {
+                    Log.Out($"Choosing new GetBindingValueInternal for XUiC_CraftingInfoWindow for game version {Constants.cVersionMajor}.{Constants.cVersionMinor}");
+                    yield return AccessTools.Method(typeof(XUiC_CraftingInfoWindow), "GetBindingValueInternal");
+                }
+            }
+#pragma warning restore CS0162
+
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                var codes = instructions.ToList();
+
+                var mtd_getvalue = AccessTools.Method(typeof(EffectManager), nameof(EffectManager.GetValue));
+                for (int i = 0; i < codes.Count; i++)
+                {
+                    if (codes[i].Calls(mtd_getvalue))
                     {
+                        codes.InsertRange(i + 2, new[]
+                        {
                         new CodeInstruction(OpCodes.Ldarg_0),
                         CodeInstruction.LoadField(typeof(XUiC_CraftingInfoWindow), nameof(XUiC_CraftingInfoWindow.recipe)),
                         new CodeInstruction(OpCodes.Ldarg_0),
@@ -123,11 +141,12 @@ namespace BetterModCompatibility.Harmony
                         CodeInstruction.Call(typeof(LocalPlayerUI), "get_entityPlayer"),
                         CodeInstruction.Call(typeof(Recipe), nameof(Recipe.GetCraftingTier))
                     });
-                    codes.RemoveRange(i - 20, 22);
-                    break;
+                        codes.RemoveRange(i - 20, 22);
+                        break;
+                    }
                 }
+                return codes;
             }
-            return codes;
         }
 
         [HarmonyPatch(typeof(ItemActionEntryCraft), nameof(ItemActionEntryCraft.RefreshEnabled))]
