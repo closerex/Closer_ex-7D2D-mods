@@ -238,7 +238,7 @@ internal static class ReloadInterruptionPatches
 
         var mtd_isrunning = AccessTools.Method(typeof(ItemAction), nameof(ItemAction.IsActionRunning));
         int localIndex;
-        if (Constants.cVersionMajor == 2 && Constants.cVersionMinor <= 1)
+        if (Constants.cVersionInformation.Major == 2 && Constants.cVersionInformation.Minor <= 1)
         {
             localIndex = 38;
         }

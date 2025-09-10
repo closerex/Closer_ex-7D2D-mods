@@ -9,21 +9,19 @@ public class XUiC_OptionsControlsCLS : XUiC_OptionsControls
 [HarmonyPatch]
 public static class GetBidningValuePatch
 {
-#pragma warning disable CS0162
     private static IEnumerable<MethodBase> TargetMethods()
     {
-        if (Constants.cVersionMajor <= 2 && Constants.cVersionMinor <= 2)
+        if (Constants.cVersionInformation.Major <= 2 && Constants.cVersionInformation.Minor <= 2)
         {
-            Log.Out($"Choosing old GetBindingValue for XUiController for game version {Constants.cVersionMajor}.{Constants.cVersionMinor}");
+            Log.Out($"Choosing old GetBindingValue for XUiController for game version {Constants.cVersionInformation.Major}.{Constants.cVersionInformation.Minor}");
             yield return AccessTools.Method(typeof(XUiController), "GetBindingValue");
         }
         else
         {
-            Log.Out($"Choosing new GetBindingValueInternal for XUiController for game version {Constants.cVersionMajor}.{Constants.cVersionMinor}");
+            Log.Out($"Choosing new GetBindingValueInternal for XUiController for game version {Constants.cVersionInformation.Major}.{Constants.cVersionInformation.Minor}");
             yield return AccessTools.Method(typeof(XUiController), "GetBindingValueInternal");
         }
     }
-#pragma warning restore CS0162
 
     private static void Postfix(ref string _value, string _bindingName, ref bool __result, XUiController __instance)
     {

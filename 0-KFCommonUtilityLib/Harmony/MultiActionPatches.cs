@@ -2013,21 +2013,19 @@ namespace KFCommonUtilityLib.Harmony
         [HarmonyPatch]
         public static class GetBindingValuePatch1
         {
-#pragma warning disable CS0162
             private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (Constants.cVersionMajor <= 2 && Constants.cVersionMinor <= 2)
+                if (Constants.cVersionInformation.Major <= 2 && Constants.cVersionInformation.Minor <= 2)
                 {
-                    Log.Out($"Choosing old GetBindingValue for XUiC_ItemInfoWindow for game version {Constants.cVersionMajor}.{Constants.cVersionMinor}");
+                    Log.Out($"Choosing old GetBindingValue for XUiC_ItemInfoWindow for game version {Constants.cVersionInformation.Major}.{Constants.cVersionInformation.Minor}");
                     yield return AccessTools.Method(typeof(XUiC_ItemInfoWindow), "GetBindingValue");
                 }
                 else
                 {
-                    Log.Out($"Choosing new GetBindingValueInternal for XUiC_ItemInfoWindow for game version {Constants.cVersionMajor}.{Constants.cVersionMinor}");
+                    Log.Out($"Choosing new GetBindingValueInternal for XUiC_ItemInfoWindow for game version {Constants.cVersionInformation.Major}.{Constants.cVersionInformation.Minor}");
                     yield return AccessTools.Method(typeof(XUiC_ItemInfoWindow), "GetBindingValueInternal");
                 }
             }
-#pragma warning restore CS0162
 
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
@@ -2073,8 +2071,7 @@ namespace KFCommonUtilityLib.Harmony
             FieldInfo fld_data = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.actionData));
 
             int localIndex;
-#pragma warning disable CS0162
-            if (Constants.cVersionMajor <= 2 && Constants.cVersionMinor <= 1)
+            if (Constants.cVersionInformation.Major <= 2 && Constants.cVersionInformation.Minor <= 1)
             {
                 localIndex = 35;
             }
@@ -2082,7 +2079,7 @@ namespace KFCommonUtilityLib.Harmony
             {
                 localIndex = 37;
             }
-#pragma warning restore CS0162
+
             for (int i = 0; i < codes.Count; i++)
             {
                 // not present in v2.1
@@ -2601,21 +2598,19 @@ namespace KFCommonUtilityLib.Harmony
         [HarmonyPatch]
         public static class GetBindingValuePatch2
         {
-#pragma warning disable CS0162
             private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (Constants.cVersionMajor <= 2 && Constants.cVersionMinor <= 2)
+                if (Constants.cVersionInformation.Major <= 2 && Constants.cVersionInformation.Minor <= 2)
                 {
-                    Log.Out($"Choosing old GetBindingValue for XUiC_ItemStack for game version {Constants.cVersionMajor}.{Constants.cVersionMinor}");
+                    Log.Out($"Choosing old GetBindingValue for XUiC_ItemStack for game version {Constants.cVersionInformation.Major}.{Constants.cVersionInformation.Minor}");
                     yield return AccessTools.Method(typeof(XUiC_ItemStack), "GetBindingValue");
                 }
                 else
                 {
-                    Log.Out($"Choosing new GetBindingValueInternal for XUiC_ItemStack for game version {Constants.cVersionMajor}.{Constants.cVersionMinor}");
+                    Log.Out($"Choosing new GetBindingValueInternal for XUiC_ItemStack for game version {Constants.cVersionInformation.Major}.{Constants.cVersionInformation.Minor}");
                     yield return AccessTools.Method(typeof(XUiC_ItemStack), "GetBindingValueInternal");
                 }
             }
-#pragma warning restore CS0162
 
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {

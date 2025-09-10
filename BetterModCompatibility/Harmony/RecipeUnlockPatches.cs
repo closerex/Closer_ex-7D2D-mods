@@ -106,21 +106,19 @@ namespace BetterModCompatibility.Harmony
         [HarmonyPatch]
         public static class GetBindingValuePatch
         {
-#pragma warning disable CS0162
             private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (Constants.cVersionMajor <= 2 && Constants.cVersionMinor <= 2)
+                if (Constants.cVersionInformation.Major <= 2 && Constants.cVersionInformation.Minor <= 2)
                 {
-                    Log.Out($"Choosing old GetBindingValue for XUiC_CraftingInfoWindow for game version {Constants.cVersionMajor}.{Constants.cVersionMinor}");
+                    Log.Out($"Choosing old GetBindingValue for XUiC_CraftingInfoWindow for game version {Constants.cVersionInformation.Major}.{Constants.cVersionInformation.Minor}");
                     yield return AccessTools.Method(typeof(XUiC_CraftingInfoWindow), "GetBindingValue");
                 }
                 else
                 {
-                    Log.Out($"Choosing new GetBindingValueInternal for XUiC_CraftingInfoWindow for game version {Constants.cVersionMajor}.{Constants.cVersionMinor}");
+                    Log.Out($"Choosing new GetBindingValueInternal for XUiC_CraftingInfoWindow for game version {Constants.cVersionInformation.Major}.{Constants.cVersionInformation.Minor}");
                     yield return AccessTools.Method(typeof(XUiC_CraftingInfoWindow), "GetBindingValueInternal");
                 }
             }
-#pragma warning restore CS0162
 
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {

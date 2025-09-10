@@ -435,8 +435,7 @@ public static class MultiItemPatches
         var codes = instructions.ToList();
 
         int localIndex;
-#pragma warning disable CS0162
-        if (Constants.cVersionMajor <= 2 && Constants.cVersionMinor <= 1)
+        if (Constants.cVersionInformation.Major <= 2 && Constants.cVersionInformation.Minor <= 1)
         {
             localIndex = 35;
         }
@@ -444,7 +443,6 @@ public static class MultiItemPatches
         {
             localIndex = 37;
         }
-#pragma warning restore CS0162
 
         for (int i = 0; i < codes.Count; i++)
         {

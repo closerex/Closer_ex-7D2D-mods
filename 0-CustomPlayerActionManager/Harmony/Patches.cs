@@ -22,10 +22,9 @@ public class Patches
     [HarmonyPatch]
     public static class GetBindingValuePatch
     {
-#pragma warning disable CS0162
         private static IEnumerable<MethodBase> TargetMethods()
         {
-            if (Constants.cVersionMajor <= 2 && Constants.cVersionMinor <= 2)
+            if (Constants.cVersionInformation.Major <= 2 && Constants.cVersionInformation.Minor <= 2)
             {
                 yield return AccessTools.Method(typeof(XUiC_OptionsController), "GetBindingValue");
             }
@@ -34,7 +33,6 @@ public class Patches
                 yield return AccessTools.Method(typeof(XUiC_OptionsController), "GetBindingValueInternal");
             }
         }
-#pragma warning restore CS0162
 
         private static void Postfix(ref string _value, string _bindingName, ref bool __result, XUiC_OptionsController __instance)
         {
