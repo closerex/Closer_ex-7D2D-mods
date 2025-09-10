@@ -63,9 +63,14 @@ namespace FPVLegs
                 }
             }
 
+            foreach (var cloth in model.GetComponentsInChildren<Cloth>())
+            {
+                cloth.enabled = enabled;
+            }
+
             foreach (var renderer in model.GetComponentsInChildren<Renderer>(true))
             {
-                renderer.shadowCastingMode = (enabled || !FPVLegMode.disableShadow) ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
+                renderer.shadowCastingMode = (enabled || (!FPVLegMode.disableShadow && !model.TryGetComponent<Cloth>(out _))) ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
                 if (renderer is SkinnedMeshRenderer skinnedMeshRenderer)
                 {
                     skinnedMeshRenderer.forceMatrixRecalculationPerRender = !enabled;
