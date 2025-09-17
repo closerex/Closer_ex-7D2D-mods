@@ -1,6 +1,7 @@
 <config>
     <append xpath="/items">
 		<item name="meleeWpnStockBashHRGBlastBrawler">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
 			<property name="Tags" value="blunt,melee,grunting,light,perkFlurryOfFortitude,weapon,attFortitude,perkBrawler,noBlades,canHaveCosmetic,knuckleSkill"/>
 			<property name="CreativeMode" value="None"/>
 			<property name="Material" value="Mmetal"/>
@@ -30,7 +31,8 @@
 				<property name="Damage_type" value="Bashing"/>
 				<property name="Sound_start" value="bashSwingReal"/>
 				<property name="DynamicSoundStart" value="bashSwingLight"/>
-				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
+				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
 				<property name="MaxComboCount" value="1"/>
 				<property name="UseGrazingHits" value="false"/>
 				<property name="GrazeStart" value=".3"/>
@@ -118,6 +120,7 @@
 		</item>
 
         <item name="gunT3HRGBlastBrawler">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
             <property name="Tags" value="blunt,melee,grunting,light,perkFlurryOfFortitude,attFortitude,perkBrawler,noBlades,knuckleSkill,ranged,gun,shotgun,shortRange,attStrength,perkBoomstick,shotgunSkill,weapon,canHaveCosmetic,attachmentsIncluded"/>
 			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
 			<property name="BoundItemName" value="meleeWpnStockBashHRGBlastBrawler"/>
@@ -147,7 +150,7 @@
             
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib;MeleeShooter,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib;MeleeShooter,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>
 				<property name="allowEmptyInspect" value="true"/>
@@ -178,7 +181,8 @@
 			</property>
             <property class="Action1"> <!-- UseAction -->
                 <property name="Class" value="DynamicMelee"/>
-				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
+				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
 				<property name="MaxComboCount" value="1"/>
                 <property name="Sphere" value=".1"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
                 <property name="Sound_start" value="knuckles_wrap_swingheavy"/>

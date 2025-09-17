@@ -1,6 +1,7 @@
 ﻿<configs>
 	<append xpath="/items">
 		<item name="meleeWpnHandBashAF2011">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
 			<property name="Tags" value="blunt,melee,grunting,light,perkFlurryOfFortitude,weapon,attFortitude,perkBrawler,noBlades,canHaveCosmetic,knuckleSkill"/>
 			<property name="CreativeMode" value="None"/>
 			<property name="Material" value="Mmetal"/>
@@ -30,7 +31,8 @@
 				<property name="Damage_type" value="Bashing"/>
 				<property name="Sound_start" value="bashSwingReal"/>
 				<property name="DynamicSoundStart" value="bashSwingLight"/>
-				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib"/>
+				<property name="InterruptStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="UseGrazingHits" value="true"/>
 				<property name="GrazeStart" value=".3"/>
 				<property name="GrazeEnd" value=".5"/>
@@ -113,6 +115,7 @@
 		</item>
 		
 		<item name="gunHandgunT3DualAF2011A1S">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
 			<property name="Tags" value="weapon,ranged,revolver,44enforcer,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,noSilencer,attAgility,perkGunslinger,attachmentsIncluded,canHaveCosmetic,handgunSkill,enforcerReload,dualaf2011,dualwield"/>
 			<property name="DisplayType" value="rangedGun"/>
 			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
@@ -147,7 +150,7 @@
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>
@@ -262,6 +265,7 @@
 			</effect_group>
 		</item>
 		<item name="gunHandgunT3AF2011A1S">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
 			<property name="Tags" value="weapon,ranged,revolver,44enforcer,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,sideAttachments,noSilencer,attAgility,perkGunslinger,attachmentsIncluded,canHaveCosmetic,handgunSkill,enforcerReload,af2011"/>
 			<property name="DisplayType" value="rangedGun"/>
 			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
@@ -296,7 +300,7 @@
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>

@@ -1,6 +1,7 @@
 ﻿<configs>
 	<append xpath="/items">
 		<item name="meleeWpnBladeBashKatana">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
 			<property name="Tags" value="machete,melee,grunting,light,perkFlurryOfAgility,weapon,meleeWeapon,attAgility,perkDeepCuts,perkTheHuntsman,canHaveCosmetic,bladeSkill,corpseRemoval"/>
 			<property name="CreativeMode" value="None"/>
 			<property name="DisplayType" value="meleeKnife"/>
@@ -29,8 +30,8 @@
 				<property name="Damage_type" value="Piercing"/>
 				<property name="Sound_start" value="bashSwingReal"/>
 				<property name="DynamicSoundStart" value="bashSwingLight"/>
-				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib"/>
-				<property name="MaxComboCount" value="3"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
+				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
 				<property name="Sphere" value=".1"/>
 				<property name="UseGrazingHits" value="false"/>
 				<property name="GrazeStart" value=".25"/>
@@ -111,6 +112,7 @@
 		</item>
 
 		<item name="meleeWpnBladeT3KF2Katana">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
 			<property name="Tags" value="machete,melee,grunting,light,longShaft,weapon,meleeWeapon,attAgility,perkDeepCuts,perkTheHuntsman,canHaveCosmetic,bladeSkill,corpseRemoval"/>
 			<property name="DisplayType" value="meleeKnife"/>
 			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
@@ -140,10 +142,11 @@
 		
 			<property class="Action0">
 				<property name="Class" value="DynamicMelee"/>
-				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;DynamicGraze,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib"/>
 				<property name="MaxComboCount" value="3"/>
 				<property name="Damage_type" value="Slashing"/>
 				<property name="Sphere" value=".15"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
+				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
 				<property name="DynamicSoundStart" value="katanaEmptySwingLight"/>
 				<property name="Sound_start" value="machete_swinglight"/>
 				<!-- <property name="ToolCategory.Butcher" value="0" param1="4.7"/> -->
@@ -166,10 +169,11 @@
 			</property>
 			<property class="Action1">
 				<property name="Class" value="DynamicMelee"/>
-				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;DynamicGraze,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib"/>
 				<property name="MaxComboCount" value="1"/>
 				<property name="Damage_type" value="Slashing"/>
 				<property name="Sphere" value=".15"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
+				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
 				<property name="DynamicSoundStart" value="katanaEmptySwingHeavy"/>
 				<property name="Sound_start" value="machete_swingheavy"/>
 				<!-- <property name="ToolCategory.Butcher" value="0" param1="4.7"/> -->

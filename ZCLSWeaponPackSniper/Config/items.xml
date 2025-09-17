@@ -1,6 +1,7 @@
 <configs>
     <append xpath="/items">
 		<item name="meleeWpnStockBashKFM99">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
 			<property name="Tags" value="blunt,club,melee,grunting,light,longShaft,perkFlurryOfStrength,weapon,meleeWeapon,attStrength,perkPummelPete,canHaveCosmetic,clubSkill"/>
 			<property name="CreativeMode" value="None"/>
 			<property name="DisplayType" value="melee"/>
@@ -26,7 +27,8 @@
 				<property name="Class" value="DynamicMelee"/>
 				<property name="Sound_start" value="bashSwingReal"/>
 				<property name="DynamicSoundStart" value="bashSwingLightSniper"/>
-				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib"/>
+				<property name="InterruptStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="Sphere" value=".1"/>
 				<property name="UseGrazingHits" value="true"/>
 				<property name="GrazeStart" value=".25"/>
@@ -99,6 +101,7 @@
 		</item>
 
         <item name="gunKFM99">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
             <property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,barrelAttachments,noSilencer,smallTopAttachments,mediumTopAttachments,largeTopAttachments,attachmentsIncluded,attPerception,perkDeadEye,canHaveCosmetic,rifleSkill"/>
             <property name="DisplayType" value="rangedGunNoMag"/>
             <property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
@@ -140,7 +143,7 @@
 
             <property class="Action0">
                 <property name="Class" value="Ranged"/>
-                <property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib"/>
+                <property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
                 <property name="allowEmptyInspect" value="true"/>
                 <property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
                 <property name="InternalCancelOnly" value="true"/>

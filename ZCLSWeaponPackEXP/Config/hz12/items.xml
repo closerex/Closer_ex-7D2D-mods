@@ -1,6 +1,7 @@
 ﻿<configs>
 	<append xpath="/items">
 		<item name="meleeWpnStockBashHZ12">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
 			<property name="Tags" value="blunt,club,melee,grunting,light,longShaft,perkFlurryOfStrength,weapon,meleeWeapon,attStrength,perkPummelPete,canHaveCosmetic,clubSkill"/>
 			<property name="CreativeMode" value="None"/>
 			<property name="DisplayType" value="melee"/>
@@ -26,7 +27,8 @@
 				<property name="Class" value="DynamicMelee"/>
 				<property name="Sound_start" value="bashSwingReal"/>
 				<property name="DynamicSoundStart" value="bashSwingLight"/>
-				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib"/>
+				<property name="InterruptStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="Sphere" value=".1"/>
 				<property name="UseGrazingHits" value="true"/>
 				<property name="GrazeStart" value=".25"/>
@@ -99,6 +101,7 @@
 		</item>
 
 		<item name="gunT3HZ12">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
 			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shotgun,shortRange,barrelAttachments,noSilencer,smallTopAttachments,mediumTopAttachments,stock,magazine,drumMagazine,attStrength,perkBoomstick,attachmentsIncluded,canHaveCosmetic,shotgunSkill"/>
 			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
 			<property name="BoundItemName" value="meleeWpnStockBashHZ12"/>
@@ -134,7 +137,7 @@
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>
 				<property name="allowEmptyInspect" value="true"/>

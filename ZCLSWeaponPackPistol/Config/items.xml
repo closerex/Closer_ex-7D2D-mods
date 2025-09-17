@@ -2,6 +2,7 @@
     <append xpath="/items">
         <!-- #region 9mm -->
         <item name="gunKF9mm">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
             <property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,barrelAttachments,sideAttachments,magazine,firingMode,attAgility,perkGunslinger,9mmGun,attachmentsIncluded,canHaveCosmetic,handgunSkill"/>
             <property name="DisplayType" value="rangedGun"/>
             <property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
@@ -43,7 +44,7 @@
 
             <property class="Action0">
                 <property name="Class" value="Ranged"/>
-                <property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib"/>
+                <property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
                 <property name="allowEmptyInspect" value="true"/>
                 <property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
                 <property name="InternalCancelOnly" value="true"/>
@@ -156,6 +157,7 @@
         </item>
 
         <item name="gunKFDual9mm">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
             <property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,firingMode,noSilencer,attAgility,perkGunslinger,9mmGun,attachmentsIncluded,canHaveCosmetic,handgunSkill,dualwield"/>
             <property name="DisplayType" value="rangedGun"/>
             <property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
@@ -197,7 +199,7 @@
 
             <property class="Action0">
                 <property name="Class" value="Ranged"/>
-                <property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
+                <property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
                 <property name="allowEmptyInspect" value="true"/>
                 <property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="MuzzleIsPerRound" value="true"/>
@@ -327,6 +329,7 @@
         </item>
 
 		<item name="meleeWpnHandBashKF9mm">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
 			<property name="Tags" value="blunt,melee,grunting,light,perkFlurryOfFortitude,weapon,attFortitude,perkBrawler,noBlades,canHaveCosmetic,knuckleSkill"/>
 			<property name="CreativeMode" value="None"/>
 			<property name="Material" value="Mmetal"/>
@@ -355,7 +358,8 @@
 				<property name="Damage_type" value="Bashing"/>
 				<property name="Sound_start" value="bashSwingReal"/>
 				<property name="DynamicSoundStart" value="bashSwingLightPistol"/>
-				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib"/>
+				<property name="InterruptStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="UseGrazingHits" value="true"/>
 				<property name="GrazeStart" value=".3"/>
 				<property name="GrazeEnd" value=".5"/>
@@ -440,6 +444,7 @@
 
         <!-- #region HRG SW 500 -->
         <item name="gunKFHRGSW500">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
             <property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,revolver,enforcerReload,shortRange,shotgun,firingMode,smallTopAttachments,attStrength,perkBoomstick,attachmentsIncluded,canHaveCosmetic,shotgunSkill"/>
             <property name="DisplayType" value="rangedShotgun"/>
             <property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
@@ -481,7 +486,7 @@
 
             <property class="Action0">
                 <property name="Class" value="Ranged"/>
-                <property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib"/>
+                <property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
                 <property name="allowEmptyInspect" value="true"/>
                 <property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
                 <property name="InternalCancelOnly" value="true"/>
@@ -590,6 +595,7 @@
         </item>
 
         <item name="gunKFDualHRGSW500">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
             <property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,revolver,enforcerReload,shortRange,shotgun,firingMode,smallTopAttachments,attStrength,perkBoomstick,attachmentsIncluded,canHaveCosmetic,shotgunSkill,dualwield,noDualSilencer,noDualMuzzleBrake,noDualLaser,noDualFlashlight"/>
             <property name="DisplayType" value="rangedShotgun"/>
             <property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
@@ -632,7 +638,7 @@
 
             <property class="Action0">
                 <property name="Class" value="Ranged"/>
-                <property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
+                <property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
                 <property name="allowEmptyInspect" value="true"/>
                 <property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
                 <property name="InternalCancelOnly" value="true"/>
@@ -761,6 +767,7 @@
         </item>
         
         <item name="gunKFSW500">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
             <property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,revolver,enforcerReload,shortRange,pistol,firingMode,smallTopAttachments,attAgility,perkGunslinger,attachmentsIncluded,canHaveCosmetic,handgunSkill"/>
             <property name="DisplayType" value="rangedGun"/>
             <property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
@@ -802,7 +809,7 @@
 
             <property class="Action0">
                 <property name="Class" value="Ranged"/>
-                <property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib"/>
+                <property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
                 <property name="allowEmptyInspect" value="true"/>
                 <property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
                 <property name="InternalCancelOnly" value="true"/>
@@ -923,6 +930,7 @@
         </item>
 
         <item name="gunKFDualSW500">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
             <property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,revolver,enforcerReload,shortRange,pistol,firingMode,smallTopAttachments,attAgility,perkGunslinger,attachmentsIncluded,canHaveCosmetic,handgunSkill,dualwield,noDualSilencer,noDualMuzzleBrake,noDualLaser,noDualFlashlight"/>
             <property name="DisplayType" value="rangedGun"/>
             <property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
@@ -965,7 +973,7 @@
 
             <property class="Action0">
                 <property name="Class" value="Ranged"/>
-                <property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib"/>
+                <property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
                 <property name="allowEmptyInspect" value="true"/>
                 <property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
                 <property name="InternalCancelOnly" value="true"/>
@@ -1106,6 +1114,7 @@
         </item>
 
 		<item name="meleeWpnHandBashHRGSW500">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
 			<property name="Tags" value="blunt,melee,grunting,light,perkFlurryOfFortitude,weapon,attFortitude,perkBrawler,noBlades,canHaveCosmetic,knuckleSkill"/>
 			<property name="CreativeMode" value="None"/>
 			<property name="Material" value="Mmetal"/>
@@ -1134,7 +1143,8 @@
 				<property name="Damage_type" value="Bashing"/>
 				<property name="Sound_start" value="bashSwingReal"/>
 				<property name="DynamicSoundStart" value="bashSwingLightPistol"/>
-				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib"/>
+				<property name="InterruptStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="UseGrazingHits" value="true"/>
 				<property name="GrazeStart" value=".3"/>
 				<property name="GrazeEnd" value=".5"/>
