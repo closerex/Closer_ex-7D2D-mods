@@ -226,11 +226,11 @@ public class ActionModuleMultiBarrel
         public Transform[] shellJoints;
         public Transform[] shellEffectJoints;
 
-        public MultiBarrelData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleMultiBarrel _module)
+        public MultiBarrelData(ItemInventoryData _inventoryData, int _indexInEntityOfAction, ActionModuleMultiBarrel __customModule)
         {
-            invData = _invData;
+            invData = _inventoryData;
             actionIndex = _indexInEntityOfAction;
-            module = _module;
+            module = __customModule;
         }
 
         public void CycleBarrels()

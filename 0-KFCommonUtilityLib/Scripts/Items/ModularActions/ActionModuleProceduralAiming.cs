@@ -142,9 +142,9 @@ public class ActionModuleProceduralAiming
         public float AimRefOffset { get; private set; }
         public int Priority => 100;
 
-        public ProceduralAimingData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleProceduralAiming _module)
+        public ProceduralAimingData(ItemInventoryData _inventoryData)
         {
-            holdingEntity = _invData.holdingEntity as EntityPlayerLocal;
+            holdingEntity = _inventoryData.holdingEntity as EntityPlayerLocal;
         }
 
         public void ResetAiming()

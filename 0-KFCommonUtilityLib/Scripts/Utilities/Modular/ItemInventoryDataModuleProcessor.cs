@@ -2,6 +2,7 @@
 using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
+using UniLinq;
 
 namespace KFCommonUtilityLib
 {
@@ -46,20 +47,42 @@ namespace KFCommonUtilityLib
                     continue;
                 }
                 arr_flddef_invdatas[i] = manipulator.arr_flddef_modules[j];
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Dup);
-                il.Emit(OpCodes.Ldarg_1);
-                il.Emit(OpCodes.Ldarg_2);
-                il.Emit(OpCodes.Ldarg_3);
-                il.Emit(OpCodes.Ldarg_S, mtddef_ctor.Parameters[3]);
-                il.Emit(OpCodes.Ldarg_S, mtddef_ctor.Parameters[4]);
-                il.Emit(OpCodes.Ldarg_1);
-                il.Emit(OpCodes.Castclass, typedef_newClass);
-                il.Emit(OpCodes.Ldfld, arr_flddef_classes[i]);
+                foreach (var ins in manipulator.MatchConstructorArguments(mtddef_ctor, manipulator.module.ImportReference(manipulator.moduleTypes[j].GetConstructors().FirstOrDefault()).Resolve(), j, (par, mtddef_original, mtddef_target, moduleIndex, list_special_args) =>
+                {
+                    switch (par.Name)
+                    {
+                        case "__instance":
+                            list_special_args.Add(il.Create(OpCodes.Ldarg_0));
+                            return true;
+                        case "__customModule":
+                            list_special_args.AddRange(new[]
+                                                {
+                            il.Create(OpCodes.Ldarg_1),
+                            il.Create(OpCodes.Castclass, typedef_newClass),
+                            il.Create(OpCodes.Ldfld, arr_flddef_classes[i]),
+                        });
+                            return true;
+                        default:
+                            return false;
+                    }
+                }))
+                {
+                    il.Append(ins);
+                }
                 Log.Out($"data module {j} {manipulator.moduleTypes[j].FullName} class module {i} {arr_type_classes[i].FullName}");
-                il.Emit(OpCodes.Newobj, manipulator.module.ImportReference(manipulator.moduleTypes[j].GetConstructor(new Type[] { typeof(ItemInventoryData), typeof(ItemClass), typeof(ItemStack), typeof(IGameManager), typeof(EntityAlive), typeof(int), arr_type_classes[i] })));
-                il.Emit(OpCodes.Stfld, manipulator.arr_flddef_modules[j]);
-                il.Emit(OpCodes.Nop);
+                //il.Emit(OpCodes.Ldarg_0);
+                //il.Emit(OpCodes.Dup);
+                //il.Emit(OpCodes.Ldarg_1);
+                //il.Emit(OpCodes.Ldarg_2);
+                //il.Emit(OpCodes.Ldarg_3);
+                //il.Emit(OpCodes.Ldarg_S, mtddef_ctor.Parameters[3]);
+                //il.Emit(OpCodes.Ldarg_S, mtddef_ctor.Parameters[4]);
+                //il.Emit(OpCodes.Ldarg_1);
+                //il.Emit(OpCodes.Castclass, typedef_newClass);
+                //il.Emit(OpCodes.Ldfld, arr_flddef_classes[i]);
+                //il.Emit(OpCodes.Newobj, manipulator.module.ImportReference(manipulator.moduleTypes[j].GetConstructor(new Type[] { typeof(ItemInventoryData), typeof(ItemClass), typeof(ItemStack), typeof(IGameManager), typeof(EntityAlive), typeof(int), arr_type_classes[i] })));
+                //il.Emit(OpCodes.Stfld, manipulator.arr_flddef_modules[j]);
+                //il.Emit(OpCodes.Nop);
                 j++;
             }
             il.Emit(OpCodes.Ret);

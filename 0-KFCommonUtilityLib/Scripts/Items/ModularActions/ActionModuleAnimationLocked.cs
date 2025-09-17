@@ -28,11 +28,6 @@ public class ActionModuleAnimationLocked
     {
         public bool isLocked = false;
         public bool isReloadLocked = false;
-
-        public AnimationLockedData(ItemActionData actionData, ItemInventoryData invData, int actionIndex, ActionModuleAnimationLocked module)
-        {
-            
-        }
     }
 }
 

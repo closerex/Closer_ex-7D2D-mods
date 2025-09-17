@@ -78,15 +78,15 @@ public class ActionModuleMetaRecharger
 
         public int Index => indexOfAction;
 
-        public MetaRechargerData(ItemActionData actionData, ItemInventoryData _invData, int _indexOfAction, ActionModuleMetaRecharger _rechargeModule)
+        public MetaRechargerData(ItemInventoryData _inventoryData, int _indexInEntityOfAction, ActionModuleMetaRecharger __customModule)
         {
-            module = _rechargeModule;
-            indexOfAction = _indexOfAction;
+            module = __customModule;
+            indexOfAction = _indexInEntityOfAction;
             lastUpdateTime = lastDecreaseTime = Time.time;
-            if (_rechargeModule.rechargeDatas == null)
+            if (__customModule.rechargeDatas == null)
                 return;
 
-            BackgroundInventoryUpdateManager.RegisterUpdater(_invData.holdingEntity, _invData.slotIdx, this);
+            BackgroundInventoryUpdateManager.RegisterUpdater(_inventoryData.holdingEntity, _inventoryData.slotIdx, this);
         }
 
         public bool OnUpdate(ItemInventoryData invData)

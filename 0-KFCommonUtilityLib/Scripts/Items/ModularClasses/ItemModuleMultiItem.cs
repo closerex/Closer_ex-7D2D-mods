@@ -53,15 +53,27 @@ public class ItemModuleMultiItem
         return true;
     }
 
-    [HarmonyPatch(nameof(ItemClass.ExecuteAction)), MethodTargetPrefix]
-    public bool Prefix_ExecuteAction(bool _bReleased, MultiItemInvData __customData)
+    [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.ExecuteAction)), MethodTargetTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_ItemClass_ExecuteAction(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
     {
-        if (!_bReleased)
+        var codes = instructions.ToList();
+
+        var lbl = generator.DefineLabel();
+        codes[0].WithLabels(lbl);
+
+        codes.InsertRange(0, new[]
         {
-            bool flag = __customData.IsBoundActionRunning();
-            return !flag;
-        }
-        return true;
+            new CodeInstruction(OpCodes.Ldarg_3),
+            new CodeInstruction(OpCodes.Brtrue_S, lbl),
+            new CodeInstruction(OpCodes.Ldarg_2),
+            new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<MultiItemInvData>)),
+            new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(IModuleContainerFor<MultiItemInvData>), nameof(IModuleContainerFor<MultiItemInvData>.Instance))),
+            CodeInstruction.Call(typeof(MultiItemInvData), nameof(MultiItemInvData.IsBoundActionRunning)),
+            new CodeInstruction(OpCodes.Brfalse_S, lbl),
+            new CodeInstruction(OpCodes.Ret)
+         });
+
+        return codes;
     }
 
     [HarmonyPatch(nameof(ItemClass.GetCameraShakeType)), MethodTargetPrefix]
@@ -215,28 +227,93 @@ public class ItemModuleMultiItem
         }
     }
 
+    [HarmonyPatch(typeof(ItemClassExtendedFunction), nameof(ItemClassExtendedFunction.CancelAllActions)), MethodTargetPostfix]
+    public void Postfix_CancelAllActions(ItemClass __instance, ItemInventoryData _invData, MultiItemInvData __customData)
+    {
+        if (__customData.boundItemClass != null)
+        {
+            bool useBound = __customData.useBound;
+            __customData.SetBoundParams();
+            (__customData.boundItemClass as ItemClassExtendedFunction)?.CancelAllActions(__customData.boundInvData);
+            __customData.RestoreParams(useBound);
+        }
+    }
+
+    [HarmonyPatch(typeof(ItemClassExtendedFunction), nameof(ItemClassExtendedFunction.GetAllExecutingActions)), MethodTargetPostfix]
+    public void Postfix_GetAllExecutingActions(ItemClass __instance, ItemInventoryData _invData, List<ItemAction> _actionList, List<ItemActionData> _dataList, MultiItemInvData __customData)
+    {
+        if (__customData.boundItemClass != null)
+        {
+            bool useBound = __customData.useBound;
+            __customData.SetBoundParams();
+            (__customData.boundItemClass as ItemClassExtendedFunction)?.GetAllExecutingActions(__customData.boundInvData, _actionList, _dataList);
+            __customData.RestoreParams(useBound);
+        }
+    }
+
+
+    private static List<ItemAction> tempActionList = new List<ItemAction>();
+    private static List<ItemActionData> tempDataList = new List<ItemActionData>();
     public static bool CheckAltMelee(EntityPlayerLocal player, MultiItemInvData multiInvData, bool bReleased, PlayerActionsLocal _playerActions, int meleeActionIndex = 0, bool useAltParam = true)
     {
+        if (!player.inventory.GetIsFinishedSwitchingHeldItem())
+        {
+            return false;
+        }
+        ItemActionDynamicMelee dynamicAction = multiInvData.boundItemClass?.Actions?[meleeActionIndex] as ItemActionDynamicMelee;
+        if (dynamicAction == null)
+        {
+            return false;
+        }
+        ItemActionDynamicMelee.ItemActionDynamicMeleeData meleeData = multiInvData.boundInvData.actionData[meleeActionIndex] as ItemActionDynamicMelee.ItemActionDynamicMeleeData;
+        if (meleeData == null)
+        {
+            return false;
+        }
+
+        //if (!bReleased)
+        //{
+        //    multiInvData.SetBoundParams();
+        //    bool isTargetActionRunning = dynamicAction.IsActionRunning(meleeData);
+        //    multiInvData.RestoreParams(false);
+        //    if (isTargetActionRunning)
+        //    {
+        //        return false;
+        //    }
+        //}
+
+        bool isActionRunning = false;
+        bool isAllRunningActionInterruptable = false;
+        var interruptData = (meleeData as IModuleContainerFor<ActionModuleAnimationInterruptSource.AnimationInterruptSourceData>)?.Instance;
+        if (!bReleased)
+        {
+            tempActionList.Clear();
+            tempDataList.Clear();
+            ActionModuleAnimationInterruptSource.GetAllRunningAndInterruptableActions(player, dynamicAction, meleeData, tempActionList, tempDataList, out isActionRunning, out isAllRunningActionInterruptable);
+        }
+
         bool isReloading = player.IsReloading();
         int actionIndex = MultiActionManager.GetActionIndexForEntity(player);
         var reloadModule = player.inventory.holdingItem.Actions[actionIndex] as IModuleContainerFor<ActionModuleInterruptReload>;
-        if (multiInvData.boundItemClass?.Actions?[meleeActionIndex] is ItemActionDynamicMelee dynamicAction && (!multiInvData.IsBoundActionRunning() || bReleased) && ((player.inventory.IsHoldingGun() && (!isReloading || reloadModule != null)) || !player.inventory.IsHoldingItemActionRunning()) && !player.AimingGun && !multiInvData.originalData.IsAnyActionLocked())
+        bool isInterruptableOrNotReloading = !isReloading || reloadModule != null;
+
+        if ((bReleased || !isActionRunning || isAllRunningActionInterruptable || isInterruptableOrNotReloading) && !player.AimingGun && !multiInvData.originalData.IsAnyActionLocked())
         {
+            //Log.Out($"bReleased {bReleased} isActionRunning {isActionRunning} isAllRunningActionInterruptable {isAllRunningActionInterruptable} isInterruptableOrNotReloading {isInterruptableOrNotReloading}");
             if (!bReleased)
             {
                 multiInvData.SetBoundParams();
-                ItemActionDynamicMelee.ItemActionDynamicMeleeData meleeData = multiInvData.boundInvData.actionData[meleeActionIndex] as ItemActionDynamicMelee.ItemActionDynamicMeleeData;
                 bool canRun = dynamicAction.canStartAttack(meleeData);
                 multiInvData.RestoreParams(false);
                 if (!canRun)
                 {
-                    //Log.Out($"Fail to run alt melee on slot {player.inventory.holdingItemIdx} released {wasReleased} is switching item {player.inventory.isSwitchingHeldItem} is attacking {meleeData.Attacking} execute time elapsed {Time.time - meleeData.lastUseTime}");
+                    Log.Out($"Fail to run alt melee on slot {player.inventory.holdingItemIdx} action{actionIndex} released {bReleased} is switching item {player.inventory.isSwitchingHeldItem} is attacking {meleeData.Attacking} execute time elapsed {Time.time - meleeData.lastUseTime}");
                     return false;
                 }
                 if (isReloading)
                 {
                     var itemActionData = player.inventory.holdingItemData.actionData[actionIndex] as ItemActionRanged.ItemActionDataRanged;
-                    itemActionData.m_LastShotTime = Time.time;
+                    itemActionData.m_LastShotTime = 0;
                     reloadModule.Instance.Postfix_ExecuteAction(itemActionData, ((IModuleContainerFor<ActionModuleInterruptReload.InterruptData>)itemActionData).Instance, new ActionModuleInterruptReload.State
                     {
                         executed = true,
@@ -245,16 +322,47 @@ public class ItemModuleMultiItem
                         isWeaponReloading = true,
                     });
                 }
+                if (isActionRunning && isAllRunningActionInterruptable)
+                {
+                    //for (int i = 0; i < tempActionList.Count; i++)
+                    //{
+                    //    //Log.Out($"interrupt action on item {tempActionList[i].item.GetLocalizedItemName()} action {i}");
+                    //    bool useBound = tempActionList[i].item.Id == multiInvData.boundItemClass.Id;
+                    //    if (useBound)
+                    //    {
+                    //        multiInvData.SetBoundParams();
+                    //    }
+                    //    ((IModuleContainerFor<ActionModuleAnimationInterruptable>)tempActionList[i]).Instance.Interrupt(tempActionList[i] as ItemActionDynamicMelee, tempDataList[i], ((IModuleContainerFor<ActionModuleAnimationInterruptable.AnimationInterruptableData>)tempDataList[i]).Instance);
+                    //    if (useBound)
+                    //    {
+                    //        multiInvData.RestoreParams(false);
+                    //    }
+                    //}
+                    (player.inventory.holdingItem as ItemClassExtendedFunction)?.CancelAllActions(player.inventory.holdingItemData);
+                    if (interruptData != null)
+                    {
+                        interruptData.interrupted = true;
+                    }
+                }
                 player.emodel.avatarController.UpdateBool(AvatarController.reloadHash, false);
                 multiInvData.boundInvData.itemStack.itemValue.UseTimes = 0;
                 player.emodel.avatarController.UpdateBool("UseAltMelee", useAltParam);
             }
+            else if (interruptData != null)
+            {
+                interruptData.interrupted = false;
+            }
 
             multiInvData.SetBoundParams();
-            multiInvData.boundItemClass.ExecuteAction(meleeActionIndex, multiInvData.boundInvData, bReleased, _playerActions);
+            multiInvData.boundItemClass.ExecuteAction(meleeActionIndex, multiInvData.boundInvData, bReleased, null);
             multiInvData.RestoreParams(false);
             return true;
             //Log.Out($"Execute alt melee on slot {player.inventory.holdingItemIdx} released {wasReleased}");
+        }
+
+        if (bReleased && interruptData != null)
+        {
+            interruptData.interrupted = false;
         }
         return false;
     }
@@ -268,10 +376,10 @@ public class ItemModuleMultiItem
         public string boundItemName;
         public ItemClass boundItemClass;
 
-        public MultiItemInvData(ItemInventoryData _invData, ItemClass _item, ItemStack _itemStack, IGameManager _gameManager, EntityAlive _holdingEntity, int _slotIdx, ItemModuleMultiItem module)
+        public MultiItemInvData(ItemInventoryData __instance, ItemModuleMultiItem __customModule)
         {
-            itemModule = module;
-            originalData = _invData;
+            itemModule = __customModule;
+            originalData = __instance;
             boundInvData = null;
             //if (module.boundItemClass != null)
             //{

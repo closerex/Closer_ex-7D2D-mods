@@ -213,10 +213,5 @@ public class ActionModuleMultiActionFix
     public class MultiActionData
     {
         public float lastAccuracy;
-
-        public MultiActionData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleMultiActionFix _module)
-        {
-
-        }
     }
 }

@@ -293,14 +293,14 @@ namespace KFCommonUtilityLib
                         dict_states = new Dictionary<string, VariableDefinition>();
                         dict_all_states.Add(pair.Key, dict_states);
                     }
-                    var list_inst_pars = MatchArguments(mtddef_root, mtdpinf_derived, mtddef_target, i, true, dict_states, moduleID);
+                    var list_inst_pars = MatchPatchArguments(mtddef_root, mtdpinf_derived, mtddef_target, i, true, dict_states, moduleID);
                     //insert invocation
                     var il = mtddef_derived.Body.GetILProcessor();
                     foreach (var ins in list_inst_pars)
                     {
                         il.InsertBefore(mtdpinf_derived.PostfixEnd, ins);
                     }
-                    il.InsertBefore(mtdpinf_derived.PostfixEnd, il.Create(OpCodes.Call, module.ImportReference(mtddef_target)));
+                    il.InsertBefore(mtdpinf_derived.PostfixEnd, il.Create(mtddef_target.IsVirtual ? OpCodes.Callvirt : OpCodes.Call, module.ImportReference(mtddef_target)));
                     if (mtdpinf_derived.PostfixBegin == null)
                         mtdpinf_derived.PostfixBegin = list_inst_pars[0];
                 }
@@ -319,7 +319,7 @@ namespace KFCommonUtilityLib
                     MethodPatchInfo mtdpinf_derived = GetOrCreateOverride(dict_overrides, pair.Key, pair.Value.mtdref_base);
                     MethodDefinition mtddef_derived = mtdpinf_derived.Method;
                     dict_all_states.TryGetValue(pair.Key, out var dict_states);
-                    var list_inst_pars = MatchArguments(mtddef_root, mtdpinf_derived, mtddef_target, i, false, dict_states, moduleID);
+                    var list_inst_pars = MatchPatchArguments(mtddef_root, mtdpinf_derived, mtddef_target, i, false, dict_states, moduleID);
                     //insert invocation
                     var il = mtdpinf_derived.Method.Body.GetILProcessor();
                     Instruction ins_insert = mtdpinf_derived.PrefixBegin;
@@ -327,7 +327,7 @@ namespace KFCommonUtilityLib
                     {
                         il.InsertBefore(ins_insert, ins);
                     }
-                    il.InsertBefore(ins_insert, il.Create(OpCodes.Call, module.ImportReference(mtddef_target)));
+                    il.InsertBefore(ins_insert, il.Create(mtddef_target.IsVirtual ? OpCodes.Callvirt : OpCodes.Call, module.ImportReference(mtddef_target)));
                     il.InsertBefore(ins_insert, il.Create(OpCodes.Brfalse_S, mtdpinf_derived.PostfixBegin ?? mtdpinf_derived.PostfixEnd));
                 }
             }
@@ -480,6 +480,87 @@ namespace KFCommonUtilityLib
             return mtdpinf_derived;
         }
 
+        public IEnumerable<Instruction> MatchConstructorArguments(MethodDefinition mtddef_original, MethodDefinition mtddef_target, int moduleIndex, Func<ParameterDefinition, MethodDefinition, MethodDefinition, int, List<Instruction>, bool> matchSpecialParDelegate)
+        {
+            var il = mtddef_original.Body.GetILProcessor();
+            yield return il.Create(OpCodes.Ldarg_0);
+            var list_special_args = new List<Instruction>();
+            foreach (var par in mtddef_target.Parameters)
+            {
+                list_special_args.Clear();
+                if (par.Name.StartsWith("___"))
+                {
+                    //___ means non public fields
+                    string str_fldname = par.Name.Substring(3);
+                    FieldDefinition flddef_target = module.ImportReference(targetType.GetField(str_fldname, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)).Resolve();
+                    if (flddef_target == null)
+                        throw new MissingFieldException($"Field with name \"{str_fldname}\" not found! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
+                    if (flddef_target.IsStatic)
+                    {
+                        yield return il.Create((par.ParameterType.IsByReference) ? OpCodes.Ldsflda : OpCodes.Ldsfld, module.ImportReference(flddef_target));
+                    }
+                    else
+                    {
+                        yield return il.Create(OpCodes.Ldarg_0);
+                        yield return il.Create(par.ParameterType.IsByReference ? OpCodes.Ldflda : OpCodes.Ldfld, module.ImportReference(flddef_target));
+                    }
+                }
+                else if (matchSpecialParDelegate == null || !matchSpecialParDelegate(par, mtddef_original, mtddef_target, moduleIndex, list_special_args))
+                {
+                    //match param by name
+                    int index = -1;
+                    if (!par.Name.StartsWith("__") || !int.TryParse(par.Name.Substring(2), out index))
+                    {
+                        for (int j = 0; j < mtddef_original.Parameters.Count; j++)
+                        {
+                            if (mtddef_original.Parameters[j].Name == par.Name)
+                            {
+                                index = mtddef_original.Parameters[j].Index;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (index < 0)
+                        throw new ArgumentException($"Parameter \"{par.Name}\" not found! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
+                    try
+                    {
+                        //Log.Out($"Match Parameter {par.Name} to {mtddef_derived.Parameters[index].Name}/{mtddef_root.Parameters[index].Name} index: {index}");
+
+                    }
+                    catch (ArgumentOutOfRangeException e)
+                    {
+                        Log.Error($"index {index} parameter {par.Name}" +
+                                  $"root pars: {{{string.Join(",", mtddef_original.Parameters.Select(p => p.Name + "/" + p.Index).ToArray())}}}" +
+                                  $"derived pars: {{{string.Join(",", mtddef_target.Parameters.Select(p => p.Name + "/" + p.Index).ToArray())}}}");
+                        throw e;
+                    }
+                    if (!mtddef_original.Parameters[index].ParameterType.IsByReference)
+                    {
+                        yield return il.Create(par.ParameterType.IsByReference ? OpCodes.Ldarga_S : OpCodes.Ldarg_S, mtddef_original.Parameters[index]);
+                    }
+                    else
+                    {
+                        yield return il.Create(OpCodes.Ldarg_S, mtddef_original.Parameters[index]);
+                        if (!par.ParameterType.IsByReference)
+                        {
+                            var opcode = par.ParameterType.LoadRefAsValue(out bool isStruct);
+                            yield return isStruct ? il.Create(opcode, par.ParameterType) : il.Create(opcode);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var ins in list_special_args)
+                    {
+                        yield return ins;
+                    }
+                }
+            }
+            yield return il.Create(OpCodes.Newobj, module.ImportReference(mtddef_target));
+            yield return il.Create(OpCodes.Stfld, arr_flddef_modules[moduleIndex]);
+        }
+
         /// <summary>
         /// Create a List<Instruction> that loads all arguments required to call the method onto stack.
         /// </summary>
@@ -494,7 +575,7 @@ namespace KFCommonUtilityLib
         /// <exception cref="MissingFieldException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        private List<Instruction> MatchArguments(MethodDefinition mtddef_root, MethodPatchInfo mtdpinf_derived, MethodDefinition mtddef_target, int moduleIndex, bool isPostfix, Dictionary<string, VariableDefinition> dict_states, string moduleID)
+        private List<Instruction> MatchPatchArguments(MethodDefinition mtddef_root, MethodPatchInfo mtdpinf_derived, MethodDefinition mtddef_target, int moduleIndex, bool isPostfix, Dictionary<string, VariableDefinition> dict_states, string moduleID)
         {
             FieldDefinition flddef_module = arr_flddef_modules[moduleIndex];
             var mtddef_derived = mtdpinf_derived.Method;
@@ -522,18 +603,22 @@ namespace KFCommonUtilityLib
                         list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldflda : OpCodes.Ldfld, module.ImportReference(flddef_target)));
                     }
                 }
-                else if (!MatchSpecialParameters(par, mtddef_target, mtdpinf_derived, moduleIndex, list_inst_pars, il, isPostfix, dict_states, moduleID))
+                else if (!MatchPatchSpecialParameters(par, mtddef_target, mtdpinf_derived, moduleIndex, list_inst_pars, il, isPostfix, dict_states, moduleID))
                 {
                     //match param by name
                     int index = -1;
-                    for (int j = 0; j < mtddef_root.Parameters.Count; j++)
+                    if (!par.Name.StartsWith("__") || !int.TryParse(par.Name.Substring(2), out index))
                     {
-                        if (mtddef_root.Parameters[j].Name == par.Name)
+                        for (int j = 0; j < mtddef_root.Parameters.Count; j++)
                         {
-                            index = mtddef_root.Parameters[j].Index;
-                            break;
+                            if (mtddef_root.Parameters[j].Name == par.Name)
+                            {
+                                index = mtddef_root.Parameters[j].Index;
+                                break;
+                            }
                         }
                     }
+
                     if (index < 0)
                         throw new ArgumentException($"Parameter \"{par.Name}\" not found! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
                     try
@@ -566,7 +651,7 @@ namespace KFCommonUtilityLib
             return list_inst_pars;
         }
 
-        private bool MatchSpecialParameters(ParameterDefinition par, MethodDefinition mtddef_target, MethodPatchInfo mtdpinf_derived, int moduleIndex, List<Instruction> list_inst_pars, ILProcessor il, bool isPostfix, Dictionary<string, VariableDefinition> dict_states, string moduleID)
+        private bool MatchPatchSpecialParameters(ParameterDefinition par, MethodDefinition mtddef_target, MethodPatchInfo mtdpinf_derived, int moduleIndex, List<Instruction> list_inst_pars, ILProcessor il, bool isPostfix, Dictionary<string, VariableDefinition> dict_states, string moduleID)
         {
             MethodDefinition mtddef_derived = mtdpinf_derived.Method;
             switch (par.Name)

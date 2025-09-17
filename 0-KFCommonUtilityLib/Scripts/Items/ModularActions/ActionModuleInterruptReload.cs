@@ -147,18 +147,6 @@ public class ActionModuleInterruptReload
         public AnimationReloadEvents eventBridge;
         public IAnimatorWrapper itemAnimator;
 
-        public InterruptData(ItemActionData actionData, ItemInventoryData invData, int actionIndex, ActionModuleInterruptReload module)
-        {
-            //if (invData.model && invData.model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
-            //{
-            //    itemAnimator = targets.ItemAnimator;
-            //    if (itemAnimator)
-            //    {
-            //        eventBridge = itemAnimator.GetComponent<AnimationReloadEvents>();
-            //    }
-            //}
-        }
-
         public void Reset()
         {
             isInterruptRequested = false;

@@ -150,11 +150,10 @@ public class ActionModuleAlternative
         //public Transform[] altMuzzleTrans = new Transform[MultiActionIndice.MAX_ACTION_COUNT];
         //public Transform[] altMuzzleTransDBarrel = new Transform[MultiActionIndice.MAX_ACTION_COUNT];
 
-        public AlternativeData(ItemActionData actionData, ItemInventoryData invData, int actionIndex, ActionModuleAlternative module)
+        public AlternativeData(ItemInventoryData _inventoryData)
         {
-            this.invData = invData;
+            this.invData = _inventoryData;
             Init();
-
         }
 
         //public void UpdateMuzzleTransformOverride()

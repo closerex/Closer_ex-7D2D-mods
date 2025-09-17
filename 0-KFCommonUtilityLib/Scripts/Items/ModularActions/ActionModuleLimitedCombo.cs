@@ -5,7 +5,6 @@ using KFCommonUtilityLib.Scripts.Utilities;
 using System.Collections.Generic;
 using UniLinq;
 using System.Reflection.Emit;
-using UnityEngine;
 
 [TypeTarget(typeof(ItemActionDynamic)), TypeDataTarget(typeof(LimitedComboData))]
 public class ActionModuleLimitedCombo
@@ -89,11 +88,6 @@ public class ActionModuleLimitedCombo
         {
             currentCombo++;
         }
-
-        public LimitedComboData(ItemActionData actionData, ItemInventoryData invData, int actionIndex, ActionModuleLimitedCombo module)
-        {
-
-        }
     }
 }
 
@@ -142,7 +136,6 @@ public static class ActionModuleLimitedComboPatches
         return codes;
     }
 
-    private static ItemInventoryData lastMalfunctioningInvData;
     private static void ResetCombo(ItemInventoryData invData, int actionIdx, bool released)
     {
         if (!released)

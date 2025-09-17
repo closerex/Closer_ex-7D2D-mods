@@ -13,7 +13,7 @@ public class ActionModuleDynamicGraze
         if (!_bReleased && !string.IsNullOrEmpty(dynamicSoundStart) && _actionData.invData.holdingEntity is EntityPlayerLocal player)
         {
             var targets = AnimationRiggingManager.GetHoldingRigTargetsFromPlayer(player);
-            if (targets && !targets.Destroyed && targets.IsAnimationSet)
+            if (targets && targets.IsAnimationSet)
             {
                 __state = (true, __instance.soundStart);
                 __instance.soundStart = dynamicSoundStart;
@@ -39,7 +39,7 @@ public class ActionModuleDynamicGraze
         if (_actionData.invData.holdingEntity is EntityPlayerLocal player)
         {
             var targets = AnimationRiggingManager.GetHoldingRigTargetsFromPlayer(player);
-            if (targets && !targets.Destroyed && targets.ItemCurrent)
+            if (targets && targets.IsAnimationSet)
             {
                 __state = (true, __instance.UseGrazingHits);
                 __instance.UseGrazingHits = false;

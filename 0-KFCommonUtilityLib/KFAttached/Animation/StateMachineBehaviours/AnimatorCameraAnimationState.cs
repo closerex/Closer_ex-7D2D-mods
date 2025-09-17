@@ -39,6 +39,8 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
     private bool normalizeLength = false;
     [SerializeField]
     internal string tagOverride;
+    [SerializeField]
+    private bool interruptOnExit = true;
     [Header("Animation Data (read from input clip)")]
     [SerializeField]
     private string clipName;
@@ -360,7 +362,7 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (loop)
+        if (loop || interruptOnExit)
         {
             curvePositionData?.Interrupt();
             curveRotationData?.Interrupt();

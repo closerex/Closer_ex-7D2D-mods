@@ -75,10 +75,5 @@ public class ActionModuleDynamicMuzzleFlash
         public string particlesMuzzleFireFpv;
         public string particlesMuzzleSmoke;
         public string particlesMuzzleSmokeFpv;
-
-        public DynamicMuzzleFlashData(ItemActionData actionData, ItemInventoryData _invData, int _indexOfAction, ActionModuleDynamicMuzzleFlash _module)
-        {
-
-        }
     }
 }

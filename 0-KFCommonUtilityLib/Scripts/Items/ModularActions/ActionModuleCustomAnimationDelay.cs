@@ -115,9 +115,9 @@ public class ActionModuleCustomAnimationDelay
     public class CustomAnimationDelayData : AnimationDelayData
     {
         ActionModuleCustomAnimationDelay module;
-        public CustomAnimationDelayData(ItemActionData actionData, ItemInventoryData invData, int actionIndex, ActionModuleCustomAnimationDelay module)
+        public CustomAnimationDelayData(ActionModuleCustomAnimationDelay __customModule)
         {
-            this.module = module;
+            this.module = __customModule;
         }
 
         public float GetDelayOverride(ItemActionData actionData, float customDelay, bool conditionCheck)

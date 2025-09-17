@@ -268,9 +268,9 @@ public class ActionModuleRampUp
 
         public ActionModuleRampUp rampUpModule;
 
-        public RampUpData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleRampUp _module)
+        public RampUpData(ActionModuleRampUp __customModule)
         {
-            rampUpModule = _module;
+            rampUpModule = __customModule;
         }
     }
 }

@@ -86,9 +86,9 @@ public class ItemModuleTrueHolster
         private bool isHolstering;
         private bool isUnholstering;
 
-        public TrueHolsterData(ItemInventoryData _invData, ItemClass _item, ItemStack _itemStack, IGameManager _gameManager, EntityAlive _holdingEntity, int _slotIdx, ItemModuleTrueHolster module)
+        public TrueHolsterData(ItemModuleTrueHolster __customModule)
         {
-            this.module = module;
+            this.module = __customModule;
         }
 
         public IEnumerator WaitForHolster()

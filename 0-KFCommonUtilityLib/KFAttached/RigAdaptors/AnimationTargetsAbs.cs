@@ -47,7 +47,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     public Transform ItemTpv { get => itemTpv; protected set => itemTpv = value; }
     public Transform ItemTpvOrSelf => itemTpv ? itemTpv : transform;
     public bool IsFpv { get; set; }
-    public bool IsAnimationSet => (IsFpv && fpvSet) || (!IsFpv && tpvSet);
+    public bool IsAnimationSet => !Destroyed && ((IsFpv && fpvSet) || (!IsFpv && tpvSet));
     public bool IsCurrent { get; internal set; }
     public bool Destroyed { get; protected set; }
     public Transform PlayerAnimatorTrans { get; private set; }

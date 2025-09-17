@@ -84,10 +84,5 @@ public class ActionModuleDynamicSensitivity
             }
             set => zoomRatio = value;
         }
-
-        public DynamicSensitivityData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleDynamicSensitivity _module)
-        {
-
-        }
     }
 }

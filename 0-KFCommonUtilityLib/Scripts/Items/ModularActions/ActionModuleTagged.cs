@@ -22,9 +22,5 @@ public class ActionModuleTagged
     public class TaggedData
     {
         public FastTags<TagGroup.Global> tags;
-        public TaggedData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleTagged _module)
-        {
-
-        }
     }
 }

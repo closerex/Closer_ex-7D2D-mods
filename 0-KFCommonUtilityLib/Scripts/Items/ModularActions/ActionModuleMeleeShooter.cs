@@ -72,7 +72,7 @@ public class ActionModuleMeleeShooter
     [HarmonyPatch(nameof(ItemActionRanged.ExecuteAction)), MethodTargetPrefix]
     public bool Prefix_ExecuteAction(ItemActionData _actionData, bool _bReleased, MeleeShooterData __customData)
     {
-        if (!__customData.targets || __customData.targets.Destroyed || !__customData.targets.IsAnimationSet)
+        if (!__customData.targets || !__customData.targets.IsAnimationSet)
         {
             return false;
         }
@@ -120,9 +120,9 @@ public class ActionModuleMeleeShooter
         public ItemInventoryData invData;
         public AnimationTargetsAbs targets;
 
-        public MeleeShooterData(ItemActionData actionData, ItemInventoryData invData, int actionIndex, ActionModuleMeleeShooter module)
+        public MeleeShooterData(ItemInventoryData _inventoryData)
         {
-            this.invData = invData;
+            this.invData = _inventoryData;
         }
 
         public void ResetRequest()

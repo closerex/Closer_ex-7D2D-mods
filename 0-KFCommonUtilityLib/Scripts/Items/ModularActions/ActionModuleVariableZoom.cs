@@ -118,9 +118,9 @@ public class ActionModuleVariableZoom
         }
         public ItemInventoryData invData = null;
 
-        public VariableZoomData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleVariableZoom _module)
+        public VariableZoomData(ItemInventoryData _inventoryData)
         {
-            invData = _invData;
+            invData = _inventoryData;
         }
 
         public void ToggleZoom()

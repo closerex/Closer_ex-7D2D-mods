@@ -193,11 +193,6 @@ public class ActionModuleFireModeSelector
         public float burstDelay;
         public bool inputReleased;
 
-        public FireModeData(ItemActionData actionData, ItemInventoryData invData, int actionIndex, ActionModuleFireModeSelector module)
-        {
-
-        }
-
         public void CycleFireMode(ItemActionData _data)
         {
             SetFireMode(_data, (byte)((currentFireMode + 1) % fireModes.Length));

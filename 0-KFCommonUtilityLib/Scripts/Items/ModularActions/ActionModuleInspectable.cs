@@ -91,10 +91,10 @@ public class ActionModuleInspectable
         public static int weaponInspectHash = Animator.StringToHash("weaponInspect");
         public static int altInspectHash = Animator.StringToHash("altInspect");
 
-        public InspectableData(ItemActionData actionData, ItemInventoryData invData, int actionIndex, ActionModuleInspectable module)
+        public InspectableData(ItemInventoryData _inventoryData, ActionModuleInspectable __customModule)
         {
-            this.module = module;
-            this.invData = invData;
+            this.module = __customModule;
+            this.invData = _inventoryData;
         }
 
         public bool CanInspect()

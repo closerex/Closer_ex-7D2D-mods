@@ -123,10 +123,10 @@ public class ActionModuleShellEjector
         public ItemActionData actionData;
         public ActionModuleShellEjector module;
 
-        public ShellEjectorData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleShellEjector _module)
+        public ShellEjectorData(ItemActionData __instance, ActionModuleShellEjector __customModule)
         {
-            this.actionData = actionData;
-            module = _module;
+            this.actionData = __instance;
+            module = __customModule;
         }
 
         public void SpawnParticle()

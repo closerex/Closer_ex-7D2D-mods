@@ -73,11 +73,11 @@ public class ActionModuleErgoAffected
 
         public float ModifiedErgo => Mathf.Lerp(minErgo, 1, curErgo);
 
-        public ErgoData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleErgoAffected _module)
+        public ErgoData(ActionModuleErgoAffected __customModule)
         {
             aimStartTime = float.MaxValue;
             aimSet = false;
-            module = _module;
+            module = __customModule;
         }
     }
 }

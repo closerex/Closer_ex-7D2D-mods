@@ -579,7 +579,10 @@
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdMultiActionItemValueDebug.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPrintLocalCache.cs" />
     <Compile Include="Scripts\Input\PlayerActionKFLib.cs" />
+    <Compile Include="Scripts\Items\ItemClasses\ItemClassExtendedFunction.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAlternative.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationInterruptable.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationInterruptSource.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleLimitedCombo.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMeleeShooter.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationLocked.cs" />

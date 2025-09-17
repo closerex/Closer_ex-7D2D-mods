@@ -201,7 +201,7 @@ namespace KFCommonUtilityLib
             //    return;
             //}
             targets = GetHoldingRigTargetsFromPlayer(player);
-            if (targets && !targets.Destroyed && targets.IsAnimationSet)
+            if (targets && targets.IsAnimationSet)
                 //RigItemChangedThisFrame = true;
                 hash_rig_changed_players.Add(player.entityId);
         }

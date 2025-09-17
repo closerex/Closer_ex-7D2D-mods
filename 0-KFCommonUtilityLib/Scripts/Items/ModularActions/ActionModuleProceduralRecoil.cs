@@ -468,11 +468,11 @@ public class ActionModuleProceduralRecoil
 
         public int Priority => 200 + actionIndex;
 
-        public EFTProceduralRecoilData(ItemActionData actionData, ItemInventoryData _invData, int _indexInEntityOfAction, ActionModuleProceduralRecoil _module)
+        public EFTProceduralRecoilData(ItemActionData __instance, ItemInventoryData _inventoryData, int _indexInEntityOfAction, ActionModuleProceduralRecoil __customModule)
         {
-            rangedData = actionData as ItemActionRanged.ItemActionDataRanged;
-            module = _module;
-            invData = _invData;
+            rangedData = __instance as ItemActionRanged.ItemActionDataRanged;
+            module = __customModule;
+            invData = _inventoryData;
             actionIndex = _indexInEntityOfAction;
         }
 
