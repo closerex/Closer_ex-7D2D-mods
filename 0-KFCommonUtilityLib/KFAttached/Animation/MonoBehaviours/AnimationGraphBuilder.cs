@@ -278,11 +278,12 @@ public class AnimationGraphBuilder : MonoBehaviour
             CurrentTarget.SetEnabled(false);
         }
 
-        bool useGraph = target && target.UseGraph;
+        bool didUseGraph = curTargetValid && CurrentTarget.UseGraph;
+        bool willUseGraph = target && target.UseGraph;
         bool nextTargetValid = target && target.ItemCurrent;
         if (HasWeaponOverride)
         {
-            if (useGraph)
+            if (willUseGraph)
             {
                 DestroyWeapon();
             }
@@ -315,7 +316,7 @@ public class AnimationGraphBuilder : MonoBehaviour
             animator.WriteDefaultValues();
         }
 
-        if (useGraph)
+        if (willUseGraph)
         {
             VanillaWrapper = new PlayableWrapper(vanillaControllerPlayable);
             WeaponWrapper = new PlayableWrapper(weaponControllerPlayable);
@@ -344,7 +345,7 @@ public class AnimationGraphBuilder : MonoBehaviour
                 VanillaWrapper.Play("idle", 0, 0f);
                 VanillaWrapper.SetInteger(AvatarController.weaponHoldTypeHash, -1);
             }
-            if (wasCrouching && !isFpv && VanillaWrapper.GetLayerCount() > 4)
+            if (wasCrouching && didUseGraph != willUseGraph && !isFpv && VanillaWrapper.GetLayerCount() > 4)
             {
                 VanillaWrapper.Play("2HGeneric", 4, 0);
             }
