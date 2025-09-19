@@ -388,7 +388,7 @@ static class AnimationRiggingPatches
 
     [HarmonyPatch(typeof(Inventory), nameof(Inventory.ForceHoldingItemUpdate))]
     [HarmonyPrefix]
-    private static bool Prefix_ForceHoldingItemUpdate(Inventory __instance)
+    private static bool Prefix_ForceHoldingItemUpdate_Inventory(Inventory __instance)
     {
         if (__instance.entity is EntityPlayer)
             AnimationRiggingManager.OnClearInventorySlot(__instance, __instance.holdingItemIdx);

@@ -54,6 +54,54 @@
         other.count -= add;
     }
 
+    public static bool ShouldUpdateItem(this ItemStack self, ItemStack other)
+    {
+        if (self.count != other.count || self.itemValue.type != other.itemValue.type)
+        {
+            return true;
+        }
+
+        return ShouldUpdateItem(self.itemValue, other.itemValue);
+    }
+
+    public static bool ShouldUpdateItem(this ItemValue self, ItemValue other)
+    {
+        if (self.type != other.type)
+        {
+            return true;
+        }
+        bool isHoldingGun = self.ItemClass != null && self.ItemClass.Actions != null && self.ItemClass.Actions.Length != 0 && self.ItemClass.Actions[0] is ItemActionRanged;
+        if (!isHoldingGun && self.Meta != other.Meta)
+        {
+            return true;
+        }
+
+        return ShouldUpdateItem(other.CosmeticMods, self.CosmeticMods) || ShouldUpdateItem(other.Modifications, self.Modifications);
+    }
+
+    public static bool ShouldUpdateItem(ItemValue[] self, ItemValue[] other)
+    {
+        if (self == null || other == null)
+        {
+            return self != other;
+        }
+
+        if (self.Length != other.Length)
+        {
+            return true;
+        }
+
+        for (int i = 0; i < self.Length; i++)
+        {
+            if (ShouldUpdateItem(self[i], other[i]))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static void TryStackItem(ItemStack[] slots, ItemStack stack)
     {
         foreach (var slot in slots)

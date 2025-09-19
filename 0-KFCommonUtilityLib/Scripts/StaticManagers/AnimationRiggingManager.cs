@@ -115,9 +115,9 @@ namespace KFCommonUtilityLib
             if (!controller?.Entity)
                 return;
             AnimationTargetsAbs targets = GetActiveRigTargetsFromPlayer(controller.Entity);
-            if (targets && !targets.Destroyed)
+            bool RigItemChangedThisFrame = hash_rig_changed_players.Remove(controller.Entity.entityId);
+            if (targets && targets.IsAnimationSet)
             {
-                bool RigItemChangedThisFrame = hash_rig_changed_players.Remove(controller.Entity.entityId);
                 targets.UpdatePlayerAvatar(controller, RigItemChangedThisFrame);
             }
             controller.UpdateBool(AvatarController.isCrouchingHash, controller.entity.Crouching, false);

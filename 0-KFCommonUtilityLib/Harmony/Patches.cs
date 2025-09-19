@@ -1372,6 +1372,45 @@ public static class CommonUtilityPatch
         return codes;
     }
 
+    [HarmonyPatch(typeof(EntityAlive.EntityNetworkStats), nameof(EntityAlive.EntityNetworkStats.ToEntity))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_ToEntity_EntityAlive_EntityNetworkStats(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var mtd_equal = AccessTools.Method(typeof(object), nameof(object.Equals), new[] { typeof(object) });
+        var mtd_force_update = AccessTools.Method(typeof(Inventory), nameof(Inventory.ForceHoldingItemUpdate));
+
+        for (var i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_equal))
+            {
+                for (var j = i + 1; j < codes.Count; j++)
+                {
+                    if (codes[j].Calls(mtd_force_update))
+                    {
+                        codes.InsertRange(j - 2, new[]
+                        {
+                            new CodeInstruction(OpCodes.Ldarg_1).WithLabels(codes[j - 2].ExtractLabels()),
+                            CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.inventory)),
+                            new CodeInstruction(OpCodes.Ldarg_0),
+                            CodeInstruction.LoadField(typeof(EntityAlive.EntityNetworkStats), nameof(EntityAlive.EntityNetworkStats.holdingItemIndex)),
+                            new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(Inventory), nameof(Inventory.GetItem))),
+                            new CodeInstruction(OpCodes.Ldarg_0),
+                            CodeInstruction.LoadField(typeof(EntityAlive.EntityNetworkStats), nameof(EntityAlive.EntityNetworkStats.holdingItemStack)),
+                            CodeInstruction.Call(typeof(EntityInventoryExtension), nameof(EntityInventoryExtension.ShouldUpdateItem), new[]{typeof(ItemStack), typeof(ItemStack)}),
+                            new CodeInstruction(OpCodes.Brfalse_S, codes[i + 1].operand)
+                        });
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+
+        return codes;
+    }
+
     //[HarmonyPatch(typeof(ProgressionValue), nameof(ProgressionValue.Level), MethodType.Setter)]
     //[HarmonyPostfix]
     //private static void Postfix_Level_ProgressionValue(int value, ProgressionValue __instance)

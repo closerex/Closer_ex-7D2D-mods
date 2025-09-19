@@ -15,6 +15,7 @@ using MethodAttributes = Mono.Cecil.MethodAttributes;
 using FieldAttributes = Mono.Cecil.FieldAttributes;
 using Mono.Cecil.Rocks;
 using KFCommonUtilityLib.Attributes;
+using Mono.Collections.Generic;
 
 namespace KFCommonUtilityLib
 {
@@ -537,11 +538,13 @@ namespace KFCommonUtilityLib
                     }
                     if (!mtddef_original.Parameters[index].ParameterType.IsByReference)
                     {
-                        yield return il.Create(par.ParameterType.IsByReference ? OpCodes.Ldarga_S : OpCodes.Ldarg_S, mtddef_original.Parameters[index]);
+                        yield return MonoCecilExtensions.LoadArgAtIndex(index, par.ParameterType.IsByReference, false, mtddef_original.Parameters, il);
+                        //yield return il.Create(par.ParameterType.IsByReference ? OpCodes.Ldarga_S : OpCodes.Ldarg_S, mtddef_original.Parameters[index]);
                     }
                     else
                     {
-                        yield return il.Create(OpCodes.Ldarg_S, mtddef_original.Parameters[index]);
+                        yield return MonoCecilExtensions.LoadArgAtIndex(index, true, false, mtddef_original.Parameters, il);
+                        //yield return il.Create(OpCodes.Ldarg_S, mtddef_original.Parameters[index]);
                         if (!par.ParameterType.IsByReference)
                         {
                             var opcode = par.ParameterType.LoadRefAsValue(out bool isStruct);
@@ -635,11 +638,13 @@ namespace KFCommonUtilityLib
                     }
                     if (!mtddef_derived.Parameters[index].ParameterType.IsByReference)
                     {
-                        list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldarga_S : OpCodes.Ldarg_S, mtddef_derived.Parameters[index]));
+                        list_inst_pars.Add(MonoCecilExtensions.LoadArgAtIndex(index, par.ParameterType.IsByReference, false, mtddef_derived.Parameters, il));
+                        //list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldarga_S : OpCodes.Ldarg_S, mtddef_derived.Parameters[index]));
                     }
                     else
                     {
-                        list_inst_pars.Add(il.Create(OpCodes.Ldarg_S, mtddef_derived.Parameters[index]));
+                        list_inst_pars.Add(MonoCecilExtensions.LoadArgAtIndex(index, true, false, mtddef_derived.Parameters, il));
+                        //list_inst_pars.Add(il.Create(OpCodes.Ldarg_S, mtddef_derived.Parameters[index]));
                         if (!par.ParameterType.IsByReference)
                         {
                             var opcode = par.ParameterType.LoadRefAsValue(out bool isStruct);

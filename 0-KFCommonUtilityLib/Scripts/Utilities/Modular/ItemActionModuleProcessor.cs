@@ -94,7 +94,8 @@ namespace KFCommonUtilityLib
                     }
                     if (index < 0)
                         throw new ArgumentException($"ItemActionData is not present in target method! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
-                    list_inst_pars.Add(il.Create(OpCodes.Ldarg_S, mtdpinf_derived.Method.Parameters[index]));
+                    list_inst_pars.Add(MonoCecilExtensions.LoadArgAtIndex(index, false, false, mtdpinf_derived.Method.Parameters, il));
+                    //list_inst_pars.Add(il.Create(OpCodes.Ldarg_S, mtdpinf_derived.Method.Parameters[index]));
                     list_inst_pars.Add(il.Create(OpCodes.Castclass, typedef_newActionData));
                     list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldflda : OpCodes.Ldfld, flddef_data));
                     return true;

@@ -291,6 +291,7 @@ public class ActionModuleFireModeSelector
                 rangedData.bPressed = true;
                 rangedData.bReleased = false;
                 rangedData.m_LastShotTime = 0;
+                rangedData.state = ItemActionFiringState.Off;
                 _instance.ExecuteAction(_data, false);
                 rangedData.curBurstCount = (byte)(curBurstCount + i + 1);
                 isRequestedByCoroutine = false;

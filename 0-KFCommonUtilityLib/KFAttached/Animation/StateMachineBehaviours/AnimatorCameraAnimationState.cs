@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using static CameraAnimationEvents;
 using System;
+using System.Collections.Generic;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -74,7 +75,7 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
     [SerializeField]
     private int tagOrNameHash = 0;
 
-    private CameraCurveData curvePositionData, curveRotationData;
+    private Queue<CameraCurveData> queue_pos_curves = new(), queue_rot_curves = new();
 
 #if UNITY_EDITOR
     public static bool IsReloading { get; private set; }
@@ -349,25 +350,29 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
             float baseSpeed = normalizeLength ? speed * clipLength / stateDuration : speed * speedMultiplier * initialFpsModifier;
             if (positionCurves != null && positionCurves.Length == 3)
             {
-                curvePositionData = new CameraCurveData(tagOrNameHash, positionCurves, clipLength, blendInTime, blendOutTime, baseSpeed, weight, CurveType.Position, relative, loop, speedParamHash);
+                var curvePositionData = new CameraCurveData(tagOrNameHash, positionCurves, clipLength, blendInTime, blendOutTime, baseSpeed, weight, CurveType.Position, relative, loop, speedParamHash);
                 cameraEvents.Play(curvePositionData);
+                queue_pos_curves.Enqueue(curvePositionData);
             }
             if (rotationCurves != null && (((rotationCurveType == CurveType.EularAngleRaw || rotationCurveType == CurveType.EularAngleBaked) && rotationCurves.Length == 3) || (rotationCurveType == CurveType.Quaternion && rotationCurves.Length == 4)))
             {
-                curveRotationData = new CameraCurveData(tagOrNameHash, rotationCurves, clipLength, blendInTime, blendOutTime, baseSpeed, weight, rotationCurveType, relative, loop, speedParamHash);
+                var curveRotationData = new CameraCurveData(tagOrNameHash, rotationCurves, clipLength, blendInTime, blendOutTime, baseSpeed, weight, rotationCurveType, relative, loop, speedParamHash);
                 cameraEvents.Play(curveRotationData);
+                queue_rot_curves.Enqueue(curveRotationData);
             }
         }
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (loop || interruptOnExit)
+        bool shouldInterrupt = loop || interruptOnExit;
+        if (queue_pos_curves.TryDequeue(out var curvePositionData) && shouldInterrupt)
         {
             curvePositionData?.Interrupt();
+        }
+        if (queue_rot_curves.TryDequeue(out var curveRotationData) && shouldInterrupt)
+        {
             curveRotationData?.Interrupt();
         }
-        curvePositionData = null;
-        curveRotationData = null;
     }
 }

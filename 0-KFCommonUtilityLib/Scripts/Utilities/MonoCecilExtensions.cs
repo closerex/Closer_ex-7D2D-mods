@@ -1,3 +1,4 @@
+#if (UNITY_2017_1_OR_NEWER && UNITY_EDITOR) || !UNITY_2017_1_OR_NEWER
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,49 +23,49 @@ public static class MonoCecilExtensions
         /// <summary>
         /// A collection of CustomAttribute objects that have been updated.
         /// </summary>
-        public readonly Collection<CustomAttribute> updatedAttributes = new Collection<CustomAttribute>();
+        public readonly Collection<CustomAttribute> updatedAttributes = new();
 
         /// <summary>
         /// A collection of InterfaceImplementation objects that have been updated.
         /// </summary>
-        public readonly Collection<InterfaceImplementation> updatedInterfaces = new Collection<InterfaceImplementation>();
+        public readonly Collection<InterfaceImplementation> updatedInterfaces = new();
 
         /// <summary>
         /// A collection of FieldDefinition objects that have been updated.
         /// </summary>
-        public readonly Collection<FieldDefinition> updatedFields = new Collection<FieldDefinition>();
+        public readonly Collection<FieldDefinition> updatedFields = new();
 
         /// <summary>
         /// A collection of PropertyDefinition objects that have been updated.
         /// </summary>
-        public readonly Collection<PropertyDefinition> updatedProperties = new Collection<PropertyDefinition>();
+        public readonly Collection<PropertyDefinition> updatedProperties = new();
 
         /// <summary>
         /// A collection of MethodDefinition objects that have been updated.
         /// </summary>
-        public readonly Collection<MethodDefinition> updatedMethods = new Collection<MethodDefinition>();
+        public readonly Collection<MethodDefinition> updatedMethods = new();
 
         /// <summary>
         /// A collection of source TypeDefinition objects that are being merged.
         /// </summary>
-        public readonly Collection<TypeDefinition> srcTypes = new Collection<TypeDefinition>();
+        public readonly Collection<TypeDefinition> srcTypes = new();
 
         /// <summary>
         /// A collection of destination TypeDefinition objects where source objects are merged into.
         /// </summary>
-        public readonly Collection<TypeDefinition> destTypes = new Collection<TypeDefinition>();
+        public readonly Collection<TypeDefinition> destTypes = new();
     };
 
     /// <summary>
     /// A dictionary mapping from AssemblyDefinition objects to their corresponding UpdateInfo objects.
     /// Used to keep track of the updates made to each assembly.
     /// </summary>
-    public static readonly Dictionary<AssemblyDefinition, UpdateInfo> assemblyUpdateInfo = new Dictionary<AssemblyDefinition, UpdateInfo> ();
+    public static readonly Dictionary<AssemblyDefinition, UpdateInfo> assemblyUpdateInfo = new();
 
     /// <summary>
     /// Additional search directories for resolving assembly types.
     /// </summary>
-    public static readonly Collection<string> additionalSearchDirectories = new Collection<string>();
+    public static readonly Collection<string> additionalSearchDirectories = new();
 
     // Basic extension methods for loading assemblies, adding elements to collections, and finding types, fields, and methods in Mono.Cecil objects.
     #region Base
@@ -279,7 +280,7 @@ public static class MonoCecilExtensions
         foreach (var clonedMethod in clonedMethods.ToList())
         {
             // Special handling for constructors
-            if (clonedMethod.Name is ".ctor" || clonedMethod.Name is ".cctor" || clonedMethod.Name is "Finalize")
+            if (clonedMethod.Name is ".ctor" or ".cctor" or "Finalize")
             {
                 // Temporarily set the declaring type of the cloned method to the destination type
                 // This is required to get the correct full name of the method for the FindMethod call
@@ -384,7 +385,7 @@ public static class MonoCecilExtensions
 
         // Add updated attributes, interfaces, fields, properties and methods to the update info
         if (!assemblyUpdateInfo.TryGetValue(dest.Module.Assembly, out var updateInfo))
-            updateInfo = assemblyUpdateInfo[dest.Module.Assembly] = new UpdateInfo();
+            updateInfo = assemblyUpdateInfo[dest.Module.Assembly] = new();
         foreach (var attribute in clonedAttributes) updateInfo.updatedAttributes.Add(attribute);
         foreach (var @interface in clonedInterfaces) updateInfo.updatedInterfaces.Add(@interface);
         foreach (var field in clonedFields) updateInfo.updatedFields.Add(field);
@@ -590,6 +591,27 @@ public static class MonoCecilExtensions
     }
 
     /// <summary>
+    /// Clones all instructions in the collection.
+    /// </summary>
+    /// <param name="instructions">The collection of instructions to be cloned.</param>
+    /// <returns>A new collection containing clones of the original instructions.</returns>
+    public static Collection<Instruction> Clone(this Collection<Instruction> instructions)
+    {
+        if (instructions == null)
+            throw new ArgumentNullException(nameof(instructions));
+
+        var clonedInstructions = new Collection<Instruction>();
+
+        foreach (var instruction in instructions)
+        {
+            // Add to the cloned collection
+            clonedInstructions.Add(instruction.Clone());
+        }
+
+        return clonedInstructions;
+    }
+
+    /// <summary>
     /// Clones a MethodDefinition.
     /// </summary>
     /// <param name="method">The method to be cloned.</param>
@@ -638,116 +660,22 @@ public static class MonoCecilExtensions
             // Now fix up the branch targets.
             foreach (var instruction in clonedMethod.Body.Instructions)
             {
-                // If the instruction is a branch instruction, fix up its target.
-                if (instruction.OpCode.FlowControl == FlowControl.Branch ||
-                    instruction.OpCode.FlowControl == FlowControl.Cond_Branch)
+                switch (instruction.OpCode.OperandType)
                 {
-                    instruction.Operand = instructionMapping[(Instruction)instruction.Operand];
+                    // If the instruction is a branch instruction, fix up its target.
+                    case OperandType.ShortInlineBrTarget:
+                    case OperandType.InlineBrTarget:
+                        instruction.Operand = instructionMapping[(Instruction)instruction.Operand];
+                        break;
+                    // If the instruction is a switch instruction, fix up its targets.
+                    case OperandType.InlineSwitch:
+                        var oldTargets = (Instruction[])instruction.Operand;
+                        var newTargets = new Instruction[oldTargets.Length];
+                        for (int i = 0; i < oldTargets.Length; ++i)
+                            newTargets[i] = instructionMapping[oldTargets[i]];
+                        instruction.Operand = newTargets;
+                        break;
                 }
-
-                // If the instruction is a switch instruction, fix up its targets.
-                if (instruction.OpCode == OpCodes.Switch)
-                {
-                    var oldTargets = (Instruction[])instruction.Operand;
-                    var newTargets = new Instruction[oldTargets.Length];
-                    for (int i = 0; i < oldTargets.Length; ++i)
-                    {
-                        newTargets[i] = instructionMapping[oldTargets[i]];
-                    }
-                    instruction.Operand = newTargets;
-                }
-            }
-        }
-
-        // Return the cloned method.
-        return clonedMethod;
-    }
-
-    public static MethodDefinition CloneToModuleAsStatic(this MethodDefinition method, TypeReference originalType, ModuleDefinition module)
-    {
-        // Create a new MethodDefinition with the same properties as the original method.
-        var clonedMethod = new MethodDefinition(method.Name, MethodAttributes.Static | MethodAttributes.Public | MethodAttributes.HideBySig, module.ImportReference(method.ReturnType))
-        {
-            ImplAttributes = method.ImplAttributes,
-            SemanticsAttributes = method.SemanticsAttributes
-        };
-
-        // Copy all custom attributes from the original method to the cloned method.
-        foreach (var attribute in method.CustomAttributes)
-            clonedMethod.CustomAttributes.Add(attribute.CloneToModule(module));
-
-        if (!method.Attributes.HasFlag(MethodAttributes.Static))
-            clonedMethod.Parameters.Add(new ParameterDefinition("self", ParameterAttributes.None, originalType));
-        // Clone all parameters and add them to the cloned method.
-        foreach (var parameter in method.Parameters)
-            clonedMethod.Parameters.Add(parameter.CloneToModule(module));
-
-        // Create a new method body for the cloned method.
-        clonedMethod.Body = new MethodBody(clonedMethod);
-
-        // If the original method has a body, copy the relevant properties to the cloned method's body.
-        if (method.HasBody)
-        {
-            clonedMethod.Body.MaxStackSize = method.Body.MaxStackSize;
-            clonedMethod.Body.InitLocals = method.Body.InitLocals;
-
-            // Clone all variables and add them to the cloned method's body.
-            foreach (var variable in method.Body.Variables) clonedMethod.Body.Variables.Add(variable.CloneToModule(module));
-
-            // Instruction mapping from old to new instructions used to update branch targets which is necessary after cloning
-            var instructionMapping = new Dictionary<Instruction, Instruction>();
-
-            // Clone all the instructions and create the mapping.
-            foreach (var instruction in method.Body.Instructions)
-            {
-                var clonedInstruction = instruction.Clone();
-                clonedInstruction.Resolve(clonedMethod, method, module);
-                instructionMapping[instruction] = clonedInstruction;
-                clonedMethod.Body.Instructions.Add(clonedInstruction);
-            }
-
-            // Now fix up the branch targets.
-            foreach (var instruction in clonedMethod.Body.Instructions)
-            {
-                // If the instruction is a branch instruction, fix up its target.
-                if (instruction.OpCode.FlowControl == FlowControl.Branch ||
-                    instruction.OpCode.FlowControl == FlowControl.Cond_Branch)
-                {
-                    instruction.Operand = instructionMapping[(Instruction)instruction.Operand];
-                }
-
-                // If the instruction is a switch instruction, fix up its targets.
-                if (instruction.OpCode == OpCodes.Switch)
-                {
-                    var oldTargets = (Instruction[])instruction.Operand;
-                    var newTargets = new Instruction[oldTargets.Length];
-                    for (int i = 0; i < oldTargets.Length; ++i)
-                    {
-                        newTargets[i] = instructionMapping[oldTargets[i]];
-                    }
-                    instruction.Operand = newTargets;
-                }
-            }
-
-            // copy the exception handler blocks
-            foreach (ExceptionHandler eh in method.Body.ExceptionHandlers)
-            {
-                ExceptionHandler neh = new ExceptionHandler(eh.HandlerType);
-                neh.CatchType = module.ImportReference(eh.CatchType);
-
-                // we need to setup neh.Start and End; these are instructions; we need to locate it in the source by index
-                if (eh.TryStart != null)
-                {
-                    int idx = method.Body.Instructions.IndexOf(eh.TryStart);
-                    neh.TryStart = clonedMethod.Body.Instructions[idx];
-                }
-                if (eh.TryEnd != null)
-                {
-                    int idx = method.Body.Instructions.IndexOf(eh.TryEnd);
-                    neh.TryEnd = clonedMethod.Body.Instructions[idx];
-                }
-
-                clonedMethod.Body.ExceptionHandlers.Add(neh);
             }
         }
 
@@ -799,23 +727,21 @@ public static class MonoCecilExtensions
         // Now fix up the branch targets.
         foreach (var instruction in clonedMethod.Body.Instructions)
         {
-            // If the instruction is a branch instruction, fix up its target.
-            if (instruction.OpCode.FlowControl == FlowControl.Branch ||
-                instruction.OpCode.FlowControl == FlowControl.Cond_Branch)
+            switch (instruction.OpCode.OperandType)
             {
-                instruction.Operand = instructionMapping[(Instruction)instruction.Operand];
-            }
-
-            // If the instruction is a switch instruction, fix up its targets.
-            if (instruction.OpCode == OpCodes.Switch)
-            {
-                var oldTargets = (Instruction[])instruction.Operand;
-                var newTargets = new Instruction[oldTargets.Length];
-                for (int i = 0; i < oldTargets.Length; ++i)
-                {
-                    newTargets[i] = instructionMapping[oldTargets[i]];
-                }
-                instruction.Operand = newTargets;
+                // If the instruction is a branch instruction, fix up its target.
+                case OperandType.ShortInlineBrTarget:
+                case OperandType.InlineBrTarget:
+                    instruction.Operand = instructionMapping[(Instruction)instruction.Operand];
+                    break;
+                // If the instruction is a switch instruction, fix up its targets.
+                case OperandType.InlineSwitch:
+                    var oldTargets = (Instruction[])instruction.Operand;
+                    var newTargets = new Instruction[oldTargets.Length];
+                    for (int i = 0; i < oldTargets.Length; ++i)
+                        newTargets[i] = instructionMapping[oldTargets[i]];
+                    instruction.Operand = newTargets;
+                    break;
             }
         }
 
@@ -1119,6 +1045,7 @@ public static class MonoCecilExtensions
 
     /// <summary>
     /// Updates all instructions in the method's body.
+    /// If the instruction's operand type matches the source type, it is replaced with the destination type.
     /// </summary>
     /// <param name="method">Method whose instructions are to be updated.</param>
     /// <param name="src">The original type which is being replaced.</param>
@@ -1720,4 +1647,43 @@ public static class MonoCecilExtensions
                 return OpCodes.Ldobj;
         }
     }
+
+    public static Instruction LoadArgAtIndex(int index, bool byRef, bool isStatic, Collection<ParameterDefinition> pars, ILProcessor il)
+    {
+        if (byRef)
+        {
+            return il.Create(index > 255 ? OpCodes.Ldarga : OpCodes.Ldarga_S, pars[index]);
+        }
+        if (!isStatic)
+        {
+            switch (index)
+            {
+                case 0:
+                    return il.Create(OpCodes.Ldarg_1);
+                case 1:
+                    return il.Create(OpCodes.Ldarg_2);
+                case 2:
+                    return il.Create(OpCodes.Ldarg_3);
+                default:
+                    return il.Create(index > 255 ? OpCodes.Ldarg : OpCodes.Ldarg_S, pars[index]);
+            }
+        }
+        else
+        {
+            switch (index)
+            {
+                case 0:
+                    return il.Create(OpCodes.Ldarg_0);
+                case 1:
+                    return il.Create(OpCodes.Ldarg_1);
+                case 2:
+                    return il.Create(OpCodes.Ldarg_2);
+                case 3:
+                    return il.Create(OpCodes.Ldarg_3);
+                default:
+                    return il.Create(index > 255 ? OpCodes.Ldarg : OpCodes.Ldarg_S, pars[index]);
+            }
+        }
+    }
 }
+#endif
