@@ -1411,6 +1411,98 @@ public static class CommonUtilityPatch
         return codes;
     }
 
+    [HarmonyPatch(typeof(Equipment), nameof(Equipment.Apply))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_Apply_Equipment(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+    {
+        var codes = instructions.ToList();
+
+        var lbd = generator.DeclareLocal(typeof(bool));
+
+        var mtd_update = AccessTools.Method(typeof(EModelSDCS), nameof(EModelSDCS.UpdateEquipment));
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_update))
+            {
+                codes.InsertRange(i - 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldloc_S, lbd),
+                    new CodeInstruction(OpCodes.Brfalse_S, codes[i - 2].operand)
+                });
+                break;
+            }
+        }
+
+        codes.InsertRange(0, new[]
+        {
+            new CodeInstruction(OpCodes.Ldarg_0),
+            new CodeInstruction(OpCodes.Ldarg_1),
+            CodeInstruction.CallClosure<Func<Equipment, Equipment, bool>>(static (curEquip, tarEquip) =>
+            {
+                int slotCount = curEquip.GetSlotCount();
+                bool isLocalPlayer = curEquip.m_entity is EntityPlayerLocal;
+                for (int i = 0; i < slotCount; i++)
+                {
+                    int curItemType = -1, tarItemType = -1;
+                    ItemClass curCosItem = curEquip.m_cosmeticSlots[i];
+                    ItemClass tarCosItem = tarEquip.m_cosmeticSlots[i];
+                    ItemValue curEquipItem = curEquip.m_slots[i];
+                    ItemValue tarEquipItem = tarEquip.m_slots[i];
+                    if (isLocalPlayer)
+                    {
+                        if (curEquip.HasCosmeticUnlocked(curCosItem).isUnlocked && curCosItem != ItemClass.MissingItem)
+                        {
+                            curItemType = curCosItem.Id;
+                        }
+                        else if (curEquipItem != null)
+                        {
+                            curItemType = curEquipItem.type;
+                        }
+
+                        if (tarEquip.HasCosmeticUnlocked(tarCosItem).isUnlocked && tarCosItem != ItemClass.MissingItem)
+                        {
+                            tarItemType = tarCosItem.Id;
+                        }
+                        else if (tarEquipItem != null)
+                        {
+                            tarItemType = tarEquipItem.type;
+                        }
+                    }
+                    else
+                    {
+                        if (curCosItem != null && curCosItem != ItemClass.MissingItem)
+                        {
+                            curItemType = curCosItem.Id;
+                        }
+                        else if (curEquipItem != null)
+                        {
+                            curItemType = curEquipItem.type;
+                        }
+
+                        if (tarCosItem != null && tarCosItem != ItemClass.MissingItem)
+                        {
+                            tarItemType = tarCosItem.Id;
+                        }
+                        else if (tarEquipItem != null)
+                        {
+                            tarItemType = tarEquipItem.type;
+                        }
+                    }
+
+                    if (curItemType != tarItemType)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }),
+            new CodeInstruction(OpCodes.Stloc_S, lbd)
+        });
+
+        return codes;
+    }
+
     //[HarmonyPatch(typeof(ProgressionValue), nameof(ProgressionValue.Level), MethodType.Setter)]
     //[HarmonyPostfix]
     //private static void Postfix_Level_ProgressionValue(int value, ProgressionValue __instance)
