@@ -1374,13 +1374,16 @@ public static class CommonUtilityPatch
 
     [HarmonyPatch(typeof(EntityAlive.EntityNetworkStats), nameof(EntityAlive.EntityNetworkStats.ToEntity))]
     [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_ToEntity_EntityAlive_EntityNetworkStats(IEnumerable<CodeInstruction> instructions)
+    private static IEnumerable<CodeInstruction> Transpiler_ToEntity_EntityAlive_EntityNetworkStats(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
     {
         var codes = instructions.ToList();
 
         var mtd_equal = AccessTools.Method(typeof(object), nameof(object.Equals), new[] { typeof(object) });
         var mtd_force_update = AccessTools.Method(typeof(Inventory), nameof(Inventory.ForceHoldingItemUpdate));
 
+        var lbd = generator.DeclareLocal(typeof(bool));
+        var lbl_false = generator.DefineLabel();
+        var lbl_true = generator.DefineLabel();
         for (var i = 0; i < codes.Count; i++)
         {
             if (codes[i].Calls(mtd_equal))
@@ -1391,19 +1394,35 @@ public static class CommonUtilityPatch
                     {
                         codes.InsertRange(j - 2, new[]
                         {
-                            new CodeInstruction(OpCodes.Ldarg_1).WithLabels(codes[j - 2].ExtractLabels()),
-                            CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.inventory)),
-                            new CodeInstruction(OpCodes.Ldarg_0),
-                            CodeInstruction.LoadField(typeof(EntityAlive.EntityNetworkStats), nameof(EntityAlive.EntityNetworkStats.holdingItemIndex)),
-                            new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(Inventory), nameof(Inventory.GetItem))),
-                            new CodeInstruction(OpCodes.Ldarg_0),
-                            CodeInstruction.LoadField(typeof(EntityAlive.EntityNetworkStats), nameof(EntityAlive.EntityNetworkStats.holdingItemStack)),
-                            CodeInstruction.Call(typeof(EntityInventoryExtension), nameof(EntityInventoryExtension.ShouldUpdateItem), new[]{typeof(ItemStack), typeof(ItemStack)}),
+                            new CodeInstruction(OpCodes.Ldloc_S, lbd).WithLabels(codes[j - 2].ExtractLabels()),
                             new CodeInstruction(OpCodes.Brfalse_S, codes[i + 1].operand)
                         });
                         break;
                     }
                 }
+
+                codes.InsertRange(i + 2, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_1).WithLabels(codes[i + 2].ExtractLabels()),
+                    CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.inventory)),
+                    CodeInstruction.LoadField(typeof(Inventory), nameof(Inventory.m_HoldingItemIdx)),
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    CodeInstruction.LoadField(typeof(EntityAlive.EntityNetworkStats), nameof(EntityAlive.EntityNetworkStats.holdingItemIndex)),
+                    new CodeInstruction(OpCodes.Bne_Un_S, lbl_false),
+                    new CodeInstruction(OpCodes.Ldarg_1),
+                    CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.inventory)),
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    CodeInstruction.LoadField(typeof(EntityAlive.EntityNetworkStats), nameof(EntityAlive.EntityNetworkStats.holdingItemIndex)),
+                    new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(Inventory), nameof(Inventory.GetItem))),
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    CodeInstruction.LoadField(typeof(EntityAlive.EntityNetworkStats), nameof(EntityAlive.EntityNetworkStats.holdingItemStack)),
+                    CodeInstruction.Call(typeof(EntityInventoryExtension), nameof(EntityInventoryExtension.ShouldUpdateItem), new[]{typeof(ItemStack), typeof(ItemStack)}),
+                    new CodeInstruction(OpCodes.Brfalse_S, lbl_false),
+                    new CodeInstruction(OpCodes.Ldc_I4_1),
+                    new CodeInstruction(OpCodes.Br_S, lbl_true),
+                    new CodeInstruction(OpCodes.Ldc_I4_0).WithLabels(lbl_false),
+                    new CodeInstruction(OpCodes.Stloc_S, lbd).WithLabels(lbl_true)
+                });
                 break;
             }
         }
