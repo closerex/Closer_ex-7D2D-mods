@@ -19,7 +19,7 @@ public class ActionModuleAnimationInterruptable
     public void Postfix_OnModificationsChanged(ItemActionData _data, AnimationInterruptableData __customData)
     {
         __customData.targets = AnimationRiggingManager.GetHoldingRigTargetsFromPlayer(_data.invData.holdingEntity);
-        __customData.animator = __customData.targets.GraphBuilder.WeaponWrapper;
+        __customData.animator = __customData.targets?.GraphBuilder.WeaponWrapper;
     }
 
     [HarmonyPatch(typeof(ItemActionDynamicMelee), nameof(ItemAction.CancelAction)), MethodTargetPostfix]
