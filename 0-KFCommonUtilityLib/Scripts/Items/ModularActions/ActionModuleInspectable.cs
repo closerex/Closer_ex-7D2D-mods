@@ -47,7 +47,8 @@ public class ActionModuleInspectable
     public void Postfix_ItemAction_OnModificationsChanged(ItemActionData _data, InspectableData __customData)
     {
         __customData.lastInspectTime = Time.time;
-        __customData.inspectAvailable = AnimationRiggingManager.GetHoldingRigTargetsFromPlayer(_data.invData.holdingEntity);
+        var targets = AnimationRiggingManager.GetHoldingRigTargetsFromPlayer(_data.invData.holdingEntity);
+        __customData.inspectAvailable = targets && targets.IsAnimationSet;
     }
 
     [HarmonyPatch(typeof(ItemActionDynamic), nameof(ItemAction.CancelAction)), MethodTargetPostfix]

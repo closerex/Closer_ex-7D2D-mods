@@ -36,7 +36,7 @@ public class ActionModuleInterruptReload
         var invData = _data.invData;
         __customData.itemAnimator = AnimationGraphBuilder.DummyWrapper;
         __customData.eventBridge = null;
-        if (invData.model && invData.model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed && targets.IsAnimationSet)
+        if (invData.model && invData.model.TryGetComponent<AnimationTargetsAbs>(out var targets) && targets.IsAnimationSet)
         {
             __customData.itemAnimator = targets.GraphBuilder.WeaponWrapper;
             if (__customData.itemAnimator.IsValid)
