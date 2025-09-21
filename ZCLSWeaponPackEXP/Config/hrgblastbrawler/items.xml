@@ -86,6 +86,7 @@
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="metal"/>
 			</effect_group>
             <effect_group name="melee shooter">
+				<passive_effect name="StaminaLoss" operation="base_set" value="20" tags="secondary"/>
 				<passive_effect name="EntityDamage" operation="base_set" value="11" tags="secondary"/>
 				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".5" tags="secondary"/>
 				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value="1" tags="secondary"/>

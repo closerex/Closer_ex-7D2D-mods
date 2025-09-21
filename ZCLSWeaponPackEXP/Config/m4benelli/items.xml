@@ -28,7 +28,7 @@
 				<property name="Sound_start" value="bashSwingReal"/>
 				<property name="DynamicSoundStart" value="bashSwingLight"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib"/>
-				<property name="InterruptStateFullName" value="Base Layer.FiringCancel"/>
+				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
 				<property name="Sphere" value=".1"/>
 				<property name="UseGrazingHits" value="true"/>
 				<property name="GrazeStart" value=".25"/>
