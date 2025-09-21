@@ -17,6 +17,11 @@ ttFiringModeBurst3,UI,Controls Dialog,x,3-round Burst,三连发
 ttFiringModeFullAuto,UI,Controls Dialog,x,Full-Auto,全自动
 ttFiringModePumpAction,UI,Controls Dialog,x,Pump Action,泵动
 
+loadingTipKFKeybinds,UI,Loading Screen,x,"KFlib adds multiple custom keybinds via Custom Player Action Manager. You can find them in keyboard/mouse movement settings.",KFlib通过Custom Player Action Manager添加了多个自定义按键。你可以在按键设置的移动一栏下找到它们。
+loadingTipKFKeybinds_title,UI,Loading Screen,x,Custom Keybinds,自定义按键
+loadingTipKFCameraAnimation,UI,Loading Screen,x,"Some weapons have camera animation associated with their animations. If you find it too shaky, you can change the weight in Gears settings. Holding a supported weapon in game also exposes individual weight settings for its predefined camera animation groups.",有些武器动画会触发与之相关联的相机动画。如果你觉得晃动太过强烈，可以在Gears设置中调节相机动画强度。在游戏内手持对应的武器时，其预定义的各个相机动画组的单独强度设置也会出现在选项中。
+loadingTipKFCameraAnimation_title,UI,Loading Screen,x,Camera Animation,相机动画
+
 statRecoilForceUp,UI,Menu,x,Vertical Recoil,垂直后坐力
 statRecoilForceBack,UI,Menu,x,Horizontal Recoil,水平后坐力
 statRecoilForceModifier,UI,Menu,x,Current Recoil Modifier,当前后坐力减免
