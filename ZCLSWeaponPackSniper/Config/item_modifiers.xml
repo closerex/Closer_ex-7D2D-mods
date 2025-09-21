@@ -26,4 +26,14 @@
 			<property name="Zoom_overlay" value=""/>
 		</item_property_overrides>
 	</append>
+	<append xpath="/item_modifiers/item_modifier[@name='modGunScopeLarge']">
+		<item_property_overrides name="gunKFM99">
+			<property name="Zoom_max_out" value="55"/>
+			<property name="Zoom_max_in" value="55"/>
+			<property name="DynamicSensitivityRange" value="8,8"/>
+			<property name="ForceFovRange" value="3.375,3.375"/>
+			<property name="CrosshairOnAim" value="false"/>
+			<property name="Zoom_overlay" value=""/>
+		</item_property_overrides>
+	</append>
 </configs>
