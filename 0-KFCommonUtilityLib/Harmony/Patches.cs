@@ -1470,7 +1470,7 @@ public static class CommonUtilityPatch
                     ItemValue tarEquipItem = tarEquip.m_slots[i];
                     if (isLocalPlayer)
                     {
-                        if (curEquip.HasCosmeticUnlocked(curCosItem).isUnlocked && curCosItem != ItemClass.MissingItem)
+                        if (curCosItem != null && curEquip.HasCosmeticUnlocked(curCosItem).isUnlocked && curCosItem != ItemClass.MissingItem)
                         {
                             curItemType = curCosItem.Id;
                         }
@@ -1479,7 +1479,7 @@ public static class CommonUtilityPatch
                             curItemType = curEquipItem.type;
                         }
 
-                        if (tarEquip.HasCosmeticUnlocked(tarCosItem).isUnlocked && tarCosItem != ItemClass.MissingItem)
+                        if (tarCosItem != null && tarEquip.HasCosmeticUnlocked(tarCosItem).isUnlocked && tarCosItem != ItemClass.MissingItem)
                         {
                             tarItemType = tarCosItem.Id;
                         }
