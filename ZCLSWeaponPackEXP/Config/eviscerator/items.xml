@@ -72,6 +72,7 @@
 				<property name="ItemActionModules" value="AnimationInterruptSource,KFCommonUtilityLib"/>
 				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
 				<property name="CommonBlockingTags" value="perkDeepCuts"/>
+				<property name="IgnoreShotTime" value="true"/>
 			</property>
 			<effect_group name="meleeWpnBladeBashEviscerator">
 				<passive_effect name="AttacksPerMinute" operation="base_set" value="56" tags="perkDeepCuts,perkFlurryOfAgility"/>
