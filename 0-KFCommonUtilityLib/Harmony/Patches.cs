@@ -8,7 +8,6 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml.Linq;
 using UnityEngine;
-using KFCommonUtilityLib.Scripts.NetPackages;
 using static ItemActionRanged;
 
 [HarmonyPatch]
@@ -1519,6 +1518,182 @@ public static class CommonUtilityPatch
             new CodeInstruction(OpCodes.Stloc_S, lbd)
         });
 
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.CancelInventoryActions), MethodType.Enumerator)]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_CancelInventoryActions_EntityPlayerLocal(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var mtd_isreloading = AccessTools.Method(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.IsReloading));
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_isreloading))
+            {
+                for (int j = i - 1; j >= 0; j--)
+                {
+                    if (codes[j].opcode == OpCodes.Br_S || codes[j].opcode == OpCodes.Br)
+                    {
+                        codes.InsertRange(j, new[]
+                        {
+                            new CodeInstruction(codes[i - 1].opcode, codes[i - 1].operand).WithLabels(codes[j].ExtractLabels()),
+                            CodeInstruction.CallClosure<Action<EntityPlayerLocal>>(static (player) =>
+                            {
+                                if (player.inventory.holdingItemData is IModuleContainerFor<ItemModuleMultiItem.MultiItemInvData> dataModule)
+                                {
+                                    var multiInvData = dataModule.Instance;
+                                    if (multiInvData.boundInvData != null && multiInvData.boundItemClass != null && multiInvData.boundInvData.actionData != null)
+                                    {
+                                        var prevData = player.MinEventContext.ItemActionData;
+                                        multiInvData.SetBoundParams();
+                                        for (int i = 0; i < multiInvData.boundInvData.actionData.Count; i++)
+                                        {
+                                            var action = multiInvData.boundItemClass.Actions[i];
+                                            var actionData = multiInvData.boundInvData.actionData[i];
+                                            if (action != null && actionData != null)
+                                            {
+                                                player.MinEventContext.ItemActionData = actionData;
+                                                if (action.IsActionRunning(actionData))
+                                                {
+                                                    action.CancelAction(actionData);
+                                                }
+                                            }
+                                        }
+                                        multiInvData.RestoreParams(false);
+                                        player.MinEventContext.ItemActionData = prevData;
+                                    }
+                                }
+                            })
+                        });
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        return codes;
+    }
+    private static readonly int MeleeRunningHash = Animator.StringToHash("IsMeleeRunning");
+    private static readonly int PowerAttackHash = Animator.StringToHash("PowerAttack");
+
+    [HarmonyPatch(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.ExecuteAction))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_ExecuteAction_ItemActionDynamicMelee(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var fld_released = AccessTools.Field(typeof(ItemActionDynamicMelee.ItemActionDynamicMeleeData), nameof(ItemActionDynamicMelee.ItemActionDynamicMeleeData.HasReleased));
+        var mtd_updatebool = AccessTools.Method(typeof(AvatarController), nameof(AvatarController.UpdateBool), new[] { typeof(int), typeof(bool), typeof(bool) });
+        var mtd_setfinished = AccessTools.Method(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.SetAttackFinished));
+
+        for (int i = 1; i < codes.Count; i++)
+        {
+            if (codes[i].opcode == OpCodes.Stloc_3)
+            {
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldloc_3).WithLabels(codes[i + 1].ExtractLabels()),
+                    CodeInstruction.LoadField(typeof(CommonUtilityPatch), nameof(MeleeRunningHash)),
+                    new CodeInstruction(OpCodes.Ldc_I4_1),
+                    new CodeInstruction(OpCodes.Ldc_I4_1),
+                    new CodeInstruction(OpCodes.Callvirt, mtd_updatebool),
+                });
+                i += 5;
+            }
+            else if (codes[i].StoresField(fld_released))
+            {
+                if (codes[i - 1].opcode == OpCodes.Ldc_I4_1)
+                {
+                    for (int j = i + 1; j < codes.Count; j++)
+                    {
+                        if (codes[j].Calls(mtd_setfinished))
+                        {
+                            codes[j + 1].WithLabels(codes[j - 2].ExtractLabels());
+                            codes.RemoveRange(j - 2, 3);
+                            break;
+                        }
+                    }
+                    codes.InsertRange(i + 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_1),
+                        CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
+                        CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity)),
+                        CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.emodel)),
+                        CodeInstruction.LoadField(typeof(EModelBase), nameof(EModelBase.avatarController)),
+                        CodeInstruction.LoadField(typeof(CommonUtilityPatch), nameof(MeleeRunningHash)),
+                        new CodeInstruction(OpCodes.Ldc_I4_0),
+                        new CodeInstruction(OpCodes.Ldc_I4_1),
+                        new CodeInstruction(OpCodes.Callvirt, mtd_updatebool),
+                    });
+                    i += 8;
+                }
+                else if (codes[i - 1].opcode == OpCodes.Ldc_I4_0)
+                {
+                    codes.InsertRange(i + 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldloc_0),
+                        CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(CheckMeleeRunning)),
+                    });
+                    i += 2;
+                }
+            }
+        }
+        return codes;
+    }
+
+    private static void CheckMeleeRunning(ItemActionDynamicMelee.ItemActionDynamicMeleeData data)
+    {
+        if (data.Attacking && data.invData.itemValue.PercentUsesLeft <= 0f || data.invData.holdingEntity.Stamina < data.StaminaUsage || !data.invData.holdingEntity.inventory.GetIsFinishedSwitchingHeldItem())
+        {
+            data.invData.holdingEntity.emodel.avatarController.UpdateBool(MeleeRunningHash, false, true);
+            data.HasExecuted = true;
+        }
+    }
+
+    [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.ExecuteAction))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_ExecuteAction_ItemClass(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+        var fld_avatar = AccessTools.Field(typeof(EModelBase), nameof(EModelBase.avatarController));
+
+        for (int i = 1; i < codes.Count - 1; i++)
+        {
+            if (codes[i].opcode == OpCodes.Stloc_1 && codes[i - 1].opcode == OpCodes.Ldarg_3)
+            {
+                for (int j = i + 1; j < codes.Count; j++)
+                {
+                    if (codes[j].opcode == OpCodes.Blt_S || codes[j].opcode == OpCodes.Blt)
+                    {
+                        codes.InsertRange(j + 1, new[]
+                        {
+                            new CodeInstruction(OpCodes.Ldarg_3).WithLabels(codes[j + 1].ExtractLabels()),
+                            new CodeInstruction(OpCodes.Brtrue_S, codes[j].operand)
+                        });
+                        i += 2;
+                        break;
+                    }
+                }
+            }
+            else if (codes[i].LoadsField(fld_avatar) && codes[i + 1].opcode == OpCodes.Ldnull)
+            {
+                for (int j = i + 1; j < codes.Count; j++)
+                {
+                    if (codes[j].Branches(out var lbl))
+                    {
+                        codes.InsertRange(j + 1, new[]
+                        {
+                            new CodeInstruction(OpCodes.Ldarg_3).WithLabels(codes[j + 1].ExtractLabels()),
+                            new CodeInstruction(OpCodes.Brtrue_S, lbl)
+                        });
+                        i += 2;
+                        break;
+                    }
+                }
+            }
+        }
         return codes;
     }
 

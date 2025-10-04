@@ -465,6 +465,8 @@
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationMeleeShooterState.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationMultiStageReloadState.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationRigLayerController.cs" />
+    <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationStateTriggers.cs" />
+    <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimatorBlockingStateMachine.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimatorCameraAnimationState.cs" />
     <Compile Include="KFAttached\FPSPack\Demo\FPSDemoGUI.cs" />
     <Compile Include="KFAttached\FPSPack\Demo\FPSDemoReactivator.cs" />
@@ -583,6 +585,7 @@
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdMultiActionItemValueDebug.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPrintLocalCache.cs" />
     <Compile Include="Scripts\Input\PlayerActionKFLib.cs" />
+    <Compile Include="Scripts\Items\ItemActions\ItemActionBlocking.cs" />
     <Compile Include="Scripts\Items\ItemClasses\ItemClassExtendedFunction.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAlternative.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationInterruptable.cs" />
@@ -628,6 +631,7 @@
     <Compile Include="Scripts\NetPackages\NetPackageEntityActionIndex.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageEntitySpawnWithCVar.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageFixedReload.cs" />
+    <Compile Include="Scripts\NetPackages\NetPackageForceKnockDown.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageRemoteAttachPrefab.cs" />
     <Compile Include="Scripts\Requirements\ActionHasTags.cs" />
     <Compile Include="Scripts\Requirements\ActionIndexIs.cs" />

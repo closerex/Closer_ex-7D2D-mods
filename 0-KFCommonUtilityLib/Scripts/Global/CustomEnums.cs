@@ -8,6 +8,14 @@
     public static MinEventTypes onSelfBurstModeChanged;
     public static MinEventTypes onSelfFirstCVarSync;
     public static MinEventTypes onSelfHoldingItemAssemble;
+    public static MinEventTypes onSelfBlockingStart;
+    public static MinEventTypes onSelfBlockingStop;
+    public static MinEventTypes onSelfBlockingExit;
+    public static MinEventTypes onSelfBlockingDamage;
+    public static MinEventTypes onSelfParryingDamage;
+    public static MinEventTypes onAnimatorStateEntered;
+    public static MinEventTypes onAnimatorStateUpdate;
+    public static MinEventTypes onAnimatorStateExit;
     #endregion
 
     #region Passives

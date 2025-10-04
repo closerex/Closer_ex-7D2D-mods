@@ -105,7 +105,7 @@ public class ActionModuleInspectable
                 return false;
             }
             var player = invData.holdingEntity as EntityPlayerLocal;
-            return player && !player.MovementRunning && !player.AimingGun && !player.bLerpCameraFlag && !invData.item.IsActionRunning(invData) && (invData.itemValue.Meta > 0 || module.allowEmptyInspect);
+            return player && !player.movementInput.running && !player.AimingGun && !player.bLerpCameraFlag && !invData.item.IsActionRunning(invData) && (invData.itemValue.Meta > 0 || module.allowEmptyInspect);
         }
 
         public void TriggerInspect(bool useAlt = false)

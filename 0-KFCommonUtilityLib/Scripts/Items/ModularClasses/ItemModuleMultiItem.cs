@@ -53,6 +53,14 @@ public class ItemModuleMultiItem
         return true;
     }
 
+    [HarmonyPatch(nameof(ItemClass.ExecuteAction)), MethodTargetPrefix]
+    public bool Prefix_ExecuteAction(ItemInventoryData _data, bool _bReleased, PlayerActionsLocal _playerActions)
+    {
+        if (!_bReleased && _playerActions != null)
+            _data.holdingEntity.emodel.avatarController.UpdateBool("UseAltMelee", false);
+        return true;
+    }
+
     [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.ExecuteAction)), MethodTargetTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_ItemClass_ExecuteAction(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
     {
@@ -71,7 +79,7 @@ public class ItemModuleMultiItem
             CodeInstruction.Call(typeof(MultiItemInvData), nameof(MultiItemInvData.IsBoundActionRunning)),
             new CodeInstruction(OpCodes.Brfalse_S, lbl),
             new CodeInstruction(OpCodes.Ret)
-         });
+        });
 
         return codes;
     }
@@ -295,11 +303,30 @@ public class ItemModuleMultiItem
         bool isReloading = player.IsReloading();
         int actionIndex = MultiActionManager.GetActionIndexForEntity(player);
         var reloadModule = player.inventory.holdingItem.Actions[actionIndex] as IModuleContainerFor<ActionModuleInterruptReload>;
-        bool isInterruptableOrNotReloading = !isReloading || reloadModule != null;
 
-        if ((bReleased || !isActionRunning || isAllRunningActionInterruptable || isInterruptableOrNotReloading) && !player.AimingGun && !multiInvData.originalData.IsAnyActionLocked())
+        bool isActionOrReloadingInterruptable = false;
+        if (isActionRunning)
         {
-            //Log.Out($"bReleased {bReleased} isActionRunning {isActionRunning} isAllRunningActionInterruptable {isAllRunningActionInterruptable} isInterruptableOrNotReloading {isInterruptableOrNotReloading}");
+            if (isReloading && reloadModule != null)
+            {
+                isActionOrReloadingInterruptable = true;
+            }
+            else if (isAllRunningActionInterruptable)
+            {
+                isActionOrReloadingInterruptable = true;
+            }
+        }
+        else
+        {
+            isActionOrReloadingInterruptable = true;
+        }
+
+        if ((bReleased || isActionOrReloadingInterruptable) && !player.AimingGun && !multiInvData.originalData.IsAnyActionLocked())
+        {
+            if (ConsoleCmdReloadLog.LogInfo)
+            {
+                Log.Out($"bReleased {bReleased} isActionRunning {isActionRunning} isAllRunningActionInterruptable {isAllRunningActionInterruptable} isReloading {isReloading} isActionOrReloadingInterruptable {isActionOrReloadingInterruptable}");
+            }
             if (!bReleased)
             {
                 multiInvData.SetBoundParams();
@@ -324,20 +351,6 @@ public class ItemModuleMultiItem
                 }
                 if (isActionRunning && isAllRunningActionInterruptable)
                 {
-                    //for (int i = 0; i < tempActionList.Count; i++)
-                    //{
-                    //    //Log.Out($"interrupt action on item {tempActionList[i].item.GetLocalizedItemName()} action {i}");
-                    //    bool useBound = tempActionList[i].item.Id == multiInvData.boundItemClass.Id;
-                    //    if (useBound)
-                    //    {
-                    //        multiInvData.SetBoundParams();
-                    //    }
-                    //    ((IModuleContainerFor<ActionModuleAnimationInterruptable>)tempActionList[i]).Instance.Interrupt(tempActionList[i] as ItemActionDynamicMelee, tempDataList[i], ((IModuleContainerFor<ActionModuleAnimationInterruptable.AnimationInterruptableData>)tempDataList[i]).Instance);
-                    //    if (useBound)
-                    //    {
-                    //        multiInvData.RestoreParams(false);
-                    //    }
-                    //}
                     (player.inventory.holdingItem as ItemClassExtendedFunction)?.CancelAllActions(player.inventory.holdingItemData);
                     if (interruptData != null)
                     {
@@ -584,7 +597,12 @@ public static class MultiItemPatches
         bool wasPressed = PlayerActionKFLib.Instance.AltMelee.WasPressed;
         bool wasReleased = PlayerActionKFLib.Instance.AltMelee.WasReleased;
 
-        if (PlayerActionKFLib.Instance.Enabled && player.inventory.GetIsFinishedSwitchingHeldItem() && (wasPressed || wasReleased) && player.inventory.holdingItemData is IModuleContainerFor<MultiItemInvData> dataModule)
+        if (wasPressed && controller.playerInput.Primary.IsPressed || controller.playerInput.Secondary.IsPressed)
+        {
+            return;
+        }
+
+        if (PlayerActionKFLib.Instance.Enabled && (player.inventory.GetIsFinishedSwitchingHeldItem() || wasReleased) && (wasPressed || wasReleased) && player.inventory.holdingItemData is IModuleContainerFor<MultiItemInvData> dataModule)
         {
             ItemModuleMultiItem.CheckAltMelee(player, dataModule.Instance, wasReleased, controller.playerInput);
         }

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace KFCommonUtilityLib.Scripts.NetPackages
+namespace KFCommonUtilityLib
 {
     public class NetPackageRemoteAttachPrefab : NetPackage
     {
@@ -30,18 +30,12 @@ namespace KFCommonUtilityLib.Scripts.NetPackages
         public override void ProcessPackage(World _world, GameManager _callbacks)
         {
             if (_world == null || _callbacks == null)
-            {
                 return;
-            }
             var entity = _world.GetEntity(entityID) as EntityAlive;
             if (!entity || !entity.isEntityRemote)
-            {
                 return;
-            }
             if (ConnectionManager.Instance.IsServer)
-            {
                 ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageRemoteAttachPrefab>().Setup(entityID, prefab, path, localPosition, localRotation, localScale), false, -1, -1, entityID);
-            }
             MinEventActionAttachPrefabToEntitySync.RemoteAttachPrefab(entity, prefab, path, localPosition, localRotation, localScale);
         }
 

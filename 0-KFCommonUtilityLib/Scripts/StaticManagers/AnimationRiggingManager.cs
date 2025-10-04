@@ -121,46 +121,6 @@ namespace KFCommonUtilityLib
                 targets.UpdatePlayerAvatar(controller, RigItemChangedThisFrame);
             }
             controller.UpdateBool(AvatarController.isCrouchingHash, controller.entity.Crouching, false);
-            //if ((controller.Entity as EntityPlayerLocal).bFirstPersonView && targets && !targets.Destroyed && targets.itemFpv)
-            //{
-            //    //workaround for animator bullshit
-            //    if (!targets.itemFpv.gameObject.activeSelf)
-            //    {
-            //        Log.Out("Rigged weapon not active, enabling it...");
-            //        targets.SetEnabled(true);
-            //    }
-            //    //vroid workaround
-            //    //it seems to use a separate animator for vroid model and does not replace CharacterBody
-            //    //controller.UpdateInt(AvatarController.weaponHoldTypeHash, -1, false);
-            //    controller.FPSArms.Animator.Play("idle", 0, 0f);
-            //    foreach (var hash in resetHashes)
-            //    {
-            //        AnimationRiggingPatches.VanillaResetTrigger(controller, hash, false);
-            //    }
-            //    //controller.FPSArms?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
-            //    //controller.CharacterBody?.Animator?.SetInteger(AvatarController.weaponHoldTypeHash, -1);
-            //}
-            //if (RigItemChangedThisFrame)
-            //{
-            //    Log.Out("Rigged weapon changed, resetting animator...");
-            //    Transform modelRoot = controller.GetActiveModelRoot();
-            //    //if (modelRoot && (!targets || targets.Destroyed) && modelRoot.GetComponentInChildren<Animator>().TryGetComponent<AnimationGraphBuilder>(out var builder))
-            //    //{
-            //    //    builder.DestroyGraph(!targets || targets.Destroyed);
-            //    //}
-            //    if (controller is AvatarLocalPlayerController localPlayerController && localPlayerController.isFPV && localPlayerController.FPSArms != null)
-            //    {
-            //        if (localPlayerController.FPSArms.Animator.TryGetComponent<AnimationGraphBuilder>(out var builder))
-            //        {
-            //            builder.VanillaWrapper.Play("idle", 0, 0f);
-            //        }
-            //        else
-            //        {
-            //            localPlayerController.FPSArms.Animator.Play("idle", 0, 0f);
-            //        }
-            //    }
-            //    controller.UpdateInt(AvatarController.weaponHoldTypeHash, -1, false);
-            //}
         }
 
         public static void OnClearInventorySlot(Inventory inv, int slot)
@@ -339,55 +299,5 @@ namespace KFCommonUtilityLib
                     lod.enabled = false;
             }
         }
-
-        //public static void SetTrigger(int _pid, EntityPlayer player)
-        //{
-        //    AnimationTargetsAbs targets = GetRigTargetsFromPlayer(player);
-        //    if (targets && !targets.Destroyed && targets.ItemAnimator)
-        //    {
-        //        targets.ItemAnimator.SetTrigger(_pid);
-        //        //Log.Out($"setting trigger {_pid}");
-        //    }
-        //}
-
-        //public static void ResetTrigger(int _pid, EntityPlayer player)
-        //{
-        //    AnimationTargetsAbs targets = GetRigTargetsFromPlayer(player);
-        //    if (targets && !targets.Destroyed && targets.ItemAnimator)
-        //    {
-        //        targets.ItemAnimator.ResetTrigger(_pid);
-        //        //Log.Out($"resetting trigger {_pid}");
-        //    }
-        //}
-
-        //public static void SetFloat(int _pid, float _value, EntityPlayer player)
-        //{
-        //    AnimationTargetsAbs targets = GetRigTargetsFromPlayer(player);
-        //    if (targets&& !targets.Destroyed  && targets.ItemAnimator)
-        //    {
-        //        targets.ItemAnimator.SetFloat(_pid, _value);
-        //        //Log.Out($"setting float {_pid}");
-        //    }
-        //}
-
-        //public static void SetBool(int _pid, bool _value, EntityPlayer player)
-        //{
-        //    AnimationTargetsAbs targets = GetRigTargetsFromPlayer(player);
-        //    if (targets && !targets.Destroyed && targets.ItemAnimator)
-        //    {
-        //        targets.ItemAnimator.SetBool(_pid, _value);
-        //        //Log.Out($"setting bool {_pid}");
-        //    }
-        //}
-
-        //public static void SetInt(int _pid, int _value, EntityPlayer player)
-        //{
-        //    AnimationTargetsAbs targets = GetRigTargetsFromPlayer(player);
-        //    if (targets && !targets.Destroyed && targets.ItemAnimator)
-        //    {
-        //        targets.ItemAnimator.SetInteger(_pid, _value);
-        //        //Log.Out($"setting int {_pid}");
-        //    }
-        //}
     }
 }

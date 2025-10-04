@@ -10,6 +10,7 @@ public class PlayerActionKFLib : CustomPlayerActionVersionBase
     public PlayerAction ToggleZoom;
     public PlayerAction AltMelee;
     public PlayerAction AltInspect;
+    public PlayerAction WeaponBlocking;
 
     public PlayerActionKFLib()
     {
@@ -36,6 +37,8 @@ public class PlayerActionKFLib : CustomPlayerActionVersionBase
         AltMelee.UserData = new PlayerActionData.ActionUserData("inpActPerformAltMeleeName", "inpActPerformAltMeleeDesc", PlayerActionData.GroupPlayerControl);
         AltInspect = CreatePlayerAction("PerformAltInspect");
         AltInspect.UserData = new PlayerActionData.ActionUserData("inpActPerformAltInspectName", "inpActPerformAltInspectDesc", PlayerActionData.GroupPlayerControl);
+        WeaponBlocking = CreatePlayerAction("PerformWeaponBlocking");
+        WeaponBlocking.UserData = new PlayerActionData.ActionUserData("inpActPerformWeaponBlockingName", "inpActPerformWeaponBlockingDesc", PlayerActionData.GroupPlayerControl);
     }
 
     public override void CreateDefaultJoystickBindings()

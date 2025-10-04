@@ -1,6 +1,4 @@
-﻿using KFCommonUtilityLib;
-
-namespace KFCommonUtilityLib.Scripts.NetPackages
+﻿namespace KFCommonUtilityLib
 {
     public class NetPackageEntityActionIndex : NetPackage
     {
@@ -21,9 +19,7 @@ namespace KFCommonUtilityLib.Scripts.NetPackages
         public override void ProcessPackage(World _world, GameManager _callbacks)
         {
             if (MultiActionManager.SetModeForEntity(entityID, mode) && ConnectionManager.Instance.IsServer)
-            {
                 ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageEntityActionIndex>().Setup(entityID, mode), false, -1, entityID);
-            }
         }
 
         public override void write(PooledBinaryWriter _writer)

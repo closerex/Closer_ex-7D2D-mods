@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using KFCommonUtilityLib;
+using System.Xml.Linq;
 
 public class MinEventActionSetStringOnWeaponLabel : MinEventActionRemoteHoldingBase
 {

@@ -1,49 +1,46 @@
 ﻿using KFCommonUtilityLib.Scripts.Utilities;
 
-class NetPackageFixedReload : NetPackage
+namespace KFCommonUtilityLib
 {
-    private int entityId;
-    private byte actionIndex;
-
-    public NetPackageFixedReload Setup(int entityId, int actionIndex)
+    class NetPackageFixedReload : NetPackage
     {
-        this.entityId = entityId;
-        this.actionIndex = (byte)actionIndex;
-        return this;
-    }
+        private int entityId;
+        private byte actionIndex;
 
-    public override int GetLength()
-    {
-        return 5;
-    }
-
-    public override void ProcessPackage(World _world, GameManager _callbacks)
-    {
-        if (_world == null)
+        public NetPackageFixedReload Setup(int entityId, int actionIndex)
         {
-            return;
+            this.entityId = entityId;
+            this.actionIndex = (byte)actionIndex;
+            return this;
         }
 
-        if (!_world.IsRemote())
+        public override int GetLength()
         {
-            MultiActionUtils.FixedItemReloadServer(entityId, actionIndex);
+            return 5;
         }
-        else
+
+        public override void ProcessPackage(World _world, GameManager _callbacks)
         {
-            MultiActionUtils.FixedItemReloadClient(entityId, actionIndex);
+            if (_world == null)
+                return;
+
+            if (!_world.IsRemote())
+                MultiActionUtils.FixedItemReloadServer(entityId, actionIndex);
+            else
+                MultiActionUtils.FixedItemReloadClient(entityId, actionIndex);
         }
-    }
 
-    public override void read(PooledBinaryReader _reader)
-    {
-        entityId = _reader.ReadInt32();
-        actionIndex = _reader.ReadByte();
-    }
+        public override void read(PooledBinaryReader _reader)
+        {
+            entityId = _reader.ReadInt32();
+            actionIndex = _reader.ReadByte();
+        }
 
-    public override void write(PooledBinaryWriter _writer)
-    {
-        base.write(_writer);
-        _writer.Write(entityId);
-        _writer.Write(actionIndex);
+        public override void write(PooledBinaryWriter _writer)
+        {
+            base.write(_writer);
+            _writer.Write(entityId);
+            _writer.Write(actionIndex);
+        }
     }
 }

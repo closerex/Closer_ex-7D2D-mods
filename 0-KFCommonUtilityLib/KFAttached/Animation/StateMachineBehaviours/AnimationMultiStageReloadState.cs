@@ -13,6 +13,8 @@ public class AnimationMultiStageReloadState : StateMachineBehaviour
     private float ForceCancelReloadDelay = 1f;
     [SerializeField]
     private bool DoNotForceCancel = false;
+    [SerializeField]
+    private bool ForceFinishOnExit = false;
 
     private AnimationReloadEvents eventBridge;
 
@@ -57,7 +59,7 @@ public class AnimationMultiStageReloadState : StateMachineBehaviour
 
             if (immediateCancel)
             {
-                animator.SetBool("IsReloading", false);
+                animator.SetWrappedBool(Animator.StringToHash("IsReloading"), false);
             }
 
             if (!DoNotForceCancel)
@@ -66,7 +68,7 @@ public class AnimationMultiStageReloadState : StateMachineBehaviour
             }
         }
 
-        if (actionData.isReloading && animator.GetBool("IsReloading"))
+        if (actionData.isReloading && animator.GetWrappedBool(Animator.StringToHash("IsReloading")))
         {
             actionData.invData.holdingEntity.MinEventContext.ItemActionData = actionData;
             actionData.invData.holdingEntity.FireEvent(MinEventTypes.onReloadUpdate, true);
@@ -76,8 +78,18 @@ public class AnimationMultiStageReloadState : StateMachineBehaviour
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.speed = 1f;
-        if (stateInfo.IsTag("ReloadEnd"))
-            eventBridge?.OnReloadFinish();
+        var actionData = eventBridge?.actionData;
+        if (stateInfo.IsTag("ReloadEnd") && actionData != null && actionData.isReloading)
+        {
+            if (ForceFinishOnExit)
+            {
+                eventBridge.OnReloadFinish();
+            }
+            else
+            {
+                eventBridge.OnReloadEnd();
+            }
+        }
     }
 #endif
 }

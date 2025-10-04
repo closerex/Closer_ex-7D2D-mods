@@ -1,10 +1,10 @@
 ﻿using HarmonyLib;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Attributes;
-using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using UniLinq;
+using UnityEngine;
 using static ItemModuleMultiItem;
 
 [TypeTarget(typeof(ItemActionRanged)), TypeDataTarget(typeof(MeleeShooterData))]
@@ -59,7 +59,9 @@ public class ActionModuleMeleeShooter
 
         if (_rangedData.invData.holdingEntity is EntityPlayerLocal player && player.inventory.holdingItemData is IModuleContainerFor<MultiItemInvData> dataModule)
         {
+            _rangedData.m_LastShotTime = 0f;
             customData.animationRequested = ItemModuleMultiItem.CheckAltMelee(player, dataModule.Instance, false, player.playerInput, 1, false);
+            _rangedData.m_LastShotTime = Time.time;
             if (customData.animationRequested)
             {
                 ItemModuleMultiItem.CheckAltMelee(player, dataModule.Instance, true, player.playerInput, 1, false);

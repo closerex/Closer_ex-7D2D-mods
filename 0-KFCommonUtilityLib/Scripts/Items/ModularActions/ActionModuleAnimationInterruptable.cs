@@ -30,15 +30,15 @@ public class ActionModuleAnimationInterruptable
     {
         if (__instance.IsActionRunning(_actionData) && __customData.IsInterruptable())
         {
-            __customData.animator.Play(interruptStateName, -1, 0f);
-            __customData.animator.Update(0f);
-            __instance.SetAttackFinished(_actionData);
-            _actionData.lastUseTime = 0f;
             var controller = _actionData.invData.holdingEntity?.emodel?.avatarController;
             if (controller != null)
             {
                 controller.CancelEvent(__instance.UsePowerAttackAnimation ? powerAttackHash : AvatarController.weaponFireHash);
             }
+            __customData.animator.Play(interruptStateName, -1, 0f);
+            __customData.animator.Update(0f);
+            __instance.SetAttackFinished(_actionData);
+            _actionData.lastUseTime = 0f;
         }
     }
 

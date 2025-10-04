@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <configs>
+	<append xpath="/buffs/buff[@name='buffStatusCheck01']">
+		<effect_group>
+			<triggered_effect trigger="onSelfBlockingStart" action="AddBuff" buff="buffKFWeaponBlocking"/>
+			<triggered_effect trigger="onSelfBlockingStop" action="RemoveBuff" buff="buffKFWeaponBlocking"/>
+			<triggered_effect trigger="onSelfEquipStop" action="RemoveBuff" buff="buffKFWeaponBlocking"/>
+		</effect_group>
+	</append>
 	<append xpath="/buffs">
+		<buff name="buffKFWeaponBlocking" hidden="true" remove_on_death="true">
+			<stack_type value="ignore"/>
+			<duration value="0"/>
+			<update_rate value="99999"/>
+			<effect_group>
+				<passive_effect name="BuffResistance" operation="perc_add" duration="0,0.5" value="1,1" tags="buffFatiguedTrigger,buffArmSprainedCHTrigger,buffLegSprainedCHTrigger,buffLaceration,buffInfectionCatch,buffAbrasionCatch,buffInjuryStunned01CHTrigger,buffInjuryBleedingTwo"/>
+			</effect_group>
+		</buff>
 		<buff name="buffZedTimeCooldown" name_key="buffZedTimeCooldownName" description_key="buffZedTimeCooldownLongDesc" icon="icon_tp_symbiotic" icon_color="255,0,0" icon_blink="true">
 			<stack_type value="ignore"/>
 			<duration value="0"/>

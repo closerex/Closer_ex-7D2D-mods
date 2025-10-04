@@ -9,6 +9,8 @@ using UniLinq;
 [TypeTarget(typeof(ItemAction)), TypeDataTarget(typeof(AnimationInterruptSourceData))]
 public class ActionModuleAnimationInterruptSource
 {
+    public bool ignoreShotTime = false;
+
     [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPostfix]
     public void Postfix_StartHolding(AnimationInterruptSourceData __customData)
     {
@@ -19,6 +21,13 @@ public class ActionModuleAnimationInterruptSource
     public void Postfix_StopHolding(AnimationInterruptSourceData __customData)
     {
         __customData.interrupted = false;
+    }
+
+    [HarmonyPatch(nameof(ItemAction.ReadFrom)), MethodTargetPostfix]
+    public void Postfix_ReadFrom(DynamicProperties _props)
+    {
+        ignoreShotTime = false;
+        _props.ParseBool("IgnoreShotTime", ref ignoreShotTime);
     }
 
     [HarmonyPatch(nameof(ItemAction.ExecuteAction)), MethodTargetPostfix]
@@ -37,10 +46,27 @@ public class ActionModuleAnimationInterruptSource
             isAllRunningActionInterruptable = interruptAction is IModuleContainerFor<ActionModuleAnimationInterruptSource> && !interruptAction.IsActionRunning(interruptData) && interruptData is IModuleContainerFor<AnimationInterruptSourceData> dataModule && !dataModule.Instance.interrupted;
             if (isAllRunningActionInterruptable)
             {
+                var interruptModule = ((IModuleContainerFor<ActionModuleAnimationInterruptSource>)interruptAction).Instance;
                 for (int i = 0; i < actionList.Count; i++)
                 {
                     if (actionList[i] is not IModuleContainerFor<ActionModuleAnimationInterruptable> animationModule || dataList[i] is not IModuleContainerFor<ActionModuleAnimationInterruptable.AnimationInterruptableData> animationModuleData)
                     {
+                        if (interruptModule.ignoreShotTime && dataList[i] is ItemActionRanged.ItemActionDataRanged rangedData)
+                        {
+                            var action = actionList[i];
+                            var data = dataList[i];
+                            float prevUseTime = data.lastUseTime;
+                            float prevShotTime = rangedData.m_LastShotTime;
+                            data.lastUseTime = 0;
+                            rangedData.m_LastShotTime = 0;
+                            bool isRunning = action.IsActionRunning(data);
+                            data.lastUseTime = prevUseTime;
+                            rangedData.m_LastShotTime = prevShotTime;
+                            if (!isRunning)
+                            {
+                                continue;
+                            }
+                        }
                         isAllRunningActionInterruptable = false;
                         break;
                     }

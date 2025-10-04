@@ -1,4 +1,4 @@
-﻿namespace KFCommonUtilityLib.Scripts.NetPackages
+﻿namespace KFCommonUtilityLib
 {
     public class NetPackageEntitySpawnWithCVar : NetPackageEntitySpawn
     {
@@ -22,13 +22,11 @@
                         }
                     }
                     else
-                    {
                         bw.Write(0);
-                    }
                     cvarData = ms.ToArray();
                 }
+                return this;
             }
-            return this;
         }
 
         public override int GetLength()
@@ -40,14 +38,10 @@
         {
             base.ProcessPackage(_world, _callbacks);
             if (_world == null || _callbacks == null || es.id == -1)
-            {
                 return;
-            }
             EntityAlive ea = _world.GetEntity(es.id) as EntityAlive;
             if (!ea)
-            {
                 return;
-            }
             using (var ms = MemoryPools.poolMemoryStream.AllocSync(true))
             {
                 ms.Write(cvarData, 0, cvarData.Length);
@@ -57,9 +51,7 @@
                     br.SetBaseStream(ms);
                     var count = br.ReadInt32();
                     for (int i = 0; i < count; i++)
-                    {
                         ea.Buffs.SetCustomVar(br.ReadString(), br.ReadSingle(), false);
-                    }
                 }
             }
             ea.FireEvent(CustomEnums.onSelfFirstCVarSync);

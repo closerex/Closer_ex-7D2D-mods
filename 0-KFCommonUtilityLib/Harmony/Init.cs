@@ -27,6 +27,7 @@ public class CommonUtilityLibInit : IModApi
         DelayLoadModuleManager.RegisterDelayloadDll("FullautoLauncher", "FullautoLauncherAnimationRiggingCompatibilityPatch");
         DelayLoadModuleManager.RegisterDelayloadDll("Quartz", "QuartzUIPatch");
         DelayLoadModuleManager.RegisterDelayloadDll("Gears", "GearsSavingPatch");
+        DelayLoadModuleManager.RegisterDelayloadDll("Rainstorm", "RainstormPatches");
         //DelayLoadModuleManager.RegisterDelayloadDll("SMXcore", "SMXMultiActionCompatibilityPatch");
         //DelayLoadModuleManager.RegisterDelayloadDll("SCore", "SCoreEntityHitCompatibilityPatch");
         CustomEffectEnumManager.RegisterEnumType<MinEventTypes>();
@@ -60,6 +61,14 @@ public class CommonUtilityLibInit : IModApi
         CustomEnums.onSelfBurstModeChanged = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onSelfBurstModeChanged");
         CustomEnums.onSelfFirstCVarSync = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onSelfFirstCVarSync");
         CustomEnums.onSelfHoldingItemAssemble = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onSelfHoldingItemAssemble");
+        CustomEnums.onSelfBlockingStart = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onSelfBlockingStart");
+        CustomEnums.onSelfBlockingStop = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onSelfBlockingStop");
+        CustomEnums.onSelfBlockingExit = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onSelfBlockingExit");
+        CustomEnums.onSelfBlockingDamage = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onSelfBlockingDamage");
+        CustomEnums.onSelfParryingDamage = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onSelfParryingDamage");
+        CustomEnums.onAnimatorStateEntered = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onAnimatorStateEntered");
+        CustomEnums.onAnimatorStateUpdate = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onAnimatorStateUpdate");
+        CustomEnums.onAnimatorStateExit = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onAnimatorStateExit");
 
         CustomEnums.ReloadSpeedRatioFPV2TPV = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("ReloadSpeedRatioFPV2TPV");
         CustomEnums.RecoilSnappiness = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RecoilSnappiness");
