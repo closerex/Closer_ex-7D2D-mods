@@ -1,0 +1,330 @@
+<configs>
+	<append xpath="/items">
+		<item name="meleeWpnBladeBashEviscerator">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
+			<property name="Tags" value="machete,melee,grunting,light,perkFlurryOfAgility,weapon,meleeWeapon,attAgility,perkDeepCuts,perkTheHuntsman,canHaveCosmetic,bladeSkill,corpseRemoval"/>
+			<property name="CreativeMode" value="None"/>
+			<property name="DisplayType" value="meleeKnife"/>
+			<property name="HoldType" value="36"/>
+			<property name="Meshfile" value="@:Other/Items/Weapons/Melee/Knives/hunting_knifePrefab.prefab"/>
+			<property name="Material" value="Mmetal"/>
+			<property name="TintColor" value="0,0,0"/>
+			<property name="ScrapTimeOverride" value="10.0"/>
+			<property name="RepairTools" value="resourceRepairKit"/>
+			<property name="DegradationBreaksAfter" value="false"/>
+			<property name="EconomicValue" value="500"/>
+			<property name="TraderStageTemplate" value="baseTier1"/><!-- meleeWpnBladeT1HuntingKnife -->
+			<property name="SoundJammed" value="ItemNeedsRepair"/>
+			<property name="SoundDestroy" value="wooddestroy1"/>
+			<property name="UnlockedBy" value="craftingBlades"/><!-- perkDeepCuts,meleeWpnBladeT1HuntingKnifeSchematic, -->
+			<property name="ShowQuality" value="true"/>
+			<property name="Group" value="Ammo/Weapons,Melee Weapons"/>
+			<property name="RepairExpMultiplier" value="5.5"/>
+			<property name="SoundUnholster" value="weapon_unholster"/>
+			<property name="SoundHolster" value="weapon_holster"/>
+			<property name="SoundPickup" value="knife_hunting_grab"/>
+			<property name="SoundPlace" value="knife_hunting_place"/>
+		
+			<property class="Action0">
+				<property name="Class" value="DynamicMelee"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
+				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
+				<property name="IgnoreShotTime" value="true"/>
+				<property name="Damage_type" value="Slashing"/>
+				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="DynamicSoundStart" value="bashSwingLight"/>
+				<property name="Sphere" value=".1"/>
+				<property name="UseGrazingHits" value="true"/>
+				<property name="GrazeStart" value=".25"/>
+				<property name="GrazeEnd" value=".35"/>
+				<property name="SwingDegrees" value="90"/>
+				<property name="SwingAngle" value="90"/>
+				<property class="HitSounds">
+					<!-- <property name="Override0" value="organic" param1="katanaslashorganic"/> -->
+					<property name="Override0" value="organic" param1="metalslashorganic"/>
+				</property>
+				<property class="GrazeSounds">
+					<property name="Override0" value="organic" param1="metalgrazeorganic"/>
+				</property>
+			</property>
+			<property class="Action1">
+				<property name="Class" value="DynamicMelee"/>
+				<property name="Damage_type" value="Slashing"/>
+				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="DynamicSoundStart" value="bashSwingLight"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib"/>
+				<property name="Sphere" value=".1"/>
+				<property name="UseGrazingHits" value="true"/>
+				<property name="GrazeStart" value=".25"/>
+				<property name="GrazeEnd" value=".35"/>
+				<property name="SwingDegrees" value="90"/>
+				<property name="SwingAngle" value="90"/>
+				<property class="HitSounds">
+					<!-- <property name="Override0" value="organic" param1="katanaslashorganic"/> -->
+					<property name="Override0" value="organic" param1="metalslashorganic"/>
+				</property>
+				<property class="GrazeSounds">
+					<property name="Override0" value="organic" param1="metalgrazeorganic"/>
+				</property>
+			</property>
+			<property class="Action2">
+				<property name="Class" value="Blocking,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="AnimationInterruptSource,KFCommonUtilityLib"/>
+				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
+				<property name="CommonBlockingTags" value="perkDeepCuts"/>
+			</property>
+			<effect_group name="meleeWpnBladeBashEviscerator">
+				<passive_effect name="AttacksPerMinute" operation="base_set" value="56" tags="perkDeepCuts,perkFlurryOfAgility"/>
+				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value="1" tags="primary"/>
+				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value="1" tags="primary"/>
+				<passive_effect name="StaminaLoss" operation="base_set" value="18" tags="primary"/>
+				<passive_effect name="DegradationMax" operation="base_set" value="500,1000" tier="1,6" tags="perkDeepCuts"/>
+				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkDeepCuts"/>
+				<passive_effect name="MaxRange" operation="base_set" value="2.6" tags="perkDeepCuts"/>
+				<passive_effect name="BlockRange" operation="base_set" value="3.5" tags="perkDeepCuts"/>
+				<passive_effect name="ModSlots" operation="base_set" value="2,2,2,3,3,4" tier="1,2,3,4,5,6"/>
+				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+				<passive_effect name="EntityDamage" operation="base_set" value="72" tags="perkDeepCuts"/> <!-- meleeWpnBladeT1HuntingKnife -->
+				<passive_effect name="BlockDamage" operation="base_set" value="6.5" tags="perkDeepCuts"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="earth"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="stone"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="metal"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value=".6" tags="organic"/>
+				<passive_effect name="DismemberChance" operation="base_add" value="3.5" tags="perkDeepCuts"/>
+				<!-- <passive_effect name="DamageModifier" operation="perc_add" value="0" tags="organic"/> affects organic block harvesting based on block.material.damage_category, not animal corpse harvesting -->
+				<passive_effect name="HarvestCount" operation="base_set" value="1" tags="butcherHarvest"/>
+				<!--<passive_effect name="BlockDamage" operation="perc_add" value="6" tags="blockButcher"/>-->
+			</effect_group>
+			<effect_group>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="12" tags="StaminaOnBlocking,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="StaminaOnParrying,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".4" tags="DamageBlockingPrec,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".6" tags="DamageParryingPrec,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="3" tags="DegradationBlocking,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="DegradationParrying,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".49" tags="ParryDuration,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1.38" tags="BlockingRangeHor,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1.2" tags="BlockingRangeVer,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="BlockingAngleOffsetHor,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="BlockingAngleOffsetVer,perkDeepCuts" match_all_tags="true"/>
+			</effect_group>
+		</item>
+
+		<item name="meleeWpnBladeT3KF2Eviscerator">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
+			<property name="Tags" value="weapon,attachmentsIncluded,canHaveCosmetic,attAgility,machete,melee,heavy,grunting,meleeWeapon,perkDeepCuts,perkTheHuntsman,bladeSkill,corpseRemoval,ranged,reloadPenalty,perkArchery,crossbow,bowSkill"/>
+			<property name="DisplayType" value="rangedBow"/>
+			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
+			<property name="UnholsterDelayActive" value="false"/>
+			<property name="BoundItemName" value="meleeWpnBladeBashEviscerator"/>
+			<property name="HoldType" value="53"/>
+			<property name="Meshfile" value="#@modfolder:Resources/Eviscerator.unity3d?eviscerator_m.prefab"/>
+			<property name="Material" value="Mmetal"/>
+			<!-- <property name="TintColor" value="107, 107, 71"/> -->
+			<property name="Weight" value="1"/>
+			<property name="ScrapTimeOverride" value="10.0"/>
+			<property name="RepairTools" value="resourceEvisceratorRepairKit"/>
+			<property name="DegradationBreaksAfter" value="false"/>
+			<property name="EconomicValue" value="1500"/>
+			<property name="TraderStageTemplate" value="baseTier3"/><!-- meleeWpnBladeT3Machete -->
+	        <property name="SoundIdle" value="eviscerator_idle"/>
+			<property name="SoundJammed" value="ItemNeedsRepair"/>
+			<property name="SoundDestroy" value="wooddestroy1"/>
+			<property name="Group" value="Ammo/Weapons,Melee Weapons"/>
+			<property name="RepairExpMultiplier" value="5.5"/>
+			<property name="UnlockedBy" value="craftingRobotics"/><!-- gunBowT3CompoundCrossbowSchematic, -->
+			<property name="ShowQuality" value="true"/>
+			<property name="SoundUnholster" value="weapon_unholster"/>
+			<property name="SoundHolster" value="weapon_holster"/>
+            <property name="SoundPickup" value="powertool_big_grab"/>
+            <property name="SoundPlace" value="powertool_big_place"/>
+
+			<property class="Action0">
+				<property name="Class" value="BetterLauncher,FullautoLauncher"/>
+				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
+				<property name="allowEmptyInspect" value="true"/>
+				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
+				<property name="InternalCancelOnly" value="true"/>
+				<property name="Delay" value=".150"/> <!-- obsolete if rounds per minute exists -->
+				<property name="Magazine_items" value="ammoEvisceratorSawBlade"/>
+				<property name="Hitmask_override" value="Melee"/>
+				<property name="ExcludeTags" value="machete,melee,grunting,heavy,meleeWeapon,perkDeepCuts,perkTheHuntsman,bladeSkill,corpseRemoval"/>
+				<property name="Reload_time" value="4.1"/>
+				<property name="Sound_start" value="eviscerator_Fire"/>
+				<property name="Sound_loop" value="eviscerator_Fire"/>
+				<property name="Sound_end" value=""/>
+				<property name="Sound_empty" value="eviscerator_dryfire"/>
+				<property name="Sound_reload" value=""/>
+				<property name="AutoReload" value="false"/>
+				<property name="ScopeOffset" value="0,0,0"/>
+				<property name="SideOffset" value="0,0,0"/>
+				<property name="BarrelOffset" value="0,0,0"/>
+				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
+					<property name="triggerEffectTriggerPullDualsense" value="PistolTrigger"/>
+					<property name="triggerEffectTriggerPullXbox" value="PistolTrigger"/>
+					<property name="triggerEffectShootDualsense" value="PistolShoot"/>
+					<property name="triggerEffectShootXbox" value="PistolShoot"/>
+			</property>
+			<property class="Action1">
+				<property name="Class" value="DynamicMelee"/>
+				<property name="ItemActionModules" value="AnimationLocked,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib;DynamicGraze,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
+				<property name="Damage_type" value="Slashing"/>
+				<property name="MaxComboCount" value="1"/>
+				<property name="ExcludeTags" value="ranged,reloadPenalty,perkArchery,crossbow,bowSkill"/>
+				<property name="Sphere" value=".15"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
+				<property name="DynamicSoundStart" value="eviscerator_melee_start"/>
+				<property name="Sound_start" value="machete_swingheavy"/>
+				<!-- <property name="ToolCategory.Butcher" value="0" param1="4.7"/> -->
+				<property name="UsePowerAttackAnimation" value="true"/>
+				<property name="UseGrazingHits" value="true"/>
+				<property name="IsHorizontalSwing" value="true"/>
+				<property name="GrazeStart" value=".3"/>
+				<property name="GrazeEnd" value=".4"/>
+				<property name="SwingDegrees" value="-80"/>
+				<property name="SwingAngle" value="-60"/>
+				<property class="HitSounds">
+					<!-- <property name="Override0" value="organic" param1="katanaslashorganic"/> -->
+					<property name="Override0" value="organic" param1="metalslashorganic"/>
+				</property>
+				<property class="GrazeSounds">
+					<property name="Override0" value="organic" param1="metalgrazeorganic"/>
+				</property>
+			</property>
+			<effect_group name="blocking effects">
+				<requirement name="HasBuff" buff="buffKFWeaponBlocking"/>
+					<passive_effect name="StaminaChangeOT" operation="perc_add" value="-1.25"/>
+					<passive_effect name="BuffResistance" operation="base_add" value=".4" tags="buffFatiguedTrigger,buffArmSprainedCHTrigger,buffLegSprainedCHTrigger,buffLaceration,buffInfectionCatch,buffAbrasionCatch,buffInjuryStunned01CHTrigger,buffInjuryBleedingTwo"/>
+			</effect_group>
+			<effect_group name="Common">
+				<passive_effect name="ModSlots" operation="base_set" value="1,1,2,2,3,4" tier="1,2,3,4,5,6"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+				<passive_effect name="DegradationMax" operation="base_set" value="500,1000" tier="1,6"/>
+				<passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6"/> <!-- tier bonus -->
+				<passive_effect name="BlockDamage" operation="perc_add" value=".15,.75" tier="2,6"/> <!-- tier bonus -->
+				<triggered_effect trigger="onAnimatorStateEntered" action="PlaySound" soundGroup="eviscerator_melee_start" play_at_self="true">
+					<requirement name="TriggerHasTags" tags="HeavyAttackIn"/>
+				</triggered_effect>
+				<triggered_effect trigger="onAnimatorStateEntered" action="PlaySound" soundGroup="eviscerator_melee_end" play_at_self="true">
+					<requirement name="TriggerHasTags" tags="HeavyAttackOut"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfEquipStart" action="StopSound" soundGroup="eviscerator_melee_loop"/>
+				<triggered_effect trigger="onSelfEquipStop" action="StopSound" soundGroup="eviscerator_melee_loop"/>
+			</effect_group>
+			<effect_group>
+				<requirement name="TriggerHasTags" tags="HeavyAttackLoop"/>
+					<triggered_effect trigger="onAnimatorStateEntered" action="PlaySound" soundGroup="eviscerator_melee_loop" play_at_self="true"/>
+					<triggered_effect trigger="onAnimatorStateExit" action="StopSound" soundGroup="eviscerator_melee_loop" play_at_self="true"/>
+			</effect_group>
+			<effect_group name="Primary">
+				<passive_effect name="MaxRange" operation="base_set" value="80" tags="perkArchery"/>
+				<passive_effect name="DamageFalloffRange" operation="base_set" value="50" tags="perkArchery"/>
+				<passive_effect name="DamageFalloffRange" operation="perc_add" value="-.2,.2" tier="1,6" tags="perkArchery"/> <!-- random effective rng -->				
+				<passive_effect name="RoundsPerMinute" operation="base_set" value="65" tags="perkArchery"/>
+				<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkArchery"/>
+				<passive_effect name="MagazineSize" operation="base_set" value="5" tags="perkArchery"/>
+				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkArchery"/>
+		
+				<passive_effect name="SpreadDegreesVertical" operation="base_set" value="1.3" tags="perkArchery"/>
+				<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="1.3" tags="perkArchery"/>
+				<passive_effect name="SpreadMultiplierCrouching" operation="base_set" value=".8" tags="perkArchery"/>
+				<passive_effect name="SpreadMultiplierWalking" operation="base_set" value="1.5" tags="perkArchery"/>
+				<passive_effect name="SpreadMultiplierRunning" operation="base_set" value="2.2" tags="perkArchery"/>
+
+				<passive_effect name="DegradationMax" operation="perc_add" value="-.2,.2" tags="perkArchery"/> <!-- random DegMax -->
+				<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkArchery"/> <!-- random WeaponHandling -->
+
+				<passive_effect name="KickDegreesVerticalMin" operation="base_set" value="1.5" tags="perkArchery"/>
+				<passive_effect name="KickDegreesVerticalMax" operation="base_set" value="1.5" tags="perkArchery"/>
+				<passive_effect name="KickDegreesHorizontalMin" operation="base_set" value="-.5" tags="perkArchery"/>
+				<passive_effect name="KickDegreesHorizontalMax" operation="base_set" value=".5" tags="perkArchery"/>
+
+				<passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="2" tags="perkArchery"/>
+				<passive_effect name="WeaponHandling" operation="base_set" value="1.7" tags="perkArchery"/>
+                <passive_effect name="RecoilCameraShakeStrength" operation="base_set" value="0" tags="perkArchery"/>
+				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkArchery"/>
+			</effect_group>
+			<effect_group name="Power Attack">
+				<passive_effect name="MaxRange" operation="base_set" value="2.4" tags="secondary"/>
+				<passive_effect name="AttacksPerMinute" operation="base_set" value="60" tags="secondary"/>
+				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value="1" tags="secondary"/>
+				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value="1" tags="secondary"/>
+				<passive_effect name="EntityDamage" operation="base_set" value="24" tags="secondary"/>
+				<passive_effect name="BlockDamage" operation="base_set" value="12" tags="secondary"/>
+				<passive_effect name="StaminaLoss" operation="base_set" value="0.2" tags="secondary"/>
+				<passive_effect name="DismemberChance" operation="base_add" value="3.5" tags="secondary"/>
+				<passive_effect name="DegradationPerUse" operation="base_set" value="2" tags="secondary"/>
+			</effect_group>
+		</item>
+
+		<item name="ammoEvisceratorSawBlade">
+			<property name="Tags" value="ammo,ranged,attAgility,perkArchery,perkPenetrator"/>
+	        <property name="DisplayType" value="ammoArrowAP"/>
+			<property name="HoldType" value="45"/>
+			<property name="Meshfile" value="#@modfolder:Resources/Eviscerator.unity3d?eviscerator_projectile.prefab"/>
+			<property name="HandMeshfile" value="@:Other/Items/Misc/sackPrefab.prefab"/>
+			<property name="DropMeshfile" value="@:Other/Items/Misc/sack_droppedPrefab.prefab"/>
+			<property name="Material" value="Mmetal"/>
+			<property name="Stacknumber" value="50"/> <!-- STK ammo low -->
+			<property name="EconomicValue" value="20"/>
+			<property name="Group" value="Ammo/Weapons,Ammo,Ranged Weapons"/>
+			<property name="UnlockedBy" value="craftingRobotics"/><!-- gunBowT3CompoundCrossbowSchematic, -->
+			<property name="IsSticky" value="true"/>
+			<property name="StickyColliderUp" value="1"/>
+			<property name="StickyColliderRadius" value=".25"/>
+			<property name="StickyColliderLength" value=".01"/>
+			<property class="Action1">
+				<property name="Class" value="Projectile"/>
+				<property name="CustomProjectileType" value="SimpleMesh,FullautoLauncher"/>
+				<property name="Gravity" value="-2"/>
+				<property name="FlyTime" value=".2"/>
+				<property name="LifeTime" value="5"/>
+			</property>
+			<effect_group name="ammoEvisceratorSawBlade" tiered="false">
+				<passive_effect name="BlockDamage" operation="base_set" value="10" tags="perkArchery"/>
+				<passive_effect name="EntityDamage" operation="base_set" value="120" tags="perkArchery"/>
+				<passive_effect name="ProjectileVelocity" operation="base_set" value="100" tags="perkArchery"/>
+				<passive_effect name="RoundRayCount" operation="base_set" value="1" tags="perkArchery"/>
+		        <passive_effect name="TargetArmor" operation="perc_add" value="-.45" tags="perkArchery"/>
+		        <display_value name="dTargetArmor" value="-.5"/>
+                <passive_effect name="DamageModifier" operation="perc_set" value="1.2" tags="wood"/>
+                <passive_effect name="DamageModifier" operation="perc_set" value="0" tags="earth,metal,cloth"/>
+			</effect_group>
+			<effect_group name="perkPenetrator" tiered="false">
+				<passive_effect name="TargetArmor" operation="perc_add" value="-.1" tags="perkArchery">
+					<requirement name="ProgressionLevel" progression_name="perkPenetrator" operation="Equals" value="1"/></passive_effect>
+				<passive_effect name="TargetArmor" operation="perc_add" value="-.15" tags="perkArchery">
+					<requirement name="ProgressionLevel" progression_name="perkPenetrator" operation="Equals" value="2"/></passive_effect>
+				<passive_effect name="TargetArmor" operation="perc_add" value="-.2" tags="perkArchery">
+					<requirement name="ProgressionLevel" progression_name="perkPenetrator" operation="Equals" value="3"/></passive_effect>
+				<passive_effect name="TargetArmor" operation="perc_add" value="-.3" tags="perkArchery">
+					<requirement name="ProgressionLevel" progression_name="perkPenetrator" operation="Equals" value="4"/></passive_effect>
+			</effect_group>
+		</item>
+
+		<item name="resourceEvisceratorRepairKit">
+			<property name="HoldType" value="45"/>
+			<property name="Tags" value="junk"/>
+			<property name="Meshfile" value="@:Other/Items/Misc/sackPrefab.prefab"/>
+			<property name="DropMeshfile" value="@:Other/Items/Misc/sack_droppedPrefab.prefab"/>
+			<property name="Material" value="Msteel"/>
+			<property name="Stacknumber" value="25"/> <!-- STK resourceRepairKit -->
+			<property name="EconomicValue" value="186"/>
+			<property name="RepairTime" value="3"/>
+			<property name="RepairAmount" value="32000"/>
+			<property name="Group" value="Resources"/>
+			<property name="SoundPickup" value="repairkits_grab"/>
+			<property name="SoundPlace" value="repairkits_place"/>
+			<property name="UnlockedBy" value="craftingRobotics"/><!-- gunBowT3CompoundCrossbowSchematic, -->
+		</item>
+	</append>
+
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Common']/passive_effect[@name='EntityDamage' and @operation='perc_add' and @tier='2,6']/@value">0</set>
+			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Common']/passive_effect[@name='BlockDamage' and @operation='perc_add' and @tier='2,6']/@value">0</set>
+			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
+		</if>
+	</conditional>
+</configs>

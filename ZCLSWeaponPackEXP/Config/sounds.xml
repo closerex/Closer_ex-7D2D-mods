@@ -6,4 +6,5 @@
 	<include filename="katana/sounds.xml"/>
 	<include filename="hz12/sounds.xml"/>
 	<include filename="hrgblastbrawler/sounds.xml"/>
+	<include filename="eviscerator/sounds.xml"/>
 </configs>

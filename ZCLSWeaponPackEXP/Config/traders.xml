@@ -5,4 +5,5 @@
 	<include filename="af2011/traders.xml"/>
 	<include filename="hz12/traders.xml"/>
 	<include filename="hrgblastbrawler/traders.xml"/>
+	<include filename="eviscerator/traders.xml"/>
 </configs>

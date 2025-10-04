@@ -5,4 +5,5 @@
 	<include filename="af2011/loot.xml"/>
 	<include filename="hz12/loot.xml"/>
 	<include filename="hrgblastbrawler/loot.xml"/>
+	<include filename="eviscerator/loot.xml"/>
 </configs>

@@ -1,0 +1,23 @@
+<configs>
+	<conditional>
+		<if cond="mod_loaded('EFT8_DVS_Configs')">
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingRobotics']/effect_group">
+				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="86,100" value="1" tags="resourceEvisceratorRepairKit"/>
+				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="86,100" value="1" tags="ammoEvisceratorSawBlade"/>
+				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="86,100" value="1" tags="meleeWpnBladeT3KF2Eviscerator"/>
+				<passive_effect name="CraftingTier" operation="base_add" level="88,90,92,94,96" value="1,2,3,4,5,5" tags="meleeWpnBladeT3KF2Eviscerator"/>
+			</append>
+		</if>
+		<else>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingRobotics']">
+				<display_entry item="meleeWpnBladeT3KF2Eviscerator" unlock_level="86,88,90,92,94,96" />
+			</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingRobotics']/effect_group">
+				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="86,100" value="1" tags="resourceEvisceratorRepairKit"/>
+				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="86,100" value="1" tags="ammoEvisceratorSawBlade"/>
+				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="86,100" value="1" tags="meleeWpnBladeT3KF2Eviscerator"/>
+				<passive_effect name="CraftingTier" operation="base_add" level="88,90,92,94,96,100" value="1,2,3,4,5,5" tags="meleeWpnBladeT3KF2Eviscerator"/>
+			</append>
+		</else>
+	</conditional>
+</configs>

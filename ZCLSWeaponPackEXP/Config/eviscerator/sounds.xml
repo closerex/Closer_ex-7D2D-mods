@@ -1,0 +1,46 @@
+<configs>
+	<append xpath="/Sounds">
+		<SoundDataNode name="evisceratorEmptySwingHeavy"> <AudioSource name="@:Sounds/Prefabs/AudioSource_Melee.prefab"/> <NetworkAudioSource name="@:Sounds/Prefabs/AudioSource_Melee.prefab"/>
+			<AudioClip ClipName="none"/>
+			<LocalCrouchVolumeScale value="0.25"/> <CrouchNoiseScale value="0.05"/> <NoiseScale value=".2"/> <MaxVoices value="3"/> <MaxRepeatRate value="0.01"/>
+		</SoundDataNode>
+		<SoundDataNode name="eviscerator_Fire"> <AudioSource name="#@modfolder:Resources/KFAudioSources.unity3d?AudioSource_KFWeaponFire"/> <NetworkAudioSource name="#@modfolder:Resources/KFAudioSources.unity3d?AudioSource_KFWeaponFire_Network"/>
+			<Noise ID="0" noise="108" time="2" muffled_when_crouched="0.8" heat_map_strength="1.4" heat_map_time="180"/>
+			<AudioClip ClipName="#@modfolder:Resources/Eviscerator_Sound.unity3d?WEP_SA_SawBlade_Fire_S"/>
+			<LocalCrouchVolumeScale value="1"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="60"/> <MaxVoicesPerEntity value="30"/> <MaxRepeatRate value="0.001"/>
+		</SoundDataNode>
+
+        <SoundDataNode name="eviscerator_idle"> <AudioSource name="#@modfolder:Resources/KFAudioSources.unity3d?AudioSource_KFWeaponFire"/> <NetworkAudioSource name="#@modfolder:Resources/KFAudioSources.unity3d?AudioSource_KFWeaponFire_Network"/>
+            <Noise ID="3" noise="30" time="2" muffled_when_crouched="0.65"/>
+            <AudioClip ClipName="#@modfolder:Resources/Eviscerator_Sound.unity3d?WEP_Sawshooter_Handling_Idle_Loop" Loop="true"/>
+            <LocalCrouchVolumeScale value="1"/><CrouchNoiseScale value="1"/><NoiseScale value="1"/><MaxVoices value="3"/><MaxVoicesPerEntity value="10"/><MaxRepeatRate value="0.01"/></SoundDataNode>
+
+        <SoundDataNode name="eviscerator_melee_start"> <AudioSource name="#@modfolder:Resources/KFAudioSources.unity3d?AudioSource_KFWeaponFire"/> <NetworkAudioSource name="#@modfolder:Resources/KFAudioSources.unity3d?AudioSource_KFWeaponFire_Network"/>
+            <Noise ID="4" noise="60" time="2" heat_map_strength="1.0" heat_map_time="90"/>
+            <AudioClip ClipName="#@modfolder:Resources/Eviscerator_Sound.unity3d?WEP_Sawshooter_Handling_Rev_01"/>
+            <AudioClip ClipName="#@modfolder:Resources/Eviscerator_Sound.unity3d?WEP_Sawshooter_Handling_Rev_02"/>
+            <AudioClip ClipName="#@modfolder:Resources/Eviscerator_Sound.unity3d?WEP_Sawshooter_Handling_Rev_03"/>
+            <LowestPitch name="0.9"/>
+            <HighestPitch name="1.1"/>
+            <LocalCrouchVolumeScale value="1"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="10"/> <MaxVoicesPerEntity value="1"/> <MaxRepeatRate value="0.01"/> </SoundDataNode>
+
+        <SoundDataNode name="eviscerator_melee_loop"> <AudioSource name="#@modfolder:Resources/KFAudioSources.unity3d?AudioSource_KFWeaponFire"/> <NetworkAudioSource name="#@modfolder:Resources/KFAudioSources.unity3d?AudioSource_KFWeaponFire_Network"/>
+            <Noise ID="4" noise="60" time="2" heat_map_strength="1.0" heat_map_time="90"/>
+            <AudioClip ClipName="#@modfolder:Resources/Eviscerator_Sound.unity3d?WEP_Sawshooter_Melee_Loop" Loop="true"/>
+            <LowestPitch name="0.9"/>
+            <HighestPitch name="1.1"/>
+            <LocalCrouchVolumeScale value="1"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="10"/> <MaxVoicesPerEntity value="1"/> <MaxRepeatRate value="0.01"/> </SoundDataNode>
+
+        <SoundDataNode name="eviscerator_melee_end"> <AudioSource name="#@modfolder:Resources/KFAudioSources.unity3d?AudioSource_KFWeaponFire"/> <NetworkAudioSource name="#@modfolder:Resources/KFAudioSources.unity3d?AudioSource_KFWeaponFire_Network"/>
+            <Noise ID="4" noise="60" time="2" heat_map_strength="1.0" heat_map_time="90"/>
+            <AudioClip ClipName="#@modfolder:Resources/Eviscerator_Sound.unity3d?WEP_Sawshooter_Melee_End"/>
+            <LowestPitch name="0.9"/>
+            <HighestPitch name="1.1"/>
+            <LocalCrouchVolumeScale value="1"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="3"/> <MaxVoicesPerEntity value="1"/> <MaxRepeatRate value="0.01"/> </SoundDataNode>
+
+        <SoundDataNode name="eviscerator_dryfire"> <AudioSource name="@:Sounds/Prefabs/AudioSource_Reloads.prefab"/>
+            <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5"/>
+            <AudioClip ClipName="#@modfolder:Resources/Eviscerator_Sound.unity3d?WEP_Sawshooter_Handling_DryFire"/>
+            <LocalCrouchVolumeScale value="0.5"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="30"/> <MaxVoicesPerEntity value="10"/> <MaxRepeatRate value="0.001"/> </SoundDataNode>
+	</append>
+</configs>

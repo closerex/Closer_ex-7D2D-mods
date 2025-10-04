@@ -67,6 +67,12 @@
 					<property name="Override0" value="organic" param1="metalhitcloth"/>
 				</property>
 			</property>
+			<property class="Action2">
+				<property name="Class" value="Blocking,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="AnimationInterruptSource,KFCommonUtilityLib"/>
+				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
+				<property name="CommonBlockingTags" value="perkBrawler"/>
+			</property>
 			<effect_group name="meleeWpnStockBashHRGBlastBrawler">
 				<passive_effect name="AttacksPerMinute" operation="base_set" value="61" tags="perkBrawler,perkFlurryOfFortitude"/>
 				<passive_effect name="StaminaLoss" operation="base_set" value="20" tags="primary"/>
@@ -85,8 +91,21 @@
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="stone"/>
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="metal"/>
 			</effect_group>
+			<effect_group>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="10" tags="StaminaOnBlocking,perkBrawler" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="StaminaOnParrying,perkBrawler" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".5" tags="DamageBlockingPrec,perkBrawler" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".8" tags="DamageParryingPrec,perkBrawler" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="2" tags="DegradationBlocking,perkBrawler" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="DegradationParrying,perkBrawler" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".26" tags="ParryDuration,perkBrawler" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1.38" tags="BlockingRangeHor,perkBrawler" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1.5" tags="BlockingRangeVer,perkBrawler" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="BlockingAngleOffsetHor,perkBrawler" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="BlockingAngleOffsetVer,perkBrawler" match_all_tags="true"/>
+			</effect_group>
             <effect_group name="melee shooter">
-				<passive_effect name="StaminaLoss" operation="base_set" value="20" tags="secondary"/>
+				<passive_effect name="StaminaLoss" operation="base_set" value="12" tags="secondary"/>
 				<passive_effect name="EntityDamage" operation="base_set" value="11" tags="secondary"/>
 				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".5" tags="secondary"/>
 				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value="1" tags="secondary"/>
@@ -207,7 +226,14 @@
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
                 <passive_effect name="DegradationMax" operation="base_set" value="700,1400" tier="1,6"/>
+				<passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6"/> <!-- tier bonus -->
+				<passive_effect name="BlockDamage" operation="perc_add" value=".15,.75" tier="2,6"/> <!-- tier bonus -->
             </effect_group>
+			<effect_group>
+				<requirement name="HasBuff" buff="buffKFWeaponBlocking"/>
+					<passive_effect name="StaminaChangeOT" operation="perc_add" value="-1.4"/>
+					<passive_effect name="BuffResistance" operation="base_add" value=".5" tags="buffFatiguedTrigger,buffArmSprainedCHTrigger,buffLegSprainedCHTrigger,buffLaceration,buffInfectionCatch,buffAbrasionCatch,buffInjuryStunned01CHTrigger,buffInjuryBleedingTwo"/>
+			</effect_group>
 			<effect_group name="Primary">
 				<!-- <passive_effect name="RecoilSnappiness" operation="base_set" value="6" tags="perkBoomstick"/>
 				<passive_effect name="RecoilReturnSpeed" operation="base_set" value="4" tags="perkBoomstick"/> -->
@@ -217,10 +243,8 @@
 				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkBoomstick"/> <!-- 2.3s -->
 				<passive_effect name="EntityDamage" operation="base_add" value="5" tags="perkBoomstick"/> <!-- damage offset -->
 				<passive_effect name="EntityDamage" operation="perc_add" value="-.5" tags="perkBoomstick"/>
-				<passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6" tags="perkBoomstick"/> <!-- tier bonus -->
 				<passive_effect name="BlockDamage" operation="base_add" value="-2" tags="perkBoomstick"/> <!-- damage offset -->
 				<passive_effect name="BlockDamage" operation="perc_add" value="-.5" tags="perkBoomstick"/>
-				<passive_effect name="BlockDamage" operation="perc_add" value=".15,.75" tier="2,6" tags="perkBoomstick"/> <!-- tier bonus -->
 				<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkBoomstick"/> <!-- random WeaponHandling -->
 				<passive_effect name="DismemberChance" operation="perc_add" value="-.8" tags="perkBoomstick"/>
 		
@@ -276,9 +300,9 @@
 	<conditional>
 		<if cond="mod_loaded('EFT_Overhaul')">
 			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Primary']/passive_effect[@name='EntityDamage' and @operation='base_add']/@value">0</set>
-			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Primary']/passive_effect[@name='EntityDamage' and @operation='perc_add' and @tier='2,6']/@value">0</set>
+			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Common']/passive_effect[@name='EntityDamage' and @operation='perc_add' and @tier='2,6']/@value">0</set>
 			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Primary']/passive_effect[@name='BlockDamage' and @operation='base_add']/@value">0</set>
-			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Primary']/passive_effect[@name='BlockDamage' and @operation='perc_add' and @tier='2,6']/@value">0</set>
+			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Common']/passive_effect[@name='BlockDamage' and @operation='perc_add' and @tier='2,6']/@value">0</set>
 			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
 		</if>
 	</conditional>

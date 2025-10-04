@@ -66,6 +66,12 @@
 					<property name="Override0" value="organic" param1="metalgrazeorganic"/>
 				</property>
 			</property>
+			<property class="Action2">
+				<property name="Class" value="Blocking,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="AnimationInterruptSource,KFCommonUtilityLib"/>
+				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
+				<property name="CommonBlockingTags" value="perkDeepCuts"/>
+			</property>
 			<effect_group name="meleeWpnBladeBashKatana">
 				<passive_effect name="AttacksPerMinute" operation="base_set" value="44" tags="perkDeepCuts,perkFlurryOfAgility"/>
 				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".8" tags="primary"/>
@@ -91,6 +97,19 @@
 				<!-- <passive_effect name="DamageModifier" operation="perc_add" value="0" tags="organic"/> affects organic block harvesting based on block.material.damage_category, not animal corpse harvesting -->
 				<passive_effect name="HarvestCount" operation="base_set" value="1" tags="butcherHarvest"/>
 				<!--<passive_effect name="BlockDamage" operation="perc_add" value="6" tags="blockButcher"/>-->
+			</effect_group>
+			<effect_group>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="10" tags="StaminaOnBlocking,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="StaminaOnParrying,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".4" tags="DamageBlockingPrec,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".6" tags="DamageParryingPrec,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="3" tags="DegradationBlocking,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="DegradationParrying,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".375" tags="ParryDuration,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1.38" tags="BlockingRangeHor,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1.0" tags="BlockingRangeVer,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="BlockingAngleOffsetHor,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="BlockingAngleOffsetVer,perkDeepCuts" match_all_tags="true"/>
 			</effect_group>
 			<effect_group name="sneak damage bonus">
 				<requirement name="CVarCompare" cvar="_crouching" operation="Equals" value="1"/>
@@ -194,6 +213,11 @@
 					<property name="Override0" value="organic" param1="metalgrazeorganic"/>
 				</property>
 			</property>
+			<effect_group name="blocking effects">
+				<requirement name="HasBuff" buff="buffKFWeaponBlocking"/>
+					<passive_effect name="StaminaChangeOT" operation="perc_add" value="-1.2"/>
+					<passive_effect name="BuffResistance" operation="base_add" value=".35" tags="buffFatiguedTrigger,buffArmSprainedCHTrigger,buffLegSprainedCHTrigger,buffLaceration,buffInfectionCatch,buffAbrasionCatch,buffInjuryStunned01CHTrigger,buffInjuryBleedingTwo"/>
+			</effect_group>
 			<effect_group name="meleeWpnBladeT3KF2Katana">
 				<passive_effect name="AttacksPerMinute" operation="base_set" value="120" tags="primary"/>
 				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".4" tags="primary"/>
