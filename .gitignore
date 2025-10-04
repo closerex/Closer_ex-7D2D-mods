@@ -36,6 +36,8 @@
 !SMXMultiActionCompatibilityPatch/**
 !SCoreEntityHitCompatibilityPatch/
 !SCoreEntityHitCompatibilityPatch/**
+!RainstormPatches/
+!RainstormPatches/**
 !RandomMainmenuBackground/
 !RandomMainmenuBackground/**
 !RandomMainmenuBGM/
