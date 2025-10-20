@@ -122,6 +122,10 @@
       <HintPath>.\TreeCollections.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Unity.Addressables">
+      <HintPath>..\..\7DaysToDie_Data\Managed\Unity.Addressables.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Unity.Animation.Rigging">
       <HintPath>..\..\7DaysToDie_Data\Managed\Unity.Animation.Rigging.dll</HintPath>
       <Private>False</Private>
@@ -432,8 +436,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Harmony\AudioPatches.cs" />
+    <Compile Include="Harmony\AudioPoolingPatches.cs" />
     <Compile Include="Harmony\BackgroundInventoryUpdatePatch.cs" />
     <Compile Include="Harmony\CameraPatches.cs" />
+    <Compile Include="KFAttached\Misc\CustomAudioSnapshotHolder.cs" />
     <Compile Include="Harmony\DamagePatches.cs" />
     <Compile Include="Harmony\HideMarkerOnAimPatch.cs" />
     <Compile Include="Harmony\DisplayMetaAsBuffPatch.cs" />
@@ -443,8 +450,11 @@
     <Compile Include="Harmony\RecoilPatch.cs" />
     <Compile Include="Harmony\SaveRescuePatches.cs" />
     <Compile Include="KFAttached\Animation\DebugScripts\AnimatorActionIndexDebug.cs" />
+    <Compile Include="KFAttached\Animation\DebugScripts\AudioCollectionHolder.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationAudioPlayer.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationDelayRender.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationDelayRenderReference.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationEventTriggers.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationFiringEvents.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationGraphBuilder.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimationInspectState.cs" />
@@ -455,6 +465,7 @@
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimatorWrapper\AttachmentWrapper.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\AnimatorWrapper\PlayableWrapper.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\CameraAnimationEvents.cs" />
+    <Compile Include="KFAttached\Misc\AudioClipCollection.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\IAnimatorWrapper.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\IPlayableGraphRelated.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationAmmoUpdateState.cs" />
@@ -591,6 +602,7 @@
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationInterruptable.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationInterruptSource.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleLimitedCombo.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleLoopSoundFix.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMeleeShooter.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationLocked.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleCustomAnimationDelay.cs" />

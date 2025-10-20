@@ -9,6 +9,7 @@ using System.Reflection.Emit;
 using System.Xml.Linq;
 using UnityEngine;
 using static ItemActionRanged;
+using Audio;
 
 [HarmonyPatch]
 public static class CommonUtilityPatch
@@ -1544,7 +1545,7 @@ public static class CommonUtilityPatch
                                 if (player.inventory.holdingItemData is IModuleContainerFor<ItemModuleMultiItem.MultiItemInvData> dataModule)
                                 {
                                     var multiInvData = dataModule.Instance;
-                                    if (multiInvData.boundInvData != null && multiInvData.boundItemClass != null && multiInvData.boundInvData.actionData != null)
+                                    if (multiInvData.boundInvData != null && multiInvData.boundItemClass != null && multiInvData.boundItemClass.Actions != null && multiInvData.boundInvData.actionData != null)
                                     {
                                         var prevData = player.MinEventContext.ItemActionData;
                                         multiInvData.SetBoundParams();

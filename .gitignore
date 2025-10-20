@@ -42,6 +42,8 @@
 !RandomMainmenuBackground/**
 !RandomMainmenuBGM/
 !RandomMainmenuBGM/**
+!KF_SFX_Lib/
+!KF_SFX_Lib/**
 !0-KFCommonUtilityLib/
 !0-KFCommonUtilityLib/**
 !MedicPerk/
@@ -61,6 +63,8 @@
 !M16M203/**
 !QuartzUIPatch
 !QuartzUIPatch/**
+!ZCLSWeaponBoneCrusher
+!ZCLSWeaponBoneCrusher/**
 !ZCLSWeaponPackPistol
 !ZCLSWeaponPackPistol/**
 !ZCLSWeaponPackEXP

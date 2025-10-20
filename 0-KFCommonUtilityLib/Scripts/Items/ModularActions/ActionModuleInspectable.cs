@@ -66,10 +66,11 @@ public class ActionModuleInspectable
     {
         if (!autoInspect || !InspectSettings.defaultAutoInspect)
         {
+            __customData.lastInspectTime = Time.time;
             return;
         }
 
-        if (__customData.CanInspect())
+        if (__customData.CanInspect() && !_actionData.invData.holdingEntity.IsCrouching)
         {
             if (Time.time - __customData.lastInspectTime >= InspectSettings.autoInspectInterval)
             {

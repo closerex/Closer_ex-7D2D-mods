@@ -17,7 +17,6 @@ using UnityEditor;
 
 [AddComponentMenu("KFAttachments/Utils/Camera Animation Events")]
 [DefaultExecutionOrder(0)]
-[RequireComponent(typeof(Animator))]
 [DisallowMultipleComponent]
 public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
 #if UNITY_EDITOR

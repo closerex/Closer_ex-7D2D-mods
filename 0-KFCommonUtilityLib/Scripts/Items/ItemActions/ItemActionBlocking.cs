@@ -431,7 +431,7 @@ public static class ItemActionBlockingPatches
                             return;
                         }
 
-                        if (IsPressed && controller.playerInput.Primary.IsPressed || controller.playerInput.Secondary.IsPressed)
+                        if (IsPressed && (controller.playerInput.Primary.IsPressed || controller.playerInput.Secondary.IsPressed))
                         {
                             return;
                         }

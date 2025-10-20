@@ -119,13 +119,13 @@ public class ActionModuleFireModeSelector
     private void Postfix_StartHolding(ItemActionData _data, FireModeData __customData)
     {
         __customData.SetFireMode(_data, __customData.currentFireMode);
+        __customData.inputReleased = true;
     }
 
     [HarmonyPatch(nameof(ItemAction.OnHoldingUpdate)), MethodTargetPostfix]
     private static void Postfix_OnHoldingUpdate(ItemActionData _actionData, FireModeData __customData)
     {
         __customData.UpdateDelay(_actionData);
-        __customData.inputReleased = true;
     }
 
     [HarmonyPatch(nameof(ItemAction.StopHolding)), MethodTargetPostfix]
@@ -299,9 +299,15 @@ public class ActionModuleFireModeSelector
                 {
                     goto cleanup;
                 }
-                yield return new WaitForSeconds(shotDelay);
+                if (shotDelay > 0)
+                {
+                    yield return new WaitForSeconds(shotDelay);
+                }
             }
-            yield return new WaitForSeconds(burstDelay);
+            if (burstDelay > 0)
+            {
+                yield return new WaitForSeconds(burstDelay);
+            }
 
             cleanup:
             delayFiringCo = null;

@@ -138,6 +138,13 @@ namespace KFCommonUtilityLib.Harmony
             CameraLateUpdater.UpdateHoldingItem(_transform);
         }
 
+        [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.switchModelView))]
+        [HarmonyPostfix]
+        private static void Postfix_switchModelView_EntityPlayerLocal(EntityPlayerLocal __instance)
+        {
+            CameraLateUpdater.UpdateHoldingItem(__instance.inventory?.GetHoldingItemTransform());
+        }
+
         [HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.LateUpdate))]
         [HarmonyPostfix]
         private static void Postfix_vp_FPCamera_LateUpdate()
@@ -482,7 +489,7 @@ public static class CameraLateUpdater
 
     public static void LateUpdate(float _dt)
     {
-        if (!player)
+        if (!player || !playerOriginTransform)
         {
             return;
         }

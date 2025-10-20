@@ -407,7 +407,7 @@ public class ItemModuleMultiItem
                 boundItemClass = ItemClass.GetItemClass(boundItemName, true);
                 if (boundItemClass != null)
                 {
-                    boundInvData = boundItemClass.CreateInventoryData(new ItemStack(new ItemValue(boundItemClass.Id), 1), originalData.gameManager, originalData.holdingEntity, originalData.slotIdx);
+                    boundInvData = boundItemClass.CreateInventoryData(new ItemStack(new ItemValue(boundItemClass.Id, originalData.itemValue.Quality, originalData.itemValue.Quality), 1), originalData.gameManager, originalData.holdingEntity, originalData.slotIdx);
                 }
                 else
                 {
@@ -597,7 +597,7 @@ public static class MultiItemPatches
         bool wasPressed = PlayerActionKFLib.Instance.AltMelee.WasPressed;
         bool wasReleased = PlayerActionKFLib.Instance.AltMelee.WasReleased;
 
-        if (wasPressed && controller.playerInput.Primary.IsPressed || controller.playerInput.Secondary.IsPressed)
+        if (wasPressed && (controller.playerInput.Primary.IsPressed || controller.playerInput.Secondary.IsPressed))
         {
             return;
         }

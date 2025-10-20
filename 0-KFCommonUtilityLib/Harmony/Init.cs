@@ -69,6 +69,7 @@ public class CommonUtilityLibInit : IModApi
         CustomEnums.onAnimatorStateEntered = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onAnimatorStateEntered");
         CustomEnums.onAnimatorStateUpdate = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onAnimatorStateUpdate");
         CustomEnums.onAnimatorStateExit = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onAnimatorStateExit");
+        CustomEnums.onAnimationEventTrigger = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onAnimationEventTrigger");
 
         CustomEnums.ReloadSpeedRatioFPV2TPV = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("ReloadSpeedRatioFPV2TPV");
         CustomEnums.RecoilSnappiness = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("RecoilSnappiness");

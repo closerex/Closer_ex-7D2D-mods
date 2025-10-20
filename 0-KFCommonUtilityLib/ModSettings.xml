@@ -34,8 +34,8 @@
     <Tab name="MiscSettings" displayKey="kflibTabMiscSettingsName" tooltipKey="">
       <Category name="AutoInspect" displayKey="kflibCategoryAutoInspect" tooltipKey="">
         <Switch name="EnableAutoInspect" displayKey="kflibSettingEnableAutoInspectName" tooltipKey="kflibSettingEnableAutoInspectDesc" defaultValue="Enabled" leftValue="Disabled" rightValue="Enabled" />
-        <Slider name="AutoInspectInterval" displayKey="kflibSettingAutoInspectIntervalName" tooltipKey="kflibSettingAutoInspectIntervalDesc" defaultValue="15">
-          <Property increment="1" minValue="5" maxValue="30" type="incrementalValuesFloat" />
+        <Slider name="AutoInspectInterval" displayKey="kflibSettingAutoInspectIntervalName" tooltipKey="kflibSettingAutoInspectIntervalDesc" defaultValue="60">
+          <Property increment="1" minValue="30" maxValue="60" type="incrementalValuesFloat" />
           <Property type="formatter" formatString="0" />
         </Slider>
       </Category>

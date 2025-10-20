@@ -49,7 +49,7 @@ namespace KFCommonUtilityLib
             }
         }
 
-        private static void FireEvent(EntityPlayerLocal player, FastTags<TagGroup.Global> tag, MinEventTypes eventType)
+        public static void FireEvent(EntityPlayerLocal player, FastTags<TagGroup.Global> tag, MinEventTypes eventType)
         {
             if (!player || tag.IsEmpty)
             {

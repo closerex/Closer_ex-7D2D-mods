@@ -16,6 +16,7 @@
     public static MinEventTypes onAnimatorStateEntered;
     public static MinEventTypes onAnimatorStateUpdate;
     public static MinEventTypes onAnimatorStateExit;
+    public static MinEventTypes onAnimationEventTrigger;
     #endregion
 
     #region Passives

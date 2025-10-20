@@ -88,7 +88,7 @@ namespace KFCommonUtilityLib
             this.targetType = targetType;
             this.baseType = baseType;
             this.moduleTypes = moduleTypes;
-            moduleExtensionTypes = moduleTypes.Select(t => (Type[])mtdinf.MakeGenericMethod(t).Invoke(null, null)).ToArray();
+            moduleExtensionTypes = moduleTypes.Select(static t => (Type[])mtdinf.MakeGenericMethod(t).Invoke(null, null)).ToArray();
             Patch();
         }
 

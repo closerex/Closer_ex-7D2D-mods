@@ -1,10 +1,15 @@
-﻿using System;
+﻿using KFCommonUtilityLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 [AddComponentMenu("KFAttachments/Utils/Animation Random Sound")]
+[DisallowMultipleComponent]
 public class AnimationRandomSound : MonoBehaviour, ISerializationCallbackReceiver
 {
     [SerializeField]
@@ -27,6 +32,144 @@ public class AnimationRandomSound : MonoBehaviour, ISerializationCallbackReceive
     [HideInInspector]
     [SerializeField]
     private int serializedCount = 0;
+
+#if UNITY_EDITOR
+    [Header("Rename")]
+    public string originalGroupName;
+    public string targetGroupName;
+    [Header("Data Transfer")]
+    public AudioClipCollection moveToCollection;
+    public string commonPrefix;
+    public string[] namePrefixes;
+    [ContextMenu("Rename Group")]
+    private void RenameGroup()
+    {
+        if (audioSourcesEditor != null && audioSourcesEditor.Count > 0 && !string.IsNullOrEmpty(originalGroupName) && !string.IsNullOrEmpty(targetGroupName) && TryGetComponent<Animator>(out var animator))
+        {
+            Undo.RecordObject(this, "Rename groups");
+            foreach (var group in audioSourcesEditor)
+            {
+                if (group.groupName == originalGroupName)
+                {
+                    group.groupName = targetGroupName;
+                }
+            }
+
+            var clips = animator.runtimeAnimatorController.animationClips;
+            Undo.RecordObjects(clips, "change event params");
+            foreach (var clip in clips)
+            {
+                var events = clip.events;
+                foreach (var ev in events)
+                {
+                    bool eventFound = false;
+                    if (ev.functionName == nameof(PlayRandomClip) && ev.stringParameter == originalGroupName)
+                    {
+                        ev.stringParameter = targetGroupName;
+                        eventFound = true;
+                    }
+                    if (eventFound)
+                    {
+                        AnimationUtility.SetAnimationEvents(clip, events);
+                        EditorUtility.SetDirty(clip);
+                    }
+                }
+            }
+            AssetDatabase.Refresh();
+        }
+    }
+
+    [ContextMenu("Move To AudioClipCollection")]
+    private void MoveToCollection()
+    {
+        if (moveToCollection == null || audioSourcesEditor == null || audioSourcesEditor.Count == 0)
+            return;
+        var audioPlayer = Undo.AddComponent<AnimationAudioPlayer>(gameObject);
+        audioPlayer.attachableNodes = audioSourcesEditor.Select(static g => g.source.transform.parent).Distinct().ToArray();
+        audioPlayer.audioCollectionHolder = FindFirstObjectByType<AudioCollectionHolder>(FindObjectsInactive.Include);
+        List<bool> useLRCorrection = audioSourcesEditor.ConvertAll(g =>
+        {
+            if (g.groupName.EndsWith('@'))
+            {
+                g.groupName = g.groupName[..^1];
+                return true;
+            }
+            return false;
+        });
+        var animator = GetComponent<Animator>();
+        if (animator)
+        {
+            var clips = animator.runtimeAnimatorController.animationClips;
+            Undo.RecordObjects(clips, "change event params");
+            foreach (var clip in clips)
+            {
+                var events = clip.events;
+                bool eventFound = false;
+                foreach (var ev in events)
+                {
+                    if (ev.functionName == nameof(PlayRandomClip))
+                    {
+                        eventFound = true;
+                        ev.functionName = nameof(AnimationAudioPlayer.PlayRandomClip);
+                        var index = audioSourcesEditor.FindIndex(g => g.groupName == ev.stringParameter || MatchPrefix(ev.stringParameter, g.groupName));
+                        if (index >= 0)
+                        {
+                            var group = audioSourcesEditor[index];
+                            ev.intParameter = Array.IndexOf(audioPlayer.attachableNodes, group.source.transform.parent);
+                            ev.stringParameter = !string.IsNullOrEmpty(commonPrefix) ? commonPrefix + group.groupName : group.groupName;
+                            if (useLRCorrection[index])
+                            {
+                                ev.stringParameter = ev.stringParameter[..^1];
+                            }
+                        }
+                    }
+                }
+                if (eventFound)
+                {
+                    AnimationUtility.SetAnimationEvents(clip, events);
+                    EditorUtility.SetDirty(clip);
+                }
+            }
+            AssetDatabase.Refresh();
+        }
+        
+        Undo.RecordObject(moveToCollection, "add groups to collection");
+        for (int i = 0; i < audioSourcesEditor.Count; i++)
+        {
+            AudioSourceGroup group = audioSourcesEditor[i];
+            if (!string.IsNullOrEmpty(commonPrefix))
+                group.groupName = commonPrefix + group.groupName;
+            if (useLRCorrection[i])
+            {
+                group.groupName = group.groupName[..^1];
+            }
+            moveToCollection.AddNew(group);
+        }
+
+        foreach (var group in audioSourcesEditor)
+        {
+            if (group.source)
+                Undo.DestroyObjectImmediate(group.source.gameObject);
+        }
+
+        Undo.DestroyObjectImmediate(this);
+    }
+
+    private bool MatchPrefix(string par, string group)
+    {
+        if (namePrefixes != null && namePrefixes.Length > 0)
+        {
+            foreach (var prefix in namePrefixes)
+            {
+                if (prefix + par == group)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+#endif
 
     public void OnAfterDeserialize()
     {
