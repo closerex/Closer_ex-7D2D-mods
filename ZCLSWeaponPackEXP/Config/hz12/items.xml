@@ -25,7 +25,7 @@
 		
 			<property class="Action0">
 				<property name="Class" value="DynamicMelee"/>
-				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="Sound_start" value="kf_Movement_Bash"/>
 				<property name="DynamicSoundStart" value="bashSwingLight"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib"/>
 				<property name="InterruptStateFullName" value="Base Layer.FiringCancel"/>
@@ -38,7 +38,7 @@
 			</property>
 			<property class="Action1">
 				<property name="Class" value="DynamicMelee"/>
-				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="Sound_start" value="kf_Movement_Bash"/>
 				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
 				<property name="Sphere" value=".15"/>
@@ -50,7 +50,7 @@
 				<property name="SwingDegrees" value="120"/>
 				<property name="SwingAngle" value="90"/>
 			</property>
-			<effect_group name="meleeWpnStockBashM4Benelli">
+			<effect_group name="meleeWpnStockBashHZ12">
 				<passive_effect name="AttacksPerMinute" operation="base_set" value="54" tags="perkPummelPete,perkFlurryOfStrength"/>
 				<passive_effect name="StaminaLoss" operation="base_set" value="35" tags="primary"/>
 				<passive_effect name="DegradationMax" operation="base_set" value="100,200" tier="1,6" tags="perkPummelPete"/>
@@ -149,10 +149,10 @@
 				<property name="Delay" value=".8"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug"/>
 				<property name="Reload_time" value="2.6"/>
-				<property name="Sound_start" value="HZ12_Fire"/>
+				<property name="Sound_start" value="kf_hz12_Fire_1P_Outdoor_City"/>
 				<property name="Sound_repeat" value=""/>
 				<property name="Sound_end" value=""/>
-				<property name="Sound_empty" value="dryfire"/>
+				<property name="Sound_empty" value="kf_hz12_DryFire"/>
 				<property name="AutoReload" value="false"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?hz12_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?hz12_muzzle_flash_fpv.prefab"/>

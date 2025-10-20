@@ -7,8 +7,8 @@
 			<property name="TraderStageTemplate" value="modsTier2"/>
 			<!--Decreases sound footprint by x% -->
 			<item_property_overrides name="*">
-				<property name="Sound_start" value="KFPump_shotgun_silenced_fire"/>
-				<property name="Sound_loop" value="KFPump_shotgun_silenced_fire"/>
+				<property name="Sound_start" value="kf_pumpshotgun_silenced_fire"/>
+				<property name="Sound_loop" value="kf_pumpshotgun_silenced_fire"/>
 			</item_property_overrides>
 			<!-- visible attachment: silencer -->
 			<effect_group tiered="false" name="internal attachment prefab (A19)">
@@ -23,8 +23,8 @@
 			<property name="TraderStageTemplate" value="modsTier2"/>
 			<!--Decreases sound footprint by x% -->
 			<item_property_overrides name="*">
-				<property name="Sound_start" value="KFPump_shotgun_silenced_fire"/>
-				<property name="Sound_loop" value="KFPump_shotgun_silenced_fire"/>
+				<property name="Sound_start" value="kf_pumpshotgun_silenced_fire"/>
+				<property name="Sound_loop" value="kf_pumpshotgun_silenced_fire"/>
 			</item_property_overrides>
 			<!-- visible attachment: silencer -->
 			<effect_group tiered="false" name="internal attachment prefab (A19)">

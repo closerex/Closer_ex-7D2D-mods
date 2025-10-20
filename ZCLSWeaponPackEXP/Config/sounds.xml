@@ -1,10 +1,2 @@
 <configs>
-	<include filename="common/sounds.xml"/>
-	<include filename="af2011/sounds.xml"/>
-	<include filename="kaboomstick/sounds.xml"/>
-	<include filename="m4benelli/sounds.xml"/>
-	<include filename="katana/sounds.xml"/>
-	<include filename="hz12/sounds.xml"/>
-	<include filename="hrgblastbrawler/sounds.xml"/>
-	<include filename="eviscerator/sounds.xml"/>
 </configs>

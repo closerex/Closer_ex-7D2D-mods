@@ -1,0 +1,15 @@
+<config>
+	<append xpath="/recipes">
+		<recipe name="meleeWpnClubT3KF2BoneCrusher" count="1" craft_area="workbench" tags="learnable,perkPummelPete,workbenchCrafting">
+            <ingredient name="meleeWpnClubT3SteelClubParts" count="3"/>
+            <ingredient name="resourceForgedSteel" count="40"/>
+            <ingredient name="resourceWood" count="10"/>
+	        <ingredient name="resourceNail" count="32"/>
+            <ingredient name="resourceLegendaryParts" count="0"/>
+            <effect_group>
+                <passive_effect name="CraftingIngredientCount" level="2,6" operation="perc_add" value="1,5" tags="meleeWpnClubT3SteelClubParts,resourceForgedSteel,resourceWood,resourceNail"/>
+                <passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
+            </effect_group>
+		</recipe>
+	</append>
+</config>

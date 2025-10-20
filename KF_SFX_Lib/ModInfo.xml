@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xml>
+	<Name value="KF_SFX_Lib" />
+	<DisplayName value="Killing Floor SFX Library" />
+	<Description value="Holder for kf2 sfx files." />
+	<Author value="closer_ex" />
+	<Version value="1.0.0" />
+</xml>

@@ -23,8 +23,8 @@
 	                <ingredient name="ammoGasCan" count="2500"/>
                     <ingredient name="resourceLegendaryParts" count="0"/>
                     <effect_group>
-                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="perc_add" value="2,10" tags="meleeToolAxeT3ChainsawParts"/>
-                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="perc_add" value="5,25" tags="resourceForgedSteel"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="meleeToolAxeT3ChainsawParts"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="5,25" tags="resourceForgedSteel"/>
                         <passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
                     </effect_group>
                 </recipe>

@@ -1,0 +1,242 @@
+<config>
+    <append xpath="/items">
+		<item name="meleeWpnShieldBashBoneCrusher">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
+			<property name="Tags" value="blunt,club,melee,grunting,light,longShaft,perkFlurryOfStrength,weapon,meleeWeapon,attStrength,perkPummelPete,canHaveCosmetic,clubSkill"/>
+			<property name="CreativeMode" value="None"/>
+			<property name="DisplayType" value="melee"/>
+			<property name="Group" value="Ammo/Weapons,Basics,Melee Weapons"/>
+			<property name="Meshfile" value="@:Other/Items/Weapons/Melee/ClubWood/clubWoodPrefab.prefab"/>
+			<property name="HoldType" value="2"/>
+			<property name="Material" value="Mmetal"/>
+			<property name="ScrapTimeOverride" value="10.0"/>
+			<property name="RepairTools" value="resourceWood"/>
+			<property name="SoundDestroy" value="wooddestroy1"/>
+			<property name="RepairExpMultiplier" value="5.5"/>
+			<property name="SellableToTrader" value="false"/>
+			<property name="EconomicBundleSize" value="1"/>
+			<property name="EconomicValue" value="200"/>
+			<property name="TraderStageTemplate" value="baseTier0"/><!-- meleeWpnClubT0WoodenClub -->
+			<property name="ShowQuality" value="true"/>
+			<property name="SoundUnholster" value="weapon_unholster"/>
+			<property name="SoundHolster" value="weapon_holster"/>
+			<property name="SoundPickup" value="club_wood_grab"/>
+			<property name="SoundPlace" value="club_wood_place"/>
+		
+			<property class="Action0">
+				<property name="Class" value="DynamicMelee"/>
+				<property name="Sound_start" value="kf_Movement_Bash"/>
+				<property name="DynamicSoundStart" value="bashSwingLight"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
+				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
+				<property name="Sphere" value=".1"/>
+				<property name="UseGrazingHits" value="true"/>
+				<property name="GrazeStart" value=".25"/>
+				<property name="GrazeEnd" value=".32"/>
+				<property name="SwingDegrees" value="65"/>
+				<property name="SwingAngle" value="180"/>
+			</property>
+			<property class="Action1">
+				<property name="Class" value="DynamicMelee"/>
+				<property name="Sound_start" value="kf_Movement_Bash"/>
+				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
+				<property name="Sphere" value=".15"/>
+				<property name="UsePowerAttackAnimation" value="true"/>
+				<property name="UseGrazingHits" value="true"/>
+				<property name="IsHorizontalSwing" value="true"/>
+				<property name="GrazeStart" value=".25"/>
+				<property name="GrazeEnd" value=".32"/>
+				<property name="SwingDegrees" value="120"/>
+				<property name="SwingAngle" value="90"/>
+			</property>
+			<property class="Action2">
+				<property name="Class" value="Blocking,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="AnimationInterruptSource,KFCommonUtilityLib"/>
+				<property name="CommonBlockingTags" value="perkPummelPete"/>
+			</property>
+			<effect_group name="meleeWpnShieldBashBoneCrusher">
+				<passive_effect name="AttacksPerMinute" operation="base_set" value="60" tags="perkPummelPete,perkFlurryOfStrength"/>
+				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value="0" tags="primary"/>
+				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value=".2" tags="primary"/>
+				<passive_effect name="StaminaLoss" operation="base_set" value="40" tags="primary"/>
+				<passive_effect name="DegradationMax" operation="base_set" value="100,200" tier="1,6" tags="perkPummelPete"/>
+				<passive_effect name="DegradationPerUse" operation="base_set" value="0" tags="perkPummelPete"/>
+				<passive_effect name="MaxRange" operation="base_set" value="2.2" tags="perkPummelPete"/>
+				<passive_effect name="BlockRange" operation="base_set" value="2" tags="perkPummelPete"/>
+				<passive_effect name="ModSlots" operation="base_set" value="1,1,1,2,2,3" tier="1,2,3,4,5,6"/>
+				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+				<passive_effect name="EntityDamage" operation="base_set" value="45"/> <!-- meleeWpnClubT0WoodenClub -->
+				<passive_effect name="EntityDamage" operation="perc_add" value="1"/> <!-- fake heavy attack, otherwise the damage scales too much -->
+				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkPummelPete"/> <!-- tier bonus -->
+				<passive_effect name="BlockDamage" operation="base_set" value="30"/>
+				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkPummelPete"/> <!-- tier bonus -->
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="earth"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="stone"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="metal"/>
+				<passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="allHarvest"/>
+				<passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="allToolsHarvest"/>
+				<passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="oreWoodHarvest"/>
+		        <passive_effect name="TargetArmor" operation="perc_add" value="-.4" tags="perkPummelPete"/>
+			</effect_group>
+			<effect_group>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="6" tags="StaminaOnBlocking,perkPummelPete" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="StaminaOnParrying,perkPummelPete" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".7" tags="DamageBlockingPrec,perkPummelPete" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".9" tags="DamageParryingPrec,perkPummelPete" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="2" tags="DegradationBlocking,perkPummelPete" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="DegradationParrying,perkPummelPete" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".44" tags="ParryDuration,perkPummelPete" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1.4" tags="BlockingRangeHor,perkPummelPete" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1.6" tags="BlockingRangeVer,perkPummelPete" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="BlockingAngleOffsetHor,perkPummelPete" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="BlockingAngleOffsetVer,perkPummelPete" match_all_tags="true"/>
+			</effect_group>
+			<effect_group name="Knockdown">
+				<requirement name="!EntityTagCompare" target="other" tags="player"/>
+					<triggered_effect trigger="onSelfAttackedOther" action="Ragdoll" duration="1" force="60" target="other"/>
+					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
+			</effect_group>
+		</item>
+
+        <item name="meleeWpnClubT3KF2BoneCrusher">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
+            <property name="Tags" value="blunt,club,melee,grunting,light,longShaft,perkFlurryOfStrength,weapon,meleeWeapon,attStrength,perkPummelPete,canHaveCosmetic,clubSkill"/>
+            <property name="DisplayType" value="melee"/>
+			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
+            <property name="Group" value="Ammo/Weapons,Melee Weapons"/>
+			<property name="BoundItemName" value="meleeWpnShieldBashBoneCrusher"/>
+            <property name="Meshfile" value="#@modfolder:Resources/BoneCrusher.unity3d?bonecrusher_m.prefab"/>
+            <property name="DropMeshfile" value="#@modfolder:Resources/BoneCrusher.unity3d?bonecrusher_dropmesh.prefab"/>
+            <property name="HoldType" value="58"/>
+            <property name="Material" value="MmeleeWpnClubParts"/>
+            <property name="Weight" value="1"/>
+            <property name="ScrapTimeOverride" value="10.0"/>
+            <property name="RepairTools" value="resourceRepairKit"/>
+            <property name="SoundDestroy" value="wooddestroy1"/>
+            <property name="RepairExpMultiplier" value="5.5"/>
+            <property name="EconomicBundleSize" value="1"/>
+            <property name="EconomicValue" value="1250"/>
+            <property name="TraderStageTemplate" value="baseTier3"/><!-- meleeWpnClubT3SteelClub -->
+            <property name="UnlockedBy" value="craftingClubs"/><!-- perkBatterUpBaseballBats, -->
+            <property name="ShowQuality" value="true"/>
+            <property name="SoundUnholster" value="weapon_unholster"/>
+            <property name="SoundHolster" value="weapon_holster"/>
+            <property name="SoundPickup" value="club_metal_grab"/>
+            <property name="SoundPlace" value="club_metal_place"/>
+
+            <property class="Action0">
+                <property name="Class" value="DynamicMelee"/>
+                <property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib"/>
+				<property name="MaxComboCount" value="3"/>
+				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
+				<property name="DynamicSoundStart" value="meleeEmptySwingLight"/>
+                <property name="Sound_start" value="batwood_swinglight"/>
+                <property name="Sphere" value=".1"/>
+                <property name="ToolCategory.harvestingTools" value=".5" param1="1"/>
+                <property name="UseGrazingHits" value="true"/>
+                <property name="GrazeStart" value=".25"/>
+                <property name="GrazeEnd" value=".32"/>
+                <property name="SwingDegrees" value="90"/>
+                <property name="SwingAngle" value="90"/>
+                <property class="HitSounds">
+                    <property name="Override0" value="organic" param1="metalhitorganic"/>
+                </property>
+                <property class="GrazeSounds">
+                    <property name="Override0" value="organic" param1="metalgrazeorganic"/>
+                </property>
+            </property>
+            <property class="Action1">
+                <property name="Class" value="DynamicMelee"/>
+                <property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib"/>
+				<property name="MaxComboCount" value="1"/>
+				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
+				<property name="DynamicSoundStart" value="meleeEmptySwingHeavy"/>
+                <property name="Sound_start" value="batwood_swingheavy"/>
+                <property name="Sphere" value=".15"/>
+                <property name="ToolCategory.harvestingTools" value=".5" param1="1"/>
+                <property name="UsePowerAttackAnimation" value="true"/>
+                <property name="UseGrazingHits" value="true"/>
+                <property name="IsHorizontalSwing" value="true"/>
+                <property name="GrazeStart" value=".2"/>
+                <property name="GrazeEnd" value=".32"/>
+                <property name="SwingDegrees" value="65"/>
+                <property name="SwingAngle" value="180"/>
+                <property class="HitSounds">
+                    <property name="Override0" value="organic" param1="woodhitorganic"/>
+                </property>
+                <property class="GrazeSounds">
+                    <property name="Override0" value="organic" param1="woodgrazeorganic"/>
+                </property>
+            </property>
+			<effect_group name="blocking effects">
+				<requirement name="HasBuff" buff="buffKFWeaponBlocking"/>
+					<passive_effect name="StaminaChangeOT" operation="perc_add" value="-1.15"/>
+					<passive_effect name="BuffResistance" operation="base_add" value=".8" tags="buffFatiguedTrigger,buffArmSprainedCHTrigger,buffLegSprainedCHTrigger,buffLaceration,buffInfectionCatch,buffAbrasionCatch,buffInjuryStunned01CHTrigger,buffInjuryBleedingTwo"/>
+			</effect_group>
+            <effect_group name="meleeWpnClubT3KF2BoneCrusher">
+                <passive_effect name="AttacksPerMinute" operation="base_set" value="120" tags="perkPummelPete,perkFlurryOfStrength"/>
+				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".4" tags="primary"/>
+				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value=".8" tags="primary"/>
+                <passive_effect name="StaminaLoss" operation="base_set" value="22" tags="primary"/>
+                <passive_effect name="DegradationMax" operation="base_set" value="600,1200" tier="1,6" tags="perkPummelPete"/>
+                <passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkPummelPete"/>
+                <passive_effect name="MaxRange" operation="base_set" value="2.3" tags="perkPummelPete"/>
+                <passive_effect name="BlockRange" operation="base_set" value="3" tags="perkPummelPete"/>
+                <passive_effect name="ModSlots" operation="base_set" value="1,2,3,4,5,6" tier="1,2,3,4,5,6"/>
+                <passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+                <passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+                <passive_effect name="EntityDamage" operation="base_set" value="35" tags="perkPummelPete"/> <!-- meleeWpnClubT3SteelClub -->
+                <passive_effect name="EntityDamage" operation="perc_add" value="-.04,.04" tags="perkPummelPete"/> <!-- random EntityDmg -->
+                <passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkPummelPete"/> <!-- tier bonus -->
+                <passive_effect name="BlockDamage" operation="base_set" value="30" tags="perkPummelPete"/>
+                <passive_effect name="BlockDamage" operation="perc_add" value="-.04,.04" tags="perkPummelPete"/> <!-- random BlockDmg -->
+                <passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkPummelPete"/> <!-- tier bonus -->
+                <passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="earth"/>
+                <passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="stone"/>
+                <passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="metal"/>
+                <passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="allHarvest"/>
+                <passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="allToolsHarvest"/>
+                <passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="oreWoodHarvest"/>
+				<passive_effect name="DismemberChance" operation="base_add" value="2" tags="primary"/>
+		        <passive_effect name="TargetArmor" operation="perc_add" value="-.4" tags="perkPummelPete"/>
+				<passive_effect name="PhysicalDamageResist" operation="base_add" value="5"/>
+            </effect_group>
+            <effect_group name="Power Attack">
+                <passive_effect name="AttacksPerMinute" operation="base_set" value="65" tags="secondary"/>
+				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".4" tags="secondary"/>
+				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value="1" tags="secondary"/>
+                <passive_effect name="StaminaLoss" operation="base_set" value="45" tags="secondary"/>
+                <passive_effect name="EntityDamage" operation="perc_add" value="1" tags="secondary"/>
+                <passive_effect name="BlockDamage" operation="perc_add" value="1" tags="secondary"/>
+				<triggered_effect trigger="onAnimatorStateEntered" action="AddBuff" buff="buffBoneCrusherHeavyMaceAttack">
+					<requirement name="TriggerHasTags" tags="HeavyMaceState"/>
+				</triggered_effect>
+				<triggered_effect trigger="onAnimatorStateEntered" action="AddBuff" buff="buffBoneCrusherHeavyShieldAttack">
+					<requirement name="TriggerHasTags" tags="HeavyShieldState"/>
+				</triggered_effect>
+            </effect_group>
+			<effect_group name="Heavy Mace Attack">
+				<requirement name="HasBuff" buff="buffBoneCrusherHeavyMaceAttack"/>
+					<passive_effect name="DismemberChance" operation="base_add" value="5" tags="secondary"/>
+			</effect_group>
+			<effect_group name="Heavy Shield Attack">
+				<requirement name="HasBuff" buff="buffBoneCrusherHeavyShieldAttack"/>
+					<triggered_effect trigger="onSelfAttackedOther" action="Ragdoll" duration="1" force="120" target="other">
+						<requirement name="!EntityTagCompare" target="other" tags="player"/>
+					</triggered_effect>
+                	<passive_effect name="EntityDamage" operation="perc_add" value="-.5" tags="secondary"/>
+					<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".8" tags="secondary"/>
+					<passive_effect name="GrazeDamageMultiplier" operation="base_set" value=".5" tags="secondary"/>
+			</effect_group>
+            <effect_group name="tpv mesh">
+                <requirement name="!IsFPV"/>
+                    <triggered_effect trigger="onSelfEquipStart" action="AddPart" part="BoneCrusherShield" prefab="#@modfolder:Resources/BoneCrusher.unity3d?bonecrusher_shield_3p.prefab" parentTransform="LeftHand" localPos="0,0,0" localRot="0,0,0" colorTint="true"/>
+            </effect_group>
+			<effect_group name="tpv mesh remove">
+				<triggered_effect trigger="onSelfEquipStop" action="RemovePart" part="BoneCrusherShield"/>
+			</effect_group>
+        </item>
+    </append>
+</config>

@@ -84,35 +84,29 @@
 				<requirement name="ActionHasTags,KFCommonUtilityLib" tags="medicAction"/>
 				<requirement name="IsAlive" target="other"/>
 				<requirement name="EntityTagCompare" target="other" tags="zombie"/>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffMedicDartPoison"/>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="ModifyCVar" target="other" cvar="buffMedicDartPoisonDuration" operation="set" value="6"/>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="ModifyCVar" target="self" cvar="medicHealAmount" operation="add" value="10">
+					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" buff="buffMedicDartPoison"/>
+					<triggered_effect trigger="onSelfAttackedOther" action="ModifyCVar" target="other" cvar="buffMedicDartPoisonDuration" operation="set" value="6"/>
+					<triggered_effect trigger="onSelfAttackedOther" action="ModifyCVar" target="self" cvar="medicHealAmount" operation="add" value="10">
 						<requirement name="ProgressionLevel" progression_name="perkMedicSurvivor1" operation="Equals" value="1"/>
 					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="self" buff="buffMedicHeal">
+					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="self" buff="buffMedicHeal">
 						<requirement name="ProgressionLevel" progression_name="perkMedicSurvivor1" operation="Equals" value="1"/>
 					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" target_tags="zombie" buff="buffInjuryCrippled01">
+					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" target_tags="zombie" buff="buffInjuryCrippled01">
 						<requirement name="ProgressionLevel" progression_name="perkMedicSurvivor5" operation="Equals" value="1"/>
 						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="50"/>
 					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" target_tags="zombie" buff="buffInjuryKnockdown01">
+					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" target_tags="zombie" buff="buffInjuryKnockdown01">
 						<requirement name="ProgressionLevel" progression_name="perkMedicSurvivor5" operation="Equals" value="1"/>
 						<requirement name="HitLocation" body_parts="Head"/>
 						<requirement name="!HasBuff" target="other" buff="buffInjuryKnockdown01Cooldown"/>
 						<requirement name="HasBuff" target="other" buff="buffInjuryCrippled01"/>
 					</triggered_effect>
+					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" buff="buffRadiatedRegenBlock">
+						<requirement name="EntityTagCompare" target="other" tags="radiated,charged,infernal"/>
+						<requirement name="ProgressionLevel" progression_name="perkMedicSurvivor5" operation="Equals" value="1"/>
+					</triggered_effect>
 			</effect_group>
-			<!-- <effect_group name="infinite">
-				<requirement name="ActionHasTags,KFCommonUtilityLib" tags="medicAction"/>
-                <requirement name="HasBuff" target="self" buff="buffMedicInfinite"/>
-					<triggered_effect trigger="onSelfRangedBurstShotStart" action="ModifyCVar" target="self" cvar=".medicBuffConsumptionTemp0" operation="subtract" value="1">
-						<requirement name="CVarCompare" cvar=".medicBuffConsumptionTemp0" operation="GT" value="0"/>
-					</triggered_effect>
-					<triggered_effect trigger="onSelfRangedBurstShotStart" action="RemoveBuff" buff="buffMedicInfinite">
-						<requirement name="CVarCompare" cvar=".medicBuffConsumptionTemp0" operation="LTE" value="0"/>
-					</triggered_effect>
-			</effect_group> -->
 		</item_modifier>
     </append>
 </configs>

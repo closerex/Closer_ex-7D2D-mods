@@ -48,10 +48,10 @@
                 <property name="allowEmptyInspect" value="true"/>
                 <property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
                 <property name="InternalCancelOnly" value="true"/>
-                <property name="Sound_start" value="KF9mm_Fire"/>
-                <property name="Sound_loop" value="KF9mm_Fire"/>
+                <property name="Sound_start" value="kf_9mm_Fire_1P_OutDoor_City"/>
+                <property name="Sound_loop" value="kf_9mm_Fire_1P_OutDoor_City"/>
                 <property name="Sound_end" value=""/>
-                <property name="Sound_empty" value="KFdryfire"/>
+                <property name="Sound_empty" value="kf_9mm_DryFire"/>
                 <property name="AutoReload" value="false"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?9mm_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?9mm_muzzle_flash_fpv.prefab"/>
@@ -207,10 +207,10 @@
 				<property name="RoundsPerShot" value="1"/>
 				<property name="BarrelCount" value="2"/>
                 <property name="InternalCancelOnly" value="true"/>
-                <property name="Sound_start" value="KF9mm_Fire"/>
-                <property name="Sound_loop" value="KF9mm_Fire"/>
+                <property name="Sound_start" value="kf_9mm_Fire_1P_OutDoor_City"/>
+                <property name="Sound_loop" value="kf_9mm_Fire_1P_OutDoor_City"/>
                 <property name="Sound_end" value=""/>
-                <property name="Sound_empty" value="KFdryfire"/>
+                <property name="Sound_empty" value="kf_ak12_DryFire"/>
                 <property name="AutoReload" value="false"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?9mm_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?9mm_muzzle_flash_fpv.prefab"/>
@@ -357,7 +357,7 @@
 				<property name="Sphere" value=".1"/>
 				<property name="Damage_type" value="Bashing"/>
 				<property name="Sound_start" value="bashSwingReal"/>
-				<property name="DynamicSoundStart" value="bashSwingLightPistol"/>
+				<property name="DynamicSoundStart" value="bashSwingLight"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib"/>
 				<property name="InterruptStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="UseGrazingHits" value="true"/>
@@ -375,7 +375,7 @@
 			<property class="Action1"> <!-- UseAction -->
 				<property name="Class" value="DynamicMelee"/>
 				<property name="Sound_start" value="bashSwingReal"/>
-				<property name="DynamicSoundStart" value="bashSwingHeavyPistol"/>
+				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
 				<property name="Sphere" value=".1"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
 				<property name="Damage_type" value="Bashing"/>
@@ -403,10 +403,8 @@
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
 				<passive_effect name="EntityDamage" operation="base_set" value="14" tags="perkBrawler"/>
-				<passive_effect name="EntityDamage" operation="perc_add" value="-.04,.04" tags="perkBrawler"/> <!-- random EntityDmg -->
 				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkBrawler"/> <!-- tier bonus -->
 				<passive_effect name="BlockDamage" operation="base_set" value="3.5" tags="perkBrawler"/>
-				<passive_effect name="BlockDamage" operation="perc_add" value="-.04,.04" tags="perkBrawler"/> <!-- random BlockDmg -->
 				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkBrawler"/> <!-- tier bonus -->
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="earth"/>
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="stone"/>
@@ -490,10 +488,10 @@
                 <property name="allowEmptyInspect" value="true"/>
                 <property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
                 <property name="InternalCancelOnly" value="true"/>
-                <property name="Sound_start" value="HRG_SW_500_Fire"/>
-                <property name="Sound_loop" value="HRG_SW_500_Fire"/>
+                <property name="Sound_start" value="kf_hrg_sw500_Fire_1P_OutDoor_Forest"/>
+                <property name="Sound_loop" value="kf_hrg_sw500_Fire_1P_OutDoor_Forest"/>
                 <property name="Sound_end" value=""/>
-                <property name="Sound_empty" value="KFdryfire"/>
+                <property name="Sound_empty" value="kf_sw500_DryFire"/>
                 <property name="AutoReload" value="false"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?hrg_sw_500_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?hrg_sw_500_muzzle_flash_fpv.prefab"/>
@@ -646,10 +644,10 @@
 				<property name="OneRoundMultiShot" value="false"/>
 				<property name="RoundsPerShot" value="1"/>
 				<property name="BarrelCount" value="2"/>
-                <property name="Sound_start" value="HRG_SW_500_Fire"/>
-                <property name="Sound_loop" value="HRG_SW_500_Fire"/>
+                <property name="Sound_start" value="kf_hrg_sw500_Fire_1P_OutDoor_Forest"/>
+                <property name="Sound_loop" value="kf_hrg_sw500_Fire_1P_OutDoor_Forest"/>
                 <property name="Sound_end" value=""/>
-                <property name="Sound_empty" value="KFdryfire"/>
+                <property name="Sound_empty" value="kf_sw500_DryFire"/>
                 <property name="AutoReload" value="false"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?hrg_sw_500_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?hrg_sw_500_muzzle_flash_fpv.prefab"/>
@@ -813,10 +811,10 @@
                 <property name="allowEmptyInspect" value="true"/>
                 <property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
                 <property name="InternalCancelOnly" value="true"/>
-                <property name="Sound_start" value="SW_500_Fire"/>
-                <property name="Sound_loop" value="SW_500_Fire"/>
+                <property name="Sound_start" value="kf_sw500_Fire_1P_OutDoor_Forest"/>
+                <property name="Sound_loop" value="kf_sw500_Fire_1P_OutDoor_Forest"/>
                 <property name="Sound_end" value=""/>
-                <property name="Sound_empty" value="KFdryfire"/>
+                <property name="Sound_empty" value="kf_sw500_DryFire"/>
                 <property name="AutoReload" value="false"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?sw_500_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?sw_500_muzzle_flash_fpv.prefab"/>
@@ -981,10 +979,10 @@
 				<property name="OneRoundMultiShot" value="false"/>
 				<property name="RoundsPerShot" value="1"/>
 				<property name="BarrelCount" value="2"/>
-                <property name="Sound_start" value="SW_500_Fire"/>
-                <property name="Sound_loop" value="SW_500_Fire"/>
+                <property name="Sound_start" value="kf_sw500_Fire_1P_OutDoor_Forest"/>
+                <property name="Sound_loop" value="kf_sw500_Fire_1P_OutDoor_Forest"/>
                 <property name="Sound_end" value=""/>
-                <property name="Sound_empty" value="KFdryfire"/>
+                <property name="Sound_empty" value="kf_sw500_DryFire"/>
                 <property name="AutoReload" value="false"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?sw_500_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?sw_500_muzzle_flash_fpv.prefab"/>
@@ -1142,7 +1140,7 @@
 				<property name="Sphere" value=".1"/>
 				<property name="Damage_type" value="Bashing"/>
 				<property name="Sound_start" value="bashSwingReal"/>
-				<property name="DynamicSoundStart" value="bashSwingLightPistol"/>
+				<property name="DynamicSoundStart" value="bashSwingLight"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib"/>
 				<property name="InterruptStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="UseGrazingHits" value="true"/>
@@ -1160,7 +1158,7 @@
 			<property class="Action1"> <!-- UseAction -->
 				<property name="Class" value="DynamicMelee"/>
 				<property name="Sound_start" value="bashSwingReal"/>
-				<property name="DynamicSoundStart" value="bashSwingHeavyPistol"/>
+				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
 				<property name="Sphere" value=".1"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
 				<property name="Damage_type" value="Bashing"/>
@@ -1188,10 +1186,8 @@
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
 				<passive_effect name="EntityDamage" operation="base_set" value="16" tags="perkBrawler"/>
-				<passive_effect name="EntityDamage" operation="perc_add" value="-.04,.04" tags="perkBrawler"/> <!-- random EntityDmg -->
 				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkBrawler"/> <!-- tier bonus -->
 				<passive_effect name="BlockDamage" operation="base_set" value="3.5" tags="perkBrawler"/>
-				<passive_effect name="BlockDamage" operation="perc_add" value="-.04,.04" tags="perkBrawler"/> <!-- random BlockDmg -->
 				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkBrawler"/> <!-- tier bonus -->
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="earth"/>
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="stone"/>

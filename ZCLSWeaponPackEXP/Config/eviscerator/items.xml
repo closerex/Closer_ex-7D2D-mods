@@ -31,7 +31,7 @@
 				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
 				<property name="IgnoreShotTime" value="true"/>
 				<property name="Damage_type" value="Slashing"/>
-				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="Sound_start" value="kf_Movement_Bash"/>
 				<property name="DynamicSoundStart" value="bashSwingLight"/>
 				<property name="Sphere" value=".1"/>
 				<property name="UseGrazingHits" value="true"/>
@@ -50,7 +50,7 @@
 			<property class="Action1">
 				<property name="Class" value="DynamicMelee"/>
 				<property name="Damage_type" value="Slashing"/>
-				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="Sound_start" value="kf_Movement_Bash"/>
 				<property name="DynamicSoundStart" value="bashSwingLight"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib"/>
 				<property name="Sphere" value=".1"/>
@@ -88,6 +88,8 @@
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
 				<passive_effect name="EntityDamage" operation="base_set" value="72" tags="perkDeepCuts"/> <!-- meleeWpnBladeT1HuntingKnife -->
 				<passive_effect name="BlockDamage" operation="base_set" value="6.5" tags="perkDeepCuts"/>
+				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDeepCuts"/> <!-- tier bonus -->
+				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDeepCuts"/> <!-- tier bonus -->
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="earth"/>
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="stone"/>
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="metal"/>
@@ -119,7 +121,7 @@
 			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
 			<property name="UnholsterDelayActive" value="false"/>
 			<property name="BoundItemName" value="meleeWpnBladeBashEviscerator"/>
-			<property name="HoldType" value="53"/>
+			<property name="HoldType" value="69"/>
 			<property name="Meshfile" value="#@modfolder:Resources/Eviscerator.unity3d?eviscerator_m.prefab"/>
 			<property name="Material" value="Mmetal"/>
 			<!-- <property name="TintColor" value="107, 107, 71"/> -->
@@ -204,19 +206,21 @@
 				<passive_effect name="DegradationMax" operation="base_set" value="500,1000" tier="1,6"/>
 				<passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6"/> <!-- tier bonus -->
 				<passive_effect name="BlockDamage" operation="perc_add" value=".15,.75" tier="2,6"/> <!-- tier bonus -->
+				<passive_effect name="ReloadSpeedRatioFPV2TPV" operation="base_set" value="0.53"/>
 				<triggered_effect trigger="onAnimatorStateEntered" action="PlaySound" soundGroup="eviscerator_melee_start" play_at_self="true">
 					<requirement name="TriggerHasTags" tags="HeavyAttackIn"/>
+				</triggered_effect>
+				<triggered_effect trigger="onAnimationEventTrigger" action="PlaySound" soundGroup="eviscerator_melee_loop" play_at_self="true">
+					<requirement name="TriggerHasTags" tags="HeavyAttackLoopSoundStart"/>
+				</triggered_effect>
+				<triggered_effect trigger="onAnimatorStateExit" action="StopSound" soundGroup="eviscerator_melee_loop" play_at_self="true">
+					<requirement name="TriggerHasTags" tags="HeavyAttackLoop"/>
 				</triggered_effect>
 				<triggered_effect trigger="onAnimatorStateEntered" action="PlaySound" soundGroup="eviscerator_melee_end" play_at_self="true">
 					<requirement name="TriggerHasTags" tags="HeavyAttackOut"/>
 				</triggered_effect>
 				<triggered_effect trigger="onSelfEquipStart" action="StopSound" soundGroup="eviscerator_melee_loop"/>
 				<triggered_effect trigger="onSelfEquipStop" action="StopSound" soundGroup="eviscerator_melee_loop"/>
-			</effect_group>
-			<effect_group>
-				<requirement name="TriggerHasTags" tags="HeavyAttackLoop"/>
-					<triggered_effect trigger="onAnimatorStateEntered" action="PlaySound" soundGroup="eviscerator_melee_loop" play_at_self="true"/>
-					<triggered_effect trigger="onAnimatorStateExit" action="StopSound" soundGroup="eviscerator_melee_loop" play_at_self="true"/>
 			</effect_group>
 			<effect_group name="Primary">
 				<passive_effect name="MaxRange" operation="base_set" value="80" tags="perkArchery"/>
@@ -225,7 +229,7 @@
 				<passive_effect name="RoundsPerMinute" operation="base_set" value="65" tags="perkArchery"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkArchery"/>
 				<passive_effect name="MagazineSize" operation="base_set" value="5" tags="perkArchery"/>
-				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkArchery"/>
+				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="0.5" tags="perkArchery"/>
 		
 				<passive_effect name="SpreadDegreesVertical" operation="base_set" value="1.3" tags="perkArchery"/>
 				<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="1.3" tags="perkArchery"/>
@@ -323,9 +327,9 @@
 
 	<conditional>
 		<if cond="mod_loaded('EFT_Overhaul')">
-			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Common']/passive_effect[@name='EntityDamage' and @operation='perc_add' and @tier='2,6']/@value">0</set>
-			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Common']/passive_effect[@name='BlockDamage' and @operation='perc_add' and @tier='2,6']/@value">0</set>
-			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
+			<set xpath="/items/item[@name='meleeWpnBladeT3KF2Eviscerator']/effect_group[@name='Common']/passive_effect[@name='EntityDamage' and @operation='perc_add' and @tier='2,6']/@value">0</set>
+			<set xpath="/items/item[@name='meleeWpnBladeT3KF2Eviscerator']/effect_group[@name='Common']/passive_effect[@name='BlockDamage' and @operation='perc_add' and @tier='2,6']/@value">0</set>
+			<set xpath="/items/item[@name='meleeWpnBladeT3KF2Eviscerator']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
 		</if>
 	</conditional>
 </configs>

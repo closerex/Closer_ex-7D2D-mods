@@ -41,23 +41,12 @@
 				<effect_description level="6" desc_key="perkMedicBasicLv6Desc" long_desc_key="perkMedicBasicLv6LongDesc"/>
 			</effect_group>
 			<effect_group>
-				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="5,6" value="1" tags="medicgrenade"/>
-                <passive_effect name="CustomTaggedEffect" operation="perc_add" level="2,6" value=".05,.25" tags="medicWeapon,MedicStock,RechargeDataMaximum"  match_all_tags="true"/>
-                <passive_effect name="CustomTaggedEffect" operation="perc_subtract" level="2,6" value=".02,.1" tags="medicWeapon,MedicStock,ConsumptionValue" match_all_tags="true"/>
-                <passive_effect name="CustomTaggedEffect" operation="perc_add" level="2,6" value=".05,.25" tags="medicWeapon,MedicWeaponHeal" match_all_tags="true"/>
+                <passive_effect name="CustomTaggedEffect" operation="base_add" level="1,6" value="0,2" tags="medicWeapon,MedicStock,RechargeDataIntervalMultiplier" match_all_tags="true"/>
+                <!-- <passive_effect name="CustomTaggedEffect" operation="perc_add" level="1,6" value="0,.25" tags="medicWeapon,MedicStock,RechargeDataMaximum" match_all_tags="true"/> -->
+                <!-- <passive_effect name="CustomTaggedEffect" operation="perc_subtract" level="1,6" value="0,.1" tags="medicWeapon,MedicStock,ConsumptionValue" match_all_tags="true"/> -->
+                <passive_effect name="CustomTaggedEffect" operation="perc_add" level="1,6" value="0,.5" tags="medicWeapon,MedicWeaponHeal" match_all_tags="true"/>
 				<triggered_effect trigger="onPerkLevelChanged" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal"/>
 			</effect_group>
-			<!-- <effect_group>
-				<requirement name="ItemHasTags" tags="medicWeapon"/>
-				    <passive_effect name="ZedTimeTriggerChance" operation="base_set" level="1,6" value="5,30"/>
-			</effect_group> -->
-			<!-- <effect_group>
-				<requirement name="!HasBuff" buff="buffZedTimeCooldown"/>
-				<requirement name="ItemHasTags" tags="medicWeapon"/>
-				<requirement name="RandomRollPassive,KFComkmonUtilityLib" seed_type="Random" min_max="0,100" operation="LTE" passive="ZedTimeTriggerChance" tags="medicWeapon"/>
-					<triggered_effect trigger="onSelfKilledOther" action="AddBuffToTargetAndSelf,KFCommonUtilityLib" target="selfAOE" target_tags="player" buff="buffZedTimeCooldown" range="60"/>
-					<triggered_effect trigger="onSelfKilledOther" action="AddBuff" target="selfAOE" target_tags="enemy" buff="buffZedTime" range="60"/>
-			</effect_group> -->
 		<effect_group>
 			<!-- Increase the chance to find medic gun crafting skill magazines with each perk rank up to crafting skill 75 -->
 			<passive_effect name="LootProb" operation="perc_add" level="2,6" value="2,10" tags="medicgunsCSM">
@@ -85,8 +74,6 @@
 	
 	<append xpath="/progression/perks">	
 		<perk name="perkMedicTeamplayer1" name_key="perkMedicTeamplayer1Name" desc_key="perkMedicTeamplayer1Desc" max_level="1" icon="icon_tp_symbiotic" parent="skillTeamplayer">
-			<!--Symbiotic Health-->
-			<!--Healing teammate with medic guns heals yourself 15 hp-->
 			<level_requirements level="1">
 				<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="2" desc_key="reqMedicLevel02"/>
 			</level_requirements>
@@ -100,8 +87,6 @@
 			</effect_group>
 		</perk>
 		<perk name="perkMedicTeamplayer2" name_key="perkMedicTeamplayer2Name" desc_key="perkMedicTeamplayer2Desc" max_level="1" icon="icon_tp_adrenaline" parent="skillTeamplayer">
-			<!--Adrenaline Shot-->
-			<!--Shoot your teammates with healing dart increase their movement speed 20% for 8s.-->
 			<level_requirements level="1">
 				<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="3" desc_key="reqMedicLevel03"/>
 			</level_requirements>
@@ -115,8 +100,6 @@
 			</effect_group>
 		</perk>
 		<perk name="perkMedicTeamplayer3" name_key="perkMedicTeamplayer3Name" desc_key="perkMedicTeamplayer3Desc" max_level="1" icon="icon_tp_lifetras" parent="skillTeamplayer">
-			<!--Life Transition-->
-			<!--When you receive healing at full hp, all the health regen turns into medic stock gradually.-->
 			<level_requirements level="1">
 				<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="4" desc_key="reqMedicLevel04"/>
 			</level_requirements>
@@ -127,7 +110,7 @@
 				<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer3" operation="Equals" value="1"/>
 				<requirement name="ActionHasTags,KFCommonUtilityLib" tags="medicAction"/>
 				<requirement name="StatComparePercCurrentToMax" stat="Health" operation="GTE" value=".75"/>
-					<passive_effect name="CustomTaggedEffect" operation="perc_add" value="-.33" tags="medicWeapon,MedicStock,RechargeDataInterval" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="perc_add" value=".2" tags="medicWeapon,MedicStock,RechargeDataValue" match_all_tags="true"/>
 			</effect_group>
 			<effect_group>
 				<triggered_effect trigger="onPerkLevelChanged" action="DecreaseProgressionLevelAndRefundSP,KFCommonUtilityLib" progression_name="perkMedicSurvivor3" level="0">
@@ -136,8 +119,6 @@
 			</effect_group>
 		</perk>
 		<perk name="perkMedicTeamplayer4" name_key="perkMedicTeamplayer4Name" desc_key="perkMedicTeamplayer4Desc" max_level="1" icon="icon_tp_focus" parent="skillTeamplayer">
-			<!--Focus Injection-->
-			<!--Shooting teammates with healing darts increases the damage they inflict 20% for 8 seconds.-->
 			<level_requirements level="1">
 				<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="5" desc_key="reqMedicLevel05"/>
 			</level_requirements>
@@ -151,8 +132,6 @@
 			</effect_group>
 		</perk>
 		<perk name="perkMedicTeamplayer5" name_key="perkMedicTeamplayer5Name" desc_key="perkMedicTeamplayer5Desc" max_level="1" icon="icon_tp_skin" parent="skillTeamplayer">
-			<!--Shiny Skin-->
-			<!--Shooting teammates with healing darts remove bleeding. All buffs you apply to teammates will apply on yourself too.-->
 			<level_requirements level="1">
 				<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="6" desc_key="reqMedicLevel06"/>
 			</level_requirements>
@@ -167,8 +146,6 @@
 		</perk>
 		
 		<perk name="perkMedicSurvivor1" name_key="perkMedicSurvivor1Name" desc_key="perkMedicSurvivor1Desc" max_level="1" icon="icon_sv_vampire" parent="skillSurvivor">
-			<!--Mine Now-->
-			<!--Healing darts hit on zombie heal you.-->
 			<level_requirements level="1">
 				<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="2" desc_key="reqMedicLevel02"/>
 			</level_requirements>
@@ -182,8 +159,6 @@
 			</effect_group>
 		</perk>
 		<perk name="perkMedicSurvivor2" name_key="perkMedicSurvivor2Name" desc_key="perkMedicSurvivor2Desc" max_level="1" icon="icon_sv_rot" parent="skillSurvivor">
-			<!--Rotten Rot-->
-			<!--Medic guns deals 20% more damage on poisoned targets.-->
 			<level_requirements level="1">
 				<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="3" desc_key="reqMedicLevel03"/>
 			</level_requirements>
@@ -203,8 +178,6 @@
 			</effect_group>
 		</perk>
 		<perk name="perkMedicSurvivor3" name_key="perkMedicSurvivor3Name" desc_key="perkMedicSurvivor3Desc" max_level="1" icon="icon_sv_stock" parent="skillSurvivor">
-			<!--Survival Instinct-->
-			<!--Killing target with medic guns doubles medic stock regeneration for 8s.-->
 			<level_requirements level="1">
 				<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="4" desc_key="reqMedicLevel04"/>
 			</level_requirements>
@@ -223,8 +196,6 @@
 			</effect_group>
 		</perk>
 		<perk name="perkMedicSurvivor4" name_key="perkMedicSurvivor4Name" desc_key="perkMedicSurvivor4Desc" max_level="1" icon="icon_sv_medic" parent="skillSurvivor">
-			<!--I'm a medic, not doctor-->
-			<!--Medic guns entity damage and reload speed increase by 20%. Medic guns degradation reduced by 50%.-->
 			<level_requirements level="1">
 				<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="5" desc_key="reqMedicLevel05"/>
 			</level_requirements>
@@ -245,8 +216,6 @@
 			</effect_group>
 		</perk>
 		<perk name="perkMedicSurvivor5" name_key="perkMedicSurvivor5Name" desc_key="perkMedicSurvivor5Desc" max_level="1" icon="icon_sv_zedtime" parent="skillSurvivor">
-			<!--I SAY IT'S ZED TIME-->
-			<!--Healing darts and grenades have 50% chance to cripple target. Dealing headshot with healing darts knocks down target during zedtime. Killing zombie during zedtime causes the following 5 shots to consume no stock.-->
 			<level_requirements level="1">
 				<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="6" desc_key="reqMedicLevel06"/>
 			</level_requirements>
@@ -254,13 +223,9 @@
 				<effect_description desc_key="perkMedicSurvivor5Name" long_desc_key="perkMedicSurvivor5LongDesc" level="1"/>
 			</effect_group>
 			<effect_group>
-                <!-- <requirement name="HasBuff" target="other" buff="buffZedTime"/> -->
 				<requirement name="ProgressionLevel" progression_name="perkMedicSurvivor5" operation="GTE" value="1"/>
                 <requirement name="ItemHasTags" tags="medicWeapon"/>
-                    <!-- <triggered_effect trigger="onSelfKilledOther" action="ModifyCVar" target="self" cvar=".medicBuffConsumptionTemp0" operation="set" value="5"/>
-                    <triggered_effect trigger="onSelfKilledOther" action="AddBuff" target="self" buff="buffMedicInfinite"/> -->
 					<triggered_effect trigger="onSelfKilledOther" action="SetItemMetaFloat" change="15" relative="true" key="MedicStock"/>
-					
 			</effect_group>
 			<effect_group>
 				<triggered_effect trigger="onPerkLevelChanged" action="DecreaseProgressionLevelAndRefundSP,KFCommonUtilityLib" progression_name="perkMedicTeamplayer5" level="0">

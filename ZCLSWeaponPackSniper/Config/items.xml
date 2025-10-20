@@ -26,7 +26,7 @@
 			<property class="Action0">
 				<property name="Class" value="DynamicMelee"/>
 				<property name="Sound_start" value="bashSwingReal"/>
-				<property name="DynamicSoundStart" value="bashSwingLightSniper"/>
+				<property name="DynamicSoundStart" value="bashSwingLight"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib"/>
 				<property name="InterruptStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="Sphere" value=".1"/>
@@ -39,7 +39,7 @@
 			<property class="Action1">
 				<property name="Class" value="DynamicMelee"/>
 				<property name="Sound_start" value="bashSwingReal"/>
-				<property name="DynamicSoundStart" value="bashSwingHeavySniper"/>
+				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
 				<property name="Sphere" value=".15"/>
 				<property name="UsePowerAttackAnimation" value="true"/>
@@ -147,10 +147,10 @@
                 <property name="allowEmptyInspect" value="true"/>
                 <property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
                 <property name="InternalCancelOnly" value="true"/>
-                <property name="Sound_start" value="M99_Fire"/>
-                <property name="Sound_loop" value="M99_Fire"/>
-                <property name="Sound_end" value=""/>
-                <property name="Sound_empty" value="M99_Dryfire"/>
+                <property name="Sound_start" value="kf_m99_Fire_1P_Single_Mountain"/>
+                <property name="Sound_loop" value="kf_m99_Fire_1P_Single_Mountain"/>
+                <property name="Sound_end" value="kf_sw500_Boom"/>
+                <property name="Sound_empty" value="kf_m99_DryFire"/>
                 <property name="AutoReload" value="false"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?m99_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?m99_muzzle_flash_fpv.prefab"/>

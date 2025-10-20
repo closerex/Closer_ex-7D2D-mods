@@ -125,36 +125,22 @@
 			<duration value="10.1"/>
 			<effect_group name="start and end">
 				<requirement name="ActionHasTags,KFCommonUtilityLib" tags="medicModuleAction"/>
-					<passive_effect name="CustomTaggedEffect" operation="perc_add" value="-.5" tags="medicWeapon,MedicStock,RechargeDataInterval" match_all_tags="true"/>
+					<passive_effect name="CustomTaggedEffect" operation="perc_add" value=".3" tags="medicWeapon,MedicStock,RechargeDataValue" match_all_tags="true"/>
 					<passive_effect name="CustomTaggedEffect" operation="perc_add" value="-.5" tags="medicWeapon,MedicStock,RechargeDataDecrease" match_all_tags="true"/>
-			</effect_group>
-		</buff>
-		<buff name="buffMedicInfinite" name_key="buffMedicInfiniteName" description_key="buffMedicInfiniteLongDesc" icon="icon_sv_stock" icon_color="255,0,0" icon_blink="true">
-			<stack_type value="replace"/>
-			<duration value="5"/>
-			<display_value value=".medicBuffConsumptionTemp0"/>
-			<effect_group name="start and end">
-				<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffMedicInfinite">
-					<requirement name="CVarCompare" cvar=".medicBuffConsumptionTemp0" operation="LTE" value="0"/>
-				</triggered_effect>
-				<triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" cvar=".medicBuffConsumptionTemp0" operation="set" value="0"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="medicWeapon,MedicStock,ConsumptionValue" match_all_tags="true">
-					<requirement name="CVarCompare" cvar=".medicBuffConsumptionTemp0" operation="GT" value="0"/>
-				</passive_effect>
 			</effect_group>
 		</buff>
 		<buff name="buffMedicAdrenaline" name_key="buffMedicAdrenalineName" description_key="buffMedicAdrenalineLongDesc" icon="icon_tp_adrenaline" icon_color="255,0,255" icon_blink="true">
 			<stack_type value="replace"/>
-			<duration value="8.1"/>
+			<duration value="16.1"/>
 			<effect_group name="running">
-				<passive_effect name="Mobility" operation="perc_add" value=".20"/>
+				<passive_effect name="Mobility" operation="perc_add" value=".3"/>
 			</effect_group>
 		</buff>
 		<buff name="buffMedicFocus" name_key="buffMedicFocusName" description_key="buffMedicFocusLongDesc" icon="icon_tp_focus" icon_color="255,0,255" icon_blink="true">
 			<stack_type value="replace"/>
-			<duration value="8.1"/>
+			<duration value="16.1"/>
 			<effect_group name="damage">
-				<passive_effect name="DamageModifier" operation="perc_add" value=".20"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value=".5"/>
 			</effect_group>
 		</buff>
 		<buff name="buffMedicEliteHealing" name_key="buffMedicEliteHealingName" description_key="buffMedicEliteHealingLongDesc" icon="icon_tp_symbiotic" icon_color="255,0,255" icon_blink="true">

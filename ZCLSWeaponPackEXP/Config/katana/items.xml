@@ -28,7 +28,7 @@
 			<property class="Action0">
 				<property name="Class" value="DynamicMelee"/>
 				<property name="Damage_type" value="Piercing"/>
-				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="Sound_start" value="kf_Movement_Bash"/>
 				<property name="DynamicSoundStart" value="bashSwingLight"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
 				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
@@ -49,7 +49,7 @@
 				<property name="Class" value="DynamicMelee"/>
 				<property name="Damage_type" value="Piercing"/>
 				<property name="Sphere" value=".1"/>
-				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="Sound_start" value="kf_Movement_Bash"/>
 				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib"/>
 				<property name="MaxComboCount" value="1"/>
@@ -69,7 +69,6 @@
 			<property class="Action2">
 				<property name="Class" value="Blocking,KFCommonUtilityLib"/>
 				<property name="ItemActionModules" value="AnimationInterruptSource,KFCommonUtilityLib"/>
-				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
 				<property name="CommonBlockingTags" value="perkDeepCuts"/>
 			</property>
 			<effect_group name="meleeWpnBladeBashKatana">
@@ -85,10 +84,8 @@
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
 				<passive_effect name="EntityDamage" operation="base_set" value="32" tags="perkDeepCuts"/> <!-- meleeWpnBladeT1HuntingKnife -->
-				<passive_effect name="EntityDamage" operation="perc_add" value="-.04,.04" tags="perkDeepCuts"/> <!-- random EntityDmg -->
 				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDeepCuts"/> <!-- tier bonus -->
 				<passive_effect name="BlockDamage" operation="base_set" value="6.5" tags="perkDeepCuts"/>
-				<passive_effect name="BlockDamage" operation="perc_add" value="-.04,.04" tags="perkDeepCuts"/> <!-- random BlockDmg -->
 				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDeepCuts"/> <!-- tier bonus -->
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="earth"/>
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="stone"/>
@@ -164,9 +161,9 @@
 				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib"/>
 				<property name="MaxComboCount" value="3"/>
 				<property name="Damage_type" value="Slashing"/>
-				<property name="Sphere" value=".15"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
+				<property name="Sphere" value=".1"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
 				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
-				<property name="DynamicSoundStart" value="katanaEmptySwingLight"/>
+				<property name="DynamicSoundStart" value="meleeEmptySwingLight"/>
 				<property name="Sound_start" value="machete_swinglight"/>
 				<!-- <property name="ToolCategory.Butcher" value="0" param1="4.7"/> -->
 					<!-- This triggers the use of the special corpse harvesting animation if there is a matching harvest event.
@@ -191,9 +188,9 @@
 				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib"/>
 				<property name="MaxComboCount" value="1"/>
 				<property name="Damage_type" value="Slashing"/>
-				<property name="Sphere" value=".15"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
+				<property name="Sphere" value=".1"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
 				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
-				<property name="DynamicSoundStart" value="katanaEmptySwingHeavy"/>
+				<property name="DynamicSoundStart" value="meleeEmptySwingHeavy"/>
 				<property name="Sound_start" value="machete_swingheavy"/>
 				<!-- <property name="ToolCategory.Butcher" value="0" param1="4.7"/> -->
 				<property name="UsePowerAttackAnimation" value="true"/>

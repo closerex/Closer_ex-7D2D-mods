@@ -12,14 +12,14 @@ perkMedicBasicLv3Desc,progression,Attribute,,,Hot Shot,,药力四射
 perkMedicBasicLv4Desc,progression,Attribute,,,Dart Master,,医疗镖师
 perkMedicBasicLv5Desc,progression,Attribute,,,Jabberwocky,,区区小伤
 perkMedicBasicLv6Desc,progression,Attribute,,,The Injector,,人形注射器
-perkMedicBasicLv1LongDesc,progression,Attribute,,,"Heal your teammates with medic weapons, or poison the zombies. Heal and medic stock limitation is increased by 5% per level, consume per healing dart is decreased by 2% per level.",,使用医疗武器治疗你的队友，或者使丧尸中毒。治疗量和最大储备每级增加5%，储备消耗每级减少2%。
-perkMedicBasicLv2LongDesc,progression,Attribute,,,"Heal amount and medic stock limitation increased by 5%, Healing dart consumption decreased by 2%.",,治疗量和医疗储备上限增加5%。医疗子弹消耗降低2%。
-perkMedicBasicLv3LongDesc,progression,Attribute,,,"Heal amount and medic stock limitation increased by 10%, Healing dart consumption decreased by 4%.",,治疗量和医疗储备上限增加10%。医疗子弹消耗降低4%。
-perkMedicBasicLv4LongDesc,progression,Attribute,,,"Heal amount and medic stock limitation increased by 15%, Healing dart consumption decreased by 6%.",,治疗量和医疗储备上限增加15%。医疗子弹消耗降低6%。
-perkMedicBasicLv5LongDesc,progression,Attribute,,,"Heal amount and medic stock limitation increased by 20%, Healing dart consumption decreased by 8%. Unlock medic grenade recipe.",,治疗量和医疗储备上限增加20%。医疗子弹消耗降低8%。解锁医疗手雷制作。
-perkMedicBasicLv6LongDesc,progression,Attribute,,,"Heal amount and medic stock limitation increased by 25%, Healing dart consumption decreased by 10%. Double healing speed for 5s on dart hits.",,治疗量和医疗储备上限增加25%。医疗子弹消耗降低10%。医疗武器命中使友军生命恢复速度翻倍，持续5秒。
+perkMedicBasicLv1LongDesc,progression,Attribute,,,"Heal your teammates with medic weapons, or poison the zombies.",,使用医疗武器治疗你的队友，或者使丧尸中毒。
+perkMedicBasicLv2LongDesc,progression,Attribute,,,"Heal amount increased by 10%, medic stock regen speed increased by 40%.",,治疗量增加10%。医疗储备充能速度增加40%。
+perkMedicBasicLv3LongDesc,progression,Attribute,,,"Heal amount increased by 20%, medic stock regen speed increased by 80%.",,治疗量增加20%。医疗储备充能速度增加80%。
+perkMedicBasicLv4LongDesc,progression,Attribute,,,"Heal amount increased by 30%, medic stock regen speed increased by 120%.",,治疗量增加30%。医疗储备充能速度增加120%。
+perkMedicBasicLv5LongDesc,progression,Attribute,,,"Heal amount increased by 40%, medic stock regen speed increased by 160%.",,治疗量增加40%。医疗储备充能速度增加160%。
+perkMedicBasicLv6LongDesc,progression,Attribute,,,"Heal amount increased by 50%, medic stock regen speed increased by 200%. Double healing speed for 5s on dart hits.",,治疗量增加50%。医疗储备充能速度增加200%。医疗武器命中使友军生命恢复速度翻倍，持续5秒。
 skillTeamplayerName,progression,Skill,,,The Healer,,治疗者
-skillTeamplayerDesc,progression,Skill,,,"What should I put here? It's a medic gun, go heal some allies.",,我应该在这里写什么？这是一把医疗枪，拿它去给队友加血。
+skillTeamplayerDesc,progression,Skill,,,"What should I put here? It's a medic gun, go heal some teammates.",,我应该在这里写什么？这是一把医疗枪，拿它去给队友加血。
 skillSurvivorName,progression,Skill,,,The Survivor,,生存者
 skillSurvivorDesc,progression,Skill,,,"What should I put here? It's a medic gun... Wait a second, is it?",,我应该在这里写什么？这是一把医疗枪……等一下，这是医疗枪？
 reqMedicLevel02,progression,Attribute,,,The Medic Level 2,,战地医师 等级2
@@ -32,13 +32,13 @@ perkMedicTeamplayer1Desc,progression,perk Med,,,"Heal others to heal yourself",,
 perkMedicTeamplayer1LongDesc,progression,perk Med,,,"Healing teammates with medic weapons heals yourself 15 HP.",,使用医疗武器治疗友军同时治疗你自己15生命值。
 perkMedicTeamplayer2Name,progression,perk Med,,,Adrenaline Shot,,肾上腺素针
 perkMedicTeamplayer2Desc,progression,perk Med,,,"DON'T YOU STAB THAT THING IN ME!",,你 不 要 过 来 啊 我 不 想 打 针
-perkMedicTeamplayer2LongDesc,progression,perk Med,,,"Shoot your teammates with a healing dart to increase their movement speed by 20% for 8 seconds.",,使用医疗武器命中友军增加他们20%移动速度，持续8秒。
+perkMedicTeamplayer2LongDesc,progression,perk Med,,,"Shoot your teammates with a healing dart to increase their movement speed by 30% for 8 seconds.",,使用医疗武器命中友军增加他们30%移动速度，持续16秒。
 perkMedicTeamplayer3Name,progression,perk Med,,,Life Transition,,生命转换
 perkMedicTeamplayer3Desc,progression,perk Med,,,"Is this some cult ceremony?",,邪教仪式？
-perkMedicTeamplayer3LongDesc,progression,perk Med,,,"Medic stock regeneration increased by 50% when your health is above 75%.",,生命值高于75%时增加50%医疗储备回复速度。
+perkMedicTeamplayer3LongDesc,progression,perk Med,,,"Medic stock regeneration amount increased by 20% when your health is above 75%.",,生命值高于75%时增加20%医疗储备回复量。
 perkMedicTeamplayer4Name,progression,perk Med,,,Focus Injection,,专注射击
 perkMedicTeamplayer4Desc,progression,perk Med,,,"You need to take your time in a hurry.",,你得在慌乱之中慢慢来。
-perkMedicTeamplayer4LongDesc,progression,perk Med,,,"Shooting teammates with healing darts increases the damage they inflict by 20% for 8 seconds.",,使用医疗武器命中友军增加20%他们造成的伤害，持续8秒。
+perkMedicTeamplayer4LongDesc,progression,perk Med,,,"Shooting teammates with healing darts increases the damage they inflict by 20% for 8 seconds.",,使用医疗武器命中友军增加50%他们造成的伤害，持续16秒。
 perkMedicTeamplayer5Name,progression,perk Med,,,Shiny Skin,,皮肤保养
 perkMedicTeamplayer5Desc,progression,perk Med,,,"One dart a day keeps the zombies away.",,
 perkMedicTeamplayer5LongDesc,progression,perk Med,,,"Shooting teammates with healing darts removes bleeding. All buffs you apply to teammates will apply to yourself too.",,使用医疗武器命中友军会移除流血，治疗擦伤。所有施加在队友身上的buff同样应用于自己。
@@ -50,13 +50,13 @@ perkMedicSurvivor2Desc,progression,perk Med,,,This might sting a bit.,,这个可
 perkMedicSurvivor2LongDesc,progression,perk Med,,,"Medic weapons deal 25% more damage on poisoned targets.",,医疗武器对中毒目标增加25%伤害。
 perkMedicSurvivor3Name,progression,perk Med,,,Survival Instinct,,生存本能
 perkMedicSurvivor3Desc,progression,perk Med,,,"Turns out it's true, blood is thicker than water.",,血浓于水。
-perkMedicSurvivor3LongDesc,progression,perk Med,,,"Killing targets with medic weapons doubles medic stock regeneration for 10 seconds.",,医疗武器击杀目标会让医疗储备回复速度变为双倍，持续10秒。
+perkMedicSurvivor3LongDesc,progression,perk Med,,,"Killing targets with medic weapons increases medic stock regeneration amount by 30% for 10 seconds.",,医疗武器击杀目标会让医疗储备回复量增加30%，持续10秒。
 perkMedicSurvivor4Name,progression,perk Med,,,"I'm a medic, not doctor",,我是战地医师，不是医生。
 perkMedicSurvivor4Desc,progression,perk Med,,,"Kills even better than it heals!",,拿这玩意儿杀僵尸可比奶人爽多了！
 perkMedicSurvivor4LongDesc,progression,perk Med,,,"Medic weapons increase entity damage and reload speed increased by 20%. Medic weapon degradation is reduced by 50%.",,医疗武器伤害和换弹速度提高20%。医疗武器耗损速度降低50%。
 perkMedicSurvivor5Name,progression,perk Med,,,Concentrated Solution,,浓缩剂
 perkMedicSurvivor5Desc,progression,perk Med,,,"It's not excessive if it dissolves.",,只要还能继续溶就不算超标。
-perkMedicSurvivor5LongDesc,progression,perk Med,,,"Healing darts and grenades have a 50% chance to cripple target. Dealing headshots with healing darts knock down crippled targets. Killing poisoned target restores 15 medic stock for you.",,医疗子弹有50%几率致残敌人。使用医疗子弹爆头命中被致残的敌人会将其击倒，且击杀敌人时回复15点医疗储备。
+perkMedicSurvivor5LongDesc,progression,perk Med,,,"Healing darts and grenades removes radiation regeneration effect and have a 50% chance to cripple target. Dealing headshots with healing darts knock down crippled targets. Killing poisoned target restores 15 medic stock for you.",,医疗飞镖会移除辐射再生效果，并且有50%几率致残敌人。使用医疗子弹爆头命中被致残的敌人会将其击倒，且击杀敌人时回复15点医疗储备。
 modMedicModule,item_modifiers,mod,,,Medic Mod,,医疗模组
 modMedicModuleDesc,item_modifiers,mod,,,"Can only be installed in Medic Guns. Allows medics to heal other players and benefit from other skills when using Alt Fire Secondary Mode. Causes zombies to lose health, among other things.",,只能安装于医疗武器上。解锁次要模式以发射医疗子弹治疗队友，或者使僵尸中毒。
 modMedicModuleSchematic,item_modifiers,Mod,,,Medic Mod Schematic,,医疗模组配方
@@ -76,8 +76,6 @@ buffMedicHealName,buffs,Buff,,,Medic Healing,,治疗量
 buffMedicHealLongDesc,buffs,Buff,,,You are healed.,,你得到了治疗。
 buffMedicBoostName,buffs,Buff,,,Restock,,快速补给
 buffMedicBoostLongDesc,buffs,Buff,,,Double medic stock regeneration.,,双倍医疗储备回复速度。
-buffMedicInfiniteName,buffs,Buff,,,Infinite Stock,,无限储备
-buffMedicInfiniteLongDesc,buffs,Buff,,,Medic darts no longer consume stock.,,医疗针不再消耗医疗储备。
 buffMedicAdrenalineName,buffs,Buff,,,Medic Adrenaline,,战地医生的肾上腺素
 buffMedicAdrenalineLongDesc,buffs,Buff,,,Run faster.,,跑得快。
 buffMedicFocusName,buffs,Buff,,,Medic Focus,,根性！

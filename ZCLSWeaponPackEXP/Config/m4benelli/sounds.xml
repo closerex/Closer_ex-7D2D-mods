@@ -1,9 +1,2 @@
 <configs>
-	<append xpath="/Sounds">
-		<SoundDataNode name="M4Benelli_Fire"> <AudioSource name="@:Sounds/Prefabs/AudioSource_WeaponFire.prefab"/> <NetworkAudioSource name="@:Sounds/Prefabs/AudioSource_WeaponFire_Network.prefab"/>
-			<Noise ID="0" noise="108" time="2" muffled_when_crouched="0.8" heat_map_strength="1.4" heat_map_time="180"/>
-			<AudioClip ClipName="#@modfolder:Resources/M4Benelli_Sound.unity3d?WEP_SA_Benelli_Fire_1P_Single_Small"/>
-			<LocalCrouchVolumeScale value="1"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="60"/> <MaxVoicesPerEntity value="30"/> <MaxRepeatRate value="0.001"/>
-		</SoundDataNode>
-	</append>
 </configs>

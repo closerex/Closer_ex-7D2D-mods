@@ -1,0 +1,11 @@
+<config>
+<!-- *** T2&T3_Melee_Weapons -->
+	<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT2_Melee']">
+		<item name="meleeWpnClubT3KF2BoneCrusher"/>
+	</append>
+	
+<!-- *** Quest_Rewards -->
+	<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsMeleeT2']">
+		<item name="meleeWpnClubT3KF2BoneCrusher"/>
+	</append>
+</config>

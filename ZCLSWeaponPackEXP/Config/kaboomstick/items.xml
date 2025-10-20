@@ -25,7 +25,7 @@
 		
 			<property class="Action0">
 				<property name="Class" value="DynamicMelee"/>
-				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="Sound_start" value="kf_Movement_Bash"/>
 				<property name="DynamicSoundStart" value="bashSwingLight"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib"/>
 				<property name="InterruptStateFullName" value="Base Layer.FiringCancel"/>
@@ -39,7 +39,7 @@
 			</property>
 			<property class="Action1">
 				<property name="Class" value="DynamicMelee"/>
-				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="Sound_start" value="kf_Movement_Bash"/>
 				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
 				<property name="Sphere" value=".15"/>
@@ -143,11 +143,11 @@
 				<property name="RoundsPerShot" value="1"/>
 				<property name="BarrelCount" value="2"/>
 				<property name="Reload_time" value="2.6"/>
-				<property name="Sound_start" value="kaboomstick_fire"/>
-				<property name="Sound_loop" value="kaboomstick_fire"/>
+				<property name="Sound_start" value="kf_boomstick_Fire_1P_Indoor_Large"/>
+				<property name="Sound_loop" value="kf_boomstick_Fire_1P_Indoor_Large"/>
 				<property name="Sound_repeat" value=""/>
 				<property name="Sound_end" value=""/>
-				<property name="Sound_empty" value="dryfire"/>
+				<property name="Sound_empty" value="kf_doublebarrel_DryFire"/>
 				<property name="AutoReload" value="false"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?kaboomstick_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?kaboomstick_muzzle_flash_fpv.prefab"/>
@@ -238,7 +238,7 @@
 				<property name="CustomProjectileType" value="SimpleMesh,FullautoLauncher"/>
 				<property name="Explosion.ParticleIndex" value="#@modfolder:Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$HE"/>
 				<property name="Explosion.Duration" value="1"/>
-				<property name="Explosion.AudioName" value="kaboomstick_explosion"/>
+				<property name="Explosion.AudioName" value="kf_hrg_kaboomstick_Explosion"/>
 				<property name="Explosion.RadiusBlocks" value="1"/> <!-- damage radius for blocks -->
 				<property name="Explosion.RadiusEntities" value="1"/> <!-- damage radius for entities -->
 				<property name="Explosion.BlastPower" value="35"/>
@@ -280,7 +280,7 @@
 				<property name="CustomProjectileType" value="SimpleMesh,FullautoLauncher"/>
 				<property name="Explosion.ParticleIndex" value="#@modfolder:Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$Frag"/>
 				<property name="Explosion.Duration" value="1"/>
-				<property name="Explosion.AudioName" value="kaboomstick_explosion"/>
+				<property name="Explosion.AudioName" value="kf_hrg_kaboomstick_Explosion"/>
 				<property name="Explosion.RadiusBlocks" value="1"/> <!-- damage radius for blocks -->
 				<property name="Explosion.RadiusEntities" value="1"/> <!-- damage radius for entities -->
 				<property name="Explosion.BlastPower" value="20"/>

@@ -29,7 +29,7 @@
 				<property name="Class" value="DynamicMelee"/>
 				<property name="Sphere" value=".15"/>
 				<property name="Damage_type" value="Bashing"/>
-				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="Sound_start" value="kf_Movement_Bash"/>
 				<property name="DynamicSoundStart" value="bashSwingLight"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
 				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
@@ -48,7 +48,7 @@
 			</property>
 			<property class="Action1"> <!-- UseAction -->
 				<property name="Class" value="DynamicMelee"/>
-				<property name="Sound_start" value="bashSwingReal"/>
+				<property name="Sound_start" value="kf_Movement_Bash"/>
 				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib"/>
 				<property name="MaxComboCount" value="1"/>
@@ -183,7 +183,7 @@
 				<property name="Magazine_items" value="ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug"/>
 				<property name="ExcludeTags" value="blunt,melee,grunting,light,perkFlurryOfFortitude,attFortitude,perkBrawler,noBlades,knuckleSkill"/>
 				<property name="Reload_time" value="2.6"/>
-				<property name="Sound_start" value="HRGBlastBrawler_Fire"/>
+				<property name="Sound_start" value="kf_hrg_blastbrawlers_Fire_3P_OutDoor_Forest"/>
 				<property name="Sound_repeat" value=""/>
 				<property name="Sound_end" value=""/>
 				<property name="Sound_empty" value="dryfire"/>
@@ -283,10 +283,12 @@
             <effect_group name="tpv mesh">
                 <requirement name="!IsFPV"/>
                     <triggered_effect trigger="onSelfEquipStart" action="AddPart" part="LeftHRGBlastBrawler" prefab="#@modfolder:Resources/HRGBlastBrawler.unity3d?hrg_blastbrawler_l_3p_m.prefab" parentTransform="LeftHand" localPos="0,0,0" localRot="0,0,0" colorTint="true"/>
-                    <triggered_effect trigger="onSelfEquipStop" action="RemovePart" part="LeftHRGBlastBrawler"/>
                     <triggered_effect trigger="onSelfEquipStart" action="AddPart" part="RightHRGBlastBrawler" prefab="#@modfolder:Resources/HRGBlastBrawler.unity3d?hrg_blastbrawler_r_3p_m.prefab" parentTransform="RightHand" localPos="0,0,0" localRot="0,0,0" colorTint="true"/>
-                    <triggered_effect trigger="onSelfEquipStop" action="RemovePart" part="RightHRGBlastBrawler"/>
             </effect_group>
+			<effect_group name="tpv mesh remove">
+				<triggered_effect trigger="onSelfEquipStop" action="RemovePart" part="RightHRGBlastBrawler"/>
+				<triggered_effect trigger="onSelfEquipStop" action="RemovePart" part="LeftHRGBlastBrawler"/>
+			</effect_group>
         </item>
     </append>
 

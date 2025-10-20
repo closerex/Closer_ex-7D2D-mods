@@ -1,0 +1,6 @@
+<config>
+<!-- *** Melee_Weapons -->
+	<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupMeleeAll']">
+		<item name="meleeWpnClubT3KF2BoneCrusher" quality="3,6"/>		
+	</append>
+</config>
