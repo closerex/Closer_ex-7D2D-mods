@@ -60,11 +60,11 @@ namespace GearsSavingPatch
             {
                 var curGearsMod = ___modSettings == null ? null : (GearsMod)gearsModField.GetValue(___modSettings);
                 var nextGearsMod = value == null ? null : (GearsMod)gearsModField.GetValue(value);
-                if (curGearsMod?.Mod?.Name == "CommonUtilityLib" && curGearsMod?.Mod?.Name != nextGearsMod.Mod.Name)
+                if (curGearsMod?.Mod?.Name == "CommonUtilityLib" && curGearsMod?.Mod?.Name != nextGearsMod?.Mod?.Name)
                 {
                     GearsImpl.CloseGlobalSettings(___modSettings);
                     ___modSettings.SaveSettings();
-                    Log.Out("GearsSavingPatch: XUiC_ModSettings GlobalSettings closed on opening: " + nextGearsMod.Mod.Name);
+                    Log.Out("GearsSavingPatch: XUiC_ModSettings GlobalSettings closed on opening: " + (nextGearsMod?.Mod?.Name ?? "null"));
                 }
             }
         }
