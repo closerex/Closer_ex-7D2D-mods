@@ -7,7 +7,9 @@ using UnityEngine;
 public static class InspectSettings
 {
     public static bool defaultAutoInspect = true;
-    public static float autoInspectInterval = 15;
+    public static float autoInspectInterval = 30;
+    private const float MinInspectInterval = 30;
+    private const float MaxInspectInterval = 60;
 
     public static void InitSettings(IModGlobalSettings modSettings)
     {
@@ -18,12 +20,12 @@ public static class InspectSettings
         enableSetting.OnSettingChanged += static (s, v) => defaultAutoInspect = v == "Enabled";
 
         var intervalSetting = category.GetSetting("AutoInspectInterval") as ISliderGlobalSetting;
-        autoInspectInterval = float.Parse(intervalSetting.CurrentValue);
+        autoInspectInterval = Mathf.Clamp(float.Parse(intervalSetting.CurrentValue), MinInspectInterval, MaxInspectInterval);
         intervalSetting.OnSettingChanged += static (s, v) =>
         {
             if (float.TryParse(v, out var val))
             {
-                autoInspectInterval = val;
+                autoInspectInterval = Mathf.Clamp(val, MinInspectInterval, MaxInspectInterval);
             }
         };
     }
@@ -43,8 +45,8 @@ public class ActionModuleInspectable
         _props.ParseBool("autoInspect", ref autoInspect);
     }
 
-    [HarmonyPatch(typeof(ItemAction), nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
-    public void Postfix_ItemAction_OnModificationsChanged(ItemActionData _data, InspectableData __customData)
+    [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
+    public void Postfix_OnModificationsChanged(ItemActionData _data, InspectableData __customData)
     {
         __customData.lastInspectTime = Time.time;
         var targets = AnimationRiggingManager.GetHoldingRigTargetsFromPlayer(_data.invData.holdingEntity);
@@ -61,8 +63,20 @@ public class ActionModuleInspectable
         }
     }
 
-    [HarmonyPatch(typeof(ItemAction), nameof(ItemAction.OnHoldingUpdate)), MethodTargetPostfix]
-    public void Postfix_ItemAction_OnHoldingUpdate(ItemAction __instance, ItemActionData _actionData, InspectableData __customData)
+    [HarmonyPatch(nameof(ItemAction.ExecuteAction)), MethodTargetPostfix]
+    public void Postfix_ExecuteAction(InspectableData __customData)
+    {
+        __customData.lastInspectTime = Time.time;
+    }
+
+    [HarmonyPatch(nameof(ItemAction.ItemActionEffects)), MethodTargetPostfix]
+    public void Postfix_ItemActionEffects(InspectableData __customData)
+    {
+        __customData.lastInspectTime = Time.time;
+    }
+
+    [HarmonyPatch(nameof(ItemAction.OnHoldingUpdate)), MethodTargetPostfix]
+    public void Postfix_OnHoldingUpdate(ItemAction __instance, ItemActionData _actionData, InspectableData __customData)
     {
         if (!autoInspect || !InspectSettings.defaultAutoInspect)
         {

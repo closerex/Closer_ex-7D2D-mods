@@ -1,4 +1,5 @@
-﻿using Audio;
+﻿/*
+using Audio;
 using HarmonyLib;
 using System.Collections.Generic;
 using System.Reflection;
@@ -44,6 +45,55 @@ namespace KFCommonUtilityLib
             }
 
             return codes;
+        }
+
+        //[HarmonyPatch(typeof(PlayAndCleanup), nameof(PlayAndCleanup.StopBeginWhenDone), MethodType.Enumerator)]
+        //[HarmonyTranspiler]
+        //private static IEnumerable<CodeInstruction> Transpiler_StopBeginWhenDone_PlayAndCleanup(IEnumerable<CodeInstruction> instructions)
+        //{
+        //    var codes = instructions.ToList();
+        //    var mtd_destroy = AccessTools.Method(typeof(Object), nameof(Object.Destroy), new[] { typeof(Object) });
+        //    var mtd_pool = AccessTools.Method(typeof(AudioPoolManager), nameof(AudioPoolManager.PoolObject));
+
+        //    for (var i = 0; i < codes.Count; i++)
+        //    {
+        //        if (codes[i].Calls(mtd_destroy))
+        //        {
+        //            codes[i].operand = mtd_pool;
+        //            Log.Out($"PlayAndCleanup.StopBeginWhenDone patched!");
+        //        }
+        //    }
+        //    return codes;
+        //}
+
+        //[HarmonyPatch(typeof(PlayAndCleanup), nameof(PlayAndCleanup.StopWhenDone), MethodType.Enumerator)]
+        //[HarmonyTranspiler]
+        //private static IEnumerable<CodeInstruction> Transpiler_StopWhenDone_PlayAndCleanup(IEnumerable<CodeInstruction> instructions)
+        //{
+        //    var codes = instructions.ToList();
+        //    var mtd_destroy = AccessTools.Method(typeof(Object), nameof(Object.Destroy), new[] { typeof(Object) });
+        //    var mtd_pool = AccessTools.Method(typeof(AudioPoolManager), nameof(AudioPoolManager.PoolObject));
+
+        //    for (var i = 0; i < codes.Count; i++)
+        //    {
+        //        if (codes[i].Calls(mtd_destroy))
+        //        {
+        //            codes[i].operand = mtd_pool;
+        //            Log.Out($"PlayAndCleanup.StopWhenDone patched!");
+        //        }
+        //    }
+        //    return codes;
+        //}
+
+
+        [HarmonyPatch(typeof(Object), nameof(Object.Destroy), new[] { typeof(Object) })]
+        [HarmonyPostfix]
+        private static void Postfix_Destroy(Object obj)
+        {
+            if (obj && obj is GameObject gameObj && gameObj.TryGetComponent<AudioSourceIDRef>(out var idRef))
+            {
+                Log.Error($"Destroying AudioSource {idRef.id}\n{StackTraceUtility.ExtractStackTrace()}");
+            }
         }
     }
 
@@ -122,7 +172,13 @@ namespace KFCommonUtilityLib
                 return;
             }
 
-            pool.Pool(audioSource);
+            if (!pathRef.pooled)
+            {
+                if (pool.Pool(audioSource))
+                {
+                    pathRef.pooled = true;
+                }
+            }
         }
 
         public class AudioPool
@@ -140,26 +196,30 @@ namespace KFCommonUtilityLib
                 queue_pool = new Queue<GameObject>(maxCount);
             }
 
-            public void Pool(AudioSource itemToPool)
+            public bool Pool(AudioSource itemToPool)
             {
                 if (!itemToPool)
                 {
-                    return;
+                    return false;
                 }
 
-                string name = itemToPool.name;
-                if (queue_pool.Count > maxCount)
+                if (queue_pool.Count >= maxCount)
                 {
-                    UnityEngine.Object.Destroy(itemToPool);
-                    return;
+                    UnityEngine.Object.Destroy(itemToPool.gameObject);
+                    return false;
                 }
 
+                itemToPool.Stop();
+                itemToPool.clip = null;
+                itemToPool.dopplerLevel = templateAudioSource.dopplerLevel;
                 itemToPool.volume = templateAudioSource.volume;
                 itemToPool.pitch = templateAudioSource.pitch;
+                itemToPool.loop = templateAudioSource.loop;
                 GameObject obj = itemToPool.gameObject;
                 obj.transform.parent = AudioPoolManager.AudioSourcePoolParent;
                 obj.SetActive(false);
                 queue_pool.Enqueue(obj);
+                return true;
             }
 
             public GameObject GetOrCreate()
@@ -175,6 +235,7 @@ namespace KFCommonUtilityLib
                     res = queue_pool.Dequeue();
                     res.transform.parent = null;
                     res.SetActive(true);
+                    res.GetComponent<AudioSourceIDRef>().pooled = false;
                 }
 
                 return res;
@@ -187,5 +248,7 @@ namespace KFCommonUtilityLib
     public class AudioSourceIDRef : MonoBehaviour
     {
         public string id;
+        public bool pooled;
     }
 }
+*/

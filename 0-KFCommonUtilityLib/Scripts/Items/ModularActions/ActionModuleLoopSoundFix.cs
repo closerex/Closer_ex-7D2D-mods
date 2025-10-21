@@ -175,8 +175,8 @@ public class ActionModuleLoopSoundFix
             }
             for (int i = 0; i < sequenceStopper.sequenceObjs.Count; i++)
             {
-                //global::UnityEngine.Object.Destroy(sequenceStopper.sequenceObjs[i]);
-                AudioPoolManager.PoolObject(sequenceStopper.sequenceObjs[i]);
+                global::UnityEngine.Object.Destroy(sequenceStopper.sequenceObjs[i]);
+                //AudioPoolManager.PoolObject(sequenceStopper.sequenceObjs[i]);
             }
         }
 

@@ -6,6 +6,7 @@ using UniLinq;
 using System.Reflection.Emit;
 using System.Xml.Linq;
 using UnityEngine;
+using System.Reflection;
 
 namespace KFCommonUtilityLib.Harmony
 {
@@ -290,25 +291,37 @@ namespace KFCommonUtilityLib.Harmony
         #endregion
 
         #region bug fixes
-        [HarmonyPatch(typeof(Audio.Handle), nameof(Audio.Handle.IsPlaying))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_IsPlaying_Handle(IEnumerable<CodeInstruction> instructions)
+        [HarmonyPatch]
+        public static class AudioSourceImplicitPatches
         {
-            var codes = instructions.ToList();
-            var mtd_inequality = AccessTools.Method(typeof(UnityEngine.Object), "op_Inequality", new[] { typeof(UnityEngine.Object), typeof(UnityEngine.Object) });
-            var mtd_implicit = AccessTools.Method(typeof(UnityEngine.Object), "op_Implicit", new[] { typeof(UnityEngine.Object) });
-            for (int i = 0; i < codes.Count; i++)
+            private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (codes[i].Calls(mtd_inequality))
+                return new[]
                 {
-                    codes[i].operand = mtd_implicit;
-                    codes.RemoveAt(i - 1);
-                    i--;
-                }
+                    AccessTools.Method(typeof(Audio.Handle), nameof(Audio.Handle.IsPlaying)),
+                    AccessTools.Method(typeof(TriggerEffectManager), nameof(TriggerEffectManager.Update)),
+                    AccessTools.Method(typeof(TriggerEffectManager), nameof(TriggerEffectManager.SetAudioRumbleSource)),
+                    AccessTools.EnumeratorMoveNext(AccessTools.Method(typeof(PlayAndCleanup), nameof(PlayAndCleanup.StopBeginWhenDone)))
+                };
             }
-            return codes;
-        }
 
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                var codes = instructions.ToList();
+                var mtd_inequality = AccessTools.Method(typeof(UnityEngine.Object), "op_Inequality", new[] { typeof(UnityEngine.Object), typeof(UnityEngine.Object) });
+                var mtd_implicit = AccessTools.Method(typeof(UnityEngine.Object), "op_Implicit", new[] { typeof(UnityEngine.Object) });
+                for (int i = 0; i < codes.Count; i++)
+                {
+                    if (codes[i].Calls(mtd_inequality))
+                    {
+                        codes[i].operand = mtd_implicit;
+                        codes.RemoveAt(i - 1);
+                        i--;
+                    }
+                }
+                return codes;
+            }
+        }
         //[HarmonyPatch(typeof(ItemAction), nameof(ItemAction.HandleItemBreak))]
         //[HarmonyTranspiler]
         //private static IEnumerable<CodeInstruction> Transpiler_HandleItemBreak_ItemAction(IEnumerable<CodeInstruction> instructions)
