@@ -150,7 +150,7 @@ public class ActionModuleMetaRecharger
                     float cur;
                     if (!itemValue.HasMetadata(rechargeData))
                     {
-                        itemValue.SetMetadata(rechargeData, 0, TypedMetadataValue.TypeTag.Float);
+                        itemValue.SetMetadata(rechargeData, 0f, TypedMetadataValue.TypeTag.Float);
                         cur = 0;
                     }
                     else
