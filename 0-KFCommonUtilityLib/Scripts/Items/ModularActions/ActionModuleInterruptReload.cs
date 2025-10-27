@@ -108,7 +108,7 @@ public class ActionModuleInterruptReload
                         Log.Out($"executed!");
                     __customData.eventBridge.OnReloadEnd();
                     __customData.itemAnimator.Play(firingStateName, -1, 0f);
-                    __customData.itemAnimator.Update(0f);
+                    //__customData.itemAnimator.Update(0f);
                     //__customData.eventBridge.GetComponent<AnimationDelayRender>()?.SkipNextUpdate();
                 }
                 else
@@ -172,31 +172,37 @@ internal static class ReloadInterruptionPatches
             var rangedData = _data.actionData[curActionIndex] as ItemActionRanged.ItemActionDataRanged;
             if (rangedData != null && rangedData is IModuleContainerFor<ActionModuleInterruptReload.InterruptData> dataModule && rangedAction is IModuleContainerFor<ActionModuleInterruptReload> actionModule && !actionModule.Instance.internalCancelOnly)
             {
-                if (!_bReleased && _playerActions != null && actionModule.Instance.IsRequestPossible(dataModule.Instance) && ((_playerActions.Primary.IsPressed && _actionIdx == curActionIndex && _data.itemValue.Meta > 0) || (_playerActions.Secondary.IsPressed && curAction is ItemActionZoom)) && (rangedData.isReloading || rangedData.isWeaponReloading) && !dataModule.Instance.isInterruptRequested)
+                if (!_bReleased && _playerActions != null && actionModule.Instance.IsRequestPossible(dataModule.Instance) && (rangedData.isReloading || rangedData.isWeaponReloading) && !dataModule.Instance.isInterruptRequested)
                 {
-                    if (dataModule.Instance.holdStartTime < 0)
+                    bool isActionInversed = rangedAction is IModuleContainerFor<ActionModuleInversedAction>;
+                    bool currentActionPressed = isActionInversed ? _playerActions.Secondary.IsPressed : _playerActions.Primary.IsPressed;
+                    bool zoomActionPressed = isActionInversed ? _playerActions.Primary.IsPressed : _playerActions.Secondary.IsPressed;
+                    if ((currentActionPressed && _actionIdx == curActionIndex && _data.itemValue.Meta > 0) || (zoomActionPressed && curAction is ItemActionZoom))
                     {
-                        dataModule.Instance.holdStartTime = Time.time;
+                        if (dataModule.Instance.holdStartTime < 0)
+                        {
+                            dataModule.Instance.holdStartTime = Time.time;
+                            return false;
+                        }
+                        if (Time.time - dataModule.Instance.holdStartTime >= actionModule.Instance.holdBeforeCancel)
+                        {
+                            if (!ItemActionRanged.ReloadCancelled(rangedData))
+                            {
+                                rangedAction.CancelReload(rangedData, false);
+                            }
+                            if (ConsoleCmdReloadLog.LogInfo)
+                                Log.Out($"interrupt requested!");
+                            dataModule.Instance.isInterruptRequested = true;
+                            if (actionModule.Instance.instantFiringCancel && curAction is ItemActionRanged)
+                            {
+                                if (ConsoleCmdReloadLog.LogInfo)
+                                    Log.Out($"instant firing cancel!");
+                                dataModule.Instance.instantFiringRequested = true;
+                                return true;
+                            }
+                        }
                         return false;
                     }
-                    if (Time.time - dataModule.Instance.holdStartTime >= actionModule.Instance.holdBeforeCancel)
-                    {
-                        if (!ItemActionRanged.ReloadCancelled(rangedData))
-                        {
-                            rangedAction.CancelReload(rangedData, false);
-                        }
-                        if (ConsoleCmdReloadLog.LogInfo)
-                            Log.Out($"interrupt requested!");
-                        dataModule.Instance.isInterruptRequested = true;
-                        if (actionModule.Instance.instantFiringCancel && curAction is ItemActionRanged)
-                        {
-                            if (ConsoleCmdReloadLog.LogInfo)
-                                Log.Out($"instant firing cancel!");
-                            dataModule.Instance.instantFiringRequested = true;
-                            return true;
-                        }
-                    }
-                    return false;
                 }
                 if (_bReleased)
                 {

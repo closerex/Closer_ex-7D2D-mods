@@ -176,11 +176,16 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             {
                 bool isValidAlternative = IsAlternative && multiInvData != null && multiInvData.boundInvData != null;
                 var prevData = SetParams(isValidAlternative);
+                float alternativeDeltaUseTimes = isValidAlternative ? multiInvData.boundInvData.itemStack.itemValue.UseTimes : 0f;
                 ItemActionDynamicMelee.ItemActionDynamicMeleeData itemActionDynamicMeleeData = entity.inventory.holdingItemData.actionData[actionIndex] as ItemActionDynamicMelee.ItemActionDynamicMeleeData;
                 if (itemActionDynamicMeleeData != null)
                 {
                     if ((entity.inventory.holdingItem.Actions[actionIndex] as ItemActionDynamicMelee).Raycast(itemActionDynamicMeleeData))
                     {
+                        if (isValidAlternative)
+                        {
+                            multiInvData.originalData.itemStack.itemValue.UseTimes += multiInvData.boundInvData.itemStack.itemValue.UseTimes - alternativeDeltaUseTimes;
+                        }
                         if (ConsoleCmdReloadLog.LogInfo)
                         {
                             Log.Out("Raycast hit!");

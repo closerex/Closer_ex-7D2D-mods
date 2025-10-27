@@ -246,7 +246,7 @@ public class ActionModuleLoopSoundFix
                     XmlData xmlData;
                     if (Manager.audioData.TryGetValue(soundGroupName, out xmlData) && !xmlData.playImmediate)
                     {
-                        float offset = (float)(delay > 0 ? loopSegTime - delay : loopSegTime);
+                        //float offset = (float)(delay > 0 ? loopSegTime - delay : loopSegTime);
                         if (audioSourceNearEnd)
                         {
                             audioSourceNearEnd.volume *= Manager.CalculateOcclusion(entity.position - Origin.position, Manager.currentListenerPosition);

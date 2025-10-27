@@ -27,6 +27,8 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
     [SerializeField]
     private float weight = 1;
     [SerializeField]
+    private float delay = 0f;
+    [SerializeField]
     private float blendInTime = 0.2f;
     [SerializeField]
     private float blendOutTime = 0.2f;
@@ -346,17 +348,18 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
         var cameraEvents = animator.GetComponent<CameraAnimationEvents>();
         if (cameraEvents)
         {
-            cameraEvents.Interrupt();
+            int statehash = stateInfo.fullPathHash;
+            cameraEvents.Interrupt(statehash);
             float baseSpeed = normalizeLength ? speed * clipLength / stateDuration : speed * speedMultiplier * initialFpsModifier;
             if (positionCurves != null && positionCurves.Length == 3)
             {
-                var curvePositionData = new CameraCurveData(tagOrNameHash, positionCurves, clipLength, blendInTime, blendOutTime, baseSpeed, weight, CurveType.Position, relative, loop, speedParamHash);
+                var curvePositionData = new CameraCurveData(tagOrNameHash, statehash, positionCurves, clipLength, delay, blendInTime, blendOutTime, baseSpeed, weight, CurveType.Position, relative, loop, speedParamHash);
                 cameraEvents.Play(curvePositionData);
                 queue_pos_curves.Enqueue(curvePositionData);
             }
             if (rotationCurves != null && (((rotationCurveType == CurveType.EularAngleRaw || rotationCurveType == CurveType.EularAngleBaked) && rotationCurves.Length == 3) || (rotationCurveType == CurveType.Quaternion && rotationCurves.Length == 4)))
             {
-                var curveRotationData = new CameraCurveData(tagOrNameHash, rotationCurves, clipLength, blendInTime, blendOutTime, baseSpeed, weight, rotationCurveType, relative, loop, speedParamHash);
+                var curveRotationData = new CameraCurveData(tagOrNameHash, statehash, rotationCurves, clipLength, delay, blendInTime, blendOutTime, baseSpeed, weight, rotationCurveType, relative, loop, speedParamHash);
                 cameraEvents.Play(curveRotationData);
                 queue_rot_curves.Enqueue(curveRotationData);
             }

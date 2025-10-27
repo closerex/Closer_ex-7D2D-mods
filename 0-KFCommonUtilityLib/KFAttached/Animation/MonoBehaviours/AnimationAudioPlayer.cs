@@ -89,7 +89,7 @@ namespace KFCommonUtilityLib
                 }
                 else
                 {
-                    dict_volumes[source] = volume;
+                    dict_volumes[source] = source.volume;
                 }
                 AudioClip clip = group.clips[UnityEngine.Random.Range(0, group.clips.Length)];
                 source.volume *= group.maxVolume;

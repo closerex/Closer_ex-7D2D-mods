@@ -601,6 +601,7 @@
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAlternative.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationInterruptable.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationInterruptSource.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleInversedAction.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleLimitedCombo.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleLoopSoundFix.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMeleeShooter.cs" />
@@ -628,6 +629,7 @@
     <Compile Include="Scripts\Items\ModularActions\ActionModuleTagged.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleTranspilerTest.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleVariableZoom.cs" />
+    <Compile Include="Scripts\Items\ModularClasses\ItemModuleInversedAction.cs" />
     <Compile Include="Scripts\Items\ModularClasses\ItemModuleMultiItem.cs" />
     <Compile Include="Scripts\Items\ModularClasses\ItemModuleSortable.cs" />
     <Compile Include="Scripts\Items\ModularClasses\ItemModuleTrueHolster.cs" />
@@ -657,6 +659,7 @@
     <Compile Include="Scripts\Requirements\IsHoldingItemModificationActivated.cs" />
     <Compile Include="Scripts\Requirements\IsLocal.cs" />
     <Compile Include="Scripts\Requirements\IsModificationActivated.cs" />
+    <Compile Include="Scripts\Requirements\MetaInItem.cs" />
     <Compile Include="Scripts\StaticManagers\AnimationRiggingManager.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdCalibrateWeapon.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPlayerDebugInfo.cs" />

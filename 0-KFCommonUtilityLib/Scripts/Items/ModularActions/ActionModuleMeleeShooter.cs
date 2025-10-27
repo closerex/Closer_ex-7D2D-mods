@@ -90,6 +90,7 @@ public class ActionModuleMeleeShooter
         }
         else if (customData.animationRequested)
         {
+            _rangedData.m_LastShotTime = Time.time;
             return false;
         }
 
@@ -122,6 +123,16 @@ public class ActionModuleMeleeShooter
             return false;
         }
         return true;
+    }
+
+    [HarmonyPatch(nameof(ItemAction.CancelAction))]
+    [HarmonyPostfix]
+    public void Postfix_CancelAction(ItemActionData _actionData, MeleeShooterData __customData)
+    {
+        if (!__customData.animationRequested)
+        {
+            __customData.executionRequested = false;
+        }
     }
 
     [HarmonyPatch(nameof(ItemActionRanged.OnModificationsChanged)), MethodTargetPostfix]

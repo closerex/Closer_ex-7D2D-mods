@@ -51,7 +51,16 @@ public class ActionModuleAnimationInterruptSource
                 {
                     if (actionList[i] is not IModuleContainerFor<ActionModuleAnimationInterruptable> animationModule || dataList[i] is not IModuleContainerFor<ActionModuleAnimationInterruptable.AnimationInterruptableData> animationModuleData)
                     {
-                        if (interruptModule.ignoreShotTime && dataList[i] is ItemActionRanged.ItemActionDataRanged rangedData)
+                        if (dataList[i] is IModuleContainerFor<ActionModuleMeleeShooter.MeleeShooterData> meleeShooterModule)
+                        {
+                            if (meleeShooterModule.Instance.animationRequested)
+                            {
+                                actionList.RemoveAt(i);
+                                i--;
+                            }
+                            continue;
+                        }
+                        else if (interruptModule.ignoreShotTime && dataList[i] is ItemActionRanged.ItemActionDataRanged rangedData)
                         {
                             var action = actionList[i];
                             var data = dataList[i];
@@ -97,7 +106,6 @@ public class ActionModuleAnimationInterruptSource
 [HarmonyPatch]
 public static class ZAnimationInterruptSourcePatches
 {
-
     [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.ExecuteAction))]
     [HarmonyPrefix]
     private static bool Prefix_ExecuteAction_ItemClass(ItemClass __instance, int _actionIdx, ItemInventoryData _data, bool _bReleased, PlayerActionsLocal _playerActions)

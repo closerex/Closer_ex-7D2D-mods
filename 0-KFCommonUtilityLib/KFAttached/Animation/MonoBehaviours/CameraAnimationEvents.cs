@@ -37,18 +37,20 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
     {
         AnimationCurve[] curves;
         float[] values, initialValues;
-        float clipLength, curTime, blendInTime, curBlendInTime, blendOutTime, curBlendOutTime, speed, weight;
+        float clipLength, delay, curTime, blendInTime, curBlendInTime, blendOutTime, curBlendOutTime, speed, weight;
         CurveType curveType;
         int speedParamHash;
         bool relative;
         bool loop;
         bool interrupted;
         public int weightTagHash;
+        public int stateHash;
 
-        public CameraCurveData(int weightTagHash, AnimationCurve[] curves, float clipLength, float blendInTime, float blendOutTime, float speed, float weight, CurveType curveType, bool relative, bool loop, int speedParamHash = 0)
+        public CameraCurveData(int weightTagHash, int stateHash, AnimationCurve[] curves, float clipLength, float delay, float blendInTime, float blendOutTime, float speed, float weight, CurveType curveType, bool relative, bool loop, int speedParamHash = 0)
         {
             this.curves = curves;
             this.clipLength = clipLength;
+            this.delay = loop ? 0f : delay;
             this.blendInTime = blendInTime;
             this.blendOutTime = blendOutTime;
             this.speed = speed;
@@ -58,6 +60,7 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
             this.loop = loop;
             this.weight = weight;
             this.weightTagHash = weightTagHash;
+            this.stateHash = stateHash;
             values = new float[curves.Length];
             initialValues = new float[curves.Length];
             if (relative)
@@ -69,7 +72,7 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
             }
         }
 
-        public bool Finished => curTime >= clipLength || (interrupted && curBlendOutTime >= blendOutTime);
+        public bool Finished => curTime >= clipLength || (interrupted && (curBlendOutTime >= blendOutTime || curTime < delay));
 
         public void Update(Animator animator, float dt)
         {
@@ -82,6 +85,10 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
             dt *= dynamicSpeed;
             curBlendInTime += dt;
             curTime += dt;
+            if (curTime < delay)
+            {
+                return;
+            }
             if (interrupted)
             {
                 curBlendOutTime += dt;
@@ -97,7 +104,7 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
                     continue;
                 }
 
-                values[i] = curves[i].Evaluate(curTime);
+                values[i] = curves[i].Evaluate(curTime - delay);
             }
         }
 
@@ -556,11 +563,12 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
 #endif
     }
 
-    public void Interrupt()
+    public void Interrupt(int fromStateHash)
     {
         foreach (var active in list_curves)
         {
-            active.Interrupt();
+            if (active.stateHash != fromStateHash)
+                active.Interrupt();
         }
     }
 

@@ -1613,22 +1613,23 @@ public static class CommonUtilityPatch
                         {
                             codes[j + 1].WithLabels(codes[j - 2].ExtractLabels());
                             codes.RemoveRange(j - 2, 3);
+                            i -= 3;
                             break;
                         }
                     }
-                    codes.InsertRange(i + 1, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldarg_1),
-                        CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
-                        CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity)),
-                        CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.emodel)),
-                        CodeInstruction.LoadField(typeof(EModelBase), nameof(EModelBase.avatarController)),
-                        CodeInstruction.LoadField(typeof(CommonUtilityPatch), nameof(MeleeRunningHash)),
-                        new CodeInstruction(OpCodes.Ldc_I4_0),
-                        new CodeInstruction(OpCodes.Ldc_I4_1),
-                        new CodeInstruction(OpCodes.Callvirt, mtd_updatebool),
-                    });
-                    i += 8;
+                    //codes.InsertRange(i + 1, new[]
+                    //{
+                    //    new CodeInstruction(OpCodes.Ldarg_1),
+                    //    CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
+                    //    CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity)),
+                    //    CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.emodel)),
+                    //    CodeInstruction.LoadField(typeof(EModelBase), nameof(EModelBase.avatarController)),
+                    //    CodeInstruction.LoadField(typeof(CommonUtilityPatch), nameof(MeleeRunningHash)),
+                    //    new CodeInstruction(OpCodes.Ldc_I4_0),
+                    //    new CodeInstruction(OpCodes.Ldc_I4_1),
+                    //    new CodeInstruction(OpCodes.Callvirt, mtd_updatebool),
+                    //});
+                    //i += 8;
                 }
                 else if (codes[i - 1].opcode == OpCodes.Ldc_I4_0)
                 {
@@ -1644,11 +1645,22 @@ public static class CommonUtilityPatch
         return codes;
     }
 
+    [HarmonyPatch(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.SetAttackFinished))]
+    [HarmonyPostfix]
+    private static void Postfix_SetAttackFinished_ItemActionDynamicMelee(ItemActionData _actionData)
+    {
+        ItemActionDynamicMelee.ItemActionDynamicMeleeData meleeData = _actionData as ItemActionDynamicMelee.ItemActionDynamicMeleeData;
+        if (meleeData != null)
+        {
+            meleeData.invData.holdingEntity.emodel.avatarController.UpdateBool(MeleeRunningHash, false, true);
+        }
+    }
+
     private static void CheckMeleeRunning(ItemActionDynamicMelee.ItemActionDynamicMeleeData data)
     {
-        if (data.Attacking && data.invData.itemValue.PercentUsesLeft <= 0f || data.invData.holdingEntity.Stamina < data.StaminaUsage || !data.invData.holdingEntity.inventory.GetIsFinishedSwitchingHeldItem())
+        if (data.Attacking && (data.invData.itemValue.PercentUsesLeft <= 0f || data.invData.holdingEntity.Stamina < data.StaminaUsage || !data.invData.holdingEntity.inventory.GetIsFinishedSwitchingHeldItem()))
         {
-            data.invData.holdingEntity.emodel.avatarController.UpdateBool(MeleeRunningHash, false, true);
+            //data.invData.holdingEntity.emodel.avatarController.UpdateBool(MeleeRunningHash, false, true);
             data.HasExecuted = true;
         }
     }

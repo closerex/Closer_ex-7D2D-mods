@@ -78,7 +78,7 @@ public class ActionModuleInspectable
     [HarmonyPatch(nameof(ItemAction.OnHoldingUpdate)), MethodTargetPostfix]
     public void Postfix_OnHoldingUpdate(ItemAction __instance, ItemActionData _actionData, InspectableData __customData)
     {
-        if (!autoInspect || !InspectSettings.defaultAutoInspect)
+        if (!autoInspect || !InspectSettings.defaultAutoInspect || _actionData.indexInEntityOfAction != 0)
         {
             __customData.lastInspectTime = Time.time;
             return;

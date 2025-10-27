@@ -85,6 +85,11 @@ public class AnimationMeleeShooterState : StateMachineBehaviour
                 if (data != null)
                 {
                     data.animationRequested = true;
+
+                    if (stateData != null && ammoData != null && stateData.Length == ammoData.Length && stateData.Length > 0)
+                    {
+                        UpdateShots(-1, 0);
+                    }
                 }
             }
         }
@@ -93,7 +98,7 @@ public class AnimationMeleeShooterState : StateMachineBehaviour
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (data == null || stateData == null || ammoData == null || stateData.Length != ammoData.Length)
+        if (data == null)
             return;
 
         var transInfo = wrapper.GetAnimatorTransitionInfo(layerIndex);
@@ -104,11 +109,31 @@ public class AnimationMeleeShooterState : StateMachineBehaviour
             return;
         }
 
+        if (stateData == null || ammoData == null || stateData.Length != ammoData.Length || stateData.Length == 0)
+        {
+            return;
+        }
+
         float lastPerc = currentPerc;
         currentPerc = stateInfo.normalizedTime % 1;
+        UpdateShots(lastPerc, currentPerc);
+    }
+
+    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        if (data != null && !requestReset)
+        {
+            data.ResetRequest();
+        }
+        requestReset = false;
+        currentPerc = 0;
+    }
+
+    private void UpdateShots(float lastPerc, float currentPerc)
+    {
         for (int i = 0; i < stateData.Length; i++)
         {
-            if (stateData[i] >= lastPerc && stateData[i] < currentPerc)
+            if (stateData[i] > lastPerc && stateData[i] <= currentPerc)
             {
                 data.executionRequested = true;
                 ItemActionRanged rangedAction = data.invData.item.Actions[actionIndex] as ItemActionRanged;
@@ -122,16 +147,6 @@ public class AnimationMeleeShooterState : StateMachineBehaviour
                 data.executionRequested = false;
             }
         }
-    }
-
-    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        if (data != null && !requestReset)
-        {
-            data.ResetRequest();
-        }
-        requestReset = false;
-        currentPerc = 0;
     }
 #endif
 }

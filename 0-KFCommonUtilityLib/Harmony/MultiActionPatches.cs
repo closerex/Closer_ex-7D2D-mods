@@ -572,12 +572,12 @@ namespace KFCommonUtilityLib.Harmony
         [HarmonyPrefix]
         private static bool Prefix_ExecuteAction_ItemClass(ref int _actionIdx, ItemInventoryData _data, PlayerActionsLocal _playerActions)
         {
-
-            if (_actionIdx != 0 || _playerActions == null || !(_data.holdingEntity is EntityPlayerLocal player))
+            if (_playerActions == null || !(_data.holdingEntity is EntityPlayerLocal player))
             {
                 return true;
             }
-            _actionIdx = MultiActionManager.GetActionIndexForEntity(player);
+            if (_actionIdx == 0)
+                _actionIdx = MultiActionManager.GetActionIndexForEntity(player);
             player.MinEventContext.ItemActionData = _data.actionData[_actionIdx];
             return true;
         }

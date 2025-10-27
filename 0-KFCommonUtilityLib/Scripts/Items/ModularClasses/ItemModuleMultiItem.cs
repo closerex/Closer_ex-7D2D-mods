@@ -408,6 +408,7 @@ public class ItemModuleMultiItem
                 if (boundItemClass != null)
                 {
                     boundInvData = boundItemClass.CreateInventoryData(new ItemStack(new ItemValue(boundItemClass.Id, originalData.itemValue.Quality, originalData.itemValue.Quality), 1), originalData.gameManager, originalData.holdingEntity, originalData.slotIdx);
+                    boundInvData.itemStack.itemValue.Meta = originalData.itemStack.itemValue.Meta;
                 }
                 else
                 {
@@ -439,6 +440,7 @@ public class ItemModuleMultiItem
             var param = originalData.holdingEntity.MinEventContext;
             param.ItemInventoryData = boundInvData;
             param.ItemValue = boundInvData.itemStack.itemValue;
+            boundInvData.itemStack.itemValue.Meta = originalData.itemStack.itemValue.Meta;
             if (originalData.actionData[0] is IModuleContainerFor<ActionModuleAlternative.AlternativeData> dataModule)
             {
                 MultiActionManager.SetMappingForEntity(originalData.holdingEntity.entityId, null);
@@ -455,6 +457,7 @@ public class ItemModuleMultiItem
             var param = originalData.holdingEntity.MinEventContext;
             param.ItemInventoryData = originalData;
             param.ItemValue = originalData.itemStack.itemValue;
+            boundInvData.itemStack.itemValue.Meta = originalData.itemStack.itemValue.Meta;
             if (originalData.actionData[0] is IModuleContainerFor<ActionModuleAlternative.AlternativeData> dataModule)
             {
                 MultiActionManager.SetMappingForEntity(originalData.holdingEntity.entityId, dataModule.Instance.mapping);

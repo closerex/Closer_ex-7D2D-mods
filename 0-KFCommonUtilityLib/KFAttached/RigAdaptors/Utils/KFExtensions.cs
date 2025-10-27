@@ -220,7 +220,8 @@ public static class KFExtensions
             if (self.TryGetComponent<AnimationGraphBuilder>(out var builder))
             {
                 var role = builder.GetWrapperRoleByParamHash(_propertyHash);
-                switch(role)
+                //Log.Out($"Setting wrapped trigger {_propertyHash} name {self.GetWrappedParameters().FirstOrDefault(par => par.nameHash == _propertyHash)?.name ?? "none"} in role {role}\n{StackTraceUtility.ExtractStackTrace()} on animator {self.runtimeAnimatorController.name}");
+                switch (role)
                 {
                     case AnimationGraphBuilder.ParamInWrapper.Both:
                         builder.VanillaWrapper.SetTrigger(_propertyHash);
@@ -368,7 +369,7 @@ public static class KFExtensions
         }
     }
 
-    public static AnimatorControllerParameter[] GetWrappedParameters(this  Animator self)
+    public static AnimatorControllerParameter[] GetWrappedParameters(this Animator self)
     {
         if (self)
         {
