@@ -1,0 +1,18 @@
+<config>
+<!-- *** Melee_Weapons -->
+	<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupMeleeAll']">
+		<item name="meleeWpnSledgeT3Pulverizer" quality="3,6"/>		
+	</append>
+	<conditional>
+		<if cond="mod_loaded('EFTX_Pack_Core')">
+			<append xpath="/traders/trader_item_groups/trader_item_group[@name='ammoGroupSpecial']">
+				<item name="ammoPulverizer" count="15,30"/>
+			</append>
+		</if>
+		<else>
+			<append xpath="/traders/trader_item_groups/trader_item_group[@name='ammoAll']">
+				<item name="ammoPulverizer" count="15,30"/>
+			</append>
+		</else>
+	</conditional>
+</config>

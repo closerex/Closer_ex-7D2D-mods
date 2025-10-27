@@ -1,0 +1,17 @@
+<config>
+	<insertBefore xpath="/progression/crafting_skills/crafting_skill[@name='craftingSledgehammers']/effect_group[1]">
+		<display_entry item="meleeWpnSledgeT3Pulverizer" unlock_level="60,63,66,69,72,75" />
+	</insertBefore>
+
+	<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingSledgehammers']/effect_group[1]">
+		<passive_effect name="RecipeTagUnlocked" operation="base_set" level="60,75" value="1" tags="meleeWpnSledgeT3Pulverizer"/>
+	</append>	
+
+	<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingSledgehammers']/effect_group[1]">
+		<passive_effect name="CraftingTier" operation="base_add" level="63,66,69,72,75" value="1,2,3,4,5" tags="meleeWpnSledgeT3Pulverizer"/>
+	</append>
+
+	<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingExplosives']/effect_group[1]">
+		<passive_effect name="RecipeTagUnlocked" operation="base_set" level="50,100" value="1" tags="ammoPulverizer"/>
+	</append>	
+</config>

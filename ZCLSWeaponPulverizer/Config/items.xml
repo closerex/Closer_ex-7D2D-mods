@@ -1,0 +1,314 @@
+<config>
+    <append xpath="/items">
+        <item name="meleeWpnHandleBashPulverizer">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
+            <property name="Tags" value="blunt,melee,grunting,heavy,sledge,weapon,meleeWeapon,longShaft,attStrength,perkSkullCrusher,perkFlurryOfStrength,canHaveCosmetic,sledgeSkill"/>
+			<property name="CreativeMode" value="None"/>
+            <property name="DisplayType" value="meleeHeavy"/>
+            <property name="HoldType" value="33"/>
+            <property name="Meshfile" value="@:Other/Items/Weapons/Melee/SledgeHammer/ironSledgehammerPrefab.prefab"/>
+            <property name="Material" value="Mmetal"/>
+            <property name="TintColor" value="77, 0, 0"/>
+            <property name="ScrapTimeOverride" value="10.0"/>
+            <property name="RepairTools" value="resourceRepairKit"/>
+            <property name="DegradationBreaksAfter" value="false"/>
+            <property name="SoundJammed" value="ItemNeedsRepair"/>
+            <property name="SoundDestroy" value="metaldestroy1"/>
+            <property name="EconomicValue" value="500"/>
+            <property name="TraderStageTemplate" value="baseTier1"/><!-- meleeWpnSledgeT1IronSledgehammer -->
+            <property name="Group" value="Ammo/Weapons,Melee Weapons"/>
+            <property name="UnlockedBy" value="craftingSledgehammers"/><!-- perkSkullCrusher,meleeWpnSledgeT1IronSledgehammerSchematic, -->
+            <property name="ShowQuality" value="true"/>
+            <property name="SoundUnholster" value="weapon_unholster"/>
+            <property name="SoundHolster" value="weapon_holster"/>
+            <property name="SoundPickup" value="sledgehammer_iron_grab"/>
+            <property name="SoundPlace" value="sledgehammer_iron_place"/>
+
+            <property class="Action0">
+                <property name="Class" value="DynamicMelee"/>
+                <property name="Sphere" value=".15"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
+				<property name="Sound_start" value="kf_Movement_Bash"/>
+				<property name="DynamicSoundStart" value="bashSwingLight"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
+				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
+                <property name="ToolCategory.harvestingTools" value=".5" param1="1"/>
+                <property name="UseGrazingHits" value="true"/>
+                <property name="GrazeStart" value=".515"/>
+                <property name="GrazeEnd" value=".52"/>
+                <property name="SwingDegrees" value="65"/>
+                <property name="SwingAngle" value="160"/>
+                <property class="HitSounds">
+                    <property name="Override0" value="organic" param1="metalsolidhitorganic"/>
+                </property>
+                <property class="GrazeSounds">
+                    <property name="Override0" value="organic" param1="metalgrazeorganic"/>
+                </property>
+            </property>
+            <property class="Action1">
+                <property name="Class" value="DynamicMelee"/>
+                <property name="Sphere" value=".15"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
+				<property name="Sound_start" value="kf_Movement_Bash"/>
+				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib"/>
+				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
+                <property name="ToolCategory.harvestingTools" value=".5" param1="1"/>
+                <property name="UsePowerAttackAnimation" value="true"/>
+                <property name="UseGrazingHits" value="true"/>
+                <property name="GrazeStart" value=".515"/>
+                <property name="GrazeEnd" value=".52"/>
+                <property name="SwingDegrees" value="110"/>
+                <property name="SwingAngle" value="90"/>
+                <property class="HitSounds">
+                    <property name="Override0" value="organic" param1="metalsolidhitorganic"/>
+                </property>
+                <property class="GrazeSounds">
+                    <property name="Override0" value="organic" param1="metalgrazeorganic"/>
+                </property>
+            </property>
+			<property class="Action2">
+				<property name="Class" value="Blocking,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="AnimationInterruptSource,KFCommonUtilityLib"/>
+				<property name="CommonBlockingTags" value="perkSkullCrusher"/>
+			</property>
+            <effect_group name="meleeWpnHandleBashPulverizer">
+                <passive_effect name="AttacksPerMinute" operation="base_set" value="84" tags="perkSkullCrusher,perkFlurryOfStrength"/>
+                <passive_effect name="StaminaLoss" operation="base_set" value="30" tags="primary"/>
+                <passive_effect name="DegradationMax" operation="base_set" value="200,400" tier="1,6" tags="perkSkullCrusher"/>
+                <passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkSkullCrusher"/>
+                <passive_effect name="MaxRange" operation="base_set" value="2.6" tags="perkSkullCrusher"/>
+                <passive_effect name="BlockRange" operation="base_set" value="3.5" tags="perkSkullCrusher"/>
+                <passive_effect name="ModSlots" operation="base_set" value="2,2,2,3,3,4" tier="1,2,3,4,5,6"/>
+                <passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+                <passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+                <passive_effect name="EntityDamage" operation="base_set" value="28" tags="perkSkullCrusher"/> <!-- meleeWpnSledgeT1IronSledgehammer -->
+                <passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkSkullCrusher"/> <!-- tier bonus -->
+                <passive_effect name="BlockDamage" operation="base_set" value="35" tags="perkSkullCrusher"/>
+                <passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkSkullCrusher"/> <!-- tier bonus -->
+                <passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="allHarvest"/>
+                <passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="allToolsHarvest"/>
+                <passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="oreWoodHarvest"/>
+                <passive_effect name="DismemberChance" operation="base_add" value="-10" tags="primary"/>
+		        <passive_effect name="TargetArmor" operation="perc_add" value="-.4"/>
+            </effect_group>
+            <effect_group name="Power Attack">
+				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".6" tags="secondary"/>
+				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value="1" tags="secondary"/>
+                <passive_effect name="AttacksPerMinute" operation="base_set" value="58" tags="secondary"/>
+                <passive_effect name="EntityDamage" operation="base_set" value="50" tags="secondary"/>
+                <passive_effect name="EntityDamage" operation="perc_add" value="1.25" tags="secondary"/>
+                <passive_effect name="BlockDamage" operation="base_set" value="90" tags="secondary"/>
+                <passive_effect name="BlockDamage" operation="perc_add" value="1.25" tags="secondary"/>
+                <passive_effect name="StaminaLoss" operation="base_set" value="60" tags="secondary"/>
+                <passive_effect name="DismemberChance" operation="base_add" value=".3" tags="secondary"/>
+            </effect_group>
+			<effect_group>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="14" tags="StaminaOnBlocking,perkSkullCrusher" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="StaminaOnParrying,perkSkullCrusher" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".5" tags="DamageBlockingPrec,perkSkullCrusher" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".6" tags="DamageParryingPrec,perkSkullCrusher" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="2" tags="DegradationBlocking,perkSkullCrusher" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="DegradationParrying,perkSkullCrusher" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".47" tags="ParryDuration,perkSkullCrusher" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1.38" tags="BlockingRangeHor,perkSkullCrusher" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1" tags="BlockingRangeVer,perkSkullCrusher" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="BlockingAngleOffsetHor,perkSkullCrusher" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="BlockingAngleOffsetVer,perkSkullCrusher" match_all_tags="true"/>
+			</effect_group>
+            <effect_group name="crippled morale"><!-- SLEDGE_SAGA_VOLUME_03_CRIPPLED_MORALE -->
+                <!-- initialize metadata for "sledge2ndHit" on sledges, don't change value if already exists -->
+                <triggered_effect trigger="onSelfEquipStart" action="SetItemMetaFloat" change="0" relative="true" key="sledge2ndHit"/>
+                <triggered_effect trigger="onSelfSecondaryActionRayHit" action="SetItemMetaFloat" change="1" relative="false" key="sledge2ndHit">
+                    <requirement name="IsAlive" target="other"/>
+                    <requirement name="!EntityTagCompare" target="other" tags="trader"/>
+                </triggered_effect>
+            </effect_group>
+			<effect_group name="hit effects">
+				<requirement name="!EntityTagCompare" target="other" tags="player"/>
+                <requirement name="IsAlive" target="other"/>
+					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="Ragdoll" duration="0" force="50" target="other"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="Ragdoll" duration="0" force="70" target="other"/>
+					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
+					<triggered_effect trigger="onSelfSecondaryActionRayHit" action="AddBuff" target="self" buff="buffPulverizerTempExplosionImmunity">
+                        <requirement name="MetaInItem,KFCommonUtilityLib" operation="GT" value="0"/>
+                    </triggered_effect>
+					<triggered_effect trigger="onSelfSecondaryActionRayHit" action="AnimatorFireTrigger" target="self" property="ExplosionTrigger" value="true">
+                        <requirement name="MetaInItem,KFCommonUtilityLib" operation="GT" value="0"/>
+                    </triggered_effect>
+                    <triggered_effect trigger="onSelfSecondaryActionRayHit" action="RangedExplosion,CustomParticleLoader" particle_index="#@modfolder:Resources/Pulverizer.unity3d?pulverizer_explosion.prefab$itemPulverizerExplosionData">
+                        <requirement name="MetaInItem,KFCommonUtilityLib" operation="GT" value="0"/>
+                    </triggered_effect>
+			</effect_group>
+        </item>
+
+        <item name="meleeWpnSledgeT3Pulverizer">
+            <property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
+            <property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib;InversedAction,KFCommonUtilityLib"/>
+            <property name="Tags" value="blunt,melee,grunting,heavy,sledge,meleeWeapon,attStrength,perkSkullCrusher,perkFlurryOfStrength,sledgeSkill,ranged,reloadPenalty,gun,attPerception,perkDemolitionsExpert,explosivesSkill,shortRange,noSilencer,longShaft,weapon,canHaveCosmetic"/>
+            <property name="BoundItemName" value="meleeWpnHandleBashPulverizer"/>
+            <property name="DisplayType" value="pulverizer"/>
+            <property name="Meshfile" value="#@modfolder:Resources/Pulverizer.unity3d?pulverizer_m.prefab"/>
+            <property name="Material" value="MmeleeWpnSledgeParts"/>
+            <property name="HoldType" value="33"/>
+            <property name="Weight" value="1"/>
+            <property name="ScrapTimeOverride" value="10.0"/>
+            <property name="RepairTools" value="resourceRepairKit"/>
+            <property name="DegradationBreaksAfter" value="false"/>
+            <property name="SoundJammed" value="ItemNeedsRepair"/>
+            <property name="SoundDestroy" value="metaldestroy1"/>
+            <property name="EconomicValue" value="3500"/>
+            <property name="TraderStageTemplate" value="baseTier3"/><!-- meleeWpnSledgeT3SteelSledgehammer -->
+            <property name="Group" value="Ammo/Weapons,Melee Weapons"/>
+            <property name="UnlockedBy" value="craftingSledgehammers"/><!-- meleeWpnSledgeT3SteelSledgehammerSchematic, -->
+            <property name="ShowQuality" value="true"/>
+            <property name="SoundUnholster" value="weapon_unholster"/>
+            <property name="SoundHolster" value="weapon_holster"/>
+            <property name="SoundPickup" value="sledgehammer_steel_grab"/>
+            <property name="SoundPlace" value="sledgehammer_steel_place"/>
+
+            <property class="Action0">
+                <property name="Class" value="Ranged"/>
+                <property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;MeleeShooter,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;InversedAction,KFCommonUtilityLib"/>
+                <property name="FiringStateFullName" value="Base Layer.MeleeCancel"/>
+				<property name="InternalCancelOnly" value="true"/>
+				<property name="allowEmptyInspect" value="true"/>
+                <property name="Delay" value=".150"/> <!-- obsolete if rounds per minute exists -->
+                <property name="Magazine_items" value="ammoPulverizer"/>
+                <property name="IgnoreAmmoCheck" value="true"/>
+                <property name="ExcludeTags" value="blunt,melee,grunting,heavy,sledge,meleeWeapon,attStrength,perkSkullCrusher,perkFlurryOfStrength,sledgeSkill"/>
+                <property name="Sound_start" value="kf_pulverizer_Fire_1P_Single_Small"/>
+                <property name="Sound_loop" value=""/>
+                <property name="Sound_end" value=""/>
+                <property name="Sound_empty" value=""/>
+                <property name="AutoReload" value="false"/>
+                <property name="triggerEffectTriggerPullDualsense" value="ShotgunTrigger"/>
+                <property name="triggerEffectTriggerPullXbox" value="ShotgunTrigger"/>
+                <property name="triggerEffectShootDualsense" value="ShotgunShoot"/>
+                <property name="triggerEffectShootXbox" value="PistolShoot"/>
+            </property>
+            <property class="Action1">
+                <property name="Class" value="DynamicMelee"/>
+                <property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib;InversedAction,KFCommonUtilityLib"/>
+                <property name="Sphere" value=".15"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
+				<property name="MaxComboCount" value="3"/>
+				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
+				<property name="DynamicSoundStart" value="meleeEmptySwingLight"/>
+                <property name="Sound_start" value="sledge_swinglight"/>
+                <property name="ToolCategory.harvestingTools" value=".5" param1="1"/>
+                <property name="ExcludeTags" value="ranged,reloadPenalty,gun,attPerception,perkDemolitionsExpert,explosivesSkill,shortRange"/>
+                <property name="UsePowerAttackAnimation" value="false"/>
+                <property name="UsePowerAttackTriggers" value="false"/>
+                <property name="UseGrazingHits" value="true"/>
+                <property name="GrazeStart" value=".515"/>
+                <property name="GrazeEnd" value=".52"/>
+                <property name="SwingDegrees" value="65"/>
+                <property name="SwingAngle" value="160"/>
+                <property class="HitSounds">
+                    <property name="Override0" value="organic" param1="metalsolidhitorganic"/>
+                </property>
+                <property class="GrazeSounds">
+                    <property name="Override0" value="organic" param1="metalgrazeorganic"/>
+                </property>
+            </property>
+            <effect_group name="Common">
+				<passive_effect name="ModSlots" operation="base_set" value="1,2,3,4,5,6" tier="1,2,3,4,5,6"/>
+				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+                <passive_effect name="DegradationMax" operation="base_set" value="800,1200" tier="1,6"/>
+				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6"/> <!-- tier bonus -->
+				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6"/> <!-- tier bonus -->
+		        <passive_effect name="DegradationPerUse" operation="base_set" value="1"/>
+                <passive_effect name="EntityDamage" operation="base_set" value="50" tags="displayAltSecondary"/>
+                <passive_effect name="EntityDamage" operation="perc_add" value="1.25" tags="displayAltSecondary"/>
+                <passive_effect name="BlockDamage" operation="base_set" value="90" tags="displayAltSecondary"/>
+                <passive_effect name="BlockDamage" operation="perc_add" value="1.25" tags="displayAltSecondary"/>
+            </effect_group>
+			<effect_group>
+				<requirement name="HasBuff" buff="buffKFWeaponBlocking"/>
+					<passive_effect name="StaminaChangeOT" operation="perc_add" value="-1.4"/>
+					<passive_effect name="BuffResistance" operation="base_add" value=".35" tags="buffFatiguedTrigger,buffArmSprainedCHTrigger,buffLegSprainedCHTrigger,buffLaceration,buffInfectionCatch,buffAbrasionCatch,buffInjuryStunned01CHTrigger,buffInjuryBleedingTwo"/>
+			</effect_group>
+            <effect_group name="Primary">
+				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="true">
+					<requirement name="ProgressionLevel" progression_name="perkDemolitionsExpert" operation="GTE" value="5"/>
+				</triggered_effect>
+				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="false">
+					<requirement name="ProgressionLevel" progression_name="perkDemolitionsExpert" operation="LT" value="5"/>
+				</triggered_effect>
+		        <passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkDemolitionsExpert"/>
+		        <passive_effect name="ReloadSpeedMultiplier" operation="perc_add" value="-.25" tags="perkDemolitionsExpert">
+					<requirement name="ProgressionLevel" progression_name="perkDemolitionsExpert" operation="GTE" value="5"/>
+                </passive_effect>
+                <passive_effect name="AttacksPerMinute" operation="base_set" value="60" tags="perkDemolitionsExpert"/>
+                <passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkDemolitionsExpert"/>
+                <passive_effect name="MagazineSize" operation="base_set" value="5" tags="perkDemolitionsExpert"/>
+                <passive_effect name="KickDegreesVerticalMin" operation="base_set" value="0" tags="perkDemolitionsExpert"/>
+                <passive_effect name="KickDegreesVerticalMax" operation="base_set" value="0" tags="perkDemolitionsExpert"/>
+                <passive_effect name="KickDegreesHorizontalMin" operation="base_set" value="0" tags="perkDemolitionsExpert"/>
+                <passive_effect name="KickDegreesHorizontalMax" operation="base_set" value="0" tags="perkDemolitionsExpert"/>
+		        <passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="2" tags="perkDemolitionsExpert"/>
+            </effect_group>
+            <effect_group name="Melee">
+				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".6" tags="secondary"/>
+				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value="1" tags="secondary"/>
+                <passive_effect name="AttacksPerMinute" operation="base_set" value="100" tags="secondary"/>
+                <passive_effect name="StaminaLoss" operation="base_set" value="32" tags="secondary"/>
+                <passive_effect name="MaxRange" operation="base_set" value="2.5" tags="secondary"/>
+                <passive_effect name="BlockRange" operation="base_set" value="3.2" tags="secondary"/>
+                <passive_effect name="DismemberChance" operation="base_add" value=".08" tags="secondary"/>
+                <passive_effect name="EntityDamage" operation="base_set" value="35" tags="secondary"/> <!-- meleeWpnSledgeT3SteelSledgehammer -->
+                <passive_effect name="EntityDamage" operation="perc_add" value="-.04,.04" tags="secondary"/> <!-- random EntityDmg -->
+                <passive_effect name="BlockDamage" operation="base_set" value="60" tags="secondary"/>
+                <passive_effect name="BlockDamage" operation="perc_add" value="-.04,.04" tags="secondary"/> <!-- random BlockDmg -->
+                <passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="allHarvest"/>
+                <passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="allToolsHarvest"/>
+                <passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="oreWoodHarvest"/>
+		        <passive_effect name="TargetArmor" operation="perc_add" value="-.4"/>
+            </effect_group>
+        </item>
+
+        <item name="ammoPulverizer">
+            <property name="Tags" value="ammo,perkDemolitionsExpert"/>
+            <property name="DisplayType" value="ammoGrenadeContact"/>
+            <property name="HoldType" value="45"/>
+            <property name="Meshfile" value="@:Other/Items/Misc/sackPrefab.prefab"/>
+            <property name="DropMeshfile" value="@:Other/Items/Misc/sack_droppedPrefab.prefab"/>
+            <property name="Material" value="Mlead_scrap"/>
+            <property name="Stacknumber" value="50"/> <!-- STK ammo high -->
+            <property name="EconomicValue" value="250"/>
+            <property name="UsableUnderwater" value="true"/>
+            <property name="TraderStageTemplate" value="ammoTier2"/>
+            <property name="UnlockedBy" value="craftingExplosives"/><!-- perkDemolitionsExpert,gunExplosivesT3RocketLauncherSchematic -->
+            <property name="Group" value="Ammo/Weapons,Ammo,Ranged Weapons"/>
+            <property name="SoundPickup" value="shotgunshells_grab"/>
+            <property name="SoundPlace" value="shotgunshells_place"/>
+            <effect_group name="ammoPulverizer" tiered="false">
+                <passive_effect name="RoundRayCount" operation="base_set" value="0"/>
+                <passive_effect name="EntityDamage" operation="base_set" value="0"/>
+                <passive_effect name="BlockDamage" operation="base_set" value="0"/>
+                <passive_effect name="SpreadDegreesVertical" operation="base_set" value="2.5" tags="perkDemolitionsExpert"/>
+                <passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="2.5" tags="perkDemolitionsExpert"/>
+                <passive_effect name="dExEntityDamage" operation="base_set" value="430"/>
+                <passive_effect name="dExBlockDamage" operation="base_set" value="5"/>
+                <passive_effect name="dExRadius" operation="base_set" value="3.5"/>
+            </effect_group>
+        </item>
+
+		<item name="itemPulverizerExplosionData">
+			<property name="Tags" value="perkDemolitionsExpert,perkSkullCrusher"/>
+			<property name="Material" value="Mstone"/>
+			<property name="Canhold" value="false"/>
+			<property name="CreativeMode" value="None"/>
+			<property name="Explosion.ParticleIndex" value="#@modfolder:Resources/Pulverizer.unity3d?pulverizer_explosion.prefab$itemPulverizerExplosionData"/>
+			<property name="Explosion.RadiusBlocks" value="3"/>
+			<property name="Explosion.RadiusEntities" value="3.5"/>
+			<property name="Explosion.Duration" value="1"/>
+			<property name="Explosion.BlastPower" value="85"/>
+			<effect_group tiered="false">
+				<passive_effect name="ExplosionBlockDamage" operation="base_set" value="5" tags="perkDemolitionsExpert"/>
+				<passive_effect name="ExplosionEntityDamage" operation="base_set" value="430" tags="perkDemolitionsExpert"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="earth"/>
+			</effect_group>
+		</item>
+    </append>
+</config>

@@ -1,0 +1,60 @@
+<config>
+	<insertAfter xpath="/lootcontainers/lootgroup[@name='empty']">
+		<lootgroup name="groupWeapons_Pulverizer" count="all" loot_quality_template="QLTemplateT3">
+			<item name="meleeWpnSledgeT3Pulverizer" count="1"/>
+			<item name="ammoPulverizer" count="3,4"/>
+		</lootgroup>
+		<lootgroup name="groupPulverizerAmmoSmall" count="1">
+			<item name="ammoPulverizer" count="4,6"/>
+		</lootgroup>
+		<lootgroup name="groupPulverizerAmmoMedium" count="1">
+			<item name="ammoPulverizer" count="8,12"/>
+		</lootgroup>
+		<lootgroup name="groupPulverizerAmmoLarge" count="1">
+			<item name="ammoPulverizer" count="10,16"/>
+		</lootgroup>
+	</insertAfter>
+<!-- *** T2&T3_Melee_Weapons -->
+	<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT2_Melee']">
+		<item name="meleeWpnSledgeT3Pulverizer" loot_prob_template="veryLow"/>
+	</append>
+	
+<!-- *** Quest_Rewards -->
+	<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsMeleeT2']">
+		<item name="meleeWpnSledgeT3Pulverizer" loot_prob_template="veryLow"/>
+	</append>
+	
+	<conditional>
+		<if cond="mod_loaded('EFTX_Pack_Core')">
+			<append xpath="//lootgroup[@name='groupSpecialGuns']">
+				<item name="meleeWpnSledgeT3Pulverizer" count="1" quality="1"/>
+			</append>
+		</if>
+		<else>
+			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT1_Demolitionist']">
+				<item group="groupWeapons_Pulverizer" loot_prob_template="veryLow"/>
+				<item group="groupPulverizerAmmoSmall" loot_prob_template="low"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT2_Demolitionist']">
+				<item group="groupWeapons_Pulverizer" loot_prob_template="low"/>
+				<item group="groupPulverizerAmmoSmall" loot_prob_template="medLow"/>
+				<item group="groupPulverizerAmmoMedium" loot_prob_template="low"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3_Demolitionist']">
+				<item group="groupWeapons_Pulverizer" loot_prob_template="med"/>
+				<item group="groupPulverizerAmmoSmall" loot_prob_template="medLow"/>
+				<item group="groupPulverizerAmmoMedium" loot_prob_template="low"/>
+				<item group="groupPulverizerAmmoLarge" loot_prob_template="veryLow"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT1_Ranged']">
+				<item group="groupWeapons_Pulverizer" loot_prob_template="veryLow"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT2_Ranged']">
+				<item group="groupWeapons_Pulverizer" loot_prob_template="low"/>
+			</append>
+			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3_Ranged']">
+				<item group="groupWeapons_Pulverizer" loot_prob_template="medLow"/>
+			</append>
+		</else>
+	</conditional>
+</config>

@@ -1,0 +1,21 @@
+<config>
+	<append xpath="/recipes">
+		<recipe name="meleeWpnSledgeT3Pulverizer" count="1" craft_area="workbench" tags="learnable,perkSkullCrusher,workbenchCrafting">
+            <ingredient name="meleeWpnSledgeT3SteelSledgehammerParts" count="3"/>
+            <ingredient name="resourceForgedSteel" count="15"/>
+            <ingredient name="resourceWood" count="10"/>
+	        <ingredient name="resourceSpring" count="2"/>
+            <ingredient name="resourceLegendaryParts" count="0"/>
+            <effect_group>
+                <passive_effect name="CraftingIngredientCount" level="2,6" operation="perc_add" value="1,5" tags="meleeWpnSledgeT3SteelSledgehammerParts,resourceForgedSteel,resourceWood,resourceSpring"/>
+                <passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
+            </effect_group>
+		</recipe>
+		<recipe name="ammoPulverizer" count="1" craft_time="40" craft_area="workbench" tags="learnable,workbenchCrafting">
+			<ingredient name="resourceBuckshot" count="15"/>
+			<ingredient name="resourceGunPowder" count="10"/>
+	        <ingredient name="resourcePaper" count="2"/>
+			<ingredient name="ammoGasCan" count="250"/>
+		</recipe>
+	</append>
+</config>

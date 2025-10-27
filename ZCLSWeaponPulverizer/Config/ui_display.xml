@@ -1,0 +1,13 @@
+<config>
+    <append xpath="//item_display">
+		<item_display_info display_type="pulverizer" display_group="groupMelee">
+			<display_entry name="EntityDamage" display_type="Decimal1" title_key="statEntityDamageMelee" tags="secondary"/>
+			<display_entry name="EntityDamage" display_type="Decimal1" title_key="statPowerAttack" tags="displayAltSecondary"/>
+			<display_entry name="dEntityDamageSneak" title_key="statEntityDamageSneak" display_type="Bool"/>
+			<display_entry name="BlockDamage" display_type="Decimal1" title_key="statBlockDamage" tags="secondary"/>
+			<display_entry name="StaminaLoss" display_type="Decimal1" title_key="statStaminaLoss" tags="secondary" negative_preferred="true"/>
+			<display_entry name="AttacksPerMinute" title_key="statAttacksPerMinute" tags="secondary"/>
+			<display_entry name="DegradationMax" title_key="statDegradationMax"/>
+		</item_display_info>
+    </append>
+</config>
