@@ -157,8 +157,8 @@
 				<property name="RoundsPerShot" value="2"/>
 				<property name="BarrelCount" value="4"/>
 				<property name="Magazine_items" value="ammo44MagnumBulletBall,ammo44MagnumBulletHP,ammo44MagnumBulletAP"/>
-				<property name="Sound_start" value="kf_af2011_Fire_1P_OutDoor_Forest"/>
-				<property name="Sound_loop" value="kf_af2011_Fire_1P_OutDoor_Forest"/>
+				<property name="Sound_start" value="kf_af2011_Fire_1P_InDoor_Large"/>
+				<property name="Sound_loop" value="kf_af2011_Fire_1P_InDoor_Large"/>
 				<property name="Sound_end" value=""/>
 				<property name="Sound_empty" value="kf_af2011_DryFire"/>
 				<property name="AutoReload" value="false"/>
@@ -307,8 +307,8 @@
 				<property name="RoundsPerShot" value="2"/>
 				<property name="BarrelCount" value="2"/>
 				<property name="Magazine_items" value="ammo44MagnumBulletBall,ammo44MagnumBulletHP,ammo44MagnumBulletAP"/>
-				<property name="Sound_start" value="kf_af2011_Fire_1P_OutDoor_Forest"/>
-				<property name="Sound_loop" value="kf_af2011_Fire_1P_OutDoor_Forest"/>
+				<property name="Sound_start" value="kf_af2011_Fire_1P_InDoor_Large"/>
+				<property name="Sound_loop" value="kf_af2011_Fire_1P_InDoor_Large"/>
 				<property name="Sound_end" value=""/>
 				<property name="Sound_empty" value="kf_af2011_DryFire"/>
 				<property name="AutoReload" value="false"/>

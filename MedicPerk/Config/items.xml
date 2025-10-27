@@ -45,8 +45,8 @@
 				<property name="InternalCancelOnly" value="true"/>
 				<property name="ToggleActionSound" value="kf_medic_Alert_Locked"/>
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
-				<property name="Sound_start" value="kf_medicpistol_Fire_1P_OutDoor_Forest"/>
-				<property name="Sound_loop" value="kf_medicpistol_Fire_1P_OutDoor_Forest"/>
+				<property name="Sound_start" value="kf_medicpistol_Fire_1P_InDoor_Large"/>
+				<property name="Sound_loop" value="kf_medicpistol_Fire_1P_InDoor_Large"/>
 				<property name="Sound_end" value=""/>
 				<property name="Sound_empty" value="kf_ak12_DryFire"/>
 				<property name="Sound_reload" value=""/>

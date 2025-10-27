@@ -95,6 +95,7 @@
 			</effect_group>
 			<effect_group name="Knockdown">
 				<requirement name="!EntityTagCompare" target="other" tags="player"/>
+				<requirement name="IsAlive" target="other"/>
 					<triggered_effect trigger="onSelfAttackedOther" action="Ragdoll" duration="1" force="60" target="other"/>
 					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
 			</effect_group>
@@ -149,8 +150,7 @@
             </property>
             <property class="Action1">
                 <property name="Class" value="DynamicMelee"/>
-                <property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib"/>
-				<property name="MaxComboCount" value="1"/>
+                <property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
 				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
 				<property name="DynamicSoundStart" value="meleeEmptySwingHeavy"/>
                 <property name="Sound_start" value="batwood_swingheavy"/>
@@ -179,7 +179,7 @@
                 <passive_effect name="AttacksPerMinute" operation="base_set" value="120" tags="perkPummelPete,perkFlurryOfStrength"/>
 				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".4" tags="primary"/>
 				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value=".8" tags="primary"/>
-                <passive_effect name="StaminaLoss" operation="base_set" value="22" tags="primary"/>
+                <passive_effect name="StaminaLoss" operation="base_set" value="20" tags="primary"/>
                 <passive_effect name="DegradationMax" operation="base_set" value="600,1200" tier="1,6" tags="perkPummelPete"/>
                 <passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkPummelPete"/>
                 <passive_effect name="MaxRange" operation="base_set" value="2.3" tags="perkPummelPete"/>
@@ -187,7 +187,7 @@
                 <passive_effect name="ModSlots" operation="base_set" value="1,2,3,4,5,6" tier="1,2,3,4,5,6"/>
                 <passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
                 <passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
-                <passive_effect name="EntityDamage" operation="base_set" value="35" tags="perkPummelPete"/> <!-- meleeWpnClubT3SteelClub -->
+                <passive_effect name="EntityDamage" operation="base_set" value="28" tags="perkPummelPete"/> <!-- meleeWpnClubT3SteelClub -->
                 <passive_effect name="EntityDamage" operation="perc_add" value="-.04,.04" tags="perkPummelPete"/> <!-- random EntityDmg -->
                 <passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkPummelPete"/> <!-- tier bonus -->
                 <passive_effect name="BlockDamage" operation="base_set" value="30" tags="perkPummelPete"/>
@@ -199,7 +199,6 @@
                 <passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="allHarvest"/>
                 <passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="allToolsHarvest"/>
                 <passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="oreWoodHarvest"/>
-				<passive_effect name="DismemberChance" operation="base_add" value="2" tags="primary"/>
 		        <passive_effect name="TargetArmor" operation="perc_add" value="-.4" tags="perkPummelPete"/>
 				<passive_effect name="PhysicalDamageResist" operation="base_add" value="5"/>
             </effect_group>
@@ -208,6 +207,7 @@
 				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".4" tags="secondary"/>
 				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value="1" tags="secondary"/>
                 <passive_effect name="StaminaLoss" operation="base_set" value="45" tags="secondary"/>
+				<passive_effect name="EntityDamage" operation="base_add" value="9" tags="secondary"/>
                 <passive_effect name="EntityDamage" operation="perc_add" value="1" tags="secondary"/>
                 <passive_effect name="BlockDamage" operation="perc_add" value="1" tags="secondary"/>
 				<triggered_effect trigger="onAnimatorStateEntered" action="AddBuff" buff="buffBoneCrusherHeavyMaceAttack">
@@ -219,14 +219,14 @@
             </effect_group>
 			<effect_group name="Heavy Mace Attack">
 				<requirement name="HasBuff" buff="buffBoneCrusherHeavyMaceAttack"/>
-					<passive_effect name="DismemberChance" operation="base_add" value="5" tags="secondary"/>
+					<passive_effect name="DismemberChance" operation="base_add" value="1.2" tags="secondary"/>
 			</effect_group>
 			<effect_group name="Heavy Shield Attack">
 				<requirement name="HasBuff" buff="buffBoneCrusherHeavyShieldAttack"/>
 					<triggered_effect trigger="onSelfAttackedOther" action="Ragdoll" duration="1" force="120" target="other">
 						<requirement name="!EntityTagCompare" target="other" tags="player"/>
 					</triggered_effect>
-                	<passive_effect name="EntityDamage" operation="perc_add" value="-.5" tags="secondary"/>
+                	<passive_effect name="EntityDamage" operation="base_add" value="-4" tags="secondary"/>
 					<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".8" tags="secondary"/>
 					<passive_effect name="GrazeDamageMultiplier" operation="base_set" value=".5" tags="secondary"/>
 			</effect_group>

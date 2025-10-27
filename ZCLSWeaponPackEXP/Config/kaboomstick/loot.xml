@@ -1,6 +1,6 @@
 <configs>
 	<insertAfter xpath="/lootcontainers/lootgroup[@name='empty']">
-		<lootgroup name="groupWeapons_ExplT2" count="all" loot_quality_template="QLTemplateT2">
+		<lootgroup name="groupWeapons_Kaboomstick" count="all" loot_quality_template="QLTemplateT2">
 			<item name="gunKaboomstick" count="1"/>
 			<item name="ammoKaboomstickShellHE" count="4,6"/>
 			<item name="ammoKaboomstickShellFrag" count="4,6"/>
@@ -36,10 +36,10 @@
 	<conditional>
 		<if cond="mod_loaded('EFT8_DVS_Configs')">
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3']">
-				<item group="groupWeapons_ExplT2" loot_prob_template="med"/>
+				<item group="groupWeapons_Kaboomstick" loot_prob_template="med"/>
 			</append>
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT4']">
-				<item group="groupWeapons_ExplT2" loot_prob_template="medLow"/>
+				<item group="groupWeapons_Kaboomstick" loot_prob_template="medLow"/>
 			</append>
 			<append xpath="/lootcontainers/lootgroup[@name='groupExplosives']">
 				<item group="groupKBSammoSmall" loot_prob_template="medLow"/>
@@ -57,28 +57,28 @@
 		</if>
 		<else>
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT1_Demolitionist']">
-				<item group="groupWeapons_ExplT2" loot_prob_template="veryLow"/>
+				<item group="groupWeapons_Kaboomstick" loot_prob_template="veryLow"/>
 				<item group="groupKBSammoSmall" loot_prob_template="low"/>
 			</append>
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT2_Demolitionist']">
-				<item group="groupWeapons_ExplT2" loot_prob_template="low"/>
+				<item group="groupWeapons_Kaboomstick" loot_prob_template="low"/>
 				<item group="groupKBSammoSmall" loot_prob_template="medLow"/>
 				<item group="groupKBSammoMedium" loot_prob_template="low"/>
 			</append>
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3_Demolitionist']">
-				<item group="groupWeapons_ExplT2" loot_prob_template="med"/>
+				<item group="groupWeapons_Kaboomstick" loot_prob_template="med"/>
 				<item group="groupKBSammoSmall" loot_prob_template="medLow"/>
 				<item group="groupKBSammoMedium" loot_prob_template="low"/>
 				<item group="groupKBSammoLarge" loot_prob_template="veryLow"/>
 			</append>
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT1_Ranged']">
-				<item group="groupWeapons_ExplT2" loot_prob_template="veryLow"/>
+				<item group="groupWeapons_Kaboomstick" loot_prob_template="veryLow"/>
 			</append>
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT2_Ranged']">
-				<item group="groupWeapons_ExplT2" loot_prob_template="low"/>
+				<item group="groupWeapons_Kaboomstick" loot_prob_template="low"/>
 			</append>
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3_Ranged']">
-				<item group="groupWeapons_ExplT2" loot_prob_template="medLow"/>
+				<item group="groupWeapons_Kaboomstick" loot_prob_template="medLow"/>
 			</append>
 		</else>
 	</conditional>

@@ -31,9 +31,8 @@
 				<property name="Damage_type" value="Bashing"/>
 				<property name="Sound_start" value="kf_Movement_Bash"/>
 				<property name="DynamicSoundStart" value="bashSwingLight"/>
-				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
 				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
-				<property name="MaxComboCount" value="1"/>
 				<property name="UseGrazingHits" value="false"/>
 				<property name="GrazeStart" value=".3"/>
 				<property name="GrazeEnd" value=".5"/>
@@ -50,8 +49,7 @@
 				<property name="Class" value="DynamicMelee"/>
 				<property name="Sound_start" value="kf_Movement_Bash"/>
 				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
-				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib"/>
-				<property name="MaxComboCount" value="1"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
 				<property name="Sphere" value=".15"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
 				<property name="Damage_type" value="Bashing"/>
 				<property name="UsePowerAttackAnimation" value="false"/>
@@ -201,9 +199,8 @@
 			</property>
             <property class="Action1"> <!-- UseAction -->
                 <property name="Class" value="DynamicMelee"/>
-				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
 				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
-				<property name="MaxComboCount" value="1"/>
                 <property name="Sphere" value=".1"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
                 <property name="Sound_start" value="knuckles_wrap_swingheavy"/>
 				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
