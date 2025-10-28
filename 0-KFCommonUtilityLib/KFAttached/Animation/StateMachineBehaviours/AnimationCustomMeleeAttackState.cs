@@ -391,10 +391,11 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         entity.MinEventContext.ItemActionData = prevData;
     }
 
-    private static bool CheckMeleeRunning(ItemActionDynamicMelee.ItemActionDynamicMeleeData data)
+    private bool CheckMeleeRunning(ItemActionDynamicMelee.ItemActionDynamicMeleeData data)
     {
-        if (data.invData.itemValue.PercentUsesLeft <= 0f || data.invData.holdingEntity.Stamina < data.StaminaUsage || !data.invData.holdingEntity.inventory.GetIsFinishedSwitchingHeldItem())
+        if (data.invData.itemValue.PercentUsesLeft <= 0f || data.invData.holdingEntity.Stamina < data.StaminaUsage || !data.invData.holdingEntity.inventory.GetIsFinishedSwitchingHeldItem() || (attackDurationNormalized <= 0 && data.HasReleased))
         {
+            //Log.Out($"Stopping melee running: {attackDurationNormalized} {data.HasReleased}");
             data.invData.holdingEntity.emodel.avatarController.UpdateBool(MeleeRunningHash, false, true);
             data.HasExecuted = true;
             return false;

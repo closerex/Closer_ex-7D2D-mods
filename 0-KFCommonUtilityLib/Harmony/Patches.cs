@@ -1600,6 +1600,9 @@ public static class CommonUtilityPatch
                     new CodeInstruction(OpCodes.Ldc_I4_1),
                     new CodeInstruction(OpCodes.Ldc_I4_1),
                     new CodeInstruction(OpCodes.Callvirt, mtd_updatebool),
+                    new CodeInstruction(OpCodes.Ldloc_0),
+                    new CodeInstruction(OpCodes.Ldc_I4_0),
+                    CodeInstruction.StoreField(typeof(ItemActionDynamicMelee.ItemActionDynamicMeleeData), nameof(ItemActionDynamicMelee.ItemActionDynamicMeleeData.HasReleased))
                 });
                 i += 5;
             }
@@ -1631,15 +1634,15 @@ public static class CommonUtilityPatch
                     //});
                     //i += 8;
                 }
-                else if (codes[i - 1].opcode == OpCodes.Ldc_I4_0)
-                {
-                    codes.InsertRange(i + 1, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldloc_0),
-                        CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(CheckMeleeRunning)),
-                    });
-                    i += 2;
-                }
+                //else if (codes[i - 1].opcode == OpCodes.Ldc_I4_0)
+                //{
+                //    codes.InsertRange(i + 1, new[]
+                //    {
+                //        new CodeInstruction(OpCodes.Ldloc_0),
+                //        CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(CheckMeleeRunning)),
+                //    });
+                //    i += 2;
+                //}
             }
         }
         return codes;
@@ -1653,17 +1656,18 @@ public static class CommonUtilityPatch
         if (meleeData != null)
         {
             meleeData.invData.holdingEntity.emodel.avatarController.UpdateBool(MeleeRunningHash, false, true);
+            meleeData.HasExecuted = false;
         }
     }
 
-    private static void CheckMeleeRunning(ItemActionDynamicMelee.ItemActionDynamicMeleeData data)
-    {
-        if (data.Attacking && (data.invData.itemValue.PercentUsesLeft <= 0f || data.invData.holdingEntity.Stamina < data.StaminaUsage || !data.invData.holdingEntity.inventory.GetIsFinishedSwitchingHeldItem()))
-        {
-            //data.invData.holdingEntity.emodel.avatarController.UpdateBool(MeleeRunningHash, false, true);
-            data.HasExecuted = true;
-        }
-    }
+    //private static void CheckMeleeRunning(ItemActionDynamicMelee.ItemActionDynamicMeleeData data)
+    //{
+    //    if (data.Attacking && (data.invData.itemValue.PercentUsesLeft <= 0f || data.invData.holdingEntity.Stamina < data.StaminaUsage || !data.invData.holdingEntity.inventory.GetIsFinishedSwitchingHeldItem()))
+    //    {
+    //        //data.invData.holdingEntity.emodel.avatarController.UpdateBool(MeleeRunningHash, false, true);
+    //        data.HasExecuted = true;
+    //    }
+    //}
 
     [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.ExecuteAction))]
     [HarmonyTranspiler]

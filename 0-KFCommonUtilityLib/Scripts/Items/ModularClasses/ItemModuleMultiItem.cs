@@ -279,6 +279,10 @@ public class ItemModuleMultiItem
             return false;
         }
 
+        if (player.inventory.holdingItemData.itemValue.PercentUsesLeft <= 0)
+        {
+            return false;
+        }
         //if (!bReleased)
         //{
         //    multiInvData.SetBoundParams();
