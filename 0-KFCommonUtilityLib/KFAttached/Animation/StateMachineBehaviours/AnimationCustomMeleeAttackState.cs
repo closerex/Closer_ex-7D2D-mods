@@ -163,6 +163,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             grazeCo = ThreadManager.StartCoroutine(customGrazeStart(length));
         }
         RestoreParams(isValidAlternative, prevData);
+        entity.emodel.avatarController.UpdateBool(MeleeRunningHash, true, true);
     }
 
     private IEnumerator impactStart(Animator animator, int layer, float length)

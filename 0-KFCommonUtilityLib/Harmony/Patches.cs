@@ -1657,6 +1657,7 @@ public static class CommonUtilityPatch
         {
             meleeData.invData.holdingEntity.emodel.avatarController.UpdateBool(MeleeRunningHash, false, true);
             meleeData.HasExecuted = false;
+            //Log.Out($"set attack finished on item {_actionData.invData.item.GetLocalizedItemName()} action {_actionData.indexInEntityOfAction}\n{StackTraceUtility.ExtractStackTrace()}");
         }
     }
 
