@@ -116,7 +116,7 @@
 
 		<item name="meleeWpnBladeT3KF2Eviscerator">
 			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
-			<property name="Tags" value="weapon,attachmentsIncluded,canHaveCosmetic,attAgility,machete,melee,heavy,grunting,meleeWeapon,perkDeepCuts,perkTheHuntsman,bladeSkill,corpseRemoval,ranged,reloadPenalty,perkArchery,crossbow,bowSkill"/>
+			<property name="Tags" value="weapon,attachmentsIncluded,canHaveCosmetic,attAgility,machete,melee,heavy,meleeWeapon,perkDeepCuts,perkTheHuntsman,bladeSkill,corpseRemoval,ranged,reloadPenalty,perkArchery,crossbow,bowSkill"/>
 			<property name="DisplayType" value="rangedBow"/>
 			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
 			<property name="UnholsterDelayActive" value="false"/>
@@ -237,7 +237,6 @@
 				<passive_effect name="SpreadMultiplierWalking" operation="base_set" value="1.5" tags="perkArchery"/>
 				<passive_effect name="SpreadMultiplierRunning" operation="base_set" value="2.2" tags="perkArchery"/>
 
-				<passive_effect name="DegradationMax" operation="perc_add" value="-.2,.2" tags="perkArchery"/> <!-- random DegMax -->
 				<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkArchery"/> <!-- random WeaponHandling -->
 
 				<passive_effect name="KickDegreesVerticalMin" operation="base_set" value="1.5" tags="perkArchery"/>
