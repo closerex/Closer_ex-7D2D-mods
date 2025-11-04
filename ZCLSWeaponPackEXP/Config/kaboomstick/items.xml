@@ -124,7 +124,7 @@
 			<property name="PickupJournalEntry" value="alternateAmmoTip"/>
 			<property name="EconomicValue" value="1500"/>
 			<property name="TraderStageTemplate" value="baseTier2"/>
-			<property name="UnlockedBy" value="perkDemolitionsExpert"/>
+			<property name="UnlockedBy" value="craftingExplosives"/>
 			<property name="ShowQuality" value="true"/>
             <property name="SoundPickup" value="rifle_polymer_grab"/>
             <property name="SoundPlace" value="rifle_polymer_place"/>
@@ -132,7 +132,7 @@
 			<property class="Action0">
 				<property name="Class" value="BetterLauncher,FullautoLauncher"/>
 				<!-- <property name="Class" value="Launcher"/> -->
-				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib;FireModeSelector,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>
 				<property name="allowEmptyInspect" value="true"/>
@@ -142,12 +142,17 @@
 				<property name="OneRoundMultiShot" value="false"/>
 				<property name="RoundsPerShot" value="1"/>
 				<property name="BarrelCount" value="2"/>
+				<property name="FireMode0.BurstCount" value="1"/>
+				<property name="FireMode0.ModeName" value="ttFiringModeSemiAuto"/>
+				<property name="FireMode1.BurstCount" value="2"/>
+				<property name="FireMode1.ModeName" value="ttFiringModeInstant2"/>
 				<property name="Reload_time" value="2.6"/>
 				<property name="Sound_start" value="kf_boomstick_Fire_1P_Indoor_Large"/>
 				<property name="Sound_loop" value="kf_boomstick_Fire_1P_Indoor_Large"/>
 				<property name="Sound_repeat" value=""/>
 				<property name="Sound_end" value=""/>
 				<property name="Sound_empty" value="kf_doublebarrel_DryFire"/>
+				<property name="RapidTrigger" value="true"/>
 				<property name="AutoReload" value="false"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?kaboomstick_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?kaboomstick_muzzle_flash_fpv.prefab"/>
@@ -232,7 +237,7 @@
 			<property name="Stacknumber" value="50"/> <!-- STK ammo low -->
 			<property name="EconomicValue" value="20"/>
 			<property name="Group" value="Ammo/Weapons,Ammo,Ranged Weapons"/>
-			<property name="UnlockedBy" value="perkDemolitionsExpert"/>
+			<property name="UnlockedBy" value="craftingExplosives"/>
 			<property class="Action1">
 				<property name="Class" value="Projectile"/>
 				<property name="CustomProjectileType" value="SimpleMesh,FullautoLauncher"/>
@@ -274,7 +279,7 @@
 			<property name="Stacknumber" value="50"/> <!-- STK ammo low -->
 			<property name="EconomicValue" value="20"/>
 			<property name="Group" value="Ammo/Weapons,Ammo,Ranged Weapons"/>
-			<property name="UnlockedBy" value="perkDemolitionsExpert"/>
+			<property name="UnlockedBy" value="craftingExplosives"/>
 			<property class="Action1">
 				<property name="Class" value="Projectile"/>
 				<property name="CustomProjectileType" value="SimpleMesh,FullautoLauncher"/>
