@@ -1,8 +1,14 @@
 <config>
     <conditional>
         <if cond="mod_loaded('EFTX_Pack_Core')">
+			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3']">
+				<item name="gunKFMosin"/>
+			</append>
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT4']">
 				<item name="gunKFM99"/>
+			</append>
+			<append xpath="//lootgroup[@name='groupQuestWeaponsRangedT2']">
+				<item name="gunKFMosin" loot_prob_template="QuestT3Prob"/>
 			</append>
 			<append xpath="//lootgroup[@name='groupQuestWeaponsRangedT3']">
 				<item name="gunKFM99" loot_prob_template="QuestT4Prob"/>
@@ -37,6 +43,9 @@
         </if>
         <else>
 			<insertAfter xpath="/lootcontainers/lootgroup[@name='empty']">
+				<lootgroup name="groupWeaponsT3_DeadEyeKFMosin" count="1" loot_quality_template="QLTemplateT3">
+                    <item name="gunKFMosin"/>
+				</lootgroup>
 				<lootgroup name="groupWeaponsT3_DeadEyeKFM99" count="1" loot_quality_template="QLTemplateT3">
                     <item name="gunKFM99"/>
 				</lootgroup>
@@ -53,10 +62,12 @@
             </insertAfter>
             
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3_Ranged']">
+                <item group="groupWeaponsT3_DeadEyeKFMosin" loot_prob_template="low"/>
                 <item group="groupWeaponsT3_DeadEyeKFM99" loot_prob_template="low"/>
             </append>
 
 			<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsRangedT3']">
+				<item name="gunKFMosin" loot_prob_template="low"/>
 				<item name="gunKFM99" loot_prob_template="low"/>
 			</append>
 
