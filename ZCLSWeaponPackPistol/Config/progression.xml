@@ -4,6 +4,16 @@
 
         </if>
         <else>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingHandguns']">
+				<display_entry item="gunKF9mm" unlock_level="15,20,25,30,35,40" />
+				<display_entry item="gunKFDual9mm" unlock_level="15,20,25,30,35,40" />
+				<display_entry item="gunKFSW500" unlock_level="75,80,85,90,95" />
+				<display_entry item="gunKFDualSW500" unlock_level="75,80,85,90,95" />
+			</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingShotguns']">
+				<display_entry item="gunKFHRGSW500" unlock_level="40,50,60,70,80,90" />
+				<display_entry item="gunKFDualHRGSW500" unlock_level="40,50,60,70,80,90" />
+			</append>
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingHandguns']/effect_group[1]">
 				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="15,100" value="1" tags="gunKF9mm,gunKFDual9mm"/>
 				<passive_effect name="CraftingTier" operation="base_add" level="20,25,30,35,40,100" value="1,2,3,4,5,5" tags="gunKF9mm,gunKFDual9mm"/>
