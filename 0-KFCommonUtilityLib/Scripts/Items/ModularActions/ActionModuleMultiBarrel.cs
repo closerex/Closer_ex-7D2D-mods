@@ -134,6 +134,7 @@ public class ActionModuleMultiBarrel
         LocalBuilder lbd_data_module = generator.DeclareLocal(typeof(ActionModuleMultiBarrel.MultiBarrelData));
         LocalBuilder lbd_i = generator.DeclareLocal(typeof(int));
         LocalBuilder lbd_rounds = generator.DeclareLocal(typeof(int));
+        LocalBuilder lbd_burstcount = generator.DeclareLocal(typeof(byte));
         for (int i = 0; i < codes.Count; i++)
         {
             //prepare loop and store local variables
@@ -151,6 +152,9 @@ public class ActionModuleMultiBarrel
                     new CodeInstruction(OpCodes.Ldloc_S, lbd_data_module),
                     CodeInstruction.LoadField(typeof(ActionModuleMultiBarrel.MultiBarrelData), nameof(ActionModuleMultiBarrel.MultiBarrelData.roundsPerShot)),
                     new CodeInstruction(OpCodes.Stloc_S, lbd_rounds),
+                    CodeInstruction.LoadLocal(0),
+                    CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.curBurstCount)),
+                    new CodeInstruction(OpCodes.Stloc_S, lbd_burstcount),
                     new CodeInstruction(OpCodes.Br_S, loopCondi),
                 });
                 i += 11;
@@ -184,7 +188,7 @@ public class ActionModuleMultiBarrel
                     new CodeInstruction(OpCodes.Brfalse_S, lbl_pre),
                     new CodeInstruction(OpCodes.Ldloc_S, lbd_data_module),
                     CodeInstruction.Call(typeof(ActionModuleMultiBarrel.MultiBarrelData), nameof(ActionModuleMultiBarrel.MultiBarrelData.CycleBarrels)),
-                    new CodeInstruction(OpCodes.Ldloc_S, 6).WithLabels(lbl_pre),
+                    CodeInstruction.LoadLocal(6).WithLabels(lbl_pre),
                     CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.inventory)),
                     CodeInstruction.Call(typeof(Inventory), nameof(Inventory.CallOnToolbeltChangedInternal)),
                     new CodeInstruction(OpCodes.Ldloc_S, lbd_i),
@@ -194,6 +198,12 @@ public class ActionModuleMultiBarrel
                     new CodeInstruction(OpCodes.Ldloc_S, lbd_i).WithLabels(loopCondi),
                     new CodeInstruction(OpCodes.Ldloc_S, lbd_rounds),
                     new CodeInstruction(OpCodes.Blt_S, loopStart),
+                    CodeInstruction.LoadLocal(0),
+                    CodeInstruction.LoadLocal(lbd_burstcount.LocalIndex),
+                    new CodeInstruction(OpCodes.Ldc_I4_1),
+                    new CodeInstruction(OpCodes.Add),
+                    new CodeInstruction(OpCodes.Conv_U1),
+                    CodeInstruction.StoreField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.curBurstCount)),
                     new CodeInstruction(OpCodes.Ldloc_S, lbd_data_module),
                     CodeInstruction.LoadField(typeof(ActionModuleMultiBarrel.MultiBarrelData), nameof(ActionModuleMultiBarrel.MultiBarrelData.muzzleIsPerRound)),
                     new CodeInstruction(OpCodes.Brtrue_S, lbl_post),

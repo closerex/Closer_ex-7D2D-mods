@@ -6,9 +6,9 @@ using UnityEngine;
 public class AnimationHolsterState : StateMachineBehaviour
 {
     [SerializeField]
-    private bool isHolstering = false;
+    public bool isHolstering = false;
     [SerializeField]
-    private string exitTransitionName = "HolsterStateExit";
+    public string exitTransitionName = "HolsterStateExit";
 
 #if NotEditor
     private EntityPlayerLocal player;

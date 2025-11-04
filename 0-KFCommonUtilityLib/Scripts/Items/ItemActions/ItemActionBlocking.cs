@@ -121,6 +121,16 @@ public class ItemActionBlocking : ItemAction
         return false;
     }
 
+    public override bool IsAimingGunPossible(ItemActionData _actionData)
+    {
+        var blockingData = _actionData as ItemActionBlockingData;
+        if (blockingData != null && blockingData.isBlockingRunning)
+        {
+            return false;
+        }
+        return base.IsAimingGunPossible(_actionData);
+    }
+
     public override void OnHoldingUpdate(ItemActionData _actionData)
     {
         base.OnHoldingUpdate(_actionData);

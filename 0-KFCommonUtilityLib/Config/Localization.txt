@@ -9,6 +9,8 @@ inpActPerformAltMeleeName,UI,Controls Dialog,x,Use Alt Melee,使用次要近战�
 inpActPerformAltMeleeDesc,UI,Controls Dialog,x,"Perform a special melee attack on supported weapons",使用支持该功能的武器时，触发一次特殊的近战攻击
 inpActPerformAltInspectName,UI,Controls Dialog,x,Trigger Alt Inspect,使用次要检视
 inpActPerformAltInspectDesc,UI,Controls Dialog,x,Individual keybind for inspect. Could also trigger special inspect animation on supported weapons.,武器检视的独立按键绑定。Mod作者可为其添加特殊的检视动画。
+inpActPerformWeaponBlockingName,UI,Controls Dialog,x,Perform Blocking,使用格挡
+inpActPerformWeaponBlockingDesc,UI,Controls Dialog,x,Hold to block with supported weapons.,按住以使用格挡。
 
 ttCurrentFiringMode,UI,Controls Dialog,x,"Firing Mode: {0}","射击模式：{0}"
 ttFiringModeSemiAuto,UI,Controls Dialog,x,Single,半自动
@@ -16,6 +18,8 @@ ttFiringModeBurst2,UI,Controls Dialog,x,2-round Burst,两连发
 ttFiringModeBurst3,UI,Controls Dialog,x,3-round Burst,三连发
 ttFiringModeFullAuto,UI,Controls Dialog,x,Full-Auto,全自动
 ttFiringModePumpAction,UI,Controls Dialog,x,Pump Action,泵动
+ttFiringModeInstant2,UI,Controls Dialog,x,2-round Rapid Fire,双发速射
+ttFiringModeInstant4,UI,Controls Dialog,x,4-round Rapid Fire,四发速射
 
 loadingTipKFKeybinds,UI,Loading Screen,x,"KFlib adds multiple custom keybinds via Custom Player Action Manager. You can find them in keyboard/mouse movement settings.",KFlib通过Custom Player Action Manager添加了多个自定义按键。你可以在按键设置的移动一栏下找到它们。
 loadingTipKFKeybinds_title,UI,Loading Screen,x,Custom Keybinds,自定义按键

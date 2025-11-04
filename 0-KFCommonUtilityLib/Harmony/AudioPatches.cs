@@ -106,71 +106,81 @@ namespace KFCommonUtilityLib.Harmony
             return codes;
         }
 
-        [HarmonyPatch(typeof(Manager), nameof(Manager.Play), new[] { typeof(Vector3), typeof(string), typeof(int), typeof(bool) })]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_Play_Position_Manager(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        [HarmonyPatch]
+        private static class PlayPositionPatch
         {
-            var codes = instructions.ToList();
-
-            var propset_loop = AccessTools.PropertySetter(typeof(AudioSource), nameof(AudioSource.loop));
-            var propget_loop = AccessTools.PropertyGetter(typeof(AudioSource), nameof(AudioSource.loop));
-
-            var lbd_modifier = generator.DeclareLocal(typeof(float));
-
-            for (int i = 1; i < codes.Count; i++)
+            private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 5 && codes[i - 1].opcode == OpCodes.Ldnull)
-                {
-                    codes.InsertRange(i + 1, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldarg_1).WithLabels(codes[i + 1].ExtractLabels()),
-                        CodeInstruction.Call(typeof(AudioPatches), nameof(GetVolumeModifier)),
-                        new CodeInstruction(OpCodes.Stloc_S, lbd_modifier)
-                    });
-                    i += 3;
-                }
-                else if (codes[i].Calls(propset_loop))
-                {
-                    OpCode opcode = default;
-                    object par = null;
-                    bool insFound = false;
-                    for (int j = i - 1; j >= 0; j--)
-                    {
-                        if (codes[j].Calls(propget_loop))
-                        {
-                            opcode = codes[j - 1].opcode;
-                            par = codes[j - 1].operand;
-                            insFound = true;
-                            break;
-                        }
-                    }
+                if (Constants.cVersionInformation.Major >= 2 && Constants.cVersionInformation.Minor >= 1)
+                    yield return AccessTools.Method(typeof(Manager), nameof(Manager.Play), new[] { typeof(Vector3), typeof(string), typeof(int), typeof(bool) });
+                else
+                    yield return AccessTools.Method(typeof(Manager), nameof(Manager.Play), new[] { typeof(Vector3), typeof(string), typeof(int) });
+            }
 
-                    if (insFound)
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+            {
+                var codes = instructions.ToList();
+
+                var propset_loop = AccessTools.PropertySetter(typeof(AudioSource), nameof(AudioSource.loop));
+                var propget_loop = AccessTools.PropertyGetter(typeof(AudioSource), nameof(AudioSource.loop));
+
+                var lbd_modifier = generator.DeclareLocal(typeof(float));
+
+                for (int i = 1; i < codes.Count; i++)
+                {
+                    if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 5 && codes[i - 1].opcode == OpCodes.Ldnull)
                     {
                         codes.InsertRange(i + 1, new[]
                         {
-                            new CodeInstruction(OpCodes.Ldarg_1),
-                            new CodeInstruction(opcode, par).WithLabels(codes[i + 1].ExtractLabels()),
-                            CodeInstruction.CallClosure<Action<string, AudioSource>>(static (soundGroupName, audioSource) =>
-                            {
-                                if (!string.IsNullOrEmpty(soundGroupName))
-                                {
-                                    float modifier = GetVolumeModifier(soundGroupName);
-                                    if (audioSource)
-                                    {
-                                        audioSource.volume *= modifier;
-                                        if (showDebugInfo)
-                                            Log.Out($"set audio source volume to {audioSource.volume} group {soundGroupName} modifier {modifier}");
-                                    }
-                                }
-                            }),
+                            new CodeInstruction(OpCodes.Ldarg_1).WithLabels(codes[i + 1].ExtractLabels()),
+                            CodeInstruction.Call(typeof(AudioPatches), nameof(GetVolumeModifier)),
+                            new CodeInstruction(OpCodes.Stloc_S, lbd_modifier)
                         });
                         i += 3;
                     }
-                }
-            }
+                    else if (codes[i].Calls(propset_loop))
+                    {
+                        OpCode opcode = default;
+                        object par = null;
+                        bool insFound = false;
+                        for (int j = i - 1; j >= 0; j--)
+                        {
+                            if (codes[j].Calls(propget_loop))
+                            {
+                                opcode = codes[j - 1].opcode;
+                                par = codes[j - 1].operand;
+                                insFound = true;
+                                break;
+                            }
+                        }
 
-            return codes;
+                        if (insFound)
+                        {
+                            codes.InsertRange(i + 1, new[]
+                            {
+                                new CodeInstruction(OpCodes.Ldarg_1),
+                                new CodeInstruction(opcode, par).WithLabels(codes[i + 1].ExtractLabels()),
+                                CodeInstruction.CallClosure<Action<string, AudioSource>>(static (soundGroupName, audioSource) =>
+                                {
+                                    if (!string.IsNullOrEmpty(soundGroupName))
+                                    {
+                                        float modifier = GetVolumeModifier(soundGroupName);
+                                        if (audioSource)
+                                        {
+                                            audioSource.volume *= modifier;
+                                            if (showDebugInfo)
+                                                Log.Out($"set audio source volume to {audioSource.volume} group {soundGroupName} modifier {modifier}");
+                                        }
+                                    }
+                                }),
+                            });
+                            i += 3;
+                        }
+                    }
+                }
+
+                return codes;
+            }
         }
 
         [HarmonyPatch(typeof(Manager), nameof(Manager.PlaySequence))]

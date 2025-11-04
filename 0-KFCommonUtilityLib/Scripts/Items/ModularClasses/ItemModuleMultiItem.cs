@@ -556,6 +556,52 @@ public static class MultiItemPatches
         return true;
     }
 
+    [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.IsAimingGunPossible))]
+    [HarmonyPostfix]
+    private static void Postfix_IsAimingGunPossible_EntityPlayerLocal(EntityPlayerLocal __instance, ref bool __result)
+    {
+        if (__result && __instance.inventory?.holdingItemData is IModuleContainerFor<MultiItemInvData> dataModule)
+        {
+            var multiItemData = dataModule.Instance;
+            if (multiItemData.boundInvData != null)
+            {
+                bool useBound = multiItemData.useBound;
+                var prevData = __instance.MinEventContext.ItemActionData;
+                multiItemData.SetBoundParams();
+                for (int i = 0; i < multiItemData.boundInvData.actionData.Count; i++)
+                {
+                    var action = multiItemData.boundItemClass.Actions[i];
+                    var actionData = multiItemData.boundInvData.actionData[i];
+                    if (action != null && !action.IsAimingGunPossible(actionData))
+                    {
+                        __result = false;
+                        break;
+                    }
+                }
+                multiItemData.RestoreParams(useBound);
+                __instance.MinEventContext.ItemActionData = prevData;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.CanReload))]
+    [HarmonyPostfix]
+    private static void Postfix_CanReload_ItemActionRanged(ItemActionRanged __instance, ItemActionRanged.ItemActionDataRanged _actionData, ref bool __result)
+    {
+        if (__result)
+        {
+            EntityAlive holdingEntity = _actionData.invData.holdingEntity;
+            if (holdingEntity.inventory.holdingItemData is IModuleContainerFor<MultiItemInvData> dataModule)
+            {
+                var multiItemData = dataModule.Instance;
+                if (multiItemData.boundInvData != null)
+                {
+                    __result = !multiItemData.IsBoundActionRunning();
+                }
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(PlayerMoveController), nameof(PlayerMoveController.Update))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_Update_PlayerMoveController(IEnumerable<CodeInstruction> instructions)

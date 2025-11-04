@@ -19,27 +19,27 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
 #if UNITY_EDITOR
     [Header("Animation Input")]
     [SerializeField]
-    private AnimationClip clip;
+    public AnimationClip clip;
     [SerializeField]
-    private string propertyPath;
+    public string propertyPath;
 #endif
     [Header("Parameters")]
     [SerializeField]
-    private float weight = 1;
+    public float weight = 1;
     [SerializeField]
-    private float delay = 0f;
+    public float delay = 0f;
     [SerializeField]
-    private float blendInTime = 0.2f;
+    public float blendInTime = 0.2f;
     [SerializeField]
-    private float blendOutTime = 0.2f;
+    public float blendOutTime = 0.2f;
     [SerializeField]
-    private float speedMultiplier = 1f;
+    public float speedMultiplier = 1f;
     [SerializeField]
-    private float targetStateFps = -1f;
+    public float targetStateFps = -1f;
     [SerializeField]
-    private bool relative = true;
+    public bool relative = true;
     [SerializeField]
-    private bool normalizeLength = false;
+    public bool normalizeLength = false;
     [SerializeField]
     internal string tagOverride;
     [SerializeField]
@@ -168,6 +168,7 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
                 ExtractCurvesFromClip(clip);
                 clipID = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(clip));
                 clipPropertyRemembered = null;
+                Log.Out($"Loading Clip from assigned clip - {clip.name}");
             }
             else if (!string.IsNullOrEmpty(clipID))
             {

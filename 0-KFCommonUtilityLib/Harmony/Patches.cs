@@ -8,8 +8,6 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml.Linq;
 using UnityEngine;
-using static ItemActionRanged;
-using Audio;
 
 [HarmonyPatch]
 public static class CommonUtilityPatch
@@ -64,6 +62,7 @@ public static class CommonUtilityPatch
         var mtd_get_model_layer = AccessTools.Method(typeof(EntityAlive), nameof(EntityAlive.GetModelLayer));
         var mtd_get_perc_left = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.PercentUsesLeft));
         var mtd_check_ammo = AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.checkAmmo));
+        var mtd_getkick = AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.GetKickbackForce));
 
         int take = -1, insert = -1;
         for (int i = 0; i < codes.Count; ++i)
@@ -80,8 +79,7 @@ public static class CommonUtilityPatch
             codes.InsertRange(insert, list);
             codes.RemoveRange(take, 6);
         }
-
-        for (int i = 0; i < codes.Count; i++)
+        for (int i = 0; i < codes.Count - 1; i++)
         {
             if (codes[i].Calls(mtd_check_ammo))
             {
@@ -111,9 +109,45 @@ public static class CommonUtilityPatch
                     new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(IGameManager), nameof(IGameManager.ItemActionEffectsServer))),
                     CodeInstruction.LoadLocal(0),
                     new CodeInstruction(OpCodes.Ldc_I4_0),
-                    CodeInstruction.StoreField(typeof(ItemActionDataRanged), nameof(ItemActionDataRanged.state))
+                    CodeInstruction.StoreField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.state))
                 });
-                break;
+                i += 23;
+            }
+            else if (codes[i].Calls(mtd_getkick))
+            {
+                var lbl = generator.DefineLabel();
+                codes[i + 2].WithLabels(lbl);
+                codes.InsertRange(i + 2, new[]
+                {
+                    CodeInstruction.LoadLocal(0),
+                    CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.state)),
+                    new CodeInstruction(OpCodes.Brfalse_S, lbl),
+                    CodeInstruction.LoadLocal(0),
+                    CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.curBurstCount)),
+                    CodeInstruction.LoadLocal(3),
+                    new CodeInstruction(OpCodes.Blt_S, lbl),
+                    CodeInstruction.LoadLocal(0),
+                    CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.invData)),
+                    CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.gameManager)),
+                    CodeInstruction.LoadLocal(0),
+                    CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.invData)),
+                    CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity)),
+                    CodeInstruction.LoadField(typeof(Entity), nameof(Entity.entityId)),
+                    CodeInstruction.LoadLocal(0),
+                    CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.invData)),
+                    CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.slotIdx)),
+                    CodeInstruction.LoadLocal(0),
+                    CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.indexInEntityOfAction)),
+                    new CodeInstruction(OpCodes.Ldc_I4_0),
+                    CodeInstruction.Call(typeof(Vector3), "get_zero"),
+                    CodeInstruction.Call(typeof(Vector3), "get_zero"),
+                    new CodeInstruction(OpCodes.Ldc_I4_0),
+                    new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(IGameManager), nameof(IGameManager.ItemActionEffectsServer))),
+                    CodeInstruction.LoadLocal(0),
+                    new CodeInstruction(OpCodes.Ldc_I4_0),
+                    CodeInstruction.StoreField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.state))
+                });
+                i += 27;
             }
         }
 
@@ -346,27 +380,35 @@ public static class CommonUtilityPatch
         {
             if (codes[i].Calls(mtd_release))
             {
-                codes[i + 1].labels.Clear();
-                codes[i + 1].MoveLabelsFrom(codes[i - 20]);
-                codes.RemoveRange(i - 20, 21);
+                codes.InsertRange(i + 1, new[]
+                {
+                    CodeInstruction.LoadLocal(0).WithLabels(codes[i - 4].ExtractLabels()),
+                    CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.invData)),
+                    CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.gameManager)),
+                    CodeInstruction.LoadLocal(0),
+                    CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.invData)),
+                    CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity)),
+                    CodeInstruction.LoadField(typeof(Entity), nameof(Entity.entityId)),
+                    CodeInstruction.LoadLocal(0),
+                    CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.invData)),
+                    CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.slotIdx)),
+                    CodeInstruction.LoadLocal(0),
+                    CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.indexInEntityOfAction)),
+                    new CodeInstruction(OpCodes.Ldc_I4_0),
+                    CodeInstruction.Call(typeof(Vector3), "get_zero"),
+                    CodeInstruction.Call(typeof(Vector3), "get_zero"),
+                    new CodeInstruction(OpCodes.Ldc_I4_0),
+                    new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(IGameManager), nameof(IGameManager.ItemActionEffectsServer))),
+                    CodeInstruction.LoadLocal(0),
+                    new CodeInstruction(OpCodes.Ldc_I4_0),
+                    CodeInstruction.StoreField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.state))
+                });
+                codes.RemoveRange(i - 4, 5);
                 break;
             }
         }
 
         return codes;
-    }
-
-    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.OnHoldingUpdate))]
-    [HarmonyPostfix]
-    private static void Postfix_OnHoldingUpdate_ItemActionRanged(ItemActionRanged __instance, ItemActionData _actionData)
-    {
-        ItemActionDataRanged itemActionDataRanged = (ItemActionDataRanged)_actionData;
-
-        if (itemActionDataRanged.state != 0 && itemActionDataRanged.m_LastShotTime > 0f && Time.time > itemActionDataRanged.m_LastShotTime + itemActionDataRanged.Delay * 2f)
-        {
-            itemActionDataRanged.invData.gameManager.ItemActionEffectsServer(itemActionDataRanged.invData.holdingEntity.entityId, itemActionDataRanged.invData.slotIdx, itemActionDataRanged.indexInEntityOfAction, 0, Vector3.zero, Vector3.zero);
-            itemActionDataRanged.state = ItemActionFiringState.Off;
-        }
     }
 
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.triggerReleased))]

@@ -123,14 +123,14 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         animator.SetWrappedFloat(AttackSpeedHash, InvariableRPM ? 1 : originalMeleeAttackSpeed);
         speedMultiplierToKeep = originalMeleeAttackSpeed;
         ItemClass holdingItem = entity.inventory.holdingItem;
-        holdingItem.Properties.ParseFloat((actionIndex != 1) ? "Action0.RaycastTime" : "Action1.RaycastTime", ref RaycastTime);
-        float impactDuration = -1f;
-        holdingItem.Properties.ParseFloat((actionIndex != 1) ? "Action0.ImpactDuration" : "Action1.ImpactDuration", ref impactDuration);
-        if (impactDuration >= 0f)
-        {
-            ImpactDuration = impactDuration * originalMeleeAttackSpeed;
-        }
-        holdingItem.Properties.ParseFloat((actionIndex != 1) ? "Action0.ImpactPlaybackSpeed" : "Action1.ImpactPlaybackSpeed", ref ImpactPlaybackSpeed);
+        //holdingItem.Properties.ParseFloat((actionIndex != 1) ? "Action0.RaycastTime" : "Action1.RaycastTime", ref RaycastTime);
+        //float impactDuration = -1f;
+        //holdingItem.Properties.ParseFloat((actionIndex != 1) ? "Action0.ImpactDuration" : "Action1.ImpactDuration", ref impactDuration);
+        //if (impactDuration >= 0f)
+        //{
+        //    ImpactDuration = impactDuration * originalMeleeAttackSpeed;
+        //}
+        //holdingItem.Properties.ParseFloat((actionIndex != 1) ? "Action0.ImpactPlaybackSpeed" : "Action1.ImpactPlaybackSpeed", ref ImpactPlaybackSpeed);
         if (originalMeleeAttackSpeed != 0f)
         {
             calculatedRaycastTime = RaycastTime / originalMeleeAttackSpeed;

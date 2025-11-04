@@ -246,24 +246,33 @@ public class ActionModuleFireModeSelector
             {
                 return;
             }
-            float rpm = 1f;
-            float perc = 1f;
-            var tags = _data.invData.item.ItemTags;
-            MultiActionManager.ModifyItemTags(_data.invData.itemValue, _data, ref tags);
-            _data.invData.item.Effects.ModifyValue(_data.invData.holdingEntity, PassiveEffects.RoundsPerMinute, ref rpm, ref perc, _data.invData.itemValue.Quality, tags);
 
-            float burstInterval = EffectManager.GetValue(CustomEnums.BurstShotInterval, _data.invData.itemValue, -1, _data.invData.holdingEntity);
             var rangedData = _data as ItemActionRanged.ItemActionDataRanged;
-            burstInterval *= 60f / (rpm * perc * rangedData.Delay);
-            if (burstInterval > 0 && rangedData.Delay > burstInterval)
+            var rangedAction = _data.invData.item.Actions[_data.indexInEntityOfAction] as ItemActionRanged;
+            if (rangedAction.rapidTrigger)
             {
-                shotDelay = burstInterval;
-                burstDelay = (rangedData.Delay - burstInterval) * curFireMode.burstCount;
+                shotDelay = 0;
+                burstDelay = rangedData.Delay;
             }
             else
             {
-                shotDelay = rangedData.Delay;
-                burstDelay = 0;
+                float rpm = 1f;
+                float perc = 1f;
+                var tags = _data.invData.item.ItemTags;
+                MultiActionManager.ModifyItemTags(_data.invData.itemValue, _data, ref tags);
+                _data.invData.item.Effects.ModifyValue(_data.invData.holdingEntity, PassiveEffects.RoundsPerMinute, ref rpm, ref perc, _data.invData.itemValue.Quality, tags);
+                float burstInterval = EffectManager.GetValue(CustomEnums.BurstShotInterval, _data.invData.itemValue, -1, _data.invData.holdingEntity);
+                burstInterval *= 60f / (rpm * perc * rangedData.Delay);
+                if (burstInterval >= 0 && rangedData.Delay > burstInterval)
+                {
+                    shotDelay = burstInterval;
+                    burstDelay = (rangedData.Delay - burstInterval) * curFireMode.burstCount;
+                }
+                else
+                {
+                    shotDelay = rangedData.Delay;
+                    burstDelay = 0;
+                }
             }
         }
 
@@ -284,7 +293,7 @@ public class ActionModuleFireModeSelector
         {
             FireMode curFireMode = fireModes[currentFireMode];
             var rangedData = _data as ItemActionRanged.ItemActionDataRanged;
-            byte curBurstCount = rangedData.curBurstCount;
+            //byte curBurstCount = rangedData.curBurstCount;
             for (int i = 0; i < curFireMode.burstCount; i++)
             {
                 isRequestedByCoroutine = true;
@@ -293,7 +302,7 @@ public class ActionModuleFireModeSelector
                 rangedData.m_LastShotTime = 0;
                 rangedData.state = ItemActionFiringState.Off;
                 _instance.ExecuteAction(_data, false);
-                rangedData.curBurstCount = (byte)(curBurstCount + i + 1);
+                //rangedData.curBurstCount = (byte)(curBurstCount + i + 1);
                 isRequestedByCoroutine = false;
                 if (rangedData.invData.itemValue.Meta <= 0 && !_instance.HasInfiniteAmmo(_data))
                 {
