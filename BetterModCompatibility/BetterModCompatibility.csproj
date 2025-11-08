@@ -61,6 +61,7 @@
     <Compile Include="Harmony\AudioDictionaryPatches.cs" />
     <Compile Include="Harmony\Init.cs" />
     <Compile Include="Harmony\LogAndContinuePatches.cs" />
+    <Compile Include="Harmony\ProgressionPatches.cs" />
     <Compile Include="Harmony\RecipeUnlockPatches.cs" />
     <Compile Include="Harmony\XmlPatchHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

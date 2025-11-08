@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using Challenges;
+using HarmonyLib;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -65,7 +66,7 @@ namespace BetterModCompatibility.Harmony
             List<string> validItems = new List<string>();
             foreach (var item in unlockItem)
             {
-                if (ItemClass.GetItemClass(item) != null || Progression.ProgressionClasses.ContainsKey(item))
+                if (ItemClass.GetItemClass(item) != null || Progression.ProgressionClasses.ContainsKey(item) || ChallengeGroup.s_ChallengeGroups.ContainsKey(item.ToLower()) || ChallengeClass.s_Challenges.ContainsKey(item.ToLower()))
                 {
                     validItems.Add(item);
                 }
@@ -77,20 +78,32 @@ namespace BetterModCompatibility.Harmony
             return validItems.ToArray();
         }
 
-        [HarmonyPatch(typeof(Recipe), nameof(Recipe.Init))]
-        [HarmonyPostfix]
-        private static void Postfix_Recipe_Init(Recipe __instance)
+        private static bool CheckProgressionUnlock(ItemClass item)
         {
-            var item = ItemClass.GetForId(__instance.itemValueType);
-
-            if (((!item.IsBlock() && (item.UnlockedBy == null || item.UnlockedBy.Length == 0))
-                 || (item.IsBlock() && (item.GetBlock().UnlockedBy == null || item.GetBlock().UnlockedBy.Length == 0)))
-                && __instance.IsLearnable)
+            if (item == null)
+                return false;
+            var itemNameTag = FastTags<TagGroup.Global>.Parse(item.Name);
+            foreach (var progression in Progression.ProgressionClasses.Values)
             {
-                Log.Out($"All unlock conditions for {item.Name} are missing, it's now unlocked!");
-                __instance.IsLearnable = false;
-                forceUnlockedRecipes.Add(__instance.itemValueType);
+                if (progression != null && progression.Effects != null && progression.Effects.PassivesIndex.Contains(PassiveEffects.RecipeTagUnlocked))
+                {
+                    foreach (var controller in progression.Effects.EffectGroups)
+                    {
+                        if (controller.PassiveEffects.Count > 0)
+                        {
+                            foreach (var passive in controller.PassiveEffects)
+                            {
+                                if (passive.Type == PassiveEffects.RecipeTagUnlocked && passive.Tags.Test_AnySet(itemNameTag))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+
+                    }
+                }
             }
+            return false;
         }
 
         [HarmonyPatch(typeof(Recipe), nameof(Recipe.GetCraftingTier))]
@@ -100,6 +113,63 @@ namespace BetterModCompatibility.Harmony
             if (!__instance.IsLearnable && forceUnlockedRecipes.Contains(__instance.itemValueType))
             {
                 __result = 6;
+            }
+        }
+
+        [HarmonyPatch(typeof(WorldStaticData), nameof(WorldStaticData.handleReceivedConfigs), MethodType.Enumerator)]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_WorldStaticData_handleReceivedConfigs(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var fld_co = AccessTools.Field(typeof(WorldStaticData), nameof(WorldStaticData.receivedConfigsHandlerCoroutine));
+
+            for (int i = codes.Count; i < 0; i--)
+            {
+                if (codes[i].StoresField(fld_co))
+                {
+                    codes.Insert(i + 1, CodeInstruction.Call(typeof(RecipeUnlockPatches), nameof(CheckRecipeUnlockConditions)));
+                    break;
+                }
+            }
+
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(WorldStaticData), nameof(WorldStaticData.LoadAllXmlsCo), MethodType.Enumerator)]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_WorldStaticData_LoadAllXmlsCo(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var fld_complete = AccessTools.Field(typeof(WorldStaticData), nameof(WorldStaticData.LoadAllXmlsCoComplete));
+
+            for (int i = 1; i < codes.Count; i++)
+            {
+                if (codes[i].StoresField(fld_complete) && codes[i - 1].opcode == OpCodes.Ldc_I4_1)
+                {
+                    codes.Insert(i + 1, CodeInstruction.Call(typeof(RecipeUnlockPatches), nameof(CheckRecipeUnlockConditions)));
+                    break;
+                }
+            }
+
+            return codes;
+        }
+
+        private static void CheckRecipeUnlockConditions()
+        {
+            foreach (var recipe in CraftingManager.GetAllRecipes())
+            {
+                var item = ItemClass.GetForId(recipe.itemValueType);
+
+                if (((!item.IsBlock() && (item.UnlockedBy == null || item.UnlockedBy.Length == 0))
+                     || (item.IsBlock() && (item.GetBlock().UnlockedBy == null || item.GetBlock().UnlockedBy.Length == 0)))
+                    && recipe.IsLearnable && !CheckProgressionUnlock(item))
+                {
+                    Log.Out($"All unlock conditions for {item.Name} are missing, it's now unlocked!");
+                    recipe.IsLearnable = false;
+                    forceUnlockedRecipes.Add(recipe.itemValueType);
+                }
             }
         }
 
