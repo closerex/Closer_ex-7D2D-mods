@@ -1729,7 +1729,7 @@ public static class CommonUtilityPatch
     private static void Postfix_SetAttackFinished_ItemActionDynamicMelee(ItemActionData _actionData)
     {
         ItemActionDynamicMelee.ItemActionDynamicMeleeData meleeData = _actionData as ItemActionDynamicMelee.ItemActionDynamicMeleeData;
-        if (meleeData != null)
+        if (meleeData != null && meleeData.invData?.holdingEntity?.emodel?.avatarController != null)
         {
             meleeData.invData.holdingEntity.emodel.avatarController.UpdateBool(MeleeRunningHash, false, true);
             meleeData.HasExecuted = false;

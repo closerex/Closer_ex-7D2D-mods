@@ -60,7 +60,8 @@
         public override void read(PooledBinaryReader _reader)
         {
             base.read(_reader);
-            cvarData = _reader.ReadBytes(_reader.ReadInt32());
+            cvarData = new byte[_reader.ReadInt32()];
+            _reader.Read(cvarData, 0, cvarData.Length);
         }
 
         public override void write(PooledBinaryWriter _writer)
