@@ -1993,7 +1993,7 @@ namespace KFCommonUtilityLib.Harmony
                     codes[i].opcode = OpCodes.Call;
                     codes[i].operand = AccessTools.Method(typeof(MultiActionUtils), nameof(MultiActionUtils.GetSelectedAmmoIndexByActionIndex));
                     codes.Insert(i, new CodeInstruction(OpCodes.Ldloc_S, lbd_index));
-                    break;
+                    i++;
                 }
             }
             return codes;

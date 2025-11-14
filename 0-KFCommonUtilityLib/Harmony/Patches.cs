@@ -442,6 +442,7 @@ public static class CommonUtilityPatch
     private static bool Prefix_StartGame_GameManager()
     {
         CustomEffectEnumManager.InitFinal();
+        CommonUtilityLibInit.RegisterKFEnums();
         return true;
     }
 
@@ -1571,9 +1572,38 @@ public static class CommonUtilityPatch
         var codes = instructions.ToList();
 
         var mtd_isreloading = AccessTools.Method(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.IsReloading));
+        var mtd_cancelaction = AccessTools.Method(typeof(ItemAction), nameof(ItemAction.CancelAction));
+        bool vanillaCancelPatched = false;
         for (int i = 0; i < codes.Count; i++)
         {
-            if (codes[i].Calls(mtd_isreloading))
+            if (codes[i].Calls(mtd_cancelaction))
+            {
+                if (!vanillaCancelPatched)
+                {
+                    for (int j = i - 1; j >= 0; j--)
+                    {
+                        if (codes[j].Branches(out _))
+                        {
+                            codes.InsertRange(j + 1, new[]
+                            {
+                                new CodeInstruction(OpCodes.Ldloc_1).WithLabels(codes[j + 1].ExtractLabels()),
+                                new CodeInstruction(OpCodes.Ldloc_2),
+                                CodeInstruction.CallClosure<Action<EntityPlayerLocal, int>>((player, index) =>
+                                {
+                                    if (player.inventory.holdingItemData.actionData[index] is IModuleContainerFor<ActionModuleAnimationInterruptable.AnimationInterruptableData> interruptData)
+                                    {
+                                        interruptData.Instance.interruptRequested = true;
+                                    }
+                                })
+                            });
+                            i += 3;
+                            break;
+                        }
+                    }
+                    vanillaCancelPatched = true;
+                }
+            }
+            else if (codes[i].Calls(mtd_isreloading))
             {
                 for (int j = i - 1; j >= 0; j--)
                 {
@@ -1600,6 +1630,10 @@ public static class CommonUtilityPatch
                                                 player.MinEventContext.ItemActionData = actionData;
                                                 if (action.IsActionRunning(actionData))
                                                 {
+                                                    if (actionData is IModuleContainerFor<ActionModuleAnimationInterruptable.AnimationInterruptableData> interruptData)
+                                                    {
+                                                        interruptData.Instance.interruptRequested = true;
+                                                    }
                                                     action.CancelAction(actionData);
                                                 }
                                             }
@@ -1755,6 +1789,16 @@ public static class CommonUtilityPatch
             }
         }
         return codes;
+    }
+
+    [HarmonyPatch(typeof(MinEventActionSetItemMetaFloat), nameof(MinEventActionSetItemMetaFloat.Execute))]
+    [HarmonyPostfix]
+    private static void Postfix_Execute_MinEventActionSetItemMetaFloat(MinEventParams _params)
+    {
+        if (_params.Self is EntityPlayerLocal player && player.inventory != null && _params.ItemValue == player.inventory.holdingItemItemValue)
+        {
+            player.inventory.CallOnToolbeltChangedInternal();
+        }
     }
 
     //[HarmonyPatch(typeof(ProgressionValue), nameof(ProgressionValue.Level), MethodType.Setter)]

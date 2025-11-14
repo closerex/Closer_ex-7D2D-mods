@@ -48,7 +48,7 @@ public class IsHoldingItemModificationActivated : RequirementBase
             }
         }
 
-        return invert;
+        return false;
     }
 
     public override bool ParseXAttribute(XAttribute _attribute)

@@ -25,12 +25,6 @@ public class ItemModuleMultiItem
         __instance.Properties.ParseString("BoundItemName", ref __customData.boundItemName);
         __customData.boundItemName = _data.itemValue.GetPropertyOverride("BoundItemName", __customData.boundItemName);
         __customData.UpdateBoundItem();
-        var boundInvData = __customData.boundInvData;
-        ItemValue boundItemValue = boundInvData.itemStack.itemValue;
-        boundItemValue.Quality = _data.itemValue.Quality;
-        boundItemValue.Metadata = _data.itemValue.Metadata;
-        boundItemValue.Modifications = _data.itemValue.Modifications;
-        boundItemValue.CosmeticMods = _data.itemValue.CosmeticMods;
         return true;
     }
 
@@ -262,7 +256,7 @@ public class ItemModuleMultiItem
 
     private static List<ItemAction> tempActionList = new List<ItemAction>();
     private static List<ItemActionData> tempDataList = new List<ItemActionData>();
-    public static bool CheckAltMelee(EntityPlayerLocal player, MultiItemInvData multiInvData, bool bReleased, PlayerActionsLocal _playerActions, int meleeActionIndex = 0, bool useAltParam = true)
+    public static bool CheckAltMelee(EntityPlayerLocal player, MultiItemInvData multiInvData, bool bReleased, int meleeActionIndex = 0, bool useAltParam = true)
     {
         if (!player.inventory.GetIsFinishedSwitchingHeldItem())
         {
@@ -411,14 +405,31 @@ public class ItemModuleMultiItem
                 boundItemClass = ItemClass.GetItemClass(boundItemName, true);
                 if (boundItemClass != null)
                 {
-                    boundInvData = boundItemClass.CreateInventoryData(new ItemStack(new ItemValue(boundItemClass.Id, originalData.itemValue.Quality, originalData.itemValue.Quality), 1), originalData.gameManager, originalData.holdingEntity, originalData.slotIdx);
-                    boundInvData.itemStack.itemValue.Meta = originalData.itemStack.itemValue.Meta;
+                    boundInvData = boundItemClass.CreateInventoryData(new ItemStack(new ItemValue(boundItemClass.Id, originalData.itemStack.itemValue.Quality, originalData.itemStack.itemValue.Quality), 1), originalData.gameManager, originalData.holdingEntity, originalData.slotIdx);
+                    SyncBoundItemValue();
                 }
                 else
                 {
                     boundInvData = null;
                 }
             }
+        }
+
+        private void SyncBoundItemValue()
+        {
+            ItemValue boundItemValue = boundInvData.itemStack.itemValue;
+            ItemValue originalItemValue = originalData.itemStack.itemValue;
+            boundItemValue.Quality = originalItemValue.Quality;
+            boundItemValue.Metadata = originalItemValue.Metadata;
+            boundItemValue.Modifications = originalItemValue.Modifications;
+            boundItemValue.CosmeticMods = originalItemValue.CosmeticMods;
+            boundItemValue.Meta = originalItemValue.Meta;
+            if (originalItemValue.Metadata == null)
+            {
+                originalItemValue.Metadata = new();
+            }
+            boundItemValue.Metadata = originalItemValue.Metadata;
+
         }
 
         public bool IsBoundActionRunning()
@@ -445,6 +456,9 @@ public class ItemModuleMultiItem
             param.ItemInventoryData = boundInvData;
             param.ItemValue = boundInvData.itemStack.itemValue;
             boundInvData.itemStack.itemValue.Meta = originalData.itemStack.itemValue.Meta;
+            boundInvData.itemStack.itemValue.Metadata = originalData.itemStack.itemValue.Metadata;
+            boundInvData.itemStack.itemValue.Activated = originalData.itemStack.itemValue.Activated;
+            boundInvData.itemStack.itemValue.UseTimes = 0;
             if (originalData.actionData[0] is IModuleContainerFor<ActionModuleAlternative.AlternativeData> dataModule)
             {
                 MultiActionManager.SetMappingForEntity(originalData.holdingEntity.entityId, null);
@@ -657,7 +671,7 @@ public static class MultiItemPatches
 
         if (PlayerActionKFLib.Instance.Enabled && (player.inventory.GetIsFinishedSwitchingHeldItem() || wasReleased) && (wasPressed || wasReleased) && player.inventory.holdingItemData is IModuleContainerFor<MultiItemInvData> dataModule)
         {
-            ItemModuleMultiItem.CheckAltMelee(player, dataModule.Instance, wasReleased, controller.playerInput);
+            ItemModuleMultiItem.CheckAltMelee(player, dataModule.Instance, wasReleased);
         }
     }
 

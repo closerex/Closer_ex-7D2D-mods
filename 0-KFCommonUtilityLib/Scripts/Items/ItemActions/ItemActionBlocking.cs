@@ -272,23 +272,6 @@ public class ItemActionBlocking : ItemAction
                                          new(blockingRangeHor, blockingRangeVer));
         }
 
-        //private bool IsPointInPyramidAngle(Vector3 directionToTarget, Vector3 forward, Vector3 right, Vector3 up, Vector2 anglesHor, Vector2 anglesVer)
-        //{
-        //    float totalAngle = Vector3.Angle(forward, directionToTarget);
-
-        //    Vector3 projDir = Vector3.ProjectOnPlane(directionToTarget, up).normalized;
-        //    float horizontalAngle = Vector3.SignedAngle(projDir, forward, up);
-        //    if (horizontalAngle < anglesHor.x || horizontalAngle > anglesHor.y)
-        //    {
-        //        return false;
-        //    }
-
-        //    projDir = Vector3.ProjectOnPlane(directionToTarget, right).normalized;
-        //    float verticalAngle = Vector3.SignedAngle(projDir, forward, right);
-
-        //    return verticalAngle >= anglesVer.x && verticalAngle <= anglesVer.y;
-        //}
-
         private bool IsPointInRange(Vector3 directionToTarget, Vector3 forward, Vector3 right, Vector3 up, Vector2 rectSize)
         {
             Vector3 localPos = new Vector3(Vector3.Dot(directionToTarget, right), Vector3.Dot(directionToTarget, up), Vector3.Dot(directionToTarget, forward));
@@ -343,9 +326,11 @@ public static class ItemActionBlockingPatches
                 __instance.MinEventContext.Other = attacker;
 
                 Vector3 lookRayOrigin = attacker.GetLookRay().origin;
+                bool isParrying = false;
+                bool fireEvent = false;
                 if (blockingData.isBlockingRunning && blockingData.IsInBlockingAngle(lookRayOrigin - Origin.position))
                 {
-                    bool isParrying = blockingData.IsParrying;
+                    isParrying = blockingData.IsParrying;
                     float drainAmount = EffectManager.GetValue(CustomEnums.CustomTaggedEffect, blockingData.invData.itemValue, 0f, blockingData.invData.holdingEntity, null, isParrying ? blockingAction.tagsStaminaOnParrying : blockingAction.tagsStaminaOnBlocking);
                     if (drainAmount > __instance.Stamina)
                     {
@@ -371,6 +356,7 @@ public static class ItemActionBlockingPatches
                         }
                         __instance.emodel.avatarController._setTrigger(isParrying ? ItemActionBlocking.ParryingHitHash : ItemActionBlocking.BlockingHitHash, false);
 
+                        fireEvent = true;
                         __instance.FireEvent(isParrying ? CustomEnums.onSelfParryingDamage : CustomEnums.onSelfBlockingDamage);
                         float degradation = EffectManager.GetValue(CustomEnums.CustomTaggedEffect, blockingData.invData.itemValue, 1f, blockingData.invData.holdingEntity, null, isParrying ? blockingAction.tagDegradationParrying : blockingAction.tagDegradationBlocking);
                         if (degradation > 0f)
@@ -390,6 +376,10 @@ public static class ItemActionBlockingPatches
 
                 multiInvData.RestoreParams(false);
                 __instance.MinEventContext.ItemActionData = prevData;
+                if (fireEvent)
+                {
+                    __instance.inventory.holdingItem.FireEvent(isParrying ? CustomEnums.onSelfParryingDamage : CustomEnums.onSelfBlockingDamage, __instance.MinEventContext);
+                }
             }
         }
     }

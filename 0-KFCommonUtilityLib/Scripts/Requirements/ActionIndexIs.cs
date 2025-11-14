@@ -10,10 +10,10 @@ public class ActionIndexIs : RequirementBase
         //{
         //    Log.Out($"Action index is not {index} : {(_params.ItemActionData == null ? "null" : _params.ItemActionData.indexInEntityOfAction.ToString())}\n{StackTraceUtility.ExtractStackTrace()}");
         //}
-        if (!base.IsValid(_params))
+        if (!base.IsValid(_params) || _params.ItemActionData == null)
             return false;
 
-        var res = (_params.ItemActionData == null && index == 0) || _params.ItemActionData?.indexInEntityOfAction == index;
+        var res = _params.ItemActionData.indexInEntityOfAction == index;
         return invert ? !res : res;
     }
 

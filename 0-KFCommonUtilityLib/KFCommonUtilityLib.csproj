@@ -601,6 +601,7 @@
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAlternative.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationInterruptable.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationInterruptSource.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleIAltMeleeInspectTrigger.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleInversedAction.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleLimitedCombo.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleLoopSoundFix.cs" />
@@ -619,6 +620,10 @@
     <Compile Include="Scripts\Items\ModularActions\ActionModuleInvariableRPM.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleLocalPassiveCache.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMetaConsumer.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleMetadataAsHUDStatWithPassiveMax.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleMetadataAsHUDStatWithValueMax.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleTargetSeeker.cs" />
+    <Compile Include="Scripts\Items\ModularActions\MetadataAsHUDStatAbs.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMultiActionFix.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMultiBarrel.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleProceduralAiming.cs" />
@@ -629,11 +634,15 @@
     <Compile Include="Scripts\Items\ModularActions\ActionModuleTagged.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleTranspilerTest.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleVariableZoom.cs" />
+    <Compile Include="Scripts\Items\ModularActions\Interfaces\IDisplayAsHUDStat.cs" />
     <Compile Include="Scripts\Items\ModularClasses\ItemModuleInversedAction.cs" />
     <Compile Include="Scripts\Items\ModularClasses\ItemModuleMultiItem.cs" />
     <Compile Include="Scripts\Items\ModularClasses\ItemModuleSortable.cs" />
     <Compile Include="Scripts\Items\ModularClasses\ItemModuleTrueHolster.cs" />
     <Compile Include="Scripts\Items\ModularClasses\ItemModuleVariableZoom.cs" />
+    <Compile Include="Scripts\MinEventActions\MinEventActionAnimatorSetFloatRef .cs" />
+    <Compile Include="Scripts\MinEventActions\MinEventActionAnimatorSetBoolRef.cs" />
+    <Compile Include="Scripts\MinEventActions\MinEventActionAnimatorSetIntRef.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionAttachPrefabToEntitySync.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionCVarExpression.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionModifyCVarWithLocalCache.cs" />
@@ -655,8 +664,10 @@
     <Compile Include="Scripts\Requirements\HoldingActionIndexIs.cs" />
     <Compile Include="Scripts\Requirements\HoldingAmmoIndexIs.cs" />
     <Compile Include="Scripts\Requirements\IsActionUnlocked.cs" />
+    <Compile Include="Scripts\Requirements\IsHoldingItemActivated.cs" />
     <Compile Include="Scripts\Requirements\IsInJeep.cs" />
     <Compile Include="Scripts\Requirements\IsHoldingItemModificationActivated.cs" />
+    <Compile Include="Scripts\Requirements\IsItemActivated.cs" />
     <Compile Include="Scripts\Requirements\IsLocal.cs" />
     <Compile Include="Scripts\Requirements\IsModificationActivated.cs" />
     <Compile Include="Scripts\Requirements\MetaInItem.cs" />

@@ -7,6 +7,13 @@ using UnityEngine;
 
 namespace KFCommonUtilityLib
 {
+    public enum ValueRefStatType
+    {
+        Value,
+        Cvar,
+        Metadata
+    }
+
     public static class MiscExtensions
     {
         public static EntityPlayerLocal GetLocalPlayerInParent(this Component self)

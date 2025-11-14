@@ -30,7 +30,7 @@ public class CommonUtilityLibInit : IModApi
         DelayLoadModuleManager.RegisterDelayloadDll("Rainstorm", "RainstormPatches");
         //DelayLoadModuleManager.RegisterDelayloadDll("SMXcore", "SMXMultiActionCompatibilityPatch");
         //DelayLoadModuleManager.RegisterDelayloadDll("SCore", "SCoreEntityHitCompatibilityPatch");
-        CustomEffectEnumManager.RegisterEnumType<MinEventTypes>();
+        CustomEffectEnumManager.RegisterEnumType<MinEventTypes>(true);
         CustomEffectEnumManager.RegisterEnumType<PassiveEffects>();
 
         ModuleManagers.ClearOutputFolder();
@@ -42,7 +42,7 @@ public class CommonUtilityLibInit : IModApi
         ModEvents.GameAwake.RegisterHandler(DelayLoadModuleManager.DelayLoad);
         //ModEvents.GameAwake.RegisterHandler(AssemblyLocator.Init);
         ModEvents.GameAwake.RegisterHandler(MultiActionUtils.SetMinEventArrays);
-        ModEvents.GameStartDone.RegisterHandler(RegisterKFEnums);
+        //ModEvents.GameStartDone.RegisterHandler(RegisterKFEnums);
         //DOES NOT WORK ON MULTIPLAYER? Patch to ItemClass.LateInitAll
         //ModEvents.GameStartDone.RegisterHandler(AnimationRiggingManager.ParseItemIDs);
         ModEvents.GameStartDone.RegisterHandler(MultiActionManager.PostloadCleanup);
@@ -52,7 +52,7 @@ public class CommonUtilityLibInit : IModApi
         HarmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
     }
 
-    private static void RegisterKFEnums(ref ModEvents.SGameStartDoneData _)
+    public static void RegisterKFEnums()
     {
         CustomEnums.onSelfMagzineDeplete = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onSelfMagzineDeplete");
         CustomEnums.onReloadAboutToStart = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onReloadAboutToStart");

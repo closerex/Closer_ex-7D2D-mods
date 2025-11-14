@@ -135,5 +135,136 @@ namespace QuartzUIPatch
 
             return codes;
         }
+
+        #region action stat display
+        [HarmonyPatch(typeof(Quartz.XUiC_HUDActiveItem), nameof(Quartz.XUiC_HUDActiveItem.GetBindingValueInternal))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_XUiC_HUDActiveItem_GetBindingValueInternal(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            var codes = instructions.ToList();
+
+            var mtd_gettotal = AccessTools.Method(typeof(Quartz.XUiC_HUDActiveItem), "GetTotalAmmo");
+            var mtd_getloaded = AccessTools.Method(typeof(Quartz.XUiC_HUDActiveItem), "GetLoadedAmmo");
+            var mtd_geticon = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.GetIconName));
+            var mtd_geticontint = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.GetIconTint));
+            var mtd_getstat = AccessTools.Method(typeof(IDisplayAsHUDStat), nameof(IDisplayAsHUDStat.GetHUDStatValue));
+            var mtd_getstatwithmax = AccessTools.Method(typeof(IDisplayAsHUDStat), nameof(IDisplayAsHUDStat.GetHUDStatValueWithMax));
+            var mtd_getstatfill = AccessTools.Method(typeof(IDisplayAsHUDStat), nameof(IDisplayAsHUDStat.GetHUDStatFillFraction));
+            var mtd_geticonoverride = AccessTools.Method(typeof(IDisplayAsHUDStat), nameof(IDisplayAsHUDStat.GetIconOverride));
+            var mtd_gettintoverride = AccessTools.Method(typeof(IDisplayAsHUDStat), nameof(IDisplayAsHUDStat.GetIconTintOverride));
+            var mtd_holdingitemdata = AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItemData));
+            var fld_blockdmg = AccessTools.Field(typeof(Quartz.XUiC_HUDActiveItem), "blockDamage");
+            var fld_entitydmg = AccessTools.Field(typeof(Quartz.XUiC_HUDActiveItem), "entityDamage");
+            var fld_localplayer = AccessTools.Field(typeof(Quartz.XUiC_HUDActiveItem), "localPlayer");
+            var fld_inventory = AccessTools.Field(typeof(EntityAlive), nameof(EntityAlive.inventory));
+
+            var lbd_stat = generator.DeclareLocal(typeof(IDisplayAsHUDStat));
+
+            for (var i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].Calls(mtd_getloaded) || codes[i].LoadsField(fld_blockdmg) || codes[i].LoadsField(fld_entitydmg))
+                {
+                    Label lbl = generator.DefineLabel(), lbl_store = generator.DefineLabel();
+                    codes[i - 1].WithLabels(lbl);
+                    codes[i + 1].WithLabels(lbl_store);
+                    codes.InsertRange(i - 1, new[]
+                    {
+                        CodeInstruction.LoadLocal(lbd_stat.LocalIndex),
+                        new CodeInstruction(OpCodes.Brfalse, lbl),
+                        CodeInstruction.LoadLocal(lbd_stat.LocalIndex),
+                        CodeInstruction.LoadArgument(0),
+                        new CodeInstruction(OpCodes.Ldfld, fld_localplayer),
+                        new CodeInstruction(OpCodes.Ldfld, fld_inventory),
+                        new CodeInstruction(OpCodes.Callvirt, mtd_holdingitemdata),
+                        new CodeInstruction(OpCodes.Callvirt, mtd_getstat),
+                        new CodeInstruction(OpCodes.Br, lbl_store)
+                    });
+                    i += 9;
+                    Log.Out("quartz stat value patched!");
+                }
+                else if (codes[i].Calls(mtd_geticon))
+                {
+                    Label lbl = generator.DefineLabel();
+                    codes[i + 2].WithLabels(lbl);
+                    codes.InsertRange(i + 2, new[]
+                    {
+                        CodeInstruction.LoadLocal(lbd_stat.LocalIndex),
+                        new CodeInstruction(OpCodes.Brfalse, lbl),
+                        CodeInstruction.LoadLocal(lbd_stat.LocalIndex),
+                        CodeInstruction.LoadArgument(0),
+                        new CodeInstruction(OpCodes.Ldfld, fld_localplayer),
+                        new CodeInstruction(OpCodes.Ldfld, fld_inventory),
+                        new CodeInstruction(OpCodes.Callvirt, mtd_holdingitemdata),
+                        CodeInstruction.LoadArgument(1),
+                        new CodeInstruction(OpCodes.Callvirt, mtd_geticonoverride),
+                    });
+                    i += 9;
+                    Log.Out("quartz icon override patched!");
+                }
+                else if (codes[i].Calls(mtd_geticontint))
+                {
+                    Label lbl = generator.DefineLabel();
+                    codes[i + 3].WithLabels(lbl);
+                    codes.InsertRange(i + 3, new[]
+                    {
+                        CodeInstruction.LoadLocal(lbd_stat.LocalIndex),
+                        new CodeInstruction(OpCodes.Brfalse, lbl),
+                        CodeInstruction.LoadLocal(lbd_stat.LocalIndex),
+                        CodeInstruction.LoadArgument(0),
+                        new CodeInstruction(OpCodes.Ldfld, fld_localplayer),
+                        new CodeInstruction(OpCodes.Ldfld, fld_inventory),
+                        new CodeInstruction(OpCodes.Callvirt, mtd_holdingitemdata),
+                        CodeInstruction.LoadLocal(0, true),
+                        new CodeInstruction(OpCodes.Callvirt, mtd_gettintoverride),
+                    });
+                    i += 9;
+                    Log.Out("quartz tint override patched!");
+                }
+            }
+
+            codes.InsertRange(2, new[]
+            {
+                CodeInstruction.LoadArgument(0),
+                new CodeInstruction(OpCodes.Dup),
+                new CodeInstruction(OpCodes.Ldfld, fld_localplayer),
+                CodeInstruction.Call(typeof(Patches), nameof(GetDisplayAsHUDStatInterface)),
+                CodeInstruction.StoreLocal(lbd_stat.LocalIndex)
+            });
+
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(Quartz.XUiC_HUDActiveItem), "updateActiveItemAmmo")]
+        [HarmonyPrefix]
+        private static bool Prefix_updateActiveItemAmmo_XUiC_HUDStatBar(Quartz.XUiC_HUDActiveItem __instance, EntityPlayerLocal ___localPlayer, ref int ___currentAmmoCount)
+        {
+            var displayAsHUDStat = GetDisplayAsHUDStatInterface(__instance, ___localPlayer);
+            if (displayAsHUDStat != null)
+            {
+                int currentAmmoCount = ___currentAmmoCount;
+                if (displayAsHUDStat.UpdateActiveItemAmmo(___localPlayer.inventory.holdingItemData, ref currentAmmoCount))
+                {
+                    ___currentAmmoCount = currentAmmoCount;
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private static IDisplayAsHUDStat GetDisplayAsHUDStatInterface(Quartz.XUiC_HUDActiveItem statBar, EntityPlayerLocal localPlayer)
+        {
+            if (statBar == null || localPlayer == null)
+            {
+                return null;
+            }
+
+            int actionIndex = MultiActionManager.GetActionIndexForEntity(localPlayer);
+            if (actionIndex >= 0 && actionIndex < localPlayer.inventory.holdingItem.Actions.Length)
+            {
+                return (localPlayer.inventory.holdingItem.Actions[actionIndex] as IModuleContainerFor<IDisplayAsHUDStat>)?.Instance;
+            }
+            return null;
+        }
+        #endregion
     }
 }

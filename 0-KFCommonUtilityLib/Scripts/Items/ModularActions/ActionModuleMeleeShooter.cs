@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Reflection.Emit;
 using UniLinq;
 using UnityEngine;
-using static ItemModuleMultiItem;
 
 [TypeTarget(typeof(ItemActionRanged)), TypeDataTarget(typeof(MeleeShooterData))]
 public class ActionModuleMeleeShooter
@@ -94,14 +93,14 @@ public class ActionModuleMeleeShooter
             return false;
         }
 
-        if (_rangedData.invData.holdingEntity is EntityPlayerLocal player && player.inventory.holdingItemData is IModuleContainerFor<MultiItemInvData> dataModule)
+        if (_rangedData.invData.holdingEntity is EntityPlayerLocal player && player.inventory.holdingItemData is IModuleContainerFor<ItemModuleMultiItem.MultiItemInvData> dataModule)
         {
             _rangedData.m_LastShotTime = 0f;
-            customData.animationRequested = ItemModuleMultiItem.CheckAltMelee(player, dataModule.Instance, false, player.playerInput, 1, false);
+            customData.animationRequested = ItemModuleMultiItem.CheckAltMelee(player, dataModule.Instance, false, 1, false);
             _rangedData.m_LastShotTime = Time.time;
             if (customData.animationRequested)
             {
-                ItemModuleMultiItem.CheckAltMelee(player, dataModule.Instance, true, player.playerInput, 1, false);
+                ItemModuleMultiItem.CheckAltMelee(player, dataModule.Instance, true, 1, false);
             }
         }
         __instance.triggerReleased(_rangedData, __instance.ActionIndex);

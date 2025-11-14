@@ -5,7 +5,7 @@ using System;
 using UniLinq;
 using UnityEngine;
 
-[TypeTarget(typeof(ItemActionRanged)), TypeDataTarget(typeof(MetaRechargerData))]
+[TypeTarget(typeof(ItemAction)), TypeDataTarget(typeof(MetaRechargerData))]
 public class ActionModuleMetaRecharger
 {
     public struct RechargeTags
@@ -37,12 +37,16 @@ public class ActionModuleMetaRecharger
         rechargeTags = null;
         string rechargeData = string.Empty;
         _props.Values.TryGetValue("RechargeData", out rechargeData);
-        _props.Values.TryGetValue("RechargeTags", out string tags);
-        FastTags<TagGroup.Global> commonTags = string.IsNullOrEmpty(tags) ? FastTags<TagGroup.Global>.none : FastTags<TagGroup.Global>.Parse(tags);
         if (string.IsNullOrEmpty(rechargeData))
         {
             Log.Error($"No recharge data found on item {__instance.item.Name} action {__instance.ActionIndex}");
             return;
+        }
+        _props.Values.TryGetValue("RechargeTags", out string tags);
+        FastTags<TagGroup.Global> commonTags = string.IsNullOrEmpty(tags) ? FastTags<TagGroup.Global>.none : FastTags<TagGroup.Global>.Parse(tags);
+        if (__instance is ItemActionDynamic)
+        {
+            commonTags |= __instance.ActionIndex != 1 ? FastTags<TagGroup.Global>.Parse("primary") : FastTags<TagGroup.Global>.Parse("secondary");
         }
         rechargeDatas = rechargeData.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToArray();
         rechargeTags = rechargeDatas.Select(s =>

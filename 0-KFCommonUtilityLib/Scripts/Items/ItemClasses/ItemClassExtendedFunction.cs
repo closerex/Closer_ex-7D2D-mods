@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using KFCommonUtilityLib;
+using System.Collections.Generic;
 using UnityEngine.Scripting;
 
 [Preserve]
@@ -11,6 +12,10 @@ public class ItemClassExtendedFunction : ItemClass
             if (Actions[i] != null && Actions[i].IsActionRunning(_invData.actionData[i]))
             {
                 //Log.Out($"interrupt action on item {Actions[i].item.GetLocalizedItemName()} action{i}");
+                if (_invData.actionData[i] is IModuleContainerFor<ActionModuleAnimationInterruptable.AnimationInterruptableData> interruptData)
+                {
+                    interruptData.Instance.interruptRequested = true;
+                }
                 Actions[i].CancelAction(_invData.actionData[i]);
             }
         }

@@ -15,6 +15,12 @@ public class ActionModuleAnimationInterruptable
         interruptStateName = _props.GetString("InterruptStateFullName");
     }
 
+    [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPostfix]
+    public void Postfix_StartHolding(AnimationInterruptableData __customData)
+    {
+        __customData.interruptRequested = false;
+    }
+
     [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
     public void Postfix_OnModificationsChanged(ItemActionData _data, AnimationInterruptableData __customData)
     {
@@ -23,12 +29,13 @@ public class ActionModuleAnimationInterruptable
         {
             __customData.animator = __customData.targets.GraphBuilder.WeaponWrapper;
         }
+        __customData.interruptRequested = false;
     }
 
     [HarmonyPatch(typeof(ItemActionDynamicMelee), nameof(ItemAction.CancelAction)), MethodTargetPostfix]
     public void Postfix_ItemActionDynamicMelee_CancelAction(ItemActionDynamicMelee __instance, ItemActionData _actionData, AnimationInterruptableData __customData)
     {
-        if (__instance.IsActionRunning(_actionData) && __customData.IsInterruptable())
+        if (__instance.IsActionRunning(_actionData) && __customData.interruptRequested && __customData.IsInterruptable())
         {
             var controller = _actionData.invData.holdingEntity?.emodel?.avatarController;
             if (controller != null)
@@ -40,12 +47,14 @@ public class ActionModuleAnimationInterruptable
             __instance.SetAttackFinished(_actionData);
             _actionData.lastUseTime = 0f;
         }
+        __customData.interruptRequested = false;
     }
 
     public class AnimationInterruptableData
     {
         public AnimationTargetsAbs targets;
         public IAnimatorWrapper animator;
+        public bool interruptRequested;
 
         public bool IsInterruptable()
         {

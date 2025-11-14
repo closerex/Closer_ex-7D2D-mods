@@ -28,6 +28,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
     public float SwingAngle = 0f;
     [Range(-180f, 180f)]
     public float SwingDegrees = 0f;
+    public int ForceActionIndex = -1;
     public bool IsAlternative = false;
     public bool InvariableRPM = false;
     public bool CancelLoopOnRelease = false;
@@ -96,7 +97,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         {
             animator.SetWrappedBool(Animator.StringToHash("UseAltMelee"), false);
         }
-        actionIndex = animator.GetWrappedInt(AvatarController.itemActionIndexHash);
+        actionIndex = ForceActionIndex >= 0 ? ForceActionIndex : animator.GetWrappedInt(AvatarController.itemActionIndexHash);
         entity = animator.GetComponentInParent<EntityAlive>();
         if (!slotGurad.IsValid(entity) || entity.isEntityRemote)
         {

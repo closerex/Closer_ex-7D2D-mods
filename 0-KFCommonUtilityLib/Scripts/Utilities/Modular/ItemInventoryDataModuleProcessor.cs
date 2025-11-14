@@ -70,19 +70,6 @@ namespace KFCommonUtilityLib
                     il.Append(ins);
                 }
                 Log.Out($"data module {j} {manipulator.moduleTypes[j].FullName} class module {i} {arr_type_classes[i].FullName}");
-                //il.Emit(OpCodes.Ldarg_0);
-                //il.Emit(OpCodes.Dup);
-                //il.Emit(OpCodes.Ldarg_1);
-                //il.Emit(OpCodes.Ldarg_2);
-                //il.Emit(OpCodes.Ldarg_3);
-                //il.Emit(OpCodes.Ldarg_S, mtddef_ctor.Parameters[3]);
-                //il.Emit(OpCodes.Ldarg_S, mtddef_ctor.Parameters[4]);
-                //il.Emit(OpCodes.Ldarg_1);
-                //il.Emit(OpCodes.Castclass, typedef_newClass);
-                //il.Emit(OpCodes.Ldfld, arr_flddef_classes[i]);
-                //il.Emit(OpCodes.Newobj, manipulator.module.ImportReference(manipulator.moduleTypes[j].GetConstructor(new Type[] { typeof(ItemInventoryData), typeof(ItemClass), typeof(ItemStack), typeof(IGameManager), typeof(EntityAlive), typeof(int), arr_type_classes[i] })));
-                //il.Emit(OpCodes.Stfld, manipulator.arr_flddef_modules[j]);
-                //il.Emit(OpCodes.Nop);
                 j++;
             }
             il.Emit(OpCodes.Ret);
