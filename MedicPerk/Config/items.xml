@@ -72,7 +72,7 @@
 				<property name="Class" value="Ranged"/>
 				<property name="ActionUnlocked" value="false"/>
 				<property name="ActionTags" value="medicAction"/>
-				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MetadataAsHUDStatWithPassiveMax,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>
@@ -83,6 +83,12 @@
 				<property name="ConsumeTags" value="medicWeapon"/>
 				<property name="RechargeData" value="MedicStock"/>
 				<property name="RechargeTags" value="medicWeapon"/>
+				<property name="DisplayMetadata" value="MedicStock"/>
+				<property name="DisplayFormat" value="{0:0}"/>
+				<property name="IconOverride" value="icon_medic_darts_ammo"/>
+				<property name="IconTintOverride" value="255,255,255"/>
+				<property name="PassiveMaxEffect" value="CustomTaggedEffect"/>
+				<property name="PassiveMaxTags" value="medicWeapon,MedicStock,RechargeDataMaximum"/>
 				<property name="Sound_start" value="kf_medicdart_Fire_1p"/>
 				<property name="Sound_loop" value="kf_medicdart_Fire_1p"/>
 				<property name="Sound_repeat" value=""/>
@@ -272,7 +278,7 @@
 				<property name="Class" value="Ranged"/>
 				<property name="ActionUnlocked" value="false"/>
 				<property name="ActionTags" value="medicAction"/>
-				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MetadataAsHUDStatWithPassiveMax,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>
@@ -283,6 +289,12 @@
 				<property name="ConsumeTags" value="medicWeapon"/>
 				<property name="RechargeData" value="MedicStock"/>
 				<property name="RechargeTags" value="medicWeapon"/>
+				<property name="DisplayMetadata" value="MedicStock"/>
+				<property name="DisplayFormat" value="{0:0}"/>
+				<property name="IconOverride" value="icon_medic_darts_ammo"/>
+				<property name="IconTintOverride" value="255,255,255"/>
+				<property name="PassiveMaxEffect" value="CustomTaggedEffect"/>
+				<property name="PassiveMaxTags" value="medicWeapon,MedicStock,RechargeDataMaximum"/>
 				<property name="Sound_start" value="kf_medicdart_Fire_1p"/>
 				<property name="Sound_loop" value="kf_medicdart_Fire_1p"/>
 				<property name="Sound_repeat" value=""/>
@@ -472,7 +484,7 @@
 				<property name="Class" value="Ranged"/>
 				<property name="ActionUnlocked" value="false"/>
 				<property name="ActionTags" value="medicAction"/>
-				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MetadataAsHUDStatWithPassiveMax,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>
@@ -483,6 +495,12 @@
 				<property name="ConsumeTags" value="medicWeapon"/>
 				<property name="RechargeData" value="MedicStock"/>
 				<property name="RechargeTags" value="medicWeapon"/>
+				<property name="DisplayMetadata" value="MedicStock"/>
+				<property name="DisplayFormat" value="{0:0}"/>
+				<property name="IconOverride" value="icon_medic_darts_ammo"/>
+				<property name="IconTintOverride" value="255,255,255"/>
+				<property name="PassiveMaxEffect" value="CustomTaggedEffect"/>
+				<property name="PassiveMaxTags" value="medicWeapon,MedicStock,RechargeDataMaximum"/>
 				<property name="Sound_start" value="kf_medicdart_Fire_1p"/>
 				<property name="Sound_loop" value="kf_medicdart_Fire_1p"/>
 				<property name="Sound_repeat" value=""/>
@@ -655,7 +673,7 @@
 				<property name="Class" value="Ranged"/>
 				<property name="ActionUnlocked" value="false"/>
 				<property name="ActionTags" value="medicAction"/>
-				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;Tagged,KFCommonUtilityLib;LocalPassiveCache,KFCommonUtilityLib;MetaConsumer,KFCommonUtilityLib;MetaRecharger,KFCommonUtilityLib;MetadataAsHUDStatWithPassiveMax,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>
@@ -666,6 +684,12 @@
 				<property name="ConsumeTags" value="medicWeapon"/>
 				<property name="RechargeData" value="MedicStock"/>
 				<property name="RechargeTags" value="medicWeapon"/>
+				<property name="DisplayMetadata" value="MedicStock"/>
+				<property name="DisplayFormat" value="{0:0}"/>
+				<property name="IconOverride" value="icon_medic_darts_ammo"/>
+				<property name="IconTintOverride" value="255,255,255"/>
+				<property name="PassiveMaxEffect" value="CustomTaggedEffect"/>
+				<property name="PassiveMaxTags" value="medicWeapon,MedicStock,RechargeDataMaximum"/>
 				<property name="Sound_start" value="kf_medicdart_Fire_1p"/>
 				<property name="Sound_loop" value="kf_medicdart_Fire_1p"/>
 				<property name="Sound_repeat" value=""/>
