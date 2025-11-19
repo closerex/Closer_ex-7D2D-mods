@@ -18,6 +18,8 @@ public class ActionModuleMetaRecharger
         public FastTags<TagGroup.Global> tagsDecrease;
         public FastTags<TagGroup.Global> tagsDecreaseInterval;
         public FastTags<TagGroup.Global> tagsDecreaseIntervalMultiplier;
+        public FastTags<TagGroup.Global> tagsUnequippedRechargeModifier;
+        public FastTags<TagGroup.Global> tagsUnequippedDecreaseModifier;
     }
 
     public string[] rechargeDatas;
@@ -29,6 +31,8 @@ public class ActionModuleMetaRecharger
     private static readonly FastTags<TagGroup.Global> TagsDecrease = FastTags<TagGroup.Global>.Parse("RechargeDataDecrease");
     private static readonly FastTags<TagGroup.Global> TagsDecreaseInterval = FastTags<TagGroup.Global>.Parse("RechargeDecreaseInterval");
     private static readonly FastTags<TagGroup.Global> TagsDecreaseIntervalMultiplier = FastTags<TagGroup.Global>.Parse("RechargeDataDecreaseIntervalMultiplier");
+    private static readonly FastTags<TagGroup.Global> TagsUnequippedRechargeModifier = FastTags<TagGroup.Global>.Parse("UnequippedRechargeModifier");
+    private static readonly FastTags<TagGroup.Global> TagsUnequippedDecreaseModifier = FastTags<TagGroup.Global>.Parse("UnequippedDecreaseModifier");
 
     [HarmonyPatch(nameof(ItemAction.ReadFrom)), MethodTargetPostfix]
     private void Postfix_ReadFrom(DynamicProperties _props, ItemAction __instance)
@@ -62,6 +66,8 @@ public class ActionModuleMetaRecharger
                 tagsDecrease = _tags | TagsDecrease,
                 tagsDecreaseInterval = _tags | TagsDecreaseInterval,
                 tagsDecreaseIntervalMultiplier = _tags | TagsDecreaseIntervalMultiplier,
+                tagsUnequippedRechargeModifier = _tags | TagsUnequippedRechargeModifier,
+                tagsUnequippedDecreaseModifier = _tags | TagsUnequippedDecreaseModifier
             };
         }).ToArray();
     }
@@ -103,6 +109,7 @@ public class ActionModuleMetaRecharger
         public bool basicIntervalSet = false;
         public float[] basicRechargeInterval, basicDecreaseInterval, lastUpdateTime, lastDecreaseTime;
         private int indexOfAction;
+        private int slotIdx;
 
         public int Index => indexOfAction;
 
@@ -110,6 +117,7 @@ public class ActionModuleMetaRecharger
         {
             module = __customModule;
             indexOfAction = _indexInEntityOfAction;
+            slotIdx = _inventoryData.slotIdx;
             basicRechargeInterval = new float[__customModule.rechargeDatas.Length];
             basicDecreaseInterval = new float[__customModule.rechargeDatas.Length];
             float curTime = Time.time;
@@ -130,6 +138,7 @@ public class ActionModuleMetaRecharger
             holdingEntity.MinEventContext.ItemInventoryData = invData;
             holdingEntity.MinEventContext.ItemValue = itemValue;
             holdingEntity.MinEventContext.ItemActionData = invData.actionData[indexOfAction];
+            bool isHolding = holdingEntity.inventory.holdingItemIdx == slotIdx;
             if (!basicIntervalSet)
             {
                 module.UpdateBasicInterval(invData.actionData[indexOfAction], this);
@@ -169,6 +178,10 @@ public class ActionModuleMetaRecharger
                         {
                             //the result updated here won't exceed max so it's set somewhere else, decrease slowly
                             float dec = EffectManager.GetValue(CustomEnums.CustomTaggedEffect, itemValue, float.MaxValue, holdingEntity, null, rechargeTag.tagsDecrease);
+                            if (!isHolding)
+                            {
+                                dec *= EffectManager.GetValue(CustomEnums.CustomTaggedEffect, itemValue, 1, holdingEntity, null, rechargeTag.tagsUnequippedDecreaseModifier);
+                            }
                             cur = Mathf.Max(cur - dec * deltaDecreaseTime / decreaseInterval, max);
                             lastDecreaseTime[i] = curTime;
                             modified = true;
@@ -183,6 +196,10 @@ public class ActionModuleMetaRecharger
                             {
                                 //add up and clamp to max
                                 float add = EffectManager.GetValue(CustomEnums.CustomTaggedEffect, itemValue, 0, holdingEntity, null, rechargeTag.tagsValue);
+                                if (!isHolding)
+                                {
+                                    add *= EffectManager.GetValue(CustomEnums.CustomTaggedEffect, itemValue, 1, holdingEntity, null, rechargeTag.tagsUnequippedRechargeModifier);
+                                }
                                 cur = Mathf.Min(cur + add * deltaRechargeTime / updateInterval, max);
                                 modified = true;
                             }

@@ -100,6 +100,10 @@
       <HintPath>..\..\7DaysToDie_Data\Managed\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="NGUI">
+      <HintPath>..\..\7DaysToDie_Data\Managed\NGUI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="ScreenSpaceReflections">
       <HintPath>..\..\7DaysToDie_Data\Managed\ScreenSpaceReflections.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -648,6 +652,7 @@
     <Compile Include="Scripts\MinEventActions\MinEventActionModifyCVarWithLocalCache.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionOverrideZoomFOV.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionRemovePrefabFromHeldItem.cs" />
+    <Compile Include="Scripts\MinEventActions\MinEventActionSetItemMetaFloatCapped.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionSetMetadataOnWeaponLabel.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionSetPassiveOnWeaponLabel.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionUpdateLocalCache.cs" />
