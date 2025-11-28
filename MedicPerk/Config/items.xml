@@ -240,7 +240,7 @@
 
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="LoopSoundFix,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="LoopSoundFix,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;FireModeSelector,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>
@@ -254,6 +254,15 @@
 				<property name="Sound_empty" value="kf_ak12_DryFire"/>
 				<property name="Sound_reload" value=""/>
 				<property name="AutoReload" value="false"/>
+				<property name="FireMode0.BurstCount" value="1"/>
+				<property name="FireMode0.IsFullAuto" value="true"/>
+				<property name="FireMode0.ModeName" value="ttFiringModeFullAuto"/>
+				<property name="FireMode1.BurstCount" value="1"/>
+				<property name="FireMode1.IsFullAuto" value="false"/>
+				<property name="FireMode1.ModeName" value="ttFiringModeSemiAuto"/>
+				<property name="FireMode2.BurstCount" value="3"/>
+				<property name="FireMode2.IsFullAuto" value="false"/>
+				<property name="FireMode2.ModeName" value="ttFiringModeBurst3"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_flash_fpv.prefab"/>
 				<property name="Particles_muzzle_smoke" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_smoke.prefab"/>
@@ -640,7 +649,7 @@
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
-				<property name="ItemActionModules" value="LoopSoundFix,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="LoopSoundFix,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;FireModeSelector,KFCommonUtilityLib;MultiActionFix,KFCommonUtilityLib;Alternative,KFCommonUtilityLib"/>
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>
@@ -652,6 +661,15 @@
 				<property name="Sound_loop" value=""/>
 				<property name="Sound_empty" value="kf_ak12_DryFire"/>
 				<property name="AutoReload" value="false"/>
+				<property name="FireMode0.BurstCount" value="1"/>
+				<property name="FireMode0.IsFullAuto" value="true"/>
+				<property name="FireMode0.ModeName" value="ttFiringModeFullAuto"/>
+				<property name="FireMode1.BurstCount" value="1"/>
+				<property name="FireMode1.IsFullAuto" value="false"/>
+				<property name="FireMode1.ModeName" value="ttFiringModeSemiAuto"/>
+				<property name="FireMode2.BurstCount" value="3"/>
+				<property name="FireMode2.IsFullAuto" value="false"/>
+				<property name="FireMode2.ModeName" value="ttFiringModeBurst3"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_ar_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_ar_muzzle_flash_fpv.prefab"/>
 				<property name="Particles_muzzle_smoke" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_ar_muzzle_smoke.prefab"/>
