@@ -3721,17 +3721,17 @@
         <SoundDataNode name="kf_medicar_Fire_1P_Loop"> <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_ar"/> <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_ar_Network"/>
             <Noise ID="4" noise="60" time="4" heat_map_strength="1.0" heat_map_time="180"/>
             <Sequence/>
-            <AudioClip ClipName="none"/>
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?empty"/>
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_MedicAssault_1P_Fire_Loop_City" Loop="true"/>
-            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_MedicAssault_1P_Fire_LoopEnd_City"/>
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_MedicAssault_1P_Fire_LoopEnd_City" AudioSourceName="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_ar_endloop"/>
             <LocalCrouchVolumeScale value="1"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="3"/> <MaxRepeatRate value="0.001"/> </SoundDataNode>
 
-        <SoundDataNode name="kf_medicsmg_Fire_1P_Loop"> <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_smg_loop"/> <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_smg_Network"/>
+        <SoundDataNode name="kf_medicsmg_Fire_1P_Loop"> <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_smg_loop"/> <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_smg_loop_Network"/>
             <Noise ID="4" noise="60" time="5" heat_map_strength="1.0" heat_map_time="120"/>
             <Sequence/>
-            <AudioClip ClipName="none"/>
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?empty"/>
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Medic_SMG_Loop_Outdoor_Surround" Loop="true"/>
-            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Medic_SMG_LoopEnd_Outdoor_Surround"/>
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Medic_SMG_LoopEnd_Outdoor_Surround" AudioSourceName="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_smg_endloop"/>
             <LocalCrouchVolumeScale value="1"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="3"/> <MaxRepeatRate value="0.001"/> </SoundDataNode>
 
         <SoundDataNode name="ion_thruster_idle"> <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_Melee_Swing_ion_thruster_handling"/>
