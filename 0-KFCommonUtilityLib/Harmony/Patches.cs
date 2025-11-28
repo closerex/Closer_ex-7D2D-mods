@@ -1802,48 +1802,48 @@ public static class CommonUtilityPatch
         }
     }
 
-    //public static void Test()
-    //{
-    //    var player = GameManager.Instance.World.GetPrimaryPlayer();
-    //    var localUI = player.PlayerUI;
-    //    var xui = localUI.xui;
-    //    GameObject parentObj = new GameObject("ScreenIconTest");
-    //    Transform parentTrans = parentObj.transform;
-    //    parentTrans.SetParent(xui.transform.parent);
-    //    parentTrans.localPosition = new Vector3(0, 0, 0);
-    //    parentTrans.localRotation = Quaternion.identity;
-    //    parentTrans.localScale = Vector3.one;
-    //    parentObj.layer = 12;
-    //    GameObject spriteObj = new GameObject("Sprite");
-    //    spriteObj.transform.SetParent(parentTrans, false);
-    //    spriteObj.layer = 12;
-    //    UISprite uisprite = spriteObj.AddComponent<UISprite>();
-    //    uisprite.atlas = xui.GetAtlasByName("ItemIconAtlas", "icon_medic_darts_ammo");
-    //    uisprite.spriteName = "icon_medic_darts_ammo";
-    //    uisprite.color = Color.white;
-    //    uisprite.pivot = UIWidget.Pivot.BottomLeft;
-    //    uisprite.SetDimensions(16, 16);
-    //    uisprite.depth = 300;
-    //    uisprite.transform.localPosition = Vector3.zero;
-    //    GameObject textTrans = new GameObject("Label");
-    //    textTrans.transform.SetParent(parentTrans, false);
-    //    textTrans.layer = 12;
-    //    UILabel uilabel = textTrans.AddComponent<UILabel>();
-    //    uilabel.font = xui.GetUIFontByName("ReferenceFont", true);
-    //    uilabel.fontSize = 20;
-    //    uilabel.pivot = UIWidget.Pivot.BottomLeft;
-    //    uilabel.overflowMethod = UILabel.Overflow.ResizeFreely;
-    //    uilabel.alignment = NGUIText.Alignment.Left;
-    //    uilabel.effectStyle = UILabel.Effect.Shadow;
-    //    uilabel.effectColor = new Color32(0, 0, 0, byte.MaxValue);
-    //    uilabel.effectDistance = new Vector2(2f, 2f);
-    //    uilabel.color = Color.white;
-    //    uilabel.text = "65,535";
-    //    uilabel.depth = 300;
-    //    uilabel.width = 200;
-    //    uilabel.transform.localPosition = new Vector2(20, -2.4f);
-    //    parentTrans.localPosition = new Vector2(-1280 * XUi.UIRoot.pixelSizeAdjustment, 0);
-    //}
+    public static void Test()
+    {
+        var player = GameManager.Instance.World.GetPrimaryPlayer();
+        var localUI = player.PlayerUI;
+        var xui = localUI.xui;
+        GameObject parentObj = new GameObject("ScreenIconTest");
+        Transform parentTrans = parentObj.transform;
+        parentTrans.SetParent(xui.transform.parent);
+        parentTrans.localPosition = new Vector3(0, 0, 0);
+        parentTrans.localRotation = Quaternion.identity;
+        parentTrans.localScale = Vector3.one;
+        parentObj.layer = 12;
+        GameObject spriteObj = new GameObject("Sprite");
+        spriteObj.transform.SetParent(parentTrans, false);
+        spriteObj.layer = 12;
+        UISprite uisprite = spriteObj.AddComponent<UISprite>();
+        uisprite.atlas = xui.GetAtlasByName("ItemIconAtlas", "icon_medic_darts_ammo");
+        uisprite.spriteName = "icon_medic_darts_ammo";
+        uisprite.color = Color.white;
+        uisprite.pivot = UIWidget.Pivot.BottomLeft;
+        uisprite.SetDimensions(16, 16);
+        uisprite.depth = 300;
+        uisprite.transform.localPosition = Vector3.zero;
+        GameObject textTrans = new GameObject("Label");
+        textTrans.transform.SetParent(parentTrans, false);
+        textTrans.layer = 12;
+        UILabel uilabel = textTrans.AddComponent<UILabel>();
+        uilabel.font = xui.GetUIFontByName("ReferenceFont", true);
+        uilabel.fontSize = 20;
+        uilabel.pivot = UIWidget.Pivot.BottomLeft;
+        uilabel.overflowMethod = UILabel.Overflow.ResizeFreely;
+        uilabel.alignment = NGUIText.Alignment.Left;
+        uilabel.effectStyle = UILabel.Effect.Shadow;
+        uilabel.effectColor = new Color32(0, 0, 0, byte.MaxValue);
+        uilabel.effectDistance = new Vector2(2f, 2f);
+        uilabel.color = Color.white;
+        uilabel.text = "65,535";
+        uilabel.depth = 300;
+        uilabel.width = 200;
+        uilabel.transform.localPosition = new Vector2(20, -2.4f);
+        parentTrans.localPosition = new Vector2(-1280 * XUi.UIRoot.pixelSizeAdjustment, 0);
+    }
 
     //[HarmonyPatch(typeof(NetPackageDamageEntity), nameof(NetPackageDamageEntity.ProcessPackage)), HarmonyPostfix]
     //private static void Postfix_Test()
@@ -1858,6 +1858,7 @@ public static class CommonUtilityPatch
     ////damage processor
     //[HarmonyPatch(typeof(EntityAlive), nameof(EntityAlive.ProcessDamageResponseLocal))]
     //private static void dumb() { }
+
     //[HarmonyPatch(typeof(ProgressionValue), nameof(ProgressionValue.Level), MethodType.Setter)]
     //[HarmonyPostfix]
     //private static void Postfix_Level_ProgressionValue(int value, ProgressionValue __instance)

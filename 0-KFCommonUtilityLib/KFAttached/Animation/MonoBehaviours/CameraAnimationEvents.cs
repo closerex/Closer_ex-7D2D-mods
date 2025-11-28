@@ -37,7 +37,7 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
     {
         AnimationCurve[] curves;
         float[] values, initialValues;
-        float clipLength, delay, curTime, blendInTime, curBlendInTime, blendOutTime, curBlendOutTime, speed, weight;
+        float clipLength, delay, curTime, blendInTime, curBlendInTime, blendOutTime, curBlendOutTime, curInterruptTime, speed, weight;
         CurveType curveType;
         int speedParamHash;
         bool relative;
@@ -89,14 +89,15 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
             {
                 return;
             }
-            if (interrupted)
-            {
-                curBlendOutTime += dt;
-            }
             if (loop)
             {
                 curTime %= clipLength;
             }
+            if (interrupted)
+            {
+                curInterruptTime += dt;
+            }
+            curBlendOutTime = Mathf.Max(curInterruptTime, loop ? 0 : curTime + blendOutTime - clipLength);
             for (int i = 0; i < curves.Length; i++)
             {
                 if (curves[i] == null)
@@ -115,7 +116,7 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
             {
                 dynamicWeight = Mathf.Lerp(0, dynamicWeight, curBlendInTime / blendInTime);
             }
-            if (interrupted && blendOutTime > 0)
+            if (blendOutTime > 0)
             {
                 dynamicWeight = Mathf.Lerp(dynamicWeight, 0, curBlendOutTime / blendOutTime);
             }

@@ -155,7 +155,7 @@ public class ActionModuleFireModeSelector
                 return true;
             }
             FireMode curFireMode = __customData.fireModes[__customData.currentFireMode];
-            if (curFireMode.burstCount == 1)
+            if (curFireMode.isFullAuto)
             {
                 return true;
             }
@@ -242,10 +242,10 @@ public class ActionModuleFireModeSelector
         public void UpdateDelay(ItemActionData _data)
         {
             FireMode curFireMode = fireModes[currentFireMode];
-            if (curFireMode.burstCount == 1)
-            {
-                return;
-            }
+            //if (curFireMode.burstCount == 1)
+            //{
+            //    return;
+            //}
 
             var rangedData = _data as ItemActionRanged.ItemActionDataRanged;
             var rangedAction = _data.invData.item.Actions[_data.indexInEntityOfAction] as ItemActionRanged;
@@ -300,13 +300,18 @@ public class ActionModuleFireModeSelector
                 rangedData.bPressed = true;
                 rangedData.bReleased = false;
                 rangedData.m_LastShotTime = 0;
-                rangedData.state = ItemActionFiringState.Off;
+                //rangedData.state = ItemActionFiringState.Off;
                 _instance.ExecuteAction(_data, false);
                 //rangedData.curBurstCount = (byte)(curBurstCount + i + 1);
                 isRequestedByCoroutine = false;
                 if (rangedData.invData.itemValue.Meta <= 0 && !_instance.HasInfiniteAmmo(_data))
                 {
                     goto cleanup;
+                }
+                if (i == curFireMode.burstCount - 1)
+                {
+                    _data.invData.gameManager.ItemActionEffectsServer(_data.invData.holdingEntity.entityId, _data.invData.slotIdx, _data.indexInEntityOfAction, 0, Vector3.zero, Vector3.zero, 0);
+                    rangedData.state = ItemActionFiringState.Off;
                 }
                 if (shotDelay > 0)
                 {

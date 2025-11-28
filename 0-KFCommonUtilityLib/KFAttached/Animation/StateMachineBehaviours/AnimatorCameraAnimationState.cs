@@ -350,7 +350,7 @@ public class AnimatorCameraAnimationState : StateMachineBehaviour
         if (cameraEvents)
         {
             int statehash = stateInfo.fullPathHash;
-            cameraEvents.Interrupt(statehash);
+            //cameraEvents.Interrupt(statehash);
             float baseSpeed = normalizeLength ? speed * clipLength / stateDuration : speed * speedMultiplier * initialFpsModifier;
             if (positionCurves != null && positionCurves.Length == 3)
             {

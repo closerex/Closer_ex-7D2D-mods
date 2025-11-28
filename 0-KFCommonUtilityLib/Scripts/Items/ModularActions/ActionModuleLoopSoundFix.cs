@@ -48,10 +48,16 @@ public class ActionModuleLoopSoundFix
                     new CodeInstruction(OpCodes.Ldarg_2),
                     new CodeInstruction(OpCodes.Castclass, type_datamodule),
                     new CodeInstruction(OpCodes.Callvirt, prop_instance),
+                    new CodeInstruction(OpCodes.Dup),
+                    new CodeInstruction(OpCodes.Dup),
+                    CodeInstruction.LoadField(typeof(LoopSoundFixPatches), nameof(LoopSoundFixPatches.LastScheduledNearSourcePlayTime)),
+                    CodeInstruction.StoreField(type_data, nameof(LoopSoundFixData.nearScheduledTime)),
+                    CodeInstruction.LoadField(typeof(LoopSoundFixPatches), nameof(LoopSoundFixPatches.LastScheduledFarSourcePlayTime)),
+                    CodeInstruction.StoreField(type_data, nameof(LoopSoundFixData.farScheduledTime)),
                     new CodeInstruction(OpCodes.Call, prop_time),
-                    CodeInstruction.StoreField(type_data, nameof(LoopSoundFixData.loopStartTime)),
+                    CodeInstruction.StoreField(type_data, nameof(LoopSoundFixData.loopStartTime))
                 });
-                i += 5;
+                i += 11;
             }
         }
 
@@ -122,18 +128,22 @@ public class ActionModuleLoopSoundFix
         return codes;
     }
 
+    [HarmonyPatch(nameof(ItemActionRanged.onHoldingEntityFired)), MethodTargetPostfix]
+    public void Postfix_onHoldingEntityFired(LoopSoundFixData __customData)
+    {
+        __customData.shotCount++;
+    }
+
     [HarmonyPatch(nameof(ItemActionRanged.StartHolding)), MethodTargetPostfix]
     public void Postfix_StartHolding(LoopSoundFixData __customData)
     {
-        __customData.loopStartTime = -1;
-        __customData.lastShotTime = -1;
+        __customData.Reset();
     }
 
     [HarmonyPatch(nameof(ItemActionRanged.StopHolding)), MethodTargetPostfix]
     public void Postfix_StopHolding(LoopSoundFixData __customData)
     {
-        __customData.loopStartTime = -1;
-        __customData.lastShotTime = -1;
+        __customData.Reset();
     }
 
     [HarmonyPatch(nameof(ItemAction.ReadFrom)), MethodTargetPostfix]
@@ -149,8 +159,12 @@ public class ActionModuleLoopSoundFix
     {
         public double loopStartTime;
         public double lastShotTime;
+        public double nearScheduledTime;
+        public double farScheduledTime;
+        public int shotCount;
         public ItemActionRanged.ItemActionDataRanged rangedData;
         public ActionModuleLoopSoundFix module;
+        private static bool debugLog = false;
 
         public LoopSoundFixData(ItemActionRanged.ItemActionDataRanged __instance, ActionModuleLoopSoundFix __customModule)
         {
@@ -158,13 +172,30 @@ public class ActionModuleLoopSoundFix
             module = __customModule;
         }
 
+        public void Reset()
+        {
+            loopStartTime = -1;
+            lastShotTime = -1;
+            nearScheduledTime = -1;
+            farScheduledTime = -1;
+            shotCount = 0;
+        }
+
         public static void StopSequenceDelayed(Entity entity, string soundGroupName, LoopSoundFixData data)
         {
-            if (data.loopStartTime >= 0f)
+            if (debugLog)
             {
-                DelayedStopSequence(entity, soundGroupName, data.module.loopSegTimeOverride > 0f ? data.module.loopSegTimeOverride : data.rangedData.Delay, data.module.acceptableError);
+                Log.Out($"[LoopSoundFix] StopSequenceDelayed called for entity {entity.entityId}, soundGroupName: {soundGroupName}, loopStartTime: {data.loopStartTime}, shotCount: {data.shotCount}\n{StackTraceUtility.ExtractStackTrace()}");
             }
-            Manager.StopSequence(entity, soundGroupName);
+            if (data.loopStartTime >= 0f && data.shotCount > 0)
+            {
+                DelayedStopSequence(entity, soundGroupName, data.nearScheduledTime, data.farScheduledTime, data.module.loopSegTimeOverride > 0f ? data.module.loopSegTimeOverride : data.rangedData.Delay, data.shotCount, data.module.acceptableError);
+            }
+            else
+            {
+                Manager.StopSequence(entity, soundGroupName);
+            }
+            data.Reset();
         }
 
         private static IEnumerator DelayedDestroyPrevSeq(Manager.SequenceStopper sequenceStopper)
@@ -180,7 +211,7 @@ public class ActionModuleLoopSoundFix
             }
         }
 
-        private static void DelayedStopSequence(Entity entity, string soundGroupName, double loopSegTime, double acceptableError)
+        private static void DelayedStopSequence(Entity entity, string soundGroupName, double nearScheduledStartTime, double farScheduledStartTime, double loopSegTime, int expectedShots, double acceptableError)
         {
             if (GameManager.IsDedicatedServer || soundGroupName == null)
             {
@@ -193,45 +224,16 @@ public class ActionModuleLoopSoundFix
             {
                 AudioSource nearAudioSource = null;
                 AudioSource farAudioSource = null;
-                double dspTime = AudioSettings.dspTime;
                 float delay = 0;
                 if (sequenceGOs.nearLoop)
                 {
                     nearAudioSource = sequenceGOs.nearLoop.GetComponent<AudioSource>();
-                    if (nearAudioSource)
-                    {
-                        double sampleTime = nearAudioSource.timeSamples / (double)nearAudioSource.clip.frequency;
-                        double actualDelay = loopSegTime - sampleTime % loopSegTime;
-                        if (actualDelay < loopSegTime * (1 - acceptableError))
-                        {
-                            nearAudioSource.SetScheduledEndTime(dspTime + actualDelay);
-                            delay = Mathf.Max(delay, (float)actualDelay);
-                        }
-                        else
-                        {
-                            nearAudioSource.Stop();
-                        }
-                        Manager.RemovePlayingAudioSource(nearAudioSource);
-                    }
+                    DelayStopLoop(sequenceGOs.nearStart ? sequenceGOs.nearStart.GetComponent<AudioSource>() : null, nearAudioSource, nearScheduledStartTime, loopSegTime, expectedShots, acceptableError, ref delay);
                 }
                 if (sequenceGOs.farLoop)
                 {
                     farAudioSource = sequenceGOs.farLoop.GetComponent<AudioSource>();
-                    if (farAudioSource)
-                    {
-                        double sampleTime = farAudioSource.timeSamples / (double)farAudioSource.clip.frequency;
-                        double actualDelay = loopSegTime - sampleTime % loopSegTime;
-                        if (actualDelay < loopSegTime * (1 - acceptableError))
-                        {
-                            farAudioSource.SetScheduledEndTime(dspTime + actualDelay);
-                            delay = Mathf.Max(delay, (float)actualDelay);
-                        }
-                        else
-                        {
-                            farAudioSource.Stop();
-                        }
-                        Manager.RemovePlayingAudioSource(farAudioSource);
-                    }
+                    DelayStopLoop(sequenceGOs.farStart ? sequenceGOs.farStart.GetComponent<AudioSource>() : null, farAudioSource, farScheduledStartTime, loopSegTime, expectedShots, acceptableError, ref delay);
                 }
                 dictionary.Remove(soundGroupName);
 
@@ -250,13 +252,13 @@ public class ActionModuleLoopSoundFix
                         if (audioSourceNearEnd)
                         {
                             audioSourceNearEnd.volume *= Manager.CalculateOcclusion(entity.position - Origin.position, Manager.currentListenerPosition);
-                            audioSourceNearEnd.Play();
+                            audioSourceNearEnd.PlayScheduled(AudioSettings.dspTime + delay);
                             Manager.AddPlayingAudioSource(audioSourceNearEnd);
                         }
                         if (audioSourceFarEnd)
                         {
                             audioSourceFarEnd.volume *= Manager.CalculateOcclusion(entity.position - Origin.position, Manager.currentListenerPosition);
-                            audioSourceFarEnd.Play();
+                            audioSourceFarEnd.PlayScheduled(AudioSettings.dspTime + delay);
                             Manager.AddPlayingAudioSource(audioSourceFarEnd);
                         }
                     }
@@ -278,6 +280,7 @@ public class ActionModuleLoopSoundFix
                     if (!stoppedSequences.TryGetValue(soundGroupName, out sequenceStopper))
                     {
                         List<GameObject> list = new List<GameObject>();
+                        float maxStopClipLength = 0f;
                         if (sequenceGOs.nearStart)
                         {
                             list.Add(sequenceGOs.nearStart);
@@ -289,6 +292,7 @@ public class ActionModuleLoopSoundFix
                         if (sequenceGOs.nearEnd)
                         {
                             list.Add(sequenceGOs.nearEnd);
+                            maxStopClipLength = Mathf.Max(maxStopClipLength, sequenceGOs.nearEnd.GetComponent<AudioSource>().clip.length + .5f);
                         }
                         if (sequenceGOs.farStart)
                         {
@@ -301,12 +305,119 @@ public class ActionModuleLoopSoundFix
                         if (sequenceGOs.farEnd)
                         {
                             list.Add(sequenceGOs.farEnd);
+                            maxStopClipLength = Mathf.Max(maxStopClipLength, sequenceGOs.farEnd.GetComponent<AudioSource>().clip.length + .5f);
                         }
-                        sequenceStopper = new Manager.SequenceStopper(list, (float)(Time.time + Mathf.Max(delay * 2, sequenceGOs.longestClipLength)));
+                        sequenceStopper = new Manager.SequenceStopper(list, Time.time + delay + maxStopClipLength);
                         stoppedSequences.Add(soundGroupName, sequenceStopper);
                     }
                 }
             }
         }
+
+        private static void DelayStopLoop(AudioSource startSource, AudioSource loopSource, double scheduledStartTime, double loopSegTime, int expectedShots, double acceptableError, ref float delay)
+        {
+            if (loopSource)
+            {
+                double dspTime = scheduledStartTime < 0 ? AudioSettings.dspTime : scheduledStartTime;
+                double sampleTime = loopSource.timeSamples / (double)loopSource.clip.frequency;
+                double actualDelay = loopSegTime - sampleTime % loopSegTime;
+                int pendingShots = (int)(sampleTime / loopSegTime) + 1;
+                double startDelay = 0, burstShotDelay = 0;
+                if (startSource)
+                {
+                    double startClipLength = startSource.clip.samples / (double)startSource.clip.frequency / 2;
+                    if (startClipLength > 0)
+                    {
+                        if (scheduledStartTime > 0)
+                        {
+                            startDelay = sampleTime;
+                        }
+                        else if (startSource.isPlaying)
+                        {
+                            startDelay = Mathf.Max(startSource.clip.samples / 2 - startSource.timeSamples, 0) / (double)startSource.clip.frequency;
+                        }
+                        int delayedShots = Mathf.Min(Mathf.CeilToInt((float)startClipLength / (float)loopSegTime), expectedShots - 1);
+                        burstShotDelay = Mathf.Clamp(expectedShots - pendingShots, 0, delayedShots) * loopSegTime;
+                        if (debugLog)
+                        {
+                            Log.Out($"[LoopSoundFix] nearStartSource sampleTime: {sampleTime}, scheduledStartTime: {scheduledStartTime}, actualDelay: {actualDelay}, startDelay: {startDelay}, burstShotDelay: {burstShotDelay}, loopSegTime: {loopSegTime}, delayedShots: {delayedShots}, expectedShots: {expectedShots}, pendingShots: {pendingShots}");
+                        }
+                    }
+                }
+                if (sampleTime == 0 || startDelay > 0 || actualDelay < loopSegTime * (1 - acceptableError))
+                {
+                    loopSource.SetScheduledEndTime(dspTime + actualDelay + startDelay + burstShotDelay);
+                    delay = Mathf.Max(delay, (float)actualDelay);
+                }
+                else
+                {
+                    loopSource.Stop();
+                }
+                Manager.RemovePlayingAudioSource(loopSource);
+            }
+        }
+    }
+}
+
+[HarmonyPatch]
+public static class LoopSoundFixPatches
+{
+    public static double LastScheduledNearSourcePlayTime = -1f;
+    public static double LastScheduledFarSourcePlayTime = -1f;
+    
+    [HarmonyPatch(typeof(Manager), nameof(Manager.PlaySequence))]
+    [HarmonyPrefix]
+    private static void Prefix_PlaySequence_Manager()
+    {
+        LastScheduledFarSourcePlayTime = LastScheduledNearSourcePlayTime = -1f;
+    }
+
+    [HarmonyPatch(typeof(Manager), nameof(Manager.PlaySequence))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_PlaySequence_Manager(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var mtd_play = AccessTools.Method(typeof(AudioSource), nameof(AudioSource.PlayScheduled));
+        var fld_near = AccessTools.Field(typeof(Manager.SequenceGOs), nameof(Manager.SequenceGOs.nearLoop));
+        var fld_far = AccessTools.Field(typeof(Manager.SequenceGOs), nameof(Manager.SequenceGOs.farLoop));
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].StoresField(fld_near))
+            {
+                for (int j = i - 1; j >= 0; j--)
+                {
+                    if (codes[j].Calls(mtd_play))
+                    {
+                        codes.InsertRange(j + 1, new[]
+                        {
+                            new CodeInstruction(OpCodes.Ldloc_S, codes[j - 1].operand),
+                            CodeInstruction.StoreField(typeof(LoopSoundFixPatches), nameof(LoopSoundFixPatches.LastScheduledNearSourcePlayTime))
+                        });
+                        i += 2;
+                        break;
+                    }
+                }
+            }
+            else if (codes[i].StoresField(fld_far))
+            {
+                for (int j = i - 1; j >= 0; j--)
+                {
+                    if (codes[j].Calls(mtd_play))
+                    {
+                        codes.InsertRange(j + 1, new[]
+                        {
+                            new CodeInstruction(OpCodes.Ldloc_S, codes[j - 1].operand),
+                            CodeInstruction.StoreField(typeof(LoopSoundFixPatches), nameof(LoopSoundFixPatches.LastScheduledFarSourcePlayTime))
+                        });
+                        i += 2;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return codes;
     }
 }

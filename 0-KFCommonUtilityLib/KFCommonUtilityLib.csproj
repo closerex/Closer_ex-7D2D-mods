@@ -605,7 +605,7 @@
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAlternative.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationInterruptable.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationInterruptSource.cs" />
-    <Compile Include="Scripts\Items\ModularActions\ActionModuleIAltMeleeInspectTrigger.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleAltMeleeInspectTrigger.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleInversedAction.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleLimitedCombo.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleLoopSoundFix.cs" />
