@@ -12,6 +12,7 @@
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingRobotics']">
 				<display_entry item="meleeWpnBladeT3KF2Eviscerator" unlock_level="86,88,90,92,94,96" />
 				<display_entry item="ammoEvisceratorSawBlade" unlock_level="86" />
+				<display_entry item="resourceEvisceratorRepairKit" unlock_level="86" />
 			</append>
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingRobotics']/effect_group">
 				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="86,100" value="1" tags="resourceEvisceratorRepairKit"/>

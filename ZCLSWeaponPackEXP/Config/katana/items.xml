@@ -78,7 +78,7 @@
 				<passive_effect name="StaminaLoss" operation="base_set" value="13" tags="primary"/>
 				<passive_effect name="DegradationMax" operation="base_set" value="500,1000" tier="1,6" tags="perkDeepCuts"/>
 				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkDeepCuts"/>
-				<passive_effect name="MaxRange" operation="base_set" value="3.2" tags="perkDeepCuts"/>
+				<passive_effect name="MaxRange" operation="base_set" value="2.8" tags="perkDeepCuts"/>
 				<passive_effect name="BlockRange" operation="base_set" value="3.5" tags="perkDeepCuts"/>
 				<passive_effect name="ModSlots" operation="base_set" value="2,2,2,3,3,4" tier="1,2,3,4,5,6"/>
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
@@ -215,14 +215,14 @@
 					<passive_effect name="BuffResistance" operation="base_add" value=".35" tags="buffFatiguedTrigger,buffArmSprainedCHTrigger,buffLegSprainedCHTrigger,buffLaceration,buffInfectionCatch,buffAbrasionCatch,buffInjuryStunned01CHTrigger,buffInjuryBleedingTwo"/>
 			</effect_group>
 			<effect_group name="meleeWpnBladeT3KF2Katana">
-				<passive_effect name="AttacksPerMinute" operation="base_set" value="120" tags="primary"/>
+				<passive_effect name="AttacksPerMinute" operation="base_set" value="126" tags="primary"/>
 				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".4" tags="primary"/>
 				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value=".8" tags="primary"/>
 				<passive_effect name="StaminaLoss" operation="base_set" value="18" tags="primary"/> <!-- - 10% -->
 				<passive_effect name="DegradationMax" operation="base_set" value="1000,2000" tier="1,6" tags="perkDeepCuts"/>
 				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkDeepCuts"/>
-				<passive_effect name="MaxRange" operation="base_set" value="2.7" tags="perkDeepCuts"/>
-				<passive_effect name="BlockRange" operation="base_set" value="3.9" tags="perkDeepCuts"/>
+				<passive_effect name="MaxRange" operation="base_set" value="2.6" tags="perkDeepCuts"/>
+				<passive_effect name="BlockRange" operation="base_set" value="3.2" tags="perkDeepCuts"/>
 				<passive_effect name="ModSlots" operation="base_set" value="3,3,3,4,4,4" tier="1,2,3,4,5,6"/>
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
