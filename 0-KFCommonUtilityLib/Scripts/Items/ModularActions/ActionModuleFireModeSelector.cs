@@ -306,6 +306,8 @@ public class ActionModuleFireModeSelector
                 isRequestedByCoroutine = false;
                 if (rangedData.invData.itemValue.Meta <= 0 && !_instance.HasInfiniteAmmo(_data))
                 {
+                    _data.invData.gameManager.ItemActionEffectsServer(_data.invData.holdingEntity.entityId, _data.invData.slotIdx, _data.indexInEntityOfAction, 0, Vector3.zero, Vector3.zero, 0);
+                    rangedData.state = ItemActionFiringState.Off;
                     goto cleanup;
                 }
                 if (i == curFireMode.burstCount - 1)
