@@ -32,16 +32,6 @@ class Patches
         return codes;
     }
 
-    [HarmonyPatch(typeof(XUiC_MainMenu), nameof(XUiC_MainMenu.OnOpen))]
-    [HarmonyPrefix]
-    private static bool Prefix_OnOpen_XUiC_MainMenu(XUiC_MainMenu __instance)
-    {
-        __instance.xui.playerUI.windowManager.Close(RandomBackgroundLoader.Cur_name);
-        __instance.xui.playerUI.windowManager.Close(RandomBackgroundLoader.Cur_logo);
-
-        return true;
-    }
-
     [HarmonyPatch(typeof(XUiC_MainMenu), nameof(XUiC_MainMenu.OpenGlobalMenuWindows))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_OpenGlobalMenuWindows_XUiC_MainMenu(IEnumerable<CodeInstruction> instructions)
@@ -53,7 +43,11 @@ class Patches
             CodeInstruction code = codes[i];
             if (code.opcode == OpCodes.Ldloc_2)
             {
-                codes.Insert(i + 1, CodeInstruction.Call(typeof(RandomBackgroundLoader), nameof(RandomBackgroundLoader.modWindowName)));
+                codes.InsertRange(i + 1, new[]
+                {
+                    CodeInstruction.LoadLocal(0),
+                    CodeInstruction.Call(typeof(RandomBackgroundLoader), nameof(RandomBackgroundLoader.modWindowName))
+                });
                 break;
             }
         }
@@ -72,27 +66,15 @@ class Patches
             CodeInstruction code = codes[i];
             if (code.opcode == OpCodes.Ldloc_2)
             {
-                codes.Insert(i + 1, CodeInstruction.Call(typeof(RandomBackgroundLoader), nameof(RandomBackgroundLoader.modWindowName)));
+                codes.InsertRange(i + 1, new[]
+                {
+                    CodeInstruction.LoadLocal(0),
+                    CodeInstruction.Call(typeof(RandomBackgroundLoader), nameof(RandomBackgroundLoader.modWindowName))
+                });
                 break;
             }
         }
 
         return codes;
-    }
-
-    [HarmonyPatch(typeof(XUiC_MainMenu), nameof(XUiC_MainMenu.OnClose))]
-    [HarmonyPostfix]
-    private static void Postfix_OnClose_XUiC_MainMenu(XUiC_MainMenu __instance)
-    {
-        __instance.xui.playerUI.windowManager.Close(RandomBackgroundLoader.Cur_logo);
-    }
-    
-    [HarmonyPatch(typeof(GameManager), nameof(GameManager.StartGame))]
-    [HarmonyPrefix]
-    private static bool Prefix_StartGame_GameManager(GameManager __instance)
-    {
-        if (!GameManager.IsDedicatedServer)
-            __instance.windowManager.Close(RandomBackgroundLoader.Cur_name);
-        return true;
     }
 }

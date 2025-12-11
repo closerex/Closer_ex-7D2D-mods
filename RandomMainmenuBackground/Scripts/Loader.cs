@@ -7,79 +7,59 @@ public class RandomBackgroundLoader
 {
     public static void insert(string name)
     {
-        if (name.StartsWith(prefix_name))
-            insertName(name.TrimStart(prefix_name.ToCharArray()));
+        if (name.StartsWith(prefix_bg))
+            insert(list_bg, prefix_bg, name.Substring(prefix_bg.Length));
         else if (name.StartsWith(prefix_logo))
-            insertLogo(name.TrimStart(prefix_logo.ToCharArray()));
+            insert(list_logos, prefix_logo,name.Substring(prefix_logo.Length));
         else
             return;
     }
 
-    public static string modWindowName(string name)
+    public static string modWindowName(string name, GUIWindowManager wm)
     {
-        if (name == prefix_name)
-            return prefix_name + getName();
+        if (name == prefix_bg)
+            return getCurrentOrNext(wm, list_bg, prefix_bg, ref cur_bg);
         if (name == prefix_logo)
-            return prefix_logo + getLogo();
+            return getCurrentOrNext(wm, list_logos, prefix_logo, ref cur_logo);
         return name;
     }
 
-    public static string getName()
+    private static string getCurrentOrNext(GUIWindowManager wm, List<string> list_names, string prefix, ref string curName)
     {
-        string str;
-        if (set_names.Count <= 0)
-            str = string.Empty;
-        else
-            str = set_names.ElementAt<string>(rnd.Next(set_names.Count));
-        cur_name = prefix_name + str;
-        Log.Out("Loading background: " + cur_name);
-        return str;
+        string winId = prefix + curName;
+        if (list_names.Count <= 0)
+        {
+            Log.Out($"No override found for {prefix}, loading default.");
+            return prefix;
+        }
+        else if (wm.IsWindowOpen(winId))
+        {
+            Log.Out($"Window is open, using current override for {prefix}: {winId}");
+            return winId;
+        }
+        curName = list_names[UnityEngine.Random.Range(0, list_names.Count)];
+        winId = prefix + curName;
+
+        Log.Out($"Loading override for {prefix}: {winId}");
+        return winId;
     }
 
-    public static string getLogo()
+    private static void insert(List<string> list, string prefix, string name)
     {
-        string str;
-        if (set_logos.Count <= 0)
-            str = string.Empty;
-        else
-            str = set_logos.ElementAt<string>(rnd.Next(set_logos.Count));
-        cur_logo = prefix_logo + str;
-        Log.Out("Loading logo: " + cur_logo);
-        return str;
-    }
-
-    private static void insertName(string name)
-    {
-        Log.Out("background name :" + name);
-        if (name.Length <= 0)
+        if (string.IsNullOrEmpty(name))
             return;
+        Log.Out($"reading override for {prefix}: {name}");
 
-        if (set_names.Contains(name))
-            Log.Warning("Window group already exists: " + name + ".");
+        if (list.Contains(name))
+            Log.Warning($"Window group already exists: {prefix + name}.");
         else
-            set_names.Add(name);
+            list.Add(name);
     }
 
-    private static void insertLogo(string name)
-    {
-        Log.Out("logo name: " + name);
-        if (name.Length <= 0)
-            return;
-
-        if (set_logos.Contains(name))
-            Log.Warning("Window group already exists: " + name + ".");
-        else
-            set_logos.Add(name);
-    }
-
-    private static HashSet<string> set_names = new HashSet<string>();
-    private static HashSet<string> set_logos = new HashSet<string>();
-    private static readonly Random rnd = new Random();
-    private const string prefix_name = "menuBackground";
+    private static List<string> list_bg = new();
+    private static List<string> list_logos = new();
+    private const string prefix_bg = "menuBackground";
     private const string prefix_logo = "mainMenuLogo";
-    private static string cur_name = string.Empty, cur_logo = string.Empty;
-
-    public static string Cur_name { get => cur_name; }
-    public static string Cur_logo { get => cur_logo; }
+    private static string cur_bg = string.Empty, cur_logo = string.Empty;
 }
 
