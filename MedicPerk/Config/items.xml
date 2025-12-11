@@ -36,6 +36,7 @@
 			<property name="SoundHolster" value="weapon_holster"/>
 			<property name="SoundPickup" value="pistol_grab"/>
 			<property name="SoundPlace" value="pistol_place"/>
+			<property name="TakeOverReloadTime" value="true"/>
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
@@ -127,7 +128,10 @@
 					<requirement name="ProgressionLevel" progression_name="perkGunslinger" operation="GTE" value="5"/>
 				</passive_effect>
 				<passive_effect name="MagazineSize" operation="base_set" value="15" tags="perkGunslinger,medicWeapon"/>
-				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkGunslinger,medicWeapon"/> <!-- 4s -->
+                <passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkGunslinger"/>
+                <passive_effect name="ReloadSpeedMultiplier" operation="perc_add" value="-.3" tags="perkGunslinger">
+					<requirement name="ProgressionLevel" progression_name="perkGunslinger" operation="GTE" value="5"/>
+				</passive_effect>
 				<passive_effect name="ModSlots" operation="base_set" value="1,2,3,4,4,4" tier="1,2,3,4,5,6"/>
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
@@ -237,6 +241,7 @@
 			<property name="SoundHolster" value="weapon_holster"/>
 			<property name="SoundPickup" value="rifle_polymer_grab"/>
 			<property name="SoundPlace" value="rifle_polymer_place"/>
+			<property name="TakeOverReloadTime" value="true"/>
 
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
@@ -263,6 +268,7 @@
 				<property name="FireMode2.BurstCount" value="3"/>
 				<property name="FireMode2.IsFullAuto" value="false"/>
 				<property name="FireMode2.ModeName" value="ttFiringModeBurst3"/>
+				<property name="FireModeSwitchingSound" value="kf_ui_mode_switch"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_flash_fpv.prefab"/>
 				<property name="Particles_muzzle_smoke" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_smoke.prefab"/>
@@ -309,6 +315,7 @@
 				<property name="Sound_repeat" value=""/>
 				<property name="Sound_end" value=""/>
 				<property name="Sound_empty" value="kf_medicdart_DryFire"/>
+				<property name="LoopSegmentLength" value="0.0751"/>
 				<property name="AutoReload" value="false"/>
 				<property name="Infinite_ammo" value="true"/>
 				<property name="ExcludeTags" value="attAgility,9mmGun"/>
@@ -343,7 +350,10 @@
 					<requirement name="ProgressionLevel" progression_name="perkGunslinger" operation="GTE" value="5"/>
 				</passive_effect>
 				<passive_effect name="MagazineSize" operation="base_set" value="40" tags="perkGunslinger,medicWeapon"/>
-				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1.568" tags="perkGunslinger,medicWeapon"/> <!-- 4s -->
+                <passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkGunslinger"/>
+                <passive_effect name="ReloadSpeedMultiplier" operation="perc_add" value="-.3" tags="perkGunslinger">
+					<requirement name="ProgressionLevel" progression_name="perkGunslinger" operation="GTE" value="5"/>
+				</passive_effect>
 				<passive_effect name="ModSlots" operation="base_set" value="1,2,3,4,5,5" tier="1,2,3,4,5,6"/>
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
@@ -452,6 +462,7 @@
 			<property name="SoundHolster" value="weapon_holster"/>
 			<property name="SoundPickup" value="shotgun_polymer_grab"/>
 			<property name="SoundPlace" value="shotgun_polymer_place"/>
+			<property name="TakeOverReloadTime" value="true"/>
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
@@ -548,7 +559,10 @@
 					<requirement name="ProgressionLevel" progression_name="perkBoomstick" operation="GTE" value="5"/>
 				</passive_effect>
 				<passive_effect name="MagazineSize" operation="base_set" value="10" tags="perkBoomstick,medicWeapon"/>
-				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="0.75" tags="perkBoomstick,medicWeapon"/> <!-- 4s -->
+                <passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkBoomstick"/>
+                <passive_effect name="ReloadSpeedMultiplier" operation="perc_add" value="-.3" tags="perkBoomstick">
+					<requirement name="ProgressionLevel" progression_name="perkBoomstick" operation="GTE" value="5"/>
+				</passive_effect>
 				<passive_effect name="ModSlots" operation="base_set" value="1,2,3,4,5,6" tier="1,2,3,4,5,6"/>
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
@@ -618,6 +632,7 @@
 					<triggered_effect trigger="onSelfItemSwitchMode" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
 			</effect_group>
 		</item>
+
 		<item name="gunMedicAssaultRifle401">
 			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
 			<property name="CustomIcon" value="medic_ar401"/>
@@ -646,6 +661,7 @@
 			<property name="SoundHolster" value="weapon_holster"/>
 			<property name="SoundPickup" value="rifle_polymer_grab"/>
 			<property name="SoundPlace" value="rifle_polymer_place"/>
+			<property name="TakeOverReloadTime" value="true"/>
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
@@ -670,6 +686,7 @@
 				<property name="FireMode2.BurstCount" value="3"/>
 				<property name="FireMode2.IsFullAuto" value="false"/>
 				<property name="FireMode2.ModeName" value="ttFiringModeBurst3"/>
+				<property name="FireModeSwitchingSound" value="kf_ui_mode_switch"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_ar_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_ar_muzzle_flash_fpv.prefab"/>
 				<property name="Particles_muzzle_smoke" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_ar_muzzle_smoke.prefab"/>
@@ -713,6 +730,7 @@
 				<property name="Sound_repeat" value=""/>
 				<property name="Sound_end" value=""/>
 				<property name="Sound_empty" value="kf_medicdart_DryFire"/>
+				<property name="LoopSegmentLength" value="0.09231"/>
 				<property name="AutoReload" value="false"/>
 				<property name="Infinite_ammo" value="true"/>
 				<property name="ExcludeTags" value="attFortitude,perkBookAutoWeapons,machinegunSkill"/>
@@ -746,7 +764,10 @@
 					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="GTE" value="5"/>
 				</passive_effect>
 				<passive_effect name="MagazineSize" operation="base_set" value="40" tags="perkMachineGunner,medicWeapon"/>
-				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="0.733" tags="perkMachineGunner,medicWeapon"/> <!-- 4s -->
+                <passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkMachineGunner"/>
+                <passive_effect name="ReloadSpeedMultiplier" operation="perc_add" value="-.3" tags="perkMachineGunner">
+					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="GTE" value="5"/>
+				</passive_effect>
 				<passive_effect name="ModSlots" operation="base_set" value="1,2,3,4,5,5" tier="1,2,3,4,5,6"/>
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
@@ -1330,4 +1351,32 @@
 			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
 		</if>
 	</conditional>
+
+    <conditional>
+        <if cond="mod_loaded('EFTX_Pack_Standard')">
+            <csv xpath="/items/item[@name='gunMedicPistol']/property[@name='Tags']/@value" delim="," op="add">eftPistol</csv>
+            <csv xpath="/items/item[@name='gunMedicPistol']/effect_group/requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="add">perkEFTXPistols</csv>
+            <csv xpath="/items/item[@name='gunMedicPistol']/effect_group/requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="remove">perkGunslinger</csv>
+            <csv xpath="/items/item[@name='gunMedicPistol']/effect_group//requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="add">perkEFTXPistols</csv>
+            <csv xpath="/items/item[@name='gunMedicPistol']/effect_group//requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="remove">perkGunslinger</csv>
+
+            <csv xpath="/items/item[@name='gunMedicSMG201']/property[@name='Tags']/@value" delim="," op="add">eftSMG</csv>
+            <csv xpath="/items/item[@name='gunMedicSMG201']/effect_group/requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="add">perkEFTXSMGS</csv>
+            <csv xpath="/items/item[@name='gunMedicSMG201']/effect_group/requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="remove">perkGunslinger</csv>
+            <csv xpath="/items/item[@name='gunMedicSMG201']/effect_group//requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="add">perkEFTXSMGS</csv>
+            <csv xpath="/items/item[@name='gunMedicSMG201']/effect_group//requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="remove">perkGunslinger</csv>
+
+            <csv xpath="/items/item[@name='gunMedicShotgun301']/property[@name='Tags']/@value" delim="," op="add">eftShotties</csv>
+            <csv xpath="/items/item[@name='gunMedicShotgun301']/effect_group/requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="add">perkEFTXShotties</csv>
+            <csv xpath="/items/item[@name='gunMedicShotgun301']/effect_group/requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="remove">perkBoomstick</csv>
+            <csv xpath="/items/item[@name='gunMedicShotgun301']/effect_group//requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="add">perkEFTXShotties</csv>
+            <csv xpath="/items/item[@name='gunMedicShotgun301']/effect_group//requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="remove">perkBoomstick</csv>
+
+            <csv xpath="/items/item[@name='gunMedicAssaultRifle401']/property[@name='Tags']/@value" delim="," op="add">eftMGS</csv>
+            <csv xpath="/items/item[@name='gunMedicAssaultRifle401']/effect_group/requirement[contains(@progression_name, 'perkMachineGunner')]/@progression_name" delim="," op="add">perkEFTXMGS</csv>
+            <csv xpath="/items/item[@name='gunMedicAssaultRifle401']/effect_group/requirement[contains(@progression_name, 'perkMachineGunner')]/@progression_name" delim="," op="remove">perkMachineGunner</csv>
+            <csv xpath="/items/item[@name='gunMedicAssaultRifle401']/effect_group//requirement[contains(@progression_name, 'perkMachineGunner')]/@progression_name" delim="," op="add">perkEFTXMGS</csv>
+            <csv xpath="/items/item[@name='gunMedicAssaultRifle401']/effect_group//requirement[contains(@progression_name, 'perkMachineGunner')]/@progression_name" delim="," op="remove">perkMachineGunner</csv>
+        </if>
+    </conditional>
 </configs>

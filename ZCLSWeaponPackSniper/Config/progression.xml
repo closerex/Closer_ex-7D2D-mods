@@ -3,6 +3,18 @@
         <if cond="mod_loaded('EFT_Overhaul')">
 
         </if>
+		<if cond="mod_loaded('EFTX_Pack_Standard')">
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTRifles']/display_entry[contains(@icon, 'gunmosin')]/@icon">,gunKFMosin</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTRifles']/display_entry[contains(@icon, 'gunmosin')]/unlock_entry[contains(@item, 'gunmosin')]/@item">,gunKFMosin</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTRifles']/effect_group/passive_effect[contains(@tags, 'gunmosin') and (@name='RecipeTagUnlocked' or @name='CraftingTier')]/@tags">,gunKFMosin</append>
+
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTRifles']/display_entry[contains(@icon, 'gunaxmc')]/@icon">,gunKFM99</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTRifles']/display_entry[contains(@icon, 'gunaxmc')]/unlock_entry[contains(@item, 'gunaxmc')]/@item">,gunKFM99</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTRifles']/effect_group/passive_effect[contains(@tags, 'gunaxmc') and (@name='RecipeTagUnlocked' or @name='CraftingTier')]/@tags">,gunKFM99</append>
+			<append xpath="/progression/perks/book[@name='perkSniperAPAmmo']/effect_group[1]">
+			    <passive_effect name="RecipeTagUnlocked" operation="base_set" level="1" value="1" tags="ammoKF50BMGBulletBall"/>
+            </append>
+		</if>
         <else>
 			<append xpath="/progression/perks/perk[@name='perkDeadEye']/effect_group[1]">
 			    <passive_effect name="LootProb" operation="perc_add" level="1,5" value="2,10" tags="ammoKF50BMG"/>

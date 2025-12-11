@@ -37,14 +37,36 @@ namespace KFCommonUtilityLib.Harmony
         [HarmonyPostfix]
         private static void Postfix_AttachToEntity_EntityAlive(EntityAlive __instance)
         {
-            BackgroundInventoryUpdateManager.DisableUpdater(__instance);
+            //BackgroundInventoryUpdateManager.DisableUpdater(__instance);
+            BackgroundInventoryUpdateManager.UnregisterUpdater(__instance);
         }
 
         [HarmonyPatch(typeof(EntityAlive), nameof(EntityAlive.Detach))]
         [HarmonyPostfix]
         private static void Postfix_Detach_EntityAlive(EntityAlive __instance)
         {
-            BackgroundInventoryUpdateManager.EnableUpdater(__instance);
+            if (__instance.isEntityRemote)
+            {
+                return;
+            }
+            if (__instance.inventory != null && __instance.inventory.slots != null)
+            {
+                for (int i = 0; i < __instance.inventory.PUBLIC_SLOTS; i++)
+                {
+                    ItemInventoryData invData = __instance.inventory.slots[i];
+                    if (invData != null && invData.actionData != null)
+                    {
+                        for (int j = 0; j < invData.actionData.Count; j++)
+                        {
+                            var actionData = invData.actionData[j];
+                            if (actionData is IModuleContainerFor<IBackgroundInventoryUpdater> updater)
+                            {
+                                BackgroundInventoryUpdateManager.RegisterUpdater(__instance, i, updater.Instance);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

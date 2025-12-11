@@ -8,10 +8,19 @@
 		<passive_effect name="CraftingTier" operation="base_add" level="63,66,69,72,75" value="1,2,3,4,5" tags="meleeWpnSledgeT3Pulverizer"/>
 	</append>
 
-	<insertBefore xpath="/progression/crafting_skills/crafting_skill[@name='craftingExplosives']/effect_group[1]">
-		<display_entry item="ammoPulverizer" unlock_level="50,100" />
-	</insertBefore>
-	<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingExplosives']/effect_group[1]">
-		<passive_effect name="RecipeTagUnlocked" operation="base_set" level="50,100" value="1" tags="ammoPulverizer"/>
-	</append>	
+	<conditional>
+		<if cond="mod_loaded('EFTX_Pack_Standard')">
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingRocketsandLaunchers']/display_entry[contains(@icon, 'gunrpg26')]/@icon">,ammoPulverizer</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingRocketsandLaunchers']/display_entry[contains(@icon, 'gunrpg26')]/unlock_entry[contains(@item, 'gunrpg26')]/@item">,ammoPulverizer</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingRocketsandLaunchers']/effect_group/passive_effect[contains(@tags, 'gunrpg26') and @name='RecipeTagUnlocked']/@tags">,ammoPulverizer</append>
+		</if>
+		<else>
+			<insertBefore xpath="/progression/crafting_skills/crafting_skill[@name='craftingExplosives']/effect_group[1]">
+				<display_entry item="ammoPulverizer" unlock_level="50,100" />
+			</insertBefore>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingExplosives']/effect_group[1]">
+				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="50,100" value="1" tags="ammoPulverizer"/>
+			</append>
+		</else>
+	</conditional>
 </config>

@@ -1,12 +1,9 @@
 <configs>
-  
 	<conditional>
-		<if cond="mod_loaded('EFT8_DVS_Configs')">
-			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingShotguns']/display_entry[contains(@icon,'gunm3benelli')]/unlock_entry[1]/@item">,gunT3HRGBlastBrawler</append>
-			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingShotguns']/effect_group">
-				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="50,100" value="1" tags="gunT3HRGBlastBrawler"/>
-				<passive_effect name="CraftingTier" operation="base_add" level="60,65,70,75,80,100" value="1,2,3,4,5,5" tags="gunT3HRGBlastBrawler"/>
-			</append>
+		<if cond="mod_loaded('EFTX_Pack_Standard')">
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTShotguns']/display_entry[contains(@icon, 'gunm3benelli')]/@icon">,gunT3HRGBlastBrawler</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTShotguns']/display_entry[contains(@icon, 'gunm3benelli')]/unlock_entry[contains(@item, 'gunm3benelli')]/@item">,gunT3HRGBlastBrawler</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTShotguns']/effect_group/passive_effect[contains(@tags, 'gunm3benelli') and (@name='RecipeTagUnlocked' or @name='CraftingTier')]/@tags">,gunT3HRGBlastBrawler</append>
 		</if>
 		<else>
 			<insertBefore xpath="/progression/crafting_skills/crafting_skill[@name='craftingShotguns']/effect_group[1]">
@@ -18,5 +15,4 @@
 			</append>
 		</else>
 	</conditional>
-
 </configs>

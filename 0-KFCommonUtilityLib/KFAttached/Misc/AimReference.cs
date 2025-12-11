@@ -17,6 +17,8 @@ public class AimReference : MonoBehaviour
     private GameObject scopeBindingObject;
     public Transform alignmentTarget;
     public bool asReference;
+    public Transform laserOriginOverride;
+    public Transform akimboLaserOriginOverride;
 
     private void OnEnable()
     {

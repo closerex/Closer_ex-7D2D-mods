@@ -23,8 +23,6 @@
     public static PassiveEffects ReloadSpeedRatioFPV2TPV;
     public static PassiveEffects RecoilSnappiness;
     public static PassiveEffects RecoilReturnSpeed;
-    //public static PassiveEffects ProjectileImpactDamagePercentEntity;
-    //public static PassiveEffects ProjectileImpactDamagePercentBlock;
     public static PassiveEffects PartialReloadCount;
     public static PassiveEffects CustomTaggedEffect;
     public static PassiveEffects KickDegreeHorizontalModifier;
@@ -33,5 +31,6 @@
     public static PassiveEffects RecoilCameraShakeStrength;
     public static PassiveEffects BurstShotInterval;
     public static PassiveEffects MaxWeaponSpread;
+    public static PassiveEffects HoldingItemDamageResistance;
     #endregion
 }

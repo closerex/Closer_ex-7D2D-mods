@@ -82,7 +82,6 @@
 !.gitignore
 !*/.gitignore
 */.vs/**
-.gitattributes
 .editorconfig
 *.unitypackage
 /AnimationRiggingWeaponTest/DemoScene.unitypackage

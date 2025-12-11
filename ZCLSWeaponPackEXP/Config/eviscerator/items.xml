@@ -320,7 +320,7 @@
 			<property name="Group" value="Resources"/>
 			<property name="SoundPickup" value="repairkits_grab"/>
 			<property name="SoundPlace" value="repairkits_place"/>
-			<property name="UnlockedBy" value="craftingRobotics"/><!-- gunBowT3CompoundCrossbowSchematic, -->
+			<property name="UnlockedBy" value="craftingRobotics"/>
 		</item>
 	</append>
 

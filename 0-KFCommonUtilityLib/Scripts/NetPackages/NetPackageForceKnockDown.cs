@@ -42,8 +42,7 @@ namespace KFCommonUtilityLib
             var entity = _world.GetEntity(entityID) as EntityAlive;
             if (!entity)
                 return;
-
-            ItemActionBlocking.ForceStunAttackerServer(entity, stunType, bodyPart, hitDirection, criticalHit, random, duration);
+            MinEventActionKnockDownTarget.ForceStunTargetServer(entity, stunType, bodyPart, hitDirection, criticalHit, random, duration);
         }
 
         public override void read(PooledBinaryReader _reader)

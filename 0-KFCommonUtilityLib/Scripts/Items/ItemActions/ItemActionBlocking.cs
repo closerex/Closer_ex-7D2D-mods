@@ -183,36 +183,6 @@ public class ItemActionBlocking : ItemAction
         }
     }
 
-    public static void ForceStunAttackerServer(EntityAlive attacker, EnumEntityStunType stun, EnumBodyPartHit _bodyPart, Utils.EnumHitDirection _hitDirection, bool _criticalHit, float random, float duration)
-    {
-        if (!attacker || attacker.IsDead())
-            return;
-        if (attacker.isEntityRemote)
-        {
-            if (ConnectionManager.Instance.IsServer)
-            {
-                ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageForceKnockDown>().Setup(attacker.entityId, stun, _bodyPart, _hitDirection, _criticalHit, random, duration), true, attacker.entityId);
-            }
-            else
-            {
-                ConnectionManager.Instance.SendToServer(NetPackageManager.GetPackage<NetPackageForceKnockDown>().Setup(attacker.entityId, stun, _bodyPart, _hitDirection, _criticalHit, random, duration));
-            }
-        }
-        else
-        {
-            ForceStunAttackerLocal(attacker, stun, _bodyPart, _hitDirection, _criticalHit, random, duration);
-        }
-    }
-
-    public static void ForceStunAttackerLocal(EntityAlive attacker, EnumEntityStunType stun, EnumBodyPartHit _bodyPart, Utils.EnumHitDirection _hitDirection, bool _criticalHit, float random, float duration)
-    {
-        if (!attacker || attacker.IsDead() || !attacker.emodel?.avatarController || attacker.bodyDamage.CurrentStun != EnumEntityStunType.None)
-            return;
-        attacker.emodel.avatarController.BeginStun(stun, _bodyPart, _hitDirection, _criticalHit, random);
-        attacker.SetStun(stun);
-        attacker.bodyDamage.StunDuration = duration;
-    }
-
     [Flags]
     public enum BlockableType
     {
@@ -265,22 +235,11 @@ public class ItemActionBlocking : ItemAction
 
             Transform cameraTrans = player.playerCamera.transform;
             Quaternion angleOffset = Quaternion.Euler(0f, blockingAngleOffsetHor, 0f) * Quaternion.Euler(blockingAngleOffsetVer, 0f, 0f);
-            return IsPointInRange(attackStartPos - cameraTrans.position,
+            return IsTargetInAngle.IsPointInRange(attackStartPos - cameraTrans.position,
                                          angleOffset * cameraTrans.forward,
                                          angleOffset * cameraTrans.right,
                                          angleOffset * cameraTrans.up,
                                          new(blockingRangeHor, blockingRangeVer));
-        }
-
-        private bool IsPointInRange(Vector3 directionToTarget, Vector3 forward, Vector3 right, Vector3 up, Vector2 rectSize)
-        {
-            Vector3 localPos = new Vector3(Vector3.Dot(directionToTarget, right), Vector3.Dot(directionToTarget, up), Vector3.Dot(directionToTarget, forward));
-            Log.Out($"checking in range: local pos: {localPos} range {rectSize}");
-            if (localPos.z <= 0f)
-            {
-                return false;
-            }
-            return Mathf.Abs(localPos.x) <= rectSize.x * 0.5f && Mathf.Abs(localPos.y) <= rectSize.y * 0.5f;
         }
     }
 }
@@ -351,7 +310,7 @@ public static class ItemActionBlockingPatches
                             _criticalHit = false;
                             if (Vector3.Distance(eds.hitTransformPosition, lookRayOrigin) <= 2.5f)
                             {
-                                ItemActionBlocking.ForceStunAttackerServer(attacker, EnumEntityStunType.Prone, EnumBodyPartHit.Head, Utils.EnumHitDirection.Front, true, GameManager.Instance.World.GetGameRandom().RandomFloat, 1.5f);
+                                MinEventActionKnockDownTarget.ForceStunTargetServer(attacker, EnumEntityStunType.Prone, EnumBodyPartHit.Head, Utils.EnumHitDirection.Front, true, GameManager.Instance.World.GetGameRandom().RandomFloat, 1.5f);
                             }
                         }
                         __instance.emodel.avatarController._setTrigger(isParrying ? ItemActionBlocking.ParryingHitHash : ItemActionBlocking.BlockingHitHash, false);

@@ -42,11 +42,12 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
         int speedParamHash;
         bool relative;
         bool loop;
+        bool alwaysBlendOut;
         bool interrupted;
         public int weightTagHash;
         public int stateHash;
 
-        public CameraCurveData(int weightTagHash, int stateHash, AnimationCurve[] curves, float clipLength, float delay, float blendInTime, float blendOutTime, float speed, float weight, CurveType curveType, bool relative, bool loop, int speedParamHash = 0)
+        public CameraCurveData(int weightTagHash, int stateHash, AnimationCurve[] curves, float clipLength, float delay, float blendInTime, float blendOutTime, float speed, float weight, CurveType curveType, bool relative, bool loop, bool alwaysBlendOut, int speedParamHash = 0)
         {
             this.curves = curves;
             this.clipLength = clipLength;
@@ -58,6 +59,7 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
             this.curveType = curveType;
             this.relative = relative;
             this.loop = loop;
+            this.alwaysBlendOut = alwaysBlendOut;
             this.weight = weight;
             this.weightTagHash = weightTagHash;
             this.stateHash = stateHash;
@@ -97,7 +99,7 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
             {
                 curInterruptTime += dt;
             }
-            curBlendOutTime = Mathf.Max(curInterruptTime, loop ? 0 : curTime + blendOutTime - clipLength);
+            curBlendOutTime = Mathf.Max(curInterruptTime, loop || !alwaysBlendOut ? 0 : curTime + blendOutTime - clipLength);
             for (int i = 0; i < curves.Length; i++)
             {
                 if (curves[i] == null)

@@ -57,6 +57,11 @@ public class ActionModuleProceduralAiming
         }
         if (__customData.playerCameraPosRef)
         {
+            __customData.scopeBase = __customData.targets.ItemFpv.GetComponentInChildren<ScopeBase>();
+            if (__customData.scopeBase)
+            {
+                __customData.scopeBase.aimingModule = __customData;
+            }
             __customData.aimRefTransform = __customData.targets.ItemFpv.Find("ScopeBasePositionReference");
             if (__customData.aimRefTransform)
             {
@@ -83,6 +88,10 @@ public class ActionModuleProceduralAiming
     [HarmonyPatch(nameof(ItemAction.StopHolding)), MethodTargetPostfix]
     public void Postfix_StopHolding(ProceduralAimingData __customData)
     {
+        if (__customData.scopeBase)
+        {
+            __customData.scopeBase.aimingModule = null;
+        }
         __customData.ResetAiming();
         CameraLateUpdater.UnregisterUpdater(__customData);
     }
@@ -100,6 +109,7 @@ public class ActionModuleProceduralAiming
     public class ProceduralAimingData : IRootMovementUpdater
     {
         public AnimationTargetsAbs targets;
+        public ScopeBase scopeBase;
         public ActionModuleErgoAffected.ErgoData ergoData;
         public float zoomInTime;
         public Transform aimRefTransform;
@@ -116,10 +126,12 @@ public class ActionModuleProceduralAiming
         public Quaternion aimRefRotOffset;
         public Vector3 curAimPosOffset;
         public Quaternion curAimRotOffset;
-        private Vector3 curAimPosVelocity;
-        private Quaternion curAimRotVelocity;
+        //private Vector3 curAimPosVelocity;
+        //private Quaternion curAimRotVelocity;
         private Vector3 targetSwitchPosVelocity;
         private Quaternion targetSwitchRotVelocity;
+        public float aimProcVelocity;
+        public float aimProcValue;
         public List<AimReference> registeredReferences = new List<AimReference>();
         private EntityPlayerLocal holdingEntity;
         public int CurAimRefIndex
@@ -159,10 +171,11 @@ public class ActionModuleProceduralAiming
             }
             curAimPosOffset = Vector3.zero;
             curAimRotOffset = Quaternion.identity;
-            curAimPosVelocity = Vector3.zero;
-            curAimRotVelocity = Quaternion.identity;
-            targetSwitchPosVelocity = Vector3.zero;
-            targetSwitchRotVelocity = Quaternion.identity;
+            //curAimPosVelocity = Vector3.zero;
+            //curAimRotVelocity = Quaternion.identity;
+            //targetSwitchPosVelocity = Vector3.zero;
+            //targetSwitchRotVelocity = Quaternion.identity;
+            aimProcVelocity = aimProcValue = 0;
             if (isRigWeapon && playerOriginTransform)
             {
                 playerOriginTransform.localPosition = rigWeaponLocalPosition;
@@ -225,10 +238,6 @@ public class ActionModuleProceduralAiming
             }
         }
 
-        //public void LateUpdateAiming()
-        //{
-        //}
-
         public void LateUpdateMovement(Transform playerCameraTransform, Transform playerOriginTransform, bool isRigWeapon, float _dt)
         {
             if (holdingEntity.AimingGun != isAiming)
@@ -246,32 +255,26 @@ public class ActionModuleProceduralAiming
                 float zoomInTimeMod = ergoData == null ? zoomInTime : zoomInTime / ergoData.ModifiedErgo;
                 zoomInTimeMod *= 0.25f;
                 //move aimRef towards target
+
                 aimRefTransform.localPosition = Vector3.SmoothDamp(aimRefTransform.localPosition, aimRefPosOffset, ref targetSwitchPosVelocity, 0.075f);
                 aimRefTransform.localRotation = QuaternionUtil.SmoothDamp(aimRefTransform.localRotation, aimRefRotOffset, ref targetSwitchRotVelocity, 0.075f);
                 //calculate current target aim offset
-                Vector3 aimTargetPosOffset = playerCameraPosRef.InverseTransformDirection(playerCameraPosRef.position - aimRefTransform.position);
+                Vector3 aimTargetPosOffset = playerCameraPosRef.parent.InverseTransformDirection(playerCameraPosRef.position - aimRefTransform.position);
                 Quaternion aimTargetRotOffset = playerCameraPosRef.localRotation * Quaternion.Inverse(aimRefTransform.parent.localRotation * aimRefTransform.localRotation);
                 //move current aim offset towards target aim offset
-                if (isAiming)
-                {
-                    curAimPosOffset = Vector3.SmoothDamp(curAimPosOffset, aimTargetPosOffset, ref curAimPosVelocity, zoomInTimeMod);
-                    curAimRotOffset = QuaternionUtil.SmoothDamp(curAimRotOffset, aimTargetRotOffset, ref curAimRotVelocity, zoomInTimeMod);
-                }
-                else
-                {
-                    curAimPosOffset = Vector3.SmoothDamp(curAimPosOffset, Vector3.zero, ref curAimPosVelocity, zoomInTimeMod);
-                    curAimRotOffset = QuaternionUtil.SmoothDamp(curAimRotOffset, Quaternion.identity, ref curAimRotVelocity, zoomInTimeMod);
-                }
+                aimProcValue = Mathf.SmoothDamp(aimProcValue, isAiming ? 1f : 0f, ref aimProcVelocity, zoomInTimeMod);
+                curAimPosOffset = Vector3.Lerp(Vector3.zero, aimTargetPosOffset, aimProcValue);
+                curAimRotOffset = Quaternion.Slerp(Quaternion.identity, aimTargetRotOffset, aimProcValue);
                 //apply offset to player
                 if (isRigWeapon)
                 {
                     (playerCameraPosRef.parent.rotation * curAimRotOffset * Quaternion.Inverse(playerCameraPosRef.parent.rotation)).ToAngleAxis(out var angle, out var axis);
                     playerOriginTransform.RotateAround(aimRefTransform.position, axis, angle);
-                    playerOriginTransform.position += playerCameraPosRef.TransformDirection(curAimPosOffset);
+                    playerOriginTransform.position += playerCameraPosRef.parent.TransformDirection(curAimPosOffset);
                 }
                 else
                 {
-                    playerOriginTransform.position += playerCameraPosRef.TransformDirection(curAimPosOffset);
+                    playerOriginTransform.position += playerCameraPosRef.parent.TransformDirection(curAimPosOffset);
                     (playerCameraPosRef.parent.rotation * curAimRotOffset * Quaternion.Inverse(playerCameraPosRef.parent.rotation)).ToAngleAxis(out var angle, out var axis);
                     playerOriginTransform.RotateAround(aimRefTransform.position, axis, angle);
                 }
@@ -279,17 +282,3 @@ public class ActionModuleProceduralAiming
         }
     }
 }
-
-//[HarmonyPatch]
-//public static class ProceduralAimingPatches
-//{
-//    [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.LateUpdate))]
-//    [HarmonyPostfix]
-//    private static void Postfix_LateUpdate_EntityPlayerLocal(EntityPlayerLocal __instance)
-//    {
-//        if (__instance.inventory?.holdingItemData?.actionData?[1] is IModuleContainerFor<ActionModuleProceduralAiming.ProceduralAimingData> module)
-//        {
-//            module.Instance.LateUpdateAiming();
-//        }
-//    }
-//}

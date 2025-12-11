@@ -60,12 +60,15 @@ public static class DamagePatches
 
     private static void CalcEquipmentDamage(Equipment equipment, ref DamageResponse damageResponse, EntityAlive attacker)
     {
+        FastTags<TagGroup.Global> bodyPartTags = GetBodyPartTags(damageResponse.HitBodyPart);
+        float holdingItemDamageResist = Mathf.Min(1, EffectManager.GetValue(CustomEnums.HoldingItemDamageResistance, null, 0, equipment.m_entity, null, damageResponse.Source.DamageTypeTag | bodyPartTags, false, true, false, false, false) * 0.01f);
+        damageResponse.Strength = Mathf.RoundToInt((float)damageResponse.Strength * (1f - holdingItemDamageResist));
         damageResponse.ArmorDamage = damageResponse.Strength;
         if (damageResponse.Source.DamageTypeTag.Test_AnySet(Equipment.physicalDamageTypes))
         {
             if (damageResponse.Strength > 0)
             {
-                float totalPhysicalArmorResistPercent = GetTotalPhysicalArmorResistPercent(equipment, in damageResponse, attacker) * .01f;
+                float totalPhysicalArmorResistPercent = GetTotalPhysicalArmorResistPercent(equipment, in damageResponse, in bodyPartTags, attacker) * .01f;
                 damageResponse.ArmorDamage = Utils.FastMax((totalPhysicalArmorResistPercent > 0f) ? 1 : 0, Mathf.RoundToInt((float)damageResponse.Strength * totalPhysicalArmorResistPercent));
                 damageResponse.Strength -= damageResponse.ArmorDamage;
                 return;
@@ -78,11 +81,10 @@ public static class DamagePatches
         }
     }
 
-    private static float GetTotalPhysicalArmorResistPercent(Equipment equipment, in DamageResponse damageResponse, EntityAlive attacker)
+    private static float GetTotalPhysicalArmorResistPercent(Equipment equipment, in DamageResponse damageResponse, in FastTags<TagGroup.Global> bodyPartTags, EntityAlive attacker)
     {
         if (!equipment?.m_entity)
             return 0f;
-        FastTags<TagGroup.Global> bodyPartTags = GetBodyPartTags(damageResponse.HitBodyPart);
         float resist = EffectManager.GetValue(PassiveEffects.PhysicalDamageResist, null, 0f, equipment.m_entity, null, Equipment.coreDamageResist | bodyPartTags);
         if (attacker)
         {
@@ -103,50 +105,103 @@ public static class DamagePatches
 
     public static FastTags<TagGroup.Global> GetBodyPartTags(EnumBodyPartHit bodyparts)
     {
-        if ((bodyparts & EnumBodyPartHit.LeftUpperArm) > EnumBodyPartHit.None)
+        if (bodyparts.IsMultiHit())
         {
-            return LeftUpperArmTags;
+            FastTags<TagGroup.Global> result = FastTags<TagGroup.Global>.none;
+            if ((bodyparts & EnumBodyPartHit.Head) > EnumBodyPartHit.None)
+            {
+                result |= HeadTags;
+            }
+            if ((bodyparts & EnumBodyPartHit.Torso) > EnumBodyPartHit.None)
+            {
+                result |= TorsoTags;
+            }
+            if ((bodyparts & EnumBodyPartHit.Special) > EnumBodyPartHit.None)
+            {
+                result |= SpecialTags;
+            }
+            if ((bodyparts & EnumBodyPartHit.LeftUpperArm) > EnumBodyPartHit.None)
+            {
+                result |= LeftUpperArmTags;
+            }
+            if ((bodyparts & EnumBodyPartHit.LeftLowerArm) > EnumBodyPartHit.None)
+            {
+                result |= LeftLowerArmTags;
+            }
+            if ((bodyparts & EnumBodyPartHit.RightUpperArm) > EnumBodyPartHit.None)
+            {
+                result |= RightUpperArmTags;
+            }
+            if ((bodyparts & EnumBodyPartHit.RightLowerArm) > EnumBodyPartHit.None)
+            {
+                result |= RightLowerArmTags;
+            }
+            if ((bodyparts & EnumBodyPartHit.LeftUpperLeg) > EnumBodyPartHit.None)
+            {
+                result |= LeftUpperLegTags;
+            }
+            if ((bodyparts & EnumBodyPartHit.LeftLowerLeg) > EnumBodyPartHit.None)
+            {
+                result |= LeftLowerLegTags;
+            }
+            if ((bodyparts & EnumBodyPartHit.RightUpperLeg) > EnumBodyPartHit.None)
+            {
+                result |= RightUpperLegTags;
+            }
+            if ((bodyparts & EnumBodyPartHit.RightLowerLeg) > EnumBodyPartHit.None)
+            {
+                result |= RightLowerLegTags;
+            }
+            return result;
         }
-        if ((bodyparts & EnumBodyPartHit.LeftLowerArm) > EnumBodyPartHit.None)
+        else
         {
-            return LeftLowerArmTags;
+            if ((bodyparts & EnumBodyPartHit.Head) > EnumBodyPartHit.None)
+            {
+                return HeadTags;
+            }
+            if ((bodyparts & EnumBodyPartHit.Torso) > EnumBodyPartHit.None)
+            {
+                return TorsoTags;
+            }
+            if ((bodyparts & EnumBodyPartHit.Special) > EnumBodyPartHit.None)
+            {
+                return SpecialTags;
+            }
+            if ((bodyparts & EnumBodyPartHit.LeftUpperArm) > EnumBodyPartHit.None)
+            {
+                return LeftUpperArmTags;
+            }
+            if ((bodyparts & EnumBodyPartHit.LeftLowerArm) > EnumBodyPartHit.None)
+            {
+                return LeftLowerArmTags;
+            }
+            if ((bodyparts & EnumBodyPartHit.RightUpperArm) > EnumBodyPartHit.None)
+            {
+                return RightUpperArmTags;
+            }
+            if ((bodyparts & EnumBodyPartHit.RightLowerArm) > EnumBodyPartHit.None)
+            {
+                return RightLowerArmTags;
+            }
+            if ((bodyparts & EnumBodyPartHit.LeftUpperLeg) > EnumBodyPartHit.None)
+            {
+                return LeftUpperLegTags;
+            }
+            if ((bodyparts & EnumBodyPartHit.LeftLowerLeg) > EnumBodyPartHit.None)
+            {
+                return LeftLowerLegTags;
+            }
+            if ((bodyparts & EnumBodyPartHit.RightUpperLeg) > EnumBodyPartHit.None)
+            {
+                return RightUpperLegTags;
+            }
+            if ((bodyparts & EnumBodyPartHit.RightLowerLeg) > EnumBodyPartHit.None)
+            {
+                return RightLowerLegTags;
+            }
         }
-        if ((bodyparts & EnumBodyPartHit.RightUpperArm) > EnumBodyPartHit.None)
-        {
-            return RightUpperArmTags;
-        }
-        if ((bodyparts & EnumBodyPartHit.RightLowerArm) > EnumBodyPartHit.None)
-        {
-            return RightLowerArmTags;
-        }
-        if ((bodyparts & EnumBodyPartHit.LeftUpperLeg) > EnumBodyPartHit.None)
-        {
-            return LeftUpperLegTags;
-        }
-        if ((bodyparts & EnumBodyPartHit.LeftLowerLeg) > EnumBodyPartHit.None)
-        {
-            return LeftLowerLegTags;
-        }
-        if ((bodyparts & EnumBodyPartHit.RightUpperLeg) > EnumBodyPartHit.None)
-        {
-            return RightUpperLegTags;
-        }
-        if ((bodyparts & EnumBodyPartHit.RightLowerLeg) > EnumBodyPartHit.None)
-        {
-            return RightLowerLegTags;
-        }
-        if ((bodyparts & EnumBodyPartHit.Head) > EnumBodyPartHit.None)
-        {
-            return HeadTags;
-        }
-        if ((bodyparts & EnumBodyPartHit.Torso) > EnumBodyPartHit.None)
-        {
-            return TorsoTags;
-        }
-        if ((bodyparts & EnumBodyPartHit.Special) > EnumBodyPartHit.None)
-        {
-            return SpecialTags;
-        }
+
         return FastTags<TagGroup.Global>.none;
     }
 

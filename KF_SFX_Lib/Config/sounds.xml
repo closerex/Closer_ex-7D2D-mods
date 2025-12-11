@@ -467,7 +467,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_hrg_blastbrawlers_Impacts_Regular">
-            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_Impact" />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_BulletImpact_overlay" />
             <Noise ID="0" noise="11" time="2" muffled_when_crouched="0.8" heat_map_strength="0.5" heat_map_time="180" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_HRG_BlastBrawlers_Impact_Regular_01" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_HRG_BlastBrawlers_Impact_Regular_02" />
@@ -880,6 +880,112 @@
             <Noise ID="0" noise="78" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="240" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_Benelli_Fire_1P_Single_Mountain" />
             <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <HighestPitch value="1.060075" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18_Fire_1P_OutDoor_City">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18_Network" />
+            <Noise ID="0" noise="62" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18_Auto_Single_1" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18_Auto_Single_2" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18_Auto_Single_3" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <HighestPitch value="1.090508" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18c_Fire_1P_InDoor_Large_silenced">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18c" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18c_Network" />
+            <Noise ID="0" noise="15" time="2" muffled_when_crouched="0.8" heat_map_strength="0.3" heat_map_time="180" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_Large_01" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_Large_02" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_Large_03" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_Large_04" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_Large_05" />
+            <LocalCrouchVolumeScale value="0.5" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <HighestPitch value="1.060075" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18c_Fire_1P_InDoor_Medium_silenced">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18c" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18c_Network" />
+            <Noise ID="0" noise="15" time="2" muffled_when_crouched="0.8" heat_map_strength="0.3" heat_map_time="180" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_Medium_01" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_Medium_02" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_Medium_03" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_Medium_04" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_Medium_05" />
+            <LocalCrouchVolumeScale value="0.5" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <HighestPitch value="1.060075" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18c_Fire_1P_InDoor_Small_silenced">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18c" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18c_Network" />
+            <Noise ID="0" noise="15" time="2" muffled_when_crouched="0.8" heat_map_strength="0.3" heat_map_time="180" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_Small_01" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_Small_02" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_Small_03" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_Small_04" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_Small_05" />
+            <LocalCrouchVolumeScale value="0.5" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <HighestPitch value="1.060075" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18c_Fire_1P_OutDoor_City_silenced">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18c" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18c_Network" />
+            <Noise ID="0" noise="15" time="2" muffled_when_crouched="0.8" heat_map_strength="0.3" heat_map_time="180" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_City_01" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_City_02" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_City_03" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_City_04" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_City_05" />
+            <LocalCrouchVolumeScale value="0.5" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <HighestPitch value="1.060075" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18c_Fire_1P_OutDoor_Mountain_silenced">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18c" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18c_Network" />
+            <Noise ID="0" noise="15" time="2" muffled_when_crouched="0.8" heat_map_strength="0.3" heat_map_time="180" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_Mountain_01" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_Mountain_02" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_Mountain_03" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_Mountain_04" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Glock18c_Shoot_1P_Mountain_05" />
+            <LocalCrouchVolumeScale value="0.5" />
             <RunningVolumeScale value="1" />
             <CrouchNoiseScale value="1" />
             <NoiseScale value="1" />
@@ -1546,6 +1652,76 @@
 
     <!-- #region Editor Sounds-->
     <append xpath="/Sounds">
+        <SoundDataNode name="kf_ui_flashlight_on">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_UI" />
+            <Noise ID="0" noise="2" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_Flashlight_TurnOn" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.9276591" />
+            <HighestPitch value="0.9548416" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ui_flashlight_off">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_UI" />
+            <Noise ID="0" noise="2" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_Flashlight_TurnOff" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.9276591" />
+            <HighestPitch value="0.9548416" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ui_nightvision_on">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_UI" />
+            <Noise ID="0" noise="2" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_Nightvision_TurnOn" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.9276591" />
+            <HighestPitch value="0.9548416" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ui_nightvision_off">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_UI" />
+            <Noise ID="0" noise="2" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_Nightvision_TurnOff" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.9276591" />
+            <HighestPitch value="0.9548416" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ui_mode_switch">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_UI" />
+            <Noise ID="0" noise="2" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_ModeSwitch" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.9276591" />
+            <HighestPitch value="0.9548416" />
+        </SoundDataNode>
         <SoundDataNode name="kf_9mm_MagInA">
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_9mm_magin_a" />
             <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
@@ -1627,6 +1803,30 @@
             <LowestPitch value="0.9276591" />
             <HighestPitch value="0.9548416" />
         </SoundDataNode>
+        <SoundDataNode name="kf_GunRattle">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_Footstep_GunRattle" />
+            <Noise ID="0" noise="3" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?PC_MVT_Rifle_Rattle_01" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?PC_MVT_Rifle_Rattle_02" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?PC_MVT_Rifle_Rattle_03" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?PC_MVT_Rifle_Rattle_04" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?PC_MVT_Rifle_Rattle_05" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_9mm_Handling_Rattle_01" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_9mm_Handling_Rattle_02" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_9mm_Handling_Rattle_03" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_9mm_Handling_Rattle_04" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_9mm_Handling_Rattle_05" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_9mm_Handling_Rattle_06" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.9298049" />
+            <HighestPitch value="1.029897" />
+        </SoundDataNode>
         <SoundDataNode name="kf_9mm_SlideClose">
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_9mm_boltfwd" />
             <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
@@ -1669,6 +1869,286 @@
             <MaxVoicesPerEntity value="5" />
             <MaxRepeatRate value="0.001" />
             <HighestPitch value="1.014545" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18c_MagInEmpty">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18c" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18c_Empty_Mag_In" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18c_MagOutEmpty">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18c" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18c_Empty_Mag_Out" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18c_MagInHalf">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18c" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18c_Half_Mag_In" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18c_MagOutHalf">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18c" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18c_Half_Mag_Out" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18c_MagInEmpty_elite">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18c" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18c_Empty_Elite_Mag_In" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18c_MagOutEmpty_elite">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18c" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18c_Empty_Elite_Mag_Out" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18c_MagInHalf_elite">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18c" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18c_Half_Elite_Mag_In" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18c_MagOutHalf_elite">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18c" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18c_Half_Elite_Mag_Out" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18c_SlideFWD_elite">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18c" />
+            <Noise ID="0" noise="3" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18c_Empty_Elite_Slide_FWD" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18_MagInEmpty">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18_Empty_Mag_In" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18_MagOutEmpty">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18_Empty_Mag_Out" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18_MagInHalf">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18_Half_Mag_In" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18_MagOutHalf">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18_Half_Mag_Out" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18_MagInEmpty_elite">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18_Empty_Elite_Mag_In" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18_MagOutEmpty_elite">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18_Empty_Elite_Mag_Out" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18_MagInHalf_elite">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18_Half_Elite_Mag_In" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18_MagOutHalf_elite">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18_Half_Elite_Mag_Out" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18_SlideFWD_elite">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18" />
+            <Noise ID="0" noise="3" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18_Empty_Elite_Slide_FWD" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18_SlideFWD">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18" />
+            <Noise ID="0" noise="3" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18_Empty_Slide_FWD" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18_nade_throw_1">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18" />
+            <Noise ID="0" noise="3" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_Riot_Shield_Nade_Throw_1" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18_nade_throw_2">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18" />
+            <Noise ID="0" noise="3" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_Riot_Shield_Nade_Throw_2" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18_PullOut">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18" />
+            <Noise ID="0" noise="5" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_Riot_Shield_Equip" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.9028136" />
+            <HighestPitch value="0.929268" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_g18_PutAway">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_g18" />
+            <Noise ID="0" noise="5" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_Riot_Shield_Put_Away" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.9028136" />
+            <HighestPitch value="0.929268" />
         </SoundDataNode>
         <SoundDataNode name="kf_af2011_MagInCheck1">
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_af2011" />
@@ -3032,6 +3512,33 @@
             <MaxVoicesPerEntity value="5" />
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
+        <SoundDataNode name="kf_Movement_GunWhoosh">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_Footstep_GunWhoosh" />
+            <Noise ID="0" noise="5" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?PC_Move_Cloth_Default_01" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?PC_Move_Cloth_Default_02" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?PC_Move_Cloth_Default_05" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?PC_Move_Cloth_Default_06" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?PC_Move_Cloth_Default_07" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?PC_Move_Cloth_Default_08" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?PC_Movement_Cloth_Medium_05" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?PC_Movement_Cloth_Medium_06" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?PC_Movement_Cloth_Medium_08" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?PC_Movement_Cloth_Quick_08" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?PC_Movement_Cloth_Quick_06" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?PC_Movement_Cloth_Quick_05" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?PC_Movement_Cloth_Quick_01" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?PC_Movement_Cloth_Quick_02" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?PC_Movement_Cloth_Quick_07" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.8274056" />
+        </SoundDataNode>
         <SoundDataNode name="kf_Parry_Metal">
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_Parry_Metal" />
             <Noise ID="0" noise="14" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
@@ -3071,6 +3578,19 @@
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?MEL_Crovel_Block_03" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?MEL_Crovel_Block_04" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?MEL_Crovel_Block_05" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_riot_shield_Bash">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_Footstep_WeaponBash" />
+            <Noise ID="0" noise="2" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_Riot_Shield_Bash_1" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_Riot_Shield_Bash_2" />
             <LocalCrouchVolumeScale value="1" />
             <RunningVolumeScale value="1" />
             <CrouchNoiseScale value="0.5" />
@@ -3732,6 +4252,22 @@
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?empty"/>
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Medic_SMG_Loop_Outdoor_Surround" Loop="true"/>
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Medic_SMG_LoopEnd_Outdoor_Surround" AudioSourceName="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_smg_endloop"/>
+            <LocalCrouchVolumeScale value="1"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="3"/> <MaxRepeatRate value="0.001"/> </SoundDataNode>
+
+        <SoundDataNode name="kf_g18c_Fire_1P_silenced_Loop"> <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18c"/> <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18c_Network"/>
+            <Noise ID="4" noise="17" time="5" heat_map_strength="1.0" heat_map_time="120"/>
+            <Sequence/>
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?empty"/>
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18c_Auto_Loop" Loop="true"/>
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18c_Auto_Loop_End_Large"/>
+            <LocalCrouchVolumeScale value=".5"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="3"/> <MaxRepeatRate value="0.001"/> </SoundDataNode>
+
+        <SoundDataNode name="kf_g18_Fire_1P_Loop"> <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18"/> <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18_Network"/>
+            <Noise ID="4" noise="60" time="5" heat_map_strength="1.0" heat_map_time="120"/>
+            <Sequence/>
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?empty"/>
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18_Auto_3P_Loop" Loop="true"/>
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18_Auto_Loop_End_Large"/>
             <LocalCrouchVolumeScale value="1"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="3"/> <MaxRepeatRate value="0.001"/> </SoundDataNode>
 
         <SoundDataNode name="ion_thruster_idle"> <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_Melee_Swing_ion_thruster_handling"/>

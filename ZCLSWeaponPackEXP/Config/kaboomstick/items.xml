@@ -128,6 +128,7 @@
 			<property name="ShowQuality" value="true"/>
             <property name="SoundPickup" value="rifle_polymer_grab"/>
             <property name="SoundPlace" value="rifle_polymer_place"/>
+			<property name="TakeOverReloadTime" value="true"/>
 
 			<property class="Action0">
 				<property name="Class" value="BetterLauncher,FullautoLauncher"/>
@@ -198,7 +199,10 @@
 				<passive_effect name="RoundsPerMinute" operation="base_set" value="1000" tags="perkDemolitionsExpert"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkDemolitionsExpert"/>
 				<passive_effect name="MagazineSize" operation="base_set" value="2" tags="perkDemolitionsExpert"/>
-				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1.5" tags="perkDemolitionsExpert"/>
+                <passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkDemolitionsExpert"/>
+                <passive_effect name="ReloadSpeedMultiplier" operation="perc_add" value="-.3" tags="perkDemolitionsExpert">
+					<requirement name="ProgressionLevel" progression_name="perkDemolitionsExpert" operation="GTE" value="5"/>
+				</passive_effect>
 				<passive_effect name="ModSlots" operation="base_set" value="1,1,2,2,3,4" tier="1,2,3,4,5,6"/>
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="ExplosionEntityDamage,ExplosionBlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
@@ -319,4 +323,14 @@
 			<set xpath="/items/item[@name='gunKaboomstick']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
 		</if>
 	</conditional>
+    <conditional>
+        <if cond="mod_loaded('EFTX_Pack_Standard')">
+			<set xpath="/items/item[@name='gunKaboomstick' or @name='ammoKaboomstickShellHE' or @name='ammoKaboomstickShellFrag']/property[@name='UnlockedBy']/@value">craftingRocketsandLaunchers</set>
+            <csv xpath="/items/item[@name='gunKaboomstick' or @name='ammoKaboomstickShellHE' or @name='ammoKaboomstickShellFrag']/property[@name='Tags']/@value" delim="," op="add">eftBoom</csv>
+            <csv xpath="/items/item[@name='gunKaboomstick']/effect_group/requirement[contains(@progression_name, 'perkDemolitionsExpert')]/@progression_name" delim="," op="add">perkEFTXBoomBoom</csv>
+            <csv xpath="/items/item[@name='gunKaboomstick']/effect_group/requirement[contains(@progression_name, 'perkDemolitionsExpert')]/@progression_name" delim="," op="remove">perkDemolitionsExpert</csv>
+            <csv xpath="/items/item[@name='gunKaboomstick']/effect_group//requirement[contains(@progression_name, 'perkDemolitionsExpert')]/@progression_name" delim="," op="add">perkEFTXBoomBoom</csv>
+            <csv xpath="/items/item[@name='gunKaboomstick']/effect_group//requirement[contains(@progression_name, 'perkDemolitionsExpert')]/@progression_name" delim="," op="remove">perkDemolitionsExpert</csv>
+        </if>
+    </conditional>
 </configs>

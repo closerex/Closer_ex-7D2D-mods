@@ -23,6 +23,8 @@ public class TransformActivationBinding : MonoBehaviour
     [SerializeField]
     private GameObject[] disableOnDisable;
     [SerializeField]
+    private GameObject[] disableSelfIfEnabled;
+    [SerializeField]
     private string[] animatorParamBindings;
     internal AnimationTargetsAbs targets;
 
@@ -84,6 +86,17 @@ public class TransformActivationBinding : MonoBehaviour
     private void OnEnable()
     {
         //Log.Out(gameObject.name + " OnEnable!");
+        if (disableSelfIfEnabled != null)
+        {
+            foreach (GameObject t in disableSelfIfEnabled)
+            {
+                if (t && t.gameObject.activeInHierarchy)
+                {
+                    gameObject.SetActive(false);
+                    return;
+                }
+            }
+        }
         if (bindings != null)
         {
             foreach (GameObject t in bindings)
@@ -166,14 +179,17 @@ public class TransformActivationBinding : MonoBehaviour
 #if NotEditor
     internal IEnumerator UpdateBool(bool enabled)
     {
-        yield return new WaitForEndOfFrame();
-        if (animatorParamBindings != null && targets)
+        if (animatorParamBindings != null)
         {
-            foreach (string str in animatorParamBindings)
+            yield return new WaitForEndOfFrame();
+            if (targets)
             {
-                if (str != null)
+                foreach (string str in animatorParamBindings)
                 {
-                    targets.GraphBuilder.Player.emodel.avatarController.UpdateBool(str, enabled);
+                    if (str != null)
+                    {
+                        targets.GraphBuilder.Player.emodel.avatarController.UpdateBool(str, enabled);
+                    }
                 }
             }
         }

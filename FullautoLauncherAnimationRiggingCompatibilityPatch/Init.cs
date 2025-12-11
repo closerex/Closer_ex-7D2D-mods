@@ -49,7 +49,7 @@ public static class FLARMultiActionFixExt
 {
     [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemAction.OnModificationsChanged))]
     [MethodTargetPostfix]
-    private static void Postfix_OnModificationChanged_ActionModuleMultiActionFix(ActionModuleMultiActionFix self, ItemActionData _data, ItemActionAttack __instance)
+    private static void Postfix_OnModificationChanged_ItemActionBetterLauncher(ActionModuleMultiActionFix self, ItemActionData _data, ItemActionAttack __instance)
     {
         self.Postfix_OnModificationChanged_ItemActionRanged(_data, __instance);
         if (_data is ItemActionBetterLauncher.ItemActionDataBetterLauncher launcherData)
@@ -62,6 +62,19 @@ public static class FLARMultiActionFixExt
                 Log.Warning($"null projectile joint on inventory slot {launcherData.invData.slotIdx}!\n{StackTraceUtility.ExtractStackTrace()}");
             }
         }
+    }
+
+    [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemAction.ItemActionEffects)), MethodTargetPrefix]
+    private static bool Prefix_ItemActionEffects_ItemActionBetterLauncher(ItemActionData _actionData, out ItemActionData __state)
+    {
+        ActionModuleMultiActionFix.SetAndSaveItemActionData(_actionData, out __state);
+        return true;
+    }
+
+    [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemAction.ItemActionEffects)), MethodTargetPostfix]
+    public static void Postfix_ItemActionEffects_ItemActionBetterLauncher(ItemActionData _actionData, ItemActionData __state)
+    {
+        ActionModuleMultiActionFix.RestoreItemActionData(_actionData, __state);
     }
 }
 

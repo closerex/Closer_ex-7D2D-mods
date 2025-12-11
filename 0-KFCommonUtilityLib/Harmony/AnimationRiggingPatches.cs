@@ -1096,6 +1096,7 @@ static class AnimationRiggingPatches
         var codes = instructions.ToList();
 
         var fld_inv = AccessTools.Field(typeof(EntityAlive), nameof(EntityAlive.inventory));
+        var mtd_setindex = AccessTools.Method(typeof(Inventory), nameof(Inventory.SetHoldingItemIdxNoHolsterTime));
         for (int i = 0; i < codes.Count; i++)
         {
             if (codes[i].StoresField(fld_inv))
@@ -1105,7 +1106,17 @@ static class AnimationRiggingPatches
                     new CodeInstruction(OpCodes.Ldarg_0),
                     CodeInstruction.Call(typeof(AnimationRiggingPatches), nameof(AnimationRiggingPatches.DetachInitInventory))
                 });
-                break;
+                i += 2;
+            }
+            else if (codes[i].Calls(mtd_setindex))
+            {
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Ldfld, fld_inv),
+                    CodeInstruction.Call(typeof(Inventory), nameof(Inventory.ForceHoldingItemUpdate))
+                });
+                i += 3;
             }
         }
         return codes;
@@ -1175,7 +1186,7 @@ static class AnimationRiggingPatches
         if (_actionData is ItemActionRanged.ItemActionDataRanged rangedData)
         {
             int burstCount = __instance.GetBurstCount(_actionData);
-            _actionData.invData.holdingEntity.emodel.avatarController._setBool("TriggerPulled", rangedData.bPressed && rangedData.curBurstCount < burstCount, true);
+            _actionData.invData.holdingEntity.emodel.avatarController._setBool("TriggerPulled", rangedData.bPressed && rangedData.state > ItemActionFiringState.Off && rangedData.curBurstCount < burstCount, true);
         }
     }
 

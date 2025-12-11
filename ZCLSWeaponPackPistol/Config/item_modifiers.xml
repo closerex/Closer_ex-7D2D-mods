@@ -2,8 +2,14 @@
 	<append xpath="/item_modifiers/item_modifier[@name='modGunSoundSuppressorSilencer']">
 		<item_property_overrides name="gunKF9mm">
 			<property name="Sound_start" value="kf_pistol_silenced_fire"/>
-			<property name="Sound_end" value=""/>
 			<property name="Sound_loop" value="kf_pistol_silenced_fire"/>
+			<property name="Sound_end" value=""/>
+		</item_property_overrides>
+		<item_property_overrides name="gunKFG18CShield">
+			<property name="Sound_start" value="kf_g18c_Fire_1P_silenced_Loop"/>
+			<property name="Sound_loop" value=""/>
+			<property name="Sound_end" value=""/>
+			<property name="EnableLoopSoundFix" value="false"/>
 		</item_property_overrides>
 	</append>
 
@@ -13,6 +19,12 @@
 	
 	<append xpath="/item_modifiers/item_modifier[@name='modGunLaserSight']">
 		<item_property_overrides name="gunKF9mm">
+			<property name="CrosshairOnAim" value="false"/>
+		</item_property_overrides>
+		<item_property_overrides name="gunKFG18C">
+			<property name="CrosshairOnAim" value="false"/>
+		</item_property_overrides>
+		<item_property_overrides name="gunKFG18CShield">
 			<property name="CrosshairOnAim" value="false"/>
 		</item_property_overrides>
 	</append>

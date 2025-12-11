@@ -655,6 +655,7 @@
     <Compile Include="Scripts\MinEventActions\MinEventActionSetItemMetaFloatCapped.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionSetMetadataOnWeaponLabel.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionSetPassiveOnWeaponLabel.cs" />
+    <Compile Include="Scripts\MinEventActions\MinEventActionKnockDownTarget.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionUpdateLocalCache.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageEntityActionIndex.cs" />
     <Compile Include="Scripts\NetPackages\NetPackageEntitySpawnWithCVar.cs" />
@@ -675,6 +676,7 @@
     <Compile Include="Scripts\Requirements\IsItemActivated.cs" />
     <Compile Include="Scripts\Requirements\IsLocal.cs" />
     <Compile Include="Scripts\Requirements\IsModificationActivated.cs" />
+    <Compile Include="Scripts\Requirements\IsTargetInAngle.cs" />
     <Compile Include="Scripts\Requirements\MetaInItem.cs" />
     <Compile Include="Scripts\StaticManagers\AnimationRiggingManager.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdCalibrateWeapon.cs" />

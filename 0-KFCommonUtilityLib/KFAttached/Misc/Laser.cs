@@ -1,32 +1,50 @@
-﻿using UnityEngine;
+﻿using KFCommonUtilityLib;
+using UnityEngine;
 
 public class LaserSight : MonoBehaviour
 {
     public LineRenderer lineRenderer;
     public Transform laserOrigin;
+    public string laserOriginName = "laserOrigin";
     public float maxDistance = 100f;
-    public LayerMask collisionMask;
+    public float maxDotSizeDistance = 50f;
+    public LayerMask collisionMask = 1353162769;
+    public bool useAkimboOrigin;
+    public Transform defaultAkimboOrigin;
+    public string akimboOriginName = "akimboLaserOrigin";
 
     [Header("Dot Settings")]
-    public Material dotMaterial;
-    public float dotSizeNear = 0.01f;
-    public float dotSizeFar = 0.45f;
-    public float dotBaseIntensity = 0.75f;
-    public float flickerSpeed = 5f;
-    public float flickerAmount = 1f;
+    public float dotBaseSizeNear = 0.03f;
+    public float dotBaseSizeFar = 0.3f;
+    public float intensityFlickerSpeed = 5f;
+    public float intensityFlickerMax = 0.1f;
     public float clippingOffset = 0.007f;
-    [Range(0f, 90f)]
-    public float maxAdjustmentAngle = 30f;
+    [Header("Material Settings")]
+    public Material dotMaterial;
+    [ColorUsage(true)]
+    public Color dotBaseColor = new (.7f, .1f, .1f, 1f);
+    public float dotBaseIntensity = 0;
+    public string dotColorPropertyName = "_EmissionColor";
 
     private static Mesh dotMesh;
-    private GameObject dotObject;
+    private Transform dotTrans;
     private MeshRenderer dotRenderer;
     private MeshFilter dotFilter;
     private MaterialPropertyBlock props;
-    private float minDotVal;
+#if NotEditor
+    private EntityPlayerLocal player;
+    private ScopeBase scopeBase;
+#endif
+
+    //handle external attached prefab origin search
 
     void Awake()
     {
+        if (!lineRenderer || !dotMaterial)
+        {
+            Destroy(this);
+            return;
+        }
         // Create the quad mesh (XY plane)
         if (!dotMesh)
         {
@@ -49,65 +67,156 @@ public class LaserSight : MonoBehaviour
             dotMesh.RecalculateNormals();
         }
 
-        // Create the dot GameObject under the laserOrigin
-        dotObject = new GameObject("LaserDot");
-        dotObject.transform.SetParent(laserOrigin, false);
+        // Create the dot GameObject
+        var dotObject = new GameObject("LaserDot");
+        dotObject.layer = 24;
+        dotTrans = dotObject.transform;
+        dotTrans.SetParent(transform, true);
 
         dotFilter = dotObject.AddComponent<MeshFilter>();
         dotFilter.mesh = dotMesh;
 
         dotRenderer = dotObject.AddComponent<MeshRenderer>();
         dotRenderer.material = dotMaterial;
+        dotRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        dotRenderer.receiveShadows = false;
+        dotRenderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
+        dotRenderer.enabled = false;
 
         props = new MaterialPropertyBlock();
 
         lineRenderer.useWorldSpace = true;
-        minDotVal = Mathf.Cos(Mathf.Deg2Rad * maxAdjustmentAngle);
-
-        dotRenderer.enabled = false;
-        lineRenderer.enabled = false;
+        lineRenderer.enabled = true;
+#if NotEditor
+        player = transform.GetLocalPlayerInParent();
+        if (player)
+        {
+            var targets = AnimationRiggingManager.GetActiveRigTargetsFromPlayer(player);
+            if (targets && targets.IsAnimationSet)
+            {
+                if (targets.IsFpv)
+                {
+                    scopeBase = targets.ItemFpv.GetComponentInChildren<ScopeBase>();
+                }
+            }
+            if (!laserOrigin)
+            {
+                laserOrigin = AnimationRiggingManager.GetTransformOverrideByName(player.inventory.holdingItemData.model, laserOriginName);
+            }
+            if (useAkimboOrigin && !defaultAkimboOrigin)
+            {
+                defaultAkimboOrigin = AnimationRiggingManager.GetTransformOverrideByName(player.inventory.holdingItemData.model, akimboOriginName);
+            }
+        }
+        if (!laserOrigin)
+        {
+            laserOrigin = transform;
+        }
+#endif
     }
 
     void LateUpdate()
     {
-        if (!lineRenderer || !dotMaterial || laserOrigin == null)
-            return;
+        bool dynamicOriginSet = false;
+        Vector3 origin = Vector3.zero;
+        Vector3 direction = Vector3.forward;
+#if NotEditor
+        if (scopeBase && scopeBase.aimingModule != null)
+        {
+            var aimingModule = scopeBase.aimingModule;
+            var dynamicLaserOrigin = aimingModule.CurAimRef;
+            if (dynamicLaserOrigin)
+            {
+                Transform dynamicOriginTrans;
+                if (useAkimboOrigin && (dynamicLaserOrigin.akimboLaserOriginOverride || defaultAkimboOrigin))
+                {
+                    dynamicOriginTrans = dynamicLaserOrigin.akimboLaserOriginOverride ?? defaultAkimboOrigin;
+                }
+                else
+                {
+                    dynamicOriginTrans = dynamicLaserOrigin.laserOriginOverride ?? dynamicLaserOrigin.transform;
+                }
+                origin = Vector3.Lerp(laserOrigin.position, dynamicOriginTrans.position, aimingModule.aimProcValue);
+                direction = Vector3.Slerp(laserOrigin.forward, dynamicOriginTrans.forward, aimingModule.aimProcValue);
+                dynamicOriginSet = true;
+            }
+        }
+#endif
+        if (!dynamicOriginSet)
+        {
+            if (!laserOrigin)
+            {
+                return;
+            }
+            origin = laserOrigin.position;
+            direction = laserOrigin.forward;
+        }
 
-        Vector3 origin = laserOrigin.position;
-        Vector3 direction = laserOrigin.forward;
+#if NotEditor
+        int layer = 0;
+        if (player != null)
+        {
+            layer = player.GetModelLayer();
+            player.SetModelLayer(2);
+        }
+#endif
         Vector3 endPoint = origin + direction * maxDistance;
         bool laserHit = Physics.Raycast(origin, direction, out RaycastHit hit, maxDistance, collisionMask);
-
         if (laserHit)
         {
-            Vector3 laserDirection = hit.point - transform.position;
-            if (Vector3.Dot(transform.forward, laserDirection) <= minDotVal)
+            //minDotVal = Mathf.Cos(Mathf.Deg2Rad * maxAdjustmentAngle);
+            if (Vector3.Dot(transform.forward, hit.point - transform.position) > 0)
             {
-                laserHit = false;
+                endPoint = hit.point + hit.normal * clippingOffset;
             }
         }
 
-        if (laserHit)
+        bool checkHit = false;
+        if (dynamicOriginSet)
         {
-            Vector3 impactWorld = hit.point + hit.normal * clippingOffset;
-            Vector3 localImpact = laserOrigin.InverseTransformPoint(impactWorld);
-            endPoint = impactWorld;
+            checkHit = Physics.Raycast(transform.position, endPoint - transform.position, out RaycastHit hitCheck, Vector3.Distance(transform.position, endPoint), collisionMask);
+            if (checkHit)
+            {
+                hit = hitCheck;
+                endPoint = hit.point + hit.normal * clippingOffset;
+            }
+        }
 
-            float distance = Vector3.Distance(laserOrigin.position, impactWorld);
-            float dotSize = Mathf.Lerp(dotSizeNear, dotSizeFar, distance / maxDistance);
+#if NotEditor
+        if (player != null)
+        {
+            player.SetModelLayer(layer);
+        }
+#endif
+
+        if (laserHit || checkHit)
+        {
+            Vector3 localImpact = transform.InverseTransformPoint(endPoint);
 
             // Flicker intensity
-            float flicker = 1f + Mathf.PerlinNoise(Time.time * flickerSpeed, 0f) * flickerAmount;
-            float intensity = dotBaseIntensity * flicker;
-            Color emissive = Color.red * intensity;
+            float flicker = Mathf.PerlinNoise(Time.time * intensityFlickerSpeed, 0f) * intensityFlickerMax;
+            float intensity = Mathf.Pow(2, dotBaseIntensity + flicker);
+            Color emissive = new Color(dotBaseColor.r * intensity,
+                                       dotBaseColor.g * intensity,
+                                       dotBaseColor.b * intensity,
+                                       dotBaseColor.a);
+            //if (string.IsNullOrEmpty(dotIntensityPropertyName))
+            //{
+            //    emissive = dotBaseColor * intensity;
+            //}
+            //else
+            //{
+            //    props.SetFloat(dotIntensityPropertyName, intensity);
+            //}
 
-            props.SetColor("_Color", emissive);
-            props.SetFloat("_Emissive", intensity);
+            props.SetColor(dotColorPropertyName, emissive);
             dotRenderer.SetPropertyBlock(props);
 
-            dotObject.transform.localPosition = localImpact;
-            dotObject.transform.forward = -hit.normal;
-            dotObject.transform.localScale = Vector3.one * dotSize;
+            dotTrans.SetParent(null, true);
+            dotTrans.position = endPoint;
+            dotTrans.forward = -hit.normal;
+            dotTrans.localScale = Vector3.one * Mathf.Lerp(dotBaseSizeNear, dotBaseSizeFar, hit.distance / maxDotSizeDistance);
+            dotTrans.SetParent(transform, true);
             dotRenderer.enabled = true;
         }
         else
@@ -118,7 +227,6 @@ public class LaserSight : MonoBehaviour
         // Update beam
         lineRenderer.SetPosition(0, transform.position);
         lineRenderer.SetPosition(1, endPoint);
-        lineRenderer.enabled = true;
     }
 
     void OnValidate()

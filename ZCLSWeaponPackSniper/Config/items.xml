@@ -126,12 +126,20 @@
             <property name="LightValue" value=".45"/>
             <property name="EconomicValue" value="6000"/>
             <property name="TraderStageTemplate" value="baseTier3"/>
-            <property name="UnlockedBy" value="craftingRifles"/>
             <property name="ShowQuality" value="true"/>
             <property name="SoundUnholster" value="weapon_unholster"/>
             <property name="SoundHolster" value="weapon_holster"/>
             <property name="SoundPickup" value="rifle_polymer_grab"/>
             <property name="SoundPlace" value="rifle_polymer_place"/>
+			<property name="TakeOverReloadTime" value="true"/>
+            <conditional>
+                <if cond="mod_loaded('EFTX_Pack_Standard')">
+                    <property name="UnlockedBy" value="craftingEFTRifles"/>
+                </if>
+                <else>
+                    <property name="UnlockedBy" value="craftingRifles"/>
+                </else>
+            </conditional>
             <conditional>
                 <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
                     <property name="RepairTools" value="resourceWeaponRepairKit"/>
@@ -196,7 +204,10 @@
                 <passive_effect name="RoundsPerMinute" operation="base_set" value="250" tags="perkDeadEye"/>
                 <passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkDeadEye"/>
                 <passive_effect name="MagazineSize" operation="base_set" value="1" tags="perkDeadEye"/>
-                <passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1.33" tags="perkDeadEye"/>
+                <passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkDeadEye"/>
+                <passive_effect name="ReloadSpeedMultiplier" operation="perc_add" value="-.3" tags="perkDeadEye">
+					<requirement name="ProgressionLevel" progression_name="perkDeadEye" operation="GTE" value="5"/>
+				</passive_effect>
                 <passive_effect name="RecoilCameraShakeStrength" operation="base_set" value="0" tags="perkDeadEye"/>
 
                 <passive_effect name="SpreadDegreesVertical" operation="base_set" value="5" tags="perkDeadEye"/>
@@ -406,12 +417,20 @@
 			<property name="LightValue" value=".45"/>
 			<property name="EconomicValue" value="2500"/>
 			<property name="TraderStageTemplate" value="baseTier2"/><!-- gunRifleT2LeverActionRifle -->
-			<property name="UnlockedBy" value="craftingRifles"/><!-- gunRifleT2LeverActionRifleSchematic, -->
 			<property name="ShowQuality" value="true"/>
 			<property name="SoundUnholster" value="weapon_unholster"/>
 			<property name="SoundHolster" value="weapon_holster"/>
 			<property name="SoundPickup" value="rifle_wood_grab"/>
 			<property name="SoundPlace" value="rifle_wood_place"/>
+			<property name="TakeOverReloadTime" value="true"/>
+            <conditional>
+                <if cond="mod_loaded('EFTX_Pack_Standard')">
+                    <property name="UnlockedBy" value="craftingEFTRifles"/>
+                </if>
+                <else>
+                    <property name="UnlockedBy" value="craftingRifles"/>
+                </else>
+            </conditional>
             <conditional>
                 <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
                     <property name="RepairTools" value="resourceWeaponRepairKit"/>
@@ -458,9 +477,6 @@
 				<property name="zoomTriggerEffectTriggerPullXbox" value="PistolZoom"/>
 			</property>
 			<effect_group name="gunKFMosin">
-				<!-- <triggered_effect trigger="onSelfRangedBurstShotStart" action="PlaySound" soundGroup="kf_mosin_Boom" play_at_self="true" play_in_head="true">
-					<requirement name="IsFPV"/>
-				</triggered_effect> -->
 				<triggered_effect trigger="onSelfHoldingItemCreated" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="AimRefGroupVanilla"/>
 				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="true">
 					<requirement name="ProgressionLevel" progression_name="perkDeadEye" operation="GTE" value="5"/>
@@ -490,7 +506,10 @@
 				<passive_effect name="RoundsPerMinute" operation="base_set" value="70" tags="perkDeadEye"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkDeadEye"/>
 				<passive_effect name="MagazineSize" operation="base_set" value="5" tags="perkDeadEye"/>
-				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1.06" tags="perkDeadEye"/> <!-- 2.7s -->
+                <passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkDeadEye"/>
+                <passive_effect name="ReloadSpeedMultiplier" operation="perc_add" value="-.3" tags="perkDeadEye">
+					<requirement name="ProgressionLevel" progression_name="perkDeadEye" operation="GTE" value="5"/>
+				</passive_effect>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
 				<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkDeadEye"/> <!-- random WeaponHandling -->
 
@@ -547,6 +566,16 @@
     <conditional>
         <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
             <append xpath="/items/item[@name='gunKFM99']/property[@name='Tags']/@value">,AssaultScope,ReflexSight,CompactReflexSight,AssaultScopeCompact,Scope30mm,Scope34mm</append>
+        </if>
+    </conditional>
+	
+    <conditional>
+        <if cond="mod_loaded('EFTX_Pack_Standard')">
+            <csv xpath="/items/item[@name='gunKFM99' or @name='gunKFMosin']/property[@name='Tags']/@value" delim="," op="add">eftRifles</csv>
+            <csv xpath="/items/item[@name='gunKFM99' or @name='gunKFMosin']/effect_group/requirement[contains(@progression_name, 'perkDeadEye')]/@progression_name" delim="," op="add">perkEFTXRifles</csv>
+            <csv xpath="/items/item[@name='gunKFM99' or @name='gunKFMosin']/effect_group/requirement[contains(@progression_name, 'perkDeadEye')]/@progression_name" delim="," op="remove">perkDeadEye</csv>
+            <csv xpath="/items/item[@name='gunKFM99' or @name='gunKFMosin']/effect_group//requirement[contains(@progression_name, 'perkDeadEye')]/@progression_name" delim="," op="add">perkEFTXRifles</csv>
+            <csv xpath="/items/item[@name='gunKFM99' or @name='gunKFMosin']/effect_group//requirement[contains(@progression_name, 'perkDeadEye')]/@progression_name" delim="," op="remove">perkDeadEye</csv>
         </if>
     </conditional>
 </configs>

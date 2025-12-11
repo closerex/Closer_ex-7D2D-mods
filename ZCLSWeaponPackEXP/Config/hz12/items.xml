@@ -131,9 +131,9 @@
 			<property name="TraderStageTemplate" value="baseTier3"/>
 			<property name="UnlockedBy" value="craftingShotguns"/><!-- gunShotgunT2PumpShotgunSchematic, -->
 			<property name="ShowQuality" value="true"/>
-			<!-- <property name="SoundUnholster" value="weapon_unholster"/>
-			<property name="SoundHolster" value="weapon_holster"/> -->
-			<!-- <property name="TakeOverReloadTime" value="true"/> -->
+			<property name="SoundUnholster" value="weapon_unholster"/>
+			<property name="SoundHolster" value="weapon_holster"/>
+			<property name="TakeOverReloadTime" value="true"/>
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
@@ -177,6 +177,7 @@
 				<property name="zoomTriggerEffectPullXb" value="PistolZoom"/>
 			</property>
 			<effect_group name="gunT3HZ12">
+				<triggered_effect trigger="onSelfHoldingItemCreated" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="AimRefGroupVanilla"/>
 				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="true">
 					<requirement name="ProgressionLevel" progression_name="perkBoomstick" operation="GTE" value="5"/>
 				</triggered_effect>
@@ -204,7 +205,10 @@
 				<passive_effect name="RoundsPerMinute" operation="base_set" value="600" tags="perkBoomstick"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkBoomstick"/>
 				<passive_effect name="MagazineSize" operation="base_set" value="16" tags="perkBoomstick"/>
-				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkBoomstick"/> <!-- 2.3s -->
+                <passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkBoomstick"/>
+                <passive_effect name="ReloadSpeedMultiplier" operation="perc_add" value="-.3" tags="perkBoomstick">
+					<requirement name="ProgressionLevel" progression_name="perkBoomstick" operation="GTE" value="5"/>
+				</passive_effect>
 				<passive_effect name="ModSlots" operation="base_set" value="1,2,3,4,5,6" tier="3,3,3,4,5,6"/>
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
@@ -233,7 +237,6 @@
 				<passive_effect name="DegradationMax" operation="base_set" value="400,700" tier="1,6" tags="perkBoomstick"/>
 				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkBoomstick"/>
 				<display_value name="dStatStunEffect" value="4"/>
-				<triggered_effect trigger="onSelfHoldingItemCreated" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="AimRefGroupVanilla"/>
 			</effect_group>
 		</item>
 	</append>
@@ -242,7 +245,7 @@
 		<if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
 			<set xpath="/items/item[@name='gunT3HZ12']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug</set>
 			<set xpath="/items/item[@name='gunT3HZ12']/effect_group[@name='gunT3HZ12']/passive_effect[@name='DegradationMax']/@value">1200,2400</set>
-			<append xpath="/items/item[@name='gunT3HZ12']/property[@name='Tags']/@value">,AssaultScope,ReflexSight,CompactReflexSight,AssaultScopeCompact,Scope30mm</append>
+			<append xpath="/items/item[@name='gunT3HZ12']/property[@name='Tags']/@value">,ReflexSight,CompactReflexSight</append>
 			<set xpath="/items/item[@name='gunT3HZ12']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
 		</if>
 	</conditional>
@@ -253,4 +256,14 @@
 			<set xpath="/items/item[@name='gunT3HZ12']/effect_group[@name='gunT3HZ12']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
 		</if>
 	</conditional>
+    <conditional>
+        <if cond="mod_loaded('EFTX_Pack_Standard')">
+			<set xpath="/items/item[@name='gunT3HZ12']/property[@name='UnlockedBy']/@value">craftingEFTShotguns</set>
+            <csv xpath="/items/item[@name='gunT3HZ12']/property[@name='Tags']/@value" delim="," op="add">eftShotties</csv>
+            <csv xpath="/items/item[@name='gunT3HZ12']/effect_group/requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="add">perkEFTXShotties</csv>
+            <csv xpath="/items/item[@name='gunT3HZ12']/effect_group/requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="remove">perkBoomstick</csv>
+            <csv xpath="/items/item[@name='gunT3HZ12']/effect_group//requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="add">perkEFTXShotties</csv>
+            <csv xpath="/items/item[@name='gunT3HZ12']/effect_group//requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="remove">perkBoomstick</csv>
+        </if>
+    </conditional>
 </configs>

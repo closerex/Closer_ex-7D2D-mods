@@ -1802,6 +1802,71 @@ public static class CommonUtilityPatch
         }
     }
 
+    [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.GetCrosshairType))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_GetCrosshairType_ItemClass(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+    {
+        var codes = instructions.ToList();
+
+        var mtd_getoverride = AccessTools.Method(typeof(ItemValue), nameof(ItemValue.GetPropertyOverride));
+        var fld_empty = AccessTools.Field(typeof(string), nameof(string.Empty));
+
+        var lbd = generator.DeclareLocal(typeof(string));
+
+        for (int i = 1; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_getoverride) && codes[i - 1].LoadsField(fld_empty))
+            {
+                codes.InsertRange(i, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldstr, "False"),
+                    CodeInstruction.StoreLocal(lbd.LocalIndex),
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    CodeInstruction.LoadField(typeof(ItemClass), nameof(ItemClass.Properties)),
+                    CodeInstruction.LoadField(typeof(ItemClass), nameof(ItemClass.PropCrosshairOnAim)),
+                    CodeInstruction.LoadLocal(lbd.LocalIndex, true),
+                    CodeInstruction.Call(typeof(DynamicProperties), nameof(DynamicProperties.ParseString)),
+                    CodeInstruction.LoadLocal(lbd.LocalIndex)
+                });
+                codes.RemoveAt(i - 1);
+                break;
+            }
+        }
+
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(EntityAlive), nameof(EntityAlive.FireEvent))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_FireEvent_EntityAlive(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+        var mtd_invevent = AccessTools.Method(typeof(Inventory), nameof(Inventory.FireEvent));
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_invevent))
+            {
+                codes[i] = CodeInstruction.CallClosure<Action<Inventory, MinEventTypes, MinEventParams>>((inv, eventType, par) =>
+                {
+                    ItemValue prevItemValue = par.ItemValue;
+                    ItemActionData prevActionData = par.ItemActionData;
+                    ItemInventoryData prevInvData = par.ItemInventoryData;
+
+                    par.ItemValue = inv.holdingItemItemValue;
+                    par.ItemInventoryData = inv.holdingItemData;
+                    par.ItemActionData = par.ItemInventoryData?.actionData?[MultiActionManager.GetActionIndexForEntity(inv.entity)];
+                    par.ItemValue.FireEvent(eventType, par);
+
+                    par.ItemValue = prevItemValue;
+                    par.ItemActionData = prevActionData;
+                    par.ItemInventoryData = prevInvData;
+                });
+                break;
+            }
+        }
+        return codes;
+    }
+
     public static void Test()
     {
         var player = GameManager.Instance.World.GetPrimaryPlayer();

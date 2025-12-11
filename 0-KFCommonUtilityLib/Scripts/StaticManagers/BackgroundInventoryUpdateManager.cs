@@ -11,12 +11,12 @@ namespace KFCommonUtilityLib
     public static class BackgroundInventoryUpdateManager
     {
         private static readonly Dictionary<int, List<IBackgroundInventoryUpdater>[]> dict_updaters = new Dictionary<int, List<IBackgroundInventoryUpdater>[]>();
-        private static readonly Dictionary<int, List<IBackgroundInventoryUpdater>[]> dict_disabled = new Dictionary<int, List<IBackgroundInventoryUpdater>[]>();
+        //private static readonly Dictionary<int, List<IBackgroundInventoryUpdater>[]> dict_disabled = new Dictionary<int, List<IBackgroundInventoryUpdater>[]>();
 
         public static void Cleanup()
         {
             dict_updaters.Clear();
-            dict_disabled.Clear();
+            //dict_disabled.Clear();
         }
 
         public static void RegisterUpdater(EntityAlive entity, int slot, IBackgroundInventoryUpdater updater)
@@ -44,23 +44,23 @@ namespace KFCommonUtilityLib
                 arr_updaters[slot].Add(updater);
         }
 
-        public static void DisableUpdater(EntityAlive entity)
-        {
-            if (dict_updaters.TryGetValue(entity.entityId, out var updater))
-            {
-                dict_updaters.Remove(entity.entityId);
-                dict_disabled.Add(entity.entityId, updater);
-            }
-        }
+        //public static void DisableUpdater(EntityAlive entity)
+        //{
+        //    if (dict_updaters.TryGetValue(entity.entityId, out var updater))
+        //    {
+        //        dict_updaters.Remove(entity.entityId);
+        //        dict_disabled.Add(entity.entityId, updater);
+        //    }
+        //}
 
-        public static void EnableUpdater(EntityAlive entity)
-        {
-            if (dict_disabled.TryGetValue(entity.entityId, out var updaters))
-            {
-                dict_disabled.Remove(entity.entityId);
-                dict_updaters.Add(entity.entityId, updaters);
-            }
-        }
+        //public static void EnableUpdater(EntityAlive entity)
+        //{
+        //    if (dict_disabled.TryGetValue(entity.entityId, out var updaters))
+        //    {
+        //        dict_disabled.Remove(entity.entityId);
+        //        dict_updaters.Add(entity.entityId, updaters);
+        //    }
+        //}
 
         public static void UnregisterUpdater(EntityAlive entity)
         {

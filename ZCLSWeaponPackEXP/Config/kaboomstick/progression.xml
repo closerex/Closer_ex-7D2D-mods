@@ -1,14 +1,10 @@
 <configs>
 	<conditional>
-		<if cond="mod_loaded('EFT8_DVS_Configs')">
-			<!-- Kaboomstick Ammo -->
-			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingExplosives']/display_entry[contains(@icon, 'gunchinalake')]">
-				<unlock_entry item="ammoKaboomstickShellFrag,ammoKaboomstickShellHE,gunKaboomstick" unlock_tier="1" />
-			</append>
-			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingExplosives']/effect_group/passive_effect[@name='RecipeTagUnlocked'][@level='50,100']/@tags">,ammoKaboomstickShellFrag,ammoKaboomstickShellHE,gunKaboomstick</append>	
-
-			<!-- Kaboomstick  -->
-			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingExplosives']/effect_group/passive_effect[@name='CraftingTier'][@level='60,70,80,90,100']/@tags">,gunKaboomstick</append>
+		<if cond="mod_loaded('EFTX_Pack_Standard')">
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingRocketsandLaunchers']/display_entry[contains(@icon, 'gunchinalake')]/@icon">,gunKaboomstick,ammoKaboomstickShellHE,ammoKaboomstickShellHE</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingRocketsandLaunchers']/display_entry[contains(@icon, 'gunchinalake')]/unlock_entry[contains(@item, 'gunchinalake')]/@item">,gunKaboomstick,ammoKaboomstickShellHE,ammoKaboomstickShellHE</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingRocketsandLaunchers']/effect_group/passive_effect[contains(@tags, 'gunchinalake') and (@name='RecipeTagUnlocked' or @name='CraftingTier')]/@tags">,gunKaboomstick</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingRocketsandLaunchers']/effect_group/passive_effect[contains(@tags, 'gunchinalake') and @name='RecipeTagUnlocked']/@tags">,ammoKaboomstickShellHE,ammoKaboomstickShellHE</append>
 		</if>
 		<else>
 			<!-- Kaboomstick Ammo -->

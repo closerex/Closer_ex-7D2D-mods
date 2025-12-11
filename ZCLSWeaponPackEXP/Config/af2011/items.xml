@@ -145,6 +145,7 @@
 			<property name="SoundHolster" value="weapon_holster"/>
 			<property name="SoundPickup" value="pistol_grab"/>
 			<property name="SoundPlace" value="pistol_place"/>
+            <property name="TakeOverReloadTime" value="true"/>
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
@@ -223,7 +224,10 @@
 				<passive_effect name="RoundsPerMinute" operation="base_set" value="461" tags="perkGunslinger"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkGunslinger"/>
 				<passive_effect name="MagazineSize" operation="base_set" value="32" tags="perkGunslinger"/>
-				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="0.667" tags="perkGunslinger"/> <!-- 2s -->
+                <passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkGunslinger"/>
+                <passive_effect name="ReloadSpeedMultiplier" operation="perc_add" value="-.3" tags="perkGunslinger">
+					<requirement name="ProgressionLevel" progression_name="perkGunslinger" operation="GTE" value="5"/>
+				</passive_effect>
 				<passive_effect name="ModSlots" operation="base_set" value="3,3,3,4,4,4" tier="1,2,3,4,5,6"/>
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
@@ -232,9 +236,6 @@
 				<passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6" tags="perkGunslinger"/> <!-- tier bonus -->
 				<passive_effect name="BlockDamage" operation="perc_add" value="-.08,.08" tags="perkGunslinger"/> <!-- random BlockDmg -->
 				<passive_effect name="BlockDamage" operation="perc_add" value=".15,.75" tier="2,6" tags="perkGunslinger"/> <!-- tier bonus -->
-				<!-- <passive_effect name="DegradationMax" operation="perc_add" value="-.2,.2" tier="1,6" tags="perkGunslinger"/> --> <!-- random DegMax -->
-				<!-- <passive_effect name="RoundsPerMinute" operation="perc_add" value="-.05,.05" tags="perkGunslinger"/> --> <!-- random APM -->
-				<!-- <passive_effect name="MagazineSize" operation="perc_add" value="-.09,.09" tags="perkGunslinger"/> --> <!-- random MagazineSize -->
 				<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkGunslinger"/> <!-- random WeaponHandling -->
 		
 				<passive_effect name="SpreadDegreesVertical" operation="base_set" value="1.3" tags="perkGunslinger"/>
@@ -295,6 +296,7 @@
 			<property name="SoundHolster" value="weapon_holster"/>
 			<property name="SoundPickup" value="pistol_grab"/>
 			<property name="SoundPlace" value="pistol_place"/>
+            <property name="TakeOverReloadTime" value="true"/>
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
@@ -363,7 +365,10 @@
 				<passive_effect name="RoundsPerMinute" operation="base_set" value="316" tags="perkGunslinger"/>
 				<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkGunslinger"/>
 				<passive_effect name="MagazineSize" operation="base_set" value="16" tags="perkGunslinger"/>
-				<passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkGunslinger"/> <!-- 2s -->
+                <passive_effect name="ReloadSpeedMultiplier" operation="base_set" value="1" tags="perkGunslinger"/>
+                <passive_effect name="ReloadSpeedMultiplier" operation="perc_add" value="-.3" tags="perkGunslinger">
+					<requirement name="ProgressionLevel" progression_name="perkGunslinger" operation="GTE" value="5"/>
+				</passive_effect>
 				<passive_effect name="ModSlots" operation="base_set" value="3,3,3,4,4,4" tier="1,2,3,4,5,6"/>
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
@@ -407,8 +412,8 @@
 
 			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft45ACP,ammoEft45ACPAP,ammoEft45ACPRIP</set>
 			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='DegradationMax']/@value">1200,2400</set>
-			<append xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/property[@name='Tags']/@value">,CompactReflexSight</append>
-			<append xpath="/items/item[@name='gunHandgunT3AF2011A1S']/property[@name='Tags']/@value">,CompactReflexSight</append>
+			<append xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/property[@name='Tags']/@value">,ReflexSight,CompactReflexSight</append>
+			<append xpath="/items/item[@name='gunHandgunT3AF2011A1S']/property[@name='Tags']/@value">,ReflexSight,CompactReflexSight</append>
 
 			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
 			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
@@ -425,4 +430,14 @@
 			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
 		</if>
 	</conditional>
+    <conditional>
+        <if cond="mod_loaded('EFTX_Pack_Standard')">
+			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/property[@name='UnlockedBy']/@value">craftingPistols</set>
+            <csv xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/property[@name='Tags']/@value" delim="," op="add">eftPistol</csv>
+            <csv xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group/requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="add">perkEFTXPistols</csv>
+            <csv xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group/requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="remove">perkGunslinger</csv>
+            <csv xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group//requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="add">perkEFTXPistols</csv>
+            <csv xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group//requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="remove">perkGunslinger</csv>
+        </if>
+    </conditional>
 </configs>

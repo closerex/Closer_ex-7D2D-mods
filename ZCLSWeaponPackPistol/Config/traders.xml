@@ -7,6 +7,7 @@
                 <item name="gunKF9mm" quality="1,5"/>
                 <item name="gunKFHRGSW500" quality="1,5"/>
                 <item name="gunKFSW500" quality="1,5"/>
+                <item name="gunKFG18C" quality="1,5"/>
             </append>
         </else>
     </conditional>

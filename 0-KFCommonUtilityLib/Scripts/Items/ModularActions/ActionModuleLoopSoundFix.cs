@@ -2,6 +2,8 @@
 using HarmonyLib;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Attributes;
+using KFCommonUtilityLib.Scripts.Utilities;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection.Emit;
@@ -12,8 +14,6 @@ using XmlData = Audio.XmlData;
 [TypeTarget(typeof(ItemActionRanged)), TypeDataTarget(typeof(LoopSoundFixData))]
 public class ActionModuleLoopSoundFix
 {
-    public float loopSegTimeOverride;
-    public float acceptableError;
 
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ItemActionEffects)), MethodTargetTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_ItemActionRanged_ItemActionEffects(IEnumerable<CodeInstruction> instructions)
@@ -134,29 +134,38 @@ public class ActionModuleLoopSoundFix
         __customData.shotCount++;
     }
 
-    [HarmonyPatch(nameof(ItemActionRanged.StartHolding)), MethodTargetPostfix]
-    public void Postfix_StartHolding(LoopSoundFixData __customData)
-    {
-        __customData.Reset();
-    }
-
     [HarmonyPatch(nameof(ItemActionRanged.StopHolding)), MethodTargetPostfix]
     public void Postfix_StopHolding(LoopSoundFixData __customData)
     {
         __customData.Reset();
     }
 
-    [HarmonyPatch(nameof(ItemAction.ReadFrom)), MethodTargetPostfix]
-    public void Postfix_ReadFrom(ItemActionRanged __instance)
+    [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
+    public void Postfix_OnModificationsChanged(ItemAction __instance, ItemActionData _data, LoopSoundFixData __customData)
     {
-        loopSegTimeOverride = -1f;
-        __instance.Properties.ParseFloat("LoopSegmentLength", ref  loopSegTimeOverride);
-        acceptableError = 0.05f;
-        __instance.Properties.ParseFloat("AcceptableError", ref acceptableError);
+        int actionIndex = _data.indexInEntityOfAction;
+        string originalValue = "0";
+        __instance.Properties.ParseString("LoopSegmentLength", ref originalValue);
+        __customData.loopSegTimeOverride = double.Parse(_data.invData.itemValue.GetPropertyOverrideForAction("LoopSegmentLength", originalValue, actionIndex));
+        originalValue = "0.05";
+        __instance.Properties.ParseString("AcceptableError", ref originalValue);
+        __customData.acceptableError = double.Parse(_data.invData.itemValue.GetPropertyOverrideForAction("AcceptableError", originalValue, actionIndex));
+        originalValue = "0";
+        __instance.Properties.ParseString("OptimalLoopEndShift", ref originalValue);
+        __customData.optimalLoopEndShift = Math.Clamp(double.Parse(_data.invData.itemValue.GetPropertyOverrideForAction("OptimalLoopEndShift", originalValue, actionIndex)), 0, 1);
+        originalValue = "true";
+        __instance.Properties.ParseString("EnableLoopSoundFix", ref originalValue);
+        __customData.enabled = bool.Parse(_data.invData.itemValue.GetPropertyOverrideForAction("EnableLoopSoundFix", originalValue, actionIndex));
+        __customData.Reset();
     }
 
     public class LoopSoundFixData
     {
+        public double loopSegTimeOverride;
+        public double acceptableError;
+        public double optimalLoopEndShift;
+        public bool enabled;
+
         public double loopStartTime;
         public double lastShotTime;
         public double nearScheduledTime;
@@ -187,9 +196,9 @@ public class ActionModuleLoopSoundFix
             {
                 Log.Out($"[LoopSoundFix] StopSequenceDelayed called for entity {entity.entityId}, soundGroupName: {soundGroupName}, loopStartTime: {data.loopStartTime}, shotCount: {data.shotCount}");
             }
-            if (data.loopStartTime >= 0f && data.shotCount > 0)
+            if (data.enabled && data.loopStartTime >= 0f && data.shotCount > 0)
             {
-                DelayedStopSequence(entity, soundGroupName, data.nearScheduledTime, data.farScheduledTime, data.module.loopSegTimeOverride > 0f ? data.module.loopSegTimeOverride : data.rangedData.Delay, data.shotCount, data.module.acceptableError);
+                DelayedStopSequence(entity, soundGroupName, data.nearScheduledTime, data.farScheduledTime, data.loopSegTimeOverride > 0f ? data.loopSegTimeOverride : data.rangedData.Delay, data.optimalLoopEndShift, data.shotCount, data.acceptableError);
             }
             else
             {
@@ -211,7 +220,7 @@ public class ActionModuleLoopSoundFix
             }
         }
 
-        private static void DelayedStopSequence(Entity entity, string soundGroupName, double nearScheduledStartTime, double farScheduledStartTime, double loopSegTime, int expectedShots, double acceptableError)
+        private static void DelayedStopSequence(Entity entity, string soundGroupName, double nearScheduledStartTime, double farScheduledStartTime, double loopSegTime, double optimalEndShift, int expectedShots, double acceptableError)
         {
             if (GameManager.IsDedicatedServer || soundGroupName == null)
             {
@@ -229,12 +238,12 @@ public class ActionModuleLoopSoundFix
                 if (sequenceGOs.nearLoop)
                 {
                     nearAudioSource = sequenceGOs.nearLoop.GetComponent<AudioSource>();
-                    DelayStopLoop(sequenceGOs.nearStart ? sequenceGOs.nearStart.GetComponent<AudioSource>() : null, nearAudioSource, nearScheduledStartTime, loopSegTime, expectedShots, acceptableError, out nearEndScheduledTime);
+                    DelayStopLoop(sequenceGOs.nearStart ? sequenceGOs.nearStart.GetComponent<AudioSource>() : null, nearAudioSource, nearScheduledStartTime, loopSegTime, optimalEndShift, expectedShots, acceptableError, out nearEndScheduledTime);
                 }
                 if (sequenceGOs.farLoop)
                 {
                     farAudioSource = sequenceGOs.farLoop.GetComponent<AudioSource>();
-                    DelayStopLoop(sequenceGOs.farStart ? sequenceGOs.farStart.GetComponent<AudioSource>() : null, farAudioSource, farScheduledStartTime, loopSegTime, expectedShots, acceptableError, out farEndScheduledTime);
+                    DelayStopLoop(sequenceGOs.farStart ? sequenceGOs.farStart.GetComponent<AudioSource>() : null, farAudioSource, farScheduledStartTime, loopSegTime, optimalEndShift, expectedShots, acceptableError, out farEndScheduledTime);
                 }
                 dictionary.Remove(soundGroupName);
 
@@ -331,11 +340,12 @@ public class ActionModuleLoopSoundFix
             }
         }
 
-        private static void DelayStopLoop(AudioSource startSource, AudioSource loopSource, double scheduledStartTime, double loopSegTime, int expectedShots, double acceptableError, out double scheduledEndTime)
+        private static void DelayStopLoop(AudioSource startSource, AudioSource loopSource, double scheduledStartTime, double loopSegTime, double optimalEndShift, int expectedShots, double acceptableError, out double scheduledEndTime)
         {
             scheduledEndTime = -1;
             if (loopSource)
             {
+                optimalEndShift = loopSegTime * optimalEndShift;
                 double dspTime = scheduledStartTime <= 0 ? AudioSettings.dspTime : scheduledStartTime;
                 double sampleTime = loopSource.timeSamples / (double)loopSource.clip.frequency;
                 double actualDelay = loopSegTime - sampleTime % loopSegTime;
@@ -364,8 +374,17 @@ public class ActionModuleLoopSoundFix
                 }
                 if (sampleTime == 0 || startDelay > 0 || burstShotDelay > 0 || actualDelay < loopSegTime * (1 - acceptableError))
                 {
-                    scheduledEndTime = dspTime + startDelay + actualDelay + burstShotDelay;
+                    double totalDelay = startDelay + burstShotDelay + actualDelay;
+                    scheduledEndTime = dspTime + totalDelay;
                     loopSource.SetScheduledEndTime(scheduledEndTime);
+                    if (totalDelay > optimalEndShift)
+                    {
+                        scheduledEndTime -= optimalEndShift;
+                    }
+                    else
+                    {
+                        scheduledEndTime = -1;
+                    }
                     if (debugLog)
                     {
                         Log.Out($"[LoopSoundFix] sampleTime: {sampleTime}, scheduledStartTime: {scheduledStartTime}, actualDelay: {actualDelay}, startDelay: {startDelay}, burstShotDelay: {burstShotDelay}, loopSegTime: {loopSegTime}, expectedShots: {expectedShots}, pendingShots: {pendingShots}");

@@ -379,7 +379,7 @@ internal class ActionModuleTargetSeeker
             {
                 foreach (var pair in colliders)
                 {
-                    if (IsPointInPyramidAngle(originTransform, pair.collider.bounds.center, angleRangeHor, angleRangeVer))
+                    if (IsTargetInAngle.IsPointInPyramidAngle(pair.collider.bounds.center - originTransform.position, originTransform.forward, originTransform.right, originTransform.up, angleRangeHor, angleRangeVer))
                     {
                         Vector3 direction = pair.collider.bounds.center - originTransform.position;
                         Ray ray = new(originTransform.position + Origin.position, direction.normalized);
@@ -422,24 +422,6 @@ internal class ActionModuleTargetSeeker
                 }
             }
             return false;
-        }
-
-        private static bool IsPointInPyramidAngle(Transform sourceTransform, Vector3 targetPos, Vector2 anglesHor, Vector2 anglesVer)
-        {
-            Vector3 directionToTarget = targetPos - sourceTransform.position;
-            float totalAngle = Vector3.Angle(sourceTransform.forward, directionToTarget);
-
-            Vector3 projDir = Vector3.ProjectOnPlane(directionToTarget, sourceTransform.up).normalized;
-            float horizontalAngle = Vector3.SignedAngle(projDir, sourceTransform.forward, sourceTransform.up);
-            if (horizontalAngle < anglesHor.x || horizontalAngle > anglesHor.y)
-            {
-                return false;
-            }
-
-            projDir = Vector3.ProjectOnPlane(directionToTarget, sourceTransform.right).normalized;
-            float verticalAngle = Vector3.SignedAngle(projDir, sourceTransform.forward, sourceTransform.right);
-
-            return verticalAngle >= anglesVer.x && verticalAngle <= anglesVer.y;
         }
     }
 }

@@ -3,11 +3,31 @@
         <if cond="mod_loaded('EFT_Overhaul')">
 
         </if>
+        <if cond="mod_loaded('EFTX_Pack_Standard')">
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingPistols']/display_entry[contains(@icon, 'gunp226')]/@icon">,gunKF9mm,gunKFDual9mm</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingPistols']/display_entry[contains(@icon, 'gunp226')]/unlock_entry[contains(@item, 'gunp226')]/@item">,gunKF9mm,gunKFDual9mm</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingPistols']/effect_group/passive_effect[contains(@tags, 'gunp226') and (@name='RecipeTagUnlocked' or @name='CraftingTier')]/@tags">,gunKF9mm,gunKFDual9mm</append>
+			
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingPistols']/display_entry[contains(@icon, 'gunrsh12')]/@icon">,gunKFSW500,gunKFDualSW500</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingPistols']/display_entry[contains(@icon, 'gunrsh12')]/unlock_entry[contains(@item, 'gunrsh12')]/@item">,gunKFSW500,gunKFDualSW500</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingPistols']/effect_group/passive_effect[contains(@tags, 'gunrsh12') and (@name='RecipeTagUnlocked' or @name='CraftingTier')]/@tags">,gunKFSW500,gunKFDualSW500</append>
+
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingPistols']/display_entry[contains(@icon, 'gunglock18c')]/@icon">,gunKFG18C,gunKFDualG18C,gunKFG18CShield</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingPistols']/display_entry[contains(@icon, 'gunglock18c')]/unlock_entry[contains(@item, 'gunglock18c')]/@item">,gunKFG18C,gunKFDualG18C,gunKFG18CShield</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingPistols']/effect_group/passive_effect[contains(@tags, 'gunglock18c') and (@name='RecipeTagUnlocked' or @name='CraftingTier')]/@tags">,gunKFG18C,gunKFDualG18C,gunKFG18CShield</append>
+			
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTShotguns']/display_entry[contains(@icon, 'gunm870')]/@icon">,gunKFHRGSW500,gunKFDualHRGSW500</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTShotguns']/display_entry[contains(@icon, 'gunm870')]/unlock_entry[contains(@item, 'gunm870')]/@item">,gunKFHRGSW500,gunKFDualHRGSW500</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTShotguns']/effect_group/passive_effect[contains(@tags, 'gunm870') and (@name='RecipeTagUnlocked' or @name='CraftingTier')]/@tags">,gunKFHRGSW500,gunKFDualHRGSW500</append>
+        </if>
         <else>
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingHandguns']">
 				<display_entry item="gunKF9mm" unlock_level="15,20,25,30,35,40" />
 				<display_entry item="gunKFDual9mm" unlock_level="15,20,25,30,35,40" />
+				<display_entry item="gunKFG18C" unlock_level="75,80,85,90,95" />
+				<display_entry item="gunKFDualG18C" unlock_level="75,80,85,90,95" />
 				<display_entry item="gunKFSW500" unlock_level="75,80,85,90,95" />
+				<display_entry item="gunKFG18CShield" unlock_level="75,80,85,90,95" />
 				<display_entry item="gunKFDualSW500" unlock_level="75,80,85,90,95" />
 			</append>
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingShotguns']">
@@ -17,8 +37,8 @@
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingHandguns']/effect_group[1]">
 				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="15,100" value="1" tags="gunKF9mm,gunKFDual9mm"/>
 				<passive_effect name="CraftingTier" operation="base_add" level="20,25,30,35,40,100" value="1,2,3,4,5,5" tags="gunKF9mm,gunKFDual9mm"/>
-				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="75,100" value="1" tags="gunKFSW500, gunKFDualSW500"/>
-				<passive_effect name="CraftingTier" operation="base_add" level="80,85,90,95,100" value="1,2,3,4,5" tags="gunKFSW500, gunKFDualSW500"/>
+				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="75,100" value="1" tags="gunKFSW500,gunKFDualSW500,gunKFG18C,gunKFDualG18C,gunKFG18CShield"/>
+				<passive_effect name="CraftingTier" operation="base_add" level="80,85,90,95,100" value="1,2,3,4,5" tags="gunKFSW500,gunKFDualSW500,gunKFG18C,gunKFDualG18C,gunKFG18CShield"/>
 			</append>
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingShotguns']/effect_group[1]">
 				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="40,100" value="1" tags="gunKFHRGSW500,gunKFDualHRGSW500"/>

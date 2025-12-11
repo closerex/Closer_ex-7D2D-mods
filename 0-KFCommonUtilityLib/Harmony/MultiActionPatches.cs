@@ -936,22 +936,6 @@ namespace KFCommonUtilityLib.Harmony
         //ItemAction.GetDismemberChance already set
         //ItemActionDynamic.GetExecuteActionTarget not needed
 
-        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ItemActionEffects))]
-        [HarmonyPrefix]
-        private static bool Prefix_ItemActionEffects_ItemActionLauncher(ItemActionData _actionData, out ItemActionData __state)
-        {
-            __state = _actionData.invData.holdingEntity.MinEventContext.ItemActionData;
-            _actionData.invData.holdingEntity.MinEventContext.ItemActionData = _actionData;
-            return true;
-        }
-
-        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ItemActionEffects))]
-        [HarmonyPostfix]
-        private static void Postfix_ItemActionEffects_ItemActionLauncher(ItemActionData _actionData, ItemActionData __state)
-        {
-            _actionData.invData.holdingEntity.MinEventContext.ItemActionData = __state;
-        }
-
         [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.ClampAmmoCount))]
         [HarmonyPrefix]
         private static bool Prefix_ClampAmmoCount_ItemActionLauncher(ItemActionLauncher.ItemActionDataLauncher actionData, out ItemActionData __state)
@@ -966,6 +950,64 @@ namespace KFCommonUtilityLib.Harmony
         private static void Postfix_ClampAmmoCount_ItemActionLauncher(ItemActionLauncher.ItemActionDataLauncher actionData, ItemActionData __state)
         {
             actionData.invData.holdingEntity.MinEventContext.ItemActionData = __state;
+        }
+
+        [HarmonyPatch]
+        private static class HUDStatBarGetBindingValuePatches
+        {
+            private static IEnumerable<MethodBase> TargetMethods()
+            {
+                if (Constants.cVersionInformation.Major <= 2 && Constants.cVersionInformation.Minor <= 2)
+                {
+                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "GetBindingValue");
+                }
+                else
+                {
+                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "GetBindingValueInternal");
+                }
+            }
+
+            private static void Prefix(XUiC_HUDStatBar __instance, out ItemActionData __state)
+            {
+                if (__instance.statType != HUDStatTypes.ActiveItem || __instance.LocalPlayer == null)
+                {
+                    __state = null;
+                    return;
+                }
+                __state = __instance.LocalPlayer.MinEventContext.ItemActionData;
+                MultiActionUtils.SetMinEventParamsByEntityInventory(__instance.LocalPlayer);
+            }
+
+            private static void Postfix(XUiC_HUDStatBar __instance, ItemActionData __state)
+            {
+                if (__instance.statType == HUDStatTypes.ActiveItem && __instance.LocalPlayer != null)
+                {
+                    __instance.LocalPlayer.MinEventContext.ItemActionData = __state;
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.SetupActiveItemEntry))]
+        [HarmonyPrefix]
+        private static void Prefix_SetupActiveItemEntry_XUiC_HUDStatBar(XUiC_HUDStatBar __instance, out ItemActionData __state)
+        {
+            if (__instance.LocalPlayer == null)
+            {
+                __state = null;
+                return;
+            }
+            __state = __instance.LocalPlayer.MinEventContext.ItemActionData;
+            MultiActionUtils.SetMinEventParamsByEntityInventory(__instance.LocalPlayer);
+        }
+
+        [HarmonyPatch(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.SetupActiveItemEntry))]
+        [HarmonyPostfix]
+        private static void Postfix_SetupActiveItemEntry_XUiC_HUDStatBar(XUiC_HUDStatBar __instance, ItemActionData __state)
+        {
+            if (__instance.LocalPlayer != null)
+            {
+                __instance.LocalPlayer.MinEventContext.ItemActionData = __state;
+            }
         }
         #endregion
 

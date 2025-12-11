@@ -1,9 +1,10 @@
 ﻿using HarmonyLib;
-using System.Collections.Generic;
-using UniLinq;
-using System.Reflection.Emit;
-using UnityEngine;
 using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Reflection.Emit;
+using UniLinq;
+using UnityEngine;
 
 namespace KFCommonUtilityLib
 {
@@ -20,221 +21,235 @@ namespace KFCommonUtilityLib
     [HarmonyPatch]
     public static class DisplayAsHUDPatches
     {
-        [HarmonyPatch(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.GetBindingValueInternal))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_GetBindingValueInternal_XUiC_HUDStatBar(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        [HarmonyPatch]
+        public static class GetBindingValuePatch
         {
-            var codes = instructions.ToList();
-
-            var fld_meta = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Meta));
-            var fld_inventory = AccessTools.Field(typeof(EntityAlive), nameof(EntityAlive.inventory));
-            var fld_attackaction = AccessTools.Field(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.attackAction));
-            var fld_currentammo = AccessTools.Field(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.currentAmmoCount));
-            var prop_localplayer = AccessTools.PropertyGetter(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.LocalPlayer));
-            var mtd_format = AccessTools.Method(typeof(CachedStringFormatter<int>), nameof(CachedStringFormatter<int>.Format), new[] { typeof(int) });
-            var mtd_getvalue = AccessTools.Method(typeof(EffectManager), nameof(EffectManager.GetValue));
-            var mtd_holdingitemdata = AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItemData));
-            var mtd_getstat = AccessTools.Method(typeof(IDisplayAsHUDStat), nameof(IDisplayAsHUDStat.GetHUDStatValue));
-            var mtd_getstatwithmax = AccessTools.Method(typeof(IDisplayAsHUDStat), nameof(IDisplayAsHUDStat.GetHUDStatValueWithMax));
-            var mtd_getstatfill = AccessTools.Method(typeof(IDisplayAsHUDStat), nameof(IDisplayAsHUDStat.GetHUDStatFillFraction));
-            var mtd_geticonoverride = AccessTools.Method(typeof(IDisplayAsHUDStat), nameof(IDisplayAsHUDStat.GetIconOverride));
-            var mtd_gettintoverride = AccessTools.Method(typeof(IDisplayAsHUDStat), nameof(IDisplayAsHUDStat.GetIconTintOverride));
-            var mtd_iseditingtool = AccessTools.Method(typeof(ItemAction), nameof(ItemAction.IsEditingTool));
-            var mtd_geticon = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.GetIconName));
-            var mtd_geticontint = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.GetIconTint));
-
-            var lbd_interface = generator.DeclareLocal(typeof(IDisplayAsHUDStat));
-
-            for (int i = 0; i < codes.Count - 1; i++)
+            private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (codes[i].LoadsField(fld_meta))
+                if (Constants.cVersionInformation.Major <= 2 && Constants.cVersionInformation.Minor <= 2)
                 {
-                    if (codes[i + 1].Calls(mtd_format))
-                    {
-                        //statcurrent
-                        for (int j = i - 1; j >= 0; j--)
-                        {
-                            if (codes[j].opcode == OpCodes.Ldarg_1)
-                            {
-                                Label lbl = generator.DefineLabel();
-                                var lbls_original = codes[j].ExtractLabels();
-                                codes[j].WithLabels(lbl);
-                                codes.InsertRange(j, new[]
-                                {
-                                    CodeInstruction.LoadLocal(lbd_interface.LocalIndex).WithLabels(lbls_original),
-                                    new CodeInstruction(OpCodes.Brfalse, lbl),
-                                    CodeInstruction.LoadArgument(1),
-                                    CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
-                                    CodeInstruction.LoadArgument(0),
-                                    new CodeInstruction(OpCodes.Call, prop_localplayer),
-                                    new CodeInstruction(OpCodes.Ldfld, fld_inventory),
-                                    new CodeInstruction(OpCodes.Callvirt, mtd_holdingitemdata),
-                                    new CodeInstruction(OpCodes.Callvirt, mtd_getstat),
-                                    new CodeInstruction(OpCodes.Stind_Ref),
-                                    new CodeInstruction(OpCodes.Br, codes[j - 1].operand)
-                                });
-                                i += 11;
-                                Log.Out("statcurrent display patched!");
-                                break;
-                            }
-                        }
-                    }
-                    else if (codes[i + 1].opcode == OpCodes.Ldarg_0)
-                    {
-                        //statcurrentwithmax
-                        for (int j = i - 1; j >= 0; j--)
-                        {
-                            if (codes[j].opcode == OpCodes.Ldarg_1)
-                            {
-                                Label lbl = generator.DefineLabel();
-                                var lbls_original = codes[j].ExtractLabels();
-                                codes[j].WithLabels(lbl);
-                                codes.InsertRange(j, new[]
-                                {
-                                    CodeInstruction.LoadLocal(lbd_interface.LocalIndex).WithLabels(lbls_original),
-                                    new CodeInstruction(OpCodes.Brfalse, lbl),
-                                    CodeInstruction.LoadArgument(1),
-                                    CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
-                                    CodeInstruction.LoadArgument(0),
-                                    new CodeInstruction(OpCodes.Call, prop_localplayer),
-                                    new CodeInstruction(OpCodes.Ldfld, fld_inventory),
-                                    new CodeInstruction(OpCodes.Callvirt, mtd_holdingitemdata),
-                                    CodeInstruction.LoadArgument(0),
-                                    new CodeInstruction(OpCodes.Ldfld, fld_currentammo),
-                                    new CodeInstruction(OpCodes.Callvirt, mtd_getstatwithmax),
-                                    new CodeInstruction(OpCodes.Stind_Ref),
-                                    new CodeInstruction(OpCodes.Br, codes[j - 1].operand)
-                                });
-                                i += 13;
-                                Log.Out("statcurrentwithmax display patched!");
-                                break;
-                            }
-                        }
-                    }
-                    else if (codes[i + 1].opcode == OpCodes.Conv_R4)
-                    {
-                        //statfill, ignored
-
-                    }
-                    else
-                    {
-                        Log.Error($"[DisplayAsHUDPatches] Transpiler_GetBindingValueInternal_XUiC_HUDStatBar unexpected opcode after loading ItemValue.Meta: {codes[i + 1]}");
-                    }
+                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "GetBindingValue");
                 }
-                else if (codes[i].Calls(mtd_getvalue))
+                else
                 {
-                    if (codes[i + 1].opcode == OpCodes.Conv_I4)
+                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "GetBindingValueInternal");
+                }
+            }
+
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+            {
+                var codes = instructions.ToList();
+
+                var fld_meta = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Meta));
+                var fld_inventory = AccessTools.Field(typeof(EntityAlive), nameof(EntityAlive.inventory));
+                var fld_attackaction = AccessTools.Field(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.attackAction));
+                var fld_currentammo = AccessTools.Field(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.currentAmmoCount));
+                var prop_localplayer = AccessTools.PropertyGetter(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.LocalPlayer));
+                var mtd_format = AccessTools.Method(typeof(CachedStringFormatter<int>), nameof(CachedStringFormatter<int>.Format), new[] { typeof(int) });
+                var mtd_getvalue = AccessTools.Method(typeof(EffectManager), nameof(EffectManager.GetValue));
+                var mtd_holdingitemdata = AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItemData));
+                var mtd_getstat = AccessTools.Method(typeof(IDisplayAsHUDStat), nameof(IDisplayAsHUDStat.GetHUDStatValue));
+                var mtd_getstatwithmax = AccessTools.Method(typeof(IDisplayAsHUDStat), nameof(IDisplayAsHUDStat.GetHUDStatValueWithMax));
+                var mtd_getstatfill = AccessTools.Method(typeof(IDisplayAsHUDStat), nameof(IDisplayAsHUDStat.GetHUDStatFillFraction));
+                var mtd_geticonoverride = AccessTools.Method(typeof(IDisplayAsHUDStat), nameof(IDisplayAsHUDStat.GetIconOverride));
+                var mtd_gettintoverride = AccessTools.Method(typeof(IDisplayAsHUDStat), nameof(IDisplayAsHUDStat.GetIconTintOverride));
+                var mtd_iseditingtool = AccessTools.Method(typeof(ItemAction), nameof(ItemAction.IsEditingTool));
+                var mtd_geticon = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.GetIconName));
+                var mtd_geticontint = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.GetIconTint));
+
+                var lbd_interface = generator.DeclareLocal(typeof(IDisplayAsHUDStat));
+
+                for (int i = 0; i < codes.Count - 1; i++)
+                {
+                    if (codes[i].LoadsField(fld_meta))
                     {
-                        //statvisible
-                        object lbl_or = null;
-                        for (int j = i + 2; j < codes.Count; j++)
+                        if (codes[i + 1].Calls(mtd_format))
                         {
-                            if (codes[j].opcode == OpCodes.Ldstr && codes[j].OperandIs("true"))
+                            //statcurrent
+                            for (int j = i - 1; j >= 0; j--)
                             {
-                                lbl_or = codes[j - 1].labels[0];
-                                break;
+                                if (codes[j].opcode == OpCodes.Ldarg_1)
+                                {
+                                    Label lbl = generator.DefineLabel();
+                                    var lbls_original = codes[j].ExtractLabels();
+                                    codes[j].WithLabels(lbl);
+                                    codes.InsertRange(j, new[]
+                                    {
+                                        CodeInstruction.LoadLocal(lbd_interface.LocalIndex).WithLabels(lbls_original),
+                                        new CodeInstruction(OpCodes.Brfalse, lbl),
+                                        CodeInstruction.LoadArgument(1),
+                                        CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
+                                        CodeInstruction.LoadArgument(0),
+                                        new CodeInstruction(OpCodes.Call, prop_localplayer),
+                                        new CodeInstruction(OpCodes.Ldfld, fld_inventory),
+                                        new CodeInstruction(OpCodes.Callvirt, mtd_holdingitemdata),
+                                        new CodeInstruction(OpCodes.Callvirt, mtd_getstat),
+                                        new CodeInstruction(OpCodes.Stind_Ref),
+                                        new CodeInstruction(OpCodes.Br, codes[j - 1].operand)
+                                    });
+                                    i += 11;
+                                    Log.Out("statcurrent display patched!");
+                                    break;
+                                }
                             }
                         }
-                        if (lbl_or == null)
+                        else if (codes[i + 1].opcode == OpCodes.Ldarg_0)
                         {
-                            Log.Error($"[DisplayAsHUDPatches] Transpiler_GetBindingValueInternal_XUiC_HUDStatBar unexpected second branch in statvisible patch");
+                            //statcurrentwithmax
+                            for (int j = i - 1; j >= 0; j--)
+                            {
+                                if (codes[j].opcode == OpCodes.Ldarg_1)
+                                {
+                                    Label lbl = generator.DefineLabel();
+                                    var lbls_original = codes[j].ExtractLabels();
+                                    codes[j].WithLabels(lbl);
+                                    codes.InsertRange(j, new[]
+                                    {
+                                        CodeInstruction.LoadLocal(lbd_interface.LocalIndex).WithLabels(lbls_original),
+                                        new CodeInstruction(OpCodes.Brfalse, lbl),
+                                        CodeInstruction.LoadArgument(1),
+                                        CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
+                                        CodeInstruction.LoadArgument(0),
+                                        new CodeInstruction(OpCodes.Call, prop_localplayer),
+                                        new CodeInstruction(OpCodes.Ldfld, fld_inventory),
+                                        new CodeInstruction(OpCodes.Callvirt, mtd_holdingitemdata),
+                                        CodeInstruction.LoadArgument(0),
+                                        new CodeInstruction(OpCodes.Ldfld, fld_currentammo),
+                                        new CodeInstruction(OpCodes.Callvirt, mtd_getstatwithmax),
+                                        new CodeInstruction(OpCodes.Stind_Ref),
+                                        new CodeInstruction(OpCodes.Br, codes[j - 1].operand)
+                                    });
+                                    i += 13;
+                                    Log.Out("statcurrentwithmax display patched!");
+                                    break;
+                                }
+                            }
+                        }
+                        else if (codes[i + 1].opcode == OpCodes.Conv_R4)
+                        {
+                            //statfill, ignored
+
                         }
                         else
                         {
+                            Log.Error($"[DisplayAsHUDPatches] Transpiler_GetBindingValueInternal_XUiC_HUDStatBar unexpected opcode after loading ItemValue.Meta: {codes[i + 1]}");
+                        }
+                    }
+                    else if (codes[i].Calls(mtd_getvalue))
+                    {
+                        if (codes[i + 1].opcode == OpCodes.Conv_I4)
+                        {
+                            //statvisible
+                            object lbl_or = null;
+                            for (int j = i + 2; j < codes.Count; j++)
+                            {
+                                if (codes[j].opcode == OpCodes.Ldstr && codes[j].OperandIs("true"))
+                                {
+                                    lbl_or = codes[j - 1].labels[0];
+                                    break;
+                                }
+                            }
+                            if (lbl_or == null)
+                            {
+                                Log.Error($"[DisplayAsHUDPatches] Transpiler_GetBindingValueInternal_XUiC_HUDStatBar unexpected second branch in statvisible patch");
+                            }
+                            else
+                            {
+                                for (int j = i - 1; j >= 0; j--)
+                                {
+                                    if (codes[j].LoadsField(fld_attackaction) && codes[j + 1].Branches(out _))
+                                    {
+                                        codes.InsertRange(j - 1, new[]
+                                        {
+                                            CodeInstruction.LoadLocal(lbd_interface.LocalIndex).WithLabels(codes[j - 1].ExtractLabels()),
+                                            new CodeInstruction(OpCodes.Brtrue, lbl_or)
+                                        });
+                                        i += 2;
+                                        Log.Out("statvisible display patched!");
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        else if (codes[i + 1].opcode == OpCodes.Div)
+                        {
+                            //statfill
                             for (int j = i - 1; j >= 0; j--)
                             {
-                                if (codes[j].LoadsField(fld_attackaction) && codes[j + 1].Branches(out _))
+                                if (codes[j].opcode == OpCodes.Br || codes[j].opcode == OpCodes.Br_S)
                                 {
-                                    codes.InsertRange(j - 1, new[]
+                                    Label lbl = generator.DefineLabel(), lbl_else = generator.DefineLabel();
+                                    var lbls_original = codes[j + 1].ExtractLabels();
+                                    codes[j + 1].WithLabels(lbl_else);
+                                    codes[i + 2].WithLabels(lbl);
+                                    codes.InsertRange(j + 1, new[]
                                     {
-                                        CodeInstruction.LoadLocal(lbd_interface.LocalIndex).WithLabels(codes[j - 1].ExtractLabels()),
-                                        new CodeInstruction(OpCodes.Brtrue, lbl_or)
+                                        CodeInstruction.LoadLocal(lbd_interface.LocalIndex).WithLabels(lbls_original),
+                                        new CodeInstruction(OpCodes.Brfalse, lbl_else),
+                                        CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
+                                        CodeInstruction.LoadArgument(0),
+                                        new CodeInstruction(OpCodes.Call, prop_localplayer),
+                                        new CodeInstruction(OpCodes.Ldfld, fld_inventory),
+                                        new CodeInstruction(OpCodes.Callvirt, mtd_holdingitemdata),
+                                        CodeInstruction.LoadArgument(0),
+                                        new CodeInstruction(OpCodes.Ldfld, fld_currentammo),
+                                        new CodeInstruction(OpCodes.Callvirt, mtd_getstatfill),
+                                        new CodeInstruction(OpCodes.Br, lbl)
                                     });
-                                    i += 2;
-                                    Log.Out("statvisible display patched!");
+                                    i += 11;
+                                    Log.Out("statfill display patched!");
                                     break;
                                 }
                             }
                         }
                     }
-                    else if (codes[i + 1].opcode == OpCodes.Div)
+                    else if (codes[i].Calls(mtd_geticon))
                     {
-                        //statfill
-                        for (int j = i - 1; j >= 0; j--)
+                        Label lbl = generator.DefineLabel();
+                        codes[i + 2].WithLabels(lbl);
+                        codes.InsertRange(i + 2, new[]
                         {
-                            if (codes[j].opcode == OpCodes.Br || codes[j].opcode == OpCodes.Br_S)
-                            {
-                                Label lbl = generator.DefineLabel(), lbl_else = generator.DefineLabel();
-                                var lbls_original = codes[j + 1].ExtractLabels();
-                                codes[j + 1].WithLabels(lbl_else);
-                                codes[i + 2].WithLabels(lbl);
-                                codes.InsertRange(j + 1, new[]
-                                {
-                                    CodeInstruction.LoadLocal(lbd_interface.LocalIndex).WithLabels(lbls_original),
-                                    new CodeInstruction(OpCodes.Brfalse, lbl_else),
-                                    CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
-                                    CodeInstruction.LoadArgument(0),
-                                    new CodeInstruction(OpCodes.Call, prop_localplayer),
-                                    new CodeInstruction(OpCodes.Ldfld, fld_inventory),
-                                    new CodeInstruction(OpCodes.Callvirt, mtd_holdingitemdata),
-                                    CodeInstruction.LoadArgument(0),
-                                    new CodeInstruction(OpCodes.Ldfld, fld_currentammo),
-                                    new CodeInstruction(OpCodes.Callvirt, mtd_getstatfill),
-                                    new CodeInstruction(OpCodes.Br, lbl)
-                                });
-                                i += 11;
-                                Log.Out("statfill display patched!");
-                                break;
-                            }
-                        }
+                            CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
+                            new CodeInstruction(OpCodes.Brfalse, lbl),
+                            CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
+                            CodeInstruction.LoadArgument(0),
+                            new CodeInstruction(OpCodes.Call, prop_localplayer),
+                            new CodeInstruction(OpCodes.Ldfld, fld_inventory),
+                            new CodeInstruction(OpCodes.Callvirt, mtd_holdingitemdata),
+                            CodeInstruction.LoadArgument(1),
+                            new CodeInstruction(OpCodes.Callvirt, mtd_geticonoverride),
+                        });
+                        i += 9;
+                        Log.Out("icon override display patched!");
+                    }
+                    else if (codes[i].Calls(mtd_geticontint))
+                    {
+                        codes.InsertRange(i + 3, new[]
+                        {
+                            CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
+                            new CodeInstruction(OpCodes.Brfalse, codes[i + 3].labels[0]),
+                            CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
+                            CodeInstruction.LoadArgument(0),
+                            new CodeInstruction(OpCodes.Call, prop_localplayer),
+                            new CodeInstruction(OpCodes.Ldfld, fld_inventory),
+                            new CodeInstruction(OpCodes.Callvirt, mtd_holdingitemdata),
+                            CodeInstruction.LoadLocal(3, true),
+                            new CodeInstruction(OpCodes.Callvirt, mtd_gettintoverride),
+                        });
+                        i += 9;
+                        Log.Out("icon tint override display patched!");
                     }
                 }
-                else if (codes[i].Calls(mtd_geticon))
+
+                codes.InsertRange(0, new[]
                 {
-                    Label lbl = generator.DefineLabel();
-                    codes[i + 2].WithLabels(lbl);
-                    codes.InsertRange(i + 2, new[]
-                    {
-                        CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
-                        new CodeInstruction(OpCodes.Brfalse, lbl),
-                        CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
-                        CodeInstruction.LoadArgument(0),
-                        new CodeInstruction(OpCodes.Call, prop_localplayer),
-                        new CodeInstruction(OpCodes.Ldfld, fld_inventory),
-                        new CodeInstruction(OpCodes.Callvirt, mtd_holdingitemdata),
-                        CodeInstruction.LoadArgument(1),
-                        new CodeInstruction(OpCodes.Callvirt, mtd_geticonoverride),
-                    });
-                    i += 9;
-                    Log.Out("icon override display patched!");
-                }
-                else if (codes[i].Calls(mtd_geticontint))
-                {
-                    codes.InsertRange(i + 3, new[]
-                    {
-                        CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
-                        new CodeInstruction(OpCodes.Brfalse, codes[i + 3].labels[0]),
-                        CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
-                        CodeInstruction.LoadArgument(0),
-                        new CodeInstruction(OpCodes.Call, prop_localplayer),
-                        new CodeInstruction(OpCodes.Ldfld, fld_inventory),
-                        new CodeInstruction(OpCodes.Callvirt, mtd_holdingitemdata),
-                        CodeInstruction.LoadLocal(3, true),
-                        new CodeInstruction(OpCodes.Callvirt, mtd_gettintoverride),
-                    });
-                    i += 9;
-                    Log.Out("icon tint override display patched!");
-                }
+                    CodeInstruction.LoadArgument(0),
+                    CodeInstruction.Call(typeof(DisplayAsHUDPatches), nameof(GetDisplayAsHUDStatInterface)),
+                    new CodeInstruction(OpCodes.Stloc, lbd_interface)
+                });
+
+                return codes;
             }
-
-            codes.InsertRange(0, new[]
-            {
-                CodeInstruction.LoadArgument(0),
-                CodeInstruction.Call(typeof(DisplayAsHUDPatches), nameof(GetDisplayAsHUDStatInterface)),
-                new CodeInstruction(OpCodes.Stloc, lbd_interface)
-            });
-
-            return codes;
         }
 
         [HarmonyPatch(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.RefreshFill))]

@@ -165,6 +165,7 @@
             <property name="SoundHolster" value="weapon_holster"/>
             <property name="SoundPickup" value="sledgehammer_steel_grab"/>
             <property name="SoundPlace" value="sledgehammer_steel_place"/>
+			<property name="TakeOverReloadTime" value="true"/>
 
             <property class="Action0">
                 <property name="Class" value="Ranged"/>
@@ -278,7 +279,7 @@
             <property name="EconomicValue" value="250"/>
             <property name="UsableUnderwater" value="true"/>
             <property name="TraderStageTemplate" value="ammoTier2"/>
-            <property name="UnlockedBy" value="craftingExplosives"/><!-- perkDemolitionsExpert,gunExplosivesT3RocketLauncherSchematic -->
+            <property name="UnlockedBy" value="craftingExplosives"/>
             <property name="Group" value="Ammo/Weapons,Ammo,Ranged Weapons"/>
             <property name="SoundPickup" value="shotgunshells_grab"/>
             <property name="SoundPlace" value="shotgunshells_place"/>
@@ -288,9 +289,9 @@
                 <passive_effect name="BlockDamage" operation="base_set" value="0"/>
                 <passive_effect name="SpreadDegreesVertical" operation="base_set" value="2.5" tags="perkDemolitionsExpert"/>
                 <passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="2.5" tags="perkDemolitionsExpert"/>
-                <passive_effect name="dExEntityDamage" operation="base_set" value="430"/>
-                <passive_effect name="dExBlockDamage" operation="base_set" value="5"/>
-                <passive_effect name="dExRadius" operation="base_set" value="3.5"/>
+                <display_value name="dExEntityDamage" value="430"/>
+                <display_value name="dExBlockDamage" value="5"/>
+                <display_value name="dExRadius" value="3.5"/>
             </effect_group>
         </item>
 
@@ -311,4 +312,16 @@
 			</effect_group>
 		</item>
     </append>
+    
+    <conditional>
+        <if cond="mod_loaded('EFTX_Pack_Standard')">
+			<set xpath="/items/item[@name='ammoPulverizer']/property[@name='UnlockedBy']/@value">craftingRocketsandLaunchers</set>
+            <csv xpath="/items/item[@name='meleeWpnSledgeT3Pulverizer' or @name='ammoPulverizer' or @name='itemPulverizerExplosionData']/property[@name='Tags']/@value" delim="," op="add">eftBoom</csv>
+            <csv xpath="/items/item[@name='meleeWpnSledgeT3Pulverizer']/property[@class='Action1']/property[@name='ExcludeTags']/@value" delim="," op="add">eftBoom</csv>
+            <csv xpath="/items/item[@name='meleeWpnSledgeT3Pulverizer']/effect_group/requirement[contains(@progression_name, 'perkDemolitionsExpert')]/@progression_name" delim="," op="add">perkEFTXBoomBoom</csv>
+            <csv xpath="/items/item[@name='meleeWpnSledgeT3Pulverizer']/effect_group/requirement[contains(@progression_name, 'perkDemolitionsExpert')]/@progression_name" delim="," op="remove">perkDemolitionsExpert</csv>
+            <csv xpath="/items/item[@name='meleeWpnSledgeT3Pulverizer']/effect_group//requirement[contains(@progression_name, 'perkDemolitionsExpert')]/@progression_name" delim="," op="add">perkEFTXBoomBoom</csv>
+            <csv xpath="/items/item[@name='meleeWpnSledgeT3Pulverizer']/effect_group//requirement[contains(@progression_name, 'perkDemolitionsExpert')]/@progression_name" delim="," op="remove">perkDemolitionsExpert</csv>
+        </if>
+    </conditional>
 </config>
