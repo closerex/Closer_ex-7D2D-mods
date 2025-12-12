@@ -75,6 +75,7 @@ namespace FPVLegs
                 {
                     skinnedMeshRenderer.forceMatrixRecalculationPerRender = !enabled;
                 }
+                renderer.motionVectorGenerationMode = enabled ? MotionVectorGenerationMode.Camera : MotionVectorGenerationMode.ForceNoMotion;
             }
         }
 
