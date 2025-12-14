@@ -49,24 +49,5 @@ namespace BetterModCompatibility.Harmony
             }
             return codes;
         }
-
-        [HarmonyPatch(typeof(AIDirectorData), nameof(AIDirectorData.AddSmell))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_AddSmell_AIDirectorData(IEnumerable<CodeInstruction> instructions)
-        {
-            var codes = instructions.ToList();
-
-            var mtd_add = AccessTools.Method(typeof(Dictionary<string, AIDirectorData.Smell>), nameof(Dictionary<string, AIDirectorData.Smell>.Add));
-
-            for (int i = 0; i < codes.Count; i++)
-            {
-                if (codes[i].Calls(mtd_add))
-                {
-                    codes[i].operand = AccessTools.Method(typeof(Dictionary<string, AIDirectorData.Smell>), "set_Item");
-                    break;
-                }
-            }
-            return codes;
-        }
     }
 }

@@ -178,7 +178,7 @@ namespace BetterModCompatibility.Harmony
         {
             private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (Constants.cVersionInformation.Major <= 2 && Constants.cVersionInformation.Minor <= 2)
+                if (Constants.cVersionInformation.CompareTo(new VersionInformation(VersionInformation.EGameReleaseType.V, 2, 3, 0)) < 0)
                 {
                     Log.Out($"Choosing old GetBindingValue for XUiC_CraftingInfoWindow for game version {Constants.cVersionInformation.Major}.{Constants.cVersionInformation.Minor}");
                     yield return AccessTools.Method(typeof(XUiC_CraftingInfoWindow), "GetBindingValue");
@@ -209,8 +209,8 @@ namespace BetterModCompatibility.Harmony
                         CodeInstruction.Call(typeof(LocalPlayerUI), "get_entityPlayer"),
                         CodeInstruction.Call(typeof(Recipe), nameof(Recipe.GetCraftingTier))
                     });
-                        codes.RemoveRange(i - 20, 22);
-                        break;
+                    codes.RemoveRange(i - 20, 22);
+                    break;
                     }
                 }
                 return codes;

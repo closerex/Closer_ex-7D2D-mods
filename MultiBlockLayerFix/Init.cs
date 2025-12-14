@@ -45,7 +45,6 @@ namespace MultiBlockLayerFix
                     {
                         if (codes[j].opcode == OpCodes.Newobj && ctor_vec3i.Equals(codes[j].operand))
                         {
-                            //Log.Out($"opcode {codes[j - 6].opcode} {codes[j - 6].opcode.OperandType}");
                             codes[j - 6].operand = (sbyte)'x';
                             codes.InsertRange(j, new[]
                             {
@@ -61,14 +60,23 @@ namespace MultiBlockLayerFix
                         }
                     }
 
+                    int local_index;
+                    if (Constants.cVersionInformation.CompareTo(new VersionInformation(VersionInformation.EGameReleaseType.V, 2, 5, 0)) < 0)
+                    {
+                        local_index = 7;
+                    }
+                    else
+                    {
+                        local_index = 8;
+                    }
                     codes.InsertRange(i + 2, new[]
                     {
-                        new CodeInstruction(OpCodes.Ldloc_S, 7).WithLabels(codes[i + 2].ExtractLabels()),
+                        new CodeInstruction(OpCodes.Ldloc_S, local_index).WithLabels(codes[i + 2].ExtractLabels()),
                         CodeInstruction.LoadField(typeof(Vector3i), nameof(Vector3i.x)),
                         new CodeInstruction(OpCodes.Ldc_I4_2),
                         new CodeInstruction(OpCodes.Div),
                         new CodeInstruction(OpCodes.Stloc_S, lbd_x),
-                        new CodeInstruction(OpCodes.Ldloc_S, 7),
+                        new CodeInstruction(OpCodes.Ldloc_S, local_index),
                         CodeInstruction.LoadField(typeof(Vector3i), nameof(Vector3i.z)),
                         new CodeInstruction(OpCodes.Ldc_I4_2),
                         new CodeInstruction(OpCodes.Div),
