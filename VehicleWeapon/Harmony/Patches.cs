@@ -147,7 +147,6 @@ namespace VehicleWeaponPatches
         {
             MethodInfo mtd_horn = AccessTools.Method(typeof(EntityVehicle), nameof(EntityVehicle.UseHorn));
             MethodInfo mtd_xui = AccessTools.Method(typeof(XUiC_Radial), nameof(XUiC_Radial.SetActivatableItemData));
-            FieldInfo fld_player = AccessTools.Field(typeof(PlayerMoveController), "entityPlayerLocal");
             var codes = new List<CodeInstruction>(instructions);
 
             for (int i = 0; i < codes.Count; i++)
@@ -158,14 +157,12 @@ namespace VehicleWeaponPatches
                     {
                         if (codes[j].Calls(mtd_xui))
                         {
-                            var insert = new CodeInstruction[]
+                            codes.InsertRange(j + 1, new CodeInstruction[]
                             {
-                                new CodeInstruction(OpCodes.Ldarg_0),
-                                CodeInstruction.LoadField(typeof(PlayerMoveController), "entityPlayerLocal"),
+                                new CodeInstruction(OpCodes.Ldarg_0).WithLabels(codes[j + 1].ExtractLabels()),
+                                CodeInstruction.LoadField(typeof(PlayerMoveController), nameof(PlayerMoveController.entityPlayerLocal)),
                                 CodeInstruction.Call(typeof(PlayerControllerPatch), nameof(CheckForSwitchingSeat))
-                            };
-                            insert[0].MoveLabelsFrom(codes[j + 1]);
-                            codes.InsertRange(j + 1, insert);
+                            });
                             break;
                         }
                     }
