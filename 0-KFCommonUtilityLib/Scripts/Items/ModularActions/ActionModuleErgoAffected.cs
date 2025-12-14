@@ -50,19 +50,6 @@ public class ActionModuleErgoAffected
         __customData.aimSet = false;
     }
 
-    //[MethodTargetPostfix(nameof(ItemAction.OnHoldingUpdate))]
-    //private void Postfix_OnHoldingUpdate(ItemActionData _actionData, ErgoData __customData)
-    //{
-    //    if ((_actionData as ItemActionZoom.ItemActionDataZoom).aimingValue && Time.time - __customData.aimStartTime > zoomInTimeBase)
-    //    {
-    //        __customData.aimSet = true;
-    //    }
-    //    else
-    //    {
-    //        __customData.aimSet = false;
-    //    }
-    //}
-
     public class ErgoData
     {
         public float aimStartTime;

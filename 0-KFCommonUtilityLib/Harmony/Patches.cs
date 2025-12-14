@@ -80,6 +80,16 @@ public static class CommonUtilityPatch
             codes.InsertRange(insert, list);
             codes.RemoveRange(take, 6);
         }
+
+        int localIndexBurstCount;
+        if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
+        {
+            localIndexBurstCount = 3;
+        }
+        else
+        {
+            localIndexBurstCount = 4;
+        }
         for (int i = 0; i < codes.Count - 1; i++)
         {
             if (codes[i].Calls(mtd_check_ammo))
@@ -125,7 +135,7 @@ public static class CommonUtilityPatch
                     new CodeInstruction(OpCodes.Brfalse_S, lbl),
                     CodeInstruction.LoadLocal(0),
                     CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.curBurstCount)),
-                    CodeInstruction.LoadLocal(3),
+                    CodeInstruction.LoadLocal(localIndexBurstCount),
                     new CodeInstruction(OpCodes.Blt_S, lbl),
                     CodeInstruction.LoadLocal(0),
                     CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.invData)),
@@ -289,40 +299,6 @@ public static class CommonUtilityPatch
     //        }
     //    }
     //}
-
-    //altmode workarounds
-    //deprecated by action module
-    private static void ParseAltRequirements(XElement _node)
-    {
-        string itemName = _node.GetAttribute("name");
-        if (string.IsNullOrEmpty(itemName))
-        {
-            return;
-        }
-        ItemClass item = ItemClass.GetItemClass(itemName);
-        for (int i = 0; i < item.Actions.Length; i++)
-        {
-            if (item.Actions[i] is ItemActionAltMode _alt)
-                _alt.ParseAltRequirements(_node, i);
-        }
-    }
-
-    [HarmonyPatch(typeof(ItemClassesFromXml), nameof(ItemClassesFromXml.parseItem))]
-    [HarmonyPostfix]
-    private static void Postfix_parseItem_ItemClassesFromXml(XElement _node)
-    {
-        ParseAltRequirements(_node);
-    }
-
-    [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.ExecuteAction))]
-    [HarmonyPrefix]
-    private static bool Prefix_ExecuteAction_ItemClass(ItemClass __instance, int _actionIdx, ItemInventoryData _data, bool _bReleased)
-    {
-        if (!_bReleased && __instance.Actions[_actionIdx] is ItemActionAltMode _alt)
-            _alt.SetAltRequirement(_data.actionData[_actionIdx]);
-
-        return true;
-    }
 
     [HarmonyPatch(typeof(DynamicProperties), nameof(DynamicProperties.Parse))]
     [HarmonyPrefix]
@@ -1846,25 +1822,62 @@ public static class CommonUtilityPatch
         {
             if (codes[i].Calls(mtd_invevent))
             {
-                codes[i] = CodeInstruction.CallClosure<Action<Inventory, MinEventTypes, MinEventParams>>((inv, eventType, par) =>
+                codes[i] = CodeInstruction.CallClosure<Action<Inventory, MinEventTypes, MinEventParams>>(static (inv, eventType, par) =>
                 {
+                    //action should be set before calling this
                     ItemValue prevItemValue = par.ItemValue;
-                    ItemActionData prevActionData = par.ItemActionData;
                     ItemInventoryData prevInvData = par.ItemInventoryData;
 
                     par.ItemValue = inv.holdingItemItemValue;
                     par.ItemInventoryData = inv.holdingItemData;
-                    par.ItemActionData = par.ItemInventoryData?.actionData?[MultiActionManager.GetActionIndexForEntity(inv.entity)];
                     par.ItemValue.FireEvent(eventType, par);
 
                     par.ItemValue = prevItemValue;
-                    par.ItemActionData = prevActionData;
                     par.ItemInventoryData = prevInvData;
                 });
                 break;
             }
         }
         return codes;
+    }
+
+    private static readonly string stitchPrefix = "Stitch-";
+
+    [HarmonyPatch(typeof(SDCSUtils), nameof(SDCSUtils.RemoveFPViewObstructingGearPolygons))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_RemoveFPViewObstructingGearPolygons_SDCSUtils(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var prop_setname = AccessTools.PropertyGetter(typeof(UnityEngine.Object), nameof(UnityEngine.Object.name));
+
+        for (var i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].opcode == OpCodes.Stloc_0)
+            {
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldloc_0),
+                    CodeInstruction.CallClosure<Action<Mesh>>((mesh) =>
+                    {
+                        mesh.name = stitchPrefix + mesh.name;
+                    })
+                });
+                break;
+            }
+        }
+
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(MeshMorph), nameof(MeshMorph.IsInstance))]
+    [HarmonyPostfix]
+    private static void Postfix_IsInstance_MeshMorph(Mesh _mesh, ref bool __result)
+    {
+        if (!__result && _mesh.name.StartsWith(stitchPrefix))
+        {
+            __result = true;
+        }
     }
 
     public static void Test()

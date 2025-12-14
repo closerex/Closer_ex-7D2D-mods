@@ -20,25 +20,20 @@ public class ActionModuleInvariableRPM
         {
             if (codes[i].Calls(mtd_getvalue))
             {
-                int start = -1;
                 for (int j = i; j >= 0; j--)
                 {
                     if (codes[j].opcode == OpCodes.Stloc_0)
                     {
-                        start = j + 2;
+                        codes.InsertRange(i + 2, new[]
+                        {
+                            new CodeInstruction(OpCodes.Ldarg_0),
+                            new CodeInstruction(OpCodes.Ldloc_0),
+                            CodeInstruction.Call(typeof(ActionModuleInvariableRPM), nameof(CalcFixedRPM))
+                        });
+                        codes.RemoveRange(j + 2, i - (j + 2) + 2);
+                        //Log.Out("Invariable RPM Patch applied!");
                         break;
                     }
-                }
-                if (start >= 0)
-                {
-                    codes.InsertRange(i + 2, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldarg_0),
-                        new CodeInstruction(OpCodes.Ldloc_0),
-                        CodeInstruction.Call(typeof(ActionModuleInvariableRPM), nameof(CalcFixedRPM))
-                    });
-                    codes.RemoveRange(start, i - start + 2);
-                    //Log.Out("Invariable RPM Patch applied!");
                 }
                 break;
             }

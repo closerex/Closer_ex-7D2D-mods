@@ -157,7 +157,7 @@ namespace QuartzUIPatch
         {
             private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (Constants.cVersionInformation.Major <= 2 && Constants.cVersionInformation.Minor <= 2)
+                if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 2))
                 {
                     yield return AccessTools.Method(typeof(Quartz.XUiC_HUDActiveItem), "GetBindingValue");
                 }

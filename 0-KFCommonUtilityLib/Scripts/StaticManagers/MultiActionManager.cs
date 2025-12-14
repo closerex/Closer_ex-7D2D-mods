@@ -387,11 +387,11 @@ namespace KFCommonUtilityLib
                             dict_item_action_exclude_mod_property.Add(item.Id, properties);
                         }
                         properties[i] = str.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                                     .Where(s => !string.IsNullOrEmpty(s))
-                                     .Select(s => ItemClass.GetItemClass(s, false))
-                                     .Where(_item => _item != null)
-                                     .Select(_item => _item.Id)
-                                     .ToArray();
+                                           .Where(static s => !string.IsNullOrEmpty(s))
+                                           .Select(static s => ItemClass.GetItemClass(s, false))
+                                           .Where(static _item => _item != null)
+                                           .Select(static _item => _item.Id)
+                                           .ToArray();
                         //Log.Out($"EXCLUDE PROPERTIES FROM ITEM {item.Name} ITEMID {item.Id} ACTION {i} : {string.Join(" ", properties[i])}");
                     }
                     if (item.Actions[i].Properties.Values.TryGetValue("ExcludePassives", out str))
@@ -402,11 +402,11 @@ namespace KFCommonUtilityLib
                             dict_item_action_exclude_mod_passive.Add(item.Id, passives);
                         }
                         passives[i] = str.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                                     .Where(s => !string.IsNullOrEmpty(s))
-                                     .Select(s => ItemClass.GetItemClass(s, false))
-                                     .Where(_item => _item != null)
-                                     .Select(_item => _item.Id)
-                                     .ToArray();
+                                         .Where(static s => !string.IsNullOrEmpty(s))
+                                         .Select(static s => ItemClass.GetItemClass(s, false))
+                                         .Where(static _item => _item != null)
+                                         .Select(static _item => _item.Id)
+                                         .ToArray();
                         //Log.Out($"EXCLUDE PASSIVES FROM ITEM {item.Name} ITEMID {item.Id} ACTION {i} : {string.Join(" ", passives[i])}");
                     }
                     if (item.Actions[i].Properties.Values.TryGetValue("ExcludeTriggers", out str))
@@ -417,11 +417,11 @@ namespace KFCommonUtilityLib
                             dict_item_action_exclude_mod_trigger.Add(item.Id, triggers);
                         }
                         triggers[i] = str.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                                     .Where(s => !string.IsNullOrEmpty(s))
-                                     .Select(s => ItemClass.GetItemClass(s, false))
-                                     .Where(_item => _item != null)
-                                     .Select(_item => _item.Id)
-                                     .ToArray();
+                                         .Where(static s => !string.IsNullOrEmpty(s))
+                                         .Select(static s => ItemClass.GetItemClass(s, false))
+                                         .Where(static _item => _item != null)
+                                         .Select(static _item => _item.Id)
+                                         .ToArray();
                         //Log.Out($"EXCLUDE TRIGGERS FROM ITEM {item.Name} ITEMID {item.Id} ACTION {i} : {string.Join(" ", triggers[i])}");
                     }
                 }

@@ -3,6 +3,7 @@ using KFCommonUtilityLib;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml.Linq;
 using UniLinq;
@@ -1051,25 +1052,31 @@ static class AnimationRiggingPatches
     private static IEnumerable<CodeInstruction> Transpiler_createMesh_EntityItem(IEnumerable<CodeInstruction> instructions)
     {
         var codes = instructions.ToList();
-        codes[codes.Count - 1].WithLabels(codes[codes.Count - 11].labels);
-        codes.RemoveRange(codes.Count - 11, 10);
-        return codes;
-    }
+        var fld_created = AccessTools.Field(typeof(EntityItem), nameof(EntityItem.bMeshCreated));
 
-    [HarmonyPatch(typeof(EntityItem), nameof(EntityItem.createMesh))]
-    [HarmonyPostfix]
-    private static void Postfix_createMesh_EntityItem(EntityItem __instance)
-    {
-        if (__instance.itemTransform)
+        for (int i = 0; i < codes.Count; i++)
         {
-            __instance.itemTransform.tag = "Item";
-            if (__instance.itemTransform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+            if (codes[i].StoresField(fld_created))
             {
-                targets.Destroy();
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(codes[i + 1].ExtractLabels()),
+                    CodeInstruction.CallClosure<Action<EntityItem>>((entityItem) =>
+                    {
+                        if (entityItem.itemTransform)
+                        {
+                            entityItem.itemTransform.tag = "Item";
+                            if (entityItem.itemTransform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+                            {
+                                targets.Destroy();
+                            }
+                        }
+                    })
+                });
+                break;
             }
-            __instance.meshRenderers = __instance.itemTransform.GetComponentsInChildren<Renderer>(true);
-            __instance.VisiblityCheck(0, false);
         }
+        return codes;
     }
 
     [HarmonyPatch(typeof(EModelBase), nameof(EModelBase.SwitchModelAndView))]
@@ -1148,30 +1155,39 @@ static class AnimationRiggingPatches
         var codes = instructions.ToList();
 
         var mtd_removeat = AccessTools.Method(typeof(List<RigLayer>), nameof(List<RigLayer>.RemoveAt));
-        var mtd_destroy = AccessTools.Method(typeof(GameUtils), nameof(GameUtils.DestroyAllChildrenBut), new[] {typeof(Transform), typeof(List<string>)});
+        MethodInfo mtd_destroy;
+        if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
+        {
+            mtd_destroy = AccessTools.Method(typeof(GameUtils), nameof(GameUtils.DestroyAllChildrenBut), new[] { typeof(Transform), typeof(List<string>) });
+        }
+        else
+        {
+            mtd_destroy = AccessTools.Method(typeof(GameUtils), nameof(GameUtils.DestroyAllChildrenImmediatelyBut), new[] { typeof(Transform), typeof(List<string>) });
+        }
+
         for (int i = 0; i < codes.Count; i++)
         {
             if (codes[i].Calls(mtd_removeat))
             {
                 codes.InsertRange(i - 2, new[]
                 {
-                    new CodeInstruction(OpCodes.Ldloc_2),
-                    new CodeInstruction(OpCodes.Ldloc_3),
-                    CodeInstruction.Call(typeof(List<RigLayer>), "get_Item"),
-                    CodeInstruction.Call(typeof(RigLayer), "get_name"),
-                    CodeInstruction.Call(typeof(AnimationRiggingManager), nameof(AnimationRiggingManager.ShouldExcludeRig)),
-                    new CodeInstruction(OpCodes.Brtrue_S, codes[i - 3].operand)
-                });
+                new CodeInstruction(OpCodes.Ldloc_2),
+                new CodeInstruction(OpCodes.Ldloc_3),
+                CodeInstruction.Call(typeof(List<RigLayer>), "get_Item"),
+                CodeInstruction.Call(typeof(RigLayer), "get_name"),
+                CodeInstruction.Call(typeof(AnimationRiggingManager), nameof(AnimationRiggingManager.ShouldExcludeRig)),
+                new CodeInstruction(OpCodes.Brtrue_S, codes[i - 3].operand)
+            });
                 i += 6;
             }
             else if (codes[i].Calls(mtd_destroy))
             {
                 codes.InsertRange(i, new[]
                 {
-                    new CodeInstruction(OpCodes.Dup),
-                    CodeInstruction.Call(typeof(AnimationRiggingManager), nameof(AnimationRiggingManager.GetExcludeRigs)),
-                    CodeInstruction.Call(typeof(List<string>), nameof(List<string>.AddRange)),
-                });
+                new CodeInstruction(OpCodes.Dup),
+                CodeInstruction.Call(typeof(AnimationRiggingManager), nameof(AnimationRiggingManager.GetExcludeRigs)),
+                CodeInstruction.Call(typeof(List<string>), nameof(List<string>.AddRange)),
+            });
                 i += 3;
             }
         }

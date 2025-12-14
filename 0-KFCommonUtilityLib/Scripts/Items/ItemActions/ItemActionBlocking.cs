@@ -352,14 +352,19 @@ public static class ItemActionBlockingPatches
         var codes = instructions.ToList();
 
         int local_holdingitem;
-        if (Constants.cVersionInformation.Major <= 2 && Constants.cVersionInformation.Minor <= 1)
+        if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 1))
         {
             local_holdingitem = 35;
         }
-        else
+        else if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
         {
             local_holdingitem = 37;
         }
+        else
+        {
+            local_holdingitem = 40;
+        }
+
         var fld_jump = AccessTools.Field(typeof(MovementInput), nameof(MovementInput.jump));
 
         for (int i = 0; i < codes.Count; i++)

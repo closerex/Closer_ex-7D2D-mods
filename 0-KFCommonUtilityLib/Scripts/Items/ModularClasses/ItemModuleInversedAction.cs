@@ -26,7 +26,7 @@ public static class InversedActionPatches
         var fld_secondary = AccessTools.Field(typeof(PlayerActionsLocal), nameof(PlayerActionsLocal.Secondary));
 
         int li_holding_item, li_is_primary_pressed, li_is_secondary_pressed, li_can_run_primary, li_can_run_secondary;
-        if (Constants.cVersionInformation.Major <= 2 && Constants.cVersionInformation.Minor <= 1)
+        if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 1))
         {
             li_holding_item = 35;
             li_is_primary_pressed = 22;
@@ -34,13 +34,21 @@ public static class InversedActionPatches
             li_can_run_primary = 21;
             li_can_run_secondary = 20;
         }
-        else
+        else if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
         {
             li_holding_item = 37;
             li_is_primary_pressed = 24;
             li_is_secondary_pressed = 25;
             li_can_run_primary = 23;
             li_can_run_secondary = 22;
+        }
+        else
+        {
+            li_holding_item = 40;
+            li_is_primary_pressed = 27;
+            li_is_secondary_pressed = 28;
+            li_can_run_primary = 26;
+            li_can_run_secondary = 25;
         }
 
         for (int i = 1; i < codes.Count - 2; i++)

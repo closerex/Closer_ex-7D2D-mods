@@ -65,14 +65,14 @@ public static class FLARMultiActionFixExt
     }
 
     [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemAction.ItemActionEffects)), MethodTargetPrefix]
-    private static bool Prefix_ItemActionEffects_ItemActionBetterLauncher(ItemActionData _actionData, out ItemActionData __state)
+    private static bool Prefix_ItemActionEffects_ItemActionBetterLauncher(ActionModuleMultiActionFix self, ItemActionData _actionData, out ItemActionData __state)
     {
         ActionModuleMultiActionFix.SetAndSaveItemActionData(_actionData, out __state);
         return true;
     }
 
     [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemAction.ItemActionEffects)), MethodTargetPostfix]
-    public static void Postfix_ItemActionEffects_ItemActionBetterLauncher(ItemActionData _actionData, ItemActionData __state)
+    public static void Postfix_ItemActionEffects_ItemActionBetterLauncher(ActionModuleMultiActionFix self, ItemActionData _actionData, ItemActionData __state)
     {
         ActionModuleMultiActionFix.RestoreItemActionData(_actionData, __state);
     }
@@ -81,8 +81,7 @@ public static class FLARMultiActionFixExt
 [TypeTargetExtension(typeof(ActionModuleProceduralRecoil))]
 public static class FLARProceduralRecoilExt
 {
-    [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemActionBetterLauncher.GetActionEffectsValues))]
-    [MethodTargetTranspiler]
+    [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemActionBetterLauncher.GetActionEffectsValues)), MethodTargetTranspiler]
     public static IEnumerable<CodeInstruction> Transpiler_ItemActionBetterLauncher_getImageActionEffectsStartPosAndDirection(IEnumerable<CodeInstruction> instructions)
     {
         var codes = instructions.ToList();

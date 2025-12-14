@@ -111,10 +111,10 @@ namespace KFCommonUtilityLib.Harmony
         {
             private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (Constants.cVersionInformation.Major >= 2 && Constants.cVersionInformation.Minor >= 1)
-                    yield return AccessTools.Method(typeof(Manager), nameof(Manager.Play), new[] { typeof(Vector3), typeof(string), typeof(int), typeof(bool) });
-                else
+                if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 0))
                     yield return AccessTools.Method(typeof(Manager), nameof(Manager.Play), new[] { typeof(Vector3), typeof(string), typeof(int) });
+                else
+                    yield return AccessTools.Method(typeof(Manager), nameof(Manager.Play), new[] { typeof(Vector3), typeof(string), typeof(int), typeof(bool) });
             }
 
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)

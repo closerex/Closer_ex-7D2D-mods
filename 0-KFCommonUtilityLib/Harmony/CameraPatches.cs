@@ -115,6 +115,7 @@ namespace KFCommonUtilityLib.Harmony
                 if (codes[i].LoadsField(fld_has_ran))
                 {
                     codes[i + 3].ExtractLabels();
+                    codes[i + 3].WithLabels(codes[i - 1].ExtractLabels());
                     codes.RemoveRange(i - 1, 4);
                     break;
                 }

@@ -135,10 +135,21 @@ public class ActionModuleMultiBarrel
         LocalBuilder lbd_i = generator.DeclareLocal(typeof(int));
         LocalBuilder lbd_rounds = generator.DeclareLocal(typeof(int));
         LocalBuilder lbd_burstcount = generator.DeclareLocal(typeof(byte));
+
+        int localIndexEntity;
+        if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
+        {
+            localIndexEntity = 6;
+        }
+        else
+        {
+            localIndexEntity = 7;
+        }
+
         for (int i = 0; i < codes.Count; i++)
         {
             //prepare loop and store local variables
-            if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 6)
+            if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == localIndexEntity)
             {
                 codes[i + 1].WithLabels(loopStart);
                 codes.InsertRange(i + 1, new[]
@@ -188,7 +199,7 @@ public class ActionModuleMultiBarrel
                     new CodeInstruction(OpCodes.Brfalse_S, lbl_pre),
                     new CodeInstruction(OpCodes.Ldloc_S, lbd_data_module),
                     CodeInstruction.Call(typeof(ActionModuleMultiBarrel.MultiBarrelData), nameof(ActionModuleMultiBarrel.MultiBarrelData.CycleBarrels)),
-                    CodeInstruction.LoadLocal(6).WithLabels(lbl_pre),
+                    CodeInstruction.LoadLocal(localIndexEntity).WithLabels(lbl_pre),
                     CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.inventory)),
                     CodeInstruction.Call(typeof(Inventory), nameof(Inventory.CallOnToolbeltChangedInternal)),
                     new CodeInstruction(OpCodes.Ldloc_S, lbd_i),

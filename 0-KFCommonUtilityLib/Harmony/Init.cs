@@ -56,6 +56,8 @@ public class CommonUtilityLibInit : IModApi
     {
         CustomEnums.onSelfMagzineDeplete = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onSelfMagzineDeplete");
         CustomEnums.onReloadAboutToStart = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onReloadAboutToStart");
+        CustomEnums.onPartialReloadAmmoSuccess = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onPartialReloadAmmoSuccess");
+        CustomEnums.onPartialReloadAmmoFail = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onPartialReloadAmmoFail");
         CustomEnums.onRechargeValueUpdate = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onRechargeValueUpdate");
         CustomEnums.onSelfItemSwitchMode = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onSelfItemSwitchMode");
         CustomEnums.onSelfBurstModeChanged = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onSelfBurstModeChanged");

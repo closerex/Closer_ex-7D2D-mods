@@ -301,7 +301,6 @@ namespace KFCommonUtilityLib.Harmony
         #endregion
 
         #region GameManager.ItemReload*
-
         [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.requestReload))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_requestReload_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
@@ -957,7 +956,7 @@ namespace KFCommonUtilityLib.Harmony
         {
             private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (Constants.cVersionInformation.Major <= 2 && Constants.cVersionInformation.Minor <= 2)
+                if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 2))
                 {
                     yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "GetBindingValue");
                 }
@@ -969,44 +968,103 @@ namespace KFCommonUtilityLib.Harmony
 
             private static void Prefix(XUiC_HUDStatBar __instance, out ItemActionData __state)
             {
-                if (__instance.statType != HUDStatTypes.ActiveItem || __instance.LocalPlayer == null)
+                EntityPlayerLocal localPlayer = __instance.GetLocalPlayer();
+                if (__instance.statType != HUDStatTypes.ActiveItem || localPlayer == null)
                 {
                     __state = null;
                     return;
                 }
-                __state = __instance.LocalPlayer.MinEventContext.ItemActionData;
-                MultiActionUtils.SetMinEventParamsByEntityInventory(__instance.LocalPlayer);
+                __state = localPlayer.MinEventContext.ItemActionData;
+                MultiActionUtils.SetMinEventParamsByEntityInventory(localPlayer);
             }
 
             private static void Postfix(XUiC_HUDStatBar __instance, ItemActionData __state)
             {
-                if (__instance.statType == HUDStatTypes.ActiveItem && __instance.LocalPlayer != null)
+                EntityPlayerLocal localPlayer = __instance.GetLocalPlayer();
+                if (__instance.statType == HUDStatTypes.ActiveItem && localPlayer != null)
                 {
-                    __instance.LocalPlayer.MinEventContext.ItemActionData = __state;
+                    localPlayer.MinEventContext.ItemActionData = __state;
                 }
             }
         }
 
-        [HarmonyPatch(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.SetupActiveItemEntry))]
-        [HarmonyPrefix]
-        private static void Prefix_SetupActiveItemEntry_XUiC_HUDStatBar(XUiC_HUDStatBar __instance, out ItemActionData __state)
+        [HarmonyPatch]
+        private static class V2_5NamePatch1
         {
-            if (__instance.LocalPlayer == null)
+            private static IEnumerable<MethodBase> TargetMethods()
             {
-                __state = null;
-                return;
+                if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
+                {
+                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "SetupActiveItemEntry");
+                }
+                else
+                {
+                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "setupActiveItemEntry");
+                }
             }
-            __state = __instance.LocalPlayer.MinEventContext.ItemActionData;
-            MultiActionUtils.SetMinEventParamsByEntityInventory(__instance.LocalPlayer);
-        }
 
-        [HarmonyPatch(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.SetupActiveItemEntry))]
-        [HarmonyPostfix]
-        private static void Postfix_SetupActiveItemEntry_XUiC_HUDStatBar(XUiC_HUDStatBar __instance, ItemActionData __state)
-        {
-            if (__instance.LocalPlayer != null)
+            private static void Prefix(XUiC_HUDStatBar __instance, out ItemActionData __state)
             {
-                __instance.LocalPlayer.MinEventContext.ItemActionData = __state;
+                EntityPlayerLocal localPlayer = __instance.GetLocalPlayer();
+                if (localPlayer == null)
+                {
+                    __state = null;
+                    return;
+                }
+                __state = localPlayer.MinEventContext.ItemActionData;
+                MultiActionUtils.SetMinEventParamsByEntityInventory(localPlayer);
+            }
+
+            private static void Postfix(XUiC_HUDStatBar __instance, ItemActionData __state)
+            {
+                EntityPlayerLocal localPlayer = __instance.GetLocalPlayer();
+                if (localPlayer != null)
+                {
+                    localPlayer.MinEventContext.ItemActionData = __state;
+                }
+            }
+
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+            {
+                var codes = instructions.ToList();
+
+                var lbd_index = generator.DeclareLocal(typeof(int));
+                FieldInfo fld_action = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
+                FieldInfo fld_ammoindex = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
+
+                int localIndex;
+                if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
+                {
+                    localIndex = 2;
+                }
+                else
+                {
+                    localIndex = 1;
+                }
+
+                for (int i = 0; i < codes.Count; i++)
+                {
+                    if (codes[i].LoadsField(fld_action))
+                    {
+                        codes.RemoveAt(i + 1);
+                        codes.InsertRange(i + 1, new[]
+                        {
+                            CodeInstruction.LoadLocal(localIndex),
+                            CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetActionIndexByMetaData)),
+                            new CodeInstruction(OpCodes.Dup),
+                            new CodeInstruction(OpCodes.Stloc_S, lbd_index)
+                        });
+                        i += 3;
+                    }
+                    else if (codes[i].LoadsField(fld_ammoindex))
+                    {
+                        codes[i].opcode = OpCodes.Call;
+                        codes[i].operand = AccessTools.Method(typeof(MultiActionUtils), nameof(MultiActionUtils.GetSelectedAmmoIndexByActionIndex));
+                        codes.Insert(i, new CodeInstruction(OpCodes.Ldloc_S, lbd_index));
+                        i++;
+                    }
+                }
+                return codes;
             }
         }
         #endregion
@@ -1987,58 +2045,38 @@ namespace KFCommonUtilityLib.Harmony
         /// </summary>
         /// <param name="instructions"></param>
         /// <returns></returns>
-        [HarmonyPatch(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.HasChanged))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_HasChanged_XUiC_HUDStatBar(IEnumerable<CodeInstruction> instructions)
+        [HarmonyPatch]
+        private static class V2_5NamePatch2
         {
-            var codes = instructions.ToList();
-
-            MethodInfo mtd_edittool = AccessTools.Method(typeof(ItemAction), nameof(ItemAction.IsEditingTool));
-            for (int i = 0; i < codes.Count; i++)
+            private static IEnumerable<MethodBase> TargetMethods()
             {
-                var code = codes[i];
-                if (code.Calls(mtd_edittool))
+                if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
                 {
-                    codes.RemoveRange(i - 1, 3);
-                    break;
+                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "HasChanged");
+                }
+                else
+                {
+                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "hasChanged");
                 }
             }
 
-            return codes;
-        }
-
-        [HarmonyPatch(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.SetupActiveItemEntry))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_SetupActiveItemEntry_XUiC_HUDStatBar(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
-        {
-            var codes = instructions.ToList();
-
-            var lbd_index = generator.DeclareLocal(typeof(int));
-            FieldInfo fld_action = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
-            FieldInfo fld_ammoindex = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
-            for (int i = 0; i < codes.Count; i++)
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
-                if (codes[i].LoadsField(fld_action))
+                var codes = instructions.ToList();
+
+                MethodInfo mtd_edittool = AccessTools.Method(typeof(ItemAction), nameof(ItemAction.IsEditingTool));
+                for (int i = 0; i < codes.Count; i++)
                 {
-                    codes.RemoveAt(i + 1);
-                    codes.InsertRange(i + 1, new[]
+                    var code = codes[i];
+                    if (code.Calls(mtd_edittool))
                     {
-                        new CodeInstruction(OpCodes.Ldloc_2),
-                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetActionIndexByMetaData)),
-                        new CodeInstruction(OpCodes.Dup),
-                        new CodeInstruction(OpCodes.Stloc_S, lbd_index)
-                    });
-                    i += 3;
+                        codes.RemoveRange(i - 1, 3);
+                        break;
+                    }
                 }
-                else if (codes[i].LoadsField(fld_ammoindex))
-                {
-                    codes[i].opcode = OpCodes.Call;
-                    codes[i].operand = AccessTools.Method(typeof(MultiActionUtils), nameof(MultiActionUtils.GetSelectedAmmoIndexByActionIndex));
-                    codes.Insert(i, new CodeInstruction(OpCodes.Ldloc_S, lbd_index));
-                    i++;
-                }
+
+                return codes;
             }
-            return codes;
         }
 
         [HarmonyPatch(typeof(XUiC_Radial), nameof(XUiC_Radial.handleActivatableItemCommand))]
@@ -2055,15 +2093,15 @@ namespace KFCommonUtilityLib.Harmony
         {
             private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (Constants.cVersionInformation.Major > 2 || Constants.cVersionInformation.Minor > 2)
-                {
-                    Log.Out($"Choosing new GetBindingValueInternal for XUiC_ItemInfoWindow for game version {Constants.cVersionInformation.Major}.{Constants.cVersionInformation.Minor}");
-                    yield return AccessTools.Method(typeof(XUiC_ItemInfoWindow), "GetBindingValueInternal");
-                }
-                else
+                if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 2))
                 {
                     Log.Out($"Choosing old GetBindingValue for XUiC_ItemInfoWindow for game version {Constants.cVersionInformation.Major}.{Constants.cVersionInformation.Minor}");
                     yield return AccessTools.Method(typeof(XUiC_ItemInfoWindow), "GetBindingValue");
+                }
+                else
+                {
+                    Log.Out($"Choosing new GetBindingValueInternal for XUiC_ItemInfoWindow for game version {Constants.cVersionInformation.Major}.{Constants.cVersionInformation.Minor}");
+                    yield return AccessTools.Method(typeof(XUiC_ItemInfoWindow), "GetBindingValueInternal");
                 }
             }
 
@@ -2111,13 +2149,17 @@ namespace KFCommonUtilityLib.Harmony
             FieldInfo fld_data = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.actionData));
 
             int localIndex;
-            if (Constants.cVersionInformation.Major <= 2 && Constants.cVersionInformation.Minor <= 1)
+            if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 1))
             {
                 localIndex = 35;
             }
-            else
+            else if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
             {
                 localIndex = 37;
+            }
+            else
+            {
+                localIndex = 40;
             }
 
             for (int i = 0; i < codes.Count; i++)
@@ -2640,7 +2682,7 @@ namespace KFCommonUtilityLib.Harmony
         {
             private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (Constants.cVersionInformation.Major <= 2 && Constants.cVersionInformation.Minor <= 2)
+                if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 2))
                 {
                     Log.Out($"Choosing old GetBindingValue for XUiC_ItemStack for game version {Constants.cVersionInformation.Major}.{Constants.cVersionInformation.Minor}");
                     yield return AccessTools.Method(typeof(XUiC_ItemStack), "GetBindingValue");
@@ -2994,12 +3036,25 @@ namespace KFCommonUtilityLib.Harmony
         #endregion
 
         #region Temporaty fix for hud ammo mismatch
-        [HarmonyPatch(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.Update))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_Update_XUiC_HUDStatBar(IEnumerable<CodeInstruction> instructions)
+        [HarmonyPatch]
+        private static class V2_5MethodPatch1
         {
-            return instructions.MethodReplacer(AccessTools.Method(typeof(Inventory), nameof(Inventory.GetFocusedItemIdx)),
-                                               AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItemIdx)));
+            private static IEnumerable<MethodBase> TargetMethods()
+            {
+                if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
+                {
+                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "Update");
+                }
+                else
+                {
+                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "hasChanged");
+                }
+            }
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                return instructions.MethodReplacer(AccessTools.Method(typeof(Inventory), nameof(Inventory.GetFocusedItemIdx)),
+                                                   AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItemIdx)));
+            }
         }
         #endregion
     }
@@ -3209,26 +3264,39 @@ namespace KFCommonUtilityLib.Harmony
     {
         private static IEnumerable<MethodBase> TargetMethods()
         {
-            return new[]
+            if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
             {
-                AccessTools.Method(typeof(ItemActionEntryAssemble), nameof(ItemActionEntryAssemble.HandleRemoveAmmo)),
-                AccessTools.Method(typeof(ItemActionEntryScrap), nameof(ItemActionEntryScrap.HandleRemoveAmmo)),
-                AccessTools.Method(typeof(ItemActionEntrySell), nameof(ItemActionEntrySell.HandleRemoveAmmo)),
-            };
+                yield return AccessTools.Method(typeof(ItemActionEntryAssemble), "HandleRemoveAmmo");
+                yield return AccessTools.Method(typeof(ItemActionEntrySell), "HandleRemoveAmmo");
+            }
+            yield return AccessTools.Method(typeof(ItemActionEntryScrap), nameof(ItemActionEntryScrap.HandleRemoveAmmo));
         }
 
         [HarmonyPrefix]
-        private static bool Prefix(BaseItemActionEntry __instance, ItemStack stack, ref ItemStack __result)
+        private static bool Prefix(ref ItemStack __result, object[] __args)
         {
+            ItemStack stack;
+            XUi xui;
+            if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
+            {
+                stack = (ItemStack)__args[1];
+                xui = ((BaseItemActionEntry)__args[0]).ItemController.xui;
+            }
+            else
+            {
+                stack = (ItemStack)__args[0];
+                xui = (XUi)__args[1];
+            }
+
             List<ItemStack> list_ammo_stack = new List<ItemStack>();
             if (!MultiActionUtils.MultiActionRemoveAmmoFromItemStack(stack, list_ammo_stack))
                 return true;
 
             foreach (var ammoStack in list_ammo_stack)
             {
-                if (!__instance.ItemController.xui.PlayerInventory.AddItem(ammoStack))
+                if (!xui.PlayerInventory.AddItem(ammoStack))
                 {
-                    __instance.ItemController.xui.PlayerInventory.DropItem(ammoStack);
+                    xui.PlayerInventory.DropItem(ammoStack);
                 }
             }
             __result = stack;

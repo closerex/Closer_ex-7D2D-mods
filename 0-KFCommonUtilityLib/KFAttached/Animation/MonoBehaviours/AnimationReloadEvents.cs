@@ -67,11 +67,14 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
         }
         actionData.isReloading = false;
         actionData.isWeaponReloading = false;
-        actionData.invData.holdingEntity.MinEventContext.ItemActionData = actionData;
-        actionData.invData.holdingEntity.FireEvent(MinEventTypes.onReloadStop, true);
-        actionData.invData.holdingEntity.OnReloadEnd();
-        actionData.invData.holdingEntity.inventory.CallOnToolbeltChangedInternal();
-        AnimationAmmoUpdateState.SetAmmoCountForEntity(actionData.invData.holdingEntity, actionData.invData.slotIdx);
+        player.MinEventContext.ItemActionData = actionData;
+        player.MinEventContext.ItemInventoryData = actionData.invData;
+        player.MinEventContext.ItemValue = actionData.invData.itemValue;
+        actionRanged.OnReloadSuccess(actionData);
+        player.FireEvent(MinEventTypes.onReloadStop);
+        player.OnReloadEnd();
+        player.inventory.CallOnToolbeltChangedInternal();
+        AnimationAmmoUpdateState.SetAmmoCountForEntity(player, actionData.invData.slotIdx);
         actionData.isReloadCancelled = false;
         actionData.isWeaponReloadCancelled = false;
         actionData.isChangingAmmoType = false;
@@ -95,17 +98,25 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
         }
 
         player.MinEventContext.ItemActionData = actionData;
+        player.MinEventContext.ItemInventoryData = actionData.invData;
+        player.MinEventContext.ItemValue = actionData.invData.itemValue;
         ItemValue ammo = ItemClass.GetItem(actionRanged.MagazineItemNames[actionData.invData.itemValue.SelectedAmmoTypeIndex], false);
         int magSize = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, actionData.invData.itemValue, (float)actionRanged.BulletsPerMagazine, player);
         int partialReloadCount = (int)EffectManager.GetValue(CustomEnums.PartialReloadCount, actionData.invData.itemValue, 1, player);
         actionData.reloadAmount = GetPartialReloadCount(player, ammo, magSize, partialReloadCount);
+        actionRanged.OnReloadSuccess(actionData);
         if (actionData.reloadAmount > 0)
         {
             actionData.invData.itemValue.Meta = Utils.FastMin(actionData.invData.itemValue.Meta + actionData.reloadAmount, magSize);
+            player.FireEvent(CustomEnums.onPartialReloadAmmoSuccess);
             if (actionData.invData.item.Properties.Values[ItemClass.PropSoundIdle] != null)
             {
                 actionData.invData.holdingEntitySoundID = -1;
             }
+        }
+        else
+        {
+            player.FireEvent(CustomEnums.onPartialReloadAmmoFail);
         }
         AnimationAmmoUpdateState.SetAmmoCountForEntity(actionData.invData.holdingEntity, actionData.invData.slotIdx);
 

@@ -623,13 +623,17 @@ public static class MultiItemPatches
         var codes = instructions.ToList();
 
         int localIndex;
-        if (Constants.cVersionInformation.Major <= 2 && Constants.cVersionInformation.Minor <= 1)
+        if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 1))
         {
             localIndex = 35;
         }
-        else
+        else if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
         {
             localIndex = 37;
+        }
+        else
+        {
+            localIndex = 40;
         }
 
         for (int i = 0; i < codes.Count; i++)

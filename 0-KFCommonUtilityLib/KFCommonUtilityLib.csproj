@@ -444,6 +444,7 @@
     <Compile Include="Harmony\AudioPoolingPatches.cs" />
     <Compile Include="Harmony\BackgroundInventoryUpdatePatch.cs" />
     <Compile Include="Harmony\CameraPatches.cs" />
+    <Compile Include="Harmony\VersionPatcher\VersionPatchManager.cs" />
     <Compile Include="KFAttached\Misc\CustomAudioSnapshotHolder.cs" />
     <Compile Include="Harmony\DamagePatches.cs" />
     <Compile Include="Harmony\HideMarkerOnAimPatch.cs" />
@@ -686,9 +687,6 @@
     <Compile Include="Scripts\StaticManagers\CustomEffectEnumManager.cs" />
     <Compile Include="Scripts\FbxExporter07.cs" />
     <Compile Include="Scripts\Global\CustomEnums.cs" />
-    <Compile Include="Scripts\Items\ItemActionAltMode.cs" />
-    <Compile Include="Scripts\Items\ItemActionHoldOpen.cs" />
-    <Compile Include="Scripts\Items\ItemActionRampUp.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionAddItemToInventory.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionAddRoundsToInventory.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionAddRoundsToMagazine.cs" />
@@ -701,7 +699,6 @@
     <Compile Include="Scripts\MinEventActions\MinEventActionRemoveRoundsFromInventory.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionSetStringOnWeaponLabel.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionSetWeaponLabelColor.cs" />
-    <Compile Include="Scripts\Items\ItemActionRechargeable.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionAddBuffToTargetAndSelf.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionDecreaseProgressionLevelAndRefundSP.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionModifyCVarWithSelfRef.cs" />

@@ -155,15 +155,20 @@ public static class ZAnimationInterruptSourcePatches
 
         var mtd_isrunning = AccessTools.Method(typeof(ItemAction), nameof(ItemAction.IsActionRunning));
         int localIndexAction0, localIndexAction1;
-        if (Constants.cVersionInformation.Major == 2 && Constants.cVersionInformation.Minor <= 1)
+        if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 1))
         {
             localIndexAction0 = 38;
             localIndexAction1 = 37;
         }
-        else
+        else if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
         {
             localIndexAction0 = 40;
             localIndexAction1 = 39;
+        }
+        else
+        {
+            localIndexAction0 = 43;
+            localIndexAction1 = 42;
         }
 
         for (int i = 0; i < codes.Count; i++)

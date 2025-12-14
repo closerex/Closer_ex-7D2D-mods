@@ -232,13 +232,17 @@ internal static class ReloadInterruptionPatches
 
         var mtd_isrunning = AccessTools.Method(typeof(ItemAction), nameof(ItemAction.IsActionRunning));
         int localIndex;
-        if (Constants.cVersionInformation.Major == 2 && Constants.cVersionInformation.Minor <= 1)
+        if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 1))
         {
             localIndex = 38;
         }
-        else
+        else if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
         {
             localIndex = 40;
+        }
+        else
+        {
+            localIndex = 43;
         }
         for (int i = 0; i < codes.Count; i++)
         {
@@ -250,15 +254,15 @@ internal static class ReloadInterruptionPatches
                     {
                         codes.InsertRange(i - 2, new[]
                         {
-                            new CodeInstruction(OpCodes.Brfalse_S, codes[i - 1].labels[0]),
-                            new CodeInstruction(OpCodes.Ldarg_0),
-                            CodeInstruction.LoadField(typeof(PlayerMoveController), nameof(PlayerMoveController.entityPlayerLocal)),
-                            new CodeInstruction(codes[j - 2].opcode, codes[j - 2].operand),
-                            CodeInstruction.CallClosure<Func<EntityPlayerLocal, int, bool>>(static (player, actionIndex) =>
-                            {
-                                return !(player.inventory.holdingItem.Actions[actionIndex] is IModuleContainerFor<ActionModuleInterruptReload> module) || module.Instance.internalCancelOnly;
-                            })
-                        });
+                        new CodeInstruction(OpCodes.Brfalse_S, codes[i - 1].labels[0]),
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(PlayerMoveController), nameof(PlayerMoveController.entityPlayerLocal)),
+                        new CodeInstruction(codes[j - 2].opcode, codes[j - 2].operand),
+                        CodeInstruction.CallClosure<Func<EntityPlayerLocal, int, bool>>(static (player, actionIndex) =>
+                        {
+                            return !(player.inventory.holdingItem.Actions[actionIndex] is IModuleContainerFor<ActionModuleInterruptReload> module) || module.Instance.internalCancelOnly;
+                        })
+                    });
                         break;
                     }
                 }

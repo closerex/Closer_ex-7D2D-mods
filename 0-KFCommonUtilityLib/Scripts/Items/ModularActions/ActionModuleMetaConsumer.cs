@@ -56,9 +56,19 @@ public class ActionModuleMetaConsumer
         var prop_data_instance = AccessTools.PropertyGetter(typeof(IModuleContainerFor<ActionModuleMetaConsumer.MetaConsumerData>), nameof(IModuleContainerFor<ActionModuleMetaConsumer.MetaConsumerData>.Instance));
         var prop_itemvalue = AccessTools.PropertyGetter(typeof(ItemInventoryData), nameof(ItemInventoryData.itemValue));
 
+        int localIndexEntity;
+        if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
+        {
+            localIndexEntity = 6;
+        }
+        else
+        {
+            localIndexEntity = 7;
+        }
+
         for (int i = 0; i < codes.Count; i++)
         {
-            if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 6)
+            if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == localIndexEntity)
             {
                 codes.InsertRange(i - 4, new[]
                 {
@@ -83,7 +93,7 @@ public class ActionModuleMetaConsumer
                     new CodeInstruction(OpCodes.Ldloc_0),
                     CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
                     new CodeInstruction(OpCodes.Callvirt, prop_itemvalue),
-                    new CodeInstruction(OpCodes.Ldloc_S, 6),
+                    new CodeInstruction(OpCodes.Ldloc_S, localIndexEntity),
                     new CodeInstruction(OpCodes.Ldloc_S, lbd_data_module),
                     new CodeInstruction(OpCodes.Ldarg_0),
                     CodeInstruction.LoadField(typeof(ItemActionAttack), nameof(ItemActionAttack.soundEmpty)),
@@ -111,7 +121,7 @@ public class ActionModuleMetaConsumer
                     new CodeInstruction(OpCodes.Ldloc_0),
                     CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
                     new CodeInstruction(OpCodes.Callvirt, prop_itemvalue),
-                    new CodeInstruction(OpCodes.Ldloc_S, 6),
+                    new CodeInstruction(OpCodes.Ldloc_S, localIndexEntity),
                     new CodeInstruction(OpCodes.Ldloc_S, lbd_data_module),
                     CodeInstruction.Call(typeof(ActionModuleMetaConsumer), nameof(ConsumeMetaData)),
                 });
