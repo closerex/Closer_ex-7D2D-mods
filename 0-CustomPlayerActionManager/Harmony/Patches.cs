@@ -24,7 +24,7 @@ public class Patches
     {
         private static IEnumerable<MethodBase> TargetMethods()
         {
-            if (Constants.cVersionInformation.Major <= 2 && Constants.cVersionInformation.Minor <= 2)
+            if (Constants.cVersionInformation.CompareTo(new VersionInformation(VersionInformation.EGameReleaseType.V, 2, 3, 0)) < 0)
             {
                 yield return AccessTools.Method(typeof(XUiC_OptionsController), "GetBindingValue");
             }

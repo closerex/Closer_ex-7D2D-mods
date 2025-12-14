@@ -11,7 +11,7 @@ public static class GetBidningValuePatch
 {
     private static IEnumerable<MethodBase> TargetMethods()
     {
-        if (Constants.cVersionInformation.Major <= 2 && Constants.cVersionInformation.Minor <= 2)
+        if (Constants.cVersionInformation.CompareTo(new VersionInformation(VersionInformation.EGameReleaseType.V, 2, 3, 0)) < 0)
         {
             Log.Out($"Choosing old GetBindingValue for XUiController for game version {Constants.cVersionInformation.Major}.{Constants.cVersionInformation.Minor}");
             yield return AccessTools.Method(typeof(XUiController), "GetBindingValue");

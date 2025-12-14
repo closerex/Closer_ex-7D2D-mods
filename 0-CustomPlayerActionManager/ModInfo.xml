@@ -5,5 +5,5 @@
 	<DisplayName value="Custom Player Action Manager" />
 	<Description value="allow modders to add custom bindable player control actions." />
 	<Author value="closer_ex" />
-	<Version value="1.3.1" />
+	<Version value="1.3.2" />
 </xml>
