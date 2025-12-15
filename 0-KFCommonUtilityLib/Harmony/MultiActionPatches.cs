@@ -3272,36 +3272,86 @@ namespace KFCommonUtilityLib.Harmony
             yield return AccessTools.Method(typeof(ItemActionEntryScrap), nameof(ItemActionEntryScrap.HandleRemoveAmmo));
         }
 
-        [HarmonyPrefix]
-        private static bool Prefix(ref ItemStack __result, object[] __args)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            ItemStack stack;
-            XUi xui;
+            var codes = instructions.ToList();
+
+            var lbl = generator.DefineLabel();
+            codes[0].WithLabels(lbl);
+            codes.InsertRange(0, new[]
+            {
+                CodeInstruction.CallClosure<Func<ItemStack, XUi, bool>>(static (stack, xui) =>
+                {
+                    List<ItemStack> list_ammo_stack = new List<ItemStack>();
+                    if (!MultiActionUtils.MultiActionRemoveAmmoFromItemStack(stack, list_ammo_stack))
+                        return true;
+
+                    foreach (var ammoStack in list_ammo_stack)
+                    {
+                        if (!xui.PlayerInventory.AddItem(ammoStack))
+                        {
+                            xui.PlayerInventory.DropItem(ammoStack);
+                        }
+                    }
+                    return false;
+                }),
+                new CodeInstruction(OpCodes.Brtrue_S, lbl),
+                CodeInstruction.LoadArgument(Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4) ? 1 : 0),
+                new CodeInstruction(OpCodes.Ret)
+            });
+
             if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
             {
-                stack = (ItemStack)__args[1];
-                xui = ((BaseItemActionEntry)__args[0]).ItemController.xui;
+                codes.InsertRange(0, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_1),
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Call, AccessTools.PropertyGetter(typeof(BaseItemActionEntry), nameof(BaseItemActionEntry.ItemController))),
+                    new CodeInstruction(OpCodes.Call, AccessTools.PropertyGetter(typeof(XUiController), nameof(XUiController.xui)))
+                });
             }
             else
             {
-                stack = (ItemStack)__args[0];
-                xui = (XUi)__args[1];
-            }
-
-            List<ItemStack> list_ammo_stack = new List<ItemStack>();
-            if (!MultiActionUtils.MultiActionRemoveAmmoFromItemStack(stack, list_ammo_stack))
-                return true;
-
-            foreach (var ammoStack in list_ammo_stack)
-            {
-                if (!xui.PlayerInventory.AddItem(ammoStack))
+                codes.InsertRange(0, new[]
                 {
-                    xui.PlayerInventory.DropItem(ammoStack);
-                }
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Ldarg_1)
+                });
             }
-            __result = stack;
-            return false;
+
+            return codes;
         }
+
+        //[HarmonyPrefix]
+        //private static bool Prefix(ref ItemStack __result, object[] __args)
+        //{
+        //    ItemStack stack;
+        //    XUi xui;
+        //    if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
+        //    {
+        //        stack = (ItemStack)__args[1];
+        //        xui = ((BaseItemActionEntry)__args[0]).ItemController.xui;
+        //    }
+        //    else
+        //    {
+        //        stack = (ItemStack)__args[0];
+        //        xui = (XUi)__args[1];
+        //    }
+
+        //    List<ItemStack> list_ammo_stack = new List<ItemStack>();
+        //    if (!MultiActionUtils.MultiActionRemoveAmmoFromItemStack(stack, list_ammo_stack))
+        //        return true;
+
+        //    foreach (var ammoStack in list_ammo_stack)
+        //    {
+        //        if (!xui.PlayerInventory.AddItem(ammoStack))
+        //        {
+        //            xui.PlayerInventory.DropItem(ammoStack);
+        //        }
+        //    }
+        //    __result = stack;
+        //    return false;
+        //}
     }
     #endregion
 

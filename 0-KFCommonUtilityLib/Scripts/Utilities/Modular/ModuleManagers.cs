@@ -28,6 +28,15 @@ namespace KFCommonUtilityLib
         private static ModuleAttributes moduleAttributes;
         private static ModuleCharacteristics moduleCharacteristics;
         private static MethodInfo mtdinf = AccessTools.Method(typeof(ModuleManagers), nameof(ModuleManagers.AddModuleExtension));
+        private static bool debugLog = false;
+
+        public static void LogOut(string msg)
+        {
+            if (debugLog)
+            {
+                Log.Out(msg);
+            }
+        }
 
         public static void InitModuleExtensions()
         {
@@ -238,11 +247,19 @@ namespace KFCommonUtilityLib
         public static bool TryFindType(string name, out Type type)
         {
             type = null;
-            foreach (var assembly in list_created)
+            try
             {
-                type = assembly.GetType(name, false);
-                if (type != null)
-                    return true;
+                foreach (var assembly in list_created)
+                {
+                    type = assembly.GetType(name, false);
+                    if (type != null)
+                        return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Failed to find type {name} in runtime generated types!");
+                Log.Error(ex.Message);
             }
             return false;
         }

@@ -69,7 +69,7 @@ namespace KFCommonUtilityLib
                 {
                     il.Append(ins);
                 }
-                Log.Out($"data module {j} {manipulator.moduleTypes[j].FullName} class module {i} {arr_type_classes[i].FullName}");
+                ModuleManagers.LogOut($"data module {j} {manipulator.moduleTypes[j].FullName} class module {i} {arr_type_classes[i].FullName}");
                 j++;
             }
             il.Emit(OpCodes.Ret);

@@ -183,7 +183,7 @@ namespace KFCommonUtilityLib
                                 if (curNode != null)
                                 {
                                     curNode.patchinf_harmony.AddTranspilers(CommonUtilityLibInit.HarmonyInstance.Id, new HarmonyMethod(mtd));
-                                    Log.Out($"Adding transpiler {mtd.FullDescription()}\nCurrent transpilers:\n{string.Join('\n', curNode.patchinf_harmony.transpilers.Select(p => p.PatchMethod.FullDescription()))}");
+                                    ModuleManagers.LogOut($"Adding transpiler {mtd.FullDescription()}\nCurrent transpilers:\n{string.Join('\n', curNode.patchinf_harmony.transpilers.Select(p => p.PatchMethod.FullDescription()))}");
                                 }
                             }
                             else
@@ -195,7 +195,7 @@ namespace KFCommonUtilityLib
                                     {
                                         childFound = true;
                                         node.patchinf_harmony.AddTranspilers(CommonUtilityLibInit.HarmonyInstance.Id, mtd);
-                                        Log.Out($"Adding transpiler {mtd.FullDescription()}\nCurrent transpilers:\n{string.Join('\n', node.patchinf_harmony.transpilers.Select(p => p.PatchMethod.FullDescription()))}");
+                                        ModuleManagers.LogOut($"Adding transpiler {mtd.FullDescription()}\nCurrent transpilers:\n{string.Join('\n', node.patchinf_harmony.transpilers.Select(p => p.PatchMethod.FullDescription()))}");
                                         break;
                                     }
                                 }
@@ -221,7 +221,7 @@ namespace KFCommonUtilityLib
                                     if (curNode != null)
                                     {
                                         curNode.patchinf_harmony.AddTranspilers(CommonUtilityLibInit.HarmonyInstance.Id, new HarmonyMethod(mtd));
-                                        Log.Out($"Adding transpiler {mtd.FullDescription()}\nCurrent transpilers:\n{string.Join('\n', curNode.patchinf_harmony.transpilers.Select(p => p.PatchMethod.FullDescription()))}");
+                                        ModuleManagers.LogOut($"Adding transpiler {mtd.FullDescription()}\nCurrent transpilers:\n{string.Join('\n', curNode.patchinf_harmony.transpilers.Select(p => p.PatchMethod.FullDescription()))}");
                                     }
                                 }
                             }
@@ -257,7 +257,7 @@ namespace KFCommonUtilityLib
                         {
                             if (ins.OpCode == OpCodes.Call && ((MethodReference)ins.Operand).FullName.Equals(mtdref_override_base.FullName))
                             {
-                                Log.Out($"replacing call to {mtdref_override_base.FullName} to {mtddef_override_copy.FullName}");
+                                ModuleManagers.LogOut($"replacing call to {mtdref_override_base.FullName} to {mtddef_override_copy.FullName}");
                                 ins.Operand = mtddef_override_copy;
                             }
                         }

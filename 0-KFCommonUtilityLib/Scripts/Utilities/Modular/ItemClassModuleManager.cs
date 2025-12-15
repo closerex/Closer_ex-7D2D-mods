@@ -12,23 +12,26 @@ namespace KFCommonUtilityLib
             ModuleManagers.OnAssemblyCreated += static () => dict_classtypes.Clear();
             ModuleManagers.OnAssemblyLoaded += static () =>
             {
+                ModuleManagers.LogOut($"Start replacing ItemClass...");
                 foreach (var pair in dict_classtypes)
                 {
+                    var item = ItemClass.GetItemClass(pair.Key);
                     if (ModuleManagers.TryFindType(pair.Value, out Type classType))
                     {
-                        var item = ItemClass.GetItemClass(pair.Key);
-                        if (item != null)
+                        ModuleManagers.LogOut($"Replace ItemClass {item.GetType().FullName} with {classType.FullName} on item {item.GetItemName()}");
+                        var itemNew = (ItemClass)Activator.CreateInstance(classType);
+                        item.PreInitCopyTo(itemNew);
+                        if (item is ItemClassModifier mod)
                         {
-                            var itemNew = (ItemClass)Activator.CreateInstance(classType);
-                            item.PreInitCopyTo(itemNew);
-                            if (item is ItemClassModifier mod)
-                            {
-                                mod.PreInitCopyToModifier((ItemClassModifier)itemNew);
-                            }
-                            itemNew.Init();
-                            ItemClass.itemNames.RemoveAt(ItemClass.itemNames.Count - 1);
-                            ItemClass.list[itemNew.Id] = itemNew;
+                            mod.PreInitCopyToModifier((ItemClassModifier)itemNew);
                         }
+                        itemNew.Init();
+                        ItemClass.itemNames.RemoveAt(ItemClass.itemNames.Count - 1);
+                        ItemClass.list[itemNew.Id] = itemNew;
+                    }
+                    else
+                    {
+                        Log.Error($"Failed to replace ItemClass on item {item.GetItemName()} with {pair.Value}!");
                     }
                 }
                 dict_classtypes.Clear();

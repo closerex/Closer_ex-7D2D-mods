@@ -43,7 +43,7 @@ namespace KFCommonUtilityLib
                     continue;
                 }
                 arr_flddef_actiondatas[i] = manipulator.arr_flddef_modules[j];
-                Log.Out($"data module {j} {manipulator.moduleTypes[j].FullName} action module {i} {arr_type_actions[i].FullName}");
+                ModuleManagers.LogOut($"data module {j} {manipulator.moduleTypes[j].FullName} action module {i} {arr_type_actions[i].FullName}");
                 foreach (var ins in manipulator.MatchConstructorArguments(mtddef_ctor, manipulator.module.ImportReference(manipulator.moduleTypes[j].GetConstructors().FirstOrDefault()).Resolve(), j, (par, mtddef_original, mtddef_target, moduleIndex, list_special_args) =>
                 {
                     switch (par.Name)

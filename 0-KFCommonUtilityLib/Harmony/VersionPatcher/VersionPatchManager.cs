@@ -49,11 +49,7 @@ namespace KFCommonUtilityLib
             #region ItemActionRanged.ReloadSuccess
             dynmtd = new DynamicMethod("OnReloadSuccess", MethodAttributes.Public | MethodAttributes.Static, CallingConventions.Standard, null, new[] { typeof(ItemActionRanged), typeof(ItemActionRanged.ItemActionDataRanged) }, typeof(ItemActionRanged), true);
             generator = dynmtd.GetILGenerator();
-            if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
-            {
-
-            }
-            else
+            if (Constants.cVersionInformation.GTE(VersionInformation.EGameReleaseType.V, 2, 5))
             {
                 generator.Emit(OpCodes.Ldarg_0);
                 generator.Emit(OpCodes.Ldarg_1);
@@ -61,6 +57,17 @@ namespace KFCommonUtilityLib
             }
             generator.Emit(OpCodes.Ret);
             ItemActionRanged_ReloadSuccess = (Action<ItemActionRanged, ItemActionRanged.ItemActionDataRanged>)dynmtd.CreateDelegate(typeof(Action<ItemActionRanged, ItemActionRanged.ItemActionDataRanged>));
+            #endregion
+
+            #region ItemAction.ExecutionRequirements
+            dynmtd = new DynamicMethod("CopyRequirements", MethodAttributes.Public | MethodAttributes.Static, CallingConventions.Standard, null, new[] { typeof(ItemAction), typeof(ItemAction) }, typeof(ItemAction), true);
+            generator = dynmtd.GetILGenerator();
+            generator.Emit(OpCodes.Ldarg_1);
+            generator.Emit(OpCodes.Ldarg_0);
+            generator.Emit(OpCodes.Ldfld, AccessTools.Field(typeof(ItemAction), nameof(ItemAction.ExecutionRequirements)));
+            generator.Emit(OpCodes.Stfld, AccessTools.Field(typeof(ItemAction), nameof(ItemAction.ExecutionRequirements)));
+            generator.Emit(OpCodes.Ret);
+            ItemAction_CopyRequirements = (Action<ItemAction, ItemAction>)dynmtd.CreateDelegate(typeof(Action<ItemAction, ItemAction>));
             #endregion
         }
 
@@ -82,6 +89,13 @@ namespace KFCommonUtilityLib
             ItemActionRanged_ReloadSuccess(self, data);
         }
 
+        public readonly static Action<ItemAction, ItemAction> ItemAction_CopyRequirements;
+        public static void CopyRequirements(ItemAction from, ItemAction to)
+        {
+            ItemAction_CopyRequirements(from, to);
+        }
+
+        #region Version Compare Helpers
         public static bool LT(this VersionInformation self, VersionInformation.EGameReleaseType releaseType, int major, int minor, int build = -1)
         {
             return self.CompareVersion(releaseType, major, minor, build) < 0;
@@ -138,5 +152,6 @@ namespace KFCommonUtilityLib
             }
             return 0;
         }
+        #endregion
     }
 }
