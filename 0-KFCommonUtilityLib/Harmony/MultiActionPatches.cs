@@ -2601,9 +2601,17 @@ namespace KFCommonUtilityLib.Harmony
                                 new CodeInstruction(OpCodes.Ldc_R4, 0f),
                                 new CodeInstruction(OpCodes.Ble_Un_S, lbl_next)
                             });
-
-                            codes[j - 7].WithLabels(codes[j - 9].ExtractLabels());
-                            codes.RemoveRange(j - 9, 2);
+                            int offset;
+                            if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
+                            {
+                                offset = 7;
+                            }
+                            else
+                            {
+                                offset = 6;
+                            }
+                            codes[j - offset].WithLabels(codes[j - offset - 2].ExtractLabels());
+                            codes.RemoveRange(j - offset - 2, 2);
                             break;
                         }
                     }

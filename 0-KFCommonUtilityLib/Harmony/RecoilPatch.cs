@@ -57,7 +57,7 @@ class RecoilPatch
     private static IEnumerable<CodeInstruction> Transpiler_OnFired_EntityPlayerLocal(IEnumerable<CodeInstruction> instructions)
     {
         var codes = instructions.ToList();
-        FieldInfo fld_isfpv = AccessTools.Field(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.bFirstPersonView));
+        MethodInfo prop_isaiming = AccessTools.PropertyGetter(typeof(EntityAlive), nameof(EntityAlive.AimingGun));
         ConstructorInfo mtd_ctor = AccessTools.Constructor(typeof(Vector2), new[] { typeof(float), typeof(float) });
 
         for (int i = 0; i < codes.Count - 1; i++)
@@ -81,12 +81,13 @@ class RecoilPatch
                 });
                 i += 4;
             }
-            else if (codes[i].LoadsField(fld_isfpv))
+            else if (codes[i].Calls(prop_isaiming))
             {
-                codes.RemoveRange(i + 2, codes.Count - i - 3);
-                codes.InsertRange(i + 2, new[]
+                var lbls = codes[i - 1].ExtractLabels();
+                codes.RemoveRange(i - 1, codes.Count - i);
+                codes.InsertRange(codes.Count - 1, new[]
                 {
-                    new CodeInstruction(OpCodes.Ldloc_0),
+                    new CodeInstruction(OpCodes.Ldloc_0).WithLabels(lbls),
                     new CodeInstruction(OpCodes.Ldloc_1),
                     CodeInstruction.Call(typeof(RecoilManager), nameof(RecoilManager.AddRecoil))
                 });

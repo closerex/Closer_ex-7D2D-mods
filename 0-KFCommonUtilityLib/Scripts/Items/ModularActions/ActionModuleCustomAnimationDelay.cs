@@ -7,19 +7,22 @@ using UAI;
 using UniLinq;
 using static AnimationDelayData;
 
-[TypeTarget(typeof(ItemAction)), TypeDataTarget(typeof(CustomAnimationDelayData))]
+[TypeTarget(typeof(ItemAction))]
 public class ActionModuleCustomAnimationDelay
 {
     public bool tpvUseCustomDelay = false;
+    public float customDelay;
 
     [HarmonyPatch(typeof(ItemActionEat), nameof(ItemAction.OnHoldingUpdate))]
     [HarmonyPatch(typeof(ItemActionGainSkill), nameof(ItemAction.OnHoldingUpdate))]
     [HarmonyPatch(typeof(ItemActionLearnRecipe), nameof(ItemAction.OnHoldingUpdate))]
     [HarmonyPatch(typeof(ItemActionQuest), nameof(ItemAction.OnHoldingUpdate))]
+    [HarmonyPatch(typeof(ItemActionThrowAway), nameof(ItemAction.OnHoldingUpdate))]
     [HarmonyPatch(typeof(ItemActionEat), nameof(ItemAction.IsActionRunning))]
     [HarmonyPatch(typeof(ItemActionGainSkill), nameof(ItemAction.IsActionRunning))]
     [HarmonyPatch(typeof(ItemActionLearnRecipe), nameof(ItemAction.IsActionRunning))]
     [HarmonyPatch(typeof(ItemActionQuest), nameof(ItemAction.IsActionRunning))]
+    [HarmonyPatch(typeof(ItemActionThrowAway), nameof(ItemAction.IsActionRunning))]
     [MethodTargetTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_OnHoldingUpdate(IEnumerable<CodeInstruction> instructions)
     {
@@ -39,14 +42,12 @@ public class ActionModuleCustomAnimationDelay
                         codes.RemoveRange(flag ? i - 1 : i, j - i + (flag ? 3 : 1));
                         codes.InsertRange(flag ? i - 1 : i, new[]
                         {
-                            new CodeInstruction(OpCodes.Ldarg_1),
-                            new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<CustomAnimationDelayData>)),
-                            new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(IModuleContainerFor<CustomAnimationDelayData>), nameof(IModuleContainerFor<CustomAnimationDelayData>.Instance))),
-                            new CodeInstruction(OpCodes.Ldarg_1),
                             new CodeInstruction(OpCodes.Ldarg_0),
-                            CodeInstruction.LoadField(typeof(ItemAction), nameof(ItemAction.Delay)),
+                            new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<ActionModuleCustomAnimationDelay>)),
+                            new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(IModuleContainerFor<ActionModuleCustomAnimationDelay>), nameof(IModuleContainerFor<ActionModuleCustomAnimationDelay>.Instance))),
+                            new CodeInstruction(OpCodes.Ldarg_1),
                             new CodeInstruction(flag ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0),
-                            CodeInstruction.Call(typeof(CustomAnimationDelayData), nameof(CustomAnimationDelayData.GetDelayOverride))
+                            CodeInstruction.Call(typeof(ActionModuleCustomAnimationDelay), nameof(ActionModuleCustomAnimationDelay.GetDelayOverride))
                         });
                         break;
                     }
@@ -58,11 +59,46 @@ public class ActionModuleCustomAnimationDelay
         return codes;
     }
 
+    [HarmonyPatch(typeof(ItemActionEat), nameof(ItemAction.OnHoldingUpdate)), MethodTargetPrefix]
+    public bool Prefix_ItemActionEat_OnHoldingUpdate(ItemActionData _actionData, out (bool, float) __state)
+    {
+        if (Constants.cVersionInformation.GTE(VersionInformation.EGameReleaseType.V, 2, 5))
+        {
+            __state = (true, AnimationDelayData.AnimationDelay[_actionData.invData.item.HoldType.Value].RayCast);
+            AnimationDelayData.AnimationDelay[_actionData.invData.item.HoldType.Value].RayCast = customDelay;
+        }
+        else
+        {
+            __state = (false, 0);
+        }
+        return true;
+    }
+
+    [HarmonyPatch(typeof(ItemActionEat), nameof(ItemAction.OnHoldingUpdate)), MethodTargetPostfix]
+    public void Postfix_ItemActionEat_OnHoldingUpdate(ItemActionData _actionData, (bool exec, float delay) __state)
+    {
+        if (__state.exec)
+        {
+            AnimationDelayData.AnimationDelay[_actionData.invData.item.HoldType.Value].RayCast = __state.delay;
+        }
+    }
+
+    public float GetDelayOverride(ItemActionData actionData, bool conditionCheck)
+    {
+        if ((actionData.invData.holdingEntity is EntityPlayerLocal player && player.bFirstPersonView) || tpvUseCustomDelay)
+        {
+            return customDelay;
+        }
+        return AnimationDelayData.AnimationDelay[actionData.invData.item.HoldType.Value].RayCast * (conditionCheck ? 2f : 1f);
+    }
+
     [HarmonyPatch(nameof(ItemAction.ReadFrom)), MethodTargetPostfix]
-    public void Postfix_ReadFrom(DynamicProperties _props)
+    public void Postfix_ReadFrom(ItemAction __instance, DynamicProperties _props)
     {
         tpvUseCustomDelay = false;
         _props.ParseBool("tpvUseCustomDelay", ref tpvUseCustomDelay);
+        customDelay = __instance.Delay;
+        _props.ParseFloat("CustomAnimationDelay", ref customDelay);
     }
 
     [HarmonyPatch(nameof(ItemAction.StopHolding)), MethodTargetPostfix]
@@ -112,21 +148,12 @@ public class ActionModuleCustomAnimationDelay
         }
     }
 
-    public class CustomAnimationDelayData : AnimationDelayData
-    {
-        ActionModuleCustomAnimationDelay module;
-        public CustomAnimationDelayData(ActionModuleCustomAnimationDelay __customModule)
-        {
-            this.module = __customModule;
-        }
-
-        public float GetDelayOverride(ItemActionData actionData, float customDelay, bool conditionCheck)
-        {
-            if ((actionData.invData.holdingEntity is EntityPlayerLocal player && player.bFirstPersonView) || module.tpvUseCustomDelay)
-            {
-                return customDelay;
-            }
-            return AnimationDelayData.AnimationDelay[actionData.invData.item.HoldType.Value].RayCast * (conditionCheck ? 2f : 1f);
-        }
-    }
+    //public class CustomAnimationDelayData : AnimationDelayData
+    //{
+    //    ActionModuleCustomAnimationDelay module;
+    //    public CustomAnimationDelayData(ActionModuleCustomAnimationDelay __customModule)
+    //    {
+    //        this.module = __customModule;
+    //    }
+    //}
 }
