@@ -93,28 +93,81 @@
 		</rect>
 	</insertAfter>
 	<remove xpath="/windows/window[@name='optionsController']/rect[@name='tabs']/rect[@name='tabsContents']/rect[not(@tab_key)]"/>
-	<insertAfter xpath="/windows/window[@name='optionsController']/rect[@name='tabs']/rect[@name='tabsContents']/rect[@tab_key='xuiOptionsControlsGeneric']">
-		<rect controller="TabSelectorTab">
-			<scrollbar name="bar" width="20" height="550" pos="15,-320" pivot="center" foregroundname="handler" backgroundname="background" depth="10">
-				<button name="handler" sprite="menu_empty3px" pivot="center" pos="0,0" hovercolor="[white]" color="[white]" defaultcolor="[white]" hoverscale="1" />
-				<button name="background" sprite="menu_empty3px" pivot="center" pos="0,0" hovercolor="[black]" color="[black]" defaultcolor="[black]" hoverscale="1" />
-			</scrollbar>
-			<scrollview scroll_speed="0" scrollbar="bar" pos="0,-40" width="1408" height="550">
-				<grid name="controlsGrid" pos="8,-40" cols="2" cell_width="600" cell_height="66" rows="{keybindingEntryCount0}" repeat_content="true" arrangement="horizontal" >
-					<controller_binding_entry name="bindingEntry"/>
-				</grid>
-			</scrollview>
-		</rect>
-		<rect controller="TabSelectorTab">
-			<scrollbar name="bar" width="20" height="550" pos="15,-320" pivot="center" foregroundname="handler" backgroundname="background" depth="10">
-				<button name="handler" sprite="menu_empty3px" pivot="center" pos="0,0" hovercolor="[white]" color="[white]" defaultcolor="[white]" hoverscale="1" />
-				<button name="background" sprite="menu_empty3px" pivot="center" pos="0,0" hovercolor="[black]" color="[black]" defaultcolor="[black]" hoverscale="1" />
-			</scrollbar>
-			<scrollview scroll_speed="0" scrollbar="bar" pos="0,-40" width="1408" height="550">
-				<grid name="controlsGrid" pos="8,-40" cols="2" cell_width="600" cell_height="66" rows="{keybindingEntryCount1}" repeat_content="true" arrangement="horizontal" >
-					<controller_binding_entry name="bindingEntry"/>
-				</grid>
-			</scrollview>
-		</rect>
-	</insertAfter>
+	
+	<conditional>
+		<if cond="game_version() &lt;= version(1,2,4)">
+			<insertAfter xpath="/windows/window[@name='optionsController']/rect[@name='tabs']/rect[@name='tabsContents']/rect[@tab_key='xuiOptionsControlsGeneric']">
+				<rect controller="TabSelectorTab">
+					<scrollbar name="bar" width="20" height="550" pos="15,-320" pivot="center" foregroundname="handler" backgroundname="background" depth="10">
+						<button name="handler" sprite="menu_empty3px" pivot="center" pos="0,0" hovercolor="[white]" color="[white]" defaultcolor="[white]" hoverscale="1" />
+						<button name="background" sprite="menu_empty3px" pivot="center" pos="0,0" hovercolor="[black]" color="[black]" defaultcolor="[black]" hoverscale="1" />
+					</scrollbar>
+					<scrollview scroll_speed="0" scrollbar="bar" pos="0,-40" width="1408" height="550">
+						<grid name="controlsGrid" pos="8,-40" cols="2" cell_width="600" cell_height="66" rows="{keybindingEntryCount0}" repeat_content="true" arrangement="horizontal" >
+							<controller_binding_entry name="bindingEntry"/>
+						</grid>
+					</scrollview>
+				</rect>
+				<rect controller="TabSelectorTab">
+					<scrollbar name="bar" width="20" height="550" pos="15,-320" pivot="center" foregroundname="handler" backgroundname="background" depth="10">
+						<button name="handler" sprite="menu_empty3px" pivot="center" pos="0,0" hovercolor="[white]" color="[white]" defaultcolor="[white]" hoverscale="1" />
+						<button name="background" sprite="menu_empty3px" pivot="center" pos="0,0" hovercolor="[black]" color="[black]" defaultcolor="[black]" hoverscale="1" />
+					</scrollbar>
+					<scrollview scroll_speed="0" scrollbar="bar" pos="0,-40" width="1408" height="550">
+						<grid name="controlsGrid" pos="8,-40" cols="2" cell_width="600" cell_height="66" rows="{keybindingEntryCount1}" repeat_content="true" arrangement="horizontal" >
+							<controller_binding_entry name="bindingEntry"/>
+						</grid>
+					</scrollview>
+				</rect>
+			</insertAfter>
+		</if>
+        <else>
+			<insertAfter xpath="/windows/window[@name='optionsController']/rect[@name='tabs']/rect[@name='tabsContents']/rect[@tab_key='xuiOptionsControlsGeneric']">
+				<rect controller="TabSelectorTab">
+					<scrollbar name="bar" width="20" height="550" pos="15,-320" pivot="center" foregroundname="handler" backgroundname="background" depth="10">
+						<button name="handler" sprite="menu_empty3px" pivot="center" pos="0,0" hovercolor="[white]" color="[white]" defaultcolor="[white]" hoverscale="1" />
+						<button name="background" sprite="menu_empty3px" pivot="center" pos="0,0" hovercolor="[black]" color="[black]" defaultcolor="[black]" hoverscale="1" />
+					</scrollbar>
+					<scrollview scroll_speed="0" scrollbar="bar" pos="0,-40" width="1408" height="550">
+						<grid name="controlsGrid" pos="8,-40" cols="2" cell_width="650" cell_height="66" rows="{keybindingEntryCount0}" repeat_content="true" arrangement="horizontal" >
+							<controller_binding_entry name="bindingEntry"/>
+						</grid>
+					</scrollview>
+				</rect>
+				<rect controller="TabSelectorTab">
+					<scrollbar name="bar" width="20" height="550" pos="15,-320" pivot="center" foregroundname="handler" backgroundname="background" depth="10">
+						<button name="handler" sprite="menu_empty3px" pivot="center" pos="0,0" hovercolor="[white]" color="[white]" defaultcolor="[white]" hoverscale="1" />
+						<button name="background" sprite="menu_empty3px" pivot="center" pos="0,0" hovercolor="[black]" color="[black]" defaultcolor="[black]" hoverscale="1" />
+					</scrollbar>
+					<scrollview scroll_speed="0" scrollbar="bar" pos="0,-40" width="1408" height="550">
+						<grid name="controlsGrid" pos="8,-40" cols="2" cell_width="650" cell_height="66" rows="{keybindingEntryCount1}" repeat_content="true" arrangement="horizontal" >
+							<controller_binding_entry name="bindingEntry"/>
+						</grid>
+					</scrollview>
+				</rect>
+				<rect controller="TabSelectorTab">
+					<scrollbar name="bar" width="20" height="550" pos="15,-320" pivot="center" foregroundname="handler" backgroundname="background" depth="10">
+						<button name="handler" sprite="menu_empty3px" pivot="center" pos="0,0" hovercolor="[white]" color="[white]" defaultcolor="[white]" hoverscale="1" />
+						<button name="background" sprite="menu_empty3px" pivot="center" pos="0,0" hovercolor="[black]" color="[black]" defaultcolor="[black]" hoverscale="1" />
+					</scrollbar>
+					<scrollview scroll_speed="0" scrollbar="bar" pos="0,-40" width="1408" height="550">
+						<grid name="controlsGrid" pos="8,-40" cols="2" cell_width="650" cell_height="66" rows="{keybindingEntryCount0}" repeat_content="true" arrangement="horizontal" >
+							<controller_binding_entry name="bindingEntry"/>
+						</grid>
+					</scrollview>
+				</rect>
+				<rect controller="TabSelectorTab">
+					<scrollbar name="bar" width="20" height="550" pos="15,-320" pivot="center" foregroundname="handler" backgroundname="background" depth="10">
+						<button name="handler" sprite="menu_empty3px" pivot="center" pos="0,0" hovercolor="[white]" color="[white]" defaultcolor="[white]" hoverscale="1" />
+						<button name="background" sprite="menu_empty3px" pivot="center" pos="0,0" hovercolor="[black]" color="[black]" defaultcolor="[black]" hoverscale="1" />
+					</scrollbar>
+					<scrollview scroll_speed="0" scrollbar="bar" pos="0,-40" width="1408" height="550">
+						<grid name="controlsGrid" pos="8,-40" cols="2" cell_width="650" cell_height="66" rows="{keybindingEntryCount1}" repeat_content="true" arrangement="horizontal" >
+							<controller_binding_entry name="bindingEntry"/>
+						</grid>
+					</scrollview>
+				</rect>
+			</insertAfter>
+        </else>
+	</conditional>
 </configs>

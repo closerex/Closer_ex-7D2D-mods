@@ -100,11 +100,25 @@ internal static class ReversePatches
 
     internal static void InitControllerActionList(XUiC_OptionsController __instance)
     {
-        PlayerActionsBase[] array = new PlayerActionsBase[]
+        PlayerActionsBase[] array;
+        if (Constants.cVersionInformation.CompareTo(new VersionInformation(VersionInformation.EGameReleaseType.V, 2, 5, 0)) < 0)
         {
-            __instance.xui.playerUI.playerInput,
-            __instance.xui.playerUI.playerInput.VehicleActions
-        };
+            array = new PlayerActionsBase[]
+            {
+                __instance.xui.playerUI.playerInput,
+                __instance.xui.playerUI.playerInput.VehicleActions
+            };
+        }
+        else
+        {
+            array = new PlayerActionsBase[]
+            {
+                __instance.xui.playerUI.playerInput,
+                __instance.xui.playerUI.playerInput.VehicleActions,
+                __instance.xui.playerUI.playerInput.PermanentActions
+            };
+        }
+
         Dictionary<string, List<PlayerAction>> dictionary = new Dictionary<string, List<PlayerAction>>();
         dictionary.Add("inpTabPlayerOnFoot", new List<PlayerAction>());
         PlayerActionsBase[] array2 = array;
@@ -113,7 +127,7 @@ internal static class ReversePatches
             foreach (PlayerAction playerAction in array2[i].ControllerRebindableActions)
             {
                 PlayerActionData.ActionUserData actionUserData = playerAction.UserData as PlayerActionData.ActionUserData;
-                if (actionUserData != null)
+                if (actionUserData != null && !playerAction.Equals(__instance.xui.playerUI.playerInput.PermanentActions.PushToTalk))
                 {
                     if (actionUserData.actionGroup.actionTab.tabNameKey == "inpTabPlayerControl" || actionUserData.actionGroup.actionTab.tabNameKey == "inpTabToolbelt")
                     {
