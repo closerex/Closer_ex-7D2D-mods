@@ -7,11 +7,12 @@
         self.inventory.TryStackItem(stack);
     }
 
-    public static void TryRemoveItem(this EntityAlive self, int count, ItemValue value)
+    public static int TryRemoveItem(this EntityAlive self, int count, ItemValue value)
     {
-        int decFromInv = self.bag.DecItem(value, count) - count;
-        if (decFromInv > 0)
-            self.inventory.DecItem(value, decFromInv);
+        int countLeft = self.bag.DecItem(value, count) - count;
+        if (countLeft > 0)
+            countLeft = self.inventory.DecItem(value, countLeft);
+        return countLeft;
     }
 
     public static int GetItemCount(this EntityAlive self, ItemValue value)

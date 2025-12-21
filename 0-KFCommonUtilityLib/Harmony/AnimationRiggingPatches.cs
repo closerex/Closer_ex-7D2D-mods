@@ -430,7 +430,7 @@ static class AnimationRiggingPatches
                 {
                     if (codes[j].opcode == OpCodes.Ldloc_2)
                     {
-                        int fpvLocalIndex = GameManager.IsDedicatedServer && Application.platform == RuntimePlatform.LinuxServer ? 5 : 7;
+                        int fpvLocalIndex = Application.platform == RuntimePlatform.LinuxPlayer || Application.platform == RuntimePlatform.LinuxServer ? 5 : 7;
                         for (int k = j + 1; k < codes.Count; k++)
                         {
                             if (codes[k].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[k].operand).LocalIndex == fpvLocalIndex)

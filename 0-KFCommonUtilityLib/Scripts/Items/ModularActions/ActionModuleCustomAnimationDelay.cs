@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection.Emit;
 using UAI;
 using UniLinq;
+using UnityEngine;
 using static AnimationDelayData;
 
 [TypeTarget(typeof(ItemAction))]
@@ -146,6 +147,12 @@ public class ActionModuleCustomAnimationDelay
         {
             __instance.OnHoldingUpdate(_actionData);
         }
+    }
+
+    [HarmonyPatch(typeof(ItemActionActivate), nameof(ItemAction.IsActionRunning)), MethodTargetPostfix]
+    private void Postfix_ItemActionActivate_IsActionRunning(ItemActionActivate __instance, ItemActionData _actionData, ref bool __result)
+    {
+        __result |= Time.time - _actionData.lastUseTime < __instance.Delay;
     }
 
     //public class CustomAnimationDelayData : AnimationDelayData

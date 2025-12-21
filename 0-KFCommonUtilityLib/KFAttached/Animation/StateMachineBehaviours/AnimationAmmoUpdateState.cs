@@ -7,7 +7,7 @@ using UnityEngine;
 public class AnimationAmmoUpdateState : StateMachineBehaviour
 {
 #if NotEditor
-    private static int[] hash_states = new[]
+    public readonly static int[] hash_states = new[]
     {
         Animator.StringToHash("ammoCount"),
         Animator.StringToHash("ammoCount1"),

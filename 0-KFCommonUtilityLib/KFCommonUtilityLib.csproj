@@ -602,11 +602,14 @@
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPrintLocalCache.cs" />
     <Compile Include="Scripts\Input\PlayerActionKFLib.cs" />
     <Compile Include="Scripts\Items\ItemActions\ItemActionBlocking.cs" />
+    <Compile Include="Scripts\Items\ItemClasses\ILateInitItem.cs" />
     <Compile Include="Scripts\Items\ItemClasses\ItemClassExtendedFunction.cs" />
+    <Compile Include="Scripts\Items\ItemClasses\ItemClassItemDetonator.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAlternative.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationInterruptable.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationInterruptSource.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAltMeleeInspectTrigger.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleDynamicDropLifetime.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleInversedAction.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleLimitedCombo.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleLoopSoundFix.cs" />
@@ -628,6 +631,7 @@
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMetadataAsHUDStatWithPassiveMax.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMetadataAsHUDStatWithValueMax.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleTargetSeeker.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleThrowFromInventory.cs" />
     <Compile Include="Scripts\Items\ModularActions\MetadataAsHUDStatAbs.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMultiActionFix.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMultiBarrel.cs" />

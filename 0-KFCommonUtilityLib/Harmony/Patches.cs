@@ -1841,6 +1841,7 @@ public static class CommonUtilityPatch
         return codes;
     }
 
+    #region destroy unused meshes
     private static readonly string stitchPrefix = "Stitch-";
 
     [HarmonyPatch(typeof(SDCSUtils), nameof(SDCSUtils.RemoveFPViewObstructingGearPolygons))]
@@ -1878,6 +1879,93 @@ public static class CommonUtilityPatch
         {
             __result = true;
         }
+    }
+    #endregion
+
+    #region fix throw away cooldown not working
+    [HarmonyPatch(typeof(ItemActionThrowAway), nameof(ItemActionThrowAway.throwAway))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_throwAway_ItemActionThrowAway(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var mtd_drop = AccessTools.Method(typeof(IGameManager), nameof(IGameManager.ItemDropServer), new[] { typeof(ItemStack), typeof(Vector3), typeof(Vector3), typeof(Vector3), typeof(int), typeof(float), typeof(bool), typeof(int) });
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_drop))
+            {
+                codes.InsertRange(i + 1, new[]
+                {
+                    CodeInstruction.LoadArgument(1),
+                    new CodeInstruction(OpCodes.Ldc_I4_1),
+                    CodeInstruction.StoreField(typeof(ItemActionThrowAway.MyInventoryData), nameof(ItemActionThrowAway.MyInventoryData.isCooldown)),
+                });
+                break;
+            }
+        }
+
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(ItemActionThrowAway), nameof(ItemActionThrowAway.StartHolding))]
+    [HarmonyPostfix]
+    private static void Postfix_StartHolding_ItemActionThrowAway(ItemActionData _data)
+    {
+        if (_data is ItemActionThrowAway.MyInventoryData myData)
+        {
+            myData.isCooldown = false;
+        }
+    }
+
+    [HarmonyPatch(typeof(ItemActionThrowAway), nameof(ItemActionThrowAway.StopHolding))]
+    [HarmonyPostfix]
+    private static void Postfix_StopHolding_ItemActionThrowAway(ItemActionData _actionData)
+    {
+        if (_actionData is ItemActionThrowAway.MyInventoryData myData)
+        {
+            myData.isCooldown = false;
+        }
+    }
+    #endregion
+
+    [HarmonyPatch(typeof(EntityItem), nameof(EntityItem.CheckStick))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_CheckStick_EntityItem(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var fld_rot = AccessTools.Field(typeof(EntityItem), nameof(EntityItem.stickRot));
+
+        for (var i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].StoresField(fld_rot))
+            {
+                for (var j = i - 2; j >= 0; j--)
+                {
+                    if (codes[j].opcode == OpCodes.Ldarg_0 && codes[j + 1].opcode == OpCodes.Ldarg_0)
+                    {
+                        codes.RemoveRange(j + 2, i - j - 2);
+                        codes.InsertRange(j + 2, new[]
+                        {
+                            new CodeInstruction(OpCodes.Ldarg_1),
+                            CodeInstruction.CallClosure<Func<EntityItem, Collision, Quaternion>>((item, collision) =>
+                            {
+                                if (item.itemClass != null && item.itemClass.Properties.GetBool("ForceZUpOnStick"))
+                                {
+                                    return Quaternion.Inverse(item.stickT.rotation) * Quaternion.FromToRotation(item.transform.up, collision.GetContact(0).normal) * item.transform.rotation;
+                                }
+                                return Quaternion.Inverse(item.stickT.rotation) * item.transform.rotation;
+                            })
+                        });
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+
+        return codes;
     }
 
     public static void Test()
