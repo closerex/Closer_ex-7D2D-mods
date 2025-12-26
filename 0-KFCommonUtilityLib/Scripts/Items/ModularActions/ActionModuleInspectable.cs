@@ -41,7 +41,7 @@ public class ActionModuleInspectable
     private void Postfix_ReadFrom(DynamicProperties _props)
     {
         allowEmptyInspect = _props.GetBool("allowEmptyInspect");
-        autoInspect = true;
+        autoInspect = false;
         _props.ParseBool("autoInspect", ref autoInspect);
     }
 
@@ -113,14 +113,14 @@ public class ActionModuleInspectable
             this.invData = _inventoryData;
         }
 
-        public bool CanInspect()
+        public bool CanInspect(int? meta = null)
         {
             if (invData == null || !inspectAvailable)
             {
                 return false;
             }
             var player = invData.holdingEntity as EntityPlayerLocal;
-            return player && !player.movementInput.running && !player.AimingGun && !player.bLerpCameraFlag && !invData.item.IsActionRunning(invData) && (invData.itemValue.Meta > 0 || module.allowEmptyInspect);
+            return player && !player.movementInput.running && !player.AimingGun && !player.bLerpCameraFlag && !invData.item.IsActionRunning(invData) && ((meta.HasValue ? meta.Value : invData.itemValue.Meta) > 0 || module.allowEmptyInspect);
         }
 
         public void TriggerInspect(bool useAlt = false)

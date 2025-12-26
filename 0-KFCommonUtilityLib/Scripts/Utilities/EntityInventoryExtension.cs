@@ -9,7 +9,7 @@
 
     public static int TryRemoveItem(this EntityAlive self, int count, ItemValue value)
     {
-        int countLeft = self.bag.DecItem(value, count) - count;
+        int countLeft = count - self.bag.DecItem(value, count);
         if (countLeft > 0)
             countLeft = self.inventory.DecItem(value, countLeft);
         return countLeft;

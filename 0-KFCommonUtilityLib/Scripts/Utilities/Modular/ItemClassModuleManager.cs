@@ -26,6 +26,10 @@ namespace KFCommonUtilityLib
                             mod.PreInitCopyToModifier((ItemClassModifier)itemNew);
                         }
                         itemNew.Init();
+                        if (itemNew is ILateInitItem lateinit)
+                        {
+                            lateinit.LateInitItem();
+                        }
                         ItemClass.itemNames.RemoveAt(ItemClass.itemNames.Count - 1);
                         ItemClass.list[itemNew.Id] = itemNew;
                     }

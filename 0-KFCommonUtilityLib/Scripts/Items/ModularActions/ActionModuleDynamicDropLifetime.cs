@@ -17,7 +17,7 @@ public class ActionModuleDynamicDropLifetime
         _props.ParseFloat("DropItemLifetime", ref lifetime);
         if (lifetime <= 0)
         {
-            lifetime = float.MaxValue;
+            lifetime = 419430f;
         }
     }
 

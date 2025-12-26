@@ -547,10 +547,13 @@
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimatorRandomSwitch.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\RigWeightOverTime.cs" />
     <Compile Include="KFAttached\Misc\AttachmentReferenceAppended.cs" />
+    <Compile Include="KFAttached\KFUtilAttached\IActiveCountHandler.cs" />
     <Compile Include="KFAttached\Misc\IgnoreTint.cs" />
     <Compile Include="KFAttached\Misc\ItemAnimatorUpdate.cs" />
     <Compile Include="KFAttached\Misc\Laser.cs" />
+    <Compile Include="KFAttached\KFUtilAttached\MultiTargetStateController.cs" />
     <Compile Include="KFAttached\Misc\PlayerRigLateUpdate.cs" />
+    <Compile Include="KFAttached\Misc\ProximityBeep.cs" />
     <Compile Include="KFAttached\Misc\ScopeBase.cs" />
     <Compile Include="KFAttached\Misc\WeaponCameraFollow.cs" />
     <Compile Include="KFAttached\Render\BokehBlurTargetRef.cs" />
@@ -604,7 +607,6 @@
     <Compile Include="Scripts\Items\ItemActions\ItemActionBlocking.cs" />
     <Compile Include="Scripts\Items\ItemClasses\ILateInitItem.cs" />
     <Compile Include="Scripts\Items\ItemClasses\ItemClassExtendedFunction.cs" />
-    <Compile Include="Scripts\Items\ItemClasses\ItemClassItemDetonator.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAlternative.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationInterruptable.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationInterruptSource.cs" />
@@ -644,6 +646,7 @@
     <Compile Include="Scripts\Items\ModularActions\ActionModuleTranspilerTest.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleVariableZoom.cs" />
     <Compile Include="Scripts\Items\ModularActions\Interfaces\IDisplayAsHUDStat.cs" />
+    <Compile Include="Scripts\Items\ModularClasses\ItemModuleDetonator.cs" />
     <Compile Include="Scripts\Items\ModularClasses\ItemModuleInversedAction.cs" />
     <Compile Include="Scripts\Items\ModularClasses\ItemModuleMultiItem.cs" />
     <Compile Include="Scripts\Items\ModularClasses\ItemModuleSortable.cs" />

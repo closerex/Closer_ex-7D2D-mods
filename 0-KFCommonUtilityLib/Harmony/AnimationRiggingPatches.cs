@@ -1066,6 +1066,10 @@ static class AnimationRiggingPatches
                         if (entityItem.itemTransform)
                         {
                             entityItem.itemTransform.tag = "Item";
+                            foreach (var collider in entityItem.itemTransform.GetComponentsInChildren<Collider>(true))
+                            {
+                                collider.transform.tag = "Item";
+	                        }
                             if (entityItem.itemTransform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
                             {
                                 targets.Destroy();

@@ -8,7 +8,6 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml.Linq;
 using UnityEngine;
-using KFCommonUtilityLib.Attributes;
 
 [HarmonyPatch]
 public static class CommonUtilityPatch
@@ -1882,60 +1881,95 @@ public static class CommonUtilityPatch
     }
     #endregion
 
+    //seems not needed
     #region fix throw away cooldown not working
-    [HarmonyPatch(typeof(ItemActionThrowAway), nameof(ItemActionThrowAway.throwAway))]
-    [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_throwAway_ItemActionThrowAway(IEnumerable<CodeInstruction> instructions)
-    {
-        var codes = instructions.ToList();
+    //[HarmonyPatch(typeof(ItemActionThrowAway), nameof(ItemActionThrowAway.throwAway))]
+    //[HarmonyTranspiler]
+    //private static IEnumerable<CodeInstruction> Transpiler_throwAway_ItemActionThrowAway(IEnumerable<CodeInstruction> instructions)
+    //{
+    //    var codes = instructions.ToList();
 
-        var mtd_drop = AccessTools.Method(typeof(IGameManager), nameof(IGameManager.ItemDropServer), new[] { typeof(ItemStack), typeof(Vector3), typeof(Vector3), typeof(Vector3), typeof(int), typeof(float), typeof(bool), typeof(int) });
+    //    var mtd_drop = AccessTools.Method(typeof(IGameManager), nameof(IGameManager.ItemDropServer), new[] { typeof(ItemStack), typeof(Vector3), typeof(Vector3), typeof(Vector3), typeof(int), typeof(float), typeof(bool), typeof(int) });
 
-        for (int i = 0; i < codes.Count; i++)
-        {
-            if (codes[i].Calls(mtd_drop))
-            {
-                codes.InsertRange(i + 1, new[]
-                {
-                    CodeInstruction.LoadArgument(1),
-                    new CodeInstruction(OpCodes.Ldc_I4_1),
-                    CodeInstruction.StoreField(typeof(ItemActionThrowAway.MyInventoryData), nameof(ItemActionThrowAway.MyInventoryData.isCooldown)),
-                });
-                break;
-            }
-        }
+    //    for (int i = 0; i < codes.Count; i++)
+    //    {
+    //        if (codes[i].Calls(mtd_drop))
+    //        {
+    //            codes.InsertRange(i + 1, new[]
+    //            {
+    //                CodeInstruction.LoadArgument(1),
+    //                new CodeInstruction(OpCodes.Ldc_I4_1),
+    //                CodeInstruction.StoreField(typeof(ItemActionThrowAway.MyInventoryData), nameof(ItemActionThrowAway.MyInventoryData.isCooldown)),
+    //            });
+    //            break;
+    //        }
+    //    }
 
-        return codes;
-    }
+    //    return codes;
+    //}
 
-    [HarmonyPatch(typeof(ItemActionThrowAway), nameof(ItemActionThrowAway.StartHolding))]
-    [HarmonyPostfix]
-    private static void Postfix_StartHolding_ItemActionThrowAway(ItemActionData _data)
-    {
-        if (_data is ItemActionThrowAway.MyInventoryData myData)
-        {
-            myData.isCooldown = false;
-        }
-    }
+    //[HarmonyPatch(typeof(ItemActionThrowAway), nameof(ItemActionThrowAway.StartHolding))]
+    //[HarmonyPostfix]
+    //private static void Postfix_StartHolding_ItemActionThrowAway(ItemActionData _data)
+    //{
+    //    if (_data is ItemActionThrowAway.MyInventoryData myData)
+    //    {
+    //        myData.isCooldown = false;
+    //    }
+    //}
 
-    [HarmonyPatch(typeof(ItemActionThrowAway), nameof(ItemActionThrowAway.StopHolding))]
-    [HarmonyPostfix]
-    private static void Postfix_StopHolding_ItemActionThrowAway(ItemActionData _actionData)
-    {
-        if (_actionData is ItemActionThrowAway.MyInventoryData myData)
-        {
-            myData.isCooldown = false;
-        }
-    }
+    //[HarmonyPatch(typeof(ItemActionThrowAway), nameof(ItemActionThrowAway.StopHolding))]
+    //[HarmonyPostfix]
+    //private static void Postfix_StopHolding_ItemActionThrowAway(ItemActionData _actionData)
+    //{
+    //    if (_actionData is ItemActionThrowAway.MyInventoryData myData)
+    //    {
+    //        myData.isCooldown = false;
+    //    }
+    //}
+
+    //[HarmonyPatch(typeof(ItemActionThrowAway), nameof(ItemActionThrowAway.ExecuteAction))]
+    //[HarmonyTranspiler]
+    //private static IEnumerable<CodeInstruction> Transpiler_ItemActionThrowAway_ExecuteAction(IEnumerable<CodeInstruction> instructions)
+    //{
+    //    var codes = instructions.ToList();
+
+    //    var fld_activated = AccessTools.Field(typeof(ItemActionThrowAway.MyInventoryData), nameof(ItemActionThrowAway.MyInventoryData.m_bActivated));
+
+    //    for (int i = 0; i < codes.Count - 1; i++)
+    //    {
+    //        if (codes[i].opcode == OpCodes.Ldarg_2 && codes[i + 1].Branches(out _))
+    //        {
+    //            for (int j = i + 1; j < codes.Count - 1; j++)
+    //            {
+    //                if (codes[j].LoadsField(fld_activated) && codes[j + 1].Branches(out var lbl))
+    //                {
+    //                    codes.InsertRange(j + 2, new[]
+    //                    {
+    //                        CodeInstruction.LoadLocal(0),
+    //                        CodeInstruction.LoadField(typeof(ItemActionThrowAway.MyInventoryData), nameof(ItemActionThrowAway.MyInventoryData.isCooldown)),
+    //                        new CodeInstruction(OpCodes.Brtrue_S, lbl)
+    //                    });
+    //                    break;
+    //                }
+    //            }
+    //            break;
+    //        }
+    //    }
+    //    return codes;
+    //}
     #endregion
 
+    private readonly static List<ContactPoint> list_contact_cache = new();
+    private readonly static HashSet<int> hashset_checked_id = new();
     [HarmonyPatch(typeof(EntityItem), nameof(EntityItem.CheckStick))]
     [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_CheckStick_EntityItem(IEnumerable<CodeInstruction> instructions)
+    private static IEnumerable<CodeInstruction> Transpiler_CheckStick_EntityItem(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
     {
         var codes = instructions.ToList();
 
         var fld_rot = AccessTools.Field(typeof(EntityItem), nameof(EntityItem.stickRot));
+        var fld_stickt = AccessTools.Field(typeof(EntityItem), nameof(EntityItem.stickT));
 
         for (var i = 0; i < codes.Count; i++)
         {
@@ -1949,22 +1983,330 @@ public static class CommonUtilityPatch
                         codes.InsertRange(j + 2, new[]
                         {
                             new CodeInstruction(OpCodes.Ldarg_1),
-                            CodeInstruction.CallClosure<Func<EntityItem, Collision, Quaternion>>((item, collision) =>
+                            CodeInstruction.CallClosure<Func<EntityItem, Collision, Quaternion>>(static (item, collision) =>
                             {
-                                if (item.itemClass != null && item.itemClass.Properties.GetBool("ForceZUpOnStick"))
+                                //for (int i = 0; i < collision.contactCount; i++)
+                                //{
+                                //    var contact = collision.GetContact(i);
+                                //    UnityEngine.Debug.DrawLine(contact.point, contact.point + contact.normal * 2f, Color.red, 10f);
+                                //    Log.Out($"Contact {i}: point {contact.point} normal {contact.normal}");
+                                //}
+                                if (item.itemClass != null && item.itemClass.Properties.GetBool("ForceYUpOnStick"))
                                 {
-                                    return Quaternion.Inverse(item.stickT.rotation) * Quaternion.FromToRotation(item.transform.up, collision.GetContact(0).normal) * item.transform.rotation;
+                                    //Log.Out($"Forcing Y-Up on stick for item {item.GetDebugName()}");
+                                    list_contact_cache.Clear();
+                                    collision.GetContacts(list_contact_cache);
+                                    int bestIndex = 0;
+                                    float bestDistance = float.MaxValue;
+                                    for (int i = 0; i < list_contact_cache.Count; i++)
+                                    {
+                                        if (Vector3.Distance(list_contact_cache[i].point, item.transform.position) < bestDistance)
+                                        {
+                                            bestDistance = Vector3.Distance(list_contact_cache[i].point, item.transform.position);
+                                            bestIndex = i;
+                                        }
+                                    }
+                                    var contactPoint = list_contact_cache[bestIndex];
+                                    Vector3 hitPoint = contactPoint.point, normal = contactPoint.normal;
+                                    if (contactPoint.otherCollider.Raycast(new(contactPoint.point + contactPoint.normal * 1f, -contactPoint.normal), out var hit, 1))
+                                    {
+                                        hitPoint = hit.point;
+                                        normal = hit.normal;
+                                    }
+                                    item.stickRelativePos = item.stickT.InverseTransformPoint(hitPoint);
+                                    Vector3 projFwd = Vector3.ProjectOnPlane(item.transform.forward, normal);
+                                    Quaternion worldRot = projFwd == Vector3.zero ? item.transform.rotation : Quaternion.LookRotation(projFwd.normalized, normal);
+                                    return Quaternion.Inverse(item.stickT.rotation) * worldRot;
                                 }
                                 return Quaternion.Inverse(item.stickT.rotation) * item.transform.rotation;
                             })
                         });
+                        i = j + 4;
                         break;
                     }
                 }
+            }
+            else if (codes[i].StoresField(fld_stickt))
+            {
+                var lbl = generator.DefineLabel();
+                codes[i].WithLabels(lbl);
+                codes.InsertRange(i, new[]
+                {
+                    new CodeInstruction(OpCodes.Dup),
+                    CodeInstruction.LoadArgument(0),
+                    CodeInstruction.CallClosure<Func<Transform, EntityItem, bool>>(static (stickT, self) =>
+                    {
+                        hashset_checked_id.Clear();
+                        if (stickT.TryGetComponent<EntityItem>(out var otherItem) || (otherItem = stickT.GetComponentInParent<EntityItem>()))
+                        {
+                            hashset_checked_id.Add(otherItem.entityId);
+                            return IsTargetStickedToSelf(self, otherItem.stickT, hashset_checked_id);
+                        }
+                        return false;
+                    }),
+                    new CodeInstruction(OpCodes.Brfalse_S, lbl),
+                    new CodeInstruction(OpCodes.Pop),
+                    new CodeInstruction(OpCodes.Pop),
+                    new CodeInstruction(OpCodes.Ret)
+                });
+                i += 7;
+            }
+        }
+
+        return codes;
+    }
+
+    private static bool IsTargetStickedToSelf(EntityItem self, Transform stickT, HashSet<int> checkedIds)
+    {
+        // seems to be the root transform most of the time but just in case
+        if (stickT && (stickT.TryGetComponent<EntityItem>(out var otherItem) || (otherItem = stickT.GetComponentInParent<EntityItem>())))
+        {
+            if (otherItem.entityId == self.entityId)
+            {
+                return true;
+            }
+            // if this one is checked then somehow the stick items forms a loop, break execution to prevent infinite loop
+            if (checkedIds.Contains(otherItem.entityId))
+            {
+                return false;
+            }
+            checkedIds.Add(otherItem.entityId);
+            return IsTargetStickedToSelf(self, otherItem.stickT, checkedIds);
+        }// other is not an item
+        return false;
+    }
+
+    [HarmonyPatch(typeof(EntityItem), nameof(EntityItem.checkGravitySetting))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_checkGravitySetting_EntityItem(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var prop_iskinematic = AccessTools.PropertySetter(typeof(Rigidbody), nameof(Rigidbody.isKinematic));
+        for (var i = 1; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(prop_iskinematic) && codes[i-1].opcode == OpCodes.Ldc_I4_1)
+            {
+                codes.InsertRange(i - 2, new[]
+                {
+                    CodeInstruction.LoadLocal(1),
+                    CodeInstruction.CallClosure<Action<Rigidbody>>(static (rb) =>
+                    {
+                        if (!rb.isKinematic)
+                        {
+                            rb.velocity = Vector3.zero;
+                            rb.angularVelocity = Vector3.zero;
+                        }
+                    })
+                });
+                break;
+            }
+        }
+        return codes;
+    }
+
+    //don't add velocity to sticked item to prevent the rigidbody warning
+    [HarmonyPatch(typeof(EntityItem), nameof(EntityItem.AddVelocity))]
+    [HarmonyPrefix]
+    private static bool Prefix_AddVelocity_EntityItem(EntityItem __instance)
+    {
+        if (__instance.stickT)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    // set spawn by entity for nav object requirement
+    [HarmonyPatch(typeof(GameManager), nameof(GameManager.ItemDropServer), new[] { typeof(ItemStack), typeof(Vector3), typeof(Vector3), typeof(Vector3), typeof(int), typeof(float), typeof(bool), typeof(int) })]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_ItemDropServer_GameManager(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var fld_belong = AccessTools.Field(typeof(EntityCreationData), nameof(EntityCreationData.belongsPlayerId));
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].StoresField(fld_belong))
+            {
+                codes.InsertRange(i + 1, new[]
+                {
+                    CodeInstruction.LoadLocal(2),
+                    CodeInstruction.LoadArgument(5),
+                    CodeInstruction.StoreField(typeof(EntityCreationData), nameof(EntityCreationData.spawnById))
+                });
+                break;
+            }
+        }
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(EntityItem), nameof(EntityItem.HandleNavObject))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_HandleNavObject_EntityItem(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var fld_wasthrown = AccessTools.Field(typeof(EntityItem), nameof(EntityItem.bWasThrown));
+        var prop_transform = AccessTools.PropertyGetter(typeof(Component), nameof(Component.transform));
+        MethodInfo mtd_from = AccessTools.Method(typeof(NavObjectManager), nameof(NavObjectManager.RegisterNavObject), new[] { typeof(string), typeof(Transform), typeof(string), typeof(bool) });
+        MethodInfo mtd_to = AccessTools.Method(typeof(NavObjectManager), nameof(NavObjectManager.RegisterNavObject), new[] { typeof(string), typeof(Entity), typeof(string), typeof(bool) });
+        MethodInfo mtd_compare = AccessTools.Method(typeof(string), "op_Inequality");
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].LoadsField(fld_wasthrown))
+            {
+                codes[i + 3].ExtractLabels();
+                codes.RemoveRange(i - 1, 4);
+                i -= 2;
+            }
+            else if (codes[i].Calls(prop_transform))
+            {
+                codes.RemoveAt(i);
+                i--;
+            }
+            else if (codes[i].Calls(mtd_from))
+            {
+                for (int j = i - 1; j >= 0; j--)
+                {
+                    if (codes[j].LoadsConstant("") && !codes[j + 1].Calls(mtd_compare))
+                    {
+                        codes[j] = CodeInstruction.CallClosure<Func<EntityItem, string>>(static (item) =>
+                        {
+                            if (item.itemClass != null)
+                            {
+                                string sprite = item.itemClass.Properties.GetString("NavObjectSpriteOverride");
+                                return sprite;
+                            }
+                            return "";
+                        });
+                        codes.Insert(j, CodeInstruction.LoadArgument(0));
+                        i++;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return codes.MethodReplacer(mtd_from, mtd_to);
+    }
+
+    // don't clean up sprite override when not tracking entity or whatever
+    [HarmonyPatch(typeof(NavObject), nameof(NavObject.SetupEntityOptions))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_SetupEntityOptions_NavObject(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var fld_sprite = AccessTools.Field(typeof(NavObject), nameof(NavObject.OverrideSpriteName));
+        for (int i = codes.Count - 1; i >= 2; i--)
+        {
+            if (codes[i].StoresField(fld_sprite) && codes[i - 1].LoadsConstant("") && codes[i - 2].opcode == OpCodes.Ldarg_0)
+            {
+                codes[i + 1].WithLabels(codes[i - 2].ExtractLabels());
+                codes.RemoveRange(i - 2, 3);
                 break;
             }
         }
 
+        return codes;
+    }
+
+    //[HarmonyPatch(typeof(EntityItem), nameof(EntityItem.HandleNavObject))]
+    //[HarmonyPostfix]
+    //private static void Postfix_HandleNavObject_EntityItem(EntityItem __instance)
+    //{
+    //    if (__instance.NavObject != null)
+    //    {
+    //        __instance.NavObject.OwnerEntity = GameManager.Instance.World.GetEntity(__instance.OwnerId);
+    //        //Log.Out($"EntityItem {__instance.entityId} navobj set owner to {__instance.OwnerId}");
+    //        if (__instance.itemClass != null && __instance.itemClass.Properties.GetBool("HideNavObjectOnSpawn"))
+    //        {
+    //            __instance.NavObject.IsActive = false;
+    //            //Log.Out($"EntityItem {__instance.entityId} navobj set active false on spawn");
+    //        }
+    //    }
+    //}
+
+    [HarmonyPatch(typeof(Chunk), nameof(Chunk.GetEntitiesAround), new[] { typeof(EntityFlags), typeof(Vector3), typeof(float), typeof(List<Entity>) })]
+    [HarmonyReversePatch(HarmonyReversePatchType.Original)]
+    public static void GetEntityItemsAroundInChunk(this Chunk self, EntityFlags _mask, Vector3 _pos, float _radius, List<Entity> _list)
+    {
+        _ = Transpiler(null);
+
+        IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            if (instructions == null)
+            {
+                return null;
+            }
+
+            var codes = instructions.ToList();
+
+            var fld_flag = AccessTools.Field(typeof(Entity), nameof(Entity.entityFlags));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].LoadsField(fld_flag))
+                {
+                    for (int j = i + 1; j < codes.Count; j++)
+                    {
+                        if (codes[j].Branches(out _))
+                        {
+                            codes.RemoveRange(i, j - i);
+                            codes.InsertRange(i, new[]
+                            {
+                                new CodeInstruction(OpCodes.Isinst, typeof(EntityItem))
+                            });
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+
+            return codes;
+        }
+    }
+
+    [HarmonyPatch(typeof(World), nameof(World.GetEntitiesAround), new[] { typeof(EntityFlags), typeof(Vector3), typeof(float), typeof(List<Entity>) })]
+    [HarmonyReversePatch(HarmonyReversePatchType.Original)]
+    public static void GetEntityItemsAroundInWorld(this World self, EntityFlags _mask, Vector3 _pos, float _radius, List<Entity> _list)
+    {
+        _ = Transpiler(null);
+
+        IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            if (instructions == null)
+            {
+                return null;
+            }
+
+            return instructions.MethodReplacer(AccessTools.Method(typeof(Chunk), nameof(Chunk.GetEntitiesAround), new[] { typeof(EntityFlags), typeof(Vector3), typeof(float), typeof(List<Entity>) }),
+                                               AccessTools.Method(typeof(CommonUtilityPatch), nameof(GetEntityItemsAroundInChunk)));
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayerMoveController), nameof(PlayerMoveController.Update))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_Update_PlayerMoveController(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var mtd_holdingmelee = AccessTools.Method(typeof(Inventory), nameof(Inventory.IsHoldingDynamicMelee));
+
+        for (int i = 0; i < codes.Count - 1; i++)
+        {
+            if (codes[i].Calls(mtd_holdingmelee) && (codes[i + 1].opcode == OpCodes.Br_S || codes[i + 1].opcode == OpCodes.Br))
+            {
+                codes[i + 1].opcode = OpCodes.Pop;
+                codes[i + 1].operand = null;
+                codes[i + 3].labels?.Clear();
+                break;
+            }
+        }
         return codes;
     }
 

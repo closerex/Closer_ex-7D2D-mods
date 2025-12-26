@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class LightController : MonoBehaviour
@@ -28,6 +24,23 @@ public class LightController : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        elapsedTime = 0f;
+        if (lightSource)
+        {
+            lightSource.enabled = true;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (lightSource)
+        {
+            lightSource.enabled = false;
+        }
+    }
+
     private void Update()
     {
         if (lightSource && lightSource.enabled)
@@ -43,7 +56,6 @@ public class LightController : MonoBehaviour
             if (elapsedTime > duration)
             {
                 elapsedTime = 0f;
-                lightSource.enabled = false;
                 enabled = false;
             }
         }
