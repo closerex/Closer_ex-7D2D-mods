@@ -1,0 +1,45 @@
+<config>
+    <append xpath="/buffs">
+        <buff name="buffBoomerang" name_key="buffBoomerangName" description_key="buffBoomerangDesc" icon="ui_boomerang_symbol" icon_color="255,255,255" icon_blink="true">
+            <stack_type value="replace"/>
+            <effect_group>
+			    <triggered_effect trigger="onSelfBuffStart" action="AddRoundsToMagazine,KFCommonUtilityLib" count="1"/>
+			    <triggered_effect trigger="onSelfBuffStart" action="PlaySound" soundGroup="tctd_high_velocity_ammo_pickup" play_at_self="true" play_in_head="true"/>
+
+			    <triggered_effect trigger="onSelfBuffStack" action="AddRoundsToMagazine,KFCommonUtilityLib" count="1"/>
+			    <triggered_effect trigger="onSelfBuffStack" action="ModifyCVar" cvar=".BoomerangStack" operation="add" value="1"/>
+			    <triggered_effect trigger="onSelfBuffStack" action="PlaySound" soundGroup="tctd_high_velocity_ammo_pickup" play_at_self="true" play_in_head="true"/>
+			    <triggered_effect trigger="onSelfBuffRemove" action="RemoveCVar" cvar=".BoomerangStack"/>
+            </effect_group>
+            <!-- <effect_group>
+                <requirement name="CVarCompare" cvar=".checkBoomerang" operation="LTE" value="0"/>
+			        <triggered_effect trigger="onSelfAttackedOther" action="LogMessage" message="== Buff Skip Check Boomerang Attack Other"/>
+			        <triggered_effect trigger="onSelfKilledOther" action="LogMessage" message="== Buff Skip Check Boomerang Kill Other"/>
+            </effect_group> -->
+            <effect_group>
+                <requirement name="IsAlive" target="other"/>
+                <requirement name="CVarCompare" cvar=".checkBoomerang" operation="GT" value="0"/>
+                    <passive_effect name="DamageModifier" operation="perc_add" value=".5" tags="ranged"/>
+				    <triggered_effect trigger="onSelfAttackedOther" action="ModifyCVar" cvar=".checkBoomerang" operation="set" value="0"/>
+
+                    <triggered_effect trigger="onSelfAttackedOther" action="ModifyCVar" cvar=".BoomerangStack" operation="add" value="-1"/>
+                    <triggered_effect trigger="onSelfAttackedOther" action="RemoveBuff" buff="buffBoomerang">
+                        <requirement name="CVarCompare" cvar=".BoomerangStack" operation="LT" value="1"/>
+                    </triggered_effect>
+                
+			        <!-- <triggered_effect trigger="onSelfAttackedOther" action="LogMessage" message="== Buff Check Boomerang Attack Other"/> -->
+            </effect_group>
+            <effect_group>
+                <requirement name="CVarCompare" cvar=".checkBoomerang" operation="GT" value="0"/>
+				    <triggered_effect trigger="onSelfKilledOther" action="ModifyCVar" cvar=".checkBoomerang" operation="set" value="0"/>
+
+                    <triggered_effect trigger="onSelfKilledOther" action="ModifyCVar" cvar=".BoomerangStack" operation="add" value="-1"/>
+                    <triggered_effect trigger="onSelfKilledOther" action="RemoveBuff" buff="buffBoomerang">
+                        <requirement name="CVarCompare" cvar=".BoomerangStack" operation="LT" value="1"/>
+                    </triggered_effect>
+                
+			        <!-- <triggered_effect trigger="onSelfKilledOther" action="LogMessage" message="== Buff Check Boomerang Kill Other"/> -->
+            </effect_group>
+        </buff>
+    </append>
+</config>

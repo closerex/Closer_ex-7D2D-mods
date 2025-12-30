@@ -32,6 +32,19 @@
                         <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="resourceMultitool"/>
                     </effect_group>
                 </recipe>
+
+                <recipe name="gunKF1894" count="1" craft_area="workbench" tags="learnable">
+                    <ingredient name="gunRifleT1HuntingRifleParts" count="1"/>
+                    <ingredient name="resourceWeaponParts" count="2"/>
+                    <ingredient name="resourceMetalPipe" count="1"/>
+                    <ingredient name="resourceSpring" count="1"/>
+                    <ingredient name="resourceMultitool" count="1"/>
+                    <effect_group>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunRifleT1HuntingRifleParts"/>
+                        <passive_effect name="CraftingIngredientCount" level="1,6" operation="perc_add" value="0,2" tags="resourceWeaponParts"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="resourceMultitool"/>
+                    </effect_group>
+                </recipe>
             </append>
         </if>
         <else>
@@ -60,6 +73,20 @@
                     <ingredient name="resourceForgedSteel" count="120"/>
                     <ingredient name="resourceDuctTape" count="15"/>
                     <ingredient name="resourceSpring" count="28"/>
+                    <ingredient name="resourceLegendaryParts" count="0"/>
+                    <effect_group>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunRifleT1HuntingRifleParts,resourceDuctTape"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceSpring"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="10,50" tags="resourceForgedSteel"/>
+                        <passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
+                    </effect_group>
+                </recipe>
+
+                <recipe name="gunKF1894" count="1" craft_area="workbench" tags="learnable,perkDeadEye,workbenchCrafting">
+                    <ingredient name="gunRifleT1HuntingRifleParts" count="12"/>
+                    <ingredient name="resourceForgedSteel" count="80"/>
+                    <ingredient name="resourceDuctTape" count="10"/>
+                    <ingredient name="resourceSpring" count="18"/>
                     <ingredient name="resourceLegendaryParts" count="0"/>
                     <effect_group>
                         <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunRifleT1HuntingRifleParts,resourceDuctTape"/>

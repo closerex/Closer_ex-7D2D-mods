@@ -5,3 +5,7 @@ ammoKF50BMGBulletBall,items,Ammo,.50 BMG,.50 BMG
 ammoKF50BMGBulletBallDesc,items,Ammo," "," "
 gunKFMosin,items,gun,Mosin Nagant,莫辛纳甘狙击步枪
 gunKFMosinDesc,items,gun,"Fire mode is single shot only.\n\nThe M91/30 specializes in stabbing, shooting, and stab shooting.\n\nUse [action:KFLibPlayerActions:PerformAltMelee] to bash. Bashing is Spear type.",射击模式只有单发。\n\nM91/30擅长刺杀、射击和刺杀射击。\n\n使用[action:KFLibPlayerActions:PerformAltMelee]推击。推击为长矛类型。
+gunKF1894,items,gun,"Winchester 1894",温彻斯特 1894
+gunKF1894Desc,items,gun,"Fire mode is single shot only.\n\nThe classic Model 1894 Winchester lever-action rifle.\n\nUse [action:KFLibPlayerActions:PerformAltMelee] to bash. Bashing is Club type.",射击模式只有单发射击。\n\n经典型号 1894 温彻斯特杠杆式步枪。\n\n使用[action:KFLibPlayerActions:PerformAltMelee]推击。推击为棍棒类型。
+gunTCTD2Virginian,items,gun,"[EAA213]The Virginian[-]",[EAA213]维吉尼亚州人[-]
+gunTCTD2VirginianDesc,items,gun,"[I]Get the fuck off my land. That means you. Now.[/I]\n - Navezgane Resident\n\n[EAA213]Perfect Boomerang[-]:\nBullet hits have a [EAA213]25%[-] chance to return the bullet to the magazine. [EAA213]75%[-] with headshots.\n\nIf a bullet is returned to the magazine the next shot has [EAA213]+50% increased damage[-].",[I]“离我的地盘远一点，我指的就是你，现在立刻。”[/I]\n --纳维戈恩居民\n\n[EAA213]完美回力镖[-]：\n射击命中时有[EAA213]25%[-]几率返还子弹，若爆头命中则几率为[EAA213]75%[-]。如果有子弹被返还，则下一次射击造成[EAA213]+50%伤害[-]。

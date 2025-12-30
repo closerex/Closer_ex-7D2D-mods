@@ -56,6 +56,7 @@
             <CrouchNoiseScale value="1" />
             <NoiseScale value="1" />
             <MaxVoices value="120" />
+            <VolumeModifier value=".8" />
             <MaxVoicesPerEntity value="60" />
             <MaxRepeatRate value="0.001" />
             <HighestPitch value="1.090508" />
@@ -1469,6 +1470,125 @@
             <MaxVoicesPerEntity value="60" />
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
+        <SoundDataNode name="kf_1894_Fire_1P_Single_City">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1894" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1894_Network" />
+            <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?DE_Shot_City_Medium_1" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?DE_Shot_City_Medium_2" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?DE_Shot_City_Medium_3" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?DE_Shot_City_Medium_4" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="1.189207" />
+            <HighestPitch value="1.260649" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_1894_Fire_1P_Single_Forest">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1894" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1894_Network" />
+            <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?DE_Shot_Forest_Medium_1" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?DE_Shot_Forest_Medium_2" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?DE_Shot_Forest_Medium_3" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?DE_Shot_Forest_Medium_4" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="1.189207" />
+            <HighestPitch value="1.260649" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_1894_Fire_1P_Single_Large">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1894" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1894_Network" />
+            <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?DE_Shot_Indoor_Large_1" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?DE_Shot_Indoor_Large_2" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?DE_Shot_Indoor_Large_3" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?DE_Shot_Indoor_Large_4" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="1.189207" />
+            <HighestPitch value="1.260649" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_1894_Fire_1P_Single_Medium">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1894" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1894_Network" />
+            <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?DE_Shot_Indoor_Medium_1" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?DE_Shot_Indoor_Medium_2" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?DE_Shot_Indoor_Medium_3" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?DE_Shot_Indoor_Medium_4" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="1.189207" />
+            <HighestPitch value="1.260649" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_1894_Fire_1P_Single_Small">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1894" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1894_Network" />
+            <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?DE_Shot_Indoor_Small_1" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?DE_Shot_Indoor_Small_2" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?DE_Shot_Indoor_Small_3" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?DE_Shot_Indoor_Small_4" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="1.189207" />
+            <HighestPitch value="1.260649" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_1894_Top_End">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1894_top_end" />
+            <Noise ID="2" noise="38" time="3" muffled_when_crouched="0.5" heat_map_strength="0.5" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?1894_close_ch3" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?1894_close_ch4" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="30" />
+            <MaxVoicesPerEntity value="10" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_1894_DryFire">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_1894" />
+            <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_AK12_Handling_DryFire_01" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_AK12_Handling_DryFire_02" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_AK12_Handling_DryFire_03" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="30" />
+            <MaxVoicesPerEntity value="10" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.8655366" />
+            <HighestPitch value="0.8908987" />
+        </SoundDataNode>
         <SoundDataNode name="kf_pulverizer_Fire_1P_Single_Small">
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_pulverizer" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_pulverizer_Network" />
@@ -1733,6 +1853,20 @@
             <NoiseScale value="1" />
             <MaxVoices value="1" />
             <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.9276591" />
+            <HighestPitch value="0.9548416" />
+        </SoundDataNode>
+        <SoundDataNode name="tctd_high_velocity_ammo_pickup">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_UI_TCTD" />
+            <Noise ID="0" noise="2" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?tctd2_high_velocity_ammo_pickup" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="10" />
             <MaxRepeatRate value="0.001" />
             <LowestPitch value="0.9276591" />
             <HighestPitch value="0.9548416" />
@@ -3170,6 +3304,102 @@
             <MaxVoicesPerEntity value="5" />
             <MaxRepeatRate value="0.001" />
             <HighestPitch value="1.107648" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_1894_open">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_1894" />
+            <Noise ID="0" noise="8" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?LAR_Open_1" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?LAR_Open_2" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.8655366" />
+            <HighestPitch value="0.8655366" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_1894_close">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_1894" />
+            <Noise ID="0" noise="8" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?LAR_Close_1" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?LAR_Close_2" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.8655366" />
+            <HighestPitch value="0.8655366" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_1894_lever">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_1894" />
+            <Noise ID="0" noise="8" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?LAR_Lever_1" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?LAR_Lever_2" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?LAR_Lever_3" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.7937005" />
+            <HighestPitch value="0.8791411" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_1894_insert">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_1894" />
+            <Noise ID="0" noise="5" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?LAR_Bullet_Insert_1" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?LAR_Bullet_Insert_2" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?LAR_Bullet_Insert_3" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?LAR_Bullet_Insert_4" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?LAR_Bullet_Insert_5" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="1.01748" />
+            <HighestPitch value="1.01748" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_1894_empty_reload">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_1894_empty_reload" />
+            <Noise ID="0" noise="5" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?LAR_Empty_Reload" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.8655366" />
+            <HighestPitch value="0.8655366" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_1894_ring">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_1894_ring" />
+            <Noise ID="0" noise="5" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?LAR_Ring_1" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?LAR_Ring_2" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?LAR_Ring_3" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?LAR_Ring_4" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?LAR_Ring_5" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.675175" />
+            <HighestPitch value="0.4968331" />
         </SoundDataNode>
         <SoundDataNode name="kf_m99_Back">
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_m99" />
