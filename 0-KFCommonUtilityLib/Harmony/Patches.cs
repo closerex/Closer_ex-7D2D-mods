@@ -60,17 +60,18 @@ public static class CommonUtilityPatch
         var codes = new List<CodeInstruction>(instructions);
         var mtd_fire_event = AccessTools.Method(typeof(EntityAlive), nameof(EntityAlive.FireEvent));
         var mtd_get_model_layer = AccessTools.Method(typeof(EntityAlive), nameof(EntityAlive.GetModelLayer));
+        var mtd_set_model_layer = AccessTools.Method(typeof(EntityAlive), nameof(EntityAlive.SetModelLayer));
         var mtd_get_perc_left = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.PercentUsesLeft));
         var mtd_check_ammo = AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.checkAmmo));
         var mtd_getkick = AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.GetKickbackForce));
 
         int take = -1, insert = -1;
-        for (int i = 0; i < codes.Count; ++i)
+        for (int i = 1; i < codes.Count; ++i)
         {
             if (codes[i].opcode == OpCodes.Ldc_I4_S && codes[i].OperandIs((int)MinEventTypes.onSelfRangedBurstShotEnd) && codes[i + 2].Calls(mtd_fire_event))
                 take = i - 3;
-            else if (codes[i].Calls(mtd_get_model_layer))
-                insert = i + 2;
+            else if (codes[i].Calls(mtd_set_model_layer) && !codes[i - 1].LoadsConstant())
+                insert = i + 1;
         }
 
         if (take < insert)

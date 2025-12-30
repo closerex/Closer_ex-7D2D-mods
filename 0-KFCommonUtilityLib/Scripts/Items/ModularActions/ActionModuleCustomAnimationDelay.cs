@@ -40,10 +40,13 @@ public class ActionModuleCustomAnimationDelay
                     if (codes[j].LoadsField(fld_raycast))
                     {
                         bool flag = codes[i - 1].LoadsConstant(2f);
-                        codes.RemoveRange(flag ? i - 1 : i, j - i + (flag ? 3 : 1));
-                        codes.InsertRange(flag ? i - 1 : i, new[]
+                        int start = flag ? i - 1 : i;
+                        int count = j - i + (flag ? 3 : 1);
+                        var lbls = codes[start].ExtractLabels();
+                        codes.RemoveRange(start, count);
+                        codes.InsertRange(start, new[]
                         {
-                            new CodeInstruction(OpCodes.Ldarg_0),
+                            new CodeInstruction(OpCodes.Ldarg_0).WithLabels(lbls),
                             new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<ActionModuleCustomAnimationDelay>)),
                             new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(IModuleContainerFor<ActionModuleCustomAnimationDelay>), nameof(IModuleContainerFor<ActionModuleCustomAnimationDelay>.Instance))),
                             new CodeInstruction(OpCodes.Ldarg_1),

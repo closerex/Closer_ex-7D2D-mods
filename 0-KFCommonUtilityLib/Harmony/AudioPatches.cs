@@ -46,7 +46,7 @@ namespace KFCommonUtilityLib.Harmony
                     codes.InsertRange(i + 1, new[]
                     {
                         new CodeInstruction(OpCodes.Ldloc_S, 4),
-                        new CodeInstruction(OpCodes.Ldloc_1),
+                        new CodeInstruction(OpCodes.Ldloc_0),
                         CodeInstruction.CallClosure<Action<XElement, string>>(static (element, soundGroupName) =>
                         {
                             if (!string.IsNullOrEmpty(soundGroupName) && element.Name.LocalName == "VolumeModifier" && float.TryParse(element.GetAttribute("value"), out float value))

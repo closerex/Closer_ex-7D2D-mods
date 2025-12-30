@@ -33,8 +33,15 @@ public class AnimationInspectState : StateMachineBehaviour
         }
         else
         {
-            var transInfo = wrapper.GetAnimatorTransitionInfo(layerIndex);
-            if (transInfo.IsUserName(inspectName) && transInfo.normalizedTime < finishTime)
+            if (animator.IsInTransition(layerIndex))
+            {
+                var transInfo = wrapper.GetAnimatorTransitionInfo(layerIndex);
+                if (transInfo.IsUserName(inspectName) && transInfo.normalizedTime < finishTime)
+                {
+                    isInspecting = true;
+                }
+            }
+            else
             {
                 isInspecting = true;
             }

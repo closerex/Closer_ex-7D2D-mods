@@ -54,17 +54,21 @@ public class ActionModuleThrowFromInventory : IDisplayAsHUDStat
         }
 
         var itemValue = __customData.invData.itemValue;
-        if (itemValue.SelectedAmmoTypeIndex < 0 || itemValue.SelectedAmmoTypeIndex >= throwItemValues.Length)
+        byte curAmmoIndex = __customData.CurrentAmmoIndex;
+        if (curAmmoIndex < 0 || curAmmoIndex >= throwItemValues.Length)
         {
             __customData.SetAmmoIndex(0);
         }
+        else if (curAmmoIndex != itemValue.SelectedAmmoTypeIndex)
+        {
+            __customData.SetAmmoIndex(itemValue.SelectedAmmoTypeIndex);
+        }
         else
         {
+            __customData.SetAmmoIndex(curAmmoIndex);
             __customData.CurrentAmmoValue.FireEvent(CustomEnums.onThrowItemSelected, holdingEntity.MinEventContext);
             __customData.OnInventoryUpdate();
-            __customData.SyncThrowParams();
         }
-        __customData.swapAmmoStartTime = -1;
         __customData.invData.holdingEntity.emodel.avatarController?.CancelEvent("ThrowItemChanged");
     }
 
@@ -400,8 +404,29 @@ public class ActionModuleThrowFromInventory : IDisplayAsHUDStat
         public float defaultThrowStrength;
         public float maxThrowStrength;
         public float maxStrainTime;
+        public byte CurrentAmmoIndex
+        {
+            get
+            {
+                return IsSwappingAmmoStarted ? invData.itemValue.SelectedAmmoTypeIndex : targetAmmoType;
+            }
+            set
+            {
+                invData.itemValue.SelectedAmmoTypeIndex = value;
+                targetAmmoType = value;
+            }
+        }
 
-        public ItemValue CurrentAmmoValue => module.throwItemValues[invData.itemValue.SelectedAmmoTypeIndex];
+        public ItemValue CurrentAmmoValue
+        {
+            get
+            {
+                int targetAmmoType = CurrentAmmoIndex;
+                return targetAmmoType >= 0 && targetAmmoType < module.throwItemValues.Length ? module.throwItemValues[targetAmmoType] : ItemValue.None;
+            }
+        }
+
+        public bool IsSwappingAmmoStarted => swapAmmoStartTime >= 0;
         public bool IsSwappingAmmoProgressing => swapAmmoStartTime >= 0 && Time.time - swapAmmoStartTime < module.swapAmmoDelay;
         public bool IsSwappingAmmoFinished => swapAmmoStartTime >= 0 && Time.time - swapAmmoStartTime >= module.swapAmmoDelay;
 
@@ -413,7 +438,7 @@ public class ActionModuleThrowFromInventory : IDisplayAsHUDStat
 
         public void OnInventoryUpdate()
         {
-            ammoCount = invData.holdingEntity.GetItemCount(module.throwItemValues[invData.itemValue.SelectedAmmoTypeIndex]);
+            ammoCount = invData.holdingEntity.GetItemCount(module.throwItemValues[targetAmmoType]);
             invData.holdingEntity.emodel.avatarController?.UpdateInt(AnimationAmmoUpdateState.hash_states[0], ammoCount);
         }
 
@@ -424,16 +449,19 @@ public class ActionModuleThrowFromInventory : IDisplayAsHUDStat
 
         public void SetAmmoIndex(byte index)
         {
-            if (index != invData.itemValue.SelectedAmmoTypeIndex)
+            if (index != CurrentAmmoIndex)
             {
                 invData.holdingEntity.MinEventContext.Transform = invData.model;
                 CurrentAmmoValue.FireEvent(CustomEnums.onThrowItemSwapped, invData.holdingEntity.MinEventContext);
-                invData.itemValue.SelectedAmmoTypeIndex = index;
+                CurrentAmmoIndex = index;
                 CurrentAmmoValue.FireEvent(CustomEnums.onThrowItemSelected, invData.holdingEntity.MinEventContext);
                 invData.Changed();
             }
+            else
+            {
+                CurrentAmmoIndex = index;
+            }
             swapAmmoStartTime = -1;
-            targetAmmoType = index;
             SyncThrowParams();
         }
 
