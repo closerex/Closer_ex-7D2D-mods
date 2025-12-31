@@ -248,22 +248,22 @@ static class AnimationRiggingPatches
                 });
                 i += 3;
             }
-            //else if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 5)
-            //{
-            //    var lbl = generator.DefineLabel();
-            //    var lbls = codes[i + 1].ExtractLabels();
-            //    codes[i + 1].WithLabels(lbl);
-            //    codes.InsertRange(i + 1, new[]
-            //    {
-            //        new CodeInstruction(OpCodes.Ldloc_3).WithLabels(lbls),
-            //        CodeInstruction.Call(typeof(Transform), nameof(Transform.GetComponent), new Type[0], new Type[]{ typeof(IgnoreTint)}),
-            //        new CodeInstruction(OpCodes.Ldnull),
-            //        new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(UnityEngine.Object), "op_Inequality")),
-            //        new CodeInstruction(OpCodes.Brfalse_S, lbl),
-            //        new CodeInstruction(OpCodes.Ret)
-            //    });
-            //    i += 6;
-            //}
+            else if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 5)
+            {
+                var lbl = generator.DefineLabel();
+                var lbls = codes[i + 1].ExtractLabels();
+                codes[i + 1].WithLabels(lbl);
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldloc_3).WithLabels(lbls),
+                    CodeInstruction.Call(typeof(Transform), nameof(Transform.GetComponent), new Type[0], new Type[]{ typeof(IgnoreTint)}),
+                    new CodeInstruction(OpCodes.Ldnull),
+                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(UnityEngine.Object), "op_Inequality")),
+                    new CodeInstruction(OpCodes.Brfalse_S, lbl),
+                    new CodeInstruction(OpCodes.Ret)
+                });
+                i += 6;
+            }
         }
         codes.InsertRange(0, new[]
         {
