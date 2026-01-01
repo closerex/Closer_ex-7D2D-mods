@@ -56,7 +56,6 @@
             <CrouchNoiseScale value="1" />
             <NoiseScale value="1" />
             <MaxVoices value="120" />
-            <VolumeModifier value=".8" />
             <MaxVoicesPerEntity value="60" />
             <MaxRepeatRate value="0.001" />
             <HighestPitch value="1.090508" />
@@ -1588,6 +1587,96 @@
             <MaxRepeatRate value="0.001" />
             <LowestPitch value="0.8655366" />
             <HighestPitch value="0.8908987" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_spx464_Fire_1P_Single_City">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_spx_464" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_spx_464_Network" />
+            <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Centerfire_Single_City_1" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Centerfire_Single_City_2" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Centerfire_Single_City_3" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Centerfire_Single_City_4" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="1.189207" />
+            <HighestPitch value="1.260649" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_spx464_Fire_1P_Single_Forest">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_spx_464" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_spx_464_Network" />
+            <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Centerfire_Single_Forest_1" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Centerfire_Single_Forest_2" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Centerfire_Single_Forest_3" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Centerfire_Single_Forest_4" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="1.189207" />
+            <HighestPitch value="1.260649" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_spx464_Fire_1P_Single_Large">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_spx_464" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_spx_464_Network" />
+            <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Centerfire_Single_Large_1" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Centerfire_Single_Large_2" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Centerfire_Single_Large_3" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Centerfire_Single_Large_4" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="1.189207" />
+            <HighestPitch value="1.260649" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_spx464_Fire_1P_Single_Medium">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_spx_464" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_spx_464_Network" />
+            <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Centerfire_Single_Medium_1" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Centerfire_Single_Medium_2" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Centerfire_Single_Medium_3" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Centerfire_Single_Medium_4" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="1.189207" />
+            <HighestPitch value="1.260649" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_spx464_Fire_1P_Single_Small">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_spx_464" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_spx_464_Network" />
+            <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Centerfire_Single_Small_1" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Centerfire_Single_Small_2" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Centerfire_Single_Small_3" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Centerfire_Single_Small_4" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="1.189207" />
+            <HighestPitch value="1.260649" />
         </SoundDataNode>
         <SoundDataNode name="kf_pulverizer_Fire_1P_Single_Small">
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_pulverizer" />
