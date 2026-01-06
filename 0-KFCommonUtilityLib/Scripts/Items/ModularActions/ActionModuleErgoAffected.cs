@@ -36,7 +36,10 @@ public class ActionModuleErgoAffected
         holdingEntity.MinEventContext.ItemActionData = _actionData.invData.actionData[MultiActionManager.GetActionIndexForEntity(holdingEntity)];
         __customData.curErgo = EffectManager.GetValue(CustomEnums.WeaponErgonomics, _actionData.invData.itemValue, 0, holdingEntity);
         float aimSpeedModifier = __customData.ModifiedErgo;
-        Log.Out($"Ergo is {__customData.curErgo}, base aim modifier is {aimSpeedModifierBase}, aim speed is {aimSpeedModifier * aimSpeedModifierBase}");
+        if (ErgoData.debug)
+        {
+            Log.Out($"Ergo is {__customData.curErgo}, base aim modifier is {aimSpeedModifierBase}, aim speed is {aimSpeedModifier * aimSpeedModifierBase}");
+        }
         holdingEntity.emodel.avatarController.UpdateFloat(AimSpeedModifierHash, aimSpeedModifier * aimSpeedModifierBase, true);
         holdingEntity.MinEventContext.ItemActionData = prevActionData;
         if ((_actionData as ItemActionZoom.ItemActionDataZoom).aimingValue && !_bReleased)
@@ -57,6 +60,8 @@ public class ActionModuleErgoAffected
         public ActionModuleErgoAffected module;
         public float curErgo;
         public float minErgo = 0.2f;
+
+        public static bool debug = false;
 
         public float ModifiedErgo => Mathf.Lerp(minErgo, 1, curErgo);
 

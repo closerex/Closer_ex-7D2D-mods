@@ -18,9 +18,9 @@ public class PlayGraphTargets : AnimationTargetsAbs
     [SerializeField]
     public Transform attachmentReference;
     [SerializeField]
-    private RuntimeAnimatorController weaponRuntimeControllerFpv;
+    public RuntimeAnimatorController weaponRuntimeControllerFpv;
     [SerializeField]
-    private ParentName parentNameFpv;
+    public ParentName parentNameFpv;
 
     private Rig[] rigFpv;
     private RigLayer[] rigLayerFpv;

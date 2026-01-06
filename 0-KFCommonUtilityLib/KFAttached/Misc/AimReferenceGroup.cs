@@ -10,7 +10,7 @@ public class AimReferenceGroup : MonoBehaviour
     private bool registered;
 
 #if NotEditor
-    private ActionModuleProceduralAiming.ProceduralAimingData data;
+    public ActionModuleProceduralAiming.ProceduralAimingData data;
     private void Awake()
     {
         if (aimReferences != null)

@@ -364,21 +364,21 @@ namespace KFCommonUtilityLib.KFAttached.Render
             }
 
             pipCamera = cameraGO.AddComponent<Camera>();
-            pipCamera.targetTexture = targetTexture;
+#if NotEditor
+            //pipCamera.CopyFrom(player.playerCamera);
+            pipCamera.cullingMask = player.playerCamera.cullingMask;
+            //renderTarget.material.SetFloat("_AspectMain", player.playerCamera.aspect);
+            //renderTarget.material.SetFloat("_AspectScope", pipCamera.aspect);
+//#else
+//            pipCamera.CopyFrom(debugCamera);
+#endif
             pipCamera.depth = -2;
             pipCamera.fieldOfView = 55;
             pipCamera.nearClipPlane = 0.05f;
             pipCamera.farClipPlane = 5000;
             pipCamera.aspect = aspectRatio;
             pipCamera.rect = new Rect(0, 0, texScale, texScale);
-#if NotEditor
-            //pipCamera.CopyFrom(player.playerCamera);
-            pipCamera.cullingMask = player.playerCamera.cullingMask;
-            //renderTarget.material.SetFloat("_AspectMain", player.playerCamera.aspect);
-            //renderTarget.material.SetFloat("_AspectScope", pipCamera.aspect);
-#else
-            pipCamera.CopyFrom(debugCamera);
-#endif
+            pipCamera.targetTexture = targetTexture;
             if (cameraJoint == null || hideFpvModelInScope)
             {
                 pipCamera.cullingMask &= ~(1024);

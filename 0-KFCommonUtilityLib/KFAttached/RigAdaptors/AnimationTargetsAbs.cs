@@ -14,23 +14,23 @@ using KFCommonUtilityLib;
 [AddComponentMenu("")]
 public abstract class AnimationTargetsAbs : MonoBehaviour
 {
-    protected enum ParentName
+    public enum ParentName
     {
         Spine3,
         LeftHand,
         RightHand,
     }
     protected static readonly string[] ParentNames = { "Spine3", "LeftHand", "RightHand" };
-    protected static string GetParentName(ParentName name) => ParentNames[(int)name];
+    public static string GetParentName(ParentName name) => ParentNames[(int)name];
     [Header("TPV Fields")]
     [SerializeField]
-    protected Transform itemTpv;
+    public Transform itemTpv;
     [SerializeField]
-    protected RuntimeAnimatorController weaponRuntimeControllerTpv;
+    public RuntimeAnimatorController weaponRuntimeControllerTpv;
     [SerializeField]
-    protected AvatarMask weaponRigMaskTpv;
+    public AvatarMask weaponRigMaskTpv;
     [SerializeField]
-    protected ParentName parentNameTpv;
+    public ParentName parentNameTpv;
 
     private Rig[] rigTpv;
     private RigLayer[] rigLayerTpv;
@@ -299,13 +299,13 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
 
         var rigBuilder = PlayerAnimatorTrans.AddMissingComponent<RigBuilder>();
 #if NotEditor
-        foreach (var layer in rigBuilder.layers)
-        {
-            if (layer.name == SDCSUtils.IKRIG)
-            {
-                layer.active = false;
-            }
-        }
+        //foreach (var layer in rigBuilder.layers)
+        //{
+        //    if (layer.name == SDCSUtils.IKRIG)
+        //    {
+        //        layer.active = false;
+        //    }
+        //}
 #endif
         if (rigTpv.Length > 0)
         {
@@ -404,7 +404,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
         list_attached_attachments = null;
         list_activate_attachments = null;
 
-        Component.Destroy(this);
+        Destroy(this);
         //Log.Out(StackTraceUtility.ExtractStackTrace());
     }
 

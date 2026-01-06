@@ -6,6 +6,9 @@ using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 [AddComponentMenu("")]
 public class AnimationGraphBuilder : MonoBehaviour
@@ -240,7 +243,7 @@ public class AnimationGraphBuilder : MonoBehaviour
     private void DestroyWeapon()
     {
         CleanupBehaviours();
-        Destroy(weaponMask);
+        //Destroy(weaponMask);
         weaponMask = null;
         if (weaponControllerPlayable.IsValid())
         {

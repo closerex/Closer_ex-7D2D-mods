@@ -95,7 +95,7 @@ public static class KFExtensions
 
     public static IAnimatorWrapper GetWrapperForParam(this Animator self, AnimatorControllerParameter param, bool prefVanilla = false)
     {
-        if (!self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+        if (!self.TryGetComponent<AnimationGraphBuilder>(out var builder) || !builder.enabled)
             return AnimationGraphBuilder.DummyWrapper;
         switch (builder.GetWrapperRoleByParam(param))
         {
@@ -121,7 +121,7 @@ public static class KFExtensions
 
     public static IAnimatorWrapper GetWrapperForParamHash(this Animator self, int nameHash, bool prefVanilla = false)
     {
-        if (!self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+        if (!self.TryGetComponent<AnimationGraphBuilder>(out var builder) || !builder.enabled)
             return AnimationGraphBuilder.DummyWrapper;
         switch (builder.GetWrapperRoleByParamHash(nameHash))
         {
@@ -147,7 +147,7 @@ public static class KFExtensions
 
     public static IAnimatorWrapper GetWrapperForParamName(this Animator self, string name, bool prefVanilla = false)
     {
-        if (!self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+        if (!self.TryGetComponent<AnimationGraphBuilder>(out var builder) || !builder.enabled)
             return AnimationGraphBuilder.DummyWrapper;
         switch (builder.GetWrapperRoleByParamName(name))
         {
@@ -217,7 +217,7 @@ public static class KFExtensions
     {
         if (self)
         {
-            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder) && builder.enabled)
             {
                 var role = builder.GetWrapperRoleByParamHash(_propertyHash);
                 //Log.Out($"Setting wrapped trigger {_propertyHash} name {self.GetWrappedParameters().FirstOrDefault(par => par.nameHash == _propertyHash)?.name ?? "none"} in role {role}\n{StackTraceUtility.ExtractStackTrace()} on animator {self.runtimeAnimatorController.name}");
@@ -249,7 +249,7 @@ public static class KFExtensions
     {
         if (self)
         {
-            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder) && builder.enabled)
             {
                 var role = builder.GetWrapperRoleByParamHash(_propertyHash);
                 switch (role)
@@ -280,7 +280,7 @@ public static class KFExtensions
     {
         if (self)
         {
-            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder) && builder.enabled)
             {
                 var role = builder.GetWrapperRoleByParamHash(_propertyHash);
                 switch (role)
@@ -311,7 +311,7 @@ public static class KFExtensions
     {
         if (self)
         {
-            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder) && builder.enabled)
             {
                 var role = builder.GetWrapperRoleByParamHash(_propertyHash);
                 switch (role)
@@ -342,7 +342,7 @@ public static class KFExtensions
     {
         if (self)
         {
-            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder) && builder.enabled)
             {
                 var role = builder.GetWrapperRoleByParamHash(_propertyHash);
                 switch (role)
@@ -373,7 +373,7 @@ public static class KFExtensions
     {
         if (self)
         {
-            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder) && builder.HasWeaponOverride)
+            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder) && builder.HasWeaponOverride && builder.enabled)
             {
                 return builder.Parameters;
             }
@@ -384,7 +384,7 @@ public static class KFExtensions
 
     public static IAnimatorWrapper GetItemAnimatorWrapper(this Animator self)
     {
-        if (self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+        if (self.TryGetComponent<AnimationGraphBuilder>(out var builder) && builder.enabled)
             return builder.WeaponWrapper;
         return new AnimatorWrapper(self);
     }
@@ -393,7 +393,7 @@ public static class KFExtensions
     {
         if (self)
         {
-            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder) && builder.enabled)
             {
                 return builder.VanillaWrapper.IsInTransition(layerIndex);
             }
@@ -406,7 +406,7 @@ public static class KFExtensions
     {
         if (self)
         {
-            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder) && builder.enabled)
             {
                 return builder.VanillaWrapper.GetCurrentAnimatorStateInfo(layerIndex);
             }
@@ -419,7 +419,7 @@ public static class KFExtensions
     {
         if (self)
         {
-            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder))
+            if (self.TryGetComponent<AnimationGraphBuilder>(out var builder) && builder.enabled)
             {
                 builder.VanillaWrapper.SetLayerWeight(layerIndex, weight);
             }

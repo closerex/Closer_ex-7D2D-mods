@@ -445,6 +445,7 @@
     <Compile Include="Harmony\BackgroundInventoryUpdatePatch.cs" />
     <Compile Include="Harmony\CameraPatches.cs" />
     <Compile Include="Harmony\VersionPatcher\VersionPatchManager.cs" />
+    <Compile Include="KFAttached\Misc\AimingMaterialBlender.cs" />
     <Compile Include="KFAttached\Misc\CustomAudioSnapshotHolder.cs" />
     <Compile Include="Harmony\DamagePatches.cs" />
     <Compile Include="Harmony\HideMarkerOnAimPatch.cs" />
@@ -611,6 +612,7 @@
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationInterruptable.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationInterruptSource.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAltMeleeInspectTrigger.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleCutShotSound.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleDynamicDropLifetime.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleInversedAction.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleLimitedCombo.cs" />

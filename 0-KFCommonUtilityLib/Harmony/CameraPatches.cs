@@ -455,6 +455,11 @@ public static class CameraLateUpdater
         {
             return;
         }
+        //somehow this just happens
+        if (!vanillaOriginTransform)
+        {
+            Init(player);
+        }
         AnimationTargetsAbs targets = transform?.GetComponent<AnimationTargetsAbs>();
 
         if (targets && !targets.Destroyed && targets.ItemFpv && targets is RigTargets)

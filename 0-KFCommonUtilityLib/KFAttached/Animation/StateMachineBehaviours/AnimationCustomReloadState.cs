@@ -52,6 +52,11 @@ public class AnimationCustomReloadState : StateMachineBehaviour
             eventBridge.OnReloadFinish();
         }
 #endif
+#if UNITY_EDITOR
+        animator.speed = 1f;
+        animator.SetWrappedBool(Animator.StringToHash("Reload"), false);
+        animator.SetWrappedBool(Animator.StringToHash("IsReloading"), false);
+#endif
         //actionData.isReloading = false;
         //actionData.isReloadCancelled = false;
         //actionData.isChangingAmmoType = false;
