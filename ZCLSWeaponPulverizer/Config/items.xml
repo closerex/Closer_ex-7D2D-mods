@@ -316,12 +316,7 @@
     <conditional>
         <if cond="mod_loaded('EFTX_Pack_Standard')">
 			<set xpath="/items/item[@name='ammoPulverizer']/property[@name='UnlockedBy']/@value">craftingRocketsandLaunchers</set>
-            <csv xpath="/items/item[@name='meleeWpnSledgeT3Pulverizer' or @name='ammoPulverizer' or @name='itemPulverizerExplosionData']/property[@name='Tags']/@value" delim="," op="add">eftBoom</csv>
-            <csv xpath="/items/item[@name='meleeWpnSledgeT3Pulverizer']/property[@class='Action1']/property[@name='ExcludeTags']/@value" delim="," op="add">eftBoom</csv>
-            <csv xpath="/items/item[@name='meleeWpnSledgeT3Pulverizer']/effect_group/requirement[contains(@progression_name, 'perkDemolitionsExpert')]/@progression_name" delim="," op="add">perkEFTXBoomBoom</csv>
-            <csv xpath="/items/item[@name='meleeWpnSledgeT3Pulverizer']/effect_group/requirement[contains(@progression_name, 'perkDemolitionsExpert')]/@progression_name" delim="," op="remove">perkDemolitionsExpert</csv>
-            <csv xpath="/items/item[@name='meleeWpnSledgeT3Pulverizer']/effect_group//requirement[contains(@progression_name, 'perkDemolitionsExpert')]/@progression_name" delim="," op="add">perkEFTXBoomBoom</csv>
-            <csv xpath="/items/item[@name='meleeWpnSledgeT3Pulverizer']/effect_group//requirement[contains(@progression_name, 'perkDemolitionsExpert')]/@progression_name" delim="," op="remove">perkDemolitionsExpert</csv>
+            <csv xpath="/items/item[@name='ammoPulverizer' or @name='itemPulverizerExplosionData']/property[@name='Tags']/@value" delim="," op="add">eftBoom</csv>
         </if>
     </conditional>
 </config>

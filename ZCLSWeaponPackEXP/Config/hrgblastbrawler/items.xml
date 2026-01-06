@@ -308,8 +308,6 @@
     <conditional>
         <if cond="mod_loaded('EFTX_Pack_Standard')">
 			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/property[@name='UnlockedBy']/@value">craftingEFTShotguns</set>
-            <csv xpath="/items/item[@name='gunT3HRGBlastBrawler']/property[@name='Tags']/@value" delim="," op="add">eftShotties</csv>
-            <csv xpath="/items/item[@name='gunT3HRGBlastBrawler']/property[@class='Action1']/property[@name='ExcludeTags']/@value" delim="," op="add">eftShotties</csv>
         </if>
     </conditional>
 </config>

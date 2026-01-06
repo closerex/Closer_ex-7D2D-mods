@@ -156,7 +156,6 @@
                         
                     </if>
                     <else>
-                        <passive_effect name="EntityDamage" operation="base_add" value="5" tags="perkGunslinger"/> <!-- damage offset -->
                         <passive_effect name="EntityDamage" operation="perc_add" value="-.02,.02" tags="perkGunslinger"/> <!-- random EntityDmg -->
                         <passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6" tags="perkGunslinger"/> <!-- tier bonus -->
                         <passive_effect name="BlockDamage" operation="perc_add" value="-.08,.08" tags="perkGunslinger"/> <!-- random BlockDmg -->
@@ -164,6 +163,16 @@
                         <passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
                     </else>
                 </conditional>
+				<conditional>
+                    <if cond="mod_loaded('EFT_Overhaul')">
+                    </if>
+                    <if cond="mod_loaded('EFTX_Pack_Core')">
+                        <passive_effect name="EntityDamage" operation="base_add" value="11" tags="perkGunslinger"/> <!-- damage offset -->
+                    </if>
+					<else>
+                        <passive_effect name="EntityDamage" operation="base_add" value="5" tags="perkGunslinger"/> <!-- damage offset -->
+					</else>
+				</conditional>
             </effect_group>
         </item>
 
@@ -339,7 +348,6 @@
                         
                     </if>
                     <else>
-                        <passive_effect name="EntityDamage" operation="base_add" value="5" tags="perkGunslinger"/> <!-- damage offset -->
                         <passive_effect name="EntityDamage" operation="perc_add" value="-.02,.02" tags="perkGunslinger"/> <!-- random EntityDmg -->
                         <passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6" tags="perkGunslinger"/> <!-- tier bonus -->
                         <passive_effect name="BlockDamage" operation="perc_add" value="-.08,.08" tags="perkGunslinger"/> <!-- random BlockDmg -->
@@ -347,6 +355,16 @@
                         <passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
                     </else>
                 </conditional>
+				<conditional>
+                    <if cond="mod_loaded('EFT_Overhaul')">
+                    </if>
+                    <if cond="mod_loaded('EFTX_Pack_Core')">
+                        <passive_effect name="EntityDamage" operation="base_add" value="11" tags="perkGunslinger"/> <!-- damage offset -->
+                    </if>
+					<else>
+                        <passive_effect name="EntityDamage" operation="base_add" value="5" tags="perkGunslinger"/> <!-- damage offset -->
+					</else>
+				</conditional>
             </effect_group>
         </item>
 
@@ -613,7 +631,6 @@
                         
                     </if>
                     <else>
-                        <passive_effect name="EntityDamage" operation="base_add" value="3.5" tags="perkBoomstick"/> <!-- damage offset -->
                         <passive_effect name="EntityDamage" operation="perc_add" value="-.02,.02" tags="perkBoomstick"/> <!-- random EntityDmg -->
                         <passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6" tags="perkBoomstick"/> <!-- tier bonus -->
                         <passive_effect name="BlockDamage" operation="base_add" value="-2" tags="perkBoomstick"/> <!-- damage offset -->
@@ -622,6 +639,16 @@
                         <passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
                     </else>
                 </conditional>
+				<conditional>
+                    <if cond="mod_loaded('EFT_Overhaul')">
+                    </if>
+                    <if cond="mod_loaded('EFTX_Pack_Core')">
+                        <passive_effect name="EntityDamage" operation="base_add" value="3" tags="perkBoomstick"/> <!-- damage offset -->
+                    </if>
+					<else>
+                        <passive_effect name="EntityDamage" operation="base_add" value="3.5" tags="perkBoomstick"/> <!-- damage offset -->
+					</else>
+				</conditional>
             </effect_group>
         </item>
 
@@ -792,7 +819,6 @@
 
                     </if>
                     <else>
-                        <passive_effect name="EntityDamage" operation="base_add" value="3.5" tags="perkBoomstick"/> <!-- damage offset -->
                         <passive_effect name="EntityDamage" operation="perc_add" value="-.02,.02" tags="perkBoomstick"/> <!-- random EntityDmg -->
                         <passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6" tags="perkBoomstick"/> <!-- tier bonus -->
                         <passive_effect name="BlockDamage" operation="base_add" value="-2" tags="perkBoomstick"/> <!-- damage offset -->
@@ -801,6 +827,16 @@
                         <passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
                     </else>
                 </conditional>
+				<conditional>
+                    <if cond="mod_loaded('EFT_Overhaul')">
+                    </if>
+                    <if cond="mod_loaded('EFTX_Pack_Core')">
+                        <passive_effect name="EntityDamage" operation="base_add" value="3" tags="perkBoomstick"/> <!-- damage offset -->
+                    </if>
+					<else>
+                        <passive_effect name="EntityDamage" operation="base_add" value="3.5" tags="perkBoomstick"/> <!-- damage offset -->
+					</else>
+				</conditional>
             </effect_group>
         </item>
         
@@ -966,7 +1002,6 @@
                         
                     </if>
                     <else>
-                        <passive_effect name="EntityDamage" operation="base_add" value="35" tags="perkGunslinger"/> <!-- damage offset -->
                         <passive_effect name="EntityDamage" operation="perc_add" value="-.02,.02" tags="perkGunslinger"/> <!-- random EntityDmg -->
                         <passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6" tags="perkGunslinger"/> <!-- tier bonus -->
                         <passive_effect name="BlockDamage" operation="base_add" value="10" tags="perkGunslinger"/> <!-- damage offset -->
@@ -975,6 +1010,16 @@
                         <passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
                     </else>
                 </conditional>
+				<conditional>
+                    <if cond="mod_loaded('EFT_Overhaul')">
+                    </if>
+                    <if cond="mod_loaded('EFTX_Pack_Core')">
+                        <passive_effect name="EntityDamage" operation="base_add" value="-5" tags="perkGunslinger"/> <!-- damage offset -->
+                    </if>
+					<else>
+                        <passive_effect name="EntityDamage" operation="base_add" value="35" tags="perkGunslinger"/> <!-- damage offset -->
+					</else>
+				</conditional>
             </effect_group>
         </item>
 
@@ -1166,6 +1211,16 @@
                         <passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
                     </else>
                 </conditional>
+				<conditional>
+                    <if cond="mod_loaded('EFT_Overhaul')">
+                    </if>
+                    <if cond="mod_loaded('EFTX_Pack_Core')">
+                        <passive_effect name="EntityDamage" operation="base_add" value="-5" tags="perkGunslinger"/> <!-- damage offset -->
+                    </if>
+					<else>
+                        <passive_effect name="EntityDamage" operation="base_add" value="35" tags="perkGunslinger"/> <!-- damage offset -->
+					</else>
+				</conditional>
             </effect_group>
         </item>
 
@@ -1442,7 +1497,6 @@
                         
                     </if>
                     <else>
-                        <passive_effect name="EntityDamage" operation="base_add" value="18" tags="perkGunslinger"/> <!-- damage offset -->
                         <passive_effect name="EntityDamage" operation="perc_add" value="-.02,.02" tags="perkGunslinger"/> <!-- random EntityDmg -->
                         <passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6" tags="perkGunslinger"/> <!-- tier bonus -->
                         <passive_effect name="BlockDamage" operation="perc_add" value="-.08,.08" tags="perkGunslinger"/> <!-- random BlockDmg -->
@@ -1450,6 +1504,16 @@
                         <passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
                     </else>
                 </conditional>
+				<conditional>
+                    <if cond="mod_loaded('EFT_Overhaul')">
+                    </if>
+                    <if cond="mod_loaded('EFTX_Pack_Core')">
+                        <passive_effect name="EntityDamage" operation="base_add" value="11" tags="perkGunslinger"/> <!-- damage offset -->
+                    </if>
+					<else>
+                        <passive_effect name="EntityDamage" operation="base_add" value="18" tags="perkGunslinger"/> <!-- damage offset -->
+					</else>
+				</conditional>
             </effect_group>
             <effect_group name="fullauto stats">
                 <requirement name="FireModeIs,KFCommonUtilityLib" index="0"/>
@@ -1640,7 +1704,6 @@
                         
                     </if>
                     <else>
-                        <passive_effect name="EntityDamage" operation="base_add" value="18" tags="perkGunslinger"/> <!-- damage offset -->
                         <passive_effect name="EntityDamage" operation="perc_add" value="-.02,.02" tags="perkGunslinger"/> <!-- random EntityDmg -->
                         <passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6" tags="perkGunslinger"/> <!-- tier bonus -->
                         <passive_effect name="BlockDamage" operation="perc_add" value="-.08,.08" tags="perkGunslinger"/> <!-- random BlockDmg -->
@@ -1648,6 +1711,16 @@
                         <passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
                     </else>
                 </conditional>
+				<conditional>
+                    <if cond="mod_loaded('EFT_Overhaul')">
+                    </if>
+                    <if cond="mod_loaded('EFTX_Pack_Core')">
+                        <passive_effect name="EntityDamage" operation="base_add" value="11" tags="perkGunslinger"/> <!-- damage offset -->
+                    </if>
+					<else>
+                        <passive_effect name="EntityDamage" operation="base_add" value="18" tags="perkGunslinger"/> <!-- damage offset -->
+					</else>
+				</conditional>
             </effect_group>
             <effect_group name="fullauto stats">
                 <requirement name="FireModeIs,KFCommonUtilityLib" index="0"/>
@@ -1841,7 +1914,6 @@
                         
                     </if>
                     <else>
-                        <passive_effect name="EntityDamage" operation="base_add" value="18" tags="perkGunslinger"/> <!-- damage offset -->
                         <passive_effect name="EntityDamage" operation="perc_add" value="-.02,.02" tags="perkGunslinger"/> <!-- random EntityDmg -->
                         <passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6" tags="perkGunslinger"/> <!-- tier bonus -->
                         <passive_effect name="BlockDamage" operation="perc_add" value="-.08,.08" tags="perkGunslinger"/> <!-- random BlockDmg -->
@@ -1849,6 +1921,16 @@
                         <passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
                     </else>
                 </conditional>
+				<conditional>
+                    <if cond="mod_loaded('EFT_Overhaul')">
+                    </if>
+                    <if cond="mod_loaded('EFTX_Pack_Core')">
+                        <passive_effect name="EntityDamage" operation="base_add" value="11" tags="perkGunslinger"/> <!-- damage offset -->
+                    </if>
+					<else>
+                        <passive_effect name="EntityDamage" operation="base_add" value="18" tags="perkGunslinger"/> <!-- damage offset -->
+					</else>
+				</conditional>
             </effect_group>
             <effect_group name="fullauto stats">
                 <requirement name="FireModeIs,KFCommonUtilityLib" index="0"/>
@@ -2050,7 +2132,7 @@
 			</property>
 			<effect_group name="KF Weapon Bash">
 				<passive_effect name="AttacksPerMinute" operation="base_set" value="76" tags="perkBrawler,perkFlurryOfFortitude"/>
-				<passive_effect name="StaminaLoss" operation="base_set" value="32" tags="primary"/>
+				<passive_effect name="StaminaLoss" operation="base_set" value="40" tags="primary"/>
 				<passive_effect name="DegradationMax" operation="base_set" value="300,700" tier="1,6" tags="perkBrawler"/>
 				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkBrawler"/>
 				<passive_effect name="MaxRange" operation="base_set" value="2.0" tags="perkBrawler"/>
@@ -2075,7 +2157,7 @@
 			</effect_group>
 			<effect_group name="Knockdown">
 				<requirement name="!EntityTagCompare" target="other" tags="player"/>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="Ragdoll" duration="2" force="80" target="other"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="Ragdoll" duration="1.5" force="80" target="other"/>
 					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
 			</effect_group>
 		</item>
@@ -2094,24 +2176,6 @@
             <append xpath="/items/item[@name='gunKFG18C']/property[@name='Tags']/@value">,ReflexSight,CompactReflexSight</append>
             <append xpath="/items/item[@name='gunKFDualG18C']/property[@name='Tags']/@value">,ReflexSight,CompactReflexSight</append>
             <append xpath="/items/item[@name='gunKFG18CShield']/property[@name='Tags']/@value">,ReflexSight,CompactReflexSight</append>
-        </if>
-    </conditional>
-    <!-- #endregion -->
-    
-    <!-- #region tag patches -->
-    <conditional>
-        <if cond="mod_loaded('EFTX_Pack_Standard')">
-            <csv xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFSW500' or @name='gunKFDualSW500' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/property[@name='Tags']/@value" delim="," op="add">eftPistol</csv>
-            <csv xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFSW500' or @name='gunKFDualSW500' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/effect_group/requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="add">perkEFTXPistols</csv>
-            <csv xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFSW500' or @name='gunKFDualSW500' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/effect_group/requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="remove">perkGunslinger</csv>
-            <csv xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFSW500' or @name='gunKFDualSW500' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/effect_group//requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="add">perkEFTXPistols</csv>
-            <csv xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFSW500' or @name='gunKFDualSW500' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/effect_group//requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="remove">perkGunslinger</csv>
-
-            <csv xpath="/items/item[@name='gunKFHRGSW500' or @name='gunKFDualHRGSW500']/property[@name='Tags']/@value" delim="," op="add">eftShotties</csv>
-            <csv xpath="/items/item[@name='gunKFHRGSW500' or @name='gunKFDualHRGSW500']/effect_group/requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="add">perkEFTXShotties</csv>
-            <csv xpath="/items/item[@name='gunKFHRGSW500' or @name='gunKFDualHRGSW500']/effect_group/requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="remove">perkBoomstick</csv>
-            <csv xpath="/items/item[@name='gunKFHRGSW500' or @name='gunKFDualHRGSW500']/effect_group//requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="add">perkEFTXShotties</csv>
-            <csv xpath="/items/item[@name='gunKFHRGSW500' or @name='gunKFDualHRGSW500']/effect_group//requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="remove">perkBoomstick</csv>
         </if>
     </conditional>
     <!-- #endregion -->

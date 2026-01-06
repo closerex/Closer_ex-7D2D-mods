@@ -259,11 +259,6 @@
     <conditional>
         <if cond="mod_loaded('EFTX_Pack_Standard')">
 			<set xpath="/items/item[@name='gunT3HZ12']/property[@name='UnlockedBy']/@value">craftingEFTShotguns</set>
-            <csv xpath="/items/item[@name='gunT3HZ12']/property[@name='Tags']/@value" delim="," op="add">eftShotties</csv>
-            <csv xpath="/items/item[@name='gunT3HZ12']/effect_group/requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="add">perkEFTXShotties</csv>
-            <csv xpath="/items/item[@name='gunT3HZ12']/effect_group/requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="remove">perkBoomstick</csv>
-            <csv xpath="/items/item[@name='gunT3HZ12']/effect_group//requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="add">perkEFTXShotties</csv>
-            <csv xpath="/items/item[@name='gunT3HZ12']/effect_group//requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="remove">perkBoomstick</csv>
         </if>
     </conditional>
 </configs>

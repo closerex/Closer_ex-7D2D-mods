@@ -1351,32 +1351,4 @@
 			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
 		</if>
 	</conditional>
-
-    <conditional>
-        <if cond="mod_loaded('EFTX_Pack_Standard')">
-            <csv xpath="/items/item[@name='gunMedicPistol']/property[@name='Tags']/@value" delim="," op="add">eftPistol</csv>
-            <csv xpath="/items/item[@name='gunMedicPistol']/effect_group/requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="add">perkEFTXPistols</csv>
-            <csv xpath="/items/item[@name='gunMedicPistol']/effect_group/requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="remove">perkGunslinger</csv>
-            <csv xpath="/items/item[@name='gunMedicPistol']/effect_group//requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="add">perkEFTXPistols</csv>
-            <csv xpath="/items/item[@name='gunMedicPistol']/effect_group//requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="remove">perkGunslinger</csv>
-
-            <csv xpath="/items/item[@name='gunMedicSMG201']/property[@name='Tags']/@value" delim="," op="add">eftSMG</csv>
-            <csv xpath="/items/item[@name='gunMedicSMG201']/effect_group/requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="add">perkEFTXSMGS</csv>
-            <csv xpath="/items/item[@name='gunMedicSMG201']/effect_group/requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="remove">perkGunslinger</csv>
-            <csv xpath="/items/item[@name='gunMedicSMG201']/effect_group//requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="add">perkEFTXSMGS</csv>
-            <csv xpath="/items/item[@name='gunMedicSMG201']/effect_group//requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="remove">perkGunslinger</csv>
-
-            <csv xpath="/items/item[@name='gunMedicShotgun301']/property[@name='Tags']/@value" delim="," op="add">eftShotties</csv>
-            <csv xpath="/items/item[@name='gunMedicShotgun301']/effect_group/requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="add">perkEFTXShotties</csv>
-            <csv xpath="/items/item[@name='gunMedicShotgun301']/effect_group/requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="remove">perkBoomstick</csv>
-            <csv xpath="/items/item[@name='gunMedicShotgun301']/effect_group//requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="add">perkEFTXShotties</csv>
-            <csv xpath="/items/item[@name='gunMedicShotgun301']/effect_group//requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="remove">perkBoomstick</csv>
-
-            <csv xpath="/items/item[@name='gunMedicAssaultRifle401']/property[@name='Tags']/@value" delim="," op="add">eftMGS</csv>
-            <csv xpath="/items/item[@name='gunMedicAssaultRifle401']/effect_group/requirement[contains(@progression_name, 'perkMachineGunner')]/@progression_name" delim="," op="add">perkEFTXMGS</csv>
-            <csv xpath="/items/item[@name='gunMedicAssaultRifle401']/effect_group/requirement[contains(@progression_name, 'perkMachineGunner')]/@progression_name" delim="," op="remove">perkMachineGunner</csv>
-            <csv xpath="/items/item[@name='gunMedicAssaultRifle401']/effect_group//requirement[contains(@progression_name, 'perkMachineGunner')]/@progression_name" delim="," op="add">perkEFTXMGS</csv>
-            <csv xpath="/items/item[@name='gunMedicAssaultRifle401']/effect_group//requirement[contains(@progression_name, 'perkMachineGunner')]/@progression_name" delim="," op="remove">perkMachineGunner</csv>
-        </if>
-    </conditional>
 </configs>

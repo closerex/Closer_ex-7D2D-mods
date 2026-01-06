@@ -326,11 +326,7 @@
     <conditional>
         <if cond="mod_loaded('EFTX_Pack_Standard')">
 			<set xpath="/items/item[@name='gunKaboomstick' or @name='ammoKaboomstickShellHE' or @name='ammoKaboomstickShellFrag']/property[@name='UnlockedBy']/@value">craftingRocketsandLaunchers</set>
-            <csv xpath="/items/item[@name='gunKaboomstick' or @name='ammoKaboomstickShellHE' or @name='ammoKaboomstickShellFrag']/property[@name='Tags']/@value" delim="," op="add">eftBoom</csv>
-            <csv xpath="/items/item[@name='gunKaboomstick']/effect_group/requirement[contains(@progression_name, 'perkDemolitionsExpert')]/@progression_name" delim="," op="add">perkEFTXBoomBoom</csv>
-            <csv xpath="/items/item[@name='gunKaboomstick']/effect_group/requirement[contains(@progression_name, 'perkDemolitionsExpert')]/@progression_name" delim="," op="remove">perkDemolitionsExpert</csv>
-            <csv xpath="/items/item[@name='gunKaboomstick']/effect_group//requirement[contains(@progression_name, 'perkDemolitionsExpert')]/@progression_name" delim="," op="add">perkEFTXBoomBoom</csv>
-            <csv xpath="/items/item[@name='gunKaboomstick']/effect_group//requirement[contains(@progression_name, 'perkDemolitionsExpert')]/@progression_name" delim="," op="remove">perkDemolitionsExpert</csv>
+            <csv xpath="/items/item[@name='ammoKaboomstickShellHE' or @name='ammoKaboomstickShellFrag']/property[@name='Tags']/@value" delim="," op="add">eftBoom</csv>
         </if>
     </conditional>
 </configs>

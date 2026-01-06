@@ -3,10 +3,11 @@
         <if cond="mod_loaded('EFTX_Pack_Core')">
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT2']">
 				<item name="gunKF1894"/>
+				<item name="gunKFMosin"/>
 			</append>
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3']">
-				<item name="gunKFMosin"/>
 				<item name="gunKFSPX464"/>
+				<item name="gunKFM14EBR"/>
 				<item name="gunTCTD2Virginian" loot_prob_template="veryLow"/>
 			</append>
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT4']">
@@ -14,12 +15,11 @@
 			</append>
 			<append xpath="//lootgroup[@name='groupQuestWeaponsRangedT2']">
 				<item name="gunKF1894" loot_prob_template="QuestT2Prob"/>
-				<item name="gunKFMosin" loot_prob_template="QuestT3Prob"/>
-				<item name="gunKFSPX464" loot_prob_template="QuestT3Prob"/>
+				<item name="gunKFMosin" loot_prob_template="QuestT2Prob"/>
 			</append>
 			<append xpath="//lootgroup[@name='groupQuestWeaponsRangedT3']">
-				<item name="gunKFMosin" loot_prob_template="QuestT3Prob"/>
 				<item name="gunKFSPX464" loot_prob_template="QuestT3Prob"/>
+				<item name="gunKFM14EBR" loot_prob_template="QuestT3Prob"/>
 				<item name="gunKFM99" loot_prob_template="QuestT4Prob"/>
 				<item name="gunTCTD2Virginian" loot_prob_template="QuestT4Prob"/>
 			</append>
@@ -62,6 +62,9 @@
 				<lootgroup name="groupWeaponsT3_DeadEyeKFMosin" count="1" loot_quality_template="QLTemplateT3">
                     <item name="gunKFMosin"/>
 				</lootgroup>
+				<lootgroup name="groupWeaponsT3_DeadEyeKFM14EBR" count="1" loot_quality_template="QLTemplateT3">
+                    <item name="gunKFM14EBR"/>
+				</lootgroup>
 				<lootgroup name="groupWeaponsT3_DeadEyeKFM99" count="1" loot_quality_template="QLTemplateT3">
                     <item name="gunKFM99"/>
 				</lootgroup>
@@ -87,7 +90,8 @@
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3_Ranged']">
                 <item group="groupWeaponsT3_DeadEyeKFSPX464" loot_prob_template="low"/>
                 <item group="groupWeaponsT3_DeadEyeKFMosin" loot_prob_template="low"/>
-                <item group="groupWeaponsT3_DeadEyeKFM99" loot_prob_template="low"/>
+                <item group="groupWeaponsT3_DeadEyeKFM14EBR" loot_prob_template="low"/>
+                <item group="groupWeaponsT3_DeadEyeKFM99" loot_prob_template="veryLow"/>
                 <item group="groupWeaponsT3_DeadEyeTCTD2Virginian" loot_prob_template="veryLow"/>
             </append>
 
@@ -98,7 +102,8 @@
 			<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsRangedT3']">
 				<item name="gunKFSPX464" loot_prob_template="low"/>
 				<item name="gunKFMosin" loot_prob_template="low"/>
-				<item name="gunKFM99" loot_prob_template="low"/>
+				<item name="gunKFM14EBR" loot_prob_template="low"/>
+				<item name="gunKFM99" loot_prob_template="veryLow"/>
 				<item name="gunTCTD2Virginian" loot_prob_template="veryLow"/>
 			</append>
 

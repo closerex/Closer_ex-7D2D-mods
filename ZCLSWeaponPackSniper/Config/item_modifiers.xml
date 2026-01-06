@@ -1,10 +1,20 @@
 <configs>
+	<append xpath="/item_modifiers/item_modifier[@name='modGunSoundSuppressorSilencer']">
+		<item_property_overrides name="gunKFM14EBR">
+			<property name="Sound_start" value="kf_sniperrifle_silenced_fire"/>
+			<property name="Sound_loop" value="kf_sniperrifle_silenced_fire"/>
+			<property name="Sound_end" value=""/>
+		</item_property_overrides>
+	</append>
 	<!-- Reflex -->
 	<append xpath="/item_modifiers/item_modifier[@name='modGunReflexSight']">
 		<item_property_overrides name="gunKFM99">
 			<property name="CrosshairOnAim" value="false"/>
 		</item_property_overrides>
 		<item_property_overrides name="gunKFSPX464">
+			<property name="CrosshairOnAim" value="false"/>
+		</item_property_overrides>
+		<item_property_overrides name="gunKFM14EBR">
 			<property name="CrosshairOnAim" value="false"/>
 		</item_property_overrides>
 	</append>
@@ -19,6 +29,15 @@
 			<property name="Zoom_overlay" value=""/>
 		</item_property_overrides>
 		<item_property_overrides name="gunKFSPX464">
+			<property name="Zoom_max_out" value="55"/>
+			<property name="Zoom_max_in" value="55"/>
+			<property name="DynamicSensitivityRange" value="2,2"/>
+			<property name="ForceFovRange" value="10,10"/>
+			<property name="ZoomRatio" value="2"/>
+			<property name="CrosshairOnAim" value="false"/>
+			<property name="Zoom_overlay" value=""/>
+		</item_property_overrides>
+		<item_property_overrides name="gunKFM14EBR">
 			<property name="Zoom_max_out" value="55"/>
 			<property name="Zoom_max_in" value="55"/>
 			<property name="DynamicSensitivityRange" value="2,2"/>
@@ -45,6 +64,14 @@
 			<property name="CrosshairOnAim" value="false"/>
 			<property name="Zoom_overlay" value=""/>
 		</item_property_overrides>
+		<item_property_overrides name="gunKFM14EBR">
+			<property name="Zoom_max_out" value="55"/>
+			<property name="Zoom_max_in" value="55"/>
+			<property name="DynamicSensitivityRange" value="4,4"/>
+			<property name="ForceFovRange" value="6,6"/>
+			<property name="CrosshairOnAim" value="false"/>
+			<property name="Zoom_overlay" value=""/>
+		</item_property_overrides>
 	</append>
 	<append xpath="/item_modifiers/item_modifier[@name='modGunScopeLarge']">
 		<item_property_overrides name="gunKFM99">
@@ -56,6 +83,14 @@
 			<property name="Zoom_overlay" value=""/>
 		</item_property_overrides>
 		<item_property_overrides name="gunKFSPX464">
+			<property name="Zoom_max_out" value="55"/>
+			<property name="Zoom_max_in" value="55"/>
+			<property name="DynamicSensitivityRange" value="8,8"/>
+			<property name="ForceFovRange" value="3.375,3.375"/>
+			<property name="CrosshairOnAim" value="false"/>
+			<property name="Zoom_overlay" value=""/>
+		</item_property_overrides>
+		<item_property_overrides name="gunKFM14EBR">
 			<property name="Zoom_max_out" value="55"/>
 			<property name="Zoom_max_in" value="55"/>
 			<property name="DynamicSensitivityRange" value="8,8"/>

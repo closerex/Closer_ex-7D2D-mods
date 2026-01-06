@@ -12,6 +12,10 @@
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTRifles']/display_entry[contains(@icon, 'gunmosin')]/unlock_entry[contains(@item, 'gunmosin')]/@item">,gunKFMosin,gunKFSPX464</append>
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTRifles']/effect_group/passive_effect[contains(@tags, 'gunmosin') and (@name='RecipeTagUnlocked' or @name='CraftingTier')]/@tags">,gunKFMosin,gunKFSPX464</append>
 
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTRifles']/display_entry[contains(@icon, 'gunm1aEBR')]/@icon">,gunKFM14EBR</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTRifles']/display_entry[contains(@icon, 'gunm1aEBR')]/unlock_entry[contains(@item, 'gunm1aEBR')]/@item">,gunKFM14EBR</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTRifles']/effect_group/passive_effect[contains(@tags, 'gunm1aEBR') and (@name='RecipeTagUnlocked' or @name='CraftingTier')]/@tags">,gunKFM14EBR</append>
+
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTRifles']/display_entry[contains(@icon, 'gunaxmc')]/@icon">,gunKFM99</append>
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTRifles']/display_entry[contains(@icon, 'gunaxmc')]/unlock_entry[contains(@item, 'gunaxmc')]/@item">,gunKFM99</append>
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTRifles']/effect_group/passive_effect[contains(@tags, 'gunaxmc') and (@name='RecipeTagUnlocked' or @name='CraftingTier')]/@tags">,gunKFM99</append>
@@ -30,11 +34,14 @@
                 <display_entry item="gunKF1894" unlock_level="45,50,55,60,65,70"/>
                 <display_entry item="gunKFMosin" unlock_level="70,75,80,85,90,95"/>
                 <display_entry item="gunKFSPX464" unlock_level="60,65,70,75,80,85"/>
+                <display_entry item="gunKFM14EBR" unlock_level="76,80,84,88,92,96"/>
                 <display_entry item="gunKFM99" unlock_level="81,85,89,93,97,100"/>
             </insertBefore>
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingRifles']/effect_group[1]">
 			    <passive_effect name="RecipeTagUnlocked" operation="base_set" level="45,100" value="1" tags="gunKF1894"/>
 			    <passive_effect name="CraftingTier" operation="base_add" level="50,55,60,65,70,100" value="1,2,3,4,5,5" tags="gunKF1894"/>
+			    <passive_effect name="RecipeTagUnlocked" operation="base_set" level="76,100" value="1" tags="gunKFM14EBR"/>
+			    <passive_effect name="CraftingTier" operation="base_add" level="80,84,88,92,96,100" value="1,2,3,4,5,5" tags="gunKFM14EBR"/>
 			    <passive_effect name="RecipeTagUnlocked" operation="base_set" level="81,100" value="1" tags="gunKFM99"/>
 			    <passive_effect name="CraftingTier" operation="base_add" level="85,89,93,97,100" value="1,2,3,4,5" tags="gunKFM99"/>
 			    <passive_effect name="RecipeTagUnlocked" operation="base_set" level="70,100" value="1" tags="gunKFMosin"/>

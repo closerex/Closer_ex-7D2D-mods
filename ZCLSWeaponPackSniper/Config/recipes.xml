@@ -20,6 +20,19 @@
                     <ingredient name="resourceHighCaliberCasing" count="3"/>
                 </recipe>
 
+                <recipe name="gunKFM14EBR" count="1" craft_area="workbench" tags="learnable">
+                    <ingredient name="gunRifleT1HuntingRifleParts" count="1"/>
+                    <ingredient name="resourceWeaponParts" count="2"/>
+                    <ingredient name="resourceMetalPipe" count="1"/>
+                    <ingredient name="resourceSpring" count="1"/>
+                    <ingredient name="resourceMultitool" count="1"/>
+                    <effect_group>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunRifleT1HuntingRifleParts"/>
+                        <passive_effect name="CraftingIngredientCount" level="1,6" operation="perc_add" value="0,2" tags="resourceWeaponParts"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="resourceMultitool"/>
+                    </effect_group>
+                </recipe>
+
                 <recipe name="gunKFMosin" count="1" craft_area="workbench" tags="learnable">
                     <ingredient name="gunRifleT1HuntingRifleParts" count="1"/>
                     <ingredient name="resourceWeaponParts" count="2"/>
@@ -79,6 +92,20 @@
                     <ingredient name="resourceBulletTip" count="6"/>
                     <ingredient name="resourceGunPowder" count="30"/>
                     <ingredient name="resourceBulletCasing" count="6"/>
+                </recipe>
+
+                <recipe name="gunKFM14EBR" count="1" craft_area="workbench" tags="learnable,perkDeadEye,workbenchCrafting">
+                    <ingredient name="gunRifleT1HuntingRifleParts" count="24"/>
+                    <ingredient name="resourceForgedSteel" count="160"/>
+                    <ingredient name="resourceDuctTape" count="25"/>
+                    <ingredient name="resourceSpring" count="36"/>
+                    <ingredient name="resourceLegendaryParts" count="0"/>
+                    <effect_group>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="gunRifleT1HuntingRifleParts,resourceDuctTape"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="3,15" tags="resourceSpring"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="12,60" tags="resourceForgedSteel"/>
+                        <passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
+                    </effect_group>
                 </recipe>
 
                 <recipe name="gunKFMosin" count="1" craft_area="workbench" tags="learnable,perkDeadEye,workbenchCrafting">

@@ -267,7 +267,12 @@
 		</item>
 	</append>
     <conditional>
-        <if cond="mod_loaded('Z6_EFTX_Armored_Zs')">
+        <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('Z6_EFTX_Armored_Zs')">
+			<append xpath="/items/item[@name='meleeWpnBladeBashKatana']/effect_group[@name='meleeWpnBladeBashKatana']">
+				<passive_effect name="TargetArmor" operation="perc_add" value="-.5"/>
+				<passive_effect name="DismemberChance" operation="base_set" value="10" tags="arm"/>
+				<passive_effect name="DismemberChance" operation="base_set" value="5" tags="leg"/>
+			</append>
 			<append xpath="/items/item[@name='meleeWpnBladeT3KF2Katana']/effect_group[@name='meleeWpnBladeT3KF2Katana']">
 				<passive_effect name="TargetArmor" operation="perc_add" value="-.5"/>
 				<passive_effect name="DismemberChance" operation="base_set" value="10" tags="arm"/>

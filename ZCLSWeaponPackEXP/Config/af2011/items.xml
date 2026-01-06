@@ -263,6 +263,7 @@
 				<triggered_effect trigger="onSelfItemDeactivate" action="SetTransformActive" active="false" parent_transform="#HeldItemRoot" transform_path="altAiming"/>
 			</effect_group>
 		</item>
+		
 		<item name="gunHandgunT3AF2011A1S">
 			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
 			<property name="Tags" value="weapon,ranged,revolver,44enforcer,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,magazine,sideAttachments,noSilencer,attAgility,perkGunslinger,attachmentsIncluded,canHaveCosmetic,handgunSkill,enforcerReload,af2011"/>
@@ -433,11 +434,6 @@
     <conditional>
         <if cond="mod_loaded('EFTX_Pack_Standard')">
 			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/property[@name='UnlockedBy']/@value">craftingPistols</set>
-            <csv xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/property[@name='Tags']/@value" delim="," op="add">eftPistol</csv>
-            <csv xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group/requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="add">perkEFTXPistols</csv>
-            <csv xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group/requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="remove">perkGunslinger</csv>
-            <csv xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group//requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="add">perkEFTXPistols</csv>
-            <csv xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group//requirement[contains(@progression_name, 'perkGunslinger')]/@progression_name" delim="," op="remove">perkGunslinger</csv>
         </if>
     </conditional>
 </configs>

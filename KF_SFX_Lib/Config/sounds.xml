@@ -18,25 +18,36 @@
             <LocalCrouchVolumeScale value="0.25"/> <CrouchNoiseScale value="0.05"/> <NoiseScale value=".2"/> <MaxVoices value="3"/> <MaxRepeatRate value="0.01"/>
         </SoundDataNode>
 		<SoundDataNode name="kf_pistol_silenced_fire"> <AudioSource name="@:Sounds/Prefabs/AudioSource_WeaponFire.prefab"/> <NetworkAudioSource name="@:Sounds/Prefabs/AudioSource_WeaponFire_Network.prefab"/>
-			<Noise ID="0" noise="17" time="2" muffled_when_crouched="0.8" heat_map_strength="0.4" heat_map_time="180"/>
-			<AudioClip ClipName="@:Sounds/Weapons/Ranged/Pistol/pistol_s_fire1.wav"/>
-			<AudioClip ClipName="@:Sounds/Weapons/Ranged/Pistol/pistol_s_fire2.wav"/>
-			<AudioClip ClipName="@:Sounds/Weapons/Ranged/Pistol/pistol_s_fire3.wav"/>
-			<AudioClip ClipName="@:Sounds/Weapons/Ranged/Pistol/pistol_s_fire4.wav"/>
-			<AudioClip ClipName="@:Sounds/Twitch/Silly/pistol_fire_silly1.wav" AltSound="true"/>
-			<AudioClip ClipName="@:Sounds/Twitch/Silly/pistol_fire_silly2.wav" AltSound="true"/>
-			<AudioClip ClipName="@:Sounds/Twitch/Silly/pistol_fire_silly3.wav" AltSound="true"/>
+            <Noise ID="0" noise="17" time="2" muffled_when_crouched="0.8" heat_map_strength="0.4" heat_map_time="180"/>
+            <AudioClip ClipName="@:Sounds/Weapons/Ranged/Pistol/pistol_s_fire1.wav"/>
+            <AudioClip ClipName="@:Sounds/Weapons/Ranged/Pistol/pistol_s_fire2.wav"/>
+            <AudioClip ClipName="@:Sounds/Weapons/Ranged/Pistol/pistol_s_fire3.wav"/>
+            <AudioClip ClipName="@:Sounds/Weapons/Ranged/Pistol/pistol_s_fire4.wav"/>
+            <AudioClip ClipName="@:Sounds/Twitch/Silly/pistol_fire_silly1.wav" AltSound="true"/>
+            <AudioClip ClipName="@:Sounds/Twitch/Silly/pistol_fire_silly2.wav" AltSound="true"/>
+            <AudioClip ClipName="@:Sounds/Twitch/Silly/pistol_fire_silly3.wav" AltSound="true"/>
 		<LocalCrouchVolumeScale value="0.5"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="30"/> <MaxVoicesPerEntity value="10"/> <MaxRepeatRate value="0.001"/> </SoundDataNode>
 
         <SoundDataNode name="kf_pumpshotgun_silenced_fire"> <AudioSource name="@:Sounds/Prefabs/AudioSource_WeaponFire.prefab"/> <NetworkAudioSource name="@:Sounds/Prefabs/AudioSource_WeaponFire_Network.prefab"/>
-        <Noise ID="0" noise="38" time="2" muffled_when_crouched="0.8" heat_map_strength="0.8" heat_map_time="180"/>
-        <AudioClip ClipName="@:Sounds/Weapons/Ranged/PumpShotgun/pump_shotgun_s_fire1.wav"/>
-        <AudioClip ClipName="@:Sounds/Weapons/Ranged/PumpShotgun/pump_shotgun_s_fire2.wav"/>
-        <AudioClip ClipName="@:Sounds/Weapons/Ranged/PumpShotgun/pump_shotgun_s_fire3.wav"/>
-        <AudioClip ClipName="@:Sounds/Weapons/Ranged/PumpShotgun/pump_shotgun_s_fire4.wav"/>
-        <AudioClip ClipName="@:Sounds/Twitch/Silly/shotgun_fire_silly1.wav" AltSound="true"/>
-        <AudioClip ClipName="@:Sounds/Twitch/Silly/shotgun_fire_silly2.wav" AltSound="true"/>
-        <AudioClip ClipName="@:Sounds/Twitch/Silly/shotgun_fire_silly3.wav" AltSound="true"/>
+            <Noise ID="0" noise="38" time="2" muffled_when_crouched="0.8" heat_map_strength="0.8" heat_map_time="180"/>
+            <AudioClip ClipName="@:Sounds/Weapons/Ranged/PumpShotgun/pump_shotgun_s_fire1.wav"/>
+            <AudioClip ClipName="@:Sounds/Weapons/Ranged/PumpShotgun/pump_shotgun_s_fire2.wav"/>
+            <AudioClip ClipName="@:Sounds/Weapons/Ranged/PumpShotgun/pump_shotgun_s_fire3.wav"/>
+            <AudioClip ClipName="@:Sounds/Weapons/Ranged/PumpShotgun/pump_shotgun_s_fire4.wav"/>
+            <AudioClip ClipName="@:Sounds/Twitch/Silly/shotgun_fire_silly1.wav" AltSound="true"/>
+            <AudioClip ClipName="@:Sounds/Twitch/Silly/shotgun_fire_silly2.wav" AltSound="true"/>
+            <AudioClip ClipName="@:Sounds/Twitch/Silly/shotgun_fire_silly3.wav" AltSound="true"/>
+        <LocalCrouchVolumeScale value="1"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="20"/> <MaxVoicesPerEntity value="6"/> <MaxRepeatRate value="0.001"/> </SoundDataNode>
+
+        <SoundDataNode name="kf_sniperrifle_silenced_fire"> <AudioSource name="@:Sounds/Prefabs/AudioSource_WeaponFire.prefab"/> <NetworkAudioSource name="@:Sounds/Prefabs/AudioSource_WeaponFire_Network.prefab"/>
+            <Noise ID="0" noise="34" time="2" muffled_when_crouched="0.8" heat_map_strength="0.65" heat_map_time="180"/>
+            <AudioClip ClipName="@:Sounds/Weapons/Ranged/SniperRifle/sniperrifle_s_fire1.wav"/>
+            <AudioClip ClipName="@:Sounds/Weapons/Ranged/SniperRifle/sniperrifle_s_fire2.wav"/>
+            <AudioClip ClipName="@:Sounds/Weapons/Ranged/SniperRifle/sniperrifle_s_fire3.wav"/>
+            <AudioClip ClipName="@:Sounds/Weapons/Ranged/SniperRifle/sniperrifle_s_fire4.wav"/>
+            <AudioClip ClipName="@:Sounds/Twitch/Silly/hunting_rifle_fire_silly1.wav" AltSound="true"/>
+            <AudioClip ClipName="@:Sounds/Twitch/Silly/hunting_rifle_fire_silly2.wav" AltSound="true"/>
+            <AudioClip ClipName="@:Sounds/Twitch/Silly/hunting_rifle_fire_silly3.wav" AltSound="true"/>
         <LocalCrouchVolumeScale value="1"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="20"/> <MaxVoicesPerEntity value="6"/> <MaxRepeatRate value="0.001"/> </SoundDataNode>
     </append>
     <!-- #endregion -->
@@ -1678,6 +1689,96 @@
             <LowestPitch value="1.189207" />
             <HighestPitch value="1.260649" />
         </SoundDataNode>
+        <SoundDataNode name="kf_ebr_Fire_1P_Single_City">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m14ebr" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m14ebr_Network" />
+            <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Shot_City_1" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Shot_City_2" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Shot_City_3" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Shot_City_4" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.917004" />
+            <HighestPitch value="1.044274" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ebr_Fire_1P_Single_Forest">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m14ebr" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m14ebr_Network" />
+            <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Shot_Forest_1" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Shot_Forest_2" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Shot_Forest_3" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Shot_Forest_4" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.917004" />
+            <HighestPitch value="1.044274" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ebr_Fire_1P_Single_Large">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m14ebr" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m14ebr_Network" />
+            <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Shot_Large_1" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Shot_Large_2" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Shot_Large_3" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Shot_Large_4" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.917004" />
+            <HighestPitch value="1.044274" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ebr_Fire_1P_Single_Medium">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m14ebr" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m14ebr_Network" />
+            <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Shot_Medium_1" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Shot_Medium_2" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Shot_Medium_3" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Shot_Medium_4" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.917004" />
+            <HighestPitch value="1.044274" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ebr_Fire_1P_Single_Small">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m14ebr" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m14ebr_Network" />
+            <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Shot_Small_1" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Shot_Small_2" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Shot_Small_3" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Shot_Small_4" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.917004" />
+            <HighestPitch value="1.044274" />
+        </SoundDataNode>
         <SoundDataNode name="kf_pulverizer_Fire_1P_Single_Small">
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_pulverizer" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_pulverizer_Network" />
@@ -1751,6 +1852,21 @@
         </SoundDataNode>
         <SoundDataNode name="kf_ak12_DryFire">
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_ak12" />
+            <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_AK12_Handling_DryFire_01" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_AK12_Handling_DryFire_02" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_AK12_Handling_DryFire_03" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="30" />
+            <MaxVoicesPerEntity value="10" />
+            <MaxRepeatRate value="0.001" />
+            <HighestPitch value="1.029302" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ebr_DryFire">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_m14ebr_dryfire" />
             <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_AK12_Handling_DryFire_01" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_AK12_Handling_DryFire_02" />
@@ -3044,6 +3160,173 @@
             <MaxVoices value="1" />
             <MaxVoicesPerEntity value="5" />
             <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ebr_check_slide">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_m14ebr" />
+            <Noise ID="0" noise="8" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Check_Fast_Slide" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ebr_check_slide_fwd">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_m14ebr" />
+            <Noise ID="0" noise="8" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Check_Fast_Slide_FWD" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ebr_check_mag">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_m14ebr" />
+            <Noise ID="0" noise="8" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Check_Mag" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ebr_check_mag_in">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_m14ebr" />
+            <Noise ID="0" noise="8" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Check_Mag_In" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ebr_empty_mag_in">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_m14ebr" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Empty_Mag_In" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.9570503" />
+            <HighestPitch value="1.029897" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ebr_slide_back">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_m14ebr" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Empty_Slide_Back" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ebr_slide_fwd">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_m14ebr" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Empty_Slide_Forward" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ebr_empty_toss">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_m14ebr" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Empty_Toss" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ebr_reload">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_m14ebr" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Reload_1" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.9570503" />
+            <HighestPitch value="1.029897" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ebr_reload_2">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_m14ebr" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?EBR_Reload_2" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="0.9570503" />
+            <HighestPitch value="1.029897" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ebr_equip">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_m14ebr" />
+            <Noise ID="0" noise="8" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_SCAR_Handling_Pullout" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <HighestPitch value="1.029302" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ebr_unequip">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_m14ebr" />
+            <Noise ID="0" noise="8" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_SCAR_Handling_PutAway" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <HighestPitch value="1.029302" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ebr_Rustle">
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_m14ebr" />
+            <Noise ID="0" noise="5" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_L85A2_Handling_Rustle_01" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_L85A2_Handling_Rustle_02" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_L85A2_Handling_Rustle_03" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <HighestPitch value="1.014545" />
         </SoundDataNode>
         <SoundDataNode name="kf_hz12_Back">
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_hz12" />

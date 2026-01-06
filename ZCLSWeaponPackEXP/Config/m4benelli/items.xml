@@ -196,7 +196,7 @@
 				<passive_effect name="ModSlots" operation="base_set" value="1,2,3,4,5,6" tier="3,3,3,4,5,6"/>
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
-				<passive_effect name="EntityDamage" operation="base_add" value="6" tags="perkBoomstick"/> <!-- damage offset -->
+				<passive_effect name="EntityDamage" operation="base_add" value="5" tags="perkBoomstick"/> <!-- damage offset -->
 				<passive_effect name="EntityDamage" operation="perc_add" value="-.02,.02" tags="perkBoomstick"/> <!-- random EntityDmg -->
 				<passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6" tags="perkBoomstick"/> <!-- tier bonus -->
 				<passive_effect name="BlockDamage" operation="base_add" value="-2" tags="perkBoomstick"/> <!-- damage offset -->
@@ -243,11 +243,6 @@
     <conditional>
         <if cond="mod_loaded('EFTX_Pack_Standard')">
 			<set xpath="/items/item[@name='gunT3M4Benelli']/property[@name='UnlockedBy']/@value">craftingEFTShotguns</set>
-            <csv xpath="/items/item[@name='gunT3M4Benelli']/property[@name='Tags']/@value" delim="," op="add">eftShotties</csv>
-            <csv xpath="/items/item[@name='gunT3M4Benelli']/effect_group/requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="add">perkEFTXShotties</csv>
-            <csv xpath="/items/item[@name='gunT3M4Benelli']/effect_group/requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="remove">perkBoomstick</csv>
-            <csv xpath="/items/item[@name='gunT3M4Benelli']/effect_group//requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="add">perkEFTXShotties</csv>
-            <csv xpath="/items/item[@name='gunT3M4Benelli']/effect_group//requirement[contains(@progression_name, 'perkBoomstick')]/@progression_name" delim="," op="remove">perkBoomstick</csv>
         </if>
     </conditional>
 </configs>
