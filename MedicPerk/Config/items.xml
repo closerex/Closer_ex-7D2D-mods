@@ -258,6 +258,7 @@
 				<property name="Sound_end" value=""/>
 				<property name="Sound_empty" value="kf_ak12_DryFire"/>
 				<property name="Sound_reload" value=""/>
+				<property name="LoopSegmentLength" value="0.075"/>
 				<property name="AutoReload" value="false"/>
 				<property name="FireMode0.BurstCount" value="1"/>
 				<property name="FireMode0.IsFullAuto" value="true"/>
