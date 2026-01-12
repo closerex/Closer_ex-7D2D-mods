@@ -119,6 +119,26 @@ namespace CustomFPVFov
         {
             (entity as EntityPlayerLocal)?.vp_FPWeapon?.CacheRenderers();
         }
+
+        private static (List<ScreenSpaceParticleAspectScaler> tempScalers, float scale) scalerPair = new(new List<ScreenSpaceParticleAspectScaler>(), 1);
+        [HarmonyPatch(typeof(CameraMatrixOverride), nameof(CameraMatrixOverride.UpdateRendererList))]
+        [HarmonyPostfix]
+        private static void Postfix_CameraMatrixOverride_UpdateRendererList(CameraMatrixOverride __instance)
+        {
+            scalerPair.tempScalers.Clear();
+            __instance.GetComponentsInChildren<ScreenSpaceParticleAspectScaler>(true, scalerPair.tempScalers);
+            scalerPair.scale = Mathf.Tan(__instance.fov * 0.5f * Mathf.Deg2Rad) / Mathf.Tan(45f * 0.5f * Mathf.Deg2Rad);
+        }
+
+        [HarmonyPatch(typeof(ScreenSpaceParticleAspectScaler), nameof(ScreenSpaceParticleAspectScaler.Update))]
+        [HarmonyPostfix]
+        private static void Postfix_ScreenSpaceParticleAspectScaler_Update(ScreenSpaceParticleAspectScaler __instance)
+        {
+            if (scalerPair.tempScalers.Contains(__instance))
+            {
+                __instance.transform.localScale *= scalerPair.scale;
+            }
+        }
     }
 
     public class GearsImpl : IGearsModApi
