@@ -194,7 +194,7 @@ public class ActionModuleLoopSoundFix
         {
             if (debugLog)
             {
-                Log.Out($"[LoopSoundFix] StopSequenceDelayed called for entity {entity.entityId}, soundGroupName: {soundGroupName}, loopStartTime: {data.loopStartTime}, shotCount: {data.shotCount}");
+                Log.Out($"[LoopSoundFix] StopSequenceDelayed called for entity {entity.entityId}, soundGroupName: {soundGroupName}, loopStartTime: {data.loopStartTime}, shotCount: {data.shotCount}\n{StackTraceUtility.ExtractStackTrace()}");
             }
             if (data.enabled && data.loopStartTime >= 0f && data.shotCount > 0)
             {

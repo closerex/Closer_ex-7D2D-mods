@@ -1,6 +1,10 @@
 <config>
-    <append xpath="/doc/tips">
-		<tip key="loadingTipKFKeybinds" />
-		<tip key="loadingTipKFCameraAnimation" />
-    </append>
+	<append xpath="/doc/tips">
+		<conditional>
+			<else>
+				<tip key="loadingTipKFKeybinds"/>
+				<tip key="loadingTipKFCameraAnimation"/>
+			</else>
+		</conditional>
+	</append>
 </config>
