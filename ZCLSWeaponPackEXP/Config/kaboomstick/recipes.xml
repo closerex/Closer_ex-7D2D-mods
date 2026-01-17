@@ -1,23 +1,37 @@
 <configs>
-	<append xpath="/recipes">
-		<recipe name="ammoKaboomstickShellFrag" count="1" craft_time="40" craft_area="workbench" tags="learnable,workbenchCrafting">
-			<ingredient name="resourceBuckshot" count="10"/>
-			<ingredient name="resourceGunPowder" count="8"/>
-			<ingredient name="resourceDuctTape" count="1"/>
-			<ingredient name="ammoGasCan" count="200"/>
-			<ingredient name="resourceRocketCasing" count="1"/>
-		</recipe>
-
-		<recipe name="ammoKaboomstickShellHE" count="1" craft_time="30" craft_area="workbench" tags="learnable,workbenchCrafting">
-			<ingredient name="resourceRocketTip" count="1"/>
-			<ingredient name="resourceGunPowder" count="8"/>
-			<ingredient name="resourceDuctTape" count="1"/>
-			<ingredient name="ammoGasCan" count="200"/>
-			<ingredient name="resourceRocketCasing" count="1"/>
-		</recipe>
-	</append>
-	
 	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<append xpath="/recipes">
+				<recipe name="schematicsKaboomstick" count="1">
+					<ingredient name="gunKaboomstick" count="1" />
+					<ingredient name="resourceToolset" count="1" />
+				</recipe>
+				<recipe name="gunKaboomstick" count="1" craft_area="workbench" tags="learnable">
+					<ingredient name="gunExplosivesT3RocketLauncherParts" count="1" />
+					<ingredient name="resourceWeaponParts" count="2" />
+					<ingredient name="resourceMetalPipe" count="2" />
+					<ingredient name="resourceSpring" count="2" />
+					<ingredient name="resourceWD40" count="1" />
+					<effect_group>
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunExplosivesT3RocketLauncherParts" />
+						<passive_effect name="CraftingIngredientCount" level="1,6" operation="perc_add" value="0,2" tags="resourceWeaponParts" />
+						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="resourceWD40" />
+					</effect_group>
+				</recipe>
+				<recipe name="ammoKaboomstickShellFrag" count="1" craft_area="workbench" tags="learnable,workbenchCrafting">
+					<ingredient name="resourceMechanicalParts" count="1" />
+					<ingredient name="resourceTP200TNTBrick" count="1" />
+					<ingredient name="resource_item_other_powder_red" count="20" />
+					<ingredient name="resourceForgedSteel" count="2" />
+				</recipe>
+				<recipe name="ammoKaboomstickShellHE" count="1" craft_area="workbench" tags="learnable,workbenchCrafting">
+					<ingredient name="resourceMechanicalParts" count="1" />
+					<ingredient name="resourceTP200TNTBrick" count="1" />
+					<ingredient name="resource_item_other_powder_red" count="20" />
+					<ingredient name="resourceForgedSteel" count="2" />
+				</recipe>
+			</append>
+		</if>
 		<if cond="mod_loaded('EFTX_Pack_Core')">
 			<append xpath="/recipes">
 				<recipe name="gunKaboomstick" count="1" craft_area="workbench" tags="learnable">
@@ -29,6 +43,18 @@
 					<effect_group>
 						<passive_effect name="CraftingIngredientCount" level="1,6" operation="base_add" value="1,5" tags="gunExplosivesT3RocketLauncherParts"/>
 					</effect_group>
+				</recipe>
+				<recipe name="ammoKaboomstickShellFrag" count="1" craft_area="workbench" tags="learnable,workbenchCrafting">
+					<ingredient name="resourceMechanicalParts" count="2" />
+					<ingredient name="resourceTP200TNTBrick" count="2" />
+					<ingredient name="resourceForgedSteel" count="1" />
+					<ingredient name="resourceEmptyShotgunShell" count="3" />
+				</recipe>
+				<recipe name="ammoKaboomstickShellHE" count="1" craft_area="workbench" tags="learnable,workbenchCrafting">
+					<ingredient name="resourceMechanicalParts" count="2" />
+					<ingredient name="resourceTP200TNTBrick" count="2" />
+					<ingredient name="resourceForgedSteel" count="1" />
+					<ingredient name="resourceEmptyShotgunShell" count="3" />
 				</recipe>
 			</append>
 		</if>
@@ -45,7 +71,29 @@
 						<passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
 					</effect_group>
 				</recipe>
+				
+				<recipe name="ammoKaboomstickShellFrag" count="1" craft_time="40" craft_area="workbench" tags="learnable,workbenchCrafting">
+					<ingredient name="resourceBuckshot" count="10"/>
+					<ingredient name="resourceGunPowder" count="8"/>
+					<ingredient name="resourceDuctTape" count="1"/>
+					<ingredient name="ammoGasCan" count="200"/>
+					<ingredient name="resourceRocketCasing" count="1"/>
+				</recipe>
+
+				<recipe name="ammoKaboomstickShellHE" count="1" craft_time="30" craft_area="workbench" tags="learnable,workbenchCrafting">
+					<ingredient name="resourceRocketTip" count="1"/>
+					<ingredient name="resourceGunPowder" count="8"/>
+					<ingredient name="resourceDuctTape" count="1"/>
+					<ingredient name="ammoGasCan" count="200"/>
+					<ingredient name="resourceRocketCasing" count="1"/>
+				</recipe>
 			</append>
 		</else>
+	</conditional>
+
+	<conditional>
+		<if cond="mod_version('EFTX_Pack_Core') &gt;= version(2,5,2,5)">
+			<setattribute xpath="/recipes/recipe[@name='gunKaboomstick']/ingredient[@name='resourceWeaponParts']" name="name">resourceLauncherRepairKit</setattribute>
+		</if>
 	</conditional>
 </configs>

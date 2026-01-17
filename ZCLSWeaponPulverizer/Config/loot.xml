@@ -18,6 +18,12 @@
 	<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT2_Melee']">
 		<item name="meleeWpnSledgeT3Pulverizer" loot_prob_template="veryLow"/>
 	</append>
+	<append xpath="/lootcontainers/lootgroup[@name='groupInfestedT5MeleeRanged']">
+		<item name="meleeWpnSledgeT3Pulverizer" loot_prob_template="low"/>
+	</append>
+	<append xpath="/lootcontainers/lootgroup[@name='twitch_tier2melee']">
+		<item name="meleeWpnSledgeT3Pulverizer" random_durability="false"/>
+	</append>
 	
 <!-- *** Quest_Rewards -->
 	<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsMeleeT2']">
@@ -25,6 +31,11 @@
 	</append>
 	
 	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<append xpath="/lootcontainers/lootgroup[@name='groupEftExplosives']">
+				<item name="ammoPulverizer" count="1,3" loot_prob_template="medLow"/>
+			</append>
+		</if>
 		<if cond="mod_loaded('EFTX_Pack_Core')">
 			<append xpath="//lootgroup[@name='groupSpecialGuns']">
 				<item name="meleeWpnSledgeT3Pulverizer" count="1" quality="1"/>

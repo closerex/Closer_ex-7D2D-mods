@@ -1,23 +1,68 @@
 <config>
-    <conditional>
-        <if cond="mod_loaded('EFTX_Pack_Core')">
-            <append xpath="/recipes">
-				<!-- Silencer -->
-				<recipe name="modGunDualWieldSilencer" count="1">
-					<ingredient name="modGunSoundSuppressorSilencer" count="2"/>
-				</recipe>
-				<recipe name="modGunSoundSuppressorSilencer" count="2">
-					<ingredient name="modGunDualWieldSilencer" count="1"/>
-				</recipe>
+    <append xpath="/recipes">
+        <!-- Silencer -->
+        <recipe name="modGunDualWieldSilencer" count="1">
+            <ingredient name="modGunSoundSuppressorSilencer" count="2"/>
+        </recipe>
+        <recipe name="modGunSoundSuppressorSilencer" count="2">
+            <ingredient name="modGunDualWieldSilencer" count="1"/>
+        </recipe>
 
-				<!-- Muzzle Brake -->
-				<recipe name="modGunDualWieldMuzzleBrake" count="1">
-					<ingredient name="modGunMuzzleBrake" count="2"/>
-				</recipe>
-				<recipe name="modGunMuzzleBrake" count="2">
-					<ingredient name="modGunDualWieldMuzzleBrake" count="1"/>
-				</recipe>
-                
+        <!-- Muzzle Brake -->
+        <recipe name="modGunDualWieldMuzzleBrake" count="1">
+            <ingredient name="modGunMuzzleBrake" count="2"/>
+        </recipe>
+        <recipe name="modGunMuzzleBrake" count="2">
+            <ingredient name="modGunDualWieldMuzzleBrake" count="1"/>
+        </recipe>
+    </append>
+
+    <conditional>
+        <if cond="mod_loaded('EFT_Overhaul')">
+            <append xpath="/recipes">
+                <recipe name="schematicsKF29mm" count="1">
+                    <ingredient name="gunKF9mm" count="1" />
+                    <ingredient name="resourceToolset" count="1" />
+                </recipe>
+                <recipe name="schematicsKF29mm" count="2">
+                    <ingredient name="gunKFDual9mm" count="1" />
+                    <ingredient name="resourceToolset" count="1" />
+                </recipe>
+                <recipe name="schematicsKF2HRGSW500" count="1">
+                    <ingredient name="gunKFHRGSW500" count="1" />
+                    <ingredient name="resourceToolset" count="1" />
+                </recipe>
+                <recipe name="schematicsKF2HRGSW500" count="2">
+                    <ingredient name="gunKFDualHRGSW500" count="1" />
+                    <ingredient name="resourceToolset" count="1" />
+                </recipe>
+                <recipe name="schematicsKF2SW500" count="1">
+                    <ingredient name="gunKFSW500" count="1" />
+                    <ingredient name="resourceToolset" count="1" />
+                </recipe>
+                <recipe name="schematicsKF2SW500" count="2">
+                    <ingredient name="gunKFDualSW500" count="1" />
+                    <ingredient name="resourceToolset" count="1" />
+                </recipe>
+                <recipe name="schematicsKF2G18C" count="1">
+                    <ingredient name="gunKFG18C" count="1" />
+                    <ingredient name="resourceToolset" count="1" />
+                </recipe>
+                <recipe name="schematicsKF2G18C" count="2">
+                    <ingredient name="gunKFDualG18C" count="1" />
+                    <ingredient name="resourceToolset" count="1" />
+                </recipe>
+                <recipe name="schematicsKF2G18Shield" count="1">
+                    <ingredient name="gunKFG18CShield" count="1" />
+                    <ingredient name="resourceToolset" count="1" />
+                </recipe>
+            </append>
+        </if>
+    </conditional>
+    
+    <conditional>
+        <if cond="mod_loaded('EFTX_Pack_Core') or mod_loaded('EFT_Overhaul')">
+            <append xpath="/recipes">
                 <recipe name="gunKF9mm" count="1" craft_area="workbench" tags="learnable">
                     <ingredient name="gunHandgunT1PistolParts" count="1"/>
                     <ingredient name="resourceWeaponParts" count="1"/>
@@ -133,27 +178,10 @@
 						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="5,25" tags="resourceScrapPolymers"/>
                     </effect_group>
                 </recipe>
-				
             </append>
         </if>
         <else>
             <append xpath="/recipes">
-				<!-- Silencer -->
-				<recipe name="modGunDualWieldSilencer" count="1">
-					<ingredient name="modGunSoundSuppressorSilencer" count="2"/>
-				</recipe>
-				<recipe name="modGunSoundSuppressorSilencer" count="2">
-					<ingredient name="modGunDualWieldSilencer" count="1"/>
-				</recipe>
-
-				<!-- Muzzle Brake -->
-				<recipe name="modGunDualWieldMuzzleBrake" count="1">
-					<ingredient name="modGunMuzzleBrake" count="2"/>
-				</recipe>
-				<recipe name="modGunMuzzleBrake" count="2">
-					<ingredient name="modGunDualWieldMuzzleBrake" count="1"/>
-				</recipe>
-
                 <recipe name="gunKF9mm" count="1" craft_area="workbench" tags="learnable,perkGunslinger,workbenchCrafting">
                     <ingredient name="gunHandgunT1PistolParts" count="4"/>
                     <ingredient name="resourceForgedIron" count="10"/>
@@ -280,4 +308,12 @@
             </append>
         </else>
     </conditional>
+
+	<conditional>
+		<if cond="mod_version('EFTX_Pack_Core') &gt;= version(2,5,2,5)">
+			<setattribute xpath="/recipes/recipe[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFG18C' or @name='gunKFDualG18C']/ingredient[@name='resourceWeaponParts']" name="name">resourcePistolRepairKit</setattribute>
+			<setattribute xpath="/recipes/recipe[@name='gunKFSW500' or @name='gunKFDualSW500' or @name='gunKFHRGSW500' or @name='gunKFDualHRGSW500']/ingredient[@name='gunHandgunT1PistolParts']" name="name">resourceRevolverParts</setattribute>
+			<setattribute xpath="/recipes/recipe[@name='gunKFSW500' or @name='gunKFDualSW500' or @name='gunKFHRGSW500' or @name='gunKFDualHRGSW500']/ingredient[@name='resourceWeaponParts']" name="name">resourceRevolverRepairKit</setattribute>
+		</if>
+	</conditional>
 </config>

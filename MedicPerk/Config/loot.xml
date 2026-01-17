@@ -34,38 +34,18 @@
 	</append>
 
 	<conditional>
-		<if cond="mod_loaded('EFT8_DVS_Configs')">
-			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT1']">
-				<item group="groupWeaponsT1_MedicWeapon"/>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<append xpath="/lootcontainers/lootgroup[@name='groupPistolsT1']">
+				<item name="gunMedicPistol" mods="modMedicModule" mod_chance="1" loot_prob_template="medLow"/>
 			</append>
-			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT2']">
-				<item group="groupWeaponsT2_MedicWeapon"/>
+			<append xpath="/lootcontainers/lootgroup[@name='groupSMGT1']">
+				<item name="gunMedicSMG201" mods="modMedicModule" mod_chance="1" loot_prob_template="medLow"/>
 			</append>
-			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3']">
-				<item group="groupWeaponsT3_MedicWeapon"/>
+			<append xpath="/lootcontainers/lootgroup[@name='groupShotgunsT2']">
+				<item name="gunMedicShotgun301" mods="modMedicModule" mod_chance="1" loot_prob_template="medLow"/>
 			</append>
-			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT4']">
-				<item group="groupWeaponsT3_MedicWeapon"/>
-			</append>
-
-			<!-- Crafting Skill Magazines -->
-			<append xpath="/lootcontainers/lootgroup[@name='groupEftMedicalMagazines']">
-				<item name="medicgunsSkillMagazine" count="0,1" loot_prob_template="med"/>
-			</append>
-			<append xpath="/lootcontainers/lootgroup[@name='groupEftReadablesMagazinesRanged']">
-				<item name="medicgunsSkillMagazine"/>
-			</append>
-			<append xpath="/lootcontainers/lootgroup[@name='groupEftMedicalTrash']">
-				<item name="medicgunsSkillMagazine" loot_prob_template="veryLow"/>
-			</append>
-			<append xpath="/lootcontainers/lootgroup[@name='groupEftMedicalT1']">
-				<item name="medicgunsSkillMagazine" loot_prob_template="veryLow"/>
-			</append>
-			<append xpath="/lootcontainers/lootgroup[@name='groupEftMedicalT2']">
-				<item name="medicgunsSkillMagazine" loot_prob_template="low"/>
-			</append>
-			<append xpath="/lootcontainers/lootgroup[@name='groupEftMedicalT3']">
-				<item name="medicgunsSkillMagazine" loot_prob_template="low"/>
+			<append xpath="/lootcontainers/lootgroup[@name='groupRiflesT3']">
+				<item name="gunMedicAssaultRifle401" mods="modMedicModule" mod_chance="1" loot_prob_template="medLow"/>
 			</append>
 		</if>
 		<if cond="mod_loaded('EFTX_Pack_Core')">
@@ -85,6 +65,86 @@
 			<append xpath="/lootcontainers/lootgroup[@name='groupModEftSkillMagazinesAll']">
 				<item name="medicgunsSkillMagazine" count="1"/>
 			</append>
+
+			<conditional>
+				<if cond="mod_version('EFTX_Pack_Core') &gt;= version(2,5,2,5)">
+					<append xpath="//lootgroup[@name='groupEFTXPistolsT1']">
+						<item name="gunMedicPistol" mods="modMedicModule" mod_chance="1" count="1" quality="1"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXPistolsT2']">
+						<item name="gunMedicPistol" mods="modMedicModule" mod_chance="1" count="1" quality="2"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXPistolsT3']">
+						<item name="gunMedicPistol" mods="modMedicModule" mod_chance="1" count="1" quality="3"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXPistolsT4']">
+						<item name="gunMedicPistol" mods="modMedicModule" mod_chance="1" count="1" quality="4"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXPistolsT5']">
+						<item name="gunMedicPistol" mods="modMedicModule" mod_chance="1" count="1" quality="5"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXPistolsT6']">
+						<item name="gunMedicPistol" mods="modMedicModule" mod_chance="1" count="1" quality="6"/>
+					</append>
+
+					<append xpath="//lootgroup[@name='groupEFTXSMGST1']">
+						<item name="gunMedicSMG201" mods="modMedicModule" mod_chance="1" count="1" quality="1"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXSMGST2']">
+						<item name="gunMedicSMG201" mods="modMedicModule" mod_chance="1" count="1" quality="2"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXSMGST3']">
+						<item name="gunMedicSMG201" mods="modMedicModule" mod_chance="1" count="1" quality="3"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXSMGST4']">
+						<item name="gunMedicSMG201" mods="modMedicModule" mod_chance="1" count="1" quality="4"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXSMGST5']">
+						<item name="gunMedicSMG201" mods="modMedicModule" mod_chance="1" count="1" quality="5"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXSMGST6']">
+						<item name="gunMedicSMG201" mods="modMedicModule" mod_chance="1" count="1" quality="6"/>
+					</append>
+					
+					<append xpath="//lootgroup[@name='groupEFTXShotgunsT1']">
+						<item name="gunMedicShotgun301" mods="modMedicModule" mod_chance="1" count="1" quality="1"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXShotgunsT2']">
+						<item name="gunMedicShotgun301" mods="modMedicModule" mod_chance="1" count="1" quality="2"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXShotgunsT3']">
+						<item name="gunMedicShotgun301" mods="modMedicModule" mod_chance="1" count="1" quality="3"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXShotgunsT4']">
+						<item name="gunMedicShotgun301" mods="modMedicModule" mod_chance="1" count="1" quality="4"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXShotgunsT5']">
+						<item name="gunMedicShotgun301" mods="modMedicModule" mod_chance="1" count="1" quality="5"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXShotgunsT6']">
+						<item name="gunMedicShotgun301" mods="modMedicModule" mod_chance="1" count="1" quality="6"/>
+					</append>
+					
+					<append xpath="//lootgroup[@name='groupEFTXRiflesT1']">
+						<item name="gunMedicAssaultRifle401" mods="modMedicModule" mod_chance="1" count="1" quality="1"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXRiflesT2']">
+						<item name="gunMedicAssaultRifle401" mods="modMedicModule" mod_chance="1" count="1" quality="2"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXRiflesT3']">
+						<item name="gunMedicAssaultRifle401" mods="modMedicModule" mod_chance="1" count="1" quality="3"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXRiflesT4']">
+						<item name="gunMedicAssaultRifle401" mods="modMedicModule" mod_chance="1" count="1" quality="4"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXRiflesT5']">
+						<item name="gunMedicAssaultRifle401" mods="modMedicModule" mod_chance="1" count="1" quality="5"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXRiflesT6']">
+						<item name="gunMedicAssaultRifle401" mods="modMedicModule" mod_chance="1" count="1" quality="6"/>
+					</append>
+				</if>
+			</conditional>
 		</if>
 		<else>
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT1_Ranged']">

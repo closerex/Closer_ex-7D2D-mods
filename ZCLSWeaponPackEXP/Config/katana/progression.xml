@@ -1,17 +1,19 @@
 <configs>
-	
-	<!-- KF2 Katana -->
-	
-	<insertBefore xpath="/progression/crafting_skills/crafting_skill[@name='craftingBlades']/effect_group[1]">
-		<display_entry item="meleeWpnBladeT3KF2Katana" unlock_level="50,55,60,65,70,75" />
-	</insertBefore>
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+		</if>
+		<else>
+			<insertBefore xpath="/progression/crafting_skills/crafting_skill[@name='craftingBlades']/effect_group[1]">
+				<display_entry item="meleeWpnBladeT3KF2Katana" unlock_level="50,55,60,65,70,75" />
+			</insertBefore>
 
-	<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingBlades']/effect_group[1]">
-		<passive_effect name="RecipeTagUnlocked" operation="base_set" level="50,75" value="1" tags="meleeWpnBladeT3KF2Katana"/>
-	</append>	
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingBlades']/effect_group[1]">
+				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="50,75" value="1" tags="meleeWpnBladeT3KF2Katana"/>
+			</append>	
 
-	<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingBlades']/effect_group[1]">
-		<passive_effect name="CraftingTier" operation="base_add" level="55,60,65,70,75" value="1,2,3,4,5" tags="meleeWpnBladeT3KF2Katana"/>
-	</append>
-	
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingBlades']/effect_group[1]">
+				<passive_effect name="CraftingTier" operation="base_add" level="55,60,65,70,75" value="1,2,3,4,5" tags="meleeWpnBladeT3KF2Katana"/>
+			</append>
+		</else>
+	</conditional>
 </configs>

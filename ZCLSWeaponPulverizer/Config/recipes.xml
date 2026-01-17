@@ -1,4 +1,41 @@
 <config>
+		<conditional>
+			<if cond="mod_loaded('EFT_Overhaul')">
+				<append xpath="/recipes">
+					<recipe name="schematicsPulverizer" count="1">
+						<ingredient name="meleeWpnSledgeT3Pulverizer" count="1" />
+						<ingredient name="resourceToolset" count="1" />
+					</recipe>
+					<recipe name="ammoPulverizer" count="1" craft_time="40" craft_area="workbench" tags="learnable,workbenchCrafting">
+						<ingredient name="resourceMechanicalParts" count="1"/>
+						<ingredient name="resourceTP200TNTBrick" count="1"/>
+						<ingredient name="resource_item_other_powder_red" count="15"/>
+						<ingredient name="ammoGasCan" count="250"/>
+					</recipe>
+				</append>
+			</if>
+			<if cond="mod_loaded('EFTX_Pack_Core')">
+				<append xpath="/recipes">
+					<recipe name="ammoPulverizer" count="1" craft_area="workbench" tags="learnable,workbenchCrafting">
+						<ingredient name="resourceMechanicalParts" count="1" />
+						<ingredient name="resourceTP200TNTBrick" count="2" />
+						<ingredient name="resourceForgedSteel" count="1" />
+						<ingredient name="resourceEmptyShotgunShell" count="4" />
+					</recipe>
+				</append>
+			</if>
+			<else>
+				<append xpath="/recipes">
+					<recipe name="ammoPulverizer" count="1" craft_time="40" craft_area="workbench" tags="learnable,workbenchCrafting">
+						<ingredient name="resourceBuckshot" count="15"/>
+						<ingredient name="resourceGunPowder" count="10"/>
+						<ingredient name="resourcePaper" count="2"/>
+						<ingredient name="ammoGasCan" count="250"/>
+					</recipe>
+				</append>
+			</else>
+		</conditional>
+		
 	<append xpath="/recipes">
 		<recipe name="meleeWpnSledgeT3Pulverizer" count="1" craft_area="workbench" tags="learnable,perkSkullCrusher,workbenchCrafting">
             <ingredient name="meleeWpnSledgeT3SteelSledgehammerParts" count="3"/>
@@ -10,12 +47,6 @@
                 <passive_effect name="CraftingIngredientCount" level="2,6" operation="perc_add" value="1,5" tags="meleeWpnSledgeT3SteelSledgehammerParts,resourceForgedSteel,resourceWood,resourceSpring"/>
                 <passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
             </effect_group>
-		</recipe>
-		<recipe name="ammoPulverizer" count="1" craft_time="40" craft_area="workbench" tags="learnable,workbenchCrafting">
-			<ingredient name="resourceBuckshot" count="15"/>
-			<ingredient name="resourceGunPowder" count="10"/>
-	        <ingredient name="resourcePaper" count="2"/>
-			<ingredient name="ammoGasCan" count="250"/>
 		</recipe>
 	</append>
 </config>

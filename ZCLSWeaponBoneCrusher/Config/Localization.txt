@@ -1,3 +1,5 @@
 Key,File,Type,english,schinese
 meleeWpnClubT3KF2BoneCrusher,items,Melee,Bone Crusher,碎骨者
 meleeWpnClubT3KF2BoneCrusherDesc,items,Melee,"Primary - fast blunt attack, Hold Primary for combo attack.\nSecondary - heavy mace attack or shield bash. Mace attack does more damage and has higher dismember chance, while shield attack knocks down the targets.\nUse [action:KFLibPlayerActions:PerformAltMelee] to perform a powerful Shield Bash attack. Bashing is Club type. ",轻击用于快速砍杀，按住可以进行连击。\n重击包括钉锤重击和盾击，钉锤会造成更多伤害并拥有更高的肢解率，而盾击能击飞命中的目标。\n使用[action:KFLibPlayerActions:PerformAltMelee]来发动强力盾牌推击。推击为棍棒类型。
+
+schematicsKF2BoneCrusher,items,Melee,Bone Crusher Schematic,碎骨者设计图

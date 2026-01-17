@@ -1,7 +1,13 @@
 <config>
 <!-- *** T2&T3_Melee_Weapons -->
 	<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT2_Melee']">
-		<item name="meleeWpnClubT3KF2BoneCrusher"/>
+		<item name="meleeWpnClubT3KF2BoneCrusher" loot_prob_template="low"/>
+	</append>
+	<append xpath="/lootcontainers/lootgroup[@name='groupInfestedT5MeleeRanged']">
+		<item name="meleeWpnClubT3KF2BoneCrusher" loot_prob_template="low"/>
+	</append>
+	<append xpath="/lootcontainers/lootgroup[@name='twitch_tier2melee']">
+		<item name="meleeWpnClubT3KF2BoneCrusher" random_durability="false"/>
 	</append>
 	
 <!-- *** Quest_Rewards -->

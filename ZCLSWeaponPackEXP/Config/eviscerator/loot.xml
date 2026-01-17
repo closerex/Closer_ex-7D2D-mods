@@ -1,17 +1,17 @@
 <configs>
 	<conditional>
-		<if cond="mod_loaded('EFT8_DVS_Configs')">
-            <append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3']">
+		<if cond="mod_loaded('EFT_Overhaul')">
+            <append xpath="/lootcontainers/lootgroup[@name='groupInfestedT5MeleeRanged']">
                 <item name="meleeWpnBladeT3KF2Eviscerator"/>
             </append>
-            <append xpath="/lootcontainers/lootgroup[@name='groupShotgunsT3']">
-                <item name="meleeWpnBladeT3KF2Eviscerator"/>
+            <append xpath="/lootcontainers/lootgroup[@name='groupHuntingRanged']">
+                <item name="meleeWpnBladeT3KF2Eviscerator" loot_prob_template="ProbT3"/>
             </append>
         </if>
         <if cond="mod_loaded('EFTX_Pack_Core')">
             <insertAfter xpath="/lootcontainers/lootgroup[@name='empty']">
                 <lootgroup name="groupWeaponsT3_Eviscerator" count="all" loot_quality_template="QLTemplateT3">
-                    <item name="meleeWpnBladeT3KF2Eviscerator" />
+                    <item name="meleeWpnBladeT3KF2Eviscerator"/>
                 </lootgroup>
             </insertAfter>
 			<append xpath="//lootgroup[@name='groupWeaponsT3_Archery']">
@@ -24,13 +24,13 @@
 				<item name="meleeWpnBladeT3KF2Eviscerator" loot_prob_template="QuestT3Prob"/>
 			</append>
             <append xpath="/lootcontainers/lootgroup[@name='groupCrossbowBoltSmall']">
-                <item name="ammoEvisceratorSawBlade" count="4,6" loot_stage_count_mod="0.01" loot_prob_template="ProbT3Cap" />
+                <item name="ammoEvisceratorSawBlade" count="4,6" loot_stage_count_mod="0.01" loot_prob_template="ProbT3Cap"/>
             </append>
             <append xpath="/lootcontainers/lootgroup[@name='groupCrossbowBoltMedium']">
-                <item name="ammoEvisceratorSawBlade" count="8,12" loot_stage_count_mod="0.01" loot_prob_template="ProbT3Cap" />
+                <item name="ammoEvisceratorSawBlade" count="8,12" loot_stage_count_mod="0.01" loot_prob_template="ProbT3Cap"/>
             </append>
             <append xpath="/lootcontainers/lootgroup[@name='groupCrossbowBoltLarge']">
-                <item name="ammoEvisceratorSawBlade" count="16,24" loot_stage_count_mod="0.01" loot_prob_template="ProbT3Cap" />
+                <item name="ammoEvisceratorSawBlade" count="16,24" loot_stage_count_mod="0.01" loot_prob_template="ProbT3Cap"/>
             </append>
         </if>
         <else>
@@ -56,13 +56,13 @@
                 <item group="twitch_Eviscerator"/>
             </append>
             <append xpath="/lootcontainers/lootgroup[@name='groupCrossbowBoltSmall']">
-                <item name="ammoEvisceratorSawBlade" count="4,6" loot_stage_count_mod="0.01" loot_prob_template="ProbT3Cap" />
+                <item name="ammoEvisceratorSawBlade" count="4,6" loot_stage_count_mod="0.01" loot_prob_template="ProbT3Cap"/>
             </append>
             <append xpath="/lootcontainers/lootgroup[@name='groupCrossbowBoltMedium']">
-                <item name="ammoEvisceratorSawBlade" count="8,12" loot_stage_count_mod="0.01" loot_prob_template="ProbT3Cap" />
+                <item name="ammoEvisceratorSawBlade" count="8,12" loot_stage_count_mod="0.01" loot_prob_template="ProbT3Cap"/>
             </append>
             <append xpath="/lootcontainers/lootgroup[@name='groupCrossbowBoltLarge']">
-                <item name="ammoEvisceratorSawBlade" count="16,24" loot_stage_count_mod="0.01" loot_prob_template="ProbT3Cap" />
+                <item name="ammoEvisceratorSawBlade" count="16,24" loot_stage_count_mod="0.01" loot_prob_template="ProbT3Cap"/>
             </append>
         </else>
     </conditional>

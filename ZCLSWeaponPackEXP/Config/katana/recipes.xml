@@ -1,4 +1,15 @@
 <configs>
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<append xpath="/recipes">
+				<recipe name="schematicsKF2Katana" count="1">
+					<ingredient name="meleeWpnBladeT3KF2Katana" count="1" />
+					<ingredient name="resourceToolset" count="1" />
+				</recipe>
+			</append>
+		</if>
+	</conditional>
+	
 	<append xpath="/recipes">
 		<recipe name="meleeWpnBladeT3KF2Katana" count="1" craft_area="workbench" tags="learnable,perkDeepCuts,workbenchCrafting">
 			<ingredient name="meleeWpnBladeT3MacheteParts" count="1"/>

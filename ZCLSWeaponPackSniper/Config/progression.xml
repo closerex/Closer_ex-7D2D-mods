@@ -19,9 +19,14 @@
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTRifles']/display_entry[contains(@icon, 'gunaxmc')]/@icon">,gunKFM99</append>
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTRifles']/display_entry[contains(@icon, 'gunaxmc')]/unlock_entry[contains(@item, 'gunaxmc')]/@item">,gunKFM99</append>
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingEFTRifles']/effect_group/passive_effect[contains(@tags, 'gunaxmc') and (@name='RecipeTagUnlocked' or @name='CraftingTier')]/@tags">,gunKFM99</append>
-			<append xpath="/progression/perks/book[@name='perkSniperAPAmmo']/effect_group[1]">
-			    <passive_effect name="RecipeTagUnlocked" operation="base_set" level="1" value="1" tags="ammoKF50BMGBulletBall"/>
-            </append>
+			
+			<conditional>
+				<if cond="mod_version('EFTX_Pack_Standard') &lt; version(2,5,2,5)">
+					<append xpath="/progression/perks/book[@name='perkSniperAPAmmo']/effect_group[1]">
+						<passive_effect name="RecipeTagUnlocked" operation="base_set" level="1" value="1" tags="ammoKF50BMGBulletBall"/>
+					</append>
+				</if>
+			</conditional>
 		</if>
         <else>
 			<append xpath="/progression/perks/perk[@name='perkDeadEye']/effect_group[1]">

@@ -407,19 +407,46 @@
 	</append>
 
 	<conditional>
-		<if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
+		<if cond="mod_loaded('Z2_EFTX_EFT_Only_Ammo') or mod_loaded('EFT_Overhaul')">
 			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft45ACP,ammoEft45ACPAP,ammoEft45ACPRIP</set>
-			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/effect_group[@name='gunHandgunT3DualAF2011A1S']/passive_effect[@name='DegradationMax']/@value">2400,4800</set>
-
 			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft45ACP,ammoEft45ACPAP,ammoEft45ACPRIP</set>
+		</if>
+		<if cond="mod_loaded('Z2_EFTX_Both_Ammo')">
+			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammo44MagnumBulletBall,ammo44MagnumBulletHP,ammo44MagnumBulletAP,ammoEft45ACP,ammoEft45ACPAP,ammoEft45ACPRIP</set>
+			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammo44MagnumBulletBall,ammo44MagnumBulletHP,ammo44MagnumBulletAP,ammoEft45ACP,ammoEft45ACPAP,ammoEft45ACPRIP</set>
+		</if>
+		<if cond="mod_loaded('Z2_EFTX_EFT_IZY_Ammo_CrossOver')">
+			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammo45ACPBulletBall,ammo45ACPHighpower,ammo45ACPArmorpiecing,ammoEft45ACP,ammoEft45ACPAP,ammoEft45ACPRIP</set>
+			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammo45ACPBulletBall,ammo45ACPHighpower,ammo45ACPArmorpiecing,ammoEft45ACP,ammoEft45ACPAP,ammoEft45ACPRIP</set>
+		</if>
+		<if cond="mod_loaded('Z2_EFTX_IZY_Uses_All_The_Ammo')">
+			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammo45ACPBulletBall,ammo45ACPHighpower,ammo45ACPArmorpiecing,ammoEft45ACP,ammoEft45ACPAP,ammoEft45ACPRIP</set>
+			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammo45ACPBulletBall,ammo45ACPHighpower,ammo45ACPArmorpiecing,ammoEft45ACP,ammoEft45ACPAP,ammoEft45ACPRIP</set>
+		</if>
+		<if cond="mod_loaded('Z2_EFTX_Uses_IZY_Vanilla_Ammo')">
+			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP,ammo45ACPBulletBall,ammo45ACPHighpower,ammo45ACPArmorpiecing,ammo45ACPEnhanced</set>
+			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP,ammo45ACPBulletBall,ammo45ACPHighpower,ammo45ACPArmorpiecing,ammo45ACPEnhanced</set>
+		</if>
+	</conditional>
+
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
+			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/effect_group[@name='gunHandgunT3DualAF2011A1S']/passive_effect[@name='DegradationMax']/@value">2400,4800</set>
 			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='DegradationMax']/@value">1200,2400</set>
 			<append xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/property[@name='Tags']/@value">,ReflexSight,CompactReflexSight</append>
 			<append xpath="/items/item[@name='gunHandgunT3AF2011A1S']/property[@name='Tags']/@value">,ReflexSight,CompactReflexSight</append>
-
-			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
-			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
+			
+			<conditional>
+				<if cond="mod_version('EFTX_Pack_Core') &gt;= version(2,5,2,5)">
+					<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/property[@name='RepairTools']/@value">resourcePistolRepairKit</set>
+				</if>
+				<else>
+					<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
+				</else>
+			</conditional>
 		</if>
 	</conditional>
+
 	<conditional>
 		<if cond="mod_loaded('EFT_Overhaul')">
 			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/effect_group[@name='gunHandgunT3DualAF2011A1S']/passive_effect[@name='EntityDamage']/@value">0</set>
@@ -429,9 +456,53 @@
 			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='EntityDamage']/@value">0</set>
 			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='BlockDamage']/@value">0</set>
 			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
+			
+			<insertAfter xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group/triggered_effect[@trigger='onReloadAboutToStart' and @property='elite' and @value='true']/requirement[@name='ProgressionLevel']">
+        		<requirement name="CVarCompare" cvar="$ASkill_Gun_ReloadBonus" operation="GTE" value=".3"/>
+			</insertAfter>
+			<remove xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group/triggered_effect[@trigger='onReloadAboutToStart' and @property='elite' and @value='true']/requirement[@name='ProgressionLevel']"/>
+			<insertAfter xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group/triggered_effect[@trigger='onReloadAboutToStart' and @property='elite' and @value='false']/requirement[@name='ProgressionLevel']">
+        		<requirement name="CVarCompare" cvar="$ASkill_Gun_ReloadBonus" operation="LT" value=".3"/>
+			</insertAfter>
+			<remove xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group/triggered_effect[@trigger='onReloadAboutToStart' and @property='elite' and @value='false']/requirement[@name='ProgressionLevel']"/>
+			<insertAfter xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group/passive_effect[@name='ReloadSpeedRatioFPV2TPV']/requirement[@name='ProgressionLevel' and @operation='GTE']">
+        		<requirement name="CVarCompare" cvar="$ASkill_Gun_ReloadBonus" operation="GTE" value=".3"/>
+			</insertAfter>
+			<remove xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group/passive_effect[@name='ReloadSpeedRatioFPV2TPV']/requirement[@name='ProgressionLevel' and @operation='GTE']"/>
+			<insertAfter xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group/passive_effect[@name='ReloadSpeedRatioFPV2TPV']/requirement[@name='ProgressionLevel' and @operation='LT']">
+        		<requirement name="CVarCompare" cvar="$ASkill_Gun_ReloadBonus" operation="LT" value=".3"/>
+			</insertAfter>
+			<remove xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group/passive_effect[@name='ReloadSpeedRatioFPV2TPV']/requirement[@name='ProgressionLevel' and @operation='LT']"/>
+			<insertAfter xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group/passive_effect[@name='ReloadSpeedMultiplier' and @operation='perc_add']/requirement[@name='ProgressionLevel' and @operation='GTE']">
+        		<requirement name="CVarCompare" cvar="$ASkill_Gun_ReloadBonus" operation="GTE" value=".3"/>
+			</insertAfter>
+			<remove xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group/passive_effect[@name='ReloadSpeedMultiplier' and @operation='perc_add']/requirement[@name='ProgressionLevel' and @operation='GTE']"/>
+			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group/passive_effect[@name='ReloadSpeedMultiplier' and @operation='perc_add']/@value">@$ASkill_Gun_ReloadBonus</set>
+			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group/passive_effect[@name='ReloadSpeedMultiplier' and @operation='perc_add']/@operation">perc_subtract</set>
+		</if>
+        <if cond="mod_loaded('EFTX_Pack_Core')">
+			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/effect_group[@name='gunHandgunT3DualAF2011A1S']/passive_effect[@name='EntityDamage' and @operation='base_add']/@value">11</set>
+			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='EntityDamage' and @operation='base_add']/@value">11</set>
 		</if>
 	</conditional>
     <conditional>
+        <if cond="mod_loaded('EFT_Overhaul')">
+			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/property[@name='UnlockedBy']/@value">schematicsAF2011A1</set>
+			
+			<append xpath="/items">
+				<item name="schematicsAF2011A1">
+					<property name="Extends" value="schematicNoQualityMaster"/>
+					<property name="CreativeMode" value="Player"/>
+					<property name="CustomIcon" value="gunHandgunT3AF2011A1S"/>
+					<property name="DescriptionKey" value="schematicsEftGunGeneralDesc"/>
+					<property name="Unlocks" value="gunHandgunT3AF2011A1S"/>
+					<property name="SellableToTrader" value="false"/>
+					<effect_group tiered="false">
+						<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="gunHandgunT3AF2011A1S" operation="set" value="1"/>
+					</effect_group>
+				</item>
+			</append>
+        </if>
         <if cond="mod_loaded('EFTX_Pack_Standard')">
 			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/property[@name='UnlockedBy']/@value">craftingPistols</set>
         </if>

@@ -1,8 +1,8 @@
 <configs>
 	<conditional>
-		<if cond="mod_loaded('EFT8_DVS_Configs')">
-			<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupRangedAllEft']">
-				<item name="meleeWpnBladeT3KF2Eviscerator" quality="1,5"/>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupEftArcher' or @name='groupRangedAll']">
+				<item name="meleeWpnBladeT3KF2Eviscerator"/>
 			</append>
 		</if>
 		<else>

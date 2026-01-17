@@ -1,2 +1,9 @@
 <config>
+	<include filename="af2011/buffs.xml"/>
+	<include filename="eviscerator/buffs.xml"/>
+	<include filename="hrgblastbrawler/buffs.xml"/>
+	<include filename="hz12/buffs.xml"/>
+	<include filename="kaboomstick/buffs.xml"/>
+	<include filename="katana/buffs.xml"/>
+	<include filename="m4benelli/buffs.xml"/>
 </config>

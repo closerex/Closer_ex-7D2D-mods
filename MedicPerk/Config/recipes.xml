@@ -1,7 +1,30 @@
 <configs>
-	<append xpath="/recipes">
-		<conditional>
-			<if cond="mod_loaded('EFTX_Pack_Core')">
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<append xpath="/recipes">
+				<recipe name="schematicsMedicPistol" count="1">
+					<ingredient name="gunMedicPistol" count="1"/>
+					<ingredient name="resourceToolset" count="1"/>
+				</recipe>
+				<recipe name="schematicsMedicSMG201" count="1">
+					<ingredient name="gunMedicSMG201" count="1"/>
+					<ingredient name="resourceToolset" count="1"/>
+				</recipe>
+				<recipe name="schematicsMedicShotgun301" count="1">
+					<ingredient name="gunMedicShotgun301" count="1"/>
+					<ingredient name="resourceToolset" count="1"/>
+				</recipe>
+				<recipe name="schematicsMedicAssaultRifle401" count="1">
+					<ingredient name="gunMedicAssaultRifle401" count="1"/>
+					<ingredient name="resourceToolset" count="1"/>
+				</recipe>
+			</append>
+		</if>
+	</conditional>
+
+	<conditional>
+		<if cond="mod_loaded('EFTX_Pack_Core') or mod_loaded('EFT_Overhaul')">
+			<append xpath="/recipes">
 				<recipe name="gunMedicPistol" count="1" craft_area="workbench" tags="learnable,perkMedic">
 					<ingredient name="gunBotRoboticsParts" count="1"/>
 					<ingredient name="resourceWeaponParts" count="1"/>
@@ -30,7 +53,7 @@
 				
 				<recipe name="gunMedicShotgun301" count="1" craft_area="workbench" tags="learnable,perkMedic">
 					<ingredient name="gunBotRoboticsParts" count="1"/>
-					<ingredient name="resourceWeaponParts" count="5"/>
+					<ingredient name="resourceWeaponParts" count="2"/>
 					<ingredient name="resourceMechanicalParts" count="8"/>
 					<ingredient name="resourceElectricParts" count="4"/>
 					<ingredient name="resourceLegendaryParts" count="1"/>
@@ -44,7 +67,7 @@
 
 				<recipe name="gunMedicAssaultRifle401" count="1" craft_area="workbench" tags="learnable,perkMedic">
 					<ingredient name="gunBotRoboticsParts" count="1"/>
-					<ingredient name="resourceWeaponParts" count="1"/>
+					<ingredient name="resourceWeaponParts" count="2"/>
 					<ingredient name="resourceMechanicalParts" count="8"/>
 					<ingredient name="resourceElectricParts" count="4"/>
 					<ingredient name="resourceMultitool" count="1"/>
@@ -55,8 +78,10 @@
 						<passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="resourceMultitool"/>
 					</effect_group>
 				</recipe>
-			</if>
-			<else>
+			</append>
+		</if>
+		<else>
+			<append xpath="/recipes">
 				<recipe name="gunMedicPistol" count="1" craft_area="workbench" tags="learnable,perkMedic">
 					<ingredient name="gunBotRoboticsParts" count="1"/>
 					<ingredient name="resourceForgedSteel" count="5"/>
@@ -108,9 +133,11 @@
 						<passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
 					</effect_group>
 				</recipe>
-			</else>
-		</conditional>
+			</append>
+		</else>
+	</conditional>
 
+	<append xpath="/recipes">
 		<recipe name="modMedicModule" count="1" craft_area="workbench" tags="workbenchCrafting">
 			<ingredient name="resourceForgedSteel" count="10"/>
 			<ingredient name="resourceScrapPolymers" count="5"/>
@@ -133,4 +160,13 @@
 			<ingredient name="resourceElectricParts" count="8"/>
 		</recipe>
 	</append>
+
+	<conditional>
+		<if cond="mod_version('EFTX_Pack_Core') &gt;= version(2,5,2,5)">
+			<setattribute xpath="/recipes/recipe[@name='gunMedicPistol']/ingredient[@name='resourceWeaponParts']" name="name">resourcePistolRepairKit</setattribute>
+			<setattribute xpath="/recipes/recipe[@name='gunMedicSMG201']/ingredient[@name='resourceWeaponParts']" name="name">resourceSMGRepairKit</setattribute>
+			<setattribute xpath="/recipes/recipe[@name='gunMedicShotgun301']/ingredient[@name='resourceWeaponParts']" name="name">resourceShotgunRepairKit</setattribute>
+			<setattribute xpath="/recipes/recipe[@name='gunMedicAssaultRifle401']/ingredient[@name='resourceWeaponParts']" name="name">resourceRifleRepairKit</setattribute>
+		</if>
+	</conditional>
 </configs>

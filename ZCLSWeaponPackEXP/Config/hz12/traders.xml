@@ -1,9 +1,15 @@
 <configs>
 	<conditional>
-		<if cond="mod_loaded('EFT8_DVS_Configs')">
-			<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupRangedAllEft']">
-				<item name="gunT3HZ12" quality="1,5"/>
-			</append>
+		<if cond="mod_loaded('EFT_Overhaul')">
+            <append xpath="/traders/trader_item_groups/trader_item_group[@name='groupGunsAll']">
+                <item name="gunT3HZ12" quality="1,5"/>
+            </append>
+            <append xpath="/traders/trader_item_groups/trader_item_group[@name='groupGunsHugh']">
+                <item name="gunT3HZ12" quality="6"/>
+            </append>
+            <append xpath="/traders/trader_item_groups/trader_item_group[@name='groupGunsBarney']">
+                <item name="gunT3HZ12" quality="6"/>
+            </append>
 		</if>
 		<else>
 			<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupRangedAll']">

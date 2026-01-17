@@ -33,22 +33,8 @@
             <property name="SoundPickup" value="pistol_grab"/>
             <property name="SoundPlace" value="pistol_place"/>
             <property name="TakeOverReloadTime" value="true"/>
-            <conditional>
-                <if cond="mod_loaded('EFTX_Pack_Standard')">
-                    <property name="UnlockedBy" value="craftingPistols"/>
-                </if>
-                <else>
-                    <property name="UnlockedBy" value="craftingHandguns"/>
-                </else>
-            </conditional>
-            <conditional>
-                <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
-                    <property name="RepairTools" value="resourceWeaponRepairKit"/>
-                </if>
-                <else>
-                    <property name="RepairTools" value="resourceRepairKit"/>
-                </else>
-            </conditional>
+            <property name="UnlockedBy" value="craftingHandguns"/>
+            <property name="RepairTools" value="resourceRepairKit"/>
 
             <property class="Action0">
                 <property name="Class" value="Ranged"/>
@@ -69,14 +55,7 @@
                 <property name="triggerEffectTriggerPullXbox" value="PistolTrigger"/>
                 <property name="triggerEffectShootDualsense" value="PistolShoot"/>
                 <property name="triggerEffectShootXbox" value="PistolShoot"/>
-                <conditional>
-                    <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
-				        <property name="Magazine_items" value="ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP"/>
-                    </if>
-                    <else>
-                        <property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
-                    </else>
-                </conditional>
+                <property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
             </property>
             <property class="Action1">
                 <property name="Class" value="Zoom"/>
@@ -208,22 +187,8 @@
             <property name="SoundPickup" value="pistol_grab"/>
             <property name="SoundPlace" value="pistol_place"/>
             <property name="TakeOverReloadTime" value="true"/>
-            <conditional>
-                <if cond="mod_loaded('EFTX_Pack_Standard')">
-                    <property name="UnlockedBy" value="craftingPistols"/>
-                </if>
-                <else>
-                    <property name="UnlockedBy" value="craftingHandguns"/>
-                </else>
-            </conditional>
-            <conditional>
-                <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
-                    <property name="RepairTools" value="resourceWeaponRepairKit"/>
-                </if>
-                <else>
-                    <property name="RepairTools" value="resourceRepairKit"/>
-                </else>
-            </conditional>
+            <property name="UnlockedBy" value="craftingHandguns"/>
+            <property name="RepairTools" value="resourceRepairKit"/>
 
             <property class="Action0">
                 <property name="Class" value="Ranged"/>
@@ -248,14 +213,7 @@
                 <property name="triggerEffectTriggerPullXbox" value="PistolTrigger"/>
                 <property name="triggerEffectShootDualsense" value="PistolShoot"/>
                 <property name="triggerEffectShootXbox" value="PistolShoot"/>
-                <conditional>
-                    <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
-				        <property name="Magazine_items" value="ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP"/>
-                    </if>
-                    <else>
-                        <property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
-                    </else>
-                </conditional>
+                <property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
             </property>
             <property class="Action1">
                 <property name="Class" value="Zoom"/>
@@ -513,22 +471,8 @@
             <property name="SoundPickup" value="pistol_grab"/>
             <property name="SoundPlace" value="pistol_place"/>
             <property name="TakeOverReloadTime" value="true"/>
-            <conditional>
-                <if cond="mod_loaded('EFTX_Pack_Standard')">
-                    <property name="UnlockedBy" value="craftingEFTShotguns"/>
-                </if>
-                <else>
-                    <property name="UnlockedBy" value="craftingShotguns"/>
-                </else>
-            </conditional>
-            <conditional>
-                <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
-                    <property name="RepairTools" value="resourceWeaponRepairKit"/>
-                </if>
-                <else>
-                    <property name="RepairTools" value="resourceRepairKit"/>
-                </else>
-            </conditional>
+            <property name="UnlockedBy" value="craftingShotguns"/>
+            <property name="RepairTools" value="resourceRepairKit"/>
 
             <property class="Action0">
                 <property name="Class" value="Ranged"/>
@@ -547,14 +491,7 @@
                 <property name="triggerEffectTriggerPullXbox" value="ShotgunTrigger"/>
                 <property name="triggerEffectShootDualsense" value="ShotgunShoot"/>
                 <property name="triggerEffectShootXbox" value="PistolShoot"/>
-                <conditional>
-                    <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
-				        <property name="Magazine_items" value="ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug,ammoEftRIPSlug"/>
-                    </if>
-                    <else>
-                        <property name="Magazine_items" value="ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug"/>
-                    </else>
-                </conditional>
+                <property name="Magazine_items" value="ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug"/>
             </property>
             <property class="Action1">
                 <property name="Class" value="Zoom"/>
@@ -684,22 +621,8 @@
             <property name="SoundPickup" value="pistol_grab"/>
             <property name="SoundPlace" value="pistol_place"/>
             <property name="TakeOverReloadTime" value="true"/>
-            <conditional>
-                <if cond="mod_loaded('EFTX_Pack_Standard')">
-                    <property name="UnlockedBy" value="craftingEFTShotguns"/>
-                </if>
-                <else>
-                    <property name="UnlockedBy" value="craftingShotguns"/>
-                </else>
-            </conditional>
-            <conditional>
-                <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
-                    <property name="RepairTools" value="resourceWeaponRepairKit"/>
-                </if>
-                <else>
-                    <property name="RepairTools" value="resourceRepairKit"/>
-                </else>
-            </conditional>
+            <property name="UnlockedBy" value="craftingShotguns"/>
+            <property name="RepairTools" value="resourceRepairKit"/>
 
             <property class="Action0">
                 <property name="Class" value="Ranged"/>
@@ -722,14 +645,7 @@
                 <property name="triggerEffectTriggerPullXbox" value="ShotgunTrigger"/>
                 <property name="triggerEffectShootDualsense" value="ShotgunShoot"/>
                 <property name="triggerEffectShootXbox" value="PistolShoot"/>
-                <conditional>
-                    <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
-				        <property name="Magazine_items" value="ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug,ammoEftRIPSlug"/>
-                    </if>
-                    <else>
-                        <property name="Magazine_items" value="ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug"/>
-                    </else>
-                </conditional>
+                <property name="Magazine_items" value="ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug"/>
             </property>
             <property class="Action1">
                 <property name="Class" value="Zoom"/>
@@ -872,22 +788,8 @@
             <property name="SoundPickup" value="pistol_grab"/>
             <property name="SoundPlace" value="pistol_place"/>
             <property name="TakeOverReloadTime" value="true"/>
-            <conditional>
-                <if cond="mod_loaded('EFTX_Pack_Standard')">
-                    <property name="UnlockedBy" value="craftingEFTShotguns"/>
-                </if>
-                <else>
-                    <property name="UnlockedBy" value="craftingShotguns"/>
-                </else>
-            </conditional>
-            <conditional>
-                <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
-                    <property name="RepairTools" value="resourceWeaponRepairKit"/>
-                </if>
-                <else>
-                    <property name="RepairTools" value="resourceRepairKit"/>
-                </else>
-            </conditional>
+            <property name="UnlockedBy" value="craftingHandguns"/>
+            <property name="RepairTools" value="resourceRepairKit"/>
 
             <property class="Action0">
                 <property name="Class" value="Ranged"/>
@@ -908,14 +810,7 @@
                 <property name="triggerEffectTriggerPullXbox" value="PistolTrigger"/>
                 <property name="triggerEffectShootDualsense" value="PistolShoot"/>
                 <property name="triggerEffectShootXbox" value="PistolShoot"/>
-                <conditional>
-                    <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
-				        <property name="Magazine_items" value="ammoEft12755PS12,ammoEft12755PS12A,ammoEft12755PS12B"/>
-                    </if>
-                    <else>
-                        <property name="Magazine_items" value="ammo44MagnumBulletBall,ammo44MagnumBulletHP,ammo44MagnumBulletAP"/>
-                    </else>
-                </conditional>
+                <property name="Magazine_items" value="ammo44MagnumBulletBall,ammo44MagnumBulletHP,ammo44MagnumBulletAP"/>
             </property>
             <property class="Action1">
                 <property name="Class" value="Zoom"/>
@@ -1014,10 +909,10 @@
                     <if cond="mod_loaded('EFT_Overhaul')">
                     </if>
                     <if cond="mod_loaded('EFTX_Pack_Core')">
-                        <passive_effect name="EntityDamage" operation="base_add" value="-5" tags="perkGunslinger"/> <!-- damage offset -->
+                        <passive_effect name="EntityDamage" operation="base_add" value="-2" tags="perkGunslinger"/> <!-- damage offset -->
                     </if>
 					<else>
-                        <passive_effect name="EntityDamage" operation="base_add" value="35" tags="perkGunslinger"/> <!-- damage offset -->
+                        <passive_effect name="EntityDamage" operation="base_add" value="50" tags="perkGunslinger"/> <!-- damage offset -->
 					</else>
 				</conditional>
             </effect_group>
@@ -1055,22 +950,8 @@
             <property name="SoundPickup" value="pistol_grab"/>
             <property name="SoundPlace" value="pistol_place"/>
             <property name="TakeOverReloadTime" value="true"/>
-            <conditional>
-                <if cond="mod_loaded('EFTX_Pack_Standard')">
-                    <property name="UnlockedBy" value="craftingEFTShotguns"/>
-                </if>
-                <else>
-                    <property name="UnlockedBy" value="craftingShotguns"/>
-                </else>
-            </conditional>
-            <conditional>
-                <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
-                    <property name="RepairTools" value="resourceWeaponRepairKit"/>
-                </if>
-                <else>
-                    <property name="RepairTools" value="resourceRepairKit"/>
-                </else>
-            </conditional>
+            <property name="UnlockedBy" value="craftingHandguns"/>
+            <property name="RepairTools" value="resourceRepairKit"/>
 
             <property class="Action0">
                 <property name="Class" value="Ranged"/>
@@ -1095,14 +976,7 @@
                 <property name="triggerEffectTriggerPullXbox" value="PistolTrigger"/>
                 <property name="triggerEffectShootDualsense" value="PistolShoot"/>
                 <property name="triggerEffectShootXbox" value="PistolShoot"/>
-                <conditional>
-                    <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
-				        <property name="Magazine_items" value="ammoEft12755PS12,ammoEft12755PS12A,ammoEft12755PS12B"/>
-                    </if>
-                    <else>
-                        <property name="Magazine_items" value="ammo44MagnumBulletBall,ammo44MagnumBulletHP,ammo44MagnumBulletAP"/>
-                    </else>
-                </conditional>
+                <property name="Magazine_items" value="ammo44MagnumBulletBall,ammo44MagnumBulletHP,ammo44MagnumBulletAP"/>
             </property>
             <property class="Action1">
                 <property name="Class" value="Zoom"/>
@@ -1215,10 +1089,10 @@
                     <if cond="mod_loaded('EFT_Overhaul')">
                     </if>
                     <if cond="mod_loaded('EFTX_Pack_Core')">
-                        <passive_effect name="EntityDamage" operation="base_add" value="-5" tags="perkGunslinger"/> <!-- damage offset -->
+                        <passive_effect name="EntityDamage" operation="base_add" value="-2" tags="perkGunslinger"/> <!-- damage offset -->
                     </if>
 					<else>
-                        <passive_effect name="EntityDamage" operation="base_add" value="35" tags="perkGunslinger"/> <!-- damage offset -->
+                        <passive_effect name="EntityDamage" operation="base_add" value="50" tags="perkGunslinger"/> <!-- damage offset -->
 					</else>
 				</conditional>
             </effect_group>
@@ -1369,22 +1243,8 @@
             <property name="SoundPickup" value="pistol_grab"/>
             <property name="SoundPlace" value="pistol_place"/>
             <property name="TakeOverReloadTime" value="true"/>
-            <conditional>
-                <if cond="mod_loaded('EFTX_Pack_Standard')">
-                    <property name="UnlockedBy" value="craftingPistols"/>
-                </if>
-                <else>
-                    <property name="UnlockedBy" value="craftingHandguns"/>
-                </else>
-            </conditional>
-            <conditional>
-                <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
-                    <property name="RepairTools" value="resourceWeaponRepairKit"/>
-                </if>
-                <else>
-                    <property name="RepairTools" value="resourceRepairKit"/>
-                </else>
-            </conditional>
+            <property name="UnlockedBy" value="craftingHandguns"/>
+            <property name="RepairTools" value="resourceRepairKit"/>
 
             <property class="Action0">
                 <property name="Class" value="Ranged"/>
@@ -1410,14 +1270,7 @@
                 <property name="triggerEffectTriggerPullXbox" value="PistolTrigger"/>
                 <property name="triggerEffectShootDualsense" value="PistolShoot"/>
                 <property name="triggerEffectShootXbox" value="PistolShoot"/>
-                <conditional>
-                    <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
-				        <property name="Magazine_items" value="ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP"/>
-                    </if>
-                    <else>
-                        <property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
-                    </else>
-                </conditional>
+                <property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
             </property>
             <property class="Action1">
                 <property name="Class" value="Zoom"/>
@@ -1559,22 +1412,8 @@
             <property name="SoundPickup" value="pistol_grab"/>
             <property name="SoundPlace" value="pistol_place"/>
             <property name="TakeOverReloadTime" value="true"/>
-            <conditional>
-                <if cond="mod_loaded('EFTX_Pack_Standard')">
-                    <property name="UnlockedBy" value="craftingPistols"/>
-                </if>
-                <else>
-                    <property name="UnlockedBy" value="craftingHandguns"/>
-                </else>
-            </conditional>
-            <conditional>
-                <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
-                    <property name="RepairTools" value="resourceWeaponRepairKit"/>
-                </if>
-                <else>
-                    <property name="RepairTools" value="resourceRepairKit"/>
-                </else>
-            </conditional>
+            <property name="UnlockedBy" value="craftingHandguns"/>
+            <property name="RepairTools" value="resourceRepairKit"/>
 
             <property class="Action0">
                 <property name="Class" value="Ranged"/>
@@ -1604,14 +1443,7 @@
                 <property name="triggerEffectTriggerPullXbox" value="PistolTrigger"/>
                 <property name="triggerEffectShootDualsense" value="PistolShoot"/>
                 <property name="triggerEffectShootXbox" value="PistolShoot"/>
-                <conditional>
-                    <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
-				        <property name="Magazine_items" value="ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP"/>
-                    </if>
-                    <else>
-                        <property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
-                    </else>
-                </conditional>
+                <property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
             </property>
             <property class="Action1">
                 <property name="Class" value="Zoom"/>
@@ -1767,22 +1599,8 @@
             <property name="SoundPickup" value="pistol_grab"/>
             <property name="SoundPlace" value="pistol_place"/>
             <property name="TakeOverReloadTime" value="true"/>
-            <conditional>
-                <if cond="mod_loaded('EFTX_Pack_Standard')">
-                    <property name="UnlockedBy" value="craftingPistols"/>
-                </if>
-                <else>
-                    <property name="UnlockedBy" value="craftingHandguns"/>
-                </else>
-            </conditional>
-            <conditional>
-                <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
-                    <property name="RepairTools" value="resourceWeaponRepairKit"/>
-                </if>
-                <else>
-                    <property name="RepairTools" value="resourceRepairKit"/>
-                </else>
-            </conditional>
+            <property name="UnlockedBy" value="craftingHandguns"/>
+            <property name="RepairTools" value="resourceRepairKit"/>
 
             <property class="Action0">
                 <property name="Class" value="Ranged"/>
@@ -1811,14 +1629,7 @@
                 <property name="triggerEffectTriggerPullXbox" value="PistolTrigger"/>
                 <property name="triggerEffectShootDualsense" value="PistolShoot"/>
                 <property name="triggerEffectShootXbox" value="PistolShoot"/>
-                <conditional>
-                    <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
-				        <property name="Magazine_items" value="ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP"/>
-                    </if>
-                    <else>
-                        <property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
-                    </else>
-                </conditional>
+                <property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
             </property>
             <property class="Action1">
                 <property name="Class" value="Zoom"/>
@@ -2163,10 +1974,38 @@
 		</item>
         <!-- #endregion -->
     </append>
+
+	<conditional>
+		<if cond="mod_loaded('Z2_EFTX_EFT_Only_Ammo') or mod_loaded('EFT_Overhaul')">
+			<set xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
+			<set xpath="/items/item[@name='gunKFHRGSW500' or @name='gunKFDualHRGSW500']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug</set>
+			<set xpath="/items/item[@name='gunKFSW500' or @name='gunKFDualSW500']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft12755PS12,ammoEft12755PS12A,ammoEft12755PS12B</set>
+		</if>
+		<if cond="mod_loaded('Z2_EFTX_Both_Ammo')">
+			<set xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP,ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
+			<set xpath="/items/item[@name='gunKFHRGSW500' or @name='gunKFDualHRGSW500']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug,ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug</set>
+			<set xpath="/items/item[@name='gunKFSW500' or @name='gunKFDualSW500']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammo44MagnumBulletBall,ammo44MagnumBulletHP,ammo44MagnumBulletAP,ammoEft12755PS12,ammoEft12755PS12A,ammoEft12755PS12B</set>
+		</if>
+		<if cond="mod_loaded('Z2_EFTX_EFT_IZY_Ammo_CrossOver')">
+			<set xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP,ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
+			<set xpath="/items/item[@name='gunKFHRGSW500' or @name='gunKFDualHRGSW500']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug,ammoShotgunShellPremium,ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug,ammoEftShrapnel25Shotgun,ammoEftBarricadeSlug,ammoShotgunShellDragoBreath</set>
+			<set xpath="/items/item[@name='gunKFSW500' or @name='gunKFDualSW500']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammo45ACPBulletBall,ammo45ACPHighpower,ammo45ACPArmorpiecing,ammo44MagnumBulletBall,ammo44MagnumBulletHP,ammo44MagnumBulletAP,ammoEft12755PS12,ammoEft12755PS12A,ammoEft12755PS12B</set>
+		</if>
+		<if cond="mod_loaded('Z2_EFTX_IZY_Uses_All_The_Ammo')">
+			<set xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP,ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
+			<set xpath="/items/item[@name='gunKFHRGSW500' or @name='gunKFDualHRGSW500']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug,ammoShotgunShellPremium,ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug,ammoEftShrapnel25Shotgun,ammoEftBarricadeSlug,ammoShotgunShellDragoBreath</set>
+			<set xpath="/items/item[@name='gunKFSW500' or @name='gunKFDualSW500']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammo45ACPBulletBall,ammo45ACPHighpower,ammo45ACPArmorpiecing,ammo44MagnumBulletBall,ammo44MagnumBulletHP,ammo44MagnumBulletAP,ammoEft12755PS12,ammoEft12755PS12A,ammoEft12755PS12B</set>
+		</if>
+		<if cond="mod_loaded('Z2_EFTX_Uses_IZY_Vanilla_Ammo')">
+			<set xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP,ammo45ACPBulletBall,ammo45ACPHighpower,ammo45ACPArmorpiecing</set>
+			<set xpath="/items/item[@name='gunKFHRGSW500' or @name='gunKFDualHRGSW500']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug,ammoShotgunShellPremium,ammoShotgunShellDragoBreath</set>
+			<set xpath="/items/item[@name='gunKFSW500' or @name='gunKFDualSW500']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammo45ACPBulletBall,ammo45ACPHighpower,ammo45ACPArmorpiecing,ammo45ACPEnhanced,ammo44MagnumBulletBall,ammo44MagnumBulletHP,ammo44MagnumBulletAP</set>
+		</if>
+	</conditional>
     
-    <!-- #region scope patches -->
     <conditional>
         <if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
+
             <append xpath="/items/item[@name='gunKF9mm']/property[@name='Tags']/@value">,ReflexSight,CompactReflexSight</append>
             <append xpath="/items/item[@name='gunKFDual9mm']/property[@name='Tags']/@value">,ReflexSight,CompactReflexSight</append>
             <append xpath="/items/item[@name='gunKFHRGSW500']/property[@name='Tags']/@value">,ReflexSight,CompactReflexSight</append>
@@ -2176,7 +2015,129 @@
             <append xpath="/items/item[@name='gunKFG18C']/property[@name='Tags']/@value">,ReflexSight,CompactReflexSight</append>
             <append xpath="/items/item[@name='gunKFDualG18C']/property[@name='Tags']/@value">,ReflexSight,CompactReflexSight</append>
             <append xpath="/items/item[@name='gunKFG18CShield']/property[@name='Tags']/@value">,ReflexSight,CompactReflexSight</append>
+            
+            <conditional>
+                <if cond="mod_version('EFTX_Pack_Core') &gt;= version(2,5,2,5)">
+                    <set xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/property[@name='RepairTools']/@value">resourcePistolRepairKit</set>
+                    <set xpath="/items/item[@name='gunKFHRGSW500' or @name='gunKFDualHRGSW500' or @name='gunKFSW500' or @name='gunKFDualSW500']/property[@name='RepairTools']/@value">resourceRevolverRepairKit</set>
+                </if>
+                <else>
+                    <set xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFHRGSW500' or @name='gunKFDualHRGSW500' or @name='gunKFSW500' or @name='gunKFDualSW500' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
+                </else>
+            </conditional>
         </if>
     </conditional>
-    <!-- #endregion -->
+
+    <conditional>
+        <if cond="mod_loaded('EFTX_Pack_Standard')">
+			<set xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield' or @name='gunKFSW500' or @name='gunKFDualSW500']/property[@name='UnlockedBy']/@value">craftingPistols</set>
+			<set xpath="/items/item[@name='gunKFHRGSW500' or @name='gunKFDualHRGSW500']/property[@name='UnlockedBy']/@value">craftingEFTShotguns</set>
+        </if>
+    </conditional>
+
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<insertAfter xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFHRGSW500' or @name='gunKFDualHRGSW500' or @name='gunKFSW500' or @name='gunKFDualSW500' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/effect_group/triggered_effect[@trigger='onReloadAboutToStart' and @property='elite' and @value='true']/requirement[@name='ProgressionLevel']">
+        		<requirement name="CVarCompare" cvar="$ASkill_Gun_ReloadBonus" operation="GTE" value=".3"/>
+			</insertAfter>
+			<remove xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFHRGSW500' or @name='gunKFDualHRGSW500' or @name='gunKFSW500' or @name='gunKFDualSW500' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/effect_group/triggered_effect[@trigger='onReloadAboutToStart' and @property='elite' and @value='true']/requirement[@name='ProgressionLevel']"/>
+			<insertAfter xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFHRGSW500' or @name='gunKFDualHRGSW500' or @name='gunKFSW500' or @name='gunKFDualSW500' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/effect_group/triggered_effect[@trigger='onReloadAboutToStart' and @property='elite' and @value='false']/requirement[@name='ProgressionLevel']">
+        		<requirement name="CVarCompare" cvar="$ASkill_Gun_ReloadBonus" operation="LT" value=".3"/>
+			</insertAfter>
+			<remove xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFHRGSW500' or @name='gunKFDualHRGSW500' or @name='gunKFSW500' or @name='gunKFDualSW500' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/effect_group/triggered_effect[@trigger='onReloadAboutToStart' and @property='elite' and @value='false']/requirement[@name='ProgressionLevel']"/>
+			<insertAfter xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFHRGSW500' or @name='gunKFDualHRGSW500' or @name='gunKFSW500' or @name='gunKFDualSW500' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/effect_group/passive_effect[@name='ReloadSpeedRatioFPV2TPV']/requirement[@name='ProgressionLevel' and @operation='GTE']">
+        		<requirement name="CVarCompare" cvar="$ASkill_Gun_ReloadBonus" operation="GTE" value=".3"/>
+			</insertAfter>
+			<remove xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFHRGSW500' or @name='gunKFDualHRGSW500' or @name='gunKFSW500' or @name='gunKFDualSW500' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/effect_group/passive_effect[@name='ReloadSpeedRatioFPV2TPV']/requirement[@name='ProgressionLevel' and @operation='GTE']"/>
+			<insertAfter xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFHRGSW500' or @name='gunKFDualHRGSW500' or @name='gunKFSW500' or @name='gunKFDualSW500' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/effect_group/passive_effect[@name='ReloadSpeedRatioFPV2TPV']/requirement[@name='ProgressionLevel' and @operation='LT']">
+        		<requirement name="CVarCompare" cvar="$ASkill_Gun_ReloadBonus" operation="LT" value=".3"/>
+			</insertAfter>
+			<remove xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFHRGSW500' or @name='gunKFDualHRGSW500' or @name='gunKFSW500' or @name='gunKFDualSW500' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/effect_group/passive_effect[@name='ReloadSpeedRatioFPV2TPV']/requirement[@name='ProgressionLevel' and @operation='LT']"/>
+			<insertAfter xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFHRGSW500' or @name='gunKFDualHRGSW500' or @name='gunKFSW500' or @name='gunKFDualSW500' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/effect_group/passive_effect[@name='ReloadSpeedMultiplier' and @operation='perc_add']/requirement[@name='ProgressionLevel' and @operation='GTE']">
+        		<requirement name="CVarCompare" cvar="$ASkill_Gun_ReloadBonus" operation="GTE" value=".3"/>
+			</insertAfter>
+			<remove xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFHRGSW500' or @name='gunKFDualHRGSW500' or @name='gunKFSW500' or @name='gunKFDualSW500' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/effect_group/passive_effect[@name='ReloadSpeedMultiplier' and @operation='perc_add']/requirement[@name='ProgressionLevel' and @operation='GTE']"/>
+			<set xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFHRGSW500' or @name='gunKFDualHRGSW500' or @name='gunKFSW500' or @name='gunKFDualSW500' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/effect_group/passive_effect[@name='ReloadSpeedMultiplier' and @operation='perc_add']/@value">@$ASkill_Gun_ReloadBonus</set>
+			<set xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm' or @name='gunKFHRGSW500' or @name='gunKFDualHRGSW500' or @name='gunKFSW500' or @name='gunKFDualSW500' or @name='gunKFG18C' or @name='gunKFDualG18C' or @name='gunKFG18CShield']/effect_group/passive_effect[@name='ReloadSpeedMultiplier' and @operation='perc_add']/@operation">perc_subtract</set>
+            
+			<set xpath="/items/item[@name='gunKF9mm' or @name='gunKFDual9mm']/property[@name='UnlockedBy']/@value">schematicsKF29mm</set>
+			<append xpath="/items">
+				<item name="schematicsKF29mm">
+					<property name="Extends" value="schematicNoQualityMaster"/>
+					<property name="CreativeMode" value="Player"/>
+					<property name="CustomIcon" value="gunKF9mm"/>
+					<property name="DescriptionKey" value="schematicsEftGunGeneralDesc"/>
+					<property name="Unlocks" value="gunKF9mm"/>
+					<property name="SellableToTrader" value="false"/>
+					<effect_group tiered="false">
+						<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="gunKF9mm" operation="set" value="1"/>
+						<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="gunKFDual9mm" operation="set" value="1"/>
+					</effect_group>
+				</item>
+			</append>
+
+			<set xpath="/items/item[@name='gunKFHRGSW500' or @name='gunKFDualHRGSW500']/property[@name='UnlockedBy']/@value">schematicsKF2HRGSW500</set>
+			<append xpath="/items">
+				<item name="schematicsKF2HRGSW500">
+					<property name="Extends" value="schematicNoQualityMaster"/>
+					<property name="CreativeMode" value="Player"/>
+					<property name="CustomIcon" value="gunKFHRGSW500"/>
+					<property name="DescriptionKey" value="schematicsEftGunGeneralDesc"/>
+					<property name="Unlocks" value="gunKFHRGSW500"/>
+					<property name="SellableToTrader" value="false"/>
+					<effect_group tiered="false">
+						<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="gunKFHRGSW500" operation="set" value="1"/>
+						<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="gunKFDualHRGSW500" operation="set" value="1"/>
+					</effect_group>
+				</item>
+			</append>
+            
+			<set xpath="/items/item[@name='gunKFSW500' or @name='gunKFDualSW500']/property[@name='UnlockedBy']/@value">schematicsKF2SW500</set>
+			<append xpath="/items">
+				<item name="schematicsKF2SW500">
+					<property name="Extends" value="schematicNoQualityMaster"/>
+					<property name="CreativeMode" value="Player"/>
+					<property name="CustomIcon" value="gunKFSW500"/>
+					<property name="DescriptionKey" value="schematicsEftGunGeneralDesc"/>
+					<property name="Unlocks" value="gunKFSW500"/>
+					<property name="SellableToTrader" value="false"/>
+					<effect_group tiered="false">
+						<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="gunKFSW500" operation="set" value="1"/>
+						<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="gunKFDualSW500" operation="set" value="1"/>
+					</effect_group>
+				</item>
+			</append>
+
+			<set xpath="/items/item[@name='gunKFG18C' or @name='gunKFDualG18C']/property[@name='UnlockedBy']/@value">schematicsKF2G18C</set>
+			<append xpath="/items">
+				<item name="schematicsKF2G18C">
+					<property name="Extends" value="schematicNoQualityMaster"/>
+					<property name="CreativeMode" value="Player"/>
+					<property name="CustomIcon" value="gunKFG18C"/>
+					<property name="DescriptionKey" value="schematicsEftGunGeneralDesc"/>
+					<property name="Unlocks" value="gunKFG18C"/>
+					<property name="SellableToTrader" value="false"/>
+					<effect_group tiered="false">
+						<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="gunKFG18C" operation="set" value="1"/>
+						<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="gunKFDualG18C" operation="set" value="1"/>
+					</effect_group>
+				</item>
+			</append>
+
+			<set xpath="/items/item[@name='gunKFG18CShield']/property[@name='UnlockedBy']/@value">schematicsKF2G18Shield</set>
+			<append xpath="/items">
+				<item name="schematicsKF2G18Shield">
+					<property name="Extends" value="schematicNoQualityMaster"/>
+					<property name="CreativeMode" value="Player"/>
+					<property name="CustomIcon" value="gunKFG18CShield"/>
+					<property name="DescriptionKey" value="schematicsEftGunGeneralDesc"/>
+					<property name="Unlocks" value="gunKFG18CShield"/>
+					<property name="SellableToTrader" value="false"/>
+					<effect_group tiered="false">
+						<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="gunKFG18CShield" operation="set" value="1"/>
+					</effect_group>
+				</item>
+			</append>
+		</if>
+	</conditional>
 </configs>

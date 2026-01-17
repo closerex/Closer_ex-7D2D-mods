@@ -5,7 +5,7 @@
 	<append xpath="/items">
 		<item name="gunMedicPistol">
 			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
-			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,sideAttachments,barrelAttachments,noSilencer,magazine,firingMode,noScopes,attAgility,perkGunslinger,9mmGun,attachmentsIncluded,canHaveCosmetic,handgunSkill,medicWeapon"/>
+			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shortRange,pistol,sideAttachments,barrelAttachments,noSilencer,magazine,firingMode,noScopes,attAgility,perkGunslinger,9mmGun,attachmentsIncluded,canHaveCosmetic,handgunSkill,medicWeapon,metaRecharger"/>
 			<property name="DisplayType" value="rangedGun"/>
 			<property name="CustomIcon" value="medic_pistol"/>
 			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
@@ -152,38 +152,38 @@
 			</effect_group>
 			<effect_group name="Weapon mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="0"/>
-				<passive_effect name="RoundsPerMinute" operation="base_set" value="342" tags="perkGunslinger"/>
-				<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkGunslinger"/>
-				<passive_effect name="MaxRange" operation="base_set" value="50" tags="perkGunslinger,9mmGun"/>
-				<passive_effect name="DamageFalloffRange" operation="base_set" value="20" tags="perkGunslinger,9mmGun"/>
-				<passive_effect name="EntityDamage" operation="perc_add" value="-.3" tags="medicWeapon"/> <!-- medic weapon decrease -->
-				<passive_effect name="EntityDamage" operation="perc_add" value="-.02,.02" tags="perkGunslinger"/> <!-- random EntityDmg -->
-				<passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6" tags="perkGunslinger"/> <!-- tier bonus -->
-				<passive_effect name="BlockDamage" operation="perc_add" value="-.3" tags="medicWeapon"/> <!-- medic weapon decrease -->
-				<passive_effect name="BlockDamage" operation="perc_add" value="-.08,.08" tags="perkGunslinger"/> <!-- random BlockDmg -->
-				<passive_effect name="BlockDamage" operation="perc_add" value=".15,.75" tier="2,6" tags="perkGunslinger"/> <!-- tier bonus -->
-				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkGunslinger,9mmGun"/>
-		
-				<passive_effect name="SpreadDegreesVertical" operation="base_set" value="1.5" tags="perkGunslinger"/>
-				<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="1.5" tags="perkGunslinger"/>
-				<passive_effect name="SpreadMultiplierAiming" operation="base_set" value=".4" tags="perkGunslinger"/>
-				<passive_effect name="SpreadMultiplierCrouching" operation="base_set" value=".8" tags="perkGunslinger"/>
-				<passive_effect name="SpreadMultiplierWalking" operation="base_set" value="1.5" tags="perkGunslinger"/>
-				<passive_effect name="SpreadMultiplierRunning" operation="base_set" value="2.2" tags="perkGunslinger"/>
-		
-				<passive_effect name="KickDegreesVerticalMin" operation="base_set" value=".25" tags="perkGunslinger"/>
-				<passive_effect name="KickDegreesVerticalMax" operation="base_set" value="0.5" tags="perkGunslinger"/>
-				<passive_effect name="KickDegreesHorizontalMin" operation="base_set" value="-.15" tags="perkGunslinger"/>
-				<passive_effect name="KickDegreesHorizontalMax" operation="base_set" value=".15" tags="perkGunslinger"/>
-		
-				<passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="1.6" tags="perkGunslinger,9mmGun"/>
-				<passive_effect name="WeaponHandling" operation="base_set" value=".95" tags="perkGunslinger"/>
-				<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkGunslinger"/> <!-- random WeaponHandling -->
-				
-				<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
-				<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1">
-					<requirement name="RoundsInMagazine" operation="LTE" value="6"/>
-				</triggered_effect>
+					<passive_effect name="RoundsPerMinute" operation="base_set" value="342" tags="perkGunslinger"/>
+					<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkGunslinger"/>
+					<passive_effect name="MaxRange" operation="base_set" value="50" tags="perkGunslinger,9mmGun"/>
+					<passive_effect name="DamageFalloffRange" operation="base_set" value="20" tags="perkGunslinger,9mmGun"/>
+					<passive_effect name="EntityDamage" operation="perc_add" value="-.3" tags="medicWeapon"/> <!-- medic weapon decrease -->
+					<passive_effect name="EntityDamage" operation="perc_add" value="-.02,.02" tags="perkGunslinger"/> <!-- random EntityDmg -->
+					<passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6" tags="perkGunslinger"/> <!-- tier bonus -->
+					<passive_effect name="BlockDamage" operation="perc_add" value="-.3" tags="medicWeapon"/> <!-- medic weapon decrease -->
+					<passive_effect name="BlockDamage" operation="perc_add" value="-.08,.08" tags="perkGunslinger"/> <!-- random BlockDmg -->
+					<passive_effect name="BlockDamage" operation="perc_add" value=".15,.75" tier="2,6" tags="perkGunslinger"/> <!-- tier bonus -->
+					<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkGunslinger,9mmGun"/>
+			
+					<passive_effect name="SpreadDegreesVertical" operation="base_set" value="1.5" tags="perkGunslinger"/>
+					<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="1.5" tags="perkGunslinger"/>
+					<passive_effect name="SpreadMultiplierAiming" operation="base_set" value=".4" tags="perkGunslinger"/>
+					<passive_effect name="SpreadMultiplierCrouching" operation="base_set" value=".8" tags="perkGunslinger"/>
+					<passive_effect name="SpreadMultiplierWalking" operation="base_set" value="1.5" tags="perkGunslinger"/>
+					<passive_effect name="SpreadMultiplierRunning" operation="base_set" value="2.2" tags="perkGunslinger"/>
+			
+					<passive_effect name="KickDegreesVerticalMin" operation="base_set" value=".25" tags="perkGunslinger"/>
+					<passive_effect name="KickDegreesVerticalMax" operation="base_set" value="0.5" tags="perkGunslinger"/>
+					<passive_effect name="KickDegreesHorizontalMin" operation="base_set" value="-.15" tags="perkGunslinger"/>
+					<passive_effect name="KickDegreesHorizontalMax" operation="base_set" value=".15" tags="perkGunslinger"/>
+			
+					<passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="1.6" tags="perkGunslinger,9mmGun"/>
+					<passive_effect name="WeaponHandling" operation="base_set" value=".95" tags="perkGunslinger"/>
+					<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkGunslinger"/> <!-- random WeaponHandling -->
+					
+					<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
+					<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1">
+						<requirement name="RoundsInMagazine" operation="LTE" value="6"/>
+					</triggered_effect>
 			</effect_group>
 			<effect_group name="Dart mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="3"/>
@@ -208,7 +208,7 @@
 		<item name="gunMedicSMG201">
 			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
 			<property name="CustomIcon" value="medic_smg"/>
-			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shortRange,magazine,drumMagazine,firingMode,attAgility,noScopes,sideAttachments,barrelAttachments,noSilencer,stock,attachmentsIncluded,canHaveCosmetic,9mmGun,perkGunslinger,medicWeapon"/>
+			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shortRange,magazine,drumMagazine,firingMode,attAgility,noScopes,sideAttachments,barrelAttachments,noSilencer,stock,attachmentsIncluded,canHaveCosmetic,9mmGun,perkGunslinger,medicWeapon,metaRecharger"/>
 			<property name="DisplayType" value="rangedGun"/>
 			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
 			<property name="BoundItemName" value="meleeWpnStockBashMedicSMG201"/>
@@ -375,39 +375,39 @@
 			</effect_group>
 			<effect_group name="Weapon mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="0"/>
-				<passive_effect name="RoundsPerMinute" operation="base_set" value="800" tags="perkGunslinger"/>
-				<passive_effect name="BurstRoundCount" operation="base_set" value="1000" tags="perkGunslinger"/>
-				<passive_effect name="MaxRange" operation="base_set" value="65" tags="perkGunslinger,9mmGun"/>
-				<passive_effect name="DamageFalloffRange" operation="base_set" value="30" tags="perkGunslinger,9mmGun"/>
-				<passive_effect name="EntityDamage" operation="base_add" value="6" tags="perkGunslinger"/> <!-- damage offset -->
-				<passive_effect name="EntityDamage" operation="perc_add" value="-.3" tags="medicWeapon"/> <!-- medic weapon decrease -->
-				<passive_effect name="EntityDamage" operation="perc_add" value="-.02,.02" tags="perkGunslinger"/> <!-- random EntityDmg -->
-				<passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6" tags="perkGunslinger"/> <!-- tier bonus -->
-				<passive_effect name="BlockDamage" operation="perc_add" value="-.3" tags="medicWeapon"/> <!-- medic weapon decrease -->
-				<passive_effect name="BlockDamage" operation="perc_add" value="-.08,.08" tags="perkGunslinger"/> <!-- random BlockDmg -->
-				<passive_effect name="BlockDamage" operation="perc_add" value=".15,.75" tier="2,6" tags="perkGunslinger"/> <!-- tier bonus -->
-				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkGunslinger,9mmGun"/>
-		
-				<passive_effect name="SpreadDegreesVertical" operation="base_set" value="1.35" tags="perkGunslinger"/>
-				<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="1.35" tags="perkGunslinger"/>
-				<passive_effect name="SpreadMultiplierAiming" operation="base_set" value=".35" tags="perkGunslinger"/>
-				<passive_effect name="SpreadMultiplierCrouching" operation="base_set" value=".8" tags="perkGunslinger"/>
-				<passive_effect name="SpreadMultiplierWalking" operation="base_set" value="1.5" tags="perkGunslinger"/>
-				<passive_effect name="SpreadMultiplierRunning" operation="base_set" value="2.2" tags="perkGunslinger"/>
-		
-				<passive_effect name="KickDegreesVerticalMin" operation="base_set" value=".25" tags="perkGunslinger"/>
-				<passive_effect name="KickDegreesVerticalMax" operation="base_set" value="0.5" tags="perkGunslinger"/>
-				<passive_effect name="KickDegreesHorizontalMin" operation="base_set" value="-.15" tags="perkGunslinger"/>
-				<passive_effect name="KickDegreesHorizontalMax" operation="base_set" value=".15" tags="perkGunslinger"/>
-		
-				<passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="1.4" tags="perkGunslinger,9mmGun"/>
-				<passive_effect name="WeaponHandling" operation="base_set" value=".8" tags="perkGunslinger"/>
-				<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkGunslinger"/> <!-- random WeaponHandling -->
-				
-				<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
-				<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1">
-					<requirement name="RoundsInMagazine" operation="LTE" value="6"/>
-				</triggered_effect>
+					<passive_effect name="RoundsPerMinute" operation="base_set" value="800" tags="perkGunslinger"/>
+					<passive_effect name="BurstRoundCount" operation="base_set" value="1000" tags="perkGunslinger"/>
+					<passive_effect name="MaxRange" operation="base_set" value="65" tags="perkGunslinger,9mmGun"/>
+					<passive_effect name="DamageFalloffRange" operation="base_set" value="30" tags="perkGunslinger,9mmGun"/>
+					<passive_effect name="EntityDamage" operation="base_add" value="6" tags="perkGunslinger"/> <!-- damage offset -->
+					<passive_effect name="EntityDamage" operation="perc_add" value="-.3" tags="medicWeapon"/> <!-- medic weapon decrease -->
+					<passive_effect name="EntityDamage" operation="perc_add" value="-.02,.02" tags="perkGunslinger"/> <!-- random EntityDmg -->
+					<passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6" tags="perkGunslinger"/> <!-- tier bonus -->
+					<passive_effect name="BlockDamage" operation="perc_add" value="-.3" tags="medicWeapon"/> <!-- medic weapon decrease -->
+					<passive_effect name="BlockDamage" operation="perc_add" value="-.08,.08" tags="perkGunslinger"/> <!-- random BlockDmg -->
+					<passive_effect name="BlockDamage" operation="perc_add" value=".15,.75" tier="2,6" tags="perkGunslinger"/> <!-- tier bonus -->
+					<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkGunslinger,9mmGun"/>
+			
+					<passive_effect name="SpreadDegreesVertical" operation="base_set" value="1.35" tags="perkGunslinger"/>
+					<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="1.35" tags="perkGunslinger"/>
+					<passive_effect name="SpreadMultiplierAiming" operation="base_set" value=".35" tags="perkGunslinger"/>
+					<passive_effect name="SpreadMultiplierCrouching" operation="base_set" value=".8" tags="perkGunslinger"/>
+					<passive_effect name="SpreadMultiplierWalking" operation="base_set" value="1.5" tags="perkGunslinger"/>
+					<passive_effect name="SpreadMultiplierRunning" operation="base_set" value="2.2" tags="perkGunslinger"/>
+			
+					<passive_effect name="KickDegreesVerticalMin" operation="base_set" value=".25" tags="perkGunslinger"/>
+					<passive_effect name="KickDegreesVerticalMax" operation="base_set" value="0.5" tags="perkGunslinger"/>
+					<passive_effect name="KickDegreesHorizontalMin" operation="base_set" value="-.15" tags="perkGunslinger"/>
+					<passive_effect name="KickDegreesHorizontalMax" operation="base_set" value=".15" tags="perkGunslinger"/>
+			
+					<passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="1.4" tags="perkGunslinger,9mmGun"/>
+					<passive_effect name="WeaponHandling" operation="base_set" value=".8" tags="perkGunslinger"/>
+					<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkGunslinger"/> <!-- random WeaponHandling -->
+					
+					<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
+					<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1">
+						<requirement name="RoundsInMagazine" operation="LTE" value="6"/>
+					</triggered_effect>
 			</effect_group>
 			<effect_group name="Dart mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="3"/>
@@ -431,7 +431,7 @@
 
 		<item name="gunMedicShotgun301">
 			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
-			<property name="Tags" value="weapon,medicWeapon,ranged,holdBreathAiming,reloadPenalty,gun,shotgun,shortRange,sideAttachments,barrelAttachments,noSilencer,noScopes,stock,magazine,drumMagazine,firingMode,bottomAttachments,attStrength,perkBoomstick,attachmentsIncluded,canHaveCosmetic,shotgunSkill"/>
+			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,shotgun,shortRange,sideAttachments,barrelAttachments,noSilencer,noScopes,stock,magazine,drumMagazine,firingMode,bottomAttachments,attStrength,perkBoomstick,attachmentsIncluded,canHaveCosmetic,shotgunSkill,medicWeapon,metaRecharger"/>
 			<property name="DisplayType" value="rangedShotgun"/>
 			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
 			<property name="BoundItemName" value="meleeWpnStockBashMedicSG301"/>
@@ -584,35 +584,35 @@
 			</effect_group>
 			<effect_group name="Weapon mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="0"/>
-				<passive_effect name="RoundsPerMinute" operation="base_set" value="300" tags="perkBoomstick"/>
-				<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkBoomstick"/>
-				<passive_effect name="MaxRange" operation="base_set" value="20" tags="perkBoomstick"/>
-				<passive_effect name="DamageFalloffRange" operation="base_set" value="10" tags="perkBoomstick"/>
-				<passive_effect name="EntityDamage" operation="base_add" value="4" tags="perkBoomstick"/> <!-- damage offset -->
-				<passive_effect name="EntityDamage" operation="perc_add" value="-.3" tags="medicWeapon"/> <!-- medic weapon decrease -->
-				<passive_effect name="EntityDamage" operation="perc_add" value="-.02,.02" tags="perkBoomstick"/> <!-- random EntityDmg -->
-				<passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6" tags="perkBoomstick"/> <!-- tier bonus -->
-				<passive_effect name="BlockDamage" operation="perc_add" value="-.3" tags="medicWeapon"/> <!-- medic weapon decrease -->
-				<passive_effect name="BlockDamage" operation="perc_add" value="-.08,.08" tags="perkBoomstick"/> <!-- random BlockDmg -->
-				<passive_effect name="BlockDamage" operation="perc_add" value=".15,.75" tier="2,6" tags="perkBoomstick"/> <!-- tier bonus -->
-				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkBoomstick"/>
-		
-				<passive_effect name="SpreadDegreesVertical" operation="perc_add" value=".07" tags="perkBoomstick"/>
-				<passive_effect name="SpreadDegreesHorizontal" operation="perc_add" value=".07" tags="perkBoomstick"/>
-		
-				<passive_effect name="KickDegreesVerticalMin" operation="base_set" value="2.0" tags="perkBoomstick"/>
-				<passive_effect name="KickDegreesVerticalMax" operation="base_set" value="2.0" tags="perkBoomstick"/>
-				<passive_effect name="KickDegreesHorizontalMin" operation="base_set" value="-1.0" tags="perkBoomstick"/>
-				<passive_effect name="KickDegreesHorizontalMax" operation="base_set" value="1.0" tags="perkBoomstick"/>
-		
-				<passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="2" tags="perkBoomstick"/>
-				<passive_effect name="WeaponHandling" operation="base_set" value="1.8" tags="perkBoomstick"/>
-				<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkBoomstick"/> <!-- random WeaponHandling -->
-				
-				<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
-				<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1">
-					<requirement name="RoundsInMagazine" operation="LTE" value="6"/>
-				</triggered_effect>
+					<passive_effect name="RoundsPerMinute" operation="base_set" value="300" tags="perkBoomstick"/>
+					<passive_effect name="BurstRoundCount" operation="base_set" value="1" tags="perkBoomstick"/>
+					<passive_effect name="MaxRange" operation="base_set" value="20" tags="perkBoomstick"/>
+					<passive_effect name="DamageFalloffRange" operation="base_set" value="10" tags="perkBoomstick"/>
+					<passive_effect name="EntityDamage" operation="base_add" value="4" tags="perkBoomstick"/> <!-- damage offset -->
+					<passive_effect name="EntityDamage" operation="perc_add" value="-.3" tags="medicWeapon"/> <!-- medic weapon decrease -->
+					<passive_effect name="EntityDamage" operation="perc_add" value="-.02,.02" tags="perkBoomstick"/> <!-- random EntityDmg -->
+					<passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6" tags="perkBoomstick"/> <!-- tier bonus -->
+					<passive_effect name="BlockDamage" operation="perc_add" value="-.3" tags="medicWeapon"/> <!-- medic weapon decrease -->
+					<passive_effect name="BlockDamage" operation="perc_add" value="-.08,.08" tags="perkBoomstick"/> <!-- random BlockDmg -->
+					<passive_effect name="BlockDamage" operation="perc_add" value=".15,.75" tier="2,6" tags="perkBoomstick"/> <!-- tier bonus -->
+					<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkBoomstick"/>
+			
+					<passive_effect name="SpreadDegreesVertical" operation="perc_add" value=".07" tags="perkBoomstick"/>
+					<passive_effect name="SpreadDegreesHorizontal" operation="perc_add" value=".07" tags="perkBoomstick"/>
+			
+					<passive_effect name="KickDegreesVerticalMin" operation="base_set" value="2.0" tags="perkBoomstick"/>
+					<passive_effect name="KickDegreesVerticalMax" operation="base_set" value="2.0" tags="perkBoomstick"/>
+					<passive_effect name="KickDegreesHorizontalMin" operation="base_set" value="-1.0" tags="perkBoomstick"/>
+					<passive_effect name="KickDegreesHorizontalMax" operation="base_set" value="1.0" tags="perkBoomstick"/>
+			
+					<passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="2" tags="perkBoomstick"/>
+					<passive_effect name="WeaponHandling" operation="base_set" value="1.8" tags="perkBoomstick"/>
+					<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkBoomstick"/> <!-- random WeaponHandling -->
+					
+					<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
+					<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1">
+						<requirement name="RoundsInMagazine" operation="LTE" value="6"/>
+					</triggered_effect>
 			</effect_group>
 			<effect_group name="Dart mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="3"/>
@@ -637,7 +637,7 @@
 		<item name="gunMedicAssaultRifle401">
 			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
 			<property name="CustomIcon" value="medic_ar401"/>
-			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,bottomAttachments,barrelAttachments,noSilencer,sideAttachments,noScopes,stock,magazine,drumMagazine,firingMode,attFortitude,perkMachineGunner,perkBookAutoWeapons,canHaveCosmetic,attachmentsIncluded,machinegunSkill,medicWeapon"/><!-- attachmentsIncluded -->
+			<property name="Tags" value="weapon,ranged,holdBreathAiming,reloadPenalty,gun,bottomAttachments,barrelAttachments,noSilencer,sideAttachments,noScopes,stock,magazine,drumMagazine,firingMode,attFortitude,perkMachineGunner,perkBookAutoWeapons,canHaveCosmetic,attachmentsIncluded,machinegunSkill,medicWeapon,metaRecharger"/><!-- attachmentsIncluded -->
 			<property name="DisplayType" value="rangedGun"/>
 			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
 			<property name="BoundItemName" value="meleeWpnStockBashMedicAR401"/>
@@ -779,40 +779,40 @@
 			</effect_group>
 			<effect_group name="Weapon mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="0"/>
-				<passive_effect name="RoundsPerMinute" operation="base_set" value="750" tags="perkMachineGunner"/>
-				<passive_effect name="BurstRoundCount" operation="base_set" value="999" tags="perkMachineGunner"/>
-				<passive_effect name="MaxRange" operation="base_set" value="90" tags="perkMachineGunner,9mmGun"/>
-				<passive_effect name="DamageFalloffRange" operation="base_set" value="50" tags="perkMachineGunner,9mmGun"/>
-				<passive_effect name="DamageFalloffRange" operation="perc_add" value="-.1,.05" tier="1,6" tags="perkMachineGunner"/> <!-- random effective rng -->
-				<passive_effect name="EntityDamage" operation="base_add" value="6" tags="perkMachineGunner"/> <!-- damage offset -->
-				<passive_effect name="EntityDamage" operation="perc_add" value="-.3" tags="medicWeapon"/> <!-- medic weapon decrease -->
-				<passive_effect name="EntityDamage" operation="perc_add" value="-.02,.02" tags="perkMachineGunner"/> <!-- random EntityDmg -->
-				<passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6" tags="perkMachineGunner"/> <!-- tier bonus -->
-				<passive_effect name="BlockDamage" operation="perc_add" value="-.3" tags="medicWeapon"/> <!-- medic weapon decrease -->
-				<passive_effect name="BlockDamage" operation="perc_add" value="-.08,.08" tags="perkMachineGunner"/> <!-- random BlockDmg -->
-				<passive_effect name="BlockDamage" operation="perc_add" value=".15,.75" tier="2,6" tags="perkMachineGunner"/> <!-- tier bonus -->
-				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkMachineGunner,perkBookAutoWeapons"/>
-		
-				<passive_effect name="SpreadDegreesVertical" operation="base_set" value="2.4" tags="perkMachineGunner"/>
-				<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="2.4" tags="perkMachineGunner"/>
-				<passive_effect name="SpreadMultiplierAiming" operation="base_set" value=".2" tags="perkMachineGunner"/>
-				<passive_effect name="SpreadMultiplierCrouching" operation="base_set" value=".8" tags="perkMachineGunner"/>
-				<passive_effect name="SpreadMultiplierWalking" operation="base_set" value="1.5" tags="perkMachineGunner"/>
-				<passive_effect name="SpreadMultiplierRunning" operation="base_set" value="2.2" tags="perkMachineGunner"/>
-		
-				<passive_effect name="KickDegreesVerticalMin" operation="base_set" value=".6" tags="perkMachineGunner"/>
-				<passive_effect name="KickDegreesVerticalMax" operation="base_set" value=".8" tags="perkMachineGunner"/>
-				<passive_effect name="KickDegreesHorizontalMin" operation="base_set" value="-.5" tags="perkMachineGunner"/>
-				<passive_effect name="KickDegreesHorizontalMax" operation="base_set" value=".5" tags="perkMachineGunner"/>
-		
-				<passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="1.8" tags="perkMachineGunner,perkBookAutoWeapons"/>
-				<passive_effect name="WeaponHandling" operation="base_set" value=".95" tags="perkMachineGunner"/>
-				<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkMachineGunner"/> <!-- random WeaponHandling -->
-				
-				<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
-				<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1">
-					<requirement name="RoundsInMagazine" operation="LTE" value="6"/>
-				</triggered_effect>
+					<passive_effect name="RoundsPerMinute" operation="base_set" value="750" tags="perkMachineGunner"/>
+					<passive_effect name="BurstRoundCount" operation="base_set" value="999" tags="perkMachineGunner"/>
+					<passive_effect name="MaxRange" operation="base_set" value="90" tags="perkMachineGunner,9mmGun"/>
+					<passive_effect name="DamageFalloffRange" operation="base_set" value="50" tags="perkMachineGunner,9mmGun"/>
+					<passive_effect name="DamageFalloffRange" operation="perc_add" value="-.1,.05" tier="1,6" tags="perkMachineGunner"/> <!-- random effective rng -->
+					<passive_effect name="EntityDamage" operation="base_add" value="6" tags="perkMachineGunner"/> <!-- damage offset -->
+					<passive_effect name="EntityDamage" operation="perc_add" value="-.3" tags="medicWeapon"/> <!-- medic weapon decrease -->
+					<passive_effect name="EntityDamage" operation="perc_add" value="-.02,.02" tags="perkMachineGunner"/> <!-- random EntityDmg -->
+					<passive_effect name="EntityDamage" operation="perc_add" value=".05,.25" tier="2,6" tags="perkMachineGunner"/> <!-- tier bonus -->
+					<passive_effect name="BlockDamage" operation="perc_add" value="-.3" tags="medicWeapon"/> <!-- medic weapon decrease -->
+					<passive_effect name="BlockDamage" operation="perc_add" value="-.08,.08" tags="perkMachineGunner"/> <!-- random BlockDmg -->
+					<passive_effect name="BlockDamage" operation="perc_add" value=".15,.75" tier="2,6" tags="perkMachineGunner"/> <!-- tier bonus -->
+					<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkMachineGunner,perkBookAutoWeapons"/>
+			
+					<passive_effect name="SpreadDegreesVertical" operation="base_set" value="2.4" tags="perkMachineGunner"/>
+					<passive_effect name="SpreadDegreesHorizontal" operation="base_set" value="2.4" tags="perkMachineGunner"/>
+					<passive_effect name="SpreadMultiplierAiming" operation="base_set" value=".2" tags="perkMachineGunner"/>
+					<passive_effect name="SpreadMultiplierCrouching" operation="base_set" value=".8" tags="perkMachineGunner"/>
+					<passive_effect name="SpreadMultiplierWalking" operation="base_set" value="1.5" tags="perkMachineGunner"/>
+					<passive_effect name="SpreadMultiplierRunning" operation="base_set" value="2.2" tags="perkMachineGunner"/>
+			
+					<passive_effect name="KickDegreesVerticalMin" operation="base_set" value=".6" tags="perkMachineGunner"/>
+					<passive_effect name="KickDegreesVerticalMax" operation="base_set" value=".8" tags="perkMachineGunner"/>
+					<passive_effect name="KickDegreesHorizontalMin" operation="base_set" value="-.5" tags="perkMachineGunner"/>
+					<passive_effect name="KickDegreesHorizontalMax" operation="base_set" value=".5" tags="perkMachineGunner"/>
+			
+					<passive_effect name="IncrementalSpreadMultiplier" operation="base_set" value="1.8" tags="perkMachineGunner,perkBookAutoWeapons"/>
+					<passive_effect name="WeaponHandling" operation="base_set" value=".95" tags="perkMachineGunner"/>
+					<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkMachineGunner"/> <!-- random WeaponHandling -->
+					
+					<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
+					<triggered_effect trigger="onSelfRangedBurstShotEnd" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1">
+						<requirement name="RoundsInMagazine" operation="LTE" value="6"/>
+					</triggered_effect>
 			</effect_group>
 			<effect_group name="label color restore">
 				<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="GT" value="5"/>
@@ -843,7 +843,7 @@
 					<triggered_effect trigger="onSelfItemSwitchMode" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
 			</effect_group>
 		</item>
-		
+
 		<!-- *** Mod_Schematics -->
 		<item name="modMedicModuleSchematic">
 			<property name="Extends" value="schematicNoQualityMaster"/>
@@ -855,8 +855,8 @@
 				<triggered_effect trigger="onSelfPrimaryActionEnd" action="GiveExp" exp="50"/>
 			</effect_group>
 		</item>
-				
-			<!-- *** Medic_Guns_Skill_Magazine -->
+
+		<!-- *** Medic_Guns_Skill_Magazine -->
 		<item name="medicgunsSkillMagazine">
 			<property name="Extends" value="masterSkillMagazine"/>
 			<property name="Tags" value="medicgunsCSM,csm"/>
@@ -867,6 +867,23 @@
 			<effect_group tiered="false">
 				<triggered_effect trigger="onSelfPrimaryActionEnd" action="AddProgressionLevel" progression_name="craftingMedicGuns" level="1"/> <!-- level="-1" sets a perk to max level -->
 				<triggered_effect trigger="onSelfPrimaryActionEnd" action="GiveExp" exp="50"/>
+			</effect_group>
+			
+			<effect_group tiered="false">
+				<requirement_group op="or">
+					<requirement name="ProgressionLevel" progression_name="perkIntellectMastery" operation="GTE" value="3"/>
+					<requirement name="HasBuff" buff="buffNerdOutfit"/>
+				</requirement_group>
+					<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="nerdPointChance" operation="set" value="1"/>
+			</effect_group>
+
+			<effect_group tiered="false">
+				<requirement name="CVarCompare" cvar="nerdPointChance" operation="EQ" value="1"/>
+				<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="@$nerdOutfitSkillPointChance"/>
+					<triggered_effect trigger="onSelfPrimaryActionEnd" action="AddProgressionLevel" progression_name="craftingMedicGuns" level="1"/>
+					<triggered_effect trigger="onSelfPrimaryActionEnd" action="PlaySound" sound="nerd_outfit_perk" play_in_head="true"/>
+					<triggered_effect trigger="onSelfPrimaryActionEnd" action="RemoveCVar" cvar="nerdPointChance"/>
+					<!-- <triggered_effect trigger="onSelfPrimaryActionEnd" action="ShowToolbeltMessage" message="Extra Point!"/> -->
 			</effect_group>
 		</item>
 
@@ -1318,38 +1335,129 @@
 	</append>
 
 	<conditional>
-		<if cond="mod_loaded('EFTX_Pack_Core') or mod_loaded('EFT_Overhaul')">
-			<set xpath="/items/item[@name='gunMedicPistol']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
-			<set xpath="/items/item[@name='gunMedicPistol']/property[@class='Action3']/property[@name='Magazine_items']/@value">ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
-
-			<set xpath="/items/item[@name='gunMedicSMG201']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
-			<set xpath="/items/item[@name='gunMedicSMG201']/property[@class='Action3']/property[@name='Magazine_items']/@value">ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
-
-			<set xpath="/items/item[@name='gunMedicShotgun301']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug</set>
-			<set xpath="/items/item[@name='gunMedicShotgun301']/property[@class='Action3']/property[@name='Magazine_items']/@value">ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug</set>
-
-			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft55645NATO,ammoEft55645NATOAP,ammoEft55645NATOHP</set>
-			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/property[@class='Action3']/property[@name='Magazine_items']/@value">ammoEft55645NATO,ammoEft55645NATOAP,ammoEft55645NATOHP</set>
+		<if cond="mod_loaded('Z2_EFTX_EFT_Only_Ammo') or mod_loaded('EFT_Overhaul')">
+			<set xpath="/items/item[@name='gunMedicPistol']/property[@class='Action0' or @class='Action3']/property[@name='Magazine_items']/@value">ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
+			<set xpath="/items/item[@name='gunMedicSMG201']/property[@class='Action0' or @class='Action3']/property[@name='Magazine_items']/@value">ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
+			<set xpath="/items/item[@name='gunMedicShotgun301']/property[@class='Action0' or @class='Action3']/property[@name='Magazine_items']/@value">ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug</set>
+			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/property[@class='Action0' or @class='Action3']/property[@name='Magazine_items']/@value">ammoEft55645NATO,ammoEft55645NATOAP,ammoEft55645NATOHP</set>
+		</if>
+		<if cond="mod_loaded('Z2_EFTX_Both_Ammo')">
+			<set xpath="/items/item[@name='gunMedicPistol']/property[@class='Action0' or @class='Action3']/property[@name='Magazine_items']/@value">ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP,ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
+			<set xpath="/items/item[@name='gunMedicSMG201']/property[@class='Action0' or @class='Action3']/property[@name='Magazine_items']/@value">ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP,ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
+			<set xpath="/items/item[@name='gunMedicShotgun301']/property[@class='Action0' or @class='Action3']/property[@name='Magazine_items']/@value">ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug,ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug</set>
+			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/property[@class='Action0' or @class='Action3']/property[@name='Magazine_items']/@value">ammo762mmBulletBall,ammo762mmBulletHP,ammo762mmBulletAP,ammoEft55645NATO,ammoEft55645NATOAP,ammoEft55645NATOHP</set>
+		</if>
+		<if cond="mod_loaded('Z2_EFTX_EFT_IZY_Ammo_CrossOver')">
+			<set xpath="/items/item[@name='gunMedicPistol']/property[@class='Action0' or @class='Action3']/property[@name='Magazine_items']/@value">ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP,ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
+			<set xpath="/items/item[@name='gunMedicSMG201']/property[@class='Action0' or @class='Action3']/property[@name='Magazine_items']/@value">ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP,ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
+			<set xpath="/items/item[@name='gunMedicShotgun301']/property[@class='Action0' or @class='Action3']/property[@name='Magazine_items']/@value">ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug,ammoShotgunShellPremium,ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug,ammoEftShrapnel25Shotgun,ammoEftBarricadeSlug,ammoShotgunShellDragoBreath</set>
+			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/property[@class='Action0' or @class='Action3']/property[@name='Magazine_items']/@value">ammo556mmBulletBall,ammo556mmHIpower,ammo556mmArmorPiercing,ammoEft55645NATO,ammoEft55645NATOAP,ammoEft55645NATOHP,ammo762mmBulletBall,ammo762mmBulletHP,ammo762mmBulletAP</set>
+		</if>
+		<if cond="mod_loaded('Z2_EFTX_IZY_Uses_All_The_Ammo')">
+			<set xpath="/items/item[@name='gunMedicPistol']/property[@class='Action0' or @class='Action3']/property[@name='Magazine_items']/@value">ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP,ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
+			<set xpath="/items/item[@name='gunMedicSMG201']/property[@class='Action0' or @class='Action3']/property[@name='Magazine_items']/@value">ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP,ammoEft919mm,ammoEft919mmAP,ammoEft919mmHP</set>
+			<set xpath="/items/item[@name='gunMedicShotgun301']/property[@class='Action0' or @class='Action3']/property[@name='Magazine_items']/@value">ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug,ammoShotgunShellPremium,ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug,ammoEftShrapnel25Shotgun,ammoEftBarricadeSlug,ammoShotgunShellDragoBreath</set>
+			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/property[@class='Action0' or @class='Action3']/property[@name='Magazine_items']/@value">ammo556mmBulletBall,ammo556mmHIpower,ammo556mmArmorPiercing,ammoEft55645NATO,ammoEft55645NATOAP,ammoEft55645NATOHP,ammo762mmBulletBall,ammo762mmBulletHP,ammo762mmBulletAP</set>
+		</if>
+		<if cond="mod_loaded('Z2_EFTX_Uses_IZY_Vanilla_Ammo')">
+			<set xpath="/items/item[@name='gunMedicPistol']/property[@class='Action0' or @class='Action3']/property[@name='Magazine_items']/@value">ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP,ammo45ACPBulletBall,ammo45ACPHighpower,ammo45ACPArmorpiecing</set>
+			<set xpath="/items/item[@name='gunMedicSMG201']/property[@class='Action0' or @class='Action3']/property[@name='Magazine_items']/@value">ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP,ammo45ACPBulletBall,ammo45ACPHighpower,ammo45ACPArmorpiecing</set>
+			<set xpath="/items/item[@name='gunMedicShotgun301']/property[@class='Action0' or @class='Action3']/property[@name='Magazine_items']/@value">ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug,ammoShotgunShellPremium,ammoShotgunShellDragoBreath</set>
+			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/property[@class='Action0' or @class='Action3']/property[@name='Magazine_items']/@value">ammo556mmBulletBall,ammo556mmHIpower,ammo556mmArmorPiercing,ammo762mmBulletBall,ammo762mmBulletHP,ammo762mmBulletAP</set>
 		</if>
 	</conditional>
 
 	<conditional>
 		<if cond="mod_loaded('EFT_Overhaul')">
+			<set xpath="/items/item[@name='gunMedicPistol']/property[@name='UnlockedBy']/@value">schematicsMedicPistol</set>
 			<set xpath="/items/item[@name='gunMedicPistol']/effect_group[@name='Weapon mode']/passive_effect[@name='EntityDamage' and @tags='perkGunslinger']/@value">0</set>
 			<set xpath="/items/item[@name='gunMedicPistol']/effect_group[@name='Weapon mode']/passive_effect[@name='BlockDamage' and @tags='perkGunslinger']/@value">0</set>
 			<set xpath="/items/item[@name='gunMedicPistol']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
 
+			<set xpath="/items/item[@name='gunMedicSMG201']/property[@name='UnlockedBy']/@value">schematicsMedicSMG201</set>
 			<set xpath="/items/item[@name='gunMedicSMG201']/effect_group[@name='Weapon mode']/passive_effect[@name='EntityDamage' and @tags='perkGunslinger']/@value">0</set>
 			<set xpath="/items/item[@name='gunMedicSMG201']/effect_group[@name='Weapon mode']/passive_effect[@name='BlockDamage' and @tags='perkGunslinger']/@value">0</set>
 			<set xpath="/items/item[@name='gunMedicSMG201']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
 
+			<set xpath="/items/item[@name='gunMedicShotgun301']/property[@name='UnlockedBy']/@value">schematicsMedicShotgun301</set>
 			<set xpath="/items/item[@name='gunMedicShotgun301']/effect_group[@name='Weapon mode']/passive_effect[@name='EntityDamage' and @tags='perkBoomstick']/@value">0</set>
 			<set xpath="/items/item[@name='gunMedicShotgun301']/effect_group[@name='Weapon mode']/passive_effect[@name='BlockDamage' and @tags='perkBoomstick']/@value">0</set>
 			<set xpath="/items/item[@name='gunMedicShotgun301']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
 
+			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/property[@name='UnlockedBy']/@value">schematicsMedicAssaultRifle401</set>
 			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/effect_group[@name='Weapon mode']/passive_effect[@name='EntityDamage' and @tags='perkMachineGunner']/@value">0</set>
 			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/effect_group[@name='Weapon mode']/passive_effect[@name='BlockDamage' and @tags='perkMachineGunner']/@value">0</set>
 			<set xpath="/items/item[@name='gunMedicAssaultRifle401']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
+
+			<insertAfter xpath="/items/item[@name='gunMedicPistol' or @name='gunMedicSMG201' or @name='gunMedicShotgun301' or @name='gunMedicAssaultRifle401']/effect_group/triggered_effect[@trigger='onReloadAboutToStart' and @property='elite' and @value='true']/requirement[@name='ProgressionLevel']">
+        		<requirement name="CVarCompare" cvar="$ASkill_Gun_ReloadBonus" operation="GTE" value=".3"/>
+			</insertAfter>
+			<remove xpath="/items/item[@name='gunMedicPistol' or @name='gunMedicSMG201' or @name='gunMedicShotgun301' or @name='gunMedicAssaultRifle401']/effect_group/triggered_effect[@trigger='onReloadAboutToStart' and @property='elite' and @value='true']/requirement[@name='ProgressionLevel']"/>
+			<insertAfter xpath="/items/item[@name='gunMedicPistol' or @name='gunMedicSMG201' or @name='gunMedicShotgun301' or @name='gunMedicAssaultRifle401']/effect_group/triggered_effect[@trigger='onReloadAboutToStart' and @property='elite' and @value='false']/requirement[@name='ProgressionLevel']">
+        		<requirement name="CVarCompare" cvar="$ASkill_Gun_ReloadBonus" operation="LT" value=".3"/>
+			</insertAfter>
+			<remove xpath="/items/item[@name='gunMedicPistol' or @name='gunMedicSMG201' or @name='gunMedicShotgun301' or @name='gunMedicAssaultRifle401']/effect_group/triggered_effect[@trigger='onReloadAboutToStart' and @property='elite' and @value='false']/requirement[@name='ProgressionLevel']"/>
+			<insertAfter xpath="/items/item[@name='gunMedicPistol' or @name='gunMedicSMG201' or @name='gunMedicShotgun301' or @name='gunMedicAssaultRifle401']/effect_group/passive_effect[@name='ReloadSpeedRatioFPV2TPV']/requirement[@name='ProgressionLevel' and @operation='GTE']">
+        		<requirement name="CVarCompare" cvar="$ASkill_Gun_ReloadBonus" operation="GTE" value=".3"/>
+			</insertAfter>
+			<remove xpath="/items/item[@name='gunMedicPistol' or @name='gunMedicSMG201' or @name='gunMedicShotgun301' or @name='gunMedicAssaultRifle401']/effect_group/passive_effect[@name='ReloadSpeedRatioFPV2TPV']/requirement[@name='ProgressionLevel' and @operation='GTE']"/>
+			<insertAfter xpath="/items/item[@name='gunMedicPistol' or @name='gunMedicSMG201' or @name='gunMedicShotgun301' or @name='gunMedicAssaultRifle401']/effect_group/passive_effect[@name='ReloadSpeedRatioFPV2TPV']/requirement[@name='ProgressionLevel' and @operation='LT']">
+        		<requirement name="CVarCompare" cvar="$ASkill_Gun_ReloadBonus" operation="LT" value=".3"/>
+			</insertAfter>
+			<remove xpath="/items/item[@name='gunMedicPistol' or @name='gunMedicSMG201' or @name='gunMedicShotgun301' or @name='gunMedicAssaultRifle401']/effect_group/passive_effect[@name='ReloadSpeedRatioFPV2TPV']/requirement[@name='ProgressionLevel' and @operation='LT']"/>
+			<insertAfter xpath="/items/item[@name='gunMedicPistol' or @name='gunMedicSMG201' or @name='gunMedicShotgun301' or @name='gunMedicAssaultRifle401']/effect_group/passive_effect[@name='ReloadSpeedMultiplier' and @operation='perc_add']/requirement[@name='ProgressionLevel' and @operation='GTE']">
+        		<requirement name="CVarCompare" cvar="$ASkill_Gun_ReloadBonus" operation="GTE" value=".3"/>
+			</insertAfter>
+			<remove xpath="/items/item[@name='gunMedicPistol' or @name='gunMedicSMG201' or @name='gunMedicShotgun301' or @name='gunMedicAssaultRifle401']/effect_group/passive_effect[@name='ReloadSpeedMultiplier' and @operation='perc_add']/requirement[@name='ProgressionLevel' and @operation='GTE']"/>
+			<set xpath="/items/item[@name='gunMedicPistol' or @name='gunMedicSMG201' or @name='gunMedicShotgun301' or @name='gunMedicAssaultRifle401']/effect_group/passive_effect[@name='ReloadSpeedMultiplier' and @operation='perc_add']/@value">@$ASkill_Gun_ReloadBonus</set>
+			<set xpath="/items/item[@name='gunMedicPistol' or @name='gunMedicSMG201' or @name='gunMedicShotgun301' or @name='gunMedicAssaultRifle401']/effect_group/passive_effect[@name='ReloadSpeedMultiplier' and @operation='perc_add']/@operation">perc_subtract</set>
+
+			<append xpath="/items">
+				<item name="schematicsMedicPistol">
+					<property name="Extends" value="schematicNoQualityMaster"/>
+					<property name="CreativeMode" value="Player"/>
+					<property name="CustomIcon" value="medic_pistol"/>
+					<property name="DescriptionKey" value="schematicsEftGunGeneralDesc"/>
+					<property name="Unlocks" value="gunMedicPistol"/>
+					<property name="SellableToTrader" value="false"/>
+					<effect_group tiered="false">
+						<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="gunMedicPistol" operation="set" value="1"/>
+					</effect_group>
+				</item>
+				<item name="schematicsMedicSMG201">
+					<property name="Extends" value="schematicNoQualityMaster"/>
+					<property name="CreativeMode" value="Player"/>
+					<property name="CustomIcon" value="medic_smg"/>
+					<property name="DescriptionKey" value="schematicsEftGunGeneralDesc"/>
+					<property name="Unlocks" value="gunMedicSMG201"/>
+					<property name="SellableToTrader" value="false"/>
+					<effect_group tiered="false">
+						<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="gunMedicSMG201" operation="set" value="1"/>
+					</effect_group>
+				</item>
+				<item name="schematicsMedicShotgun301">
+					<property name="Extends" value="schematicNoQualityMaster"/>
+					<property name="CreativeMode" value="Player"/>
+					<property name="CustomIcon" value="medic_sg301"/>
+					<property name="DescriptionKey" value="schematicsEftGunGeneralDesc"/>
+					<property name="Unlocks" value="gunMedicShotgun301"/>
+					<property name="SellableToTrader" value="false"/>
+					<effect_group tiered="false">
+						<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="gunMedicShotgun301" operation="set" value="1"/>
+					</effect_group>
+				</item>
+				<item name="schematicsMedicAssaultRifle401">
+					<property name="Extends" value="schematicNoQualityMaster"/>
+					<property name="CreativeMode" value="Player"/>
+					<property name="CustomIcon" value="medic_ar401"/>
+					<property name="DescriptionKey" value="schematicsEftGunGeneralDesc"/>
+					<property name="Unlocks" value="gunMedicAssaultRifle401"/>
+					<property name="SellableToTrader" value="false"/>
+					<effect_group tiered="false">
+						<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="gunMedicAssaultRifle401" operation="set" value="1"/>
+					</effect_group>
+				</item>
+			</append>
 		</if>
 	</conditional>
 </configs>

@@ -34,17 +34,13 @@
 	</append>
 	
 	<conditional>
-		<if cond="mod_loaded('EFT8_DVS_Configs')">
-			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3']">
-				<item group="groupWeapons_Kaboomstick" loot_prob_template="med"/>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<append xpath="/lootcontainers/lootgroup[@name='groupSpecialGuns']">
+				<item name="gunKaboomstick" loot_prob_template="ProbT2" loot_quality_template="QLTemplateT2"/>
 			</append>
-			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT4']">
-				<item group="groupWeapons_Kaboomstick" loot_prob_template="medLow"/>
-			</append>
-			<append xpath="/lootcontainers/lootgroup[@name='groupExplosives']">
-				<item group="groupKBSammoSmall" loot_prob_template="medLow"/>
-				<item group="groupKBSammoMedium" loot_prob_template="low"/>
-				<item group="groupKBSammoLarge" loot_prob_template="veryLow"/>
+			<append xpath="/lootcontainers/lootgroup[@name='groupEftExplosives']">
+				<item name="ammoKaboomstickShellHE" count="4,8" loot_prob_template="medLow"/>
+				<item name="ammoKaboomstickShellFrag" count="4,8" loot_prob_template="medLow"/>
 			</append>
 		</if>
 		<if cond="mod_loaded('EFTX_Pack_Core')">

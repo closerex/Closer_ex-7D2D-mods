@@ -26,8 +26,24 @@
 			<ingredient name="modDualGunFlashlight" count="1"/>
 		</recipe>
 	</append>
+		
 	<conditional>
-		<if cond="mod_loaded('EFTX_Pack_Standard')">
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<append xpath="/recipes">
+				<recipe name="schematicsAF2011A1" count="1">
+					<ingredient name="gunHandgunT3AF2011A1S" count="1" />
+					<ingredient name="resourceToolset" count="1" />
+				</recipe>
+				<recipe name="schematicsAF2011A1" count="2">
+					<ingredient name="gunHandgunT3DualAF2011A1S" count="1" />
+					<ingredient name="resourceToolset" count="1" />
+				</recipe>
+			</append>
+		</if>
+	</conditional>
+	
+	<conditional>
+		<if cond="mod_loaded('EFTX_Pack_Standard') or mod_loaded('EFT_Overhaul')">
 			<append xpath="/recipes">
 				<recipe name="gunHandgunT3AF2011A1S" count="1" craft_area="workbench" tags="learnable">
 					<ingredient name="gunHandgunT1PistolParts" count="2"/>
@@ -52,11 +68,11 @@
 
 				<!-- Silencer -->
 				<recipe name="modGunAF2011OspreySilencer" count="1" craft_area="workbench" tags="workbenchCrafting">
-					<ingredient name="modsilencerco9osprey" count="2"/>
+					<ingredient name="modsilencerco45komega" count="2"/>
 					<ingredient name="resourceScrapPolymers" count="2"/>
 					<ingredient name="resourceDuctTape" count="1"/>
 				</recipe>
-				<recipe name="modsilencerco9osprey" count="2" craft_area="workbench">
+				<recipe name="modsilencerco45komega" count="2" craft_area="workbench">
 					<ingredient name="modGunAF2011OspreySilencer" count="1"/>
 				</recipe>
 
@@ -136,5 +152,15 @@
 				</recipe>
 			</append>
 		</else>
+	</conditional>
+
+	<conditional>
+		<if cond="mod_version('EFTX_Pack_Core') &gt;= version(2,5,2,5)">
+			<setattribute xpath="/recipes/recipe[@name='gunHandgunT3AF2011A1S' or @name='gunHandgunT3DualAF2011A1S']/ingredient[@name='resourceWeaponParts']" name="name">resourcePistolRepairKit</setattribute>
+			<setattribute xpath="/recipes/recipe[@name='modGunAF2011OspreySilencer']/ingredient[@name='modsilencerco45komega']" name="name">modsilencer_base_silencerco_omega_45k_1143x23</setattribute>
+			<setattribute xpath="/recipes/recipe[@name='modsilencerco45komega']/ingredient[@name='modGunAF2011OspreySilencer']/.." name="name">modsilencer_base_silencerco_omega_45k_1143x23</setattribute>
+			<setattribute xpath="/recipes/recipe[@name='modGunAF2011MuzzleBrake']/ingredient[@name='modmuzzle1911anarchyoutdoors']" name="name">modGunMuzzleBrake</setattribute>
+			<setattribute xpath="/recipes/recipe[@name='modmuzzle1911anarchyoutdoors']/ingredient[@name='modGunAF2011MuzzleBrake']/.." name="name">modGunMuzzleBrake</setattribute>
+		</if>
 	</conditional>
 </configs>

@@ -26,6 +26,17 @@
                 </triggered_effect>
             </effect_group>
         </buff>
-        
     </append>
+		
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<append xpath="/buffs/buff[@name='buffEftASkillsAndLBD']">
+				<effect_group>
+					<passive_effect name="CraftingTier" operation="base_set" value="6" tags="meleeWpnClubT3KF2BoneCrusher">
+						<requirement name="CVarCompare" cvar="meleeWpnClubT3KF2BoneCrusher" operation="GT" value="0"/>
+					</passive_effect>
+				</effect_group>
+			</append>
+		</if>
+	</conditional>
 </config>

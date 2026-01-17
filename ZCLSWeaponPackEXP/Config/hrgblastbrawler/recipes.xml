@@ -1,23 +1,17 @@
 <configs>
 	<conditional>
-		<if cond="mod_loaded('EFT8_DVS_Configs')">
+		<if cond="mod_loaded('EFT_Overhaul')">
             <append xpath="/recipes">
-                <recipe name="gunT3HRGBlastBrawler" count="1" craft_area="workbench" tags="learnable,perkBoomstick">
-                    <ingredient name="gunShotgunT1DoubleBarrelParts" count="2" />
-                    <ingredient name="resourceWeaponParts" count="4" />
-                    <ingredient name="resourceDuctTape" count="4" />
-                    <ingredient name="resourceSpring" count="4" />
-                    <ingredient name="resourceLegendaryParts" count="0" />
-                    <effect_group>
-                      <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="4,44" tags="gunShotgunT1DoubleBarrelParts,resourceDuctTape" />
-                      <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="resourceWeaponParts" />
-                      <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="4,20" tags="resourceSpring" />
-                      <passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts" />
-                    </effect_group>
-                </recipe>
+				<recipe name="schematicsHRGBlastBrawler" count="1">
+					<ingredient name="gunT3HRGBlastBrawler" count="1"/>
+					<ingredient name="resourceToolset" count="1"/>
+				</recipe>
             </append>
         </if>
-        <if cond="mod_loaded('EFTX_Pack_Core')">
+    </conditional>
+    
+	<conditional>
+        <if cond="mod_loaded('EFTX_Pack_Core') or mod_loaded('EFT_Overhaul')">
             <append xpath="/recipes">
                 <recipe name="gunT3HRGBlastBrawler" count="1" craft_area="workbench" tags="learnable">
                     <ingredient name="gunShotgunT1DoubleBarrelParts" count="2"/>
@@ -51,4 +45,10 @@
             </append>
         </else>
     </conditional>
+
+	<conditional>
+		<if cond="mod_version('EFTX_Pack_Core') &gt;= version(2,5,2,5)">
+			<setattribute xpath="/recipes/recipe[@name='gunT3HRGBlastBrawler']/ingredient[@name='resourceWeaponParts']" name="name">resourceShotgunRepairKit</setattribute>
+		</if>
+	</conditional>
 </configs>

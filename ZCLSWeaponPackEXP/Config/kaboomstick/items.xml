@@ -318,12 +318,66 @@
 			</effect_group>
 		</item>
 	</append>
+
 	<conditional>
 		<if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
-			<set xpath="/items/item[@name='gunKaboomstick']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
+			<conditional>
+				<if cond="mod_version('EFTX_Pack_Core') &gt;= version(2,5,2,5)">
+					<set xpath="/items/item[@name='gunKaboomstick']/property[@name='RepairTools']/@value">resourceLauncherRepairKit</set>
+				</if>
+				<else>
+					<set xpath="/items/item[@name='gunKaboomstick']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
+				</else>
+			</conditional>
 		</if>
 	</conditional>
+
     <conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<set xpath="/items/item[@name='gunKaboomstick']/property[@name='UnlockedBy']/@value">schematicsKaboomstick</set>
+			<append xpath="/items">
+				<item name="schematicsKaboomstick">
+					<property name="Extends" value="schematicNoQualityMaster"/>
+					<property name="CreativeMode" value="Player"/>
+					<property name="CustomIcon" value="UI_WeaponSelect_HRG_Kaboomstick"/>
+					<property name="DescriptionKey" value="schematicsEftGunGeneralDesc"/>
+					<property name="Unlocks" value="gunKaboomstick"/>
+					<property name="SellableToTrader" value="false"/>
+					<effect_group tiered="false">
+						<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="gunKaboomstick" operation="set" value="1"/>
+					</effect_group>
+				</item>
+			</append>
+
+			<set xpath="/items/item[@name='ammoKaboomstickShellHE' or @name='ammoKaboomstickShellFrag']/property[@name='UnlockedBy']/@value">schematicsExplosives</set>
+            <append xpath="/items/item[@name='schematicsExplosives']/effect_group[1]">
+                <triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="ammoKaboomstickShellHE" operation="set" value="1"/>
+                <triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="ammoKaboomstickShellFrag" operation="set" value="1"/>
+            </append>
+			
+			<insertAfter xpath="/items/item[@name='gunKaboomstick']/effect_group/triggered_effect[@trigger='onReloadAboutToStart' and @property='elite' and @value='true']/requirement[@name='ProgressionLevel']">
+        		<requirement name="CVarCompare" cvar="$ASkill_Gun_ReloadBonus" operation="GTE" value=".3"/>
+			</insertAfter>
+			<remove xpath="/items/item[@name='gunKaboomstick']/effect_group/triggered_effect[@trigger='onReloadAboutToStart' and @property='elite' and @value='true']/requirement[@name='ProgressionLevel']"/>
+			<insertAfter xpath="/items/item[@name='gunKaboomstick']/effect_group/triggered_effect[@trigger='onReloadAboutToStart' and @property='elite' and @value='false']/requirement[@name='ProgressionLevel']">
+        		<requirement name="CVarCompare" cvar="$ASkill_Gun_ReloadBonus" operation="LT" value=".3"/>
+			</insertAfter>
+			<remove xpath="/items/item[@name='gunKaboomstick']/effect_group/triggered_effect[@trigger='onReloadAboutToStart' and @property='elite' and @value='false']/requirement[@name='ProgressionLevel']"/>
+			<insertAfter xpath="/items/item[@name='gunKaboomstick']/effect_group/passive_effect[@name='ReloadSpeedRatioFPV2TPV']/requirement[@name='ProgressionLevel' and @operation='GTE']">
+        		<requirement name="CVarCompare" cvar="$ASkill_Gun_ReloadBonus" operation="GTE" value=".3"/>
+			</insertAfter>
+			<remove xpath="/items/item[@name='gunKaboomstick']/effect_group/passive_effect[@name='ReloadSpeedRatioFPV2TPV']/requirement[@name='ProgressionLevel' and @operation='GTE']"/>
+			<insertAfter xpath="/items/item[@name='gunKaboomstick']/effect_group/passive_effect[@name='ReloadSpeedRatioFPV2TPV']/requirement[@name='ProgressionLevel' and @operation='LT']">
+        		<requirement name="CVarCompare" cvar="$ASkill_Gun_ReloadBonus" operation="LT" value=".3"/>
+			</insertAfter>
+			<remove xpath="/items/item[@name='gunKaboomstick']/effect_group/passive_effect[@name='ReloadSpeedRatioFPV2TPV']/requirement[@name='ProgressionLevel' and @operation='LT']"/>
+			<insertAfter xpath="/items/item[@name='gunKaboomstick']/effect_group/passive_effect[@name='ReloadSpeedMultiplier' and @operation='perc_add']/requirement[@name='ProgressionLevel' and @operation='GTE']">
+        		<requirement name="CVarCompare" cvar="$ASkill_Gun_ReloadBonus" operation="GTE" value=".3"/>
+			</insertAfter>
+			<remove xpath="/items/item[@name='gunKaboomstick']/effect_group/passive_effect[@name='ReloadSpeedMultiplier' and @operation='perc_add']/requirement[@name='ProgressionLevel' and @operation='GTE']"/>
+			<set xpath="/items/item[@name='gunKaboomstick']/effect_group/passive_effect[@name='ReloadSpeedMultiplier' and @operation='perc_add']/@value">@$ASkill_Gun_ReloadBonus</set>
+			<set xpath="/items/item[@name='gunKaboomstick']/effect_group/passive_effect[@name='ReloadSpeedMultiplier' and @operation='perc_add']/@operation">perc_subtract</set>
+		</if>
         <if cond="mod_loaded('EFTX_Pack_Standard')">
 			<set xpath="/items/item[@name='gunKaboomstick' or @name='ammoKaboomstickShellHE' or @name='ammoKaboomstickShellFrag']/property[@name='UnlockedBy']/@value">craftingRocketsandLaunchers</set>
             <csv xpath="/items/item[@name='ammoKaboomstickShellHE' or @name='ammoKaboomstickShellFrag']/property[@name='Tags']/@value" delim="," op="add">eftBoom</csv>

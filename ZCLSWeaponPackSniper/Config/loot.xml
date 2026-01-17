@@ -1,5 +1,31 @@
 <config>
     <conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+            <append xpath="/lootcontainers/lootgroup[@name='groupRiflesT2' or @name='groupWeaponsT2']">
+				<item name="gunKF1894"/>
+				<item name="gunKFMosin"/>
+            </append>
+            <append xpath="/lootcontainers/lootgroup[@name='groupRiflesT3' or @name='groupWeaponsT3']">
+				<item name="gunKFSPX464"/>
+				<item name="gunKFM14EBR"/>
+				<item name="gunTCTD2Virginian" loot_prob_template="veryLow"/>
+            </append>
+            <append xpath="/lootcontainers/lootgroup[@name='groupRiflesT4' or @name='groupWeaponsT4']">
+				<item name="gunKFM99"/>
+            </append>
+			<append xpath="//lootgroup[@name='groupEftAmmoSmall']">
+                <item name="ammoKF50BMGBulletBall" count="1,2" loot_prob_template="low"/>
+			</append>
+			<append xpath="//lootgroup[@name='groupEftAmmoMedium']">
+                <item name="ammoKF50BMGBulletBall" count="2,4" loot_prob_template="low"/>
+			</append>
+			<append xpath="//lootgroup[@name='groupEftAmmoLarge']">
+                <item name="ammoKF50BMGBulletBall" count="3,6" loot_prob_template="low"/>
+			</append>
+			<append xpath="//lootgroup[@name='groupEftAmmoSoldier']">
+                <item name="ammoKF50BMGBulletBall" count="1,2" loot_prob_template="low"/>
+			</append>
+        </if>
         <if cond="mod_loaded('EFTX_Pack_Core')">
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT2']">
 				<item name="gunKF1894"/>
@@ -23,33 +49,167 @@
 				<item name="gunKFM99" loot_prob_template="QuestT4Prob"/>
 				<item name="gunTCTD2Virginian" loot_prob_template="QuestT4Prob"/>
 			</append>
-			<append xpath="//lootgroup[@name='groupEftAmmoSmallT3']">
-                <item name="ammoKF50BMGBulletBall" count="2,3" />
-			</append>
-			<append xpath="//lootgroup[@name='groupEftAmmoMediumT1']">
-                <item name="ammoKF50BMGBulletBall" count="1,3" />
-			</append>
-			<append xpath="//lootgroup[@name='groupEftAmmoMediumT2']">
-                <item name="ammoKF50BMGBulletBall" count="2,4" />
-			</append>
-			<append xpath="//lootgroup[@name='groupEftAmmoMediumT3']">
-                <item name="ammoKF50BMGBulletBall" count="3,5" />
-			</append>
-			<append xpath="//lootgroup[@name='groupEftAmmoLargeT0']">
-                <item name="ammoKF50BMGBulletBall" count="2,3" />
-			</append>
-			<append xpath="//lootgroup[@name='groupEftAmmoLargeT1']">
-                <item name="ammoKF50BMGBulletBall" count="2,4" />
-			</append>
-			<append xpath="//lootgroup[@name='groupEftAmmoLargeT2']">
-                <item name="ammoKF50BMGBulletBall" count="3,5" />
-			</append>
-			<append xpath="//lootgroup[@name='groupEftAmmoLargeT3']">
-                <item name="ammoKF50BMGBulletBall" count="4,6" />
-			</append>
-            <append xpath="//lootgroup[@name='groupQuestAmmo']">
-				<item name="ammoKF50BMGBulletBall" count="20,50" loot_prob_template="QuestT3Prob"/>
-            </append>
+			
+			<conditional>
+				<if cond="mod_version('EFTX_Pack_Core') &lt; version(2,5,2,5)">
+					<append xpath="//lootgroup[@name='groupEftAmmoSmallT3']">
+						<item name="ammoKF50BMGBulletBall" count="2,3" loot_prob_template="low"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEftAmmoMediumT1']">
+						<item name="ammoKF50BMGBulletBall" count="1,3" loot_prob_template="low"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEftAmmoMediumT2']">
+						<item name="ammoKF50BMGBulletBall" count="2,4" loot_prob_template="low"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEftAmmoMediumT3']">
+						<item name="ammoKF50BMGBulletBall" count="3,5" loot_prob_template="low"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEftAmmoLargeT0']">
+						<item name="ammoKF50BMGBulletBall" count="2,3" loot_prob_template="low"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEftAmmoLargeT1']">
+						<item name="ammoKF50BMGBulletBall" count="2,4" loot_prob_template="low"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEftAmmoLargeT2']">
+						<item name="ammoKF50BMGBulletBall" count="3,5" loot_prob_template="low"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEftAmmoLargeT3']">
+						<item name="ammoKF50BMGBulletBall" count="4,6" loot_prob_template="low"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupQuestAmmo']">
+						<item name="ammoKF50BMGBulletBall" count="20,50" loot_prob_template="QuestT3Prob"/>
+					</append>
+				</if>
+				<else>
+					<append xpath="//lootgroup[@name='groupEFTXRiflesT1']">
+						<item name="gunKF1894" count="1" quality="1"/>
+						<item name="gunKFMosin" count="1" quality="1"/>
+						<item name="gunKFSPX464" count="1" quality="1"/>
+						<item name="gunKFM14EBR" count="1" quality="1"/>
+						<item name="gunKFM99" count="1" quality="1" loot_prob_template="low"/>
+						<item name="gunTCTD2Virginian" count="1" quality="1" loot_prob_template="veryLow"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXRiflesT1']">
+						<item name="gunKF1894" count="1" quality="2"/>
+						<item name="gunKFMosin" count="1" quality="2"/>
+						<item name="gunKFSPX464" count="1" quality="2"/>
+						<item name="gunKFM14EBR" count="1" quality="2"/>
+						<item name="gunKFM99" count="1" quality="2" loot_prob_template="low"/>
+						<item name="gunTCTD2Virginian" count="1" quality="2" loot_prob_template="veryLow"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXRiflesT1']">
+						<item name="gunKF1894" count="1" quality="3"/>
+						<item name="gunKFMosin" count="1" quality="3"/>
+						<item name="gunKFSPX464" count="1" quality="3"/>
+						<item name="gunKFM14EBR" count="1" quality="3"/>
+						<item name="gunKFM99" count="1" quality="3" loot_prob_template="low"/>
+						<item name="gunTCTD2Virginian" count="1" quality="3" loot_prob_template="veryLow"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXRiflesT1']">
+						<item name="gunKF1894" count="1" quality="4"/>
+						<item name="gunKFMosin" count="1" quality="4"/>
+						<item name="gunKFSPX464" count="1" quality="4"/>
+						<item name="gunKFM14EBR" count="1" quality="4"/>
+						<item name="gunKFM99" count="1" quality="4" loot_prob_template="low"/>
+						<item name="gunTCTD2Virginian" count="1" quality="4" loot_prob_template="veryLow"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXRiflesT1']">
+						<item name="gunKF1894" count="1" quality="5"/>
+						<item name="gunKFMosin" count="1" quality="5"/>
+						<item name="gunKFSPX464" count="1" quality="5"/>
+						<item name="gunKFM14EBR" count="1" quality="5"/>
+						<item name="gunKFM99" count="1" quality="5" loot_prob_template="low"/>
+						<item name="gunTCTD2Virginian" count="1" quality="5" loot_prob_template="veryLow"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXRiflesT1']">
+						<item name="gunKF1894" count="1" quality="6"/>
+						<item name="gunKFMosin" count="1" quality="6"/>
+						<item name="gunKFSPX464" count="1" quality="6"/>
+						<item name="gunKFM14EBR" count="1" quality="6"/>
+						<item name="gunKFM99" count="1" quality="6" loot_prob_template="low"/>
+						<item name="gunTCTD2Virginian" count="1" quality="6" loot_prob_template="veryLow"/>
+					</append>
+
+					<conditional>
+						<if cond="mod_loaded('Z9_EFTX_Lootable_Zs')">
+							<append xpath="//lootgroup[@name='GroupMaleHazmatRiflesT1']">
+								<item name="gunKFM14EBR" count="1" quality="1"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupMaleHazmatRiflesT2']">
+								<item name="gunKFM14EBR" count="1" quality="2"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupMaleHazmatRiflesT3']">
+								<item name="gunKFM14EBR" count="1" quality="3"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupMaleHazmatRiflesT4']">
+								<item name="gunKFM14EBR" count="1" quality="4"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupMaleHazmatRiflesT5']">
+								<item name="gunKFM14EBR" count="1" quality="5"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupMaleHazmatRiflesT6']">
+								<item name="gunKFM14EBR" count="1" quality="6"/>
+							</append>
+
+							<append xpath="//lootgroup[@name='GroupBowlerRiflesT1']">
+								<item name="gunKF1894" count="1" quality="1"/>
+								<item name="gunKFMosin" count="1" quality="1" loot_prob_template="medLow"/>
+								<item name="gunKFSPX464" count="1" quality="1" loot_prob_template="medLow"/>
+								<item name="gunTCTD2Virginian" count="1" quality="1" loot_prob_template="veryLow"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupBowlerRiflesT2']">
+								<item name="gunKF1894" count="1" quality="2"/>
+								<item name="gunKFMosin" count="1" quality="2" loot_prob_template="medLow"/>
+								<item name="gunKFSPX464" count="1" quality="2" loot_prob_template="medLow"/>
+								<item name="gunTCTD2Virginian" count="1" quality="2" loot_prob_template="veryLow"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupBowlerRiflesT3']">
+								<item name="gunKF1894" count="1" quality="3"/>
+								<item name="gunKFMosin" count="1" quality="3" loot_prob_template="medLow"/>
+								<item name="gunKFSPX464" count="1" quality="3" loot_prob_template="medLow"/>
+								<item name="gunTCTD2Virginian" count="1" quality="3" loot_prob_template="veryLow"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupBowlerRiflesT4']">
+								<item name="gunKF1894" count="1" quality="4"/>
+								<item name="gunKFMosin" count="1" quality="4" loot_prob_template="medLow"/>
+								<item name="gunKFSPX464" count="1" quality="4" loot_prob_template="medLow"/>
+								<item name="gunTCTD2Virginian" count="1" quality="4" loot_prob_template="veryLow"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupBowlerRiflesT5']">
+								<item name="gunKF1894" count="1" quality="5"/>
+								<item name="gunKFMosin" count="1" quality="5" loot_prob_template="medLow"/>
+								<item name="gunKFSPX464" count="1" quality="5" loot_prob_template="medLow"/>
+								<item name="gunTCTD2Virginian" count="1" quality="5" loot_prob_template="veryLow"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupBowlerRiflesT6']">
+								<item name="gunKF1894" count="1" quality="6"/>
+								<item name="gunKFMosin" count="1" quality="6" loot_prob_template="medLow"/>
+								<item name="gunKFSPX464" count="1" quality="6" loot_prob_template="medLow"/>
+								<item name="gunTCTD2Virginian" count="1" quality="6" loot_prob_template="veryLow"/>
+							</append>
+
+							<append xpath="//lootgroup[@name='GroupWightRiflesT1']">
+								<item name="gunKFM99" count="1" quality="1"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupWightRiflesT2']">
+								<item name="gunKFM99" count="1" quality="2"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupWightRiflesT3']">
+								<item name="gunKFM99" count="1" quality="3"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupWightRiflesT4']">
+								<item name="gunKFM99" count="1" quality="4"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupWightRiflesT5']">
+								<item name="gunKFM99" count="1" quality="5"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupWightRiflesT6']">
+								<item name="gunKFM99" count="1" quality="6"/>
+							</append>
+						</if>
+					</conditional>
+				</else>
+			</conditional>
         </if>
         <else>
 			<insertAfter xpath="/lootcontainers/lootgroup[@name='empty']">
@@ -111,19 +271,19 @@
 				<item name="ammoKF50BMGBulletBall" count="15" loot_prob_template="QuestT3Prob"/>
             </append>
             <append xpath="/lootcontainers/lootgroup[@name='groupAmmoSmall']">
-				<item group="groupKF50BMGSmall"/>
+				<item group="groupKF50BMGSmall" loot_prob_template="low"/>
             </append>
             <append xpath="/lootcontainers/lootgroup[@name='groupAmmoMedium']">
-				<item group="groupKF50BMGMedium"/>
+				<item group="groupKF50BMGMedium" loot_prob_template="low"/>
             </append>
             <append xpath="/lootcontainers/lootgroup[@name='groupAmmoSmallNoArrow']">
-				<item group="groupKF50BMGSmall"/>
+				<item group="groupKF50BMGSmall" loot_prob_template="low"/>
             </append>
             <append xpath="/lootcontainers/lootgroup[@name='groupAmmoMediumNoArrow']">
-				<item group="groupKF50BMGMedium"/>
+				<item group="groupKF50BMGMedium" loot_prob_template="low"/>
             </append>
             <append xpath="/lootcontainers/lootgroup[@name='groupAmmoLarge']">
-				<item group="groupKF50BMGLarge"/>
+				<item group="groupKF50BMGLarge" loot_prob_template="low"/>
             </append>
         </else>
     </conditional>

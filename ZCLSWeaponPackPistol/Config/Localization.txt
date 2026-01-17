@@ -17,3 +17,9 @@ gunKFDualG18C,items,gun,Dual Glock 18c,双持格洛克 18c
 gunKFDualG18CDesc,items,gun,"Choice of full-auto and semi-auto fire modes. Semi-auto features low rpm and high precision. Activating weapon switches aiming styles when in Ironsights.\n\nCaution: Uncontrollable urges to declare self-identification with the law when used.\n\nUse [action:KFLibPlayerActions:PerformAltMelee] to bash. Bashing is Brawler type.",可选择全自动和半自动射击模式。半自动模式射速较低，精确度更高。激活武器可以切换瞄准模式。\n\n注意：使用时会有无法控制的法律认同感。\n\n使用[action:KFLibPlayerActions:PerformAltMelee]推击。推击为搏斗类型。
 gunKFG18CShield,items,gun,Riot Shield & Glock 18,防爆盾牌 & 格洛克 18 手枪
 gunKFG18CShieldDesc,items,gun,"Choice of full-auto and semi-auto fire modes. Semi-auto features low rpm and high precision.\n\nBlocks 60% attack damage from front side when aiming and 20% from left side when not aiming.\n\nUse [action:KFLibPlayerActions:PerformAltMelee] to bash. Bashing is Brawler type.",可选择全自动和半自动射击模式。半自动模式射速较低，精确度更高。\n\n瞄准时可抵挡60%来自正前方的伤害，未瞄准时则可抵挡20%来自左侧的伤害。\n\n使用[action:KFLibPlayerActions:PerformAltMelee]推击。推击为搏斗类型，并且会击倒所有范围内的敌人。
+
+schematicsKF29mm,items,gun,9mm Pistol Schematic,9毫米手枪设计图
+schematicsKF2HRGSW500,items,gun,HRG Buckshot Schematic,HRG大号铅弹设计图
+schematicsKF2SW500,items,gun,.500 Magnum Revolver Schematic,.500 马格南左轮手枪设计图
+schematicsKF2G18C,items,gun,Glock 18c Schematic,格洛克 18c设计图
+schematicsKF2G18Shield,items,gun,Riot Shield & Glock 18 Schematic,防爆盾牌 & 格洛克 18 手枪设计图

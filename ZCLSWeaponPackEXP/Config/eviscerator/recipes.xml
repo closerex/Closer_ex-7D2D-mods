@@ -1,4 +1,15 @@
 <configs>
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<append xpath="/recipes">
+				<recipe name="schematicsKF2Eviscerator" count="1">
+					<ingredient name="meleeWpnBladeT3KF2Eviscerator" count="1" />
+					<ingredient name="resourceToolset" count="1" />
+				</recipe>
+			</append>
+		</if>
+	</conditional>
+	
 	<append xpath="/recipes">
 		<recipe name="ammoEvisceratorSawBlade" count="1" craft_time="40" craft_area="workbench" tags="learnable,workbenchCrafting">
 	        <ingredient name="resourceForgedIron" count="5"/>
@@ -9,26 +20,18 @@
             <ingredient name="ammoGasCan" count="500"/>
             <ingredient name="resourceDuctTape" count="1"/>
         </recipe>
+
+        <recipe name="meleeWpnBladeT3KF2Eviscerator" count="1" craft_area="workbench" tags="learnable,workbenchCrafting">
+            <ingredient name="meleeToolAxeT3ChainsawParts" count="4"/>
+            <ingredient name="smallEngine" count="1"/>
+            <ingredient name="resourceForgedSteel" count="25"/>
+            <ingredient name="ammoGasCan" count="2500"/>
+            <ingredient name="resourceLegendaryParts" count="0"/>
+            <effect_group>
+                <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="meleeToolAxeT3ChainsawParts"/>
+                <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="5,25" tags="resourceForgedSteel"/>
+                <passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
+            </effect_group>
+        </recipe>
 	</append>
-	
-	<conditional>
-		<if cond="mod_loaded('EFT_Overhaul')">
-		</if>
-		<else>
-			<append xpath="/recipes">
-                <recipe name="meleeWpnBladeT3KF2Eviscerator" count="1" craft_area="workbench" tags="learnable,workbenchCrafting">
-                    <ingredient name="meleeToolAxeT3ChainsawParts" count="4"/>
-                    <ingredient name="smallEngine" count="1"/>
-                    <ingredient name="resourceForgedSteel" count="25"/>
-	                <ingredient name="ammoGasCan" count="2500"/>
-                    <ingredient name="resourceLegendaryParts" count="0"/>
-                    <effect_group>
-                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="2,10" tags="meleeToolAxeT3ChainsawParts"/>
-                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="5,25" tags="resourceForgedSteel"/>
-                        <passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
-                    </effect_group>
-                </recipe>
-			</append>
-		</else>
-	</conditional>
 </configs>

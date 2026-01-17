@@ -1,10 +1,13 @@
 <configs>
 	<conditional>
-		<if cond="mod_loaded('EFT8_DVS_Configs')">
-            <append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3']">
+		<if cond="mod_loaded('EFT_Overhaul')">
+            <append xpath="/lootcontainers/lootgroup[@name='modEftGunStocksT3']">
                 <item name="gunT3M4Benelli"/>
             </append>
             <append xpath="/lootcontainers/lootgroup[@name='groupShotgunsT3']">
+                <item name="gunT3M4Benelli"/>
+            </append>
+            <append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3']">
                 <item name="gunT3M4Benelli"/>
             </append>
         </if>
@@ -12,12 +15,55 @@
 			<append xpath="//lootgroup[@name='groupWeaponsT3']">
 				<item name="gunT3M4Benelli" count="1" quality="3"/>
 			</append>
-			<append xpath="//lootgroup[@name='groupBikerShotgunsT3']">
-				<item name="gunT3M4Benelli" count="1" quality="3"/>
-			</append>
 			<append xpath="//lootgroup[@name='groupQuestWeaponsRangedT3']">
 				<item name="gunT3M4Benelli" loot_prob_template="QuestT3Prob"/>
 			</append>
+
+            <conditional>
+                <if cond="mod_version('EFTX_Pack_Core') &gt;= version(2,5,2,5)">
+                    <append xpath="//lootgroup[@name='groupEFTXShotgunsT1']">
+                        <item name="gunT3M4Benelli" count="1" quality="1"/>
+                    </append>
+                    <append xpath="//lootgroup[@name='groupEFTXShotgunsT2']">
+                        <item name="gunT3M4Benelli" count="1" quality="2"/>
+                    </append>
+                    <append xpath="//lootgroup[@name='groupEFTXShotgunsT3']">
+                        <item name="gunT3M4Benelli" count="1" quality="3"/>
+                    </append>
+                    <append xpath="//lootgroup[@name='groupEFTXShotgunsT4']">
+                        <item name="gunT3M4Benelli" count="1" quality="4"/>
+                    </append>
+                    <append xpath="//lootgroup[@name='groupEFTXShotgunsT5']">
+                        <item name="gunT3M4Benelli" count="1" quality="5"/>
+                    </append>
+                    <append xpath="//lootgroup[@name='groupEFTXShotgunsT6']">
+                        <item name="gunT3M4Benelli" count="1" quality="6"/>
+                    </append>
+                
+                    <conditional>
+                        <if cond="mod_loaded('Z9_EFTX_Lootable_Zs')">
+                            <append xpath="//lootgroup[@name='GroupBikerShotgunsT1']">
+                                <item name="gunT3M4Benelli" count="1" quality="1"/>
+                            </append>
+                            <append xpath="//lootgroup[@name='GroupBikerShotgunsT2']">
+                                <item name="gunT3M4Benelli" count="1" quality="2"/>
+                            </append>
+                            <append xpath="//lootgroup[@name='GroupBikerShotgunsT3']">
+                                <item name="gunT3M4Benelli" count="1" quality="3"/>
+                            </append>
+                            <append xpath="//lootgroup[@name='GroupBikerShotgunsT4']">
+                                <item name="gunT3M4Benelli" count="1" quality="4"/>
+                            </append>
+                            <append xpath="//lootgroup[@name='GroupBikerShotgunsT5']">
+                                <item name="gunT3M4Benelli" count="1" quality="5"/>
+                            </append>
+                            <append xpath="//lootgroup[@name='GroupBikerShotgunsT6']">
+                                <item name="gunT3M4Benelli" count="1" quality="6"/>
+                            </append>
+                        </if>
+                    </conditional>
+                </if>
+            </conditional>
         </if>
         <else>
             <insertAfter xpath="/lootcontainers/lootgroup[@name='empty']">

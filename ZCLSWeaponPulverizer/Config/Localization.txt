@@ -3,3 +3,5 @@ meleeWpnSledgeT3Pulverizer,items,Melee,Pulverizer,粉碎机
 meleeWpnSledgeT3PulverizerDesc,items,Melee,"Primary - fast blunt attack, Hold Primary for combo attack.\nSecondary consumes ammo and triggers an explosion when directly hits. You can still perform secondary attack when empty.\nUse [action:KFLibPlayerActions:PerformAltMelee] to bash enemies back. Bashing is SledgeHammer type. ",轻击用于快速砍杀，按住可以进行连击。\n重击直接命中敌人时会消耗弹药并触发爆炸。弹药耗尽时仍然可以使用重击。\n使用[action:KFLibPlayerActions:PerformAltMelee]来发动推击击退敌人。推击为大锤类型。
 ammoPulverizer,items,Ammo,Pulverizer Ammo,粉碎机弹药
 ammoPulverizerDesc,items,Ammo,Ammo for Pulverizer.,粉碎机使用的弹药。
+
+schematicsPulverizer,items,Melee,Pulverizer Schematic,粉碎机设计图

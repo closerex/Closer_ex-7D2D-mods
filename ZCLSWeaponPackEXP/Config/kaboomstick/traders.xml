@@ -1,12 +1,16 @@
 <configs>
 	<conditional>
-		<if cond="mod_loaded('EFT8_DVS_Configs')">
-			<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupRangedAllEft']">
-				<item name="gunKaboomstick" quality="1,5"/>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupGunsHugh']">
+				<item name="gunKaboomstick"/>
 			</append>
-			<append xpath="/traders/trader_item_groups/trader_item_group[@name='ammoAllEft']">
-				<item name="ammoKaboomstickShellHE" count="25,50"/>
-				<item name="ammoKaboomstickShellFrag" count="25,50"/>
+			<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupModsBarney']">
+				<item name="ammoKaboomstickShellHE" count="5,8"/>
+				<item name="ammoKaboomstickShellFrag" count="5,8"/>
+			</append>
+			<append xpath="/traders/trader_item_groups/trader_item_group[@name='ammoExplosives']">
+				<item name="ammoKaboomstickShellHE" count="1,2"/>
+				<item name="ammoKaboomstickShellFrag" count="1,2"/>
 			</append>
 		</if>
 		<if cond="mod_loaded('EFTX_Pack_Core')">

@@ -19,9 +19,9 @@ modDualGunLaserSight,item_modifiers,mod,Laser Sight for Dual Wield Weapons,"双�
 modDualGunFlashlight,item_modifiers,mod,Flashlight for Dual Wield Weapons,"双持武器下挂手电筒"
 modGunAF2011ReflexSight,item_modifiers,mod,Reflex Sight for AF2011,"AF2011专用反射瞄具"
 modGunDualAF2011ReflexSight,item_modifiers,mod,Reflex Sight for Dual AF2011s,"双持AF2011专用反射瞄具"
-gunT3HZ12,items,Gun,HZ12 Multi-Action,多动作 HZ12
+gunT3HZ12,items,Gun,HZ12 Multi-Action,多动作HZ12
 gunT3HZ12Desc,items,Gun,"Fire mode is a dual semi-auto/pump-action.\n\nThe HZ12 shotgun is an experimental prototype that is being tested by Horzine security forces. Zeds were harmed in the development of this weapon.\n\nUse [action:KFLibPlayerActions:PerformAltMelee] to bash. Bashing is Club type.",射击模式为双发泵动。\n\nHZ12霰弹枪是霍因安全部队测试的实验模型。丧尸在该武器研发的过程中受到了伤害。\n\n使用[action:KFLibPlayerActions:PerformAltMelee]推击。推击为棍棒类型。
-gunT3HRGBlastBrawler,items,Gun,HRG Blast Brawler,HRG 爆裂斗士
+gunT3HRGBlastBrawler,items,Gun,HRG Blast Brawler,HRG爆裂斗士
 gunT3HRGBlastBrawlerDesc,items,Gun,"Primary: Fire 2 shots, one with each fist. Secondary: Heavy melee attack.\n\nResearch team was out of ideas for any punchline.\n\nUse [action:KFLibPlayerActions:PerformAltMelee] to bash. Bashing is Brawler type.",主要攻击：射出两发霰弹，每只拳头各一次。次要攻击：强力近战攻击。\n\n研究团队也束手无策。\n\n使用[action:KFLibPlayerActions:PerformAltMelee]推击。推击为搏斗类型。
 meleeWpnBladeT3KF2Eviscerator,items,Gun,Eviscerator,开膛锯
 meleeWpnBladeT3KF2EvisceratorDesc,items,Gun,"Primary fire shoots saw-blades. Secondary is a melee attack, but burns durability fast.\n\nOriginally designed by Horzine's SDS group, in one of their wilder moments, this beast isn't subtle.\n\nUse [action:KFLibPlayerActions:PerformAltMelee] to bash.",主要攻击发射锯片。次要攻击为近战，但是会快速消耗耐久。\n\n最初由霍因的SDS小组在一次疯狂实验中制造出来，使用起来并不复杂。\n\n使用[action:KFLibPlayerActions:PerformAltMelee]推击。
@@ -29,3 +29,11 @@ ammoEvisceratorSawBlade,items,Ammo,Eviscerator Sawblade,开膛锯锯片
 ammoEvisceratorSawBladeDesc,items,Ammo,The ammo for Eviscerator.,开膛锯使用的弹药。
 resourceEvisceratorRepairKit,items,Item,Eviscerator Repair Kit,开膛锯修理工具
 resourceEvisceratorRepairKitDesc,items,Item,Used for repairing Eviscerator.,用来修理开膛锯。
+
+schematicsAF2011A1,items,Gun,AF2011-A1 Schematic,AF2011-A1设计图
+schematicsKF2Eviscerator,items,Gun,Eviscerator Schematic,开膛锯设计图
+schematicsHRGBlastBrawler,items,Gun,HRG Blast Brawler Schematic,HRG 爆裂斗士设计图
+schematicsHZ12,items,Gun,HZ12 Multi-Action Schematic,多动作HZ12设计图
+schematicsKaboomstick,items,Gun,HRG Kaboomstick Schematic,HRG大爆炸射手设计图
+schematicsKF2Katana,items,Melee,Katana (Prototype 01) Schematic,武士刀（原型01）设计图
+schematicsKF2M4Benelli,items,Gun,M4 Combat Shotgun Schematic,M4战斗霰弹枪设计图

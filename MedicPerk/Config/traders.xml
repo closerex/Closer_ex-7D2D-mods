@@ -1,11 +1,20 @@
 <configs>
 	<conditional>
-		<if cond="mod_loaded('EFT8_DVS_Configs')">
-			<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupRangedAllEft']">
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupGunsAll']">
 				<item name="gunMedicPistol" quality="2,5"/>
 				<item name="gunMedicSMG201" quality="2,5"/>
 				<item name="gunMedicShotgun301" quality="2,5"/>
 				<item name="gunMedicAssaultRifle401" quality="2,5"/>
+			</append>
+			<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupGunsHugh']">
+				<item name="gunMedicSMG201" quality="6"/>
+				<item name="gunMedicShotgun301" quality="6"/>
+				<item name="gunMedicAssaultRifle401" quality="6"/>
+			</append>
+			<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupGunsBarney']">
+				<item name="gunMedicShotgun301" quality="6"/>
+				<item name="gunMedicAssaultRifle401" quality="6"/>
 			</append>
 		</if>
 		<else>

@@ -1,13 +1,19 @@
 <config>
-	<insertBefore xpath="/progression/crafting_skills/crafting_skill[@name='craftingClubs']/effect_group[1]">
-		<display_entry item="meleeWpnClubT3KF2BoneCrusher" unlock_level="60,63,66,69,72,75" />
-	</insertBefore>
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+		</if>
+		<else>
+			<insertBefore xpath="/progression/crafting_skills/crafting_skill[@name='craftingClubs']/effect_group[1]">
+				<display_entry item="meleeWpnClubT3KF2BoneCrusher" unlock_level="60,63,66,69,72,75" />
+			</insertBefore>
 
-	<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingClubs']/effect_group[1]">
-		<passive_effect name="RecipeTagUnlocked" operation="base_set" level="60,75" value="1" tags="meleeWpnClubT3KF2BoneCrusher"/>
-	</append>	
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingClubs']/effect_group[1]">
+				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="60,1000" value="1" tags="meleeWpnClubT3KF2BoneCrusher"/>
+			</append>	
 
-	<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingClubs']/effect_group[1]">
-		<passive_effect name="CraftingTier" operation="base_add" level="63,66,69,72,75" value="1,2,3,4,5" tags="meleeWpnClubT3KF2BoneCrusher"/>
-	</append>
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingClubs']/effect_group[1]">
+				<passive_effect name="CraftingTier" operation="base_add" level="63,66,69,72,75,1000" value="1,2,3,4,5,5" tags="meleeWpnClubT3KF2BoneCrusher"/>
+			</append>
+		</else>
+	</conditional>
 </config>

@@ -1,6 +1,26 @@
 <configs>
 	<conditional>
-		<if cond="mod_loaded('EFT8_Overhaul')">
+		<if cond="mod_loaded('EFT_Overhaul')">
+            <append xpath="/traders/trader_item_groups/trader_item_group[@name='groupGunsAll']">
+                <item name="gunKF9mm" quality="1,5"/>
+                <item name="gunKFHRGSW500" quality="1,5"/>
+                <item name="gunKFSW500" quality="1,5"/>
+                <item name="gunKFG18C" quality="1,5"/>
+            </append>
+            <append xpath="/traders/trader_item_groups/trader_item_group[@name='groupGunsHugh']">
+                <item name="gunKF9mm" quality="6"/>
+                <item name="gunKFHRGSW500" quality="6"/>
+                <item name="gunKFSW500" quality="6"/>
+                <item name="gunKFG18C" quality="6"/>
+				<item name="gunKFG18CShield" quality="1,5"/>
+            </append>
+            <append xpath="/traders/trader_item_groups/trader_item_group[@name='groupGunsBarney']">
+                <item name="gunKF9mm" quality="6"/>
+                <item name="gunKFHRGSW500" quality="6"/>
+                <item name="gunKFSW500" quality="6"/>
+                <item name="gunKFG18C" quality="6"/>
+				<item name="gunKFG18CShield" quality="1,5" prob="0.05"/>
+            </append>
         </if>
 		<else>
             <append xpath="/traders/trader_item_groups/trader_item_group[@name='groupRangedAll']">

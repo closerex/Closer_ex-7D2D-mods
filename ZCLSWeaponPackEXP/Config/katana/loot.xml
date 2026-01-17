@@ -1,13 +1,17 @@
 <configs>
-
 <!-- *** T2&T3_Melee_Weapons -->
 	<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT2_Melee']">
-		<item name="meleeWpnBladeT3KF2Katana"/>
+		<item name="meleeWpnBladeT3KF2Katana" loot_prob_template="low"/>
+	</append>
+	<append xpath="/lootcontainers/lootgroup[@name='groupInfestedT5MeleeRanged']">
+		<item name="meleeWpnBladeT3KF2Katana" loot_prob_template="low"/>
+	</append>
+	<append xpath="/lootcontainers/lootgroup[@name='twitch_tier2melee']">
+		<item name="meleeWpnBladeT3KF2Katana" random_durability="false"/>
 	</append>
 	
 <!-- *** Quest_Rewards -->
 	<append xpath="/lootcontainers/lootgroup[@name='groupQuestWeaponsMeleeT2']">
-		<item name="meleeWpnBladeT3KF2Katana"/>
+		<item name="meleeWpnBladeT3KF2Katana" loot_prob_template="veryLow"/>
 	</append>
-	
 </configs>

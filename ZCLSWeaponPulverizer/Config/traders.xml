@@ -4,6 +4,14 @@
 		<item name="meleeWpnSledgeT3Pulverizer" quality="3,6"/>		
 	</append>
 	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<append xpath="/traders/trader_item_groups/trader_item_group[@name='ammoExplosives']">
+				<item name="ammoPulverizer" count="1,2"/>
+			</append>
+			<append xpath="/traders/trader_item_groups/trader_item_group[@name='groupModsBarney']">
+				<item name="ammoPulverizer" count="4,8"/>
+			</append>
+		</if>
 		<if cond="mod_loaded('EFTX_Pack_Core')">
 			<append xpath="/traders/trader_item_groups/trader_item_group[@name='ammoGroupSpecial']">
 				<item name="ammoPulverizer" count="15,30"/>

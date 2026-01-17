@@ -1,0 +1,13 @@
+<config>
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<append xpath="/buffs/buff[@name='buffEftASkillsAndLBD']">
+				<effect_group>
+					<passive_effect name="CraftingTier" operation="base_set" value="6" tags="meleeWpnBladeT3KF2Eviscerator">
+						<requirement name="CVarCompare" cvar="meleeWpnBladeT3KF2Eviscerator" operation="GT" value="0"/>
+					</passive_effect>
+				</effect_group>
+			</append>
+		</if>
+	</conditional>
+</config>

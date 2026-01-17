@@ -1,4 +1,14 @@
 <config>
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<append xpath="/recipes">
+				<recipe name="schematicsKF2BoneCrusher" count="1">
+					<ingredient name="meleeWpnClubT3KF2BoneCrusher" count="1" />
+					<ingredient name="resourceToolset" count="1" />
+				</recipe>
+			</append>
+		</if>
+	</conditional>
 	<append xpath="/recipes">
 		<recipe name="meleeWpnClubT3KF2BoneCrusher" count="1" craft_area="workbench" tags="learnable,perkPummelPete,workbenchCrafting">
             <ingredient name="meleeWpnClubT3SteelClubParts" count="3"/>

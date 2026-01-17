@@ -1,9 +1,39 @@
 <config>
 	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+            <append xpath="/lootcontainers/lootgroup[@name='groupInfestedT5MeleeRanged']">
+                <item name="gunKF9mm"/>
+				<item name="gunKFDual9mm" loot_prob_template="low"/>
+                <item name="gunKFHRGSW500"/>
+				<item name="gunKFDualHRGSW500" loot_prob_template="low"/>
+                <item name="gunKFSW500"/>
+				<item name="gunKFDualSW500" loot_prob_template="low"/>
+                <item name="gunKFG18C"/>
+				<item name="gunKFDualG18C" loot_prob_template="low"/>
+				<item name="gunKFG18CShield" loot_prob_template="veryLow"/>
+            </append>
+            <append xpath="/lootcontainers/lootgroup[@name='groupPistolsT1']">
+                <item name="gunKF9mm"/>
+				<item name="gunKFDual9mm" loot_prob_template="low"/>
+                <item name="gunKFHRGSW500"/>
+				<item name="gunKFDualHRGSW500" loot_prob_template="low"/>
+                <item name="gunKFSW500"/>
+				<item name="gunKFDualSW500" loot_prob_template="low"/>
+                <item name="gunKFG18C"/>
+				<item name="gunKFDualG18C" loot_prob_template="low"/>
+				<item name="gunKFG18CShield" loot_prob_template="veryLow"/>
+            </append>
+            <append xpath="/lootcontainers/lootgroup[@name='groupAmmoPistolCase']">
+                <item name="gunKF9mm"/>
+                <item name="gunKFHRGSW500"/>
+                <item name="gunKFSW500"/>
+                <item name="gunKFG18C"/>
+            </append>
+        </if>
 		<if cond="mod_loaded('EFTX_Pack_Core')">
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT1']">
 				<item name="gunKF9mm"/>
-				<item name="gunKFDual9mm"/>
+				<item name="gunKFDual9mm" loot_prob_template="low"/>
 			</append>
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT2']">
 				<item name="gunKFHRGSW500"/>
@@ -13,28 +43,160 @@
 			</append>
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT4']">
 				<item name="gunKFSW500"/>
-				<item name="gunKFDualSW500"/>
-				<item name="gunKFG18CShield"/>
+				<item name="gunKFDualSW500" loot_prob_template="low"/>
+				<item name="gunKFG18CShield" loot_prob_template="low"/>
 			</append>
 			<append xpath="//lootgroup[@name='groupQuestWeaponsRangedT1']">
 				<item name="gunKF9mm" loot_prob_template="QuestT1Prob"/>
-				<item name="gunKFDual9mm" loot_prob_template="QuestT1Prob"/>
+				<item name="gunKFDual9mm" loot_prob_template="QuestT2Prob"/>
 			</append>
 			<append xpath="//lootgroup[@name='groupQuestWeaponsRangedT2']">
 				<item name="gunKFHRGSW500" loot_prob_template="QuestT2Prob"/>
-				<item name="gunKFDualHRGSW500" loot_prob_template="QuestT2Prob"/>
+				<item name="gunKFDualHRGSW500" loot_prob_template="QuestT3Prob"/>
 				<item name="gunKFG18C" loot_prob_template="QuestT2Prob"/>
-				<item name="gunKFDualG18C" loot_prob_template="QuestT2Prob"/>
+				<item name="gunKFDualG18C" loot_prob_template="QuestT3Prob"/>
 			</append>
 			<append xpath="//lootgroup[@name='groupQuestWeaponsRangedT3']">
 				<item name="gunKFHRGSW500" loot_prob_template="QuestT2Prob"/>
-				<item name="gunKFDualHRGSW500" loot_prob_template="QuestT2Prob"/>
+				<item name="gunKFDualHRGSW500" loot_prob_template="QuestT3Prob"/>
 				<item name="gunKFG18C" loot_prob_template="QuestT2Prob"/>
-				<item name="gunKFDualG18C" loot_prob_template="QuestT2Prob"/>
+				<item name="gunKFDualG18C" loot_prob_template="QuestT3Prob"/>
 				<item name="gunKFSW500" loot_prob_template="QuestT4Prob"/>
-				<item name="gunKFDualSW500" loot_prob_template="QuestT4Prob"/>
-				<item name="gunKFG18CShield" loot_prob_template="QuestT4Prob"/>
+				<item name="gunKFDualSW500" loot_prob_template="QuestT5Prob"/>
+				<item name="gunKFG18CShield" loot_prob_template="QuestT5Prob"/>
 			</append>
+
+			<conditional>
+				<if cond="mod_version('EFTX_Pack_Core') &gt;= version(2,5,2,5)">
+					<append xpath="//lootgroup[@name='groupEFTXPistolsT1']">
+						<item name="gunKF9mm" count="1" quality="1"/>
+						<item name="gunKFDual9mm" count="1" quality="1" loot_prob_template="low"/>
+						<item name="gunKFSW500" count="1" quality="1"/>
+						<item name="gunKFDualSW500" count="1" quality="1" loot_prob_template="low"/>
+						<item name="gunKFG18C" count="1" quality="1"/>
+						<item name="gunKFDualG18C" count="1" quality="1" loot_prob_template="low"/>
+						<item name="gunKFG18CShield" count="1" quality="1" loot_prob_template="veryLow"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXPistolsT2']">
+						<item name="gunKF9mm" count="1" quality="2"/>
+						<item name="gunKFDual9mm" count="1" quality="2" loot_prob_template="low"/>
+						<item name="gunKFSW500" count="1" quality="2"/>
+						<item name="gunKFDualSW500" count="1" quality="2" loot_prob_template="low"/>
+						<item name="gunKFG18C" count="1" quality="2"/>
+						<item name="gunKFDualG18C" count="1" quality="2" loot_prob_template="low"/>
+						<item name="gunKFG18CShield" count="1" quality="2" loot_prob_template="veryLow"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXPistolsT3']">
+						<item name="gunKF9mm" count="1" quality="3"/>
+						<item name="gunKFDual9mm" count="1" quality="3" loot_prob_template="low"/>
+						<item name="gunKFSW500" count="1" quality="3"/>
+						<item name="gunKFDualSW500" count="1" quality="3" loot_prob_template="low"/>
+						<item name="gunKFG18C" count="1" quality="3"/>
+						<item name="gunKFDualG18C" count="1" quality="3" loot_prob_template="low"/>
+						<item name="gunKFG18CShield" count="1" quality="3" loot_prob_template="veryLow"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXPistolsT4']">
+						<item name="gunKF9mm" count="1" quality="4"/>
+						<item name="gunKFDual9mm" count="1" quality="4" loot_prob_template="low"/>
+						<item name="gunKFSW500" count="1" quality="4"/>
+						<item name="gunKFDualSW500" count="1" quality="4" loot_prob_template="low"/>
+						<item name="gunKFG18C" count="1" quality="4"/>
+						<item name="gunKFDualG18C" count="1" quality="4" loot_prob_template="low"/>
+						<item name="gunKFG18CShield" count="1" quality="4" loot_prob_template="veryLow"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXPistolsT5']">
+						<item name="gunKF9mm" count="1" quality="5"/>
+						<item name="gunKFDual9mm" count="1" quality="5" loot_prob_template="low"/>
+						<item name="gunKFSW500" count="1" quality="5"/>
+						<item name="gunKFDualSW500" count="1" quality="5" loot_prob_template="low"/>
+						<item name="gunKFG18C" count="1" quality="5"/>
+						<item name="gunKFDualG18C" count="1" quality="5" loot_prob_template="low"/>
+						<item name="gunKFG18CShield" count="1" quality="5" loot_prob_template="veryLow"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXPistolsT6']">
+						<item name="gunKF9mm" count="1" quality="6"/>
+						<item name="gunKFDual9mm" count="1" quality="6" loot_prob_template="low"/>
+						<item name="gunKFSW500" count="1" quality="6"/>
+						<item name="gunKFDualSW500" count="1" quality="6" loot_prob_template="low"/>
+						<item name="gunKFG18C" count="1" quality="6"/>
+						<item name="gunKFDualG18C" count="1" quality="6" loot_prob_template="low"/>
+						<item name="gunKFG18CShield" count="1" quality="6" loot_prob_template="veryLow"/>
+					</append>
+
+					<append xpath="//lootgroup[@name='groupEFTXShotgunsT1']">
+						<item name="gunKFHRGSW500" count="1" quality="1"/>
+						<item name="gunKFDualHRGSW500" count="1" quality="1" loot_prob_template="low"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXShotgunsT2']">
+						<item name="gunKFHRGSW500" count="1" quality="2"/>
+						<item name="gunKFDualHRGSW500" count="1" quality="1" loot_prob_template="low"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXShotgunsT3']">
+						<item name="gunKFHRGSW500" count="1" quality="3"/>
+						<item name="gunKFDualHRGSW500" count="1" quality="1" loot_prob_template="low"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXShotgunsT4']">
+						<item name="gunKFHRGSW500" count="1" quality="4"/>
+						<item name="gunKFDualHRGSW500" count="1" quality="1" loot_prob_template="low"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXShotgunsT5']">
+						<item name="gunKFHRGSW500" count="1" quality="5"/>
+						<item name="gunKFDualHRGSW500" count="1" quality="1" loot_prob_template="low"/>
+					</append>
+					<append xpath="//lootgroup[@name='groupEFTXShotgunsT6']">
+						<item name="gunKFHRGSW500" count="1" quality="6"/>
+						<item name="gunKFDualHRGSW500" count="1" quality="1" loot_prob_template="low"/>
+					</append>
+
+					<conditional>
+						<if cond="mod_loaded('Z9_EFTX_Lootable_Zs')">
+							<append xpath="//lootgroup[@name='GroupArlenePistolsT1']">
+								<item name="gunKF9mm" count="1" quality="1"/>
+								<item name="gunKFG18C" count="1" quality="1"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupArlenePistolsT2']">
+								<item name="gunKF9mm" count="1" quality="2"/>
+								<item name="gunKFG18C" count="1" quality="2"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupArlenePistolsT3']">
+								<item name="gunKF9mm" count="1" quality="3"/>
+								<item name="gunKFG18C" count="1" quality="3"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupArlenePistolsT4']">
+								<item name="gunKF9mm" count="1" quality="4"/>
+								<item name="gunKFG18C" count="1" quality="4"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupArlenePistolsT5']">
+								<item name="gunKF9mm" count="1" quality="5"/>
+								<item name="gunKFG18C" count="1" quality="5"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupArlenePistolsT6']">
+								<item name="gunKF9mm" count="1" quality="6"/>
+								<item name="gunKFG18C" count="1" quality="6"/>
+							</append>
+
+							<append xpath="//lootgroup[@name='GroupBikerShotgunsT1']">
+								<item name="gunKFHRGSW500" count="1" quality="1"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupBikerShotgunsT2']">
+								<item name="gunKFHRGSW500" count="1" quality="2"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupBikerShotgunsT3']">
+								<item name="gunKFHRGSW500" count="1" quality="3"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupBikerShotgunsT4']">
+								<item name="gunKFHRGSW500" count="1" quality="4"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupBikerShotgunsT5']">
+								<item name="gunKFHRGSW500" count="1" quality="5"/>
+							</append>
+							<append xpath="//lootgroup[@name='GroupBikerShotgunsT6']">
+								<item name="gunKFHRGSW500" count="1" quality="6"/>
+							</append>
+						</if>
+					</conditional>
+				</if>
+			</conditional>
 		</if>
 		<else>
 			<insertAfter xpath="/lootcontainers/lootgroup[@name='empty']">
@@ -53,7 +215,7 @@
 				<lootgroup name="groupWeaponsT1_GunslingerKFG18C" count="1" loot_quality_template="QLTemplateT3">
 					<item name="gunKFG18C"/>
                     <item name="gunKFDualG18C" loot_prob_template="low"/>
-					<item name="gunKFG18CShield" loot_prob_template="low"/>
+					<item name="gunKFG18CShield" loot_prob_template="veryLow"/>
 				</lootgroup>
 			</insertAfter>
 
@@ -81,7 +243,7 @@
 				<item name="gunKFDualSW500" loot_prob_template="low"/>
 				<item name="gunKFG18C"/>
                 <item name="gunKFDualG18C" loot_prob_template="low"/>
-				<item name="gunKFG18CShield" loot_prob_template="low"/>
+				<item name="gunKFG18CShield" loot_prob_template="veryLow"/>
 			</append>
 		</else>
 	</conditional>

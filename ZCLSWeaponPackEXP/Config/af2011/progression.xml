@@ -1,5 +1,7 @@
 <configs>
 	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+		</if>
 		<if cond="mod_loaded('EFTX_Pack_Standard')">
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingPistols']/display_entry[contains(@icon, 'gundeserteagle')]/@icon">,gunHandgunT3AF2011A1S,gunHandgunT3DualAF2011A1S</append>
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingPistols']/display_entry[contains(@icon, 'gundeserteagle')]/unlock_entry[contains(@item, 'gundeserteagle')]/@item">,gunHandgunT3AF2011A1S,gunHandgunT3DualAF2011A1S</append>

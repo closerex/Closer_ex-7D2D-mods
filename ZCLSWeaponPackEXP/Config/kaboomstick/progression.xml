@@ -1,5 +1,7 @@
 <configs>
 	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+		</if>
 		<if cond="mod_loaded('EFTX_Pack_Standard')">
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingRocketsandLaunchers']/display_entry[contains(@icon, 'gunchinalake')]/@icon">,gunKaboomstick,ammoKaboomstickShellHE,ammoKaboomstickShellFrag</append>
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingRocketsandLaunchers']/display_entry[contains(@icon, 'gunchinalake')]/unlock_entry[contains(@item, 'gunchinalake')]/@item">,gunKaboomstick,ammoKaboomstickShellHE,ammoKaboomstickShellFrag</append>

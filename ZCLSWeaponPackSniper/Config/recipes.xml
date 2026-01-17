@@ -1,6 +1,33 @@
 <config>
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+            <append xpath="/recipes">
+				<recipe name="schematicsKF2M99" count="1">
+					<ingredient name="gunKFM99" count="1"/>
+					<ingredient name="resourceToolset" count="1"/>
+				</recipe>
+				<recipe name="schematicsKF2Mosin" count="1">
+					<ingredient name="gunKFMosin" count="1"/>
+					<ingredient name="resourceToolset" count="1"/>
+				</recipe>
+				<recipe name="schematicsKF21894" count="1">
+					<ingredient name="gunKF1894" count="1"/>
+					<ingredient name="resourceToolset" count="1"/>
+				</recipe>
+				<recipe name="schematicsKF2SPX464" count="1">
+					<ingredient name="gunKFSPX464" count="1"/>
+					<ingredient name="resourceToolset" count="1"/>
+				</recipe>
+				<recipe name="schematicsKF2M14EBR" count="1">
+					<ingredient name="gunKFM14EBR" count="1"/>
+					<ingredient name="resourceToolset" count="1"/>
+				</recipe>
+            </append>
+        </if>
+    </conditional>
+    
     <conditional>
-        <if cond="mod_loaded('EFTX_Pack_Core')">
+        <if cond="mod_loaded('EFTX_Pack_Core') or mod_loaded('EFT_Overhaul')">
             <append xpath="/recipes">
                 <recipe name="gunKFM99" count="1" craft_area="workbench" tags="learnable">
                     <ingredient name="gunRifleT1HuntingRifleParts" count="1"/>
@@ -152,4 +179,11 @@
             </append>
         </else>
     </conditional>
+
+	<conditional>
+		<if cond="mod_version('EFTX_Pack_Core') &gt;= version(2,5,2,5)">
+			<setattribute xpath="/recipes/recipe[@name='gunKFM99' or @name='gunKFMosin' or @name='gunKF1894' or @name='gunKFSPX464' or @name='gunKFM14EBR']/ingredient[@name='resourceWeaponParts']" name="name">resourceRifleRepairKit</setattribute>
+            <remove xpath="/recipes/recipe[@name='ammoKF50BMGBulletBall']"/>
+		</if>
+	</conditional>
 </config>

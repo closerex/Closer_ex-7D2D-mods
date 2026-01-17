@@ -290,12 +290,49 @@
     </append>
 
 	<conditional>
-		<if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
+		<if cond="mod_loaded('Z2_EFTX_EFT_Only_Ammo') or mod_loaded('EFT_Overhaul')">
 			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug</set>
-			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Common']/passive_effect[@name='DegradationMax']/@value">1200,2400</set>
-			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
+		</if>
+		<if cond="mod_loaded('Z2_EFTX_Both_Ammo')">
+			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug,ammoEft7mmShotgun,ammoEftFlechetteShotgun</set>
+		</if>
+		<if cond="mod_loaded('Z2_EFTX_EFT_IZY_Ammo_CrossOver')">
+			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug,ammoShotgunShellPremium,ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug,ammoEftShrapnel25Shotgun,ammoEftBarricadeSlug,ammoShotgunShellDragoBreath</set>
+		</if>
+		<if cond="mod_loaded('Z2_EFTX_IZY_Uses_All_The_Ammo')">
+			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug,ammoShotgunShellPremium,ammoEft7mmShotgun,ammoEftFlechetteShotgun,ammoEftAP20Slug,ammoEftShrapnel25Shotgun,ammoEftBarricadeSlug,ammoShotgunShellDragoBreath</set>
+		</if>
+		<if cond="mod_loaded('Z2_EFTX_Uses_IZY_Vanilla_Ammo')">
+			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/property[@class='Action0']/property[@name='Magazine_items']/@value">ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug,ammoShotgunShellPremium,ammoShotgunShellDragoBreath</set>
 		</if>
 	</conditional>
+
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
+			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Common']/passive_effect[@name='DegradationMax']/@value">1200,2400</set>
+			
+			<conditional>
+				<if cond="mod_version('EFTX_Pack_Core') &gt;= version(2,5,2,5)">
+					<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/property[@name='RepairTools']/@value">resourceShotgunRepairKit</set>
+				</if>
+				<else>
+					<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/property[@name='RepairTools']/@value">resourceWeaponRepairKit</set>
+				</else>
+			</conditional>
+		</if>
+	</conditional>
+
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul') or mod_loaded('Z6_EFTX_Armored_Zs')">
+			<append xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Common']">
+		        <passive_effect name="TargetArmor" operation="perc_add" value="-.5" tags="perkBrawler"/>
+			</append>
+			<append xpath="/items/item[@name='meleeWpnStockBashHRGBlastBrawler']/effect_group[@name='meleeWpnStockBashHRGBlastBrawler']">
+		        <passive_effect name="TargetArmor" operation="perc_add" value="-.5" tags="perkBrawler"/>
+			</append>
+		</if>
+	</conditional>
+
 	<conditional>
 		<if cond="mod_loaded('EFT_Overhaul')">
 			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Primary']/passive_effect[@name='EntityDamage' and @operation='base_add']/@value">0</set>
@@ -303,8 +340,25 @@
 			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Primary']/passive_effect[@name='BlockDamage' and @operation='base_add']/@value">0</set>
 			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Common']/passive_effect[@name='BlockDamage' and @operation='perc_add' and @tier='2,6']/@value">0</set>
 			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Common']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
+
+			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/property[@name='UnlockedBy']/@value">schematicsHRGBlastBrawler</set>
+			
+			<append xpath="/items">
+				<item name="schematicsHRGBlastBrawler">
+					<property name="Extends" value="schematicNoQualityMaster"/>
+					<property name="CreativeMode" value="Player"/>
+					<property name="CustomIcon" value="HRGBlastBrawler"/>
+					<property name="DescriptionKey" value="schematicsEftGunGeneralDesc"/>
+					<property name="Unlocks" value="gunT3HRGBlastBrawler"/>
+					<property name="SellableToTrader" value="false"/>
+					<effect_group tiered="false">
+						<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="gunT3HRGBlastBrawler" operation="set" value="1"/>
+					</effect_group>
+				</item>
+			</append>
 		</if>
 	</conditional>
+
     <conditional>
         <if cond="mod_loaded('EFTX_Pack_Standard')">
 			<set xpath="/items/item[@name='gunT3HRGBlastBrawler']/property[@name='UnlockedBy']/@value">craftingEFTShotguns</set>

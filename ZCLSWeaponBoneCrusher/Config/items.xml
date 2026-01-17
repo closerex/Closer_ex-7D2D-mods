@@ -239,4 +239,31 @@
 			</effect_group>
         </item>
     </append>
+	
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<set xpath="/items/item[@name='meleeWpnClubT3KF2BoneCrusher']/property[@name='UnlockedBy']/@value">schematicsKF2BoneCrusher</set>
+			
+			<append xpath="/items">
+				<item name="schematicsKF2BoneCrusher">
+					<property name="Extends" value="schematicNoQualityMaster"/>
+					<property name="CreativeMode" value="Player"/>
+					<property name="CustomIcon" value="meleeWpnClubT3KF2BoneCrusher"/>
+					<property name="DescriptionKey" value="schematicsEftGunGeneralDesc"/>
+					<property name="Unlocks" value="meleeWpnClubT3KF2BoneCrusher"/>
+					<property name="SellableToTrader" value="false"/>
+					<effect_group tiered="false">
+						<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="meleeWpnClubT3KF2BoneCrusher" operation="set" value="1"/>
+					</effect_group>
+				</item>
+			</append>
+		</if>
+	</conditional>
+	
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul') or mod_loaded('Z6_EFTX_Armored_Zs')">
+			<set xpath="/items/item[@name='meleeWpnClubT3KF2BoneCrusher']/effect_group[@name='meleeWpnClubT3KF2BoneCrusher']/passive_effect[@name='TargetArmor']/@value">-.75</set>
+			<set xpath="/items/item[@name='meleeWpnShieldBashBoneCrusher']/effect_group[@name='meleeWpnShieldBashBoneCrusher']/passive_effect[@name='TargetArmor']/@value">-.75</set>
+		</if>
+	</conditional>
 </config>
