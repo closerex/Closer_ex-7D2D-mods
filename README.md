@@ -4,7 +4,7 @@ This collection contains all my 7 days to die mods with source code included.
 
 For non modders, you can download release version without source code on [Nexus](https://www.nexusmods.com/7daystodie/users/91949543?tab=user+files).
 
-[download-directory](https://download-directory.github.io/) is recommended for downloading individual folders.
+[download-directory](https://download-directory.github.io/) is recommended for downloading individual folders. DO NOT Download the whole repo as zip! Asset bundles are hosted with lfs and zipping the repo itself won't retrive the actual asset files for you.
 
 [Discord](https://discord.com/channels/243577046616375297/945694105923616779) to find me.
 
