@@ -11,12 +11,12 @@ public class MinEventActionUpdateLocalCache : MinEventActionBase
     private string saveAsStr;
     public override bool CanExecute(MinEventTypes _eventType, MinEventParams _params)
     {
-        return !_params.Self.isEntityRemote && (actionIndex < 0 ? _params.ItemActionData : _params.ItemActionData.invData.actionData[actionIndex]) is IModuleContainerFor<ActionModuleLocalPassiveCache.LocalPassiveCacheData> && base.CanExecute(_eventType, _params);
+        return !_params.Self.isEntityRemote && (actionIndex < 0 ? _params.ItemActionData : _params.ItemInventoryData.actionData[actionIndex]) is IModuleContainerFor<ActionModuleLocalPassiveCache.LocalPassiveCacheData> && base.CanExecute(_eventType, _params);
     }
 
     public override void Execute(MinEventParams _params)
     {
-        ActionModuleLocalPassiveCache.LocalPassiveCacheData _data = ((IModuleContainerFor<ActionModuleLocalPassiveCache.LocalPassiveCacheData>)(actionIndex < 0 ? _params.ItemActionData : _params.ItemActionData.invData.actionData[actionIndex])).Instance;
+        ActionModuleLocalPassiveCache.LocalPassiveCacheData _data = ((IModuleContainerFor<ActionModuleLocalPassiveCache.LocalPassiveCacheData>)(actionIndex < 0 ? _params.ItemActionData : _params.ItemInventoryData.actionData[actionIndex])).Instance;
 
         _data.CachePassive(passive, saveAs, saveAsStr, tags);
     }

@@ -7,7 +7,7 @@ public class MinEventActionModifyCVarWithLocalCache : MinEventActionModifyCVar
     private int actionIndex = -1;
     public override bool CanExecute(MinEventTypes _eventType, MinEventParams _params)
     {
-        bool flag = !_params.Self.isEntityRemote && (actionIndex < 0 ? _params.ItemActionData : _params.ItemActionData.invData.actionData[actionIndex]) is IModuleContainerFor<ActionModuleLocalPassiveCache.LocalPassiveCacheData> && base.CanExecute(_eventType, _params);
+        bool flag = !_params.Self.isEntityRemote && (actionIndex < 0 ? _params.ItemActionData : _params.ItemInventoryData.actionData[actionIndex]) is IModuleContainerFor<ActionModuleLocalPassiveCache.LocalPassiveCacheData> && base.CanExecute(_eventType, _params);
         //Log.Out($"can execute {flag} is remote {_params.Self.isEntityRemote} action index {actionIndex} cache {targetHash.ToString()} action {(actionIndex < 0 ? _params.ItemActionData : _params.ItemActionData.invData.actionData[actionIndex]).GetType().Name}");
         return flag;
     }
@@ -18,32 +18,12 @@ public class MinEventActionModifyCVarWithLocalCache : MinEventActionModifyCVar
         {
             return;
         }
-        ActionModuleLocalPassiveCache.LocalPassiveCacheData _data = ((IModuleContainerFor<ActionModuleLocalPassiveCache.LocalPassiveCacheData>)(actionIndex < 0 ? _params.ItemActionData : _params.ItemActionData.invData.actionData[actionIndex])).Instance;
+        ActionModuleLocalPassiveCache.LocalPassiveCacheData _data = ((IModuleContainerFor<ActionModuleLocalPassiveCache.LocalPassiveCacheData>)(actionIndex < 0 ? _params.ItemActionData : _params.ItemInventoryData.actionData[actionIndex])).Instance;
         float value = _data.GetCachedValue(targetHash);
         //Log.Out($"cache {targetHash.ToString()} value {value}");
         for (int i = 0; i < targets.Count; i++)
         {
-            float num = targets[i].Buffs.GetCustomVar(cvarName);
-            switch (operation)
-            {
-                case CVarOperation.set:
-                case CVarOperation.setvalue:
-                    num = value;
-                    break;
-                case CVarOperation.add:
-                    num += value;
-                    break;
-                case CVarOperation.subtract:
-                    num -= value;
-                    break;
-                case CVarOperation.multiply:
-                    num *= value;
-                    break;
-                case CVarOperation.divide:
-                    num /= ((value == 0f) ? 0.0001f : value);
-                    break;
-            }
-            targets[i].Buffs.SetCustomVar(cvarName, num, (targets[i].isEntityRemote && !_params.Self.isEntityRemote) || _params.IsLocal);
+            targets[i].Buffs.SetCustomVar(cvarName, value, (targets[i].isEntityRemote && !_params.Self.isEntityRemote) || _params.IsLocal, operation);
         }
     }
 
