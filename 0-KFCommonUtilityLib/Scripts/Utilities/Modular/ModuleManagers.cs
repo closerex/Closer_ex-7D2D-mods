@@ -93,8 +93,11 @@ namespace KFCommonUtilityLib
             }
         }
 
-        internal static void ClearOutputFolder()
+        internal static void Init()
         {
+            KFLibEvents.onXmlLoadingStart += InitNew;
+            KFLibEvents.onXmlLoadingFinish += FinishAndLoad;
+
             Mod self = ModManager.GetMod("CommonUtilityLib");
             string path = Path.Combine(self.Path, "AssemblyOutput");
             if (Directory.Exists(path))

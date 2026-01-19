@@ -444,6 +444,7 @@
     <Compile Include="Harmony\AudioPoolingPatches.cs" />
     <Compile Include="Harmony\BackgroundInventoryUpdatePatch.cs" />
     <Compile Include="Harmony\CameraPatches.cs" />
+    <Compile Include="Harmony\EventHookPatches.cs" />
     <Compile Include="Harmony\VersionPatcher\VersionPatchManager.cs" />
     <Compile Include="KFAttached\Misc\AimingMaterialBlender.cs" />
     <Compile Include="KFAttached\Misc\CustomAudioSnapshotHolder.cs" />
@@ -659,6 +660,7 @@
     <Compile Include="Scripts\MinEventActions\MinEventActionAnimatorSetIntRef.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionAttachPrefabToEntitySync.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionCVarExpression.cs" />
+    <Compile Include="Scripts\MinEventActions\MinEventActionLogStackTrace.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionModifyCVarWithLocalCache.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionOverrideZoomFOV.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionRemovePrefabFromHeldItem.cs" />

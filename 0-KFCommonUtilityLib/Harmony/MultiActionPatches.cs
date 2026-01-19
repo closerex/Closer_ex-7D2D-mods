@@ -2436,6 +2436,53 @@ namespace KFCommonUtilityLib.Harmony
             __instance.m_HoldingItemIdx = __instance.m_FocusedItemIdx;
         }
 
+        [HarmonyPatch(typeof(Inventory), nameof(Inventory.updateHoldingItem))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_updateHoldingItem_Inventory(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            var codes = instructions.ToList();
+
+            var mtd_stopholding = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.StopHolding));
+            var fld_transform = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.Transform));
+
+            var lbd_prev = generator.DeclareLocal(typeof(int));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].Calls(mtd_stopholding))
+                {
+                    codes.InsertRange(i + 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        new CodeInstruction(OpCodes.Ldloc_S, lbd_prev),
+                        CodeInstruction.StoreField(typeof(Inventory), nameof(Inventory.m_HoldingItemIdx))
+                    });
+                    var lbl = generator.DefineLabel();
+                    codes[i].WithLabels(lbl);
+                    codes.InsertRange(i, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.LoadField(typeof(Inventory), nameof(Inventory.m_HoldingItemIdx)),
+                        new CodeInstruction(OpCodes.Stloc_S, lbd_prev),
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.CallClosure<Func<Inventory, bool>>((inventory) =>
+                        {
+                            return inventory.m_LastDrawnHoldingItemIndex >=0 && inventory.m_LastDrawnHoldingItemIndex < inventory.GetSlotCount();
+                        }),
+                        new CodeInstruction(OpCodes.Brfalse_S, lbl),
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        new CodeInstruction(OpCodes.Dup),
+                        CodeInstruction.LoadField(typeof(Inventory), nameof(Inventory.m_LastDrawnHoldingItemIndex)),
+                        CodeInstruction.StoreField(typeof(Inventory), nameof(Inventory.m_HoldingItemIdx))
+                    });
+
+                    break;
+                }
+            }
+
+            return codes;
+        }
+
         [HarmonyPatch(typeof(Inventory), nameof(Inventory.setHeldItemByIndex))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_setHeldItemByIndex_Inventory(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
