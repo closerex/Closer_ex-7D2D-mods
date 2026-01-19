@@ -38,8 +38,8 @@
 				<requirement name="ActionHasTags,KFCommonUtilityLib" tags="medicAction"/>
 				<requirement name="IsAlive" target="other"/>
 				<requirement name="EntityTagCompare" target="other" tags="player,npc"/>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="ModifyCVarWithLocalCache,KFCommonUtilityLib" target="other" cvar="medicHealAmount" operation="add" cache="MedicWeaponHeal"/>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="ModifyCVar" target="self" cvar="medicHealAmount" operation="add" value="15">
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="ModifyCVarWithLocalCache,KFCommonUtilityLib" target="other" cvar="%medicHealAmount" operation="add" cache="MedicWeaponHeal"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="ModifyCVar" target="self" cvar="%medicHealAmount" operation="add" value="15">
 						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer1" operation="Equals" value="1"/>
 					</triggered_effect>
 					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuffToTargetAndSelf,KFCommonUtilityLib" target="other" buff="buffMedicHeal">
@@ -49,11 +49,11 @@
 						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer1" operation="Equals" value="0"/>
 					</triggered_effect>
 					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffMedicEliteHealing">
-						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="6"/>
+						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="5"/>
 						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer5" operation="Equals" value="0"/>
 					</triggered_effect>
 					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuffToTargetAndSelf,KFCommonUtilityLib" target="other" buff="buffMedicEliteHealing">
-						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="6"/>
+						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="5"/>
 						<requirement name="ProgressionLevel" progression_name="perkMedicTeamplayer5" operation="Equals" value="1"/>
 					</triggered_effect>
 					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffMedicAdrenaline">
@@ -86,7 +86,7 @@
 				<requirement name="EntityTagCompare" target="other" tags="zombie"/>
 					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" buff="buffMedicDartPoison"/>
 					<triggered_effect trigger="onSelfAttackedOther" action="ModifyCVar" target="other" cvar="buffMedicDartPoisonDuration" operation="set" value="6"/>
-					<triggered_effect trigger="onSelfAttackedOther" action="ModifyCVar" target="self" cvar="medicHealAmount" operation="add" value="10">
+					<triggered_effect trigger="onSelfAttackedOther" action="ModifyCVar" target="self" cvar="%medicHealAmount" operation="add" value="10">
 						<requirement name="ProgressionLevel" progression_name="perkMedicSurvivor1" operation="Equals" value="1"/>
 					</triggered_effect>
 					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="self" buff="buffMedicHeal">

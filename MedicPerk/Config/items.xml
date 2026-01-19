@@ -1,7 +1,4 @@
 ﻿<configs>
-	<append xpath="/items/item[@name='drinkJarGrandpasForgettingElixir']/effect_group[@name='Drink Tier Trader']">
-		<triggered_effect trigger="onSelfPrimaryActionEnd" action="SetProgressionLevel" progression_name="perkMedic" level="1"/>
-	</append>
 	<append xpath="/items">
 		<item name="gunMedicPistol">
 			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>

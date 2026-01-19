@@ -10,23 +10,21 @@ perkMedicBasicLv1Desc,progression,Attribute,,,Little Prick,,小小针头
 perkMedicBasicLv2Desc,progression,Attribute,,,Needler,,两肋插针
 perkMedicBasicLv3Desc,progression,Attribute,,,Hot Shot,,药力四射
 perkMedicBasicLv4Desc,progression,Attribute,,,Dart Master,,医疗镖师
-perkMedicBasicLv5Desc,progression,Attribute,,,Jabberwocky,,区区小伤
-perkMedicBasicLv6Desc,progression,Attribute,,,The Injector,,人形注射器
-perkMedicBasicLv1LongDesc,progression,Attribute,,,"Heal your teammates with medic weapons, or poison the zombies.",,使用医疗武器治疗你的队友，或者使丧尸中毒。
-perkMedicBasicLv2LongDesc,progression,Attribute,,,"Heal amount increased by 10%, medic stock regen speed increased by 40%.",,治疗量增加10%。医疗储备充能速度增加40%。
-perkMedicBasicLv3LongDesc,progression,Attribute,,,"Heal amount increased by 20%, medic stock regen speed increased by 80%.",,治疗量增加20%。医疗储备充能速度增加80%。
-perkMedicBasicLv4LongDesc,progression,Attribute,,,"Heal amount increased by 30%, medic stock regen speed increased by 120%.",,治疗量增加30%。医疗储备充能速度增加120%。
-perkMedicBasicLv5LongDesc,progression,Attribute,,,"Heal amount increased by 40%, medic stock regen speed increased by 160%.",,治疗量增加40%。医疗储备充能速度增加160%。
-perkMedicBasicLv6LongDesc,progression,Attribute,,,"Heal amount increased by 50%, medic stock regen speed increased by 200%. Double healing speed for 5s on dart hits.",,治疗量增加50%。医疗储备充能速度增加200%。医疗武器命中使友军生命恢复速度翻倍，持续5秒。
+perkMedicBasicLv5Desc,progression,Attribute,,,The Injector,,人形注射器
+perkMedicBasicLv1LongDesc,progression,Attribute,,,"Heal amount increased by 10%, medic stock regen speed increased by 40%.",,治疗量增加10%。医疗储备充能速度增加40%。
+perkMedicBasicLv2LongDesc,progression,Attribute,,,"Heal amount increased by 20%, medic stock regen speed increased by 80%.",,治疗量增加20%。医疗储备充能速度增加80%。
+perkMedicBasicLv3LongDesc,progression,Attribute,,,"Heal amount increased by 30%, medic stock regen speed increased by 120%.",,治疗量增加30%。医疗储备充能速度增加120%。
+perkMedicBasicLv4LongDesc,progression,Attribute,,,"Heal amount increased by 40%, medic stock regen speed increased by 160%.",,治疗量增加40%。医疗储备充能速度增加160%。
+perkMedicBasicLv5LongDesc,progression,Attribute,,,"Heal amount increased by 50%, medic stock regen speed increased by 200%. Double healing speed for 5s on dart hits.",,治疗量增加50%。医疗储备充能速度增加200%。医疗武器命中使友军生命恢复速度翻倍，持续5秒。
 skillTeamplayerName,progression,Skill,,,The Healer,,治疗者
 skillTeamplayerDesc,progression,Skill,,,"What should I put here? It's a medic gun, go heal some teammates.",,我应该在这里写什么？这是一把医疗枪，拿它去给队友加血。
 skillSurvivorName,progression,Skill,,,The Survivor,,生存者
 skillSurvivorDesc,progression,Skill,,,"What should I put here? It's a medic gun... Wait a second, is it?",,我应该在这里写什么？这是一把医疗枪……等一下，这是医疗枪？
+reqMedicLevel01,progression,Attribute,,,The Medic Level 1,,战地医师 等级1
 reqMedicLevel02,progression,Attribute,,,The Medic Level 2,,战地医师 等级2
 reqMedicLevel03,progression,Attribute,,,The Medic Level 3,,战地医师 等级3
 reqMedicLevel04,progression,Attribute,,,The Medic Level 4,,战地医师 等级4
 reqMedicLevel05,progression,Attribute,,,The Medic Level 5,,战地医师 等级5
-reqMedicLevel06,progression,Attribute,,,The Medic Level 6,,战地医师 等级6
 perkMedicTeamplayer1Name,progression,perk Med,,,Symbiotic Health,,共生生命
 perkMedicTeamplayer1Desc,progression,perk Med,,,"Heal others to heal yourself",,给人打针活该加血
 perkMedicTeamplayer1LongDesc,progression,perk Med,,,"Healing teammates with medic weapons heals yourself 15 HP.",,使用医疗武器治疗友军同时治疗你自己15生命值。

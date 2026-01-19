@@ -22,32 +22,30 @@
 						<passive_effect name="CraftingTier" operation="base_add" level="10,15,20,25,30,1000" value="1,2,3,4,5,5" tags="gunMedicPistol"/>
 						<passive_effect name="CraftingTier" operation="base_add" level="25,35,45,55,60,1000" value="1,2,3,4,5,5" tags="gunMedicSMG201"/>
 						<passive_effect name="CraftingTier" operation="base_add" level="30,40,50,60,65,1000" value="1,2,3,4,5,5" tags="gunMedicShotgun301"/>
-						<passive_effect name="CraftingTier" operation="base_add" level="50,60,65,70,1000" value="1,2,3,4,5" tags="gunMedicAssaultRifle401"/>
+						<passive_effect name="CraftingTier" operation="base_add" level="50,60,65,70,75,1000" value="1,2,3,4,5,5" tags="gunMedicAssaultRifle401"/>
 					</effect_group>
 				</crafting_skill>
 			</insertBefore>
 			<insertBefore xpath="/progression/perks/perk[@name='perkElectrocutioner']">	
-				<perk name="perkMedic" parent="skillIntellectCombat" name_key="perkMedicBasicName" desc_key="perkMedicBasicDesc" min_level="1" max_level="6" base_skill_point_cost="4" cost_multiplier_per_level="1" icon="icon_perkmedic">
+				<perk name="perkMedic" parent="skillIntellectCombat" name_key="perkMedicBasicName" desc_key="perkMedicBasicDesc" max_level="5" base_skill_point_cost="4" cost_multiplier_per_level="1" icon="icon_perkmedic">
 					<!--The Medic-->
-					<level_requirements level="1"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="0" desc_key="no req"/></level_requirements>
-					<level_requirements level="2"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="1" desc_key="reqPhysicianLevel01"/></level_requirements>
-					<level_requirements level="3"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="2" desc_key="reqPhysicianLevel02"/></level_requirements>
-					<level_requirements level="4"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="3" desc_key="reqPhysicianLevel03"/></level_requirements>
+					<level_requirements level="1"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="1" desc_key="reqPhysicianLevel01"/></level_requirements>
+					<level_requirements level="2"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="2" desc_key="reqPhysicianLevel02"/></level_requirements>
+					<level_requirements level="3"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="3" desc_key="reqPhysicianLevel03"/></level_requirements>
+					<level_requirements level="4"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="4" desc_key="reqPhysicianLevel04"/></level_requirements>
 					<level_requirements level="5"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="4" desc_key="reqPhysicianLevel04"/></level_requirements>
-					<level_requirements level="6"><requirement name="ProgressionLevel" progression_name="perkPhysician" operation="GTE" value="4" desc_key="reqPhysicianLevel04"/></level_requirements>
 					<effect_group>
 						<effect_description level="1" desc_key="perkMedicBasicLv1Desc" long_desc_key="perkMedicBasicLv1LongDesc"/>
 						<effect_description level="2" desc_key="perkMedicBasicLv2Desc" long_desc_key="perkMedicBasicLv2LongDesc"/>
 						<effect_description level="3" desc_key="perkMedicBasicLv3Desc" long_desc_key="perkMedicBasicLv3LongDesc"/>
 						<effect_description level="4" desc_key="perkMedicBasicLv4Desc" long_desc_key="perkMedicBasicLv4LongDesc"/>
 						<effect_description level="5" desc_key="perkMedicBasicLv5Desc" long_desc_key="perkMedicBasicLv5LongDesc"/>
-						<effect_description level="6" desc_key="perkMedicBasicLv6Desc" long_desc_key="perkMedicBasicLv6LongDesc"/>
 					</effect_group>
 					<effect_group>
-						<passive_effect name="CustomTaggedEffect" operation="base_add" level="1,6" value="0,2" tags="medicWeapon,MedicStock,RechargeDataIntervalMultiplier" match_all_tags="true"/>
+						<passive_effect name="CustomTaggedEffect" operation="base_add" level="0,5" value="0,2" tags="medicWeapon,MedicStock,RechargeDataIntervalMultiplier" match_all_tags="true"/>
 						<!-- <passive_effect name="CustomTaggedEffect" operation="perc_add" level="1,6" value="0,.25" tags="medicWeapon,MedicStock,RechargeDataMaximum" match_all_tags="true"/> -->
 						<!-- <passive_effect name="CustomTaggedEffect" operation="perc_subtract" level="1,6" value="0,.1" tags="medicWeapon,MedicStock,ConsumptionValue" match_all_tags="true"/> -->
-						<passive_effect name="CustomTaggedEffect" operation="perc_add" level="1,6" value="0,.5" tags="medicWeapon,MedicWeaponHeal" match_all_tags="true"/>
+						<passive_effect name="CustomTaggedEffect" operation="perc_add" level="0,5" value="0,.5" tags="medicWeapon,MedicWeaponHeal" match_all_tags="true"/>
 						<triggered_effect trigger="onPerkLevelChanged" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal">
 							<requirement name="HoldingItemHasTags" tags="medicWeapon,metaRecharger" has_all_tags="true"/>
 							<requirement name="IsActionUnlocked,KFCommonUtilityLib" index="3"/>
@@ -55,12 +53,12 @@
 					</effect_group>
 					<effect_group>
 						<!-- Increase the chance to find medic gun crafting skill magazines with each perk rank up to crafting skill 75 -->
-						<passive_effect name="LootProb" operation="perc_add" level="2,6" value="2,10" tags="medicgunsCSM">
+						<passive_effect name="LootProb" operation="perc_add" level="1,5" value="2,10" tags="medicgunsCSM">
 							<requirement name="ProgressionLevel" progression_name="craftingMedicGuns" operation="LT" value="75"/>
 						</passive_effect>
 
 						<!-- Once medic gun crafting skill reaches 75, set the probability bonus of finding medic gun crafting skill magazines to 0 -->
-						<passive_effect name="LootProb" operation="base_set" level="2,6" value="1,1" tags="medicgunsCSM">
+						<passive_effect name="LootProb" operation="base_set" level="1,5" value="1,1" tags="medicgunsCSM">
 							<requirement name="ProgressionLevel" progression_name="craftingMedicGuns" operation="Equals" value="75"/>
 						</passive_effect>
 					</effect_group>
@@ -81,7 +79,7 @@
 			<append xpath="/progression/perks">	
 				<perk name="perkMedicTeamplayer1" name_key="perkMedicTeamplayer1Name" desc_key="perkMedicTeamplayer1Desc" max_level="1" icon="icon_tp_symbiotic" parent="skillTeamplayer">
 					<level_requirements level="1">
-						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="2" desc_key="reqMedicLevel02"/>
+						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="1" desc_key="reqMedicLevel01"/>
 					</level_requirements>
 					<effect_group>
 						<effect_description desc_key="perkMedicTeamplayer1Name" long_desc_key="perkMedicTeamplayer1LongDesc" level="1"/>
@@ -94,7 +92,7 @@
 				</perk>
 				<perk name="perkMedicTeamplayer2" name_key="perkMedicTeamplayer2Name" desc_key="perkMedicTeamplayer2Desc" max_level="1" icon="icon_tp_adrenaline" parent="skillTeamplayer">
 					<level_requirements level="1">
-						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="3" desc_key="reqMedicLevel03"/>
+						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="2" desc_key="reqMedicLevel02"/>
 					</level_requirements>
 					<effect_group>
 						<effect_description desc_key="perkMedicTeamplayer2Name" long_desc_key="perkMedicTeamplayer2LongDesc" level="1"/>
@@ -107,7 +105,7 @@
 				</perk>
 				<perk name="perkMedicTeamplayer3" name_key="perkMedicTeamplayer3Name" desc_key="perkMedicTeamplayer3Desc" max_level="1" icon="icon_tp_lifetras" parent="skillTeamplayer">
 					<level_requirements level="1">
-						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="4" desc_key="reqMedicLevel04"/>
+						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="3" desc_key="reqMedicLevel03"/>
 					</level_requirements>
 					<effect_group>
 						<effect_description desc_key="perkMedicTeamplayer3Name" long_desc_key="perkMedicTeamplayer3LongDesc" level="1"/>
@@ -126,7 +124,7 @@
 				</perk>
 				<perk name="perkMedicTeamplayer4" name_key="perkMedicTeamplayer4Name" desc_key="perkMedicTeamplayer4Desc" max_level="1" icon="icon_tp_focus" parent="skillTeamplayer">
 					<level_requirements level="1">
-						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="5" desc_key="reqMedicLevel05"/>
+						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="4" desc_key="reqMedicLevel04"/>
 					</level_requirements>
 					<effect_group>
 						<effect_description desc_key="perkMedicTeamplayer4Name" long_desc_key="perkMedicTeamplayer4LongDesc" level="1"/>
@@ -139,7 +137,7 @@
 				</perk>
 				<perk name="perkMedicTeamplayer5" name_key="perkMedicTeamplayer5Name" desc_key="perkMedicTeamplayer5Desc" max_level="1" icon="icon_tp_skin" parent="skillTeamplayer">
 					<level_requirements level="1">
-						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="6" desc_key="reqMedicLevel06"/>
+						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="5" desc_key="reqMedicLevel05"/>
 					</level_requirements>
 					<effect_group>
 						<effect_description desc_key="perkMedicTeamplayer5Name" long_desc_key="perkMedicTeamplayer5LongDesc" level="1"/>
@@ -153,7 +151,7 @@
 				
 				<perk name="perkMedicSurvivor1" name_key="perkMedicSurvivor1Name" desc_key="perkMedicSurvivor1Desc" max_level="1" icon="icon_sv_vampire" parent="skillSurvivor">
 					<level_requirements level="1">
-						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="2" desc_key="reqMedicLevel02"/>
+						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="1" desc_key="reqMedicLevel01"/>
 					</level_requirements>
 					<effect_group>
 						<effect_description desc_key="perkMedicSurvivor1Name" long_desc_key="perkMedicSurvivor1LongDesc" level="1"/>
@@ -166,7 +164,7 @@
 				</perk>
 				<perk name="perkMedicSurvivor2" name_key="perkMedicSurvivor2Name" desc_key="perkMedicSurvivor2Desc" max_level="1" icon="icon_sv_rot" parent="skillSurvivor">
 					<level_requirements level="1">
-						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="3" desc_key="reqMedicLevel03"/>
+						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="2" desc_key="reqMedicLevel02"/>
 					</level_requirements>
 					<effect_group>
 						<effect_description desc_key="perkMedicSurvivor2Name" long_desc_key="perkMedicSurvivor2LongDesc" level="1"/>
@@ -185,7 +183,7 @@
 				</perk>
 				<perk name="perkMedicSurvivor3" name_key="perkMedicSurvivor3Name" desc_key="perkMedicSurvivor3Desc" max_level="1" icon="icon_sv_stock" parent="skillSurvivor">
 					<level_requirements level="1">
-						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="4" desc_key="reqMedicLevel04"/>
+						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="3" desc_key="reqMedicLevel03"/>
 					</level_requirements>
 					<effect_group>
 						<effect_description desc_key="perkMedicSurvivor3Name" long_desc_key="perkMedicSurvivor3LongDesc" level="1"/>
@@ -203,7 +201,7 @@
 				</perk>
 				<perk name="perkMedicSurvivor4" name_key="perkMedicSurvivor4Name" desc_key="perkMedicSurvivor4Desc" max_level="1" icon="icon_sv_medic" parent="skillSurvivor">
 					<level_requirements level="1">
-						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="5" desc_key="reqMedicLevel05"/>
+						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="4" desc_key="reqMedicLevel04"/>
 					</level_requirements>
 					<effect_group>
 						<requirement name="ProgressionLevel" progression_name="perkMedicSurvivor4" operation="GTE" value="1"/>
@@ -223,7 +221,7 @@
 				</perk>
 				<perk name="perkMedicSurvivor5" name_key="perkMedicSurvivor5Name" desc_key="perkMedicSurvivor5Desc" max_level="1" icon="icon_sv_zedtime" parent="skillSurvivor">
 					<level_requirements level="1">
-						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="6" desc_key="reqMedicLevel06"/>
+						<requirement name="ProgressionLevel" progression_name="perkMedic" operation="GTE" value="5" desc_key="reqMedicLevel05"/>
 					</level_requirements>
 					<effect_group>
 						<effect_description desc_key="perkMedicSurvivor5Name" long_desc_key="perkMedicSurvivor5LongDesc" level="1"/>
