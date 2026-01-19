@@ -9,7 +9,7 @@
 					<recipe name="ammoPulverizer" count="1" craft_time="40" craft_area="workbench" tags="learnable,workbenchCrafting">
 						<ingredient name="resourceMechanicalParts" count="1"/>
 						<ingredient name="resourceTP200TNTBrick" count="1"/>
-						<ingredient name="resource_item_other_powder_red" count="15"/>
+						<ingredient name="resource_item_other_powder" count="15"/>
 						<ingredient name="ammoGasCan" count="250"/>
 					</recipe>
 				</append>

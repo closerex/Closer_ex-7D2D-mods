@@ -21,13 +21,13 @@
 				<recipe name="ammoKaboomstickShellFrag" count="1" craft_area="workbench" tags="learnable,workbenchCrafting">
 					<ingredient name="resourceMechanicalParts" count="1" />
 					<ingredient name="resourceTP200TNTBrick" count="1" />
-					<ingredient name="resource_item_other_powder_red" count="20" />
+					<ingredient name="resource_item_other_powder" count="20" />
 					<ingredient name="resourceForgedSteel" count="2" />
 				</recipe>
 				<recipe name="ammoKaboomstickShellHE" count="1" craft_area="workbench" tags="learnable,workbenchCrafting">
 					<ingredient name="resourceMechanicalParts" count="1" />
 					<ingredient name="resourceTP200TNTBrick" count="1" />
-					<ingredient name="resource_item_other_powder_red" count="20" />
+					<ingredient name="resource_item_other_powder" count="20" />
 					<ingredient name="resourceForgedSteel" count="2" />
 				</recipe>
 			</append>
