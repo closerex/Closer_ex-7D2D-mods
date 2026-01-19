@@ -12,9 +12,7 @@
 			</append>
 		</if>
 	</conditional>
-		
-	<append xpath="/buffs/buff[@name='buffZedTimeCooldown']/effect_group[@name='zedtime']">
-	</append>
+	
 	<append xpath="/buffs">
 		<buff name="buffMedicHeal" name_key="buffMedicHealName" description_key="buffMedicHealLongDesc" icon="ui_game_symbol_add" icon_color="0,240,0">
 			<stack_type value="ignore"/>

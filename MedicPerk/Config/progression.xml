@@ -48,7 +48,6 @@
 						<passive_effect name="CustomTaggedEffect" operation="perc_add" level="0,5" value="0,.5" tags="medicWeapon,MedicWeaponHeal" match_all_tags="true"/>
 						<triggered_effect trigger="onPerkLevelChanged" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal">
 							<requirement name="HoldingItemHasTags" tags="medicWeapon,metaRecharger" has_all_tags="true"/>
-							<requirement name="IsActionUnlocked,KFCommonUtilityLib" index="3"/>
 						</triggered_effect>
 					</effect_group>
 					<effect_group>
