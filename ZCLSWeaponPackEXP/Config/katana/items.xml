@@ -2,7 +2,7 @@
 	<append xpath="/items">
 		<item name="meleeWpnBladeBashKatana">
 			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
-			<property name="Tags" value="machete,melee,grunting,light,perkFlurryOfAgility,weapon,meleeWeapon,attAgility,perkDeepCuts,perkTheHuntsman,canHaveCosmetic,bladeSkill,corpseRemoval"/>
+			<property name="Tags" value="machete,melee,grunting,light,perkFlurryOfAgility,weapon,meleeWeapon,attAgility,perkDeepCuts,perkFlurryOfAgility,perkTheHuntsman,canHaveCosmetic,bladeSkill,corpseRemoval"/>
 			<property name="CreativeMode" value="None"/>
 			<property name="DisplayType" value="meleeKnife"/>
 			<property name="HoldType" value="36"/>
@@ -129,7 +129,7 @@
 
 		<item name="meleeWpnBladeT3KF2Katana">
 			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
-			<property name="Tags" value="machete,melee,grunting,light,longShaft,weapon,meleeWeapon,attAgility,perkDeepCuts,perkTheHuntsman,canHaveCosmetic,bladeSkill,corpseRemoval"/>
+			<property name="Tags" value="machete,melee,grunting,light,longShaft,weapon,meleeWeapon,attAgility,perkDeepCuts,perkFlurryOfAgility,perkTheHuntsman,canHaveCosmetic,bladeSkill,corpseRemoval"/>
 			<property name="DisplayType" value="meleeKnife"/>
 			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
 			<property name="UnholsterDelayActive" value="false"/>
@@ -215,7 +215,7 @@
 					<passive_effect name="BuffResistance" operation="base_add" value=".35" tags="buffFatiguedTrigger,buffArmSprainedCHTrigger,buffLegSprainedCHTrigger,buffLaceration,buffInfectionCatch,buffAbrasionCatch,buffInjuryStunned01CHTrigger,buffInjuryBleedingTwo"/>
 			</effect_group>
 			<effect_group name="meleeWpnBladeT3KF2Katana">
-				<passive_effect name="AttacksPerMinute" operation="base_set" value="126" tags="primary"/>
+				<passive_effect name="AttacksPerMinute" operation="base_set" value="126" tags="perkDeepCuts"/>
 				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".4" tags="primary"/>
 				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value=".8" tags="primary"/>
 				<passive_effect name="StaminaLoss" operation="base_set" value="18" tags="primary"/> <!-- - 10% -->

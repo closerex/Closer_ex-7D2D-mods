@@ -210,6 +210,11 @@
 				<passive_effect name="EntityDamage" operation="base_add" value="9" tags="secondary"/>
                 <passive_effect name="EntityDamage" operation="perc_add" value="1" tags="secondary"/>
                 <passive_effect name="BlockDamage" operation="perc_add" value="1" tags="secondary"/>
+				
+				<triggered_effect trigger="onSelfEquipStart" action="RemoveBuff" buff="buffBoneCrusherHeavyMaceAttack"/>
+				<triggered_effect trigger="onSelfEquipStop" action="RemoveBuff" buff="buffBoneCrusherHeavyMaceAttack"/>
+				<triggered_effect trigger="onSelfEquipStart" action="RemoveBuff" buff="buffBoneCrusherHeavyShieldAttack"/>
+				<triggered_effect trigger="onSelfEquipStop" action="RemoveBuff" buff="buffBoneCrusherHeavyShieldAttack"/>
 				<triggered_effect trigger="onAnimatorStateEntered" action="AddBuff" buff="buffBoneCrusherHeavyMaceAttack">
 					<requirement name="TriggerHasTags" tags="HeavyMaceState"/>
 				</triggered_effect>

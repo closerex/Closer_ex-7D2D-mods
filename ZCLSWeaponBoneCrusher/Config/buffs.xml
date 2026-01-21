@@ -6,8 +6,6 @@
 			<update_rate value="1"/>
             <effect_group>
 				<triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffBoneCrusherHeavyShieldAttack"/>
-				<triggered_effect trigger="onSelfEquipStart" action="RemoveBuff" buff="buffBoneCrusherHeavyMaceAttack"/>
-				<triggered_effect trigger="onSelfEquipStop" action="RemoveBuff" buff="buffBoneCrusherHeavyMaceAttack"/>
 				<triggered_effect trigger="onAnimatorStateExit" action="RemoveBuff" buff="buffBoneCrusherHeavyMaceAttack">
 					<requirement name="TriggerHasTags" tags="HeavyMaceState"/>
                 </triggered_effect>
@@ -19,8 +17,6 @@
 			<update_rate value="1"/>
             <effect_group>
 				<triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffBoneCrusherHeavyMaceAttack"/>
-				<triggered_effect trigger="onSelfEquipStart" action="RemoveBuff" buff="buffBoneCrusherHeavyShieldAttack"/>
-				<triggered_effect trigger="onSelfEquipStop" action="RemoveBuff" buff="buffBoneCrusherHeavyShieldAttack"/>
 				<triggered_effect trigger="onAnimatorStateExit" action="RemoveBuff" buff="buffBoneCrusherHeavyShieldAttack">
 					<requirement name="TriggerHasTags" tags="HeavyShieldState"/>
                 </triggered_effect>

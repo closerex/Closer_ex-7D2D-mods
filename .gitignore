@@ -73,6 +73,8 @@
 !ZCLSWeaponPackSniper/**
 !ZCLSWeaponPulverizer
 !ZCLSWeaponPulverizer/**
+!ZCLSWeaponZweihander
+!ZCLSWeaponZweihander/**
 !ZZCustomPlayerActionManagerSMXPatch/
 !ZZCustomPlayerActionManagerSMXPatch/**
 !MultiBlockLayerFix
