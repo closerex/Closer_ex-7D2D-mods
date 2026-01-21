@@ -15,6 +15,7 @@ namespace KFCommonUtilityLib.Harmony
     {
         #region volume patches
         private static readonly CaseInsensitiveStringDictionary<float> dict_volume_modifiers = new();
+        private static readonly HashSet<string> set_force_2d_fpv = new(StringComparer.OrdinalIgnoreCase);
         private static bool showDebugInfo = false;
 
         private static float GetVolumeModifier(string soundGroupName)
@@ -26,11 +27,22 @@ namespace KFCommonUtilityLib.Harmony
             return 1f;
         }
 
+        private static bool IsForce2DFPV(string soundGroupName)
+        {
+            return !string.IsNullOrEmpty(soundGroupName) && set_force_2d_fpv.Contains(soundGroupName);
+        }
+
+        private static bool ShouldForce2DFPV(string soundGroupName, Entity entity)
+        {
+            return entity is EntityPlayerLocal player && player.bFirstPersonView && IsForce2DFPV(soundGroupName);
+        }
+
         [HarmonyPatch(typeof(Manager), nameof(Manager.Reset))]
         [HarmonyPostfix]
         private static void Postfix_Reset_Manager()
         {
             dict_volume_modifiers.Clear();
+            set_force_2d_fpv.Clear();
         }
 
         [HarmonyPatch(typeof(SoundsFromXml), nameof(SoundsFromXml.Parse))]
@@ -49,9 +61,16 @@ namespace KFCommonUtilityLib.Harmony
                         new CodeInstruction(OpCodes.Ldloc_0),
                         CodeInstruction.CallClosure<Action<XElement, string>>(static (element, soundGroupName) =>
                         {
-                            if (!string.IsNullOrEmpty(soundGroupName) && element.Name.LocalName == "VolumeModifier" && float.TryParse(element.GetAttribute("value"), out float value))
+                            if (!string.IsNullOrEmpty(soundGroupName))
                             {
-                                dict_volume_modifiers[soundGroupName] = value;
+                                if (element.Name.LocalName == "VolumeModifier" && float.TryParse(element.GetAttribute("value"), out float value))
+                                {
+                                    dict_volume_modifiers[soundGroupName] = value;
+                                }
+                                else if (element.Name.LocalName == "FPVForce2D")
+                                {
+                                    set_force_2d_fpv.Add(soundGroupName);
+                                }
                             }
                         })
                     });
@@ -79,22 +98,36 @@ namespace KFCommonUtilityLib.Harmony
                         new CodeInstruction(OpCodes.Ldarg_1).WithLabels(codes[i + 1].ExtractLabels()),
                         new CodeInstruction(OpCodes.Ldloc_S, 8),
                         new CodeInstruction(OpCodes.Ldloc_S, 10),
-                        CodeInstruction.CallClosure<Action<string, AudioSource, AudioSource>>(static (soundGroupName, nearAudioSource, farAudioSource) =>
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.CallClosure<Action<string, AudioSource, AudioSource, Entity>>(static (soundGroupName, nearAudioSource, farAudioSource, entity) =>
                         {
                             if (!string.IsNullOrEmpty(soundGroupName))
                             {
                                 float modifier = GetVolumeModifier(soundGroupName);
+                                bool isForce2DFPV = ShouldForce2DFPV(soundGroupName, entity);
                                 if (nearAudioSource)
                                 {
                                     nearAudioSource.volume *= modifier;
                                     if (showDebugInfo)
                                         Log.Out($"set near audio source volume to {nearAudioSource.volume} group {soundGroupName} modifier {modifier}");
+                                    if (isForce2DFPV)
+                                    {
+                                        nearAudioSource.spatialBlend = 0f;
+                                        if (showDebugInfo)
+                                            Log.Out($"set near audio source spatial blend to 0 for FPVForce2D group {soundGroupName}");
+                                    }
                                 }
                                 if (farAudioSource)
                                 {
                                     farAudioSource.volume *= modifier;
                                     if (showDebugInfo)
                                         Log.Out($"set far audio source volume to {farAudioSource.volume} group {soundGroupName} modifier {modifier}");
+                                    if (isForce2DFPV)
+                                    {
+                                        farAudioSource.spatialBlend = 0f;
+                                        if (showDebugInfo)
+                                            Log.Out($"set far audio source spatial blend to 0 for FPVForce2D group {soundGroupName}");
+                                    }
                                 }
                             }
                         }),
@@ -193,6 +226,7 @@ namespace KFCommonUtilityLib.Harmony
             var mtd_containskey = AccessTools.Method(typeof(Dictionary<string, Manager.SequenceGOs>), nameof(Dictionary<string, Manager.SequenceGOs>.ContainsKey));
 
             var lbd_modifier = generator.DeclareLocal(typeof(float));
+            var lbd_force2d = generator.DeclareLocal(typeof(bool));
 
             for (int i = 0; i < codes.Count - 1; i++)
             {
@@ -202,18 +236,25 @@ namespace KFCommonUtilityLib.Harmony
                     {
                         new CodeInstruction(OpCodes.Ldloc_S, lbd_modifier),
                         new CodeInstruction(OpCodes.Ldarg_1),
-                        CodeInstruction.CallClosure<Func<AudioSource, float, string, AudioSource>>(static (audioSource, modifier, soundGroupName) =>
+                        new CodeInstruction(OpCodes.Ldloc_S, lbd_force2d),
+                        CodeInstruction.CallClosure<Func<AudioSource, float, string, bool, AudioSource>>(static (audioSource, modifier, soundGroupName, shouldForce2D) =>
                         {
                             if (audioSource)
                             {
                                 audioSource.volume *= modifier;
                                 if (showDebugInfo)
                                     Log.Out($"set sequence audio source volume to {audioSource.volume} group {soundGroupName} modifier {modifier}");
+                                if (shouldForce2D)
+                                {
+                                    audioSource.spatialBlend = 0f;
+                                    if (showDebugInfo)
+                                        Log.Out($"set sequence audio source spatial blend to 0 for FPVForce2D group {soundGroupName}");
+                                }
                             }
                             return audioSource;
                         })
                     });
-                    i += 3;
+                    i += 4;
                 }
                 else if (codes[i].Calls(mtd_containskey) && codes[i + 1].Branches(out _))
                 {
@@ -221,9 +262,13 @@ namespace KFCommonUtilityLib.Harmony
                     {
                         new CodeInstruction(OpCodes.Ldarg_1).WithLabels(codes[i + 2].ExtractLabels()),
                         CodeInstruction.Call(typeof(AudioPatches), nameof(GetVolumeModifier)),
-                        new CodeInstruction(OpCodes.Stloc_S, lbd_modifier)
+                        new CodeInstruction(OpCodes.Stloc_S, lbd_modifier),
+                        new CodeInstruction(OpCodes.Ldarg_1),
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        CodeInstruction.Call(typeof(AudioPatches), nameof(AudioPatches.ShouldForce2DFPV)),
+                        new CodeInstruction(OpCodes.Stloc_S, lbd_force2d)
                     });
-                    i += 3;
+                    i += 7;
                 }
             }
 
@@ -252,8 +297,20 @@ namespace KFCommonUtilityLib.Harmony
                         {
                             float beginModifier = GetVolumeModifier(soundGroupNameBegin);
                             audioSourceBegin.volume *= beginModifier;
+                            if (IsForce2DFPV(soundGroupNameBegin))
+                            {
+                                audioSourceBegin.spatialBlend = 0f;
+                                if (showDebugInfo)
+                                    Log.Out($"set begin audio source spatial blend to 0 for FPVForce2D group {soundGroupNameBegin}");
+                            }
                             float loopModifier = GetVolumeModifier(soundGroupNameLoop);
                             audioSourceLoop.volume *= loopModifier;
+                            if (IsForce2DFPV(soundGroupNameLoop))
+                            {
+                                audioSourceLoop.spatialBlend = 0f;
+                                if (showDebugInfo)
+                                    Log.Out($"set loop audio source spatial blend to 0 for FPVForce2D group {soundGroupNameLoop}");
+                            }
                             if (showDebugInfo)
                                 Log.Out($"set begin audio source volume to {audioSourceBegin.volume} group {soundGroupNameBegin} modifier {beginModifier}, loop audio source volume to {audioSourceLoop} group {soundGroupNameLoop} modifier {soundGroupNameLoop}");
                         })
@@ -288,6 +345,12 @@ namespace KFCommonUtilityLib.Harmony
                                 audioSource.volume *= modifier;
                                 if (showDebugInfo)
                                     Log.Out($"set local audio source volume to {audioSource.volume} group {soundGroupName} modifier {modifier}");
+                                if (IsForce2DFPV(soundGroupName))
+                                {
+                                    audioSource.spatialBlend = 0f;
+                                    if (showDebugInfo)
+                                        Log.Out($"set local audio source spatial blend to 0 for FPVForce2D group {soundGroupName}");
+                                }
                             }
                             return audioSource;
                         })

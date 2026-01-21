@@ -2311,6 +2311,42 @@ public static class CommonUtilityPatch
         return codes;
     }
 
+    [HarmonyPatch(typeof(ItemActionDynamic), nameof(ItemActionDynamic.GetExecuteActionGrazeTarget))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_GetExecuteActionGrazeTarget_ItemActionDynamic(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var mtd_add = AccessTools.Method(typeof(List<int>), nameof(List<int>.Add));
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_add))
+            {
+                codes.RemoveAt(i);
+                codes.InsertRange(i, new[]
+                {
+                    new CodeInstruction(OpCodes.Pop),
+                    new CodeInstruction(OpCodes.Pop)
+                });
+                break;
+            }
+        }
+
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(MinEffectGroup), nameof(MinEffectGroup.ModifyValue))]
+    [HarmonyPrefix]
+    private static bool Prefix_ModifyValue_MinEffectGroup(List<PassiveEffects> ___PassivesIndices, object ___Requirements, PassiveEffects _effect)
+    {
+        if (___Requirements != null && !___PassivesIndices.Contains(_effect))
+        {
+            return false;
+        }
+        return true;
+    }
+
     public static void Test()
     {
         var player = GameManager.Instance.World.GetPrimaryPlayer();

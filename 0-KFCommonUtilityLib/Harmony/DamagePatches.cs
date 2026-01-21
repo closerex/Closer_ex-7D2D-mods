@@ -62,22 +62,22 @@ public static class DamagePatches
     {
         FastTags<TagGroup.Global> bodyPartTags = GetBodyPartTags(damageResponse.HitBodyPart);
         float holdingItemDamageResist = Mathf.Min(1, EffectManager.GetValue(CustomEnums.HoldingItemDamageResistance, null, 0, equipment.m_entity, null, damageResponse.Source.DamageTypeTag | bodyPartTags, false, true, false, false, false) * 0.01f);
-        damageResponse.Strength = Mathf.RoundToInt((float)damageResponse.Strength * (1f - holdingItemDamageResist));
+        damageResponse.Strength = Mathf.RoundToInt(damageResponse.Strength * (1f - holdingItemDamageResist));
         damageResponse.ArmorDamage = damageResponse.Strength;
         if (damageResponse.Source.DamageTypeTag.Test_AnySet(Equipment.physicalDamageTypes))
         {
             if (damageResponse.Strength > 0)
             {
                 float totalPhysicalArmorResistPercent = GetTotalPhysicalArmorResistPercent(equipment, in damageResponse, in bodyPartTags, attacker) * .01f;
-                damageResponse.ArmorDamage = Utils.FastMax((totalPhysicalArmorResistPercent > 0f) ? 1 : 0, Mathf.RoundToInt((float)damageResponse.Strength * totalPhysicalArmorResistPercent));
+                damageResponse.ArmorDamage = Utils.FastMax((totalPhysicalArmorResistPercent > 0f) ? 1 : 0, Mathf.RoundToInt(damageResponse.Strength * totalPhysicalArmorResistPercent));
                 damageResponse.Strength -= damageResponse.ArmorDamage;
                 return;
             }
         }
         else
         {
-            damageResponse.Strength = Mathf.RoundToInt(Utils.FastMax(0f, (float)damageResponse.Strength * (1f - EffectManager.GetValue(PassiveEffects.ElementalDamageResist, null, 0f, equipment.m_entity, null, damageResponse.Source.DamageTypeTag) * .01f)));
-            damageResponse.ArmorDamage = Mathf.RoundToInt((float)Utils.FastMax(0, damageResponse.ArmorDamage - damageResponse.Strength));
+            damageResponse.Strength = Mathf.RoundToInt(Utils.FastMax(0f, damageResponse.Strength * (1f - EffectManager.GetValue(PassiveEffects.ElementalDamageResist, null, 0f, equipment.m_entity, null, damageResponse.Source.DamageTypeTag) * .01f)));
+            damageResponse.ArmorDamage = Mathf.RoundToInt(Utils.FastMax(0, damageResponse.ArmorDamage - damageResponse.Strength));
         }
     }
 

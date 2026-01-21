@@ -60,22 +60,25 @@ namespace KFCommonUtilityLib
             if (handle != null)
             {
                 Transform parent = FindParentNode(par.intParameter);
-                if (handle.nearSource != null)
+                if (parent != null)
                 {
-                    handle.nearSource.transform.SetParent(parent);
-                    handle.nearSource.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-                }
-                if (handle.farSource != null)
-                {
-                    handle.farSource.transform.SetParent(parent);
-                    handle.farSource.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+                    if (handle.nearSource != null)
+                    {
+                        handle.nearSource.transform.SetParent(parent);
+                        handle.nearSource.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+                    }
+                    if (handle.farSource != null)
+                    {
+                        handle.farSource.transform.SetParent(parent);
+                        handle.farSource.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+                    }
                 }
             }
 #elif UNITY_EDITOR
             if (dict_groups.TryGetValue(par.stringParameter, out var group) && group.IsValid)
             {
                 AudioSource source = null;
-                Transform parent = FindParentNode(par.intParameter);
+                Transform parent = FindParentNode(par.intParameter) ?? transform;
                 source = parent.Find(group.source.gameObject.name + "(Clone)")?.GetComponent<AudioSource>();
                 if (source == null)
                 {
@@ -100,20 +103,19 @@ namespace KFCommonUtilityLib
 
         private Transform FindParentNode(int attachableNodeIndex)
         {
-            Transform parent = null;
-            if (attachableNodeIndex >= 0)
+            if (attachableNodeIndex < 0)
             {
-                if (attachableNodes != null && attachableNodes.Length > 0 && attachableNodes.Length > attachableNodeIndex && attachableNodes[attachableNodeIndex])
-                {
-                    parent = attachableNodes[attachableNodeIndex];
-                }
+                return null;
             }
 
-            if (parent == null)
+            if (attachableNodes != null && attachableNodes.Length > 0 && attachableNodes.Length > attachableNodeIndex && attachableNodes[attachableNodeIndex])
             {
-                parent = this.transform;
+                return attachableNodes[attachableNodeIndex];
             }
-            return parent;
+            else
+            {
+                return transform;
+            }
         }
     }
 }

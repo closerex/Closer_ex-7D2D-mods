@@ -98,7 +98,10 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             animator.SetWrappedBool(Animator.StringToHash("UseAltMelee"), false);
         }
         actionIndex = ForceActionIndex >= 0 ? ForceActionIndex : animator.GetWrappedInt(AvatarController.itemActionIndexHash);
-        entity = animator.GetComponentInParent<EntityAlive>();
+        if (entity == null)
+        {
+            entity = animator.GetLocalPlayerInParent();
+        }
         if (!slotGurad.IsValid(entity) || entity.isEntityRemote)
         {
             return;
@@ -120,18 +123,10 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         {
             fastTags |= itemClass.ItemTags;
         }
-        originalMeleeAttackSpeed = InvariableRPM ? stateInfo.speed : EffectManager.GetValue(PassiveEffects.AttacksPerMinute, holdingItemItemValue, attacksPerMinute, entity, null, fastTags) / 60f * length;
+        float apm = EffectManager.GetValue(PassiveEffects.AttacksPerMinute, holdingItemItemValue, attacksPerMinute, entity, null, fastTags);
+        originalMeleeAttackSpeed = InvariableRPM ? stateInfo.speed : apm / 60f * length;
         animator.SetWrappedFloat(AttackSpeedHash, InvariableRPM ? 1 : originalMeleeAttackSpeed);
         speedMultiplierToKeep = originalMeleeAttackSpeed;
-        ItemClass holdingItem = entity.inventory.holdingItem;
-        //holdingItem.Properties.ParseFloat((actionIndex != 1) ? "Action0.RaycastTime" : "Action1.RaycastTime", ref RaycastTime);
-        //float impactDuration = -1f;
-        //holdingItem.Properties.ParseFloat((actionIndex != 1) ? "Action0.ImpactDuration" : "Action1.ImpactDuration", ref impactDuration);
-        //if (impactDuration >= 0f)
-        //{
-        //    ImpactDuration = impactDuration * originalMeleeAttackSpeed;
-        //}
-        //holdingItem.Properties.ParseFloat((actionIndex != 1) ? "Action0.ImpactPlaybackSpeed" : "Action1.ImpactPlaybackSpeed", ref ImpactPlaybackSpeed);
         if (originalMeleeAttackSpeed != 0f)
         {
             calculatedRaycastTime = RaycastTime / originalMeleeAttackSpeed;
@@ -154,6 +149,15 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         {
             Log.Out($"original: raycast time {RaycastTime} impact duration {ImpactDuration} impact playback speed {ImpactPlaybackSpeed} clip length {length}/{stateInfo.length}");
             Log.Out($"calculated: raycast time {calculatedRaycastTime} impact duration {calculatedImpactDuration} impact playback speed {calculatedImpactPlaybackSpeed} speed multiplier {originalMeleeAttackSpeed}");
+            Log.Out($"Melee attack started: action index {actionIndex} alternative {isValidAlternative} original rpm {attacksPerMinute} calculated apm {apm} inv rpm {InvariableRPM}");
+            if (itemClass != null)
+            {
+                Log.Out($"Item class: {itemClass.Name} tags: {itemClass.ItemTags.ToString()}");
+            }
+            else
+            {
+                Log.Out("Item class: null");
+            }
         }
         if (!GrazeAsRaycast)
         { 

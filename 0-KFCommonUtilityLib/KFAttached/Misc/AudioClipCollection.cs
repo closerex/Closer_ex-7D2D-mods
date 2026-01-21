@@ -59,6 +59,7 @@ namespace KFCommonUtilityLib
         public string soundGroupName;
         public AudioClip[] clips;
         public float maxVolume = 1f;
+        public bool dontForce2D = false;
         public GameObject audioSource;
         public GameObject networkAudioSource;
         public NoiseData noiseData = new();
@@ -122,6 +123,12 @@ namespace KFCommonUtilityLib
                     XmlElement maxVolume = xmlDoc.CreateElement("VolumeModifier");
                     maxVolume.Attributes.Append(xmlDoc.CreateAttribute("value")).Value = audio.maxVolume.ToString();
                     soundDataNode.AppendChild(maxVolume);
+                }
+
+                if (!audio.dontForce2D)
+                {
+                    XmlElement force2d = xmlDoc.CreateElement("Force2D");
+                    soundDataNode.AppendChild(force2d);
                 }
 
                 if (audio.audioSource)

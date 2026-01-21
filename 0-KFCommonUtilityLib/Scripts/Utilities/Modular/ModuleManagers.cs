@@ -100,11 +100,27 @@ namespace KFCommonUtilityLib
 
             Mod self = ModManager.GetMod("CommonUtilityLib");
             string path = Path.Combine(self.Path, "AssemblyOutput");
-            if (Directory.Exists(path))
+            if (Directory.Exists(path) && !IsUnderSymlinkOrJunction(path))
                 Array.ForEach(Directory.GetFiles(path), File.Delete);
             else
                 Directory.CreateDirectory(path);
         }
+
+        private static bool IsUnderSymlinkOrJunction(string path)
+        {
+            var dir = new DirectoryInfo(path);
+
+            while (dir != null)
+            {
+                if ((dir.Attributes & FileAttributes.ReparsePoint) != 0)
+                    return true;
+
+                dir = dir.Parent;
+            }
+
+            return false;
+        }
+
 
         internal static void InitNew()
         {
