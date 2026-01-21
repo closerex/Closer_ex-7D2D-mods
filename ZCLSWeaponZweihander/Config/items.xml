@@ -1,0 +1,358 @@
+<config>
+    
+	<append xpath="/items">
+		<item name="meleeWpnBladeBashZweihander">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
+			<property name="Tags" value="machete,melee,grunting,light,perkFlurryOfAgility,weapon,meleeWeapon,attAgility,perkDeepCuts,perkFlurryOfAgility,perkTheHuntsman,canHaveCosmetic,bladeSkill,corpseRemoval"/>
+			<property name="CreativeMode" value="None"/>
+			<property name="DisplayType" value="meleeKnife"/>
+			<property name="HoldType" value="36"/>
+			<property name="Meshfile" value="@:Other/Items/Weapons/Melee/Knives/hunting_knifePrefab.prefab"/>
+			<property name="Material" value="Mmetal"/>
+			<property name="TintColor" value="0,0,0"/>
+			<property name="ScrapTimeOverride" value="10.0"/>
+			<property name="RepairTools" value="resourceRepairKit"/>
+			<property name="DegradationBreaksAfter" value="false"/>
+			<property name="EconomicValue" value="500"/>
+			<property name="TraderStageTemplate" value="baseTier1"/><!-- meleeWpnBladeT1HuntingKnife -->
+			<property name="SoundJammed" value="ItemNeedsRepair"/>
+			<property name="SoundDestroy" value="wooddestroy1"/>
+			<property name="UnlockedBy" value="craftingBlades"/><!-- perkDeepCuts,meleeWpnBladeT1HuntingKnifeSchematic, -->
+			<property name="ShowQuality" value="true"/>
+			<property name="Group" value="Ammo/Weapons,Melee Weapons"/>
+			<property name="RepairExpMultiplier" value="5.5"/>
+			<property name="SoundUnholster" value="weapon_unholster"/>
+			<property name="SoundHolster" value="weapon_holster"/>
+			<property name="SoundPickup" value="knife_hunting_grab"/>
+			<property name="SoundPlace" value="knife_hunting_place"/>
+		
+			<property class="Action0">
+				<property name="Class" value="DynamicMelee"/>
+				<property name="Damage_type" value="Piercing"/>
+				<property name="Sound_start" value="kf_Movement_Bash"/>
+				<property name="DynamicSoundStart" value="bashSwingLight"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
+				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
+				<property name="Sphere" value=".1"/>
+				<property name="UseGrazingHits" value="false"/>
+				<property name="GrazeStart" value=".25"/>
+				<property name="GrazeEnd" value=".35"/>
+				<property name="SwingDegrees" value="90"/>
+				<property name="SwingAngle" value="90"/>
+				<property class="HitSounds">
+					<property name="Override0" value="organic" param1="metalstaborganic"/>
+				</property>
+				<property class="GrazeSounds">
+					<property name="Override0" value="organic" param1="metalstaborganic"/>
+				</property>
+			</property>
+			<property class="Action1">
+				<property name="Class" value="DynamicMelee"/>
+				<property name="Damage_type" value="Piercing"/>
+				<property name="Sphere" value=".1"/>
+				<property name="Sound_start" value="kf_Movement_Bash"/>
+				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
+				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib"/>
+				<property name="MaxComboCount" value="1"/>
+				<property name="UsePowerAttackAnimation" value="true"/>
+				<property name="UseGrazingHits" value="false"/>
+				<property name="GrazeStart" value=".2"/>
+				<property name="GrazeEnd" value=".3"/>
+				<property name="SwingDegrees" value="80"/>
+				<property name="SwingAngle" value="140"/>
+				<property class="HitSounds">
+					<property name="Override0" value="organic" param1="metalstaborganic"/>
+				</property>
+				<property class="GrazeSounds">
+					<property name="Override0" value="organic" param1="metalstaborganic"/>
+				</property>
+			</property>
+			<property class="Action2">
+				<property name="Class" value="Blocking,KFCommonUtilityLib"/>
+				<property name="ItemActionModules" value="AnimationInterruptSource,KFCommonUtilityLib"/>
+				<property name="CommonBlockingTags" value="perkDeepCuts"/>
+			</property>
+			<effect_group name="meleeWpnBladeBashZweihander">
+				<passive_effect name="AttacksPerMinute" operation="base_set" value="38" tags="perkDeepCuts,perkFlurryOfAgility"/>
+				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".8" tags="primary"/>
+				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value="1" tags="primary"/>
+				<passive_effect name="StaminaLoss" operation="base_set" value="25" tags="primary"/>
+				<passive_effect name="DegradationMax" operation="base_set" value="500,1000" tier="1,6" tags="perkDeepCuts"/>
+				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkDeepCuts"/>
+				<passive_effect name="MaxRange" operation="base_set" value="3.3" tags="perkDeepCuts"/>
+				<passive_effect name="BlockRange" operation="base_set" value="3.5" tags="perkDeepCuts"/>
+				<passive_effect name="ModSlots" operation="base_set" value="2,2,2,3,3,4" tier="1,2,3,4,5,6"/>
+				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+				<passive_effect name="EntityDamage" operation="base_set" value="42" tags="perkDeepCuts"/> <!-- meleeWpnBladeT1HuntingKnife -->
+				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDeepCuts"/> <!-- tier bonus -->
+				<passive_effect name="BlockDamage" operation="base_set" value="6.5" tags="perkDeepCuts"/>
+				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDeepCuts"/> <!-- tier bonus -->
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="earth"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="stone"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="metal"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value=".6" tags="organic"/>
+				<!-- <passive_effect name="DamageModifier" operation="perc_add" value="0" tags="organic"/> affects organic block harvesting based on block.material.damage_category, not animal corpse harvesting -->
+				<passive_effect name="HarvestCount" operation="base_set" value="1" tags="butcherHarvest"/>
+		        <passive_effect name="TargetArmor" operation="perc_add" value="-.3" tags="perkDeepCuts"/>
+				<!--<passive_effect name="BlockDamage" operation="perc_add" value="6" tags="blockButcher"/>-->
+			</effect_group>
+			<effect_group>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="10" tags="StaminaOnBlocking,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="StaminaOnParrying,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".45" tags="DamageBlockingPrec,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".65" tags="DamageParryingPrec,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="3" tags="DegradationBlocking,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="DegradationParrying,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".375" tags="ParryDuration,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1.38" tags="BlockingRangeHor,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="1.0" tags="BlockingRangeVer,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="BlockingAngleOffsetHor,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="BlockingAngleOffsetVer,perkDeepCuts" match_all_tags="true"/>
+
+				<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="Ragdoll" duration="0" force="60" target="other"/>
+				<triggered_effect trigger="onSelfPrimaryActionRayHit" action="Ragdoll" duration="0" force="60" target="other"/>
+			</effect_group>
+			<effect_group name="sneak damage bonus">
+				<requirement name="CVarCompare" cvar="_crouching" operation="Equals" value="1"/>
+				<requirement name="CVarCompare" cvar="_notAlerted" operation="GT" value="0" target="other"/>
+					<passive_effect name="DamageBonus" operation="base_add" value="5"/>
+					<passive_effect name="EntityDamage" operation="perc_add" value="5" tags="perkDeepCuts"/>
+					<display_value name="dEntityDamageSneak" value="5"/>
+			</effect_group>
+		</item>
+
+		<item name="meleeWpnBladeT3KF2Zweihander">
+			<property name="Class" value="ItemClassExtendedFunction,KFCommonUtilityLib"/>
+			<property name="Tags" value="machete,melee,grunting,heavy,longShaft,weapon,meleeWeapon,attAgility,perkDeepCuts,perkFlurryOfAgility,perkTheHuntsman,canHaveCosmetic,bladeSkill,corpseRemoval"/>
+			<property name="DisplayType" value="meleeKnife"/>
+			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
+			<property name="BoundItemName" value="meleeWpnBladeBashZweihander"/>
+			<property name="HoldType" value="65"/>
+			<property name="Meshfile" value="#@modfolder:Resources/Zweihander.unity3d?zweihander_m.prefab"/>
+			<property name="DropMeshfile" value="#@modfolder:Resources/Zweihander.unity3d?zweihander_dropmesh.prefab"/>
+			<property name="Material" value="MmeleeWpnBladeParts"/>
+			<!-- <property name="TintColor" value="107, 107, 71"/> -->
+			<property name="Weight" value="1"/>
+			<property name="ScrapTimeOverride" value="10.0"/>
+			<property name="RepairTools" value="resourceRepairKit"/>
+			<property name="DegradationBreaksAfter" value="false"/>
+			<property name="EconomicValue" value="1100"/>
+			<property name="TraderStageTemplate" value="baseTier2"/><!-- meleeWpnBladeT3Machete -->
+			<property name="SoundJammed" value="ItemNeedsRepair"/>
+			<property name="SoundDestroy" value="wooddestroy1"/>
+			<property name="Group" value="Ammo/Weapons,Melee Weapons"/>
+			<property name="RepairExpMultiplier" value="5.5"/>
+			<property name="UnlockedBy" value="craftingBlades"/><!-- meleeWpnBladeT3MacheteSchematic, -->
+			<property name="ShowQuality" value="true"/>
+			<property name="SoundUnholster" value="weapon_unholster"/>
+			<property name="SoundHolster" value="weapon_holster"/>
+			<property name="SoundPickup" value="machete_grab"/>
+			<property name="SoundPlace" value="machete_place"/>
+		
+			<property class="Action0">
+				<property name="Class" value="DynamicMelee"/>
+				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib"/>
+				<property name="MaxComboCount" value="3"/>
+				<property name="Damage_type" value="Slashing"/>
+				<property name="Sphere" value=".05"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
+				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
+				<property name="DynamicSoundStart" value="meleeEmptySwingLight"/>
+				<property name="Sound_start" value="machete_swinglight"/>
+				<!-- <property name="ToolCategory.Butcher" value="0" param1="4.7"/> -->
+					<!-- This triggers the use of the special corpse harvesting animation if there is a matching harvest event.
+					Also, param1 is the damage multiplier for corpse harvesting. -->
+				<property name="UseGrazingHits" value="true"/>
+				<property name="GrazeStart" value=".28"/>
+				<property name="GrazeEnd" value=".4"/>
+				<property name="SwingDegrees" value="80"/>
+				<property name="SwingAngle" value="130"/>
+				<property name="ImpactPlaybackSpeed" value="0.05"/>
+				<property name="ImpactDuration" value="0.1"/>
+				<property class="HitSounds">
+					<property name="Override0" value="organic" param1="metalslashorganic"/>
+				</property>
+				<property class="GrazeSounds">
+					<property name="Override0" value="organic" param1="metalslashorganic"/>
+				</property>
+			</property>
+			<property class="Action1">
+				<property name="Class" value="DynamicMelee"/>
+				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
+				<property name="Damage_type" value="Slashing"/>
+				<property name="Sphere" value=".05"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
+				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
+				<property name="DynamicSoundStart" value="meleeEmptySwingHeavy"/>
+				<property name="Sound_start" value="machete_swingheavy"/>
+				<!-- <property name="ToolCategory.Butcher" value="0" param1="4.7"/> -->
+				<property name="UsePowerAttackAnimation" value="true"/>
+				<property name="UseGrazingHits" value="true"/>
+				<property name="IsHorizontalSwing" value="true"/>
+				<property name="GrazeStart" value=".3"/>
+				<property name="GrazeEnd" value=".4"/>
+				<property name="SwingDegrees" value="-80"/>
+				<property name="SwingAngle" value="-60"/>
+				<property name="ImpactPlaybackSpeed" value="0.1"/>
+				<property name="ImpactDuration" value="0.025"/>
+				<property class="HitSounds">
+					<!-- <property name="Override0" value="organic" param1="katanaslashorganic"/> -->
+					<property name="Override0" value="organic" param1="metalslashorganic"/>
+				</property>
+				<property class="GrazeSounds">
+					<property name="Override0" value="organic" param1="metalslashorganic"/>
+				</property>
+			</property>
+			<effect_group name="blocking effects">
+				<requirement name="HasBuff" buff="buffKFWeaponBlocking"/>
+					<passive_effect name="StaminaChangeOT" operation="perc_add" value="-1.2"/>
+					<passive_effect name="BuffResistance" operation="base_add" value=".4" tags="buffFatiguedTrigger,buffArmSprainedCHTrigger,buffLegSprainedCHTrigger,buffLaceration,buffInfectionCatch,buffAbrasionCatch,buffInjuryStunned01CHTrigger,buffInjuryBleedingTwo"/>
+			</effect_group>
+			<effect_group name="meleeWpnBladeT3KF2Zweihander">
+				<passive_effect name="AttacksPerMinute" operation="base_set" value="79" tags="perkDeepCuts"/>
+				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".4" tags="primary"/>
+				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value=".8" tags="primary"/>
+				<passive_effect name="StaminaLoss" operation="base_set" value="25" tags="primary"/> <!-- - 10% -->
+				<passive_effect name="DegradationMax" operation="base_set" value="1000,2000" tier="1,6" tags="perkDeepCuts"/>
+				<passive_effect name="DegradationPerUse" operation="base_set" value="1" tags="perkDeepCuts"/>
+				<passive_effect name="MaxRange" operation="base_set" value="3.0" tags="perkDeepCuts"/>
+				<passive_effect name="BlockRange" operation="base_set" value="3.5" tags="perkDeepCuts"/>
+				<passive_effect name="ModSlots" operation="base_set" value="3,3,3,4,5,6" tier="1,2,3,4,5,6"/>
+				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
+				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
+				<passive_effect name="EntityDamage" operation="base_set" value="35" tags="perkDeepCuts"/>
+				<passive_effect name="EntityDamage" operation="perc_add" value="-.04,.04" tags="perkDeepCuts"/>
+				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDeepCuts"/> <!-- tier bonus -->
+				<passive_effect name="BlockDamage" operation="base_set" value="23" tags="perkDeepCuts"/>
+				<passive_effect name="BlockDamage" operation="perc_add" value="-.04,.04" tags="perkDeepCuts"/> <!-- random BlockDmg -->
+				<passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDeepCuts"/> <!-- tier bonus -->
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="earth"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="stone"/>
+				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="metal"/>
+				<!--<passive_effect name="BlockDamage" operation="perc_add" value="1.5" tags="blockButcher"/>-->
+				<passive_effect name="DismemberChance" operation="base_add" value="2.5" tags="primary"/>
+		        <passive_effect name="TargetArmor" operation="perc_add" value="-.3" tags="perkDeepCuts"/>
+				
+				<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="Ragdoll" duration="0" force="25" target="other"/>
+				<triggered_effect trigger="onSelfPrimaryActionRayHit" action="Ragdoll" duration="0" force="40" target="other"/>
+			</effect_group>
+			<effect_group name="Power Attack">
+				<passive_effect name="AttacksPerMinute" operation="base_set" value="52" tags="secondary"/>
+				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".8" tags="secondary"/>
+				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value="1" tags="secondary"/>
+				<passive_effect name="EntityDamage" operation="base_set" value="42" tags="secondary"/>
+				<passive_effect name="EntityDamage" operation="perc_add" value="1" tags="secondary"/>
+				<passive_effect name="BlockDamage" operation="perc_add" value="1" tags="secondary"/>
+				<passive_effect name="StaminaLoss" operation="base_set" value="52" tags="secondary"/> <!-- - 10% -->
+				<passive_effect name="DismemberChance" operation="base_add" value="7.5" tags="secondary"/>
+				
+				<triggered_effect trigger="onSelfEquipStart" action="RemoveBuff" buff="buffZweihanderHeavyAttackHor"/>
+				<triggered_effect trigger="onSelfEquipStop" action="RemoveBuff" buff="buffZweihanderHeavyAttackHor"/>
+				<triggered_effect trigger="onSelfEquipStart" action="RemoveBuff" buff="buffZweihanderHeavyAttackVer"/>
+				<triggered_effect trigger="onSelfEquipStop" action="RemoveBuff" buff="buffZweihanderHeavyAttackVer"/>
+				<triggered_effect trigger="onAnimatorStateEntered" action="AddBuff" buff="buffZweihanderHeavyAttackHor">
+					<requirement name="TriggerHasTags" tags="HeavyHorState"/>
+				</triggered_effect>
+				<triggered_effect trigger="onAnimatorStateEntered" action="AddBuff" buff="buffZweihanderHeavyAttackVer">
+					<requirement name="TriggerHasTags" tags="HeavyVerState"/>
+				</triggered_effect>
+			</effect_group>
+			<effect_group name="Vertical Heavy Attack">
+				<requirement name="HasBuff" buff="buffZweihanderHeavyAttackVer"/>
+				<requirement name="!EntityTagCompare" target="other" tags="player"/>
+		        	<passive_effect name="TargetArmor" operation="perc_add" value="-.2" tags="perkDeepCuts"/>
+					<passive_effect name="EntityDamage" operation="base_add" value="8" tags="secondary"/>
+					<triggered_effect trigger="onSelfSecondaryActionGrazeHit" action="Ragdoll" duration="0" force="25" target="other"/>
+					<triggered_effect trigger="onSelfSecondaryActionRayHit" action="Ragdoll" duration="0" force="40" target="other"/>
+			</effect_group>
+			<effect_group name="Horizontal Heavy Attack">
+				<requirement name="HasBuff" buff="buffZweihanderHeavyAttackHor"/>
+				<requirement name="!EntityTagCompare" target="other" tags="player"/>
+					<triggered_effect trigger="onSelfSecondaryActionGrazeHit" action="Ragdoll" duration="0" force="40" target="other"/>
+					<triggered_effect trigger="onSelfSecondaryActionRayHit" action="Ragdoll" duration="0" force="60" target="other"/>
+			</effect_group>
+		</item>
+	</append>
+	
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<set xpath="/items/item[@name='meleeWpnBladeT3KF2Zweihander']/property[@name='UnlockedBy']/@value">schematicsKF2Zweihander</set>
+			
+			<append xpath="/items">
+				<item name="schematicsKF2Zweihander">
+					<property name="Extends" value="schematicNoQualityMaster"/>
+					<property name="CreativeMode" value="Player"/>
+					<property name="CustomIcon" value="meleeWpnBladeT3KF2Zweihander"/>
+					<property name="DescriptionKey" value="schematicsEftGunGeneralDesc"/>
+					<property name="Unlocks" value="meleeWpnBladeT3KF2Zweihander"/>
+					<property name="SellableToTrader" value="false"/>
+					<effect_group tiered="false">
+						<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="meleeWpnBladeT3KF2Zweihander" operation="set" value="1"/>
+					</effect_group>
+				</item>
+			</append>
+		</if>
+	</conditional>
+	
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul') or mod_loaded('Z6_EFTX_Armored_Zs')">
+			<set xpath="/items/item[@name='meleeWpnBladeT3KF2Zweihander']/effect_group[@name='meleeWpnBladeT3KF2Zweihander']/passive_effect[@name='TargetArmor']/@value">-.6</set>
+			<set xpath="/items/item[@name='meleeWpnBladeBashZweihander']/effect_group[@name='meleeWpnBladeBashZweihander']/passive_effect[@name='TargetArmor']/@value">-.8</set>
+			<append xpath="/items/item[@name='meleeWpnBladeBashZweihander']">
+				<effect_group>
+					<requirement name="HasBuff" target="other" buff="eftZombieRandomArmorBody"/>
+					<requirement name="HitLocation" body_parts="Torso"/>
+						<triggered_effect trigger="onSelfPrimaryActionRayHit" target="other" action="ModifyCVar" cvar="eftZombieBodyArmorDamage" operation="add" value="200"/>
+						<triggered_effect trigger="onSelfPrimaryActionGrazeHit" target="other" action="ModifyCVar" cvar="eftZombieBodyArmorDamage" operation="add" value="200"/>
+				</effect_group>
+				<effect_group>
+					<requirement name="HasBuff" target="other" buff="eftZombieRandomArmorHead"/>
+					<requirement name="HitLocation" body_parts="Head"/>
+						<triggered_effect trigger="onSelfPrimaryActionRayHit" target="other" action="ModifyCVar" cvar="eftZombieHelmetDamage" operation="add" value="200"/>
+						<triggered_effect trigger="onSelfPrimaryActionGrazeHit" target="other" action="ModifyCVar" cvar="eftZombieHelmetDamage" operation="add" value="200"/>
+				</effect_group>
+			</append>
+			<append xpath="/items/item[@name='meleeWpnBladeT3KF2Zweihander']">
+				<effect_group>
+					<requirement name="HasBuff" target="other" buff="eftZombieRandomArmorBody"/>
+					<requirement name="HitLocation" body_parts="Torso"/>
+						<triggered_effect trigger="onSelfPrimaryActionRayHit" target="other" action="ModifyCVar" cvar="eftZombieBodyArmorDamage" operation="add" value="160"/>
+						<triggered_effect trigger="onSelfPrimaryActionGrazeHit" target="other" action="ModifyCVar" cvar="eftZombieBodyArmorDamage" operation="add" value="160"/>
+				</effect_group>
+				<effect_group>
+					<requirement name="HasBuff" target="other" buff="eftZombieRandomArmorHead"/>
+					<requirement name="HitLocation" body_parts="Head"/>
+						<triggered_effect trigger="onSelfPrimaryActionRayHit" target="other" action="ModifyCVar" cvar="eftZombieHelmetDamage" operation="add" value="160"/>
+						<triggered_effect trigger="onSelfPrimaryActionGrazeHit" target="other" action="ModifyCVar" cvar="eftZombieHelmetDamage" operation="add" value="160"/>
+				</effect_group>
+				<effect_group>
+					<requirement name="HasBuff" buff="buffZweihanderHeavyAttackVer"/>
+					<requirement name="HasBuff" target="other" buff="eftZombieRandomArmorBody"/>
+					<requirement name="HitLocation" body_parts="Torso"/>
+						<triggered_effect trigger="onSelfSecondaryActionRayHit" target="other" action="ModifyCVar" cvar="eftZombieBodyArmorDamage" operation="add" value="400"/>
+						<triggered_effect trigger="onSelfSecondaryActionGrazeHit" target="other" action="ModifyCVar" cvar="eftZombieBodyArmorDamage" operation="add" value="400"/>
+				</effect_group>
+				<effect_group>
+					<requirement name="HasBuff" buff="buffZweihanderHeavyAttackVer"/>
+					<requirement name="HasBuff" target="other" buff="eftZombieRandomArmorHead"/>
+					<requirement name="HitLocation" body_parts="Head"/>
+						<triggered_effect trigger="onSelfSecondaryActionRayHit" target="other" action="ModifyCVar" cvar="eftZombieHelmetDamage" operation="add" value="400"/>
+						<triggered_effect trigger="onSelfSecondaryActionGrazeHit" target="other" action="ModifyCVar" cvar="eftZombieHelmetDamage" operation="add" value="400"/>
+				</effect_group>
+				<effect_group>
+					<requirement name="HasBuff" buff="buffZweihanderHeavyAttackHor"/>
+					<requirement name="HasBuff" target="other" buff="eftZombieRandomArmorBody"/>
+					<requirement name="HitLocation" body_parts="Torso"/>
+						<triggered_effect trigger="onSelfSecondaryActionRayHit" target="other" action="ModifyCVar" cvar="eftZombieBodyArmorDamage" operation="add" value="280"/>
+						<triggered_effect trigger="onSelfSecondaryActionGrazeHit" target="other" action="ModifyCVar" cvar="eftZombieBodyArmorDamage" operation="add" value="280"/>
+				</effect_group>
+				<effect_group>
+					<requirement name="HasBuff" buff="buffZweihanderHeavyAttackHor"/>
+					<requirement name="HasBuff" target="other" buff="eftZombieRandomArmorHead"/>
+					<requirement name="HitLocation" body_parts="Head"/>
+						<triggered_effect trigger="onSelfSecondaryActionRayHit" target="other" action="ModifyCVar" cvar="eftZombieHelmetDamage" operation="add" value="280"/>
+						<triggered_effect trigger="onSelfSecondaryActionGrazeHit" target="other" action="ModifyCVar" cvar="eftZombieHelmetDamage" operation="add" value="280"/>
+				</effect_group>
+			</append>
+		</if>
+	</conditional>
+</config>

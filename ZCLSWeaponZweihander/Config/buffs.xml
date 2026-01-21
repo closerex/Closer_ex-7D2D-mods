@@ -1,0 +1,38 @@
+<config>
+    <append xpath="/buffs">
+		<buff name="buffZweihanderHeavyAttackHor" hidden="true" remove_on_death="true">
+			<stack_type value="ignore"/>
+			<duration value="0"/>
+			<update_rate value="1"/>
+            <effect_group>
+				<triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffZweihanderHeavyAttackVer"/>
+				<triggered_effect trigger="onAnimatorStateExit" action="RemoveBuff" buff="buffZweihanderHeavyAttackHor">
+					<requirement name="TriggerHasTags" tags="HeavyHorState"/>
+                </triggered_effect>
+            </effect_group>
+        </buff>
+		<buff name="buffZweihanderHeavyAttackVer" hidden="true" remove_on_death="true">
+			<stack_type value="ignore"/>
+			<duration value="0"/>
+			<update_rate value="1"/>
+            <effect_group>
+				<triggered_effect trigger="onSelfBuffStart" action="RemoveBuff" buff="buffZweihanderHeavyAttackHor"/>
+				<triggered_effect trigger="onAnimatorStateExit" action="RemoveBuff" buff="buffZweihanderHeavyAttackVer">
+					<requirement name="TriggerHasTags" tags="HeavyVerState"/>
+                </triggered_effect>
+            </effect_group>
+        </buff>
+    </append>
+		
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<append xpath="/buffs/buff[@name='buffEftASkillsAndLBD']">
+				<effect_group>
+					<passive_effect name="CraftingTier" operation="base_set" value="6" tags="meleeWpnBladeT3KF2Zweihander">
+						<requirement name="CVarCompare" cvar="meleeWpnBladeT3KF2Zweihander" operation="GT" value="0"/>
+					</passive_effect>
+				</effect_group>
+			</append>
+		</if>
+	</conditional>
+</config>

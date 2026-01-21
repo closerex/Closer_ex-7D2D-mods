@@ -1,0 +1,19 @@
+<config>
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+		</if>
+		<else>
+			<insertBefore xpath="/progression/crafting_skills/crafting_skill[@name='craftingBlades']/effect_group[1]">
+				<display_entry item="meleeWpnBladeT3KF2Zweihander" unlock_level="60,63,66,69,72,75" />
+			</insertBefore>
+
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingBlades']/effect_group[1]">
+				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="60,1000" value="1" tags="meleeWpnBladeT3KF2Zweihander"/>
+			</append>	
+
+			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingBlades']/effect_group[1]">
+				<passive_effect name="CraftingTier" operation="base_add" level="63,66,69,72,75,1000" value="1,2,3,4,5,5" tags="meleeWpnBladeT3KF2Zweihander"/>
+			</append>
+		</else>
+	</conditional>
+</config>

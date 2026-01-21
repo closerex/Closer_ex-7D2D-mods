@@ -1,0 +1,25 @@
+<config>
+	<conditional>
+		<if cond="mod_loaded('EFT_Overhaul')">
+			<append xpath="/recipes">
+				<recipe name="schematicsKF2Zweihander" count="1">
+					<ingredient name="meleeWpnBladeT3KF2Zweihander" count="1" />
+					<ingredient name="resourceToolset" count="1" />
+				</recipe>
+			</append>
+		</if>
+	</conditional>
+	<append xpath="/recipes">
+		<recipe name="meleeWpnBladeT3KF2Zweihander" count="1" craft_area="workbench" tags="learnable,perkDeepCuts,workbenchCrafting">
+            <ingredient name="meleeWpnBladeT3MacheteParts" count="3"/>
+            <ingredient name="resourceForgedSteel" count="60"/>
+            <ingredient name="resourceWood" count="10"/>
+	        <ingredient name="resourceLeather" count="12"/>
+            <ingredient name="resourceLegendaryParts" count="0"/>
+            <effect_group>
+                <passive_effect name="CraftingIngredientCount" level="2,6" operation="perc_add" value="1,5" tags="meleeWpnBladeT3MacheteParts,resourceForgedSteel,resourceWood,resourceLeather"/>
+                <passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
+            </effect_group>
+		</recipe>
+	</append>
+</config>
