@@ -139,6 +139,14 @@
                         <requirement name="MetaInItem,KFCommonUtilityLib" operation="GT" value="0"/>
                     </triggered_effect>
 			</effect_group>
+			<effect_group name="Radiated dismember resistance">
+				<passive_effect name="DismemberChance" operation="perc_add" value="-.2" tags="head">
+					<requirement name="EntityTagCompare" target="other" tags="feral"/>
+				</passive_effect>
+				<passive_effect name="DismemberChance" operation="perc_add" value="-.3" tags="head">
+					<requirement name="EntityTagCompare" target="other" tags="radiated"/>
+				</passive_effect>
+			</effect_group>
         </item>
 
         <item name="meleeWpnSledgeT3Pulverizer">
@@ -256,7 +264,6 @@
                 <passive_effect name="StaminaLoss" operation="base_set" value="32" tags="secondary"/>
                 <passive_effect name="MaxRange" operation="base_set" value="2.5" tags="secondary"/>
                 <passive_effect name="BlockRange" operation="base_set" value="3.2" tags="secondary"/>
-                <passive_effect name="DismemberChance" operation="base_add" value=".08" tags="secondary"/>
                 <passive_effect name="EntityDamage" operation="base_set" value="35" tags="secondary"/> <!-- meleeWpnSledgeT3SteelSledgehammer -->
                 <passive_effect name="EntityDamage" operation="perc_add" value="-.04,.04" tags="secondary"/> <!-- random EntityDmg -->
                 <passive_effect name="BlockDamage" operation="base_set" value="60" tags="secondary"/>
@@ -265,7 +272,16 @@
                 <passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="allToolsHarvest"/>
                 <passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="oreWoodHarvest"/>
 		        <passive_effect name="TargetArmor" operation="perc_add" value="-.4"/>
+                <passive_effect name="DismemberChance" operation="base_add" value=".8" tags="secondary"/>
             </effect_group>
+			<effect_group name="Radiated dismember resistance">
+				<passive_effect name="DismemberChance" operation="perc_add" value="-.2" tags="head">
+					<requirement name="EntityTagCompare" target="other" tags="feral"/>
+				</passive_effect>
+				<passive_effect name="DismemberChance" operation="perc_add" value="-.3" tags="head">
+					<requirement name="EntityTagCompare" target="other" tags="radiated"/>
+				</passive_effect>
+			</effect_group>
         </item>
 
         <item name="ammoPulverizer">
@@ -370,6 +386,8 @@
 		<if cond="mod_loaded('EFT_Overhaul') or mod_loaded('Z6_EFTX_Armored_Zs')">
 			<set xpath="/items/item[@name='meleeWpnSledgeT3Pulverizer']/effect_group[@name='Melee']/passive_effect[@name='TargetArmor']/@value">-.75</set>
 			<set xpath="/items/item[@name='meleeWpnHandleBashPulverizer']/effect_group[@name='meleeWpnHandleBashPulverizer']/passive_effect[@name='TargetArmor']/@value">-.75</set>
+			<remove xpath="/items/item[@name='meleeWpnSledgeT3Pulverizer']/effect_group[@name='Radiated dismember resistance']"/>
+			<remove xpath="/items/item[@name='meleeWpnHandleBashPulverizer']/effect_group[@name='Radiated dismember resistance']"/>
 		</if>
 	</conditional>
 </config>

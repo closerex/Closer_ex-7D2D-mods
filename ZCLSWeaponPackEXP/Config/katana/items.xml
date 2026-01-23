@@ -94,6 +94,7 @@
 				<!-- <passive_effect name="DamageModifier" operation="perc_add" value="0" tags="organic"/> affects organic block harvesting based on block.material.damage_category, not animal corpse harvesting -->
 				<passive_effect name="HarvestCount" operation="base_set" value="1" tags="butcherHarvest"/>
 				<!--<passive_effect name="BlockDamage" operation="perc_add" value="6" tags="blockButcher"/>-->
+				<passive_effect name="DismemberChance" operation="base_add" value="1.5" tags="primary"/>
 			</effect_group>
 			<effect_group>
 				<passive_effect name="CustomTaggedEffect" operation="base_set" value="10" tags="StaminaOnBlocking,perkDeepCuts" match_all_tags="true"/>
@@ -124,6 +125,14 @@
 					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="Blood"/>
 					<triggered_effect trigger="onSelfSecondaryActionRayHit" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="Blood"/>
 					<triggered_effect trigger="onSelfSecondaryActionGrazeHit" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="Blood"/>
+			</effect_group>
+			<effect_group name="Radiated dismember resistance">
+				<passive_effect name="DismemberChance" operation="perc_add" value="-.2" tags="head">
+					<requirement name="EntityTagCompare" target="other" tags="feral"/>
+				</passive_effect>
+				<passive_effect name="DismemberChance" operation="perc_add" value="-.3" tags="head">
+					<requirement name="EntityTagCompare" target="other" tags="radiated"/>
+				</passive_effect>
 			</effect_group>
 		</item>
 
@@ -236,7 +245,7 @@
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="stone"/>
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="metal"/>
 				<!--<passive_effect name="BlockDamage" operation="perc_add" value="1.5" tags="blockButcher"/>-->
-				<passive_effect name="DismemberChance" operation="base_add" value="1.8" tags="primary"/>
+				<passive_effect name="DismemberChance" operation="base_add" value="1.2" tags="primary"/>
 			</effect_group>
 			<effect_group name="Power Attack">
 				<passive_effect name="AttacksPerMinute" operation="base_set" value="63" tags="secondary"/>
@@ -245,7 +254,7 @@
 				<passive_effect name="EntityDamage" operation="perc_add" value="1" tags="secondary"/>
 				<passive_effect name="BlockDamage" operation="perc_add" value="1" tags="secondary"/>
 				<passive_effect name="StaminaLoss" operation="base_set" value="36" tags="secondary"/> <!-- - 10% -->
-				<passive_effect name="DismemberChance" operation="base_add" value="3.6" tags="secondary"/>
+				<passive_effect name="DismemberChance" operation="base_add" value="2.4" tags="secondary"/>
 			</effect_group>
 			<!-- <effect_group name="sneak damage bonus">
 				<requirement name="CVarCompare" cvar="_crouching" operation="Equals" value="1"/>
@@ -264,6 +273,14 @@
 					<triggered_effect trigger="onSelfSecondaryActionRayHit" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="Blood"/>
 					<triggered_effect trigger="onSelfSecondaryActionGrazeHit" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="Blood"/>
 			</effect_group>
+			<effect_group name="Radiated dismember resistance">
+				<passive_effect name="DismemberChance" operation="perc_add" value="-.2" tags="head">
+					<requirement name="EntityTagCompare" target="other" tags="feral"/>
+				</passive_effect>
+				<passive_effect name="DismemberChance" operation="perc_add" value="-.3" tags="head">
+					<requirement name="EntityTagCompare" target="other" tags="radiated"/>
+				</passive_effect>
+			</effect_group>
 		</item>
 	</append>
 
@@ -275,6 +292,8 @@
 			<append xpath="/items/item[@name='meleeWpnBladeT3KF2Katana']/effect_group[@name='meleeWpnBladeT3KF2Katana']">
 				<passive_effect name="TargetArmor" operation="perc_add" value="-.5"/>
 			</append>
+			<remove xpath="/items/item[@name='meleeWpnBladeBashKatana']/effect_group[@name='Radiated dismember resistance']"/>
+			<remove xpath="/items/item[@name='meleeWpnBladeT3KF2Katana']/effect_group[@name='Radiated dismember resistance']"/>
 		</if>
 	</conditional>
 	

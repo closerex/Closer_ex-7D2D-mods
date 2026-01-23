@@ -79,6 +79,7 @@
 				<passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="allToolsHarvest"/>
 				<passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="oreWoodHarvest"/>
 		        <passive_effect name="TargetArmor" operation="perc_add" value="-.4" tags="perkPummelPete"/>
+				<passive_effect name="DismemberChance" operation="base_add" value="0.6" tags="primary"/>
 			</effect_group>
 			<effect_group>
 				<passive_effect name="CustomTaggedEffect" operation="base_set" value="6" tags="StaminaOnBlocking,perkPummelPete" match_all_tags="true"/>
@@ -98,6 +99,14 @@
 				<requirement name="IsAlive" target="other"/>
 					<triggered_effect trigger="onSelfAttackedOther" action="Ragdoll" duration="1" force="60" target="other"/>
 					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
+			</effect_group>
+			<effect_group name="Radiated dismember resistance">
+				<passive_effect name="DismemberChance" operation="perc_add" value="-.2" tags="head">
+					<requirement name="EntityTagCompare" target="other" tags="feral"/>
+				</passive_effect>
+				<passive_effect name="DismemberChance" operation="perc_add" value="-.3" tags="head">
+					<requirement name="EntityTagCompare" target="other" tags="radiated"/>
+				</passive_effect>
 			</effect_group>
 		</item>
 
@@ -201,6 +210,8 @@
                 <passive_effect name="HarvestCount" operation="base_add" value="-.75" tags="oreWoodHarvest"/>
 		        <passive_effect name="TargetArmor" operation="perc_add" value="-.4" tags="perkPummelPete"/>
 				<passive_effect name="PhysicalDamageResist" operation="base_add" value="5"/>
+				<passive_effect name="DismemberChance" operation="base_add" value=".6" tags="primary"/>
+				<passive_effect name="DismemberChance" operation="base_add" value="1.2" tags="head" invert_tag_check="true"/>
             </effect_group>
             <effect_group name="Power Attack">
                 <passive_effect name="AttacksPerMinute" operation="base_set" value="65" tags="secondary"/>
@@ -234,6 +245,7 @@
                 	<passive_effect name="EntityDamage" operation="base_add" value="-4" tags="secondary"/>
 					<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".8" tags="secondary"/>
 					<passive_effect name="GrazeDamageMultiplier" operation="base_set" value=".5" tags="secondary"/>
+					<passive_effect name="DismemberChance" operation="base_add" value=".6" tags="secondary"/>
 			</effect_group>
             <effect_group name="tpv mesh">
                 <requirement name="!IsFPV"/>
@@ -241,6 +253,14 @@
             </effect_group>
 			<effect_group name="tpv mesh remove">
 				<triggered_effect trigger="onSelfEquipStop" action="RemovePart" part="BoneCrusherShield"/>
+			</effect_group>
+			<effect_group name="Radiated dismember resistance">
+				<passive_effect name="DismemberChance" operation="perc_add" value="-.2" tags="head">
+					<requirement name="EntityTagCompare" target="other" tags="feral"/>
+				</passive_effect>
+				<passive_effect name="DismemberChance" operation="perc_add" value="-.3" tags="head">
+					<requirement name="EntityTagCompare" target="other" tags="radiated"/>
+				</passive_effect>
 			</effect_group>
         </item>
     </append>
@@ -269,6 +289,8 @@
 		<if cond="mod_loaded('EFT_Overhaul') or mod_loaded('Z6_EFTX_Armored_Zs')">
 			<set xpath="/items/item[@name='meleeWpnClubT3KF2BoneCrusher']/effect_group[@name='meleeWpnClubT3KF2BoneCrusher']/passive_effect[@name='TargetArmor']/@value">-.75</set>
 			<set xpath="/items/item[@name='meleeWpnShieldBashBoneCrusher']/effect_group[@name='meleeWpnShieldBashBoneCrusher']/passive_effect[@name='TargetArmor']/@value">-.75</set>
+			<remove xpath="/items/item[@name='meleeWpnClubT3KF2BoneCrusher']/effect_group[@name='Radiated dismember resistance']"/>
+			<remove xpath="/items/item[@name='meleeWpnShieldBashBoneCrusher']/effect_group[@name='Radiated dismember resistance']"/>
 		</if>
 	</conditional>
 </config>

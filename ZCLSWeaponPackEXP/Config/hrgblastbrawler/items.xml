@@ -88,6 +88,7 @@
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="earth"/>
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="stone"/>
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="metal"/>
+				<passive_effect name="DismemberChance" operation="perc_add" value="0.2" tags="primary"/>
 			</effect_group>
 			<effect_group>
 				<passive_effect name="CustomTaggedEffect" operation="base_set" value="10" tags="StaminaOnBlocking,perkBrawler" match_all_tags="true"/>
@@ -107,6 +108,7 @@
 				<passive_effect name="EntityDamage" operation="base_set" value="11" tags="secondary"/>
 				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".5" tags="secondary"/>
 				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value="1" tags="secondary"/>
+				<passive_effect name="DismemberChance" operation="perc_add" value="0.1" tags="primary"/>
             </effect_group>
 			<effect_group name="Knockdown">
 				<requirement name="!EntityTagCompare" target="other" tags="player"/>
@@ -134,6 +136,14 @@
 						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="5" />
 						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="50" />
 					</triggered_effect>
+			</effect_group>
+			<effect_group name="Radiated dismember resistance">
+				<passive_effect name="DismemberChance" operation="perc_add" value="-.2" tags="head">
+					<requirement name="EntityTagCompare" target="other" tags="feral"/>
+				</passive_effect>
+				<passive_effect name="DismemberChance" operation="perc_add" value="-.3" tags="head">
+					<requirement name="EntityTagCompare" target="other" tags="radiated"/>
+				</passive_effect>
 			</effect_group>
 		</item>
 
@@ -243,7 +253,7 @@
 				<passive_effect name="BlockDamage" operation="base_add" value="-2" tags="perkBoomstick"/> <!-- damage offset -->
 				<passive_effect name="BlockDamage" operation="perc_add" value="-.5" tags="perkBoomstick"/>
 				<passive_effect name="WeaponHandling" operation="perc_add" value="-.08,.08" tags="perkBoomstick"/> <!-- random WeaponHandling -->
-				<passive_effect name="DismemberChance" operation="perc_add" value="-.8" tags="perkBoomstick"/>
+				<passive_effect name="DismemberChance" operation="perc_add" value="-.8" tags="primary"/>
 		
 				<passive_effect name="KickDegreesVerticalMin" operation="base_set" value="0" tags="perkBoomstick"/>
 				<passive_effect name="KickDegreesVerticalMax" operation="base_set" value="0" tags="perkBoomstick"/>
@@ -271,6 +281,7 @@
                 <passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkBrawler"/> <!-- tier bonus -->
                 <passive_effect name="BlockDamage" operation="base_set" value="20" tags="perkBrawler"/>
                 <passive_effect name="BlockDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkBrawler"/> <!-- tier bonus -->
+				<passive_effect name="DismemberChance" operation="perc_add" value="1.5" tags="secondary"/>
 
                 <passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="earth,perkBrawler" match_all_tags="true"/>
                 <passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="stone,perkBrawler" match_all_tags="true"/>
@@ -285,6 +296,14 @@
 			<effect_group name="tpv mesh remove">
 				<triggered_effect trigger="onSelfEquipStop" action="RemovePart" part="RightHRGBlastBrawler"/>
 				<triggered_effect trigger="onSelfEquipStop" action="RemovePart" part="LeftHRGBlastBrawler"/>
+			</effect_group>
+			<effect_group name="Radiated dismember resistance">
+				<passive_effect name="DismemberChance" operation="perc_add" value="-.2" tags="head,secondary" match_all_tags="true">
+					<requirement name="EntityTagCompare" target="other" tags="feral"/>
+				</passive_effect>
+				<passive_effect name="DismemberChance" operation="perc_add" value="-.3" tags="head,secondary" match_all_tags="true">
+					<requirement name="EntityTagCompare" target="other" tags="radiated"/>
+				</passive_effect>
 			</effect_group>
         </item>
     </append>
@@ -330,6 +349,8 @@
 			<append xpath="/items/item[@name='meleeWpnStockBashHRGBlastBrawler']/effect_group[@name='meleeWpnStockBashHRGBlastBrawler']">
 		        <passive_effect name="TargetArmor" operation="perc_add" value="-.5" tags="perkBrawler"/>
 			</append>
+			<remove xpath="/items/item[@name='gunT3HRGBlastBrawler']/effect_group[@name='Radiated dismember resistance']"/>
+			<remove xpath="/items/item[@name='meleeWpnStockBashHRGBlastBrawler']/effect_group[@name='Radiated dismember resistance']"/>
 		</if>
 	</conditional>
 

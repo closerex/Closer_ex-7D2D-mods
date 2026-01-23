@@ -94,6 +94,7 @@
 				<passive_effect name="DamageModifier" operation="perc_add" value=".6" tags="organic"/>
 				<!-- <passive_effect name="DamageModifier" operation="perc_add" value="0" tags="organic"/> affects organic block harvesting based on block.material.damage_category, not animal corpse harvesting -->
 				<passive_effect name="HarvestCount" operation="base_set" value="1" tags="butcherHarvest"/>
+				<passive_effect name="DismemberChance" operation="base_add" value="3.5" tags="primary"/>
 		        <passive_effect name="TargetArmor" operation="perc_add" value="-.3" tags="perkDeepCuts"/>
 				<!--<passive_effect name="BlockDamage" operation="perc_add" value="6" tags="blockButcher"/>-->
 			</effect_group>
@@ -119,6 +120,14 @@
 					<passive_effect name="DamageBonus" operation="base_add" value="5"/>
 					<passive_effect name="EntityDamage" operation="perc_add" value="5" tags="perkDeepCuts"/>
 					<display_value name="dEntityDamageSneak" value="5"/>
+			</effect_group>
+			<effect_group name="Radiated dismember resistance">
+				<passive_effect name="DismemberChance" operation="perc_add" value="-.2" tags="head">
+					<requirement name="EntityTagCompare" target="other" tags="feral"/>
+				</passive_effect>
+				<passive_effect name="DismemberChance" operation="perc_add" value="-.3" tags="head">
+					<requirement name="EntityTagCompare" target="other" tags="radiated"/>
+				</passive_effect>
 			</effect_group>
 		</item>
 
@@ -229,7 +238,7 @@
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="stone"/>
 				<passive_effect name="DamageModifier" operation="perc_add" value="-.8" tags="metal"/>
 				<!--<passive_effect name="BlockDamage" operation="perc_add" value="1.5" tags="blockButcher"/>-->
-				<passive_effect name="DismemberChance" operation="base_add" value="2.5" tags="primary"/>
+				<passive_effect name="DismemberChance" operation="base_add" value="2" tags="primary"/>
 		        <passive_effect name="TargetArmor" operation="perc_add" value="-.3" tags="perkDeepCuts"/>
 				
 				<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="Ragdoll" duration="0" force="25" target="other"/>
@@ -243,7 +252,7 @@
 				<passive_effect name="EntityDamage" operation="perc_add" value="1" tags="secondary"/>
 				<passive_effect name="BlockDamage" operation="perc_add" value="1" tags="secondary"/>
 				<passive_effect name="StaminaLoss" operation="base_set" value="52" tags="secondary"/> <!-- - 10% -->
-				<passive_effect name="DismemberChance" operation="base_add" value="7.5" tags="secondary"/>
+				<passive_effect name="DismemberChance" operation="base_add" value="6" tags="secondary"/>
 				
 				<triggered_effect trigger="onSelfEquipStart" action="RemoveBuff" buff="buffZweihanderHeavyAttackHor"/>
 				<triggered_effect trigger="onSelfEquipStop" action="RemoveBuff" buff="buffZweihanderHeavyAttackHor"/>
@@ -270,6 +279,14 @@
 					<triggered_effect trigger="onSelfSecondaryActionGrazeHit" action="Ragdoll" duration="0" force="40" target="other"/>
 					<triggered_effect trigger="onSelfSecondaryActionRayHit" action="Ragdoll" duration="0" force="60" target="other"/>
 			</effect_group>
+			<effect_group name="Radiated dismember resistance">
+				<passive_effect name="DismemberChance" operation="perc_add" value="-.2" tags="head">
+					<requirement name="EntityTagCompare" target="other" tags="feral"/>
+				</passive_effect>
+				<passive_effect name="DismemberChance" operation="perc_add" value="-.3" tags="head">
+					<requirement name="EntityTagCompare" target="other" tags="radiated"/>
+				</passive_effect>
+			</effect_group>
 		</item>
 	</append>
 	
@@ -295,8 +312,8 @@
 	
 	<conditional>
 		<if cond="mod_loaded('EFT_Overhaul') or mod_loaded('Z6_EFTX_Armored_Zs')">
-			<set xpath="/items/item[@name='meleeWpnBladeT3KF2Zweihander']/effect_group[@name='meleeWpnBladeT3KF2Zweihander']/passive_effect[@name='TargetArmor']/@value">-.6</set>
 			<set xpath="/items/item[@name='meleeWpnBladeBashZweihander']/effect_group[@name='meleeWpnBladeBashZweihander']/passive_effect[@name='TargetArmor']/@value">-.8</set>
+			<set xpath="/items/item[@name='meleeWpnBladeT3KF2Zweihander']/effect_group[@name='meleeWpnBladeT3KF2Zweihander']/passive_effect[@name='TargetArmor']/@value">-.6</set>
 			<append xpath="/items/item[@name='meleeWpnBladeBashZweihander']">
 				<effect_group>
 					<requirement name="HasBuff" target="other" buff="eftZombieRandomArmorBody"/>
@@ -353,6 +370,8 @@
 						<triggered_effect trigger="onSelfSecondaryActionGrazeHit" target="other" action="ModifyCVar" cvar="eftZombieHelmetDamage" operation="add" value="280"/>
 				</effect_group>
 			</append>
+			<remove xpath="/items/item[@name='meleeWpnBladeBashZweihander']/effect_group[@name='Radiated dismember resistance']"/>
+			<remove xpath="/items/item[@name='meleeWpnBladeT3KF2Zweihander']/effect_group[@name='Radiated dismember resistance']"/>
 		</if>
 	</conditional>
 </config>
