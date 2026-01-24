@@ -1,13 +1,15 @@
 ﻿using HarmonyLib;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Scripts.Utilities;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using UniLinq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml.Linq;
+using UniLinq;
 using UnityEngine;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 [HarmonyPatch]
 public static class CommonUtilityPatch
@@ -2346,6 +2348,153 @@ public static class CommonUtilityPatch
         }
         return true;
     }
+
+    [HarmonyPatch(typeof(MinEventActionModifyCVar), nameof(MinEventActionModifyCVar.Execute))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_Execute_MinEventActionModifyCVar(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+    {
+        var codes = instructions.ToList();
+
+        var fld_local = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.IsLocal));
+
+        for (int i = 0; i < codes.Count - 1; i++)
+        {
+            if (codes[i].LoadsField(fld_local) && codes[i + 1].Branches(out _))
+            {
+                codes.InsertRange(i - 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(codes[i - 1].ExtractLabels()),
+                    CodeInstruction.LoadField(typeof(MinEventActionTargetedBase), nameof(MinEventActionTargetedBase.targets)),
+                    new CodeInstruction(OpCodes.Ldloc_2),
+                    new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(List<EntityAlive>), "get_Item")),
+                    new CodeInstruction(OpCodes.Ldarg_1),
+                    CodeInstruction.LoadField(typeof(MinEventParams), nameof(MinEventParams.Self)),
+                    CodeInstruction.CallClosure<Func<EntityAlive, EntityAlive, bool>>(static (target, self) =>
+                    {
+                        return !target.isEntityRemote && !self.isEntityRemote && target != self;
+                    }),
+                    new CodeInstruction(OpCodes.Brtrue_S, codes[i - 2].operand)
+                });
+                break;
+            }
+        }
+
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(NetPackageModifyCVar), nameof(NetPackageModifyCVar.ProcessPackage), new[] { typeof(World), typeof(GameManager) })]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_ProcessPackage_NetPackageModifyCVar(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var prop_isserver = AccessTools.PropertyGetter(typeof(ConnectionManager), nameof(ConnectionManager.IsServer));
+        var mtd_setcvar = AccessTools.Method(typeof(EntityBuffs), nameof(EntityBuffs.SetCustomVar));
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(prop_isserver))
+            {
+                codes.RemoveRange(i - 1, 2);
+                codes.Insert(i - 1, new CodeInstruction(OpCodes.Ldc_I4_0));
+                i--;
+            }
+            else if (codes[i].Calls(mtd_setcvar))
+            {
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Call, AccessTools.PropertyGetter(typeof(NetPackage), nameof(NetPackage.Sender))),
+                    new CodeInstruction(OpCodes.Ldloc_0),
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    CodeInstruction.LoadField(typeof(NetPackageModifyCVar), nameof(NetPackageModifyCVar.cvarName)),
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    CodeInstruction.LoadField(typeof(NetPackageModifyCVar), nameof(NetPackageModifyCVar.value)),
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    CodeInstruction.LoadField(typeof(NetPackageModifyCVar), nameof(NetPackageModifyCVar.operation)),
+                    CodeInstruction.CallClosure<Action<ClientInfo, EntityAlive, string, float, CVarOperation>>(static (clientInfo, targetEntity, cvarName, value, operation) =>
+                    {
+                        if (ConnectionManager.Instance.IsServer)
+                        {
+                            if ((targetEntity.isEntityRemote || cvarName[0] == '%') && cvarName[0] != '.' && cvarName[0] != '_')
+                            {
+                                ConnectionManager.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageModifyCVar>().Setup(targetEntity, cvarName, value, operation), false, -1, clientInfo?.entityId ?? -1, -1, null, 192, false);
+                            }
+                        }
+                    })
+                });
+                break;
+            }
+        }
+
+        return codes;
+    }
+
+    //[HarmonyPatch(typeof(EntityBuffs), nameof(EntityBuffs.SetCustomVar))]
+    //[HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
+    //private static void SetCustomVarSelectiveSync(this EntityBuffs self, string _name, float _value, bool _netSync = true, CVarOperation _operation = CVarOperation.set)
+    //{
+    //    _ = Transpiler(null);
+
+    //    IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    //    {
+    //        if (instructions == null)
+    //        {
+    //            return null;
+    //        }
+
+    //        return instructions.MethodReplacer(AccessTools.Method(typeof(EntityBuffs), nameof(EntityBuffs.SetCustomVarNetwork)),
+    //                                           AccessTools.Method(typeof(CommonUtilityPatch), nameof(SetCustomVarNetworkSelectiveSync)));
+    //    }
+    //}
+
+    //[HarmonyPatch(typeof(EntityBuffs), nameof(EntityBuffs.SetCustomVarNetwork))]
+    //[HarmonyReversePatch]
+    //private static void SetCustomVarNetworkSelectiveSync(this EntityBuffs self, string _name, float _value, CVarOperation _operation = CVarOperation.set)
+    //{
+    //    _ = Transpiler(null);
+
+    //    IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    //    {
+    //        if (instructions == null)
+    //        {
+    //            return null;
+    //        }
+
+    //        var codes = instructions.ToList();
+
+    //        var mtd_send = AccessTools.Method(typeof(ConnectionManager), nameof(ConnectionManager.SendPackage), new[] { typeof(NetPackage), typeof(bool), typeof(int), typeof(int), typeof(int), typeof(Vector3?), typeof(int), typeof(bool) });
+
+    //        for (int i = 0; i < codes.Count; i++)
+    //        {
+    //            if (codes[i].Calls(mtd_send))
+    //            {
+    //                for (int j = i - 1; j >= 2; j--)
+    //                {
+    //                    if (codes[j].LoadsConstant(-1) && codes[j - 1].LoadsConstant(-1) && codes[j - 2].LoadsConstant(-1))
+    //                    {
+    //                        codes.RemoveAt(j - 1);
+    //                        codes.InsertRange(j - 1, new[]
+    //                        {
+    //                            new CodeInstruction(OpCodes.Ldarg_0),
+    //                            CodeInstruction.LoadField(typeof(EntityBuffs), nameof(EntityBuffs.parent)),
+    //                            CodeInstruction.CallClosure<Func<EntityAlive, int>>(static (entity) =>
+    //                            {
+    //                                var id = entity.isEntityRemote ? entity.entityId : -1;
+    //                                Log.Out($"Checking Modify Cvar entity {entity.GetDebugName()} is remote {entity.isEntityRemote} exclude id {id}");
+    //                                return id;
+    //                            })
+    //                        });
+    //                        break;
+    //                    }
+    //                }
+    //                break;
+    //            }
+    //        }
+
+    //        return codes;
+    //    }
+    //}
 
     public static void Test()
     {

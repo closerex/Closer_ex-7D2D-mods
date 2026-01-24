@@ -49,46 +49,15 @@ public class MinEventActionCVarExpression : MinEventActionTargetedBase
 
     public override void Execute(MinEventParams _params)
     {
-        if (_params.Self.isEntityRemote && !_params.IsLocal)
-        {
-            return;
-        }
-        minEventContext = _params;
         if (compiledExpr == null)
         {
             return;
         }
+        minEventContext = _params;
         for (int i = 0; i < targets.Count; i++)
         {
             target = targets[i];
-            float cvar = target.Buffs.GetCustomVar(cvarName);
-            float value = compiledExpr.Invoke();
-            switch (operation)
-            {
-                case CVarOperation.set:
-                case CVarOperation.setvalue:
-                    cvar = value;
-                    break;
-                case CVarOperation.add:
-                    cvar += value;
-                    break;
-                case CVarOperation.subtract:
-                    cvar -= value;
-                    break;
-                case CVarOperation.multiply:
-                    cvar *= value;
-                    break;
-                case CVarOperation.divide:
-                    cvar /= ((value == 0f) ? 0.0001f : value);
-                    break;
-                case CVarOperation.percentadd:
-                    cvar += cvar * value;
-                    break;
-                case CVarOperation.percentsubtract:
-                    cvar -= cvar * value;
-                    break;
-            }
-            target.Buffs.SetCustomVar(cvarName, cvar);
+            target.Buffs.SetCustomVar(cvarName, compiledExpr.Invoke(), (target.isEntityRemote && !_params.Self.isEntityRemote) || (!target.isEntityRemote && !_params.Self.isEntityRemote && target != _params.Self) || _params.IsLocal, operation);
         }
         minEventContext = null;
         target = null;
@@ -215,7 +184,9 @@ public class MinEventActionCVarExpression : MinEventActionTargetedBase
         switch (variableInfo.varType)
         {
             case VariableType.CVar:
-                return target.Buffs.GetCustomVar(variableInfo.cvarName);
+                var value = target.Buffs.GetCustomVar(variableInfo.cvarName);
+                //Log.Out($"Evaluate CVar {variableInfo.cvarName} = {value}");
+                return value;
             case VariableType.RandomInt:
                 return Mathf.Clamp(minEventContext.Self.rand.RandomRange((int)variableInfo.randomMin, (int)variableInfo.randomMax + 1), variableInfo.randomMin, variableInfo.randomMax);
             case VariableType.RandomFloat:

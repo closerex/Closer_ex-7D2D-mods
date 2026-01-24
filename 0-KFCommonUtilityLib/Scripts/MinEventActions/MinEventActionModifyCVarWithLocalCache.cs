@@ -5,6 +5,7 @@ public class MinEventActionModifyCVarWithLocalCache : MinEventActionModifyCVar
 {
     int targetHash;
     private int actionIndex = -1;
+
     public override bool CanExecute(MinEventTypes _eventType, MinEventParams _params)
     {
         bool flag = !_params.Self.isEntityRemote && (actionIndex < 0 ? _params.ItemActionData : _params.ItemInventoryData.actionData[actionIndex]) is IModuleContainerFor<ActionModuleLocalPassiveCache.LocalPassiveCacheData> && base.CanExecute(_eventType, _params);
@@ -23,7 +24,8 @@ public class MinEventActionModifyCVarWithLocalCache : MinEventActionModifyCVar
         //Log.Out($"cache {targetHash.ToString()} value {value}");
         for (int i = 0; i < targets.Count; i++)
         {
-            targets[i].Buffs.SetCustomVar(cvarName, value, (targets[i].isEntityRemote && !_params.Self.isEntityRemote) || _params.IsLocal, operation);
+            EntityAlive target = targets[i];
+            target.Buffs.SetCustomVar(cvarName, value, (target.isEntityRemote && !_params.Self.isEntityRemote) || (!target.isEntityRemote && !_params.Self.isEntityRemote && target != _params.Self) || _params.IsLocal, operation);
         }
     }
 
