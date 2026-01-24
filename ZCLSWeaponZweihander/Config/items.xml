@@ -315,63 +315,55 @@
 			<set xpath="/items/item[@name='meleeWpnBladeBashZweihander']/effect_group[@name='meleeWpnBladeBashZweihander']/passive_effect[@name='TargetArmor']/@value">-.8</set>
 			<set xpath="/items/item[@name='meleeWpnBladeT3KF2Zweihander']/effect_group[@name='meleeWpnBladeT3KF2Zweihander']/passive_effect[@name='TargetArmor']/@value">-.6</set>
 			<append xpath="/items/item[@name='meleeWpnBladeBashZweihander']">
-				<effect_group>
+				<effect_group name="Body armor damage">
 					<requirement name="HasBuff" target="other" buff="eftZombieRandomArmorBody"/>
 					<requirement name="HitLocation" body_parts="Torso"/>
-						<triggered_effect trigger="onSelfPrimaryActionRayHit" target="other" action="ModifyCVar" cvar="eftZombieBodyArmorDamage" operation="add" value="200"/>
-						<triggered_effect trigger="onSelfPrimaryActionGrazeHit" target="other" action="ModifyCVar" cvar="eftZombieBodyArmorDamage" operation="add" value="200"/>
+						<triggered_effect trigger="onSelfAttackedOther" target="other" action="ModifyCVar" cvar="eftZombieBodyArmorDamage" operation="add" value="200"/>
 				</effect_group>
-				<effect_group>
+				<effect_group name="Head armor damage">
 					<requirement name="HasBuff" target="other" buff="eftZombieRandomArmorHead"/>
 					<requirement name="HitLocation" body_parts="Head"/>
-						<triggered_effect trigger="onSelfPrimaryActionRayHit" target="other" action="ModifyCVar" cvar="eftZombieHelmetDamage" operation="add" value="200"/>
-						<triggered_effect trigger="onSelfPrimaryActionGrazeHit" target="other" action="ModifyCVar" cvar="eftZombieHelmetDamage" operation="add" value="200"/>
+						<triggered_effect trigger="onSelfAttackedOther" target="other" action="ModifyCVar" cvar="eftZombieHelmetDamage" operation="add" value="200"/>
 				</effect_group>
 			</append>
 			<append xpath="/items/item[@name='meleeWpnBladeT3KF2Zweihander']">
-				<effect_group>
+				<effect_group name="Body armor damage">
 					<requirement name="HasBuff" target="other" buff="eftZombieRandomArmorBody"/>
 					<requirement name="HitLocation" body_parts="Torso"/>
-						<triggered_effect trigger="onSelfPrimaryActionRayHit" target="other" action="ModifyCVar" cvar="eftZombieBodyArmorDamage" operation="add" value="160"/>
-						<triggered_effect trigger="onSelfPrimaryActionGrazeHit" target="other" action="ModifyCVar" cvar="eftZombieBodyArmorDamage" operation="add" value="160"/>
+						<triggered_effect trigger="onSelfAttackedOther" target="other" action="ModifyCVar" cvar="eftZombieBodyArmorDamage" operation="add" value="160"/>
+						<triggered_effect trigger="onSelfAttackedOther" target="other" action="ModifyCVar" cvar="eftZombieBodyArmorDamage" operation="add" value="240">
+							<requirement name="HasBuff" buff="buffZweihanderHeavyAttackVer"/>
+						</triggered_effect>
+						<triggered_effect trigger="onSelfAttackedOther" target="other" action="ModifyCVar" cvar="eftZombieBodyArmorDamage" operation="add" value="120">
+							<requirement name="HasBuff" buff="buffZweihanderHeavyAttackHor"/>
+						</triggered_effect>
 				</effect_group>
-				<effect_group>
+				<effect_group name="Head armor damage">
 					<requirement name="HasBuff" target="other" buff="eftZombieRandomArmorHead"/>
 					<requirement name="HitLocation" body_parts="Head"/>
-						<triggered_effect trigger="onSelfPrimaryActionRayHit" target="other" action="ModifyCVar" cvar="eftZombieHelmetDamage" operation="add" value="160"/>
-						<triggered_effect trigger="onSelfPrimaryActionGrazeHit" target="other" action="ModifyCVar" cvar="eftZombieHelmetDamage" operation="add" value="160"/>
-				</effect_group>
-				<effect_group>
-					<requirement name="HasBuff" buff="buffZweihanderHeavyAttackVer"/>
-					<requirement name="HasBuff" target="other" buff="eftZombieRandomArmorBody"/>
-					<requirement name="HitLocation" body_parts="Torso"/>
-						<triggered_effect trigger="onSelfSecondaryActionRayHit" target="other" action="ModifyCVar" cvar="eftZombieBodyArmorDamage" operation="add" value="400"/>
-						<triggered_effect trigger="onSelfSecondaryActionGrazeHit" target="other" action="ModifyCVar" cvar="eftZombieBodyArmorDamage" operation="add" value="400"/>
-				</effect_group>
-				<effect_group>
-					<requirement name="HasBuff" buff="buffZweihanderHeavyAttackVer"/>
-					<requirement name="HasBuff" target="other" buff="eftZombieRandomArmorHead"/>
-					<requirement name="HitLocation" body_parts="Head"/>
-						<triggered_effect trigger="onSelfSecondaryActionRayHit" target="other" action="ModifyCVar" cvar="eftZombieHelmetDamage" operation="add" value="400"/>
-						<triggered_effect trigger="onSelfSecondaryActionGrazeHit" target="other" action="ModifyCVar" cvar="eftZombieHelmetDamage" operation="add" value="400"/>
-				</effect_group>
-				<effect_group>
-					<requirement name="HasBuff" buff="buffZweihanderHeavyAttackHor"/>
-					<requirement name="HasBuff" target="other" buff="eftZombieRandomArmorBody"/>
-					<requirement name="HitLocation" body_parts="Torso"/>
-						<triggered_effect trigger="onSelfSecondaryActionRayHit" target="other" action="ModifyCVar" cvar="eftZombieBodyArmorDamage" operation="add" value="280"/>
-						<triggered_effect trigger="onSelfSecondaryActionGrazeHit" target="other" action="ModifyCVar" cvar="eftZombieBodyArmorDamage" operation="add" value="280"/>
-				</effect_group>
-				<effect_group>
-					<requirement name="HasBuff" buff="buffZweihanderHeavyAttackHor"/>
-					<requirement name="HasBuff" target="other" buff="eftZombieRandomArmorHead"/>
-					<requirement name="HitLocation" body_parts="Head"/>
-						<triggered_effect trigger="onSelfSecondaryActionRayHit" target="other" action="ModifyCVar" cvar="eftZombieHelmetDamage" operation="add" value="280"/>
-						<triggered_effect trigger="onSelfSecondaryActionGrazeHit" target="other" action="ModifyCVar" cvar="eftZombieHelmetDamage" operation="add" value="280"/>
+						<triggered_effect trigger="onSelfAttackedOther" target="other" action="ModifyCVar" cvar="eftZombieHelmetDamage" operation="add" value="160"/>
+						<triggered_effect trigger="onSelfAttackedOther" target="other" action="ModifyCVar" cvar="eftZombieHelmetDamage" operation="add" value="240">
+							<requirement name="HasBuff" buff="buffZweihanderHeavyAttackVer"/>
+						</triggered_effect>
+						<triggered_effect trigger="onSelfAttackedOther" target="other" action="ModifyCVar" cvar="eftZombieHelmetDamage" operation="add" value="120">
+							<requirement name="HasBuff" buff="buffZweihanderHeavyAttackHor"/>
+						</triggered_effect>
 				</effect_group>
 			</append>
-			<remove xpath="/items/item[@name='meleeWpnBladeBashZweihander']/effect_group[@name='Radiated dismember resistance']"/>
-			<remove xpath="/items/item[@name='meleeWpnBladeT3KF2Zweihander']/effect_group[@name='Radiated dismember resistance']"/>
+			<remove xpath="/items/item[@name='meleeWpnBladeBashZweihander' or @name='meleeWpnBladeT3KF2Zweihander']/effect_group[@name='Radiated dismember resistance']"/>
+
+			<conditional>
+				<if cond="mod_version('Z6_EFTX_Armored_Zs') &gt;= version(2,5,2,9)">
+					<set xpath="/items/item[@name='meleeWpnBladeBashZweihander' or @name='meleeWpnBladeT3KF2Zweihander']/effect_group[@name='Body armor damage']/triggered_effect[@action='ModifyCVar' and @cvar='eftZombieBodyArmorDamage']/@cvar">%eftZombieBodyArmorDamage</set>
+					<set xpath="/items/item[@name='meleeWpnBladeBashZweihander' or @name='meleeWpnBladeT3KF2Zweihander']/effect_group[@name='Head armor damage']/triggered_effect[@action='ModifyCVar' and @cvar='eftZombieHelmetDamage']/@cvar">%eftZombieHelmetDamage</set>
+					<append xpath="/items/item[@name='meleeWpnBladeBashZweihander' or @name='meleeWpnBladeT3KF2Zweihander']/effect_group[@name='Body armor damage']">
+						<triggered_effect trigger="onSelfAttackedOther" target="other" action="AddBuff" buff="eftZombieBodyArmorResistCalc"/>
+					</append>
+					<append xpath="/items/item[@name='meleeWpnBladeBashZweihander' or @name='meleeWpnBladeT3KF2Zweihander']/effect_group[@name='Head armor damage']">
+						<triggered_effect trigger="onSelfAttackedOther" target="other" action="AddBuff" buff="eftZombieHeadArmorResistCalc"/>
+					</append>
+				</if>
+			</conditional>
 		</if>
 	</conditional>
 </config>

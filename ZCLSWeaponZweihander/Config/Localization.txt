@@ -1,5 +1,5 @@
 Key,File,Type,english,schinese
 meleeWpnBladeT3KF2Zweihander,items,Melee,Zweihander,双手剑
-meleeWpnBladeT3KF2ZweihanderDesc,items,Melee,"Primary - medium/heavy damage, with some crowd control.\nSecondary - slower, but with more damage and higher armor penetration.\n\n[action:KFLibPlayerActions:PerformWeaponBlocking] - block/parry\n\nUse [action:KFLibPlayerActions:PerformAltMelee] to perform stabbing attack, which consumes less stamina and has stealth bonus.",主要攻击造成中/重伤害，可以对付一群怪物。\n次要攻击速度较慢，但是伤害和护甲穿透更高。\n横扫能造成更多击退，而劈砍会造成更高伤害。\n[action:KFLibPlayerActions:PerformAltMelee] - 格挡\n\n使用[action:KFLibPlayerActions:PerformAltMelee]戳刺敌人，消耗耐力较少且拥有潜行加成。
+meleeWpnBladeT3KF2ZweihanderDesc,items,Melee,"Primary - medium/heavy damage, with some crowd control.\nSecondary - slower, but with more damage and higher armor penetration.\n\n[action:KFLibPlayerActions:PerformWeaponBlocking] - block/parry\n\nUse [action:KFLibPlayerActions:PerformAltMelee] to perform stabbing attack, which consumes less stamina and has stealth bonus.",主要攻击造成中/重伤害，可以对付一群怪物。\n次要攻击速度较慢，但是伤害和护甲穿透更高。\n横扫能造成更多击退，而劈砍会造成更高伤害。\n[action:KFLibPlayerActions:PerformWeaponBlocking] - 格挡\n\n使用[action:KFLibPlayerActions:PerformAltMelee]戳刺敌人，消耗耐力较少且拥有潜行加成。
 
 schematicsKF2Zweihander,items,Melee,Zweihander Schematic,双手剑设计图
