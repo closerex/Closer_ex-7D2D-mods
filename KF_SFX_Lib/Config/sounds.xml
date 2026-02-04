@@ -2,7 +2,7 @@
     <!-- #region Attack Sounds -->
     <append xpath="/Sounds">
         <SoundDataNode name="kf_9mm_Fire_1P_InDoor_Large">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_9mm" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_9mm_Network" />
             <Noise ID="0" noise="62" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
@@ -20,7 +20,7 @@
             <HighestPitch value="1.090508" />
         </SoundDataNode>
         <SoundDataNode name="kf_9mm_Fire_1P_InDoor_Medium">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_9mm" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_9mm_Network" />
             <Noise ID="0" noise="62" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
@@ -38,7 +38,7 @@
             <HighestPitch value="1.090508" />
         </SoundDataNode>
         <SoundDataNode name="kf_9mm_Fire_1P_InDoor_Small">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_9mm" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_9mm_Network" />
             <Noise ID="0" noise="62" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
@@ -56,7 +56,7 @@
             <HighestPitch value="1.090508" />
         </SoundDataNode>
         <SoundDataNode name="kf_9mm_Fire_1P_OutDoor_City">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_9mm" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_9mm_Network" />
             <Noise ID="0" noise="62" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
@@ -74,7 +74,7 @@
             <HighestPitch value="1.090508" />
         </SoundDataNode>
         <SoundDataNode name="kf_1911_Fire_1P_InDoor_Large">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1911" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1911_Network" />
             <Noise ID="0" noise="72" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
@@ -93,7 +93,7 @@
             <HighestPitch value="1.044274" />
         </SoundDataNode>
         <SoundDataNode name="kf_1911_Fire_1P_InDoor_Medium">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1911" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1911_Network" />
             <Noise ID="0" noise="72" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
@@ -112,7 +112,7 @@
             <HighestPitch value="1.044274" />
         </SoundDataNode>
         <SoundDataNode name="kf_1911_Fire_1P_InDoor_Small">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1911" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1911_Network" />
             <Noise ID="0" noise="72" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
@@ -131,7 +131,7 @@
             <HighestPitch value="1.044274" />
         </SoundDataNode>
         <SoundDataNode name="kf_1911_Fire_1P_OutDoor_City">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1911" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1911_Network" />
             <Noise ID="0" noise="72" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
@@ -150,7 +150,7 @@
             <HighestPitch value="1.044274" />
         </SoundDataNode>
         <SoundDataNode name="kf_1911_Fire_1P_OutDoor_Forest">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1911" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1911_Network" />
             <Noise ID="0" noise="72" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
@@ -169,7 +169,7 @@
             <HighestPitch value="1.044274" />
         </SoundDataNode>
         <SoundDataNode name="kf_af2011_Fire_1P_InDoor_Large">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_af2011" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_af2011_Network" />
             <Noise ID="0" noise="72" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
@@ -188,7 +188,7 @@
             <HighestPitch value="0.8482139" />
         </SoundDataNode>
         <SoundDataNode name="kf_af2011_Fire_1P_InDoor_Medium">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_af2011" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_af2011_Network" />
             <Noise ID="0" noise="72" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
@@ -207,7 +207,7 @@
             <HighestPitch value="0.8482139" />
         </SoundDataNode>
         <SoundDataNode name="kf_af2011_Fire_1P_InDoor_Small">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_af2011" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_af2011_Network" />
             <Noise ID="0" noise="72" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
@@ -226,7 +226,7 @@
             <HighestPitch value="0.8482139" />
         </SoundDataNode>
         <SoundDataNode name="kf_af2011_Fire_1P_OutDoor_City">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_af2011" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_af2011_Network" />
             <Noise ID="0" noise="72" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
@@ -245,7 +245,7 @@
             <HighestPitch value="0.8482139" />
         </SoundDataNode>
         <SoundDataNode name="kf_af2011_Fire_1P_OutDoor_Forest">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_af2011" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_af2011_Network" />
             <Noise ID="0" noise="72" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
@@ -264,7 +264,7 @@
             <HighestPitch value="0.8482139" />
         </SoundDataNode>
         <SoundDataNode name="kf_sw500_Fire_1P_InDoor_Large">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_sw500" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_sw500_Network" />
             <Noise ID="0" noise="75" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="180" />
@@ -283,7 +283,7 @@
             <HighestPitch value="1.075494" />
         </SoundDataNode>
         <SoundDataNode name="kf_sw500_Fire_1P_InDoor_Medium">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_sw500" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_sw500_Network" />
             <Noise ID="0" noise="75" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="180" />
@@ -302,7 +302,7 @@
             <HighestPitch value="1.075494" />
         </SoundDataNode>
         <SoundDataNode name="kf_sw500_Fire_1P_InDoor_Small">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_sw500" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_sw500_Network" />
             <Noise ID="0" noise="75" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="180" />
@@ -321,7 +321,7 @@
             <HighestPitch value="1.075494" />
         </SoundDataNode>
         <SoundDataNode name="kf_sw500_Fire_1P_OutDoor_City">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_sw500" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_sw500_Network" />
             <Noise ID="0" noise="75" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="180" />
@@ -340,7 +340,7 @@
             <HighestPitch value="1.075494" />
         </SoundDataNode>
         <SoundDataNode name="kf_sw500_Fire_1P_OutDoor_Forest">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_sw500" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_sw500_Network" />
             <Noise ID="0" noise="75" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="180" />
@@ -359,7 +359,7 @@
             <HighestPitch value="1.075494" />
         </SoundDataNode>
         <SoundDataNode name="kf_hrg_sw500_Fire_1P_InDoor_Large">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_sw500" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_sw500_Network" />
             <Noise ID="0" noise="78" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="180" />
@@ -377,7 +377,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_hrg_sw500_Fire_1P_InDoor_Medium">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_sw500" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_sw500_Network" />
             <Noise ID="0" noise="78" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="180" />
@@ -395,7 +395,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_hrg_sw500_Fire_1P_InDoor_Small">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_sw500" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_sw500_Network" />
             <Noise ID="0" noise="78" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="180" />
@@ -413,7 +413,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_hrg_sw500_Fire_1P_OutDoor_City">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_sw500" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_sw500_Network" />
             <Noise ID="0" noise="78" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="180" />
@@ -431,7 +431,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_hrg_sw500_Fire_1P_OutDoor_Forest">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_sw500" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_sw500_Network" />
             <Noise ID="0" noise="78" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="180" />
@@ -449,7 +449,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_hrg_blastbrawlers_Impacts_Regular">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_BulletImpact_overlay" />
             <Noise ID="0" noise="11" time="2" muffled_when_crouched="0.8" heat_map_strength="0.5" heat_map_time="180" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_HRG_BlastBrawlers_Impact_Regular_01" />
@@ -465,7 +465,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_hrg_blastbrawlers_Fire_3P_InDoor_Large">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler_Network" />
             <Noise ID="0" noise="70" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="180" />
@@ -482,7 +482,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_hrg_blastbrawlers_Fire_3P_InDoor_Medium">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler_Network" />
             <Noise ID="0" noise="70" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="180" />
@@ -499,7 +499,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_hrg_blastbrawlers_Fire_3P_InDoor_Small">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler_Network" />
             <Noise ID="0" noise="70" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="180" />
@@ -516,7 +516,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_hrg_blastbrawlers_Fire_3P_OutDoor_City">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler_Network" />
             <Noise ID="0" noise="70" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="180" />
@@ -533,7 +533,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_hrg_blastbrawlers_Fire_3P_OutDoor_Forest">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler_Network" />
             <Noise ID="0" noise="70" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="180" />
@@ -550,7 +550,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_hrg_blastbrawlers_Fire_3P_OutDoor_Mountain">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler_Network" />
             <Noise ID="0" noise="70" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="180" />
@@ -567,7 +567,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_hrg_blastbrawlers_AirBlast_3P_InDoor_Large">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler_Network" />
             <Noise ID="0" noise="15" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="180" />
@@ -583,7 +583,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_hrg_blastbrawlers_AirBlast_3P_InDoor_Medium">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler_Network" />
             <Noise ID="0" noise="15" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="180" />
@@ -599,7 +599,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_hrg_blastbrawlers_AirBlast_3P_InDoor_Small">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler_Network" />
             <Noise ID="0" noise="15" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="180" />
@@ -615,7 +615,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_hrg_blastbrawlers_AirBlast_3P_OutDoor_City">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler_Network" />
             <Noise ID="0" noise="15" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="180" />
@@ -631,7 +631,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_hrg_blastbrawlers_AirBlast_3P_OutDoor_Forest">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler_Network" />
             <Noise ID="0" noise="15" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="180" />
@@ -647,7 +647,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_hrg_blastbrawlers_AirBlast_3P_OutDoor_Mountain">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hrg_blastbrawler_Network" />
             <Noise ID="0" noise="15" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="180" />
@@ -663,7 +663,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_boomstick_Fire_1P_Indoor_Large">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_boomstick" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_boomstick_Network" />
             <Noise ID="0" noise="80" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="240" />
@@ -680,7 +680,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_boomstick_Fire_1P_Indoor_Small">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_boomstick" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_boomstick_Network" />
             <Noise ID="0" noise="80" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="240" />
@@ -697,7 +697,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_hrg_kaboomstick_Explosion">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_Explosion_kaboomstick" />
             <Noise ID="5" noise="85" time="4" muffled_when_crouched="1" heat_map_strength="5" heat_map_time="300" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?HRG_Kaboomstick__ProjectileExplo_01" />
@@ -718,7 +718,7 @@
             <HighestPitch value="1.059463" />
         </SoundDataNode>
         <SoundDataNode name="kf_c4_Explosion">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_Explosion_c4" />
             <Noise ID="5" noise="95" time="4" muffled_when_crouched="1" heat_map_strength="5" heat_map_time="300" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_EXP_C4_Explosion_01" />
@@ -734,7 +734,7 @@
             <HighestPitch value="1.059463" />
         </SoundDataNode>
         <SoundDataNode name="kf_hz12_Fire_1P_Indoor_Large">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hz12" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hz12_Network" />
             <Noise ID="0" noise="78" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="240" />
@@ -752,7 +752,7 @@
             <HighestPitch value="1.044274" />
         </SoundDataNode>
         <SoundDataNode name="kf_hz12_Fire_1P_Indoor_Medium">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hz12" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hz12_Network" />
             <Noise ID="0" noise="78" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="240" />
@@ -770,7 +770,7 @@
             <HighestPitch value="1.044274" />
         </SoundDataNode>
         <SoundDataNode name="kf_hz12_Fire_1P_Indoor_Small">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hz12" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hz12_Network" />
             <Noise ID="0" noise="78" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="240" />
@@ -788,7 +788,7 @@
             <HighestPitch value="1.044274" />
         </SoundDataNode>
         <SoundDataNode name="kf_hz12_Fire_1P_Outdoor_City">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hz12" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hz12_Network" />
             <Noise ID="0" noise="78" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="240" />
@@ -806,7 +806,7 @@
             <HighestPitch value="1.044274" />
         </SoundDataNode>
         <SoundDataNode name="kf_hz12_Fire_1P_Outdoor_Forest">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hz12" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_hz12_Network" />
             <Noise ID="0" noise="78" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="240" />
@@ -824,7 +824,7 @@
             <HighestPitch value="1.044274" />
         </SoundDataNode>
         <SoundDataNode name="kf_m4_Fire_1P_Indoor_Large">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m4" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m4_Network" />
             <Noise ID="0" noise="78" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="240" />
@@ -839,7 +839,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_m4_Fire_1P_Indoor_Medium">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m4" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m4_Network" />
             <Noise ID="0" noise="78" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="240" />
@@ -854,7 +854,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_m4_Fire_1P_Indoor_Small">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m4" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m4_Network" />
             <Noise ID="0" noise="78" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="240" />
@@ -869,7 +869,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_m4_Fire_1P_Outdoor_City">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m4" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m4_Network" />
             <Noise ID="0" noise="78" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="240" />
@@ -884,7 +884,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_m4_Fire_1P_Outdoor_Forest">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m4" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m4_Network" />
             <Noise ID="0" noise="78" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="240" />
@@ -899,7 +899,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_m4_Fire_1P_Outdoor_Mountain">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m4" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m4_Network" />
             <Noise ID="0" noise="78" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="240" />
@@ -914,7 +914,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_g18_Fire_1P_OutDoor_City">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18_Network" />
             <Noise ID="0" noise="62" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
@@ -931,7 +931,7 @@
             <HighestPitch value="1.090508" />
         </SoundDataNode>
         <SoundDataNode name="kf_g18c_Fire_1P_InDoor_Large_silenced">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18c" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18c_Network" />
             <Noise ID="0" noise="15" time="2" muffled_when_crouched="0.8" heat_map_strength="0.3" heat_map_time="180" />
@@ -950,7 +950,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_g18c_Fire_1P_InDoor_Medium_silenced">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18c" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18c_Network" />
             <Noise ID="0" noise="15" time="2" muffled_when_crouched="0.8" heat_map_strength="0.3" heat_map_time="180" />
@@ -969,7 +969,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_g18c_Fire_1P_InDoor_Small_silenced">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18c" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18c_Network" />
             <Noise ID="0" noise="15" time="2" muffled_when_crouched="0.8" heat_map_strength="0.3" heat_map_time="180" />
@@ -988,7 +988,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_g18c_Fire_1P_OutDoor_City_silenced">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18c" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18c_Network" />
             <Noise ID="0" noise="15" time="2" muffled_when_crouched="0.8" heat_map_strength="0.3" heat_map_time="180" />
@@ -1007,7 +1007,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_g18c_Fire_1P_OutDoor_Mountain_silenced">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18c" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_g18c_Network" />
             <Noise ID="0" noise="15" time="2" muffled_when_crouched="0.8" heat_map_strength="0.3" heat_map_time="180" />
@@ -1026,7 +1026,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_medicdart_Fire_1p">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_dart" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_dart_Network" />
             <Noise ID="0" noise="5" time="2" muffled_when_crouched="0.8" heat_map_strength="0.1" heat_map_time="50" />
@@ -1042,7 +1042,7 @@
             <HighestPitch value="1.570075" />
         </SoundDataNode>
         <SoundDataNode name="kf_medic_Alert_Locked">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling" />
             <Noise ID="6" noise="0" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_Medic_Alert_Locked" />
@@ -1055,7 +1055,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_medic_Alert_Lost">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling" />
             <Noise ID="6" noise="0" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_Medic_Alert_Lost" />
@@ -1068,7 +1068,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_medicdart_DryFire">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling" />
             <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_MedicDart_DryFire" />
@@ -1082,7 +1082,7 @@
             <HighestPitch value="1.029302" />
         </SoundDataNode>
         <SoundDataNode name="kf_medicpistol_Fire_1P_InDoor_Large">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_pistol" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_pistol_Network" />
             <Noise ID="0" noise="65" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
@@ -1097,7 +1097,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_medicpistol_Fire_1P_InDoor_Medium">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_pistol" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_pistol_Network" />
             <Noise ID="0" noise="65" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
@@ -1112,7 +1112,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_medicpistol_Fire_1P_InDoor_Small">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_pistol" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_pistol_Network" />
             <Noise ID="0" noise="65" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
@@ -1127,7 +1127,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_medicpistol_Fire_1P_OutDoor_City">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_pistol" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_pistol_Network" />
             <Noise ID="0" noise="65" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
@@ -1142,7 +1142,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_medicpistol_Fire_1P_OutDoor_Forest">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_pistol" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_pistol_Network" />
             <Noise ID="0" noise="65" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
@@ -1156,7 +1156,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_medicpistol_Fire_1P_OutDoor_Mountain">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_pistol" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_pistol_Network" />
             <Noise ID="0" noise="65" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
@@ -1171,7 +1171,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_medicshotgun_Fire_1P_OutDoor_Surround">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_shotgun" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_shotgun_Network" />
             <Noise ID="0" noise="85" time="2" muffled_when_crouched="0.8" heat_map_strength="1.2" heat_map_time="240" />
@@ -1186,7 +1186,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_medicsmg_Fire_1P_OutDoor_Surround">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_smg" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_smg_Network" />
             <Noise ID="0" noise="72" time="2" muffled_when_crouched="0.8" heat_map_strength="0.9" heat_map_time="180" />
@@ -1201,7 +1201,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_medicar_Fire_1P_Single_City">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_ar" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_ar_Network" />
             <Noise ID="0" noise="75" time="2" muffled_when_crouched="0.8" heat_map_strength="1" heat_map_time="200" />
@@ -1216,7 +1216,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_medicar_Fire_1P_Single_Forest">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_ar" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_ar_Network" />
             <Noise ID="0" noise="75" time="2" muffled_when_crouched="0.8" heat_map_strength="1" heat_map_time="200" />
@@ -1231,7 +1231,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_medicar_Fire_1P_Single_Mountain">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_ar" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_ar_Network" />
             <Noise ID="0" noise="75" time="2" muffled_when_crouched="0.8" heat_map_strength="1" heat_map_time="200" />
@@ -1246,7 +1246,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_medicar_Fire_1P_Single_Large">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_ar" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_ar_Network" />
             <Noise ID="0" noise="75" time="2" muffled_when_crouched="0.8" heat_map_strength="1" heat_map_time="200" />
@@ -1261,7 +1261,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_medicar_Fire_1P_Single_Medium">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_ar" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_ar_Network" />
             <Noise ID="0" noise="75" time="2" muffled_when_crouched="0.8" heat_map_strength="1" heat_map_time="200" />
@@ -1276,7 +1276,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_medicar_Fire_1P_Single_Small">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_ar" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_medic_ar_Network" />
             <Noise ID="0" noise="75" time="2" muffled_when_crouched="0.8" heat_map_strength="1" heat_map_time="200" />
@@ -1291,7 +1291,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_m99_Fire_1P_Single_City">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m99" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m99_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1309,7 +1309,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_m99_Fire_1P_Single_Mountain">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m99" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m99_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1327,7 +1327,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_m99_Fire_1P_Single_Large">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m99" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m99_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1345,7 +1345,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_m99_Fire_1P_Single_Medium">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m99" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m99_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1363,7 +1363,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_m99_Fire_1P_Single_Small">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m99" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m99_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1381,7 +1381,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_mosin_Fire_1P_Single_City">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_mosin" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_mosin_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1398,7 +1398,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_mosin_Fire_1P_Single_Mountain">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_mosin" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_mosin_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1415,7 +1415,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_mosin_Fire_1P_Single_Forest">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_mosin" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_mosin_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1432,7 +1432,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_mosin_Fire_1P_Single_Large">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_mosin" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_mosin_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1449,7 +1449,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_mosin_Fire_1P_Single_Medium">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_mosin" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_mosin_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1466,7 +1466,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_mosin_Boom">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_mosin" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_mosin_Network" />
             <Noise ID="2" noise="38" time="3" muffled_when_crouched="0.5" heat_map_strength="0.5" heat_map_time="100" />
@@ -1482,7 +1482,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_mosin_DryFire">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling" />
             <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_MosinNagant_DryFire_01" />
@@ -1500,7 +1500,7 @@
             <HighestPitch value="1.029302" />
         </SoundDataNode>
         <SoundDataNode name="kf_mosin_Fire_1P_Single_Small">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_mosin" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_mosin_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1517,7 +1517,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_1894_Fire_1P_Single_City">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1894" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1894_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1536,7 +1536,7 @@
             <HighestPitch value="1.260649" />
         </SoundDataNode>
         <SoundDataNode name="kf_1894_Fire_1P_Single_Forest">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1894" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1894_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1555,7 +1555,7 @@
             <HighestPitch value="1.260649" />
         </SoundDataNode>
         <SoundDataNode name="kf_1894_Fire_1P_Single_Large">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1894" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1894_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1574,7 +1574,7 @@
             <HighestPitch value="1.260649" />
         </SoundDataNode>
         <SoundDataNode name="kf_1894_Fire_1P_Single_Medium">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1894" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1894_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1593,7 +1593,7 @@
             <HighestPitch value="1.260649" />
         </SoundDataNode>
         <SoundDataNode name="kf_1894_Fire_1P_Single_Small">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1894" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1894_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1612,7 +1612,7 @@
             <HighestPitch value="1.260649" />
         </SoundDataNode>
         <SoundDataNode name="kf_1894_Top_End">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_1894_top_end" />
             <Noise ID="2" noise="38" time="3" muffled_when_crouched="0.5" heat_map_strength="0.5" heat_map_time="100" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?1894_close_ch3" />
@@ -1626,7 +1626,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_1894_DryFire">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_1894" />
             <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_AK12_Handling_DryFire_01" />
@@ -1643,7 +1643,7 @@
             <HighestPitch value="0.8908987" />
         </SoundDataNode>
         <SoundDataNode name="kf_spx464_Fire_1P_Single_City">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_spx_464" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_spx_464_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1662,7 +1662,7 @@
             <HighestPitch value="1.260649" />
         </SoundDataNode>
         <SoundDataNode name="kf_spx464_Fire_1P_Single_Forest">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_spx_464" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_spx_464_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1681,7 +1681,7 @@
             <HighestPitch value="1.260649" />
         </SoundDataNode>
         <SoundDataNode name="kf_spx464_Fire_1P_Single_Large">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_spx_464" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_spx_464_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1700,7 +1700,7 @@
             <HighestPitch value="1.260649" />
         </SoundDataNode>
         <SoundDataNode name="kf_spx464_Fire_1P_Single_Medium">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_spx_464" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_spx_464_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1719,7 +1719,7 @@
             <HighestPitch value="1.260649" />
         </SoundDataNode>
         <SoundDataNode name="kf_spx464_Fire_1P_Single_Small">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_spx_464" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_spx_464_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1738,7 +1738,7 @@
             <HighestPitch value="1.260649" />
         </SoundDataNode>
         <SoundDataNode name="kf_ebr_Fire_1P_Single_City">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m14ebr" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m14ebr_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1757,7 +1757,7 @@
             <HighestPitch value="1.044274" />
         </SoundDataNode>
         <SoundDataNode name="kf_ebr_Fire_1P_Single_Forest">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m14ebr" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m14ebr_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1776,7 +1776,7 @@
             <HighestPitch value="1.044274" />
         </SoundDataNode>
         <SoundDataNode name="kf_ebr_Fire_1P_Single_Large">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m14ebr" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m14ebr_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1795,7 +1795,7 @@
             <HighestPitch value="1.044274" />
         </SoundDataNode>
         <SoundDataNode name="kf_ebr_Fire_1P_Single_Medium">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m14ebr" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m14ebr_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1814,7 +1814,7 @@
             <HighestPitch value="1.044274" />
         </SoundDataNode>
         <SoundDataNode name="kf_ebr_Fire_1P_Single_Small">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m14ebr" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_m14ebr_Network" />
             <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1833,7 +1833,7 @@
             <HighestPitch value="1.044274" />
         </SoundDataNode>
         <SoundDataNode name="kf_pulverizer_Fire_1P_Single_Small">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_pulverizer" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_pulverizer_Network" />
             <Noise ID="0" noise="72" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1848,7 +1848,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_pulverizer_Fire_3P_Single_Small">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_pulverizer" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_pulverizer_Network" />
             <Noise ID="0" noise="72" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
@@ -1863,7 +1863,7 @@
             <HighestPitch value="1.060075" />
         </SoundDataNode>
         <SoundDataNode name="kf_sw500_Boom">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_sw500_boom" />
             <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_sw500_boom" />
             <Noise ID="2" noise="38" time="3" muffled_when_crouched="0.5" heat_map_strength="0.5" heat_map_time="100" />
@@ -1879,7 +1879,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_m99_DryFire">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling" />
             <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_M99_Handling_DryFire_01" />
@@ -1896,7 +1896,7 @@
             <HighestPitch value="1.029302" />
         </SoundDataNode>
         <SoundDataNode name="kf_m99_PullUpScope">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling" />
             <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_M99_Handling_PullUpScope_01" />
@@ -1909,7 +1909,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
         <SoundDataNode name="kf_ak12_DryFire">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_ak12" />
             <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_AK12_Handling_DryFire_01" />
@@ -1925,7 +1925,7 @@
             <HighestPitch value="1.029302" />
         </SoundDataNode>
         <SoundDataNode name="kf_ebr_DryFire">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_m14ebr_dryfire" />
             <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_AK12_Handling_DryFire_01" />
@@ -1941,7 +1941,7 @@
             <HighestPitch value="1.029302" />
         </SoundDataNode>
         <SoundDataNode name="kf_9mm_DryFire">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_9mm_dryfire" />
             <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_AK12_Handling_DryFire_01" />
@@ -1957,7 +1957,7 @@
             <HighestPitch value="1.029302" />
         </SoundDataNode>
         <SoundDataNode name="kf_m4_DryFire">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_m4_dryfire" />
             <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_M4_Handling_DryFire" />
@@ -1971,7 +1971,7 @@
             <HighestPitch value="1.029302" />
         </SoundDataNode>
         <SoundDataNode name="kf_hz12_DryFire">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_hz12_dryfire" />
             <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_M4_Handling_DryFire" />
@@ -1985,7 +1985,7 @@
             <HighestPitch value="1.029302" />
         </SoundDataNode>
         <SoundDataNode name="kf_aa12_DryFire">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_aa12_dryfire" />
             <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_AA12_Handling_DryFire" />
@@ -1999,7 +1999,7 @@
             <HighestPitch value="1.029302" />
         </SoundDataNode>
         <SoundDataNode name="kf_sw500_DryFire">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_sw500_dryfire" />
             <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_AA12_Handling_DryFire" />
@@ -2014,7 +2014,7 @@
             <HighestPitch value="0.929268" />
         </SoundDataNode>
         <SoundDataNode name="kf_mb500_DryFire">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_mb500_dryfire" />
             <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_MB500_Fire_DryFire" />
@@ -2028,7 +2028,7 @@
             <HighestPitch value="1.014545" />
         </SoundDataNode>
         <SoundDataNode name="kf_af2011_DryFire">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_af2011" />
             <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_MB500_Fire_DryFire" />
@@ -2042,7 +2042,7 @@
             <HighestPitch value="1.014545" />
         </SoundDataNode>
         <SoundDataNode name="kf_doublebarrel_DryFire">
-            <FPVForce2D />
+            <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_doublebarrel_dryfire" />
             <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_DoubleBarrel_Handling_DryFire" />
@@ -2054,6 +2054,173 @@
             <MaxVoicesPerEntity value="10" />
             <MaxRepeatRate value="0.001" />
             <HighestPitch value="1.014545" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ion_thruster_charging_tick_1">
+            <VolumeModifier value="0.5" />
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_UI" />
+            <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?IonCluster_Charging" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="30" />
+            <MaxVoicesPerEntity value="10" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="1.45" />
+            <HighestPitch value="1.5" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ion_thruster_charging_tick_2">
+            <VolumeModifier value="0.6" />
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_UI" />
+            <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?IonCluster_Charging" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="30" />
+            <MaxVoicesPerEntity value="10" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="1.45" />
+            <HighestPitch value="1.5" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ion_thruster_charging_tick_3">
+            <VolumeModifier value="0.75" />
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_UI" />
+            <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?IonCluster_Charging" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="30" />
+            <MaxVoicesPerEntity value="10" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="1.45" />
+            <HighestPitch value="1.5" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ion_thruster_charging_tick_4">
+            <VolumeModifier value="0.8" />
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_UI" />
+            <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?IonCluster_Charging" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="30" />
+            <MaxVoicesPerEntity value="10" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="1.45" />
+            <HighestPitch value="1.5" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ion_thruster_charging_tick_5">
+            <VolumeModifier value="0.8" />
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_UI" />
+            <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?IonCluster_Charged" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="30" />
+            <MaxVoicesPerEntity value="10" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="1.45" />
+            <HighestPitch value="1.55" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ion_thruster_charging_tick_1_alt">
+            <VolumeModifier value="0.7" />
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_UI" />
+            <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Ion_Thruster_Charging_Tick" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="30" />
+            <MaxVoicesPerEntity value="10" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ion_thruster_charging_tick_2_alt">
+            <VolumeModifier value="0.8" />
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_UI" />
+            <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Ion_Thruster_Charging_Tick" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="30" />
+            <MaxVoicesPerEntity value="10" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ion_thruster_charging_tick_3_alt">
+            <VolumeModifier value="0.9" />
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_UI" />
+            <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Ion_Thruster_Charging_Tick" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="30" />
+            <MaxVoicesPerEntity value="10" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="1.05" />
+            <HighestPitch value="1.1" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ion_thruster_charging_tick_4_alt">
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_UI" />
+            <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Ion_Thruster_Charging_Tick" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="30" />
+            <MaxVoicesPerEntity value="10" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="1.15" />
+            <HighestPitch value="1.2" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ion_thruster_charging_tick_5_alt">
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_UI" />
+            <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?Ion_Thruster_Charged_Tick" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="30" />
+            <MaxVoicesPerEntity value="10" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_ion_thruster_projectile_fire">
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_Melee_Swing_ion_thruster_handling" />
+            <Noise ID="0" noise="35" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_IonThruster_Super_Ignite_02" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <LowestPitch value="1.75" />
+            <HighestPitch value="1.95" />
         </SoundDataNode>
     </append>
     <!-- #endregion -->
