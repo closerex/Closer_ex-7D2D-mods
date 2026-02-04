@@ -81,7 +81,7 @@ public class ActionModuleLimitedCombo
 
         public bool CanContinue()
         {
-            return currentCombo < maxCombo;
+            return maxCombo <= 0 || currentCombo < maxCombo;
         }
 
         public void AddCombo()

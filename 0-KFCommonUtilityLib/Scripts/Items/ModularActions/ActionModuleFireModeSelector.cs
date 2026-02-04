@@ -7,17 +7,47 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[TypeTarget(typeof(ItemActionRanged)), TypeDataTarget(typeof(FireModeData))]
+[TypeTarget(typeof(ItemActionRanged)), TypeDataTarget(typeof(FireModeData)), RequireUserDataBits(nameof(userDataMask), nameof(shiftBits), 3)]
 public class ActionModuleFireModeSelector
 {
-    public struct FireMode
+    public readonly struct FireMode
     {
-        public byte burstCount;
-        public bool isFullAuto;
+        public readonly byte burstCount;
+        public readonly bool isFullAuto;
+        public readonly string modeName;
+        public readonly string soundStart;
+        public readonly string soundLoop;
+        public readonly string soundEnd;
+
+        public FireMode(byte burstCount, bool isFullAuto, string modeName = null, string soundStart = null, string soundLoop = null, string soundEnd = null)
+        {
+            this.burstCount = burstCount;
+            this.isFullAuto = isFullAuto;
+            this.modeName = modeName;
+            this.soundStart = soundStart;
+            this.soundLoop = soundLoop;
+            this.soundEnd = soundEnd;
+        }
+        public readonly void SyncSounds(ItemActionData _data, FireModeData fireModeData, byte _fireMode)
+        {
+            ItemActionRanged.ItemActionDataRanged rangedData = (ItemActionRanged.ItemActionDataRanged)_data;
+            if (string.IsNullOrEmpty(soundStart))
+            {
+                rangedData.SoundStart = fireModeData.originalSoundStart;
+                rangedData.SoundLoop = fireModeData.originalSoundLoop;
+                rangedData.SoundEnd = fireModeData.originalSoundEnd;
+            }
+            else
+            {
+                rangedData.SoundStart = soundStart;
+                rangedData.SoundLoop = soundLoop;
+                rangedData.SoundEnd = soundEnd;
+            }
+        }
     }
-    public string fireModeSwitchingSound = null;
+    public int userDataMask;
+    public byte shiftBits;
     private List<FireMode> modeCache = new List<FireMode>();
-    private List<string> nameCache = new List<string>();
     public static string[] FireModeNames = new[]
     {
         "FireMode",
@@ -46,9 +76,14 @@ public class ActionModuleFireModeSelector
     [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
     private void Postfix_OnModificationChanged(ItemActionData _data, FireModeData __customData, ItemActionRanged __instance)
     {
-        __instance.Properties.ParseString("FireModeSwitchingSound", ref fireModeSwitchingSound);
+        __customData.switchSound = "";
+        var rangedData = (ItemActionRanged.ItemActionDataRanged)_data;
+        __customData.originalSoundStart = rangedData.SoundStart;
+        __customData.originalSoundLoop = rangedData.SoundLoop;
+        __customData.originalSoundEnd = rangedData.SoundEnd;
+        __instance.Properties.ParseString("FireModeSwitchingSound", ref __customData.switchSound);
         int actionIndex = _data.indexInEntityOfAction;
-        for (int i = 0; i < 99; i++)
+        for (int i = 0; i < 7; i++)
         {
             if (!__instance.Properties.Contains($"FireMode{i}.BurstCount"))
             {
@@ -60,45 +95,45 @@ public class ActionModuleFireModeSelector
             __instance.Properties.ParseString($"FireMode{i}.IsFullAuto", ref isFullAuto);
             string modeName = null;
             __instance.Properties.ParseString($"FireMode{i}.ModeName", ref modeName);
+            string soundStart = null;
+            __instance.Properties.ParseString($"FireMode{i}.SoundStart", ref soundStart);
+            string soundLoop = null;
+            __instance.Properties.ParseString($"FireMode{i}.SoundLoop", ref soundLoop);
+            string soundEnd = null;
+            __instance.Properties.ParseString($"FireMode{i}.SoundEnd", ref soundEnd);
             modeCache.Add(new FireMode
-            {
-                burstCount = byte.Parse(_data.invData.itemValue.GetPropertyOverrideForAction($"FireMode{i}.BurstCount", burstCount, actionIndex)),
-                isFullAuto = bool.Parse(_data.invData.itemValue.GetPropertyOverrideForAction($"FireMode{i}.IsFullAuto", isFullAuto, actionIndex))
-            });
-            nameCache.Add(_data.invData.itemValue.GetPropertyOverrideForAction($"FireMode{i}.ModeName", modeName, actionIndex));
+            (
+                byte.Parse(_data.invData.itemValue.GetPropertyOverrideForAction($"FireMode{i}.BurstCount", burstCount, actionIndex)),
+                bool.Parse(_data.invData.itemValue.GetPropertyOverrideForAction($"FireMode{i}.IsFullAuto", isFullAuto, actionIndex)),
+                _data.invData.itemValue.GetPropertyOverrideForAction($"FireMode{i}.ModeName", modeName, actionIndex),
+                _data.invData.itemValue.GetPropertyOverrideForAction($"FireMode{i}.SoundStart", soundStart, actionIndex),
+                _data.invData.itemValue.GetPropertyOverrideForAction($"FireMode{i}.SoundLoop", soundLoop, actionIndex),
+                _data.invData.itemValue.GetPropertyOverrideForAction($"FireMode{i}.SoundEnd", soundEnd, actionIndex
+            )));
         }
         foreach (var modePlus in _data.invData.itemValue.GetAllPropertyOverridesForAction("FireModePlus", actionIndex))
         {
+            if (modeCache.Count >= 7)
+            {
+                break;
+            }
             JObject jsonData = (JObject)JToken.Parse(modePlus);
             foreach (var modeProp in jsonData.Properties())
             {
                 JObject modeValue = (JObject)modeProp.Value;
                 modeCache.Add(new FireMode
-                {
-                    burstCount = (byte)modeValue.GetValue("BurstCount"),
-                    isFullAuto = (bool)modeValue.GetValue("IsFullAuto")
-                });
-                nameCache.Add(modeProp.Name);
+                (
+                    (byte)modeValue.GetValue("BurstCount"),
+                    (bool)modeValue.GetValue("IsFullAuto"),
+                    (string)modeValue.GetValue("ModeName"),
+                    (string)modeValue.GetValue("SoundStart"),
+                    (string)modeValue.GetValue("SoundLoop"),
+                    (string)modeValue.GetValue("SoundEnd")
+                ));
             }
         }
-        //for (int i = 0; i < 99; i++)
-        //{
-        //    string burstCount = _data.invData.itemValue.GetPropertyOverrideForAction($"FireModePlus{i}.BurstCount", null, actionIndex);
-        //    if (burstCount == null)
-        //    {
-        //        break;
-        //    }
-        //    modeCache.Add(new FireMode
-        //    {
-        //        burstCount = byte.Parse(_data.invData.itemValue.GetPropertyOverrideForAction($"FireModePlus{i}.BurstCount", burstCount, actionIndex)),
-        //        isFullAuto = bool.Parse(_data.invData.itemValue.GetPropertyOverrideForAction($"FireModePlus{i}.IsFullAuto", "false", actionIndex))
-        //    });
-        //    nameCache.Add(_data.invData.itemValue.GetPropertyOverrideForAction($"FireModePlus{i}.ModeName", null, actionIndex));
-        //}
         __customData.fireModes = modeCache.ToArray();
         modeCache.Clear();
-        __customData.modeNames = nameCache.ToArray();
-        nameCache.Clear();
         if (_data.invData.itemValue.GetMetadata(FireModeNames[actionIndex]) is int mode)
         {
             __customData.currentFireMode = (byte)mode;
@@ -113,6 +148,25 @@ public class ActionModuleFireModeSelector
             __customData.delayFiringCo = null;
         }
         __customData.isRequestedByCoroutine = false;
+    }
+
+    [HarmonyPatch(nameof(ItemActionRanged.getUserData)), MethodTargetPostfix]
+    public void Postfix_getUserData(ItemActionData _actionData, FireModeData __customData, ref int __result)
+    {
+        __result = RequireUserDataBits.InjectUserDataBits(__result, __customData.currentFireMode, shiftBits);
+    }
+
+    [HarmonyPatch(nameof(ItemAction.ItemActionEffects)), MethodTargetPrefix]
+    public bool Prefix_ItemActionEffects(ItemActionData _actionData, FireModeData __customData, int _firingState, ref int _userData)
+    {
+        //assuming that firing end always happens before firemode switch
+        if (_firingState > 0)
+        {
+            byte fireMode = (byte)RequireUserDataBits.ExtractUserDataBits(ref _userData, userDataMask, shiftBits);
+            //Log.Out($"Extracted fire mode {fireMode} from user data {_userData} (mask {userDataMask}, shift {shiftBits})\n{StackTraceUtility.ExtractStackTrace()}");
+            __customData.fireModes[fireMode].SyncSounds(_actionData, __customData, fireMode);
+        }
+        return true;
     }
 
     [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPostfix]
@@ -185,7 +239,7 @@ public class ActionModuleFireModeSelector
     {
         public string switchSound;
         public FireMode[] fireModes;
-        public string[] modeNames;
+        public string originalSoundStart, originalSoundLoop, originalSoundEnd;
         public byte currentFireMode;
         public Coroutine delayFiringCo;
         public bool isRequestedByCoroutine;
@@ -210,15 +264,14 @@ public class ActionModuleFireModeSelector
                 }
                 _data.invData.holdingEntity.emodel.avatarController.TriggerEvent(FireModeSwitchParamHashes[_data.indexInEntityOfAction]);
             }
-            if (!string.IsNullOrEmpty(modeNames[_fireMode]))
+            if (!string.IsNullOrEmpty(fireModes[_fireMode].modeName))
             {
-                GameManager.ShowTooltip(_data.invData.holdingEntity as EntityPlayerLocal, modeNames[_fireMode], true);
+                GameManager.ShowTooltip(_data.invData.holdingEntity as EntityPlayerLocal, fireModes[_fireMode].modeName, true);
             }
             else
             {
                 GameManager.ShowTooltip(_data.invData.holdingEntity as EntityPlayerLocal, "ttCurrentFiringMode", _fireMode.ToString(), null, null, true);
             }
-            //GameManager.ShowTooltip(_data.invData.holdingEntity as EntityPlayerLocal, "ttCurrentFiringMode", string.IsNullOrEmpty(modeNames[_fireMode]) ? _fireMode.ToString() : Localization.Get(modeNames[_fireMode]), null, null, true);
             _data.invData.holdingEntity.MinEventContext.ItemActionData = _data;
             _data.invData.holdingEntity.FireEvent(CustomEnums.onSelfBurstModeChanged);
             UpdateDelay(_data);
@@ -242,10 +295,6 @@ public class ActionModuleFireModeSelector
         public void UpdateDelay(ItemActionData _data)
         {
             FireMode curFireMode = fireModes[currentFireMode];
-            //if (curFireMode.burstCount == 1)
-            //{
-            //    return;
-            //}
 
             var rangedData = _data as ItemActionRanged.ItemActionDataRanged;
             var rangedAction = _data.invData.item.Actions[_data.indexInEntityOfAction] as ItemActionRanged;
@@ -293,16 +342,13 @@ public class ActionModuleFireModeSelector
         {
             FireMode curFireMode = fireModes[currentFireMode];
             var rangedData = _data as ItemActionRanged.ItemActionDataRanged;
-            //byte curBurstCount = rangedData.curBurstCount;
             for (int i = 0; i < curFireMode.burstCount; i++)
             {
                 isRequestedByCoroutine = true;
                 rangedData.bPressed = true;
                 rangedData.bReleased = false;
                 rangedData.m_LastShotTime = 0;
-                //rangedData.state = ItemActionFiringState.Off;
                 _instance.ExecuteAction(_data, false);
-                //rangedData.curBurstCount = (byte)(curBurstCount + i + 1);
                 isRequestedByCoroutine = false;
                 if (rangedData.invData.itemValue.Meta <= 0 && !_instance.HasInfiniteAmmo(_data))
                 {

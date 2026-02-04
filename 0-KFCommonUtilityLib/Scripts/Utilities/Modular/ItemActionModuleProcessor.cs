@@ -1,12 +1,13 @@
-﻿using Mono.Cecil;
+﻿using HarmonyLib;
+using KFCommonUtilityLib.Attributes;
+using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Mono.Cecil.Rocks;
 using System;
 using System.Collections.Generic;
-using UniLinq;
 using System.Reflection;
+using UniLinq;
 using MethodAttributes = Mono.Cecil.MethodAttributes;
-using Mono.Cecil.Rocks;
-using KFCommonUtilityLib.Attributes;
 
 namespace KFCommonUtilityLib
 {
@@ -22,7 +23,45 @@ namespace KFCommonUtilityLib
 
         public bool BuildConstructor(ModuleManipulator manipulator, MethodDefinition mtddef_ctor)
         {
-            return false;
+            manipulator.BuildDefaultConstructor(mtddef_ctor);
+            var ins_ret = mtddef_ctor.Body.Instructions[mtddef_ctor.Body.Instructions.Count - 1];
+            mtddef_ctor.Body.Instructions.RemoveAt(mtddef_ctor.Body.Instructions.Count - 1);
+            var il = mtddef_ctor.Body.GetILProcessor();
+            // check and set required user data bits
+            byte bitsUsed = 0;
+            for (int i = 0; i < manipulator.moduleTypes.Length; i++)
+            {
+                Type moduleType = manipulator.moduleTypes[i];
+                var attr = moduleType.GetCustomAttribute<RequireUserDataBits>();
+                if (attr == null)
+                    continue;
+
+                var fld_mask = AccessTools.Field(moduleType, attr.MaskField);
+                if (fld_mask == null)
+                    throw new ArgumentException($"Field {attr.MaskField} not found in module type {moduleType.FullName}!");
+                if (Type.GetTypeCode(fld_mask.FieldType) != TypeCode.Int32)
+                    throw new ArgumentException($"Field {attr.MaskField} in module type {moduleType.FullName} is not of type Int32!");
+
+                var fld_shift = AccessTools.Field(moduleType, attr.ShiftField);
+                if (fld_shift == null)
+                    throw new ArgumentException($"Field {attr.ShiftField} not found in module type {moduleType.FullName}!");
+                if (Type.GetTypeCode(fld_shift.FieldType) != TypeCode.Byte)
+                    throw new ArgumentException($"Field {attr.ShiftField} in module type {moduleType.FullName} is not of type Byte!");
+
+                int shift = 32 - attr.Bits - bitsUsed;
+                int mask = ((1 << attr.Bits) - 1) << shift;
+                bitsUsed += attr.Bits;
+                var flddef_module = manipulator.arr_flddef_modules[i];
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Ldfld, flddef_module);
+                il.Emit(OpCodes.Dup);
+                il.Emit(OpCodes.Ldc_I4, mask);
+                il.Emit(OpCodes.Stfld, manipulator.module.ImportReference(fld_mask));
+                il.Emit(OpCodes.Ldc_I4, shift);
+                il.Emit(OpCodes.Stfld, manipulator.module.ImportReference(fld_shift));
+            }
+            il.Append(ins_ret);
+            return true;
         }
 
         public void InitModules(ModuleManipulator manipulator, Type targetType, Type baseType, params Type[] moduleTypes)

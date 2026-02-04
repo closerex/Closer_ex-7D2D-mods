@@ -115,18 +115,7 @@ namespace KFCommonUtilityLib
             MethodDefinition mtddef_ctor = new MethodDefinition(".ctor", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName, module.TypeSystem.Void);
             if (processor == null || !processor.BuildConstructor(this, mtddef_ctor))
             {
-                var il = mtddef_ctor.Body.GetILProcessor();
-                il.Append(il.Create(OpCodes.Ldarg_0));
-                il.Append(il.Create(OpCodes.Call, module.ImportReference(targetType.GetConstructor(Array.Empty<Type>()))));
-                il.Append(il.Create(OpCodes.Nop));
-                for (int i = 0; i < arr_flddef_modules.Length; i++)
-                {
-                    il.Append(il.Create(OpCodes.Ldarg_0));
-                    il.Append(il.Create(OpCodes.Newobj, module.ImportReference(moduleTypes[i].GetConstructor(Array.Empty<Type>()))));
-                    il.Append(il.Create(OpCodes.Stfld, arr_flddef_modules[i]));
-                    il.Append(il.Create(OpCodes.Nop));
-                }
-                il.Append(il.Create(OpCodes.Ret));
+                BuildDefaultConstructor(mtddef_ctor);
             }
             typedef_newTarget.Methods.Add(mtddef_ctor);
 
@@ -349,6 +338,20 @@ namespace KFCommonUtilityLib
 
                 //Log.Out($"Add method override to new action: {mtd.Method.Name}");
             }
+        }
+
+        public void BuildDefaultConstructor(MethodDefinition mtddef_ctor)
+        {
+            var il = mtddef_ctor.Body.GetILProcessor();
+            il.Append(il.Create(OpCodes.Ldarg_0));
+            il.Append(il.Create(OpCodes.Call, module.ImportReference(targetType.GetConstructor(Array.Empty<Type>()))));
+            for (int i = 0; i < arr_flddef_modules.Length; i++)
+            {
+                il.Append(il.Create(OpCodes.Ldarg_0));
+                il.Append(il.Create(OpCodes.Newobj, module.ImportReference(moduleTypes[i].GetConstructor(Array.Empty<Type>()))));
+                il.Append(il.Create(OpCodes.Stfld, arr_flddef_modules[i]));
+            }
+            il.Append(il.Create(OpCodes.Ret));
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Attributes;
+using KFCommonUtilityLib.Scripts.Utilities;
 using UnityEngine;
 
 [TypeTarget(typeof(ItemAction)), TypeDataTarget(typeof(AnimationInterruptableData))]
@@ -22,13 +23,21 @@ public class ActionModuleAnimationInterruptable
     }
 
     [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
-    public void Postfix_OnModificationsChanged(ItemActionData _data, AnimationInterruptableData __customData)
+    public void Postfix_OnModificationsChanged(ItemAction __instance, ItemActionData _data, AnimationInterruptableData __customData)
     {
         __customData.targets = AnimationRiggingManager.GetHoldingRigTargetsFromPlayer(_data.invData.holdingEntity);
         if (__customData.targets && __customData.targets.IsAnimationSet)
         {
             __customData.animator = __customData.targets.GraphBuilder.WeaponWrapper;
         }
+        string str = "true";
+        __instance.Properties.ParseString("InterruptionEnabled", ref str);
+        str = _data.invData.itemValue.GetPropertyOverrideForAction("InterruptionEnabled", str, _data.indexInEntityOfAction);
+        if (!StringParsers.TryParseBool(str, out __customData.interruptionEnabled))
+        {
+            __customData.interruptionEnabled = true;
+        }
+
         __customData.interruptRequested = false;
     }
 
@@ -54,11 +63,12 @@ public class ActionModuleAnimationInterruptable
     {
         public AnimationTargetsAbs targets;
         public IAnimatorWrapper animator;
+        public bool interruptionEnabled;
         public bool interruptRequested;
 
         public bool IsInterruptable()
         {
-            return targets && targets.IsAnimationSet && animator.IsValid;
+            return interruptionEnabled && targets && targets.IsAnimationSet && animator.IsValid;
         }
     }
 }

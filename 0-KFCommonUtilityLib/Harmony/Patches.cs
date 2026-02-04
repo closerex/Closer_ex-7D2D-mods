@@ -390,31 +390,31 @@ public static class CommonUtilityPatch
         return codes;
     }
 
-    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.triggerReleased))]
-    [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_triggerReleased_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
-    {
-        var mtd_effect = AccessTools.Method(typeof(IGameManager), nameof(IGameManager.ItemActionEffectsServer));
-        var mtd_data = AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.getUserData));
-        var codes = instructions.ToList();
+    //[HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.triggerReleased))]
+    //[HarmonyTranspiler]
+    //private static IEnumerable<CodeInstruction> Transpiler_triggerReleased_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
+    //{
+    //    var mtd_effect = AccessTools.Method(typeof(IGameManager), nameof(IGameManager.ItemActionEffectsServer));
+    //    var mtd_data = AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.getUserData));
+    //    var codes = instructions.ToList();
 
-        for (int i = 0; i < codes.Count; i++)
-        {
-            if (codes[i].Calls(mtd_effect))
-            {
-                codes.InsertRange(i, new CodeInstruction[]
-                {
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    new CodeInstruction(OpCodes.Ldarg_1),
-                    new CodeInstruction(OpCodes.Callvirt, mtd_data)
-                });
-                codes.RemoveAt(i - 1);
-                break;
-            }
-        }
+    //    for (int i = 0; i < codes.Count; i++)
+    //    {
+    //        if (codes[i].Calls(mtd_effect))
+    //        {
+    //            codes.InsertRange(i, new CodeInstruction[]
+    //            {
+    //                new CodeInstruction(OpCodes.Ldarg_0),
+    //                new CodeInstruction(OpCodes.Ldarg_1),
+    //                new CodeInstruction(OpCodes.Callvirt, mtd_data)
+    //            });
+    //            codes.RemoveAt(i - 1);
+    //            break;
+    //        }
+    //    }
 
-        return codes;
-    }
+    //    return codes;
+    //}
 
     [HarmonyPatch(typeof(GameManager), nameof(GameManager.StartGame))]
     [HarmonyPrefix]
@@ -1633,6 +1633,14 @@ public static class CommonUtilityPatch
     }
     private static readonly int MeleeRunningHash = Animator.StringToHash("IsMeleeRunning");
     private static readonly int PowerAttackHash = Animator.StringToHash("PowerAttack");
+
+    //[HarmonyPatch(typeof(AvatarLocalPlayerController), nameof(AvatarController._setBool), new[] { typeof(int), typeof(bool), typeof(bool)})]
+    //[HarmonyPostfix]
+    //private static void Postfix_Test(int _pid)
+    //{
+    //    if (_pid == MeleeRunningHash)
+    //        Log.Out($"set avatar bool\n{StackTraceUtility.ExtractStackTrace()}");
+    //}
 
     [HarmonyPatch(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.ExecuteAction))]
     [HarmonyTranspiler]

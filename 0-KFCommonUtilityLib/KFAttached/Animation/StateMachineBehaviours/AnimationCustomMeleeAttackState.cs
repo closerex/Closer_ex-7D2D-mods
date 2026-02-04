@@ -14,6 +14,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
 {
     public float RaycastTime = 0.3f;
     public bool GrazeAsRaycast = false;
+    public bool UseRaycast = true;
     public bool UseGraze = true;
     public float CustomGrazeCastTime = 0.3f;
     public float CustomGrazeCastDuration = 0f;
@@ -116,6 +117,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         if (itemActionDynamicMeleeData != null)
         {
             itemActionDynamicMeleeData.lastUseTime = Time.time;
+            itemActionDynamicMeleeData.HasFinished = false;
         }
         ItemValue holdingItemItemValue = entity.inventory.holdingItemItemValue;
         ItemClass itemClass = holdingItemItemValue.ItemClass;
@@ -159,11 +161,11 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
                 Log.Out("Item class: null");
             }
         }
-        if (!GrazeAsRaycast)
+        if (UseRaycast && !GrazeAsRaycast)
         { 
             impactCo = ThreadManager.StartCoroutine(impactStart(animator, layerIndex, length));
         }
-        if (UseGraze)
+        if (UseGraze || GrazeAsRaycast)
         {
             grazeCo = ThreadManager.StartCoroutine(customGrazeStart(length));
         }
@@ -186,7 +188,15 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
                 ItemActionDynamicMelee.ItemActionDynamicMeleeData itemActionDynamicMeleeData = entity.inventory.holdingItemData.actionData[actionIndex] as ItemActionDynamicMelee.ItemActionDynamicMeleeData;
                 if (itemActionDynamicMeleeData != null)
                 {
-                    if ((entity.inventory.holdingItem.Actions[actionIndex] as ItemActionDynamicMelee).Raycast(itemActionDynamicMeleeData))
+                    ItemActionDynamicMelee itemActionDynamicMelee = (ItemActionDynamicMelee)entity.inventory.holdingItem.Actions[actionIndex];
+                    float originalSwingAngle = itemActionDynamicMelee.SwingAngle;
+                    float originalSwingDegrees = itemActionDynamicMelee.SwingDegrees;
+                    itemActionDynamicMelee.SwingAngle = SwingAngle;
+                    itemActionDynamicMelee.SwingDegrees = SwingDegrees;
+                    bool hit = itemActionDynamicMelee.Raycast(itemActionDynamicMeleeData);
+                    itemActionDynamicMelee.SwingAngle = originalSwingAngle;
+                    itemActionDynamicMelee.SwingDegrees = originalSwingDegrees;
+                    if (hit)
                     {
                         if (isValidAlternative)
                         {
@@ -274,30 +284,34 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
                 Log.Out($"Invalid graze!");
                 goto Return;
             }
-            bool isValidAlternative = IsAlternative && multiInvData != null && multiInvData.boundInvData != null;
-            var prevData = SetParams(isValidAlternative);
-            var action = entity.inventory.holdingItem.Actions[actionIndex] as ItemActionDynamicMelee;
-            float originalSwingAngle = action.SwingAngle;
-            float originalSwingDegrees = action.SwingDegrees;
-            action.SwingAngle = SwingAngle;
-            action.SwingDegrees = SwingDegrees;
-            bool grazeResult = GrazeAsRaycast ? action.Raycast(data) : action.GrazeCast(data, normalizedTime % 1);
-            if (GrazeCanHitSameTarget)
+            if (!GrazeAsRaycast || UseRaycast)
             {
-                data.alreadyHitEnts.Clear();
-                data.alreadyHitBlocks.Clear();
+                bool isValidAlternative = IsAlternative && multiInvData != null && multiInvData.boundInvData != null;
+                var prevData = SetParams(isValidAlternative);
+                var action = entity.inventory.holdingItem.Actions[actionIndex] as ItemActionDynamicMelee;
+                float originalSwingAngle = action.SwingAngle;
+                float originalSwingDegrees = action.SwingDegrees;
+                action.SwingAngle = SwingAngle;
+                action.SwingDegrees = SwingDegrees;
+                bool grazeResult = GrazeAsRaycast ? action.Raycast(data) : action.GrazeCast(data, normalizedTime % 1);
+                if (GrazeCanHitSameTarget)
+                {
+                    data.alreadyHitEnts.Clear();
+                    data.alreadyHitBlocks.Clear();
+                }
+                if (ConsoleCmdReloadLog.LogInfo)
+                {
+                    Log.Out($"GrazeCast {grazeResult}!");
+                }
+                action.SwingAngle = originalSwingAngle;
+                action.SwingDegrees = originalSwingDegrees;
+                RestoreParams(isValidAlternative, prevData);
             }
-            if (ConsoleCmdReloadLog.LogInfo)
-            {
-                Log.Out($"GrazeCast {grazeResult}!");
-            }
-            action.SwingAngle = originalSwingAngle;
-            action.SwingDegrees = originalSwingDegrees;
             if (attackDurationNormalized <= 0)
             {
                 data.lastUseTime = Time.time;
             }
-            RestoreParams(isValidAlternative, prevData);
+
             if (!CheckMeleeRunning(data))
             {
                 break;
@@ -401,7 +415,8 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
     {
         if (data.invData.itemValue.PercentUsesLeft <= 0f || data.invData.holdingEntity.Stamina < data.StaminaUsage || !data.invData.holdingEntity.inventory.GetIsFinishedSwitchingHeldItem() || (attackDurationNormalized <= 0 && data.HasReleased))
         {
-            //Log.Out($"Stopping melee running: {attackDurationNormalized} {data.HasReleased}");
+            if (ConsoleCmdReloadLog.LogInfo)
+                Log.Out($"Stopping melee running: {attackDurationNormalized} {data.HasReleased}");
             data.invData.holdingEntity.emodel.avatarController.UpdateBool(MeleeRunningHash, false, true);
             data.HasExecuted = true;
             return false;

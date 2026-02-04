@@ -9,9 +9,8 @@ using UniLinq;
 using UnityEngine;
 
 [TypeTarget(typeof(ItemAction)), TypeDataTarget(typeof(TargetSeekerData))]
-internal class ActionModuleTargetSeeker
+public class ActionModuleTargetSeeker
 {
-    public const int MAX_BODYPART_COUNT = 8;
     public FastTags<TagGroup.Global> tagsTargetSeekRange;
     public FastTags<TagGroup.Global> tagsTargetSeekAngleHor;
     public FastTags<TagGroup.Global> tagsTargetSeekAngleVer;
@@ -37,13 +36,13 @@ internal class ActionModuleTargetSeeker
         tagsTargetSeekAngleOffsetVer = FastTags<TagGroup.Global>.Parse("TargetSeekAngleOffsetVer") | commonTags;
         sortingOrder = new()
         {
-            mask = (EnumBodyPartHit)int.MaxValue
+            mask = (EnumBodyPartHit)(-1)
         };
         unsafe
         {
             fixed(byte* ptr = sortingOrder.orders)
             {
-                var span = MemoryMarshal.CreateSpan(ref *ptr, MAX_BODYPART_COUNT);
+                var span = MemoryMarshal.CreateSpan(ref *ptr, BodyPartSortingOrder.MAX_BODYPART_COUNT);
                 span.Fill(byte.MaxValue);
             }
         }
@@ -251,43 +250,12 @@ internal class ActionModuleTargetSeeker
         return codes;
     }
 
-    public unsafe struct BodyPartSortingOrder
-    {
-        public EnumBodyPartHit mask;
-        public fixed byte orders[MAX_BODYPART_COUNT];
-
-        public static int BodyPartToOrderIndex(EnumBodyPartHit part)
-        {
-            if (part.HasFlag(EnumBodyPartHit.Head))
-            {
-                return 0;
-            }
-            if (part.HasFlag(EnumBodyPartHit.Torso))
-            {
-                return 1;
-            }
-            if (part.IsArm())
-            {
-                return 2;
-            }
-            if (part.IsLeg())
-            {
-                return 3;
-            }
-            if (part.HasFlag(EnumBodyPartHit.Special))
-            {
-                return 4;
-            }
-            return -1;
-        }
-    }
-
     public class EntityRayHitInfo : WorldRayHitInfo
     {
         public EntityAlive entityHit;
     }
 
-    public class TargetSeekerData : IComparer<EnumBodyPartHit>
+    public class TargetSeekerData
     {
         private ItemInventoryData invData;
         private ItemActionData actionData;
@@ -302,32 +270,6 @@ internal class ActionModuleTargetSeeker
             invData = _inventoryData;
             actionData = __instance;
             module = __customModule;
-        }
-
-        int IComparer<EnumBodyPartHit>.Compare(EnumBodyPartHit x, EnumBodyPartHit y)
-        {
-            int orderx = BodyPartSortingOrder.BodyPartToOrderIndex(x), ordery = BodyPartSortingOrder.BodyPartToOrderIndex(y);
-            if (orderx == ordery || orderx < 0 && ordery < 0)
-            {
-                return 0;
-            }
-            if (orderx > 0 && ordery < 0)
-            {
-                return -1;
-            }
-            if (orderx < 0 && ordery > 0)
-            {
-                return 1;
-            }
-            unsafe
-            {
-                int res = module.sortingOrder.orders[orderx] - module.sortingOrder.orders[ordery];
-                if (res == 0)
-                {
-                    return orderx - ordery;
-                }
-                return res;
-            }
         }
 
         public bool GetValidTargetsInRange()
@@ -373,7 +315,7 @@ internal class ActionModuleTargetSeeker
 
             var colliders = entity.GetComponentsInChildren<Collider>().Select(c => (collider: c, part: DamageSource.TagToBodyPart(c.tag)))
                                                                       .Where(c => module.sortingOrder.mask.HasFlag(c.part))
-                                                                      .OrderBy(c => c.part, this).ToArray();
+                                                                      .OrderBy(c => c.part, module.sortingOrder).ToArray();
 
             if (colliders.Length > 0)
             {

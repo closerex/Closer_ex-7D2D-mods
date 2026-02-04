@@ -598,9 +598,10 @@
     <Compile Include="KFAttached\RigAdaptors\Adaptors\TwistCorrectionAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\Adaptors\TwoBoneIKConstraintAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\Utils\KFExtensions.cs" />
+    <Compile Include="Scripts\Attributes\RequireUserDataBits.cs" />
     <Compile Include="Scripts\Attributes\TypeDataTargetAttribute.cs" />
     <Compile Include="Scripts\Attributes\MethodTargetAttribute.cs" />
-    <Compile Include="Scripts\Attributes\PatchTargetAttribute.cs" />
+    <Compile Include="Scripts\Attributes\TypeTargetAttribute.cs" />
     <Compile Include="Scripts\Attributes\TypeTargetExtensionAttribute.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdListParticleScripts.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdMultiActionItemValueDebug.cs" />
@@ -618,6 +619,7 @@
     <Compile Include="Scripts\Items\ModularActions\ActionModuleInversedAction.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleLimitedCombo.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleLoopSoundFix.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModuleMagicSlash.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMeleeShooter.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleAnimationLocked.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleCustomAnimationDelay.cs" />
@@ -635,8 +637,11 @@
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMetaConsumer.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMetadataAsHUDStatWithPassiveMax.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMetadataAsHUDStatWithValueMax.cs" />
+    <Compile Include="Scripts\Items\ModularActions\ActionModulePrefireRequired.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleTargetSeeker.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleThrowFromInventory.cs" />
+    <Compile Include="Scripts\MinEventActions\MinEventActionLogParams.cs" />
+    <Compile Include="Scripts\Utilities\BodyPartSortingOrder.cs" />
     <Compile Include="Scripts\Items\ModularActions\MetadataAsHUDStatAbs.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMultiActionFix.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMultiBarrel.cs" />
@@ -723,6 +728,7 @@
     <Compile Include="Scripts\Requirements\RoundsInInventory.cs" />
     <Compile Include="Scripts\Requirements\RoundsInMagazineBase.cs" />
     <Compile Include="Scripts\StaticManagers\DelayLoadModuleManager.cs" />
+    <Compile Include="Scripts\Utilities\AreaSweep.cs" />
     <Compile Include="Scripts\Utilities\LocalPlayerCameraUpdater.cs" />
     <Compile Include="Scripts\Utilities\MiscExtensions.cs" />
     <Compile Include="Scripts\Utilities\Modular\ItemInventoryDataModuleProcessor.cs" />
@@ -769,6 +775,7 @@
     <Compile Include="Scripts\Utilities\EntityInventoryExtension.cs" />
     <Compile Include="Scripts\Utilities\TemporaryMuzzleFlash.cs" />
     <Compile Include="Scripts\Utilities\TypeBasedUID.cs" />
+    <Compile Include="Scripts\Utilities\VoxelCaster.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ModSettings.xml" />

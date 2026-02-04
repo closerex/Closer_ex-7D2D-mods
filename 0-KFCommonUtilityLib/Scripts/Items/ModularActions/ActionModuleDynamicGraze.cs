@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Attributes;
+using UnityEngine;
 
 [TypeTarget(typeof(ItemActionDynamic))]
 public class ActionModuleDynamicGraze
@@ -41,28 +42,30 @@ public class ActionModuleDynamicGraze
     }
 
     [HarmonyPatch(nameof(ItemAction.OnHoldingUpdate)), MethodTargetPrefix]
-    private bool Prefix_OnHoldingUpdate(ItemActionDynamic __instance, ItemActionData _actionData, out (bool executed, bool useGrazeCast) __state)
+    private bool Prefix_OnHoldingUpdate(ItemActionDynamic __instance, ItemActionData _actionData, out (bool executed, bool useGrazeCast, float lastUseTime) __state)
     {
         if (_actionData.invData.holdingEntity is EntityPlayerLocal player)
         {
             var targets = AnimationRiggingManager.GetHoldingRigTargetsFromPlayer(player);
             if (targets && targets.IsAnimationSet)
             {
-                __state = (true, __instance.UseGrazingHits);
+                __state = (true, __instance.UseGrazingHits, _actionData.lastUseTime);
+                _actionData.lastUseTime = Time.time;
                 __instance.UseGrazingHits = false;
                 return true;
             }
         }
-        __state = (false, false);
+        __state = (false, false, -1);
         return true;
     }
 
     [HarmonyPatch(nameof(ItemAction.OnHoldingUpdate)), MethodTargetPostfix]
-    private void Postfix_OnHoldingUpdate(ItemActionDynamic __instance, (bool executed, bool useGrazeCast) __state)
+    private void Postfix_OnHoldingUpdate(ItemActionDynamic __instance, ItemActionData _actionData, (bool executed, bool useGrazeCast, float lastUseTime) __state)
     {
         if (__state.executed)
         {
             __instance.UseGrazingHits = __state.useGrazeCast;
+            _actionData.lastUseTime = __state.lastUseTime;
         }
     }
 
