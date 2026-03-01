@@ -58,9 +58,9 @@ public class ItemModuleDetonator
     }
 
     [HarmonyPatch(nameof(ItemClass.OnHoldingItemActivated)), MethodTargetPrefix]
-    public bool Prefix_OnHoldingItemActivated(ItemInventoryData _data, DetonatorData __customData)
+    public bool Prefix_OnHoldingItemActivated(ItemInventoryData _data, DetonatorData __customData, bool __runOriginal)
     {
-        if (!HasDetonateItem())
+        if (!__runOriginal || !HasDetonateItem())
         {
             return false;
         }

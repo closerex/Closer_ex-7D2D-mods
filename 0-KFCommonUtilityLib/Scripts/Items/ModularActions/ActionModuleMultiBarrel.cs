@@ -7,9 +7,11 @@ using System.Reflection.Emit;
 using UniLinq;
 using UnityEngine;
 
-[TypeTarget(typeof(ItemActionRanged)), TypeDataTarget(typeof(MultiBarrelData))]
+[TypeTarget(typeof(ItemActionRanged)), TypeDataTarget(typeof(MultiBarrelData)), RequireUserDataBits(nameof(mask), nameof(shift), 8)]
 public class ActionModuleMultiBarrel
 {
+    public int mask;
+    public byte shift;
     [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
     public void Postfix_OnModificationChanged(ItemActionData _data, MultiBarrelData __customData, ItemActionRanged __instance)
     {
@@ -88,16 +90,16 @@ public class ActionModuleMultiBarrel
     [HarmonyPatch(nameof(ItemActionRanged.getUserData)), MethodTargetPostfix]
     public void Postfix_getUserData(MultiBarrelData __customData, ref int __result)
     {
-        __result |= ((byte)__customData.curBarrelIndex) << 8;
+        __result = RequireUserDataBits.InjectUserDataBits(__result, __customData.curBarrelIndex, shift);
     }
 
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemAction.ItemActionEffects)), MethodTargetPrefix]
-    public bool Prefix_ItemActionEffects_ItemActionRanged(ItemActionData _actionData, int _userData, int _firingState, MultiBarrelData __customData)
+    public void Prefix_ItemActionEffects_ItemActionRanged(ItemActionData _actionData, int _userData, int _firingState, MultiBarrelData __customData)
     {
         ItemActionRanged.ItemActionDataRanged rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
         if (rangedData != null && _firingState != 0)
         {
-            byte index = (byte)(_userData >> 8);
+            byte index = (byte)RequireUserDataBits.ExtractUserDataBits(ref _userData, mask, shift);
             rangedData.muzzle = __customData.muzzles[index] ?? rangedData.muzzle;
             if (_actionData is IModuleContainerFor<ActionModuleShellEjector.ShellEjectorData> dataModule)
             {
@@ -106,18 +108,17 @@ public class ActionModuleMultiBarrel
             }
             __customData.SetAnimatorParam(index);
         }
-        return true;
     }
 
     [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemAction.ItemActionEffects)), MethodTargetPrefix]
-    public bool Prefix_ItemActionEffects_ItemActionLauncher(ItemActionData _actionData, int _userData, int _firingState, MultiBarrelData __customData)
+    public void Prefix_ItemActionEffects_ItemActionLauncher(ItemActionData _actionData, int _userData, int _firingState, MultiBarrelData __customData)
     {
         ItemActionLauncher.ItemActionDataLauncher launcherData = _actionData as ItemActionLauncher.ItemActionDataLauncher;
         if (launcherData != null)
         {
-            launcherData.projectileJointT = __customData.projectileJoints[(byte)(_userData >> 8)] ?? launcherData.projectileJointT;
+            launcherData.projectileJointT = __customData.projectileJoints[(byte)RequireUserDataBits.ExtractUserDataBits(ref _userData, mask, shift)] ?? launcherData.projectileJointT;
         }
-        return Prefix_ItemActionEffects_ItemActionRanged(_actionData, _userData, _firingState, __customData);
+        Prefix_ItemActionEffects_ItemActionRanged(_actionData, _userData, _firingState, __customData);
     }
 
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemAction.ExecuteAction)), MethodTargetTranspiler]

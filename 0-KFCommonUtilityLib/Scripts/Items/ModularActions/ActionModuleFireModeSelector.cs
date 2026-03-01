@@ -157,7 +157,7 @@ public class ActionModuleFireModeSelector
     }
 
     [HarmonyPatch(nameof(ItemAction.ItemActionEffects)), MethodTargetPrefix]
-    public bool Prefix_ItemActionEffects(ItemActionData _actionData, FireModeData __customData, int _firingState, ref int _userData)
+    public void Prefix_ItemActionEffects(ItemActionData _actionData, FireModeData __customData, int _firingState, ref int _userData)
     {
         //assuming that firing end always happens before firemode switch
         if (_firingState > 0)
@@ -166,7 +166,6 @@ public class ActionModuleFireModeSelector
             //Log.Out($"Extracted fire mode {fireMode} from user data {_userData} (mask {userDataMask}, shift {shiftBits})\n{StackTraceUtility.ExtractStackTrace()}");
             __customData.fireModes[fireMode].SyncSounds(_actionData, __customData, fireMode);
         }
-        return true;
     }
 
     [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPostfix]
@@ -195,8 +194,12 @@ public class ActionModuleFireModeSelector
     }
 
     [HarmonyPatch(nameof(ItemAction.ExecuteAction)), MethodTargetPrefix]
-    private bool Prefix_ExecuteAction(ItemActionData _actionData, ItemActionRanged __instance, FireModeData __customData, bool _bReleased)
+    private bool Prefix_ExecuteAction(ItemActionData _actionData, ItemActionRanged __instance, FireModeData __customData, bool _bReleased, bool __runOriginal)
     {
+        if (!__runOriginal)
+        {
+            return false;
+        }
         if (__customData.isRequestedByCoroutine)
         {
             return true;

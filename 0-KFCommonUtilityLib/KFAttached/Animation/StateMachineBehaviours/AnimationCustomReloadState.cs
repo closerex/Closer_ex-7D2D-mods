@@ -24,7 +24,7 @@ public class AnimationCustomReloadState : StateMachineBehaviour
 #if DEBUG
         Log.Out($"start reload {actionIndex}");
 #endif
-        actionData = player.inventory.holdingItemData.actionData[actionIndex] as ItemActionRanged.ItemActionDataRanged;
+        actionData = player?.inventory.holdingItemData.actionData[actionIndex] as ItemActionRanged.ItemActionDataRanged;
         if (eventBridge == null)
         {
             eventBridge = animator.GetComponent<AnimationReloadEvents>();

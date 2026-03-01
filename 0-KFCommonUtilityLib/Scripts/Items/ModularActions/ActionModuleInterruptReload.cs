@@ -16,10 +16,9 @@ public class ActionModuleInterruptReload
     public bool internalCancelOnly = false;
 
     [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPrefix]
-    public bool Prefix_StartHolding(InterruptData __customData)
+    public void Prefix_StartHolding(InterruptData __customData)
     {
         __customData.Reset();
-        return true;
     }
 
     [HarmonyPatch(nameof(ItemAction.ReadFrom)), MethodTargetPostfix]
@@ -61,9 +60,13 @@ public class ActionModuleInterruptReload
     }
 
     [HarmonyPatch(nameof(ItemAction.ExecuteAction)), MethodTargetPrefix]
-    public bool Prefix_ExecuteAction(ItemActionData _actionData, bool _bReleased, InterruptData __customData, out State __state)
+    public bool Prefix_ExecuteAction(ItemActionData _actionData, bool _bReleased, InterruptData __customData, bool __runOriginal, out State __state)
     {
         __state = default;
+        if (!__runOriginal)
+        {
+            return false;
+        }
         if (!_bReleased && __customData.isInterruptRequested && __customData.instantFiringRequested)
         {
             if (_actionData.invData.itemValue.Meta > 0)
@@ -123,15 +126,14 @@ public class ActionModuleInterruptReload
     }
 
     [HarmonyPatch(nameof(ItemAction.ItemActionEffects)), MethodTargetPrefix]
-    public bool Prefix_ItemActionEffects(ItemActionData _actionData, int _firingState, InterruptData __customData)
+    public void Prefix_ItemActionEffects(ItemActionData _actionData, int _firingState, InterruptData __customData)
     {
         var rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
-        if (_firingState != 0 && (rangedData.isReloading || rangedData.isWeaponReloading) && !(rangedData.invData.holdingEntity is EntityPlayerLocal) && __customData.eventBridge)
+        if (_firingState != 0 && (rangedData.isReloading || rangedData.isWeaponReloading) && rangedData.invData.holdingEntity is not EntityPlayerLocal && __customData.eventBridge)
         {
             __customData.eventBridge.OnReloadEnd();
             __customData.itemAnimator.Play(firingStateName, -1, 0f);
         }
-        return true;
     }
 
     public bool IsRequestPossible(InterruptData interruptData)

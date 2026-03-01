@@ -12,6 +12,8 @@
 !BetterModCompatibility/**
 !CustomFPVFov/
 !CustomFPVFov/**
+!CustomAimFovCorrectionPatch/
+!CustomAimFovCorrectionPatch/**
 !CustomParticleLoaderBuffArea/
 !CustomParticleLoaderBuffArea/**
 !CustomParticleLoaderMultiExplosion/
@@ -28,6 +30,8 @@
 !KeepReloading/**
 !FPVLegs/
 !FPVLegs/**
+!FPVLegsPiPCameraPatches/
+!FPVLegsPiPCameraPatches/**
 !FullautoLauncher/
 !FullautoLauncher/**
 !FullautoLauncherAnimationRiggingCompatibilityPatch/
@@ -63,6 +67,8 @@
 !M16M203/**
 !QuartzUIPatch
 !QuartzUIPatch/**
+!TorchPatches
+!TorchPatches/**
 !ZCLSWeaponBoneCrusher
 !ZCLSWeaponBoneCrusher/**
 !ZCLSWeaponPackPistol

@@ -289,22 +289,29 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
                 bool isValidAlternative = IsAlternative && multiInvData != null && multiInvData.boundInvData != null;
                 var prevData = SetParams(isValidAlternative);
                 var action = entity.inventory.holdingItem.Actions[actionIndex] as ItemActionDynamicMelee;
-                float originalSwingAngle = action.SwingAngle;
-                float originalSwingDegrees = action.SwingDegrees;
-                action.SwingAngle = SwingAngle;
-                action.SwingDegrees = SwingDegrees;
-                bool grazeResult = GrazeAsRaycast ? action.Raycast(data) : action.GrazeCast(data, normalizedTime % 1);
-                if (GrazeCanHitSameTarget)
+                if (action != null)
                 {
-                    data.alreadyHitEnts.Clear();
-                    data.alreadyHitBlocks.Clear();
+                    float originalSwingAngle = action.SwingAngle;
+                    float originalSwingDegrees = action.SwingDegrees;
+                    action.SwingAngle = SwingAngle;
+                    action.SwingDegrees = SwingDegrees;
+                    bool grazeResult = GrazeAsRaycast ? action.Raycast(data) : action.GrazeCast(data, normalizedTime % 1);
+                    if (GrazeCanHitSameTarget)
+                    {
+                        data.alreadyHitEnts.Clear();
+                        data.alreadyHitBlocks.Clear();
+                    }
+                    if (ConsoleCmdReloadLog.LogInfo)
+                    {
+                        Log.Out($"GrazeCast {grazeResult}!");
+                    }
+                    action.SwingAngle = originalSwingAngle;
+                    action.SwingDegrees = originalSwingDegrees;
                 }
-                if (ConsoleCmdReloadLog.LogInfo)
+                else if (ConsoleCmdReloadLog.LogInfo)
                 {
-                    Log.Out($"GrazeCast {grazeResult}!");
+                    Log.Out($"GrazeCast invalid data! holdingItem {entity.inventory.holdingItem.Name} isAlt {isValidAlternative} actionIndex {actionIndex}");
                 }
-                action.SwingAngle = originalSwingAngle;
-                action.SwingDegrees = originalSwingDegrees;
                 RestoreParams(isValidAlternative, prevData);
             }
             if (attackDurationNormalized <= 0)

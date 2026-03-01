@@ -63,14 +63,15 @@ namespace FPVLegs
                 }
             }
 
-            foreach (var cloth in model.GetComponentsInChildren<Cloth>())
+            foreach (var cloth in model.GetComponentsInChildren<Cloth>(true))
             {
-                cloth.enabled = enabled;
+                cloth.enabled = enabled || FPVLegMode.disableShadow;
             }
 
             foreach (var renderer in model.GetComponentsInChildren<Renderer>(true))
             {
-                renderer.shadowCastingMode = (enabled || (!FPVLegMode.disableShadow && !model.TryGetComponent<Cloth>(out _))) ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
+                //renderer.shadowCastingMode = (enabled || (!FPVLegMode.disableShadow && !model.TryGetComponent<Cloth>(out _))) ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
+                renderer.shadowCastingMode = (enabled || !FPVLegMode.disableShadow) ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
                 if (renderer is SkinnedMeshRenderer skinnedMeshRenderer)
                 {
                     skinnedMeshRenderer.forceMatrixRecalculationPerRender = !enabled;
@@ -96,7 +97,9 @@ namespace FPVLegs
         {
             //var animator = player.emodel?.GetModelTransform()?.GetComponent<Animator>();
             var animator = player.emodel?.avatarController?.GetAnimator();
-            player.vp_FPCamera.gameObject.GetOrAddComponent<FPVLegCameraCallback>().enabled = player.bFirstPersonView;
+            FPVLegCameraCallback callback = player.vp_FPCamera.gameObject.GetOrAddComponent<FPVLegCameraCallback>();
+            callback.Init(player.vp_FPCamera);
+            callback.enabled = player.bFirstPersonView;
             if (animator)
             {
                 animator.enabled = true;
@@ -167,84 +170,63 @@ namespace FPVLegs
             UpdateTPVMeshState(__instance, true);
         }
 
-        //[HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.FixedUpdate))]
+        [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.Detach))]
+        [HarmonyPostfix]
+        private static void Postfix_EntityPlayerLocal_Detach(EntityPlayerLocal __instance)
+        {
+            UpdateTPVMeshState(__instance, !__instance.bFirstPersonView);
+        }
+
+        //[HarmonyPatch(typeof(MinEventActionAttachPrefabToHeldItem), nameof(MinEventActionAttachPrefabToHeldItem.Execute))]
         //[HarmonyTranspiler]
-        //private static IEnumerable<CodeInstruction> Transpiler_vp_FPCamera_FixedUpdate(IEnumerable<CodeInstruction> instructions)
+        //private static IEnumerable<CodeInstruction> Transpiler_MinEventActionAttachPrefabToHeldItem_Execute(IEnumerable<CodeInstruction> instructions)
         //{
         //    var codes = new List<CodeInstruction>(instructions);
-        //    var mtd_shake = AccessTools.Method(typeof(vp_FPCamera), nameof(vp_FPCamera.UpdateShakes));
+
+        //    var fld_pos = AccessTools.Field(typeof(MinEventActionAttachPrefabToHeldItem), nameof(MinEventActionAttachPrefabToHeldItem.local_offset));
+        //    var prop_scale = AccessTools.PropertySetter(typeof(Transform), nameof(Transform.localScale));
+        //    var prop_one = AccessTools.PropertyGetter(typeof(Vector3), nameof(Vector3.one));
+
         //    for (int i = 0; i < codes.Count; i++)
         //    {
-        //        if (codes[i].Calls(mtd_shake))
+        //        if (codes[i].LoadsField(fld_pos))
+        //        {
+        //            codes.InsertRange(i - 2, new[]
+        //            {
+        //                new CodeInstruction(codes[i - 2].opcode, codes[i - 2].operand),
+        //                new CodeInstruction(OpCodes.Callvirt, prop_one),
+        //                new CodeInstruction(OpCodes.Callvirt, prop_scale)
+        //            });
+        //            break;
+        //        }
+        //    }
+
+        //    return codes;
+        //}
+
+        //[HarmonyPatch(typeof(Inventory), nameof(Inventory.setHoldingItemTransform))]
+        //[HarmonyTranspiler]
+        //private static IEnumerable<CodeInstruction> Transpiler_Inventory_setHoldingItemTransform(IEnumerable<CodeInstruction> instructions)
+        //{
+        //    var codes = new List<CodeInstruction>(instructions);
+        //    var prop_pos = AccessTools.PropertySetter(typeof(Transform), nameof(Transform.position));
+        //    var prop_scale = AccessTools.PropertySetter(typeof(Transform), nameof(Transform.localScale));
+        //    var prop_one = AccessTools.PropertyGetter(typeof(Vector3), nameof(Vector3.one));
+        //    for (int i = 0; i < codes.Count; i++)
+        //    {
+        //        if (codes[i].Calls(prop_pos))
         //        {
         //            codes.InsertRange(i + 1, new[]
         //            {
-        //                new CodeInstruction(OpCodes.Ldarg_0),
-        //                CodeInstruction.Call(typeof(FPVLegPatches), nameof(UpdateTpvPosition))
+        //                new CodeInstruction(codes[i - 2].opcode, codes[i - 2].operand),
+        //                new CodeInstruction(OpCodes.Callvirt, prop_one),
+        //                new CodeInstruction(OpCodes.Callvirt, prop_scale)
         //            });
         //            break;
         //        }
         //    }
         //    return codes;
         //}
-
-        //[HarmonyPatch(typeof(vp_FPCamera), nameof(vp_FPCamera.LateUpdate))]
-        //[HarmonyPostfix]
-        //private static void Postfix_vp_FPCamera_LateUpdate(vp_FPCamera __instance)
-        //{
-        //    UpdateTpvPosition(__instance);
-        //}
-
-        [HarmonyPatch(typeof(MinEventActionAttachPrefabToHeldItem), nameof(MinEventActionAttachPrefabToHeldItem.Execute))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_MinEventActionAttachPrefabToHeldItem_Execute(IEnumerable<CodeInstruction> instructions)
-        {
-            var codes = new List<CodeInstruction>(instructions);
-
-            var fld_pos = AccessTools.Field(typeof(MinEventActionAttachPrefabToHeldItem), nameof(MinEventActionAttachPrefabToHeldItem.local_offset));
-            var prop_scale = AccessTools.PropertySetter(typeof(Transform), nameof(Transform.localScale));
-            var prop_one = AccessTools.PropertyGetter(typeof(Vector3), nameof(Vector3.one));
-
-            for (int i = 0; i < codes.Count; i++)
-            {
-                if (codes[i].LoadsField(fld_pos))
-                {
-                    codes.InsertRange(i - 2, new[]
-                    {
-                        new CodeInstruction(codes[i - 2].opcode, codes[i - 2].operand),
-                        new CodeInstruction(OpCodes.Callvirt, prop_one),
-                        new CodeInstruction(OpCodes.Callvirt, prop_scale)
-                    });
-                    break;
-                }
-            }
-
-            return codes;
-        }
-
-        [HarmonyPatch(typeof(Inventory), nameof(Inventory.setHoldingItemTransform))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_Inventory_setHoldingItemTransform(IEnumerable<CodeInstruction> instructions)
-        {
-            var codes = new List<CodeInstruction>(instructions);
-            var prop_pos = AccessTools.PropertySetter(typeof(Transform), nameof(Transform.position));
-            var prop_scale = AccessTools.PropertySetter(typeof(Transform), nameof(Transform.localScale));
-            var prop_one = AccessTools.PropertyGetter(typeof(Vector3), nameof(Vector3.one));
-            for (int i = 0; i < codes.Count; i++)
-            {
-                if (codes[i].Calls(prop_pos))
-                {
-                    codes.InsertRange(i + 1, new[]
-                    {
-                        new CodeInstruction(codes[i - 2].opcode, codes[i - 2].operand),
-                        new CodeInstruction(OpCodes.Callvirt, prop_one),
-                        new CodeInstruction(OpCodes.Callvirt, prop_scale)
-                    });
-                    break;
-                }
-            }
-            return codes;
-        }
     }
 
     public class FPVLegHelper : MonoBehaviour
@@ -338,8 +320,8 @@ namespace FPVLegs
                         }
                         lShoulder.localEulerAngles = new Vector3(0f, -7f, 0f);
                         rShoulder.localEulerAngles = new Vector3(0f, 187f, 180f);
-                        lUpperArm.localScale = Vector3.zero;
-                        rUpperArm.localScale = Vector3.zero;
+                        lUpperArm.localScale = new Vector3(.00001f, .00001f, .00001f);
+                        rUpperArm.localScale = new Vector3(.00001f, .00001f, .00001f);
                     }
                 }
                 else
@@ -368,26 +350,26 @@ namespace FPVLegs
         private static Vector3 headOffset = new Vector3(0f, 0.05f, -0.3f);
         private vp_FPCamera vp_camera;
 
-        public void OnEnable()
+        public void Init(vp_FPCamera vp_FPCamera)
         {
-            vp_camera = GetComponent<vp_FPCamera>();
-            if (!vp_camera)
-            {
-                Destroy(this);
-            }
+            vp_camera = vp_FPCamera;
         }
 
         public void OnPreCull()
         {
-            UpdateTpvPosition();
+            if (vp_camera)
+                UpdateTpvPosition();
         }
 
         public void OnPostRender()
         {
-            var model = vp_camera.FPController.localPlayer.emodel?.GetModelTransform();
-            if (model)
+            if (vp_camera)
             {
-                model.localPosition = Vector3.zero;
+                var model = vp_camera.FPController.localPlayer.emodel?.GetModelTransform();
+                if (model)
+                {
+                    model.localPosition = Vector3.zero;
+                }
             }
         }
 

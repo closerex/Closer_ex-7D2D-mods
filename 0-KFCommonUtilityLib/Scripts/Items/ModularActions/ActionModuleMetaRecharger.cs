@@ -73,18 +73,17 @@ public class ActionModuleMetaRecharger
     }
 
     [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPrefix]
-    private bool Prefix_StartHolding(ItemActionData _data, MetaRechargerData __customData)
+    private void Prefix_StartHolding(ItemActionData _data, MetaRechargerData __customData)
     {
         EntityAlive holdingEntity = _data.invData.holdingEntity;
         if (holdingEntity.isEntityRemote)
-            return true;
+            return;
         for (int i = 0; i < rechargeDatas.Length; i++)
         {
             holdingEntity.MinEventContext.Tags = rechargeTags[i].tagsOriginal;
             holdingEntity.FireEvent(CustomEnums.onRechargeValueUpdate, true);
         }
         UpdateBasicInterval(_data, __customData);
-        return true;
     }
 
     public void UpdateBasicInterval(ItemActionData _data, MetaRechargerData __customData)

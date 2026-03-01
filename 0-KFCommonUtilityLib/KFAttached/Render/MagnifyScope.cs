@@ -13,40 +13,42 @@ namespace KFCommonUtilityLib.KFAttached.Render
     public class MagnifyScope : MonoBehaviour
     {
 #if NotEditor
-        private static Shader newShader;
-        private static FieldInfo fieldResources = AccessTools.Field(typeof(PostProcessLayer), "m_Resources");
+        internal static Shader newShader;
+        internal static FieldInfo fieldResources = AccessTools.Field(typeof(PostProcessLayer), "m_Resources");
 #endif
-        private RenderTexture targetTexture;
-        private Renderer renderTarget;
+        internal RenderTexture targetTexture;
+        internal Renderer renderTarget;
 
-        private Camera pipCamera;
+        internal Camera pipCamera;
         [Header("Core")]
         [SerializeField]
-        private bool manualControl = false;
+        internal bool manualControl = false;
         [SerializeField]
-        private Transform cameraJoint;
+        internal Transform cameraJoint;
         [SerializeField]
-        private float aspectRatio = 1.0f;
+        internal float aspectRatio = 1.0f;
         [SerializeField]
-        private bool hideFpvModelInScope = false;
+        internal bool hideFpvModelInScope = false;
         [SerializeField]
-        private bool variableZoom = false;
+        internal bool variableZoom = false;
         [Header("Reticle Scaling")]
         [SerializeField]
-        private bool scaleReticle = false;
+        internal bool scaleReticle = false;
         [SerializeField]
-        private Vector2 reticleSizeRange = new Vector2(1, 1);
+        internal Vector2 reticleSizeRange = new Vector2(1, 1);
         //[SerializeField]
-        //private bool scaleDownReticle = false;
+        //internal bool scaleDownReticle = false;
         //[SerializeField]
-        //private float reticleScaleRatio = 1.0f;
+        //internal float reticleScaleRatio = 1.0f;
         [Header("Camera Texture Size And Procedural Aiming")]
         [SerializeField]
-        private Transform aimRef;
+        internal Transform aimRef;
         [SerializeField]
-        private float lensSizeFull;
+        internal float lensSizeFull;
         [SerializeField]
-        private float lensSizeValid;
+        internal float lensSizeValid;
+        [SerializeField, Range(0.5f, 1f)]
+        internal float screenHeightPerc = 0.5f;
 
         private float initialReticleScale = 1f;
         private float initialFov = 55f;
@@ -78,14 +80,32 @@ namespace KFCommonUtilityLib.KFAttached.Render
 
             if (newShader == null)
             {
-                newShader = LoadManager.LoadAsset<Shader>("#@modfolder(CommonUtilityLib):Resources/PIPScope.unity3d?PIPScope.shadergraph", null, null, false, true).Asset;
+                newShader = LoadManager.LoadAsset<Shader>("#@modfolder(CommonUtilityLib):Resources/PIPScope.unity3d?PIPScopeAimBlend.shadergraph", null, null, false, true).Asset;
             }
-            if (renderTarget.material.shader.name == "Shader Graphs/MagnifyScope" || renderTarget.material.shader.name == "Shader Graphs/PIPScopeNew")
+            Material material = renderTarget.material;
+            string curShaderName = material.shader.name;
+            if (curShaderName == "Shader Graphs/MagnifyScope" || curShaderName == "Shader Graphs/PIPScopeNew" || curShaderName == "Shader Graphs/PIPScope")
             {
-                renderTarget.material.shader = newShader;
+                material.shader = newShader;
+                curShaderName = newShader.name;
             }
-            renderTarget.material.renderQueue = 3000;
-            initialReticleScale = renderTarget.material.GetFloat("_ReticleScale");
+            if (curShaderName == newShader.name && !TryGetComponent<AimingMaterialBlender>(out _))
+            {
+                if (aimRef && aimRef.TryGetComponent<AimReference>(out var aimRefComp))
+                {
+                    var aimBlend = gameObject.AddComponent<AimingMaterialBlender>();
+                    aimBlend.aimRef = aimRefComp;
+                    //Log.Out($"Adding aim mat blender...");
+                }
+            }
+
+            material.renderQueue = 3000;
+            material.EnableKeyword("_BUILTIN_AlphaClip");
+            material.EnableKeyword("_BUILTIN_ALPHATEST_ON");
+            if (material.HasFloat("_ReticleScale"))
+            {
+                initialReticleScale = material.GetFloat("_ReticleScale");
+            }
 #else
             if(debugCamera == null)
             {
@@ -249,20 +269,28 @@ namespace KFCommonUtilityLib.KFAttached.Render
 #if NotEditor
         private void CalcInitialFov()
         {
+            textureHeight = Mathf.Max(512, screenHeightPerc * Screen.height);
+            initialFov = 15;
             if (aimRef)
             {
+                var aimRefComp = aimRef.GetComponent<AimReference>();
                 var distance = Mathf.Abs(Vector3.Dot(renderTarget.bounds.center - aimRef.position, aimRef.forward));
+                if (aimRefComp != null && aimRefComp.designedAimDistance > 0)
+                {
+                    distance = aimRefComp.designedAimDistance;
+                }
+                else
+                {
+                    distance = Mathf.Abs(Vector3.Dot(renderTarget.bounds.center - aimRef.position, aimRef.forward));
+                }
                 var scaleFov = lensSizeValid / (2 * distance * Mathf.Tan(Mathf.Deg2Rad * 27.5f));
                 var scaleTexture = lensSizeFull / (2 * distance * Mathf.Tan(Mathf.Deg2Rad * 27.5f));
-                textureHeight = scaleTexture * Screen.height;
+                //textureHeight = scaleTexture * Screen.height;
                 //textureHeight = Mathf.Abs(player.playerCamera.WorldToScreenPoint(player.playerCamera.transform.forward * distance + player.playerCamera.transform.up * height).y - 
                 //                          player.playerCamera.WorldToScreenPoint(player.playerCamera.transform.forward * distance - player.playerCamera.transform.up * height).y);
                 initialFov = Mathf.Rad2Deg * 2 * Mathf.Atan(Mathf.Tan(Mathf.Deg2Rad * 27.5f) * scaleFov);
                 Log.Out($"distance {distance}, scale fov {scaleFov}, scale texture {scaleTexture} texture height {textureHeight} initial fov {initialFov}");
-                return;
             }
-            textureHeight = Screen.height * 0.5f;
-            initialFov = 15;
         }
 
         private static float CalcFovStep(float t, float fovMin, float fovMax)
@@ -372,13 +400,13 @@ namespace KFCommonUtilityLib.KFAttached.Render
 //#else
 //            pipCamera.CopyFrom(debugCamera);
 #endif
+            pipCamera.targetTexture = targetTexture;
             pipCamera.depth = -2;
             pipCamera.fieldOfView = 55;
             pipCamera.nearClipPlane = 0.05f;
             pipCamera.farClipPlane = 5000;
             pipCamera.aspect = aspectRatio;
             pipCamera.rect = new Rect(0, 0, texScale, texScale);
-            pipCamera.targetTexture = targetTexture;
             if (cameraJoint == null || hideFpvModelInScope)
             {
                 pipCamera.cullingMask &= ~(1024);
@@ -392,15 +420,13 @@ namespace KFCommonUtilityLib.KFAttached.Render
 
 #if NotEditor
             WeaponCameraFollow weaponCameraFollow = cameraGO.AddComponent<WeaponCameraFollow>();
+            weaponCameraFollow.magnifyScope = this;
             weaponCameraFollow.targetTexture = targetTexture;
             weaponCameraFollow.dynamicSensitivityData = (zoomActionData as IModuleContainerFor<ActionModuleDynamicSensitivity.DynamicSensitivityData>)?.Instance;
             weaponCameraFollow.player = player;
             var old = player.playerCamera.GetComponent<PostProcessLayer>();
             var layer = pipCamera.gameObject.GetOrAddComponent<PostProcessLayer>();
-            //layer.antialiasingMode = old.antialiasingMode;
-            //layer.superResolution = (SuperResolution)old.superResolution.GetType().CreateInstance();
             layer.Init(fieldResources.GetValue(old) as PostProcessResources);
-            //weaponCameraFollow.UpdateAntialiasing();
 #endif
         }
 

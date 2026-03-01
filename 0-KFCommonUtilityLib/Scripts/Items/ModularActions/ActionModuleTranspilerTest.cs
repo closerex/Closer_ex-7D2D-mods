@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using KFCommonUtilityLib.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using UnityEngine;
@@ -10,8 +11,8 @@ public class ActionModuleTranspilerTest
     [HarmonyPatch(typeof(ItemActionAttack), nameof(ItemAction.ExecuteAction)), MethodTargetTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_InvalidTest(IEnumerable<CodeInstruction> instructions)
     {
-        yield return new CodeInstruction(OpCodes.Ldstr, "Ranged!");
-        yield return CodeInstruction.Call(typeof(ActionModuleTranspilerTest), nameof(ActionModuleTranspilerTest.CallSomething));
+        yield return new CodeInstruction(OpCodes.Ldstr, "Attack!");
+        yield return CodeInstruction.CallClosure((Action<string>)ActionModuleTranspilerTest.CallSomething);
         foreach (var ins in instructions)
         {
             yield return ins;
@@ -23,7 +24,7 @@ public class ActionModuleTranspilerTest
     private static IEnumerable<CodeInstruction> Transpiler_RangedTest(IEnumerable<CodeInstruction> instructions)
     {
         yield return new CodeInstruction(OpCodes.Ldstr, "Ranged!");
-        yield return CodeInstruction.Call(typeof(ActionModuleTranspilerTest), nameof(ActionModuleTranspilerTest.CallSomething));
+        yield return CodeInstruction.CallClosure<Action<string>>((str)=>ActionModuleTranspilerTest.CallSomething(str));
         foreach (var ins in instructions)
         {
             yield return ins;

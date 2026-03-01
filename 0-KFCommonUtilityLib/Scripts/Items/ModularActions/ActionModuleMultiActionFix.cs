@@ -24,10 +24,9 @@ public class ActionModuleMultiActionFix
     }
 
     [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPrefix]
-    public bool Prefix_StartHolding(ItemActionData _data, out ItemActionData __state)
+    public void Prefix_StartHolding(ItemActionData _data, out ItemActionData __state)
     {
         SetAndSaveItemActionData(_data, out __state);
-        return true;
     }
 
     [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPostfix]
@@ -72,10 +71,9 @@ public class ActionModuleMultiActionFix
     }
 
     [HarmonyPatch(nameof(ItemAction.StopHolding)), MethodTargetPrefix]
-    public bool Prefix_StopHolding(ItemActionData _data, out ItemActionData __state)
+    public void Prefix_StopHolding(ItemActionData _data, out ItemActionData __state)
     {
         SetAndSaveItemActionData(_data, out __state);
-        return true;
     }
 
     [HarmonyPatch(nameof(ItemAction.StopHolding)), MethodTargetPostfix]
@@ -85,10 +83,9 @@ public class ActionModuleMultiActionFix
     }
 
     [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemAction.ItemActionEffects)), MethodTargetPrefix]
-    public bool Prefix_ItemActionEffects(ItemActionData _actionData, out ItemActionData __state)
+    public void Prefix_ItemActionEffects(ItemActionData _actionData, out ItemActionData __state)
     {
         SetAndSaveItemActionData(_actionData, out __state);
-        return true;
     }
 
     [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemAction.ItemActionEffects)), MethodTargetPostfix]
@@ -98,10 +95,9 @@ public class ActionModuleMultiActionFix
     }
 
     [HarmonyPatch(nameof(ItemAction.CancelAction)), MethodTargetPrefix]
-    public bool Prefix_CancelAction(ItemActionData _actionData, out ItemActionData __state)
+    public void Prefix_CancelAction(ItemActionData _actionData, out ItemActionData __state)
     {
         SetAndSaveItemActionData(_actionData, out __state);
-        return true;
     }
 
     [HarmonyPatch(nameof(ItemAction.CancelAction)), MethodTargetPostfix]
@@ -111,10 +107,9 @@ public class ActionModuleMultiActionFix
     }
 
     [HarmonyPatch(nameof(ItemActionAttack.CancelReload)), MethodTargetPrefix]
-    public bool Prefix_CancelReload(ItemActionData _actionData, out ItemActionData __state)
+    public void Prefix_CancelReload(ItemActionData _actionData, out ItemActionData __state)
     {
         SetAndSaveItemActionData(_actionData, out __state);
-        return true;
     }
 
     [HarmonyPatch(nameof(ItemActionAttack.CancelReload)), MethodTargetPostfix]
@@ -124,13 +119,10 @@ public class ActionModuleMultiActionFix
     }
 
     [HarmonyPatch(nameof(ItemActionAttack.ReloadGun)), MethodTargetPrefix]
-    public bool Prefix_ReloadGun(ItemActionData _actionData)
+    public void Prefix_ReloadGun(ItemActionData _actionData)
     {
-        //int reloadAnimationIndex = MultiActionManager.GetMetaIndexForActionIndex(_actionData.invData.holdingEntity.entityId, _actionData.indexInEntityOfAction);
         _actionData.invData.holdingEntity.emodel?.avatarController?.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, _actionData.indexInEntityOfAction, false);
         _actionData.invData.holdingEntity.MinEventContext.ItemActionData = _actionData;
-        //MultiActionManager.GetMappingForEntity(_actionData.invData.holdingEntity.entityId)?.SaveMeta();
-        return true;
     }
 
     [HarmonyPatch(nameof(ItemAction.OnHUD)), MethodTargetPrefix]
@@ -178,14 +170,12 @@ public class ActionModuleMultiActionFix
     //    }
     //}
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.onHoldingEntityFired)), MethodTargetPrefix]
-    public bool Prefix_onHoldingEntityFired(ItemActionData _actionData)
+    public void Prefix_onHoldingEntityFired(ItemActionData _actionData)
     {
         if (!_actionData.invData.holdingEntity.isEntityRemote)
         {
             _actionData.invData.holdingEntity?.emodel?.avatarController.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, _actionData.indexInEntityOfAction);
-            //_actionData.invData.holdingEntity?.emodel?.avatarController.CancelEvent("WeaponFire");
         }
-        return true;
     }
 
     //[MethodTargetPostfix("onHoldingEntityFired", typeof(ItemActionRanged))]

@@ -45,6 +45,9 @@ namespace KFCommonUtilityLib
             DelayLoadModuleManager.RegisterDelayloadDll("Quartz", "QuartzUIPatch");
             DelayLoadModuleManager.RegisterDelayloadDll("Gears", "GearsSavingPatch");
             DelayLoadModuleManager.RegisterDelayloadDll("Rainstorm", "RainstormPatches");
+            DelayLoadModuleManager.RegisterDelayloadDll("Torch", "TorchPatches");
+            DelayLoadModuleManager.RegisterDelayloadDll("CustomFPVFov", "CustomAimFovCorrectionPatch");
+            DelayLoadModuleManager.RegisterDelayloadDll("FPVLegs", "FPVLegsPiPCameraPatches");
             //DelayLoadModuleManager.RegisterDelayloadDll("SMXcore", "SMXMultiActionCompatibilityPatch");
             //DelayLoadModuleManager.RegisterDelayloadDll("SCore", "SCoreEntityHitCompatibilityPatch");
             CustomEffectEnumManager.RegisterEnumType<MinEventTypes>(true);
@@ -54,17 +57,13 @@ namespace KFCommonUtilityLib
             ItemClassModuleManager.Init();
             ItemActionModuleManager.Init();
 
-            ModEvents.GameAwake.RegisterHandler(CommonUtilityPatch.InitShotStates);
+            //ModEvents.GameAwake.RegisterHandler(CommonUtilityPatch.InitShotStates);
             ModEvents.GameAwake.RegisterHandler(CustomEffectEnumManager.InitDefault);
             ModEvents.GameAwake.RegisterHandler(DelayLoadModuleManager.DelayLoad);
             //ModEvents.GameAwake.RegisterHandler(AssemblyLocator.Init);
             ModEvents.GameAwake.RegisterHandler(MultiActionUtils.SetMinEventArrays);
-            //ModEvents.GameStartDone.RegisterHandler(RegisterKFEnums);
-            //DOES NOT WORK ON MULTIPLAYER? Patch to ItemClass.LateInitAll
-            //ModEvents.GameStartDone.RegisterHandler(AnimationRiggingManager.ParseItemIDs);
             ModEvents.GameStartDone.RegisterHandler(MultiActionManager.PostloadCleanup);
             //ModEvents.GameStartDone.RegisterHandler(CustomEffectEnumManager.PrintResults);
-            //ModEvents.GameUpdate.RegisterHandler(CommonUtilityPatch.ForceUpdateGC);
             HarmonyInstance = new HarmonyLib.Harmony(GetType().ToString());
             HarmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
         }
@@ -142,11 +141,36 @@ namespace KFCommonUtilityLib.Gears
             RecoilManager.InitRecoilSettings(modSettings);
             CameraAnimationEvents.InitModSettings(modSettings);
             InspectSettings.InitSettings(modSettings);
+            AimingSettings.InitSettings(modSettings);
+            PiPCameraSettings.InitSettings(modSettings);
         }
 
         public void OnWorldSettingsLoaded(IModWorldSettings worldSettings)
         {
 
+        }
+    }
+
+    public enum SyncAAQualityMode
+    {
+        Disabled,
+        Antialiasing,
+        Upscaling
+    }
+    public class PiPCameraSettings
+    {
+        public static SyncAAQualityMode SyncAAQuality { get; private set; }
+
+        public static void InitSettings(IModGlobalSettings modSettings)
+        {
+            var tab = modSettings.GetTab("MiscSettings");
+            var category = tab.GetCategory("PiPCamera");
+            var syncAASetting = category.GetSetting<ISelectorGlobalSetting>("SyncAAQuality");
+            SyncAAQuality = EnumUtils.Parse<SyncAAQualityMode>(syncAASetting.CurrentValue);
+            syncAASetting.OnSettingChanged += (s, e) =>
+            {
+                SyncAAQuality = EnumUtils.Parse<SyncAAQualityMode>(syncAASetting.CurrentValue);
+            }; 
         }
     }
 }

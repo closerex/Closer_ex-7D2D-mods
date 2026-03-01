@@ -290,6 +290,8 @@ namespace KFCommonUtilityLib
                 foreach (var particle in particlePrefab.GetComponentsInChildren<ParticleSystem>())
                 {
                     particle.gameObject.SetActive(true);
+                    var main = particle.main;
+                    main.loop = false;
                     particle.Clear();
                     particle.Play();
                 }

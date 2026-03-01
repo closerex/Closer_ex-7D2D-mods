@@ -1,14 +1,14 @@
 ﻿using FullautoLauncher.Scripts.ProjectileManager;
 using HarmonyLib;
+using KFCommonUtilityLib;
 using KFCommonUtilityLib.Attributes;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System.Collections.Generic;
-using UniLinq;
 using System.Reflection;
 using System.Reflection.Emit;
+using UniLinq;
 using UnityEngine;
 using static ActionModuleMultiBarrel;
-using KFCommonUtilityLib;
 
 public class FLARCompatibilityPatchInit : IModApi
 {
@@ -30,17 +30,17 @@ public static class FLARMultiBarrelExt
     //multi barrel patch
     [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemAction.ItemActionEffects))]
     [MethodTargetPrefix]
-    private static bool Prefix_ItemActionEffects_ItemActionBetterLauncher(ActionModuleMultiBarrel self, ItemActionData _actionData, int _userData, int _firingState, MultiBarrelData __customData)
+    private static void Prefix_ItemActionEffects_ItemActionBetterLauncher(ActionModuleMultiBarrel self, ItemActionData _actionData, int _userData, int _firingState, MultiBarrelData __customData)
     {
         if (_actionData is ItemActionBetterLauncher.ItemActionDataBetterLauncher launcherData)
         {
-            launcherData.projectileJoint = __customData.projectileJoints[(byte)(_userData >> 8)] ?? launcherData.projectileJoint;
+            launcherData.projectileJoint = __customData.projectileJoints[(byte)RequireUserDataBits.ExtractUserDataBits(ref _userData, self.mask, self.shift)] ?? launcherData.projectileJoint;
             if (launcherData.projectileJoint == null && ConsoleCmdReloadLog.LogInfo)
             {
                 Log.Warning($"null projectile joint on inventory slot {launcherData.invData.slotIdx}!!\n{StackTraceUtility.ExtractStackTrace()}");
             }
         }
-        return self.Prefix_ItemActionEffects_ItemActionRanged(_actionData, _userData, _firingState, __customData);
+        self.Prefix_ItemActionEffects_ItemActionRanged(_actionData, _userData, _firingState, __customData);
     }
 }
 
@@ -65,10 +65,9 @@ public static class FLARMultiActionFixExt
     }
 
     [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemAction.ItemActionEffects)), MethodTargetPrefix]
-    private static bool Prefix_ItemActionEffects_ItemActionBetterLauncher(ActionModuleMultiActionFix self, ItemActionData _actionData, out ItemActionData __state)
+    private static void Prefix_ItemActionEffects_ItemActionBetterLauncher(ActionModuleMultiActionFix self, ItemActionData _actionData, out ItemActionData __state)
     {
         ActionModuleMultiActionFix.SetAndSaveItemActionData(_actionData, out __state);
-        return true;
     }
 
     [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemAction.ItemActionEffects)), MethodTargetPostfix]

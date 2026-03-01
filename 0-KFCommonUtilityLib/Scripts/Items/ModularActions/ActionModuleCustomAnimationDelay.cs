@@ -64,9 +64,9 @@ public class ActionModuleCustomAnimationDelay
     }
 
     [HarmonyPatch(typeof(ItemActionEat), nameof(ItemAction.OnHoldingUpdate)), MethodTargetPrefix]
-    public bool Prefix_ItemActionEat_OnHoldingUpdate(ItemActionData _actionData, out (bool, float) __state)
+    public void Prefix_ItemActionEat_OnHoldingUpdate(ItemActionData _actionData, out (bool, float) __state, bool __runOriginal)
     {
-        if (Constants.cVersionInformation.GTE(VersionInformation.EGameReleaseType.V, 2, 5))
+        if (__runOriginal && Constants.cVersionInformation.GTE(VersionInformation.EGameReleaseType.V, 2, 5))
         {
             __state = (true, AnimationDelayData.AnimationDelay[_actionData.invData.item.HoldType.Value].RayCast);
             AnimationDelayData.AnimationDelay[_actionData.invData.item.HoldType.Value].RayCast = customDelay;
@@ -75,7 +75,6 @@ public class ActionModuleCustomAnimationDelay
         {
             __state = (false, 0);
         }
-        return true;
     }
 
     [HarmonyPatch(typeof(ItemActionEat), nameof(ItemAction.OnHoldingUpdate)), MethodTargetPostfix]

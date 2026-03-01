@@ -12,9 +12,8 @@ public class ActionModuleAlternative
     internal static ItemValue InventorySetItemTemp;
 
     [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPrefix]
-    private bool Prefix_StartHolding(ItemActionData _data, AlternativeData __customData)
+    private void Prefix_StartHolding(ItemActionData _data, AlternativeData __customData)
     {
-        //__customData.Init();
         int prevMode = __customData.mapping.CurMode;
         __customData.UpdateUnlockState(_data.invData.itemValue);
         if (prevMode != __customData.mapping.CurMode && _data.invData.holdingEntity is EntityPlayerLocal player)
@@ -25,24 +24,7 @@ public class ActionModuleAlternative
         if (_data.invData.holdingEntity is EntityPlayerLocal)
         {
             MultiActionManager.inputCD = math.max(0.5f, MultiActionManager.inputCD);
-            //ThreadManager.StartCoroutine(DelaySetExecutionIndex(_data.invData.holdingEntity, __customData.mapping));
         }
-        return true;
-    }
-
-    //[MethodTargetPostfix(nameof(ItemActionAttack.StartHolding))]
-    //private void Postfix_StartHolding(AlternativeData __customData)
-    //{
-    //    __customData.UpdateMuzzleTransformOverride();
-    //    __customData.OverrideMuzzleTransform(__customData.mapping.CurMode);
-    //}
-
-    private static IEnumerator DelaySetExecutionIndex(EntityAlive player, MultiActionMapping mapping)
-    {
-        yield return null;
-        yield return null;
-        if (GameManager.Instance.GetGameStateManager().IsGameStarted())
-            player?.emodel?.avatarController?.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, mapping.CurActionIndex);
     }
 
     [HarmonyPatch(nameof(ItemActionRanged.CancelReload)), MethodTargetPrefix]

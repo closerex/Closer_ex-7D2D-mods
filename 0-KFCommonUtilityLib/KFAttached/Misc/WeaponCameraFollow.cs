@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using KFCommonUtilityLib.KFAttached.Render;
+using System;
+using UnityEngine;
 using UnityEngine.Rendering;
 #if NotEditor
 using UnityEngine.Rendering.PostProcessing;
@@ -11,6 +13,7 @@ public class WeaponCameraFollow : MonoBehaviour
 #if NotEditor
     public ActionModuleDynamicSensitivity.DynamicSensitivityData dynamicSensitivityData;
     public EntityPlayerLocal player;
+    public MagnifyScope magnifyScope;
 #endif
 
     private void OnEnable()
@@ -21,7 +24,7 @@ public class WeaponCameraFollow : MonoBehaviour
         {
             dynamicSensitivityData.activated = true;
         }
-        //UpdateAntialiasing();
+        UpdateAntialiasing();
 #endif
     }
 
@@ -46,6 +49,62 @@ public class WeaponCameraFollow : MonoBehaviour
     }
 
 #if NotEditor
+    public void UpdateAntialiasing()
+    {
+        if (!player)
+        {
+            return;
+        }
+
+        var layer = GetComponent<PostProcessLayer>();
+        if (!layer)
+        {
+            return;
+        }
+
+        var prevLayer = player.renderManager.layer;
+        player.renderManager.layer = layer;
+        try
+        {
+            if (layer)
+            {
+                float sharpness = GamePrefs.GetFloat(EnumGamePrefs.OptionsGfxAASharpness);
+                int upscalerMode = GamePrefs.GetInt(EnumGamePrefs.OptionsGfxUpscalerMode);
+                int aaQuality = GamePrefs.GetInt(EnumGamePrefs.OptionsGfxAA);
+                if (KFCommonUtilityLib.Gears.PiPCameraSettings.SyncAAQuality == KFCommonUtilityLib.Gears.SyncAAQualityMode.Upscaling && (upscalerMode == 5 || upscalerMode == 2))
+                {
+                    PostProcessLayer postProcessLayer = layer;
+                    PostProcessLayer.Antialiasing antialiasingMode = ((upscalerMode != 5) ? PostProcessLayer.Antialiasing.FSR3 : PostProcessLayer.Antialiasing.DLSS);
+                    postProcessLayer.antialiasingMode = antialiasingMode;
+                    layer.fsr3.sharpness = sharpness;
+                    layer.dlss.sharpness = sharpness;
+                    player.renderManager.UpscalingSetQuality(GamePrefs.GetInt(EnumGamePrefs.OptionsGfxFSRPreset));
+                }
+                else if(KFCommonUtilityLib.Gears.PiPCameraSettings.SyncAAQuality == KFCommonUtilityLib.Gears.SyncAAQualityMode.Antialiasing)
+                {
+                    player.renderManager.SetAntialiasing(aaQuality, sharpness, layer);
+                }
+                else
+                {
+                    layer.antialiasingMode = PostProcessLayer.Antialiasing.None;
+                }
+
+                var camera = GetComponent<Camera>();
+                Rect rect = camera.rect;
+                rect.x = ((layer.antialiasingMode == PostProcessLayer.Antialiasing.DLSS || layer.antialiasingMode == PostProcessLayer.Antialiasing.FSR3) ? 1E-07f : 0f);
+                camera.rect = rect;
+            }
+        }
+        catch (Exception e)
+        {
+            Log.Exception(e);
+        }
+        finally
+        {
+            player.renderManager.layer = prevLayer;
+        }
+
+    }
     //public void UpdateAntialiasing()
     //{
     //    var pipCamera = GetComponent<Camera>();

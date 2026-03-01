@@ -233,11 +233,22 @@ namespace KFCommonUtilityLib
                         DirectoryInfo dirInfo = Directory.CreateDirectory(Path.Combine(self.Path, "AssemblyOutput"));
                         string filename = Path.Combine(dirInfo.FullName, WorkingAssembly.Name.Name + ".dll");
                         Log.Out("Output Assembly: " + filename);
+                        bool fileWritten = false;
                         using (FileStream fs = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Write))
                         {
-                            ms.WriteTo(fs);
+                            try
+                            {
+                                ms.WriteTo(fs);
+                                fileWritten = true;
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.Warning($"Failed to write assembly file: {ex.Message}\n{ex.StackTrace}");
+                                fileWritten = false;
+                                Log.Warning("Loading from raw data...");
+                            }
                         }
-                        Assembly newAssembly = Assembly.LoadFile(filename);
+                        Assembly newAssembly = fileWritten ? Assembly.LoadFile(filename) : Assembly.Load(ms.ToArray());
                         list_created.Add(newAssembly);
                     }
                 }

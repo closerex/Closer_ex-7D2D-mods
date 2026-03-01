@@ -1,13 +1,14 @@
-﻿using GearsAPI.Settings.Global;
+﻿using GearsAPI.Settings;
+using GearsAPI.Settings.Global;
 using GearsAPI.Settings.World;
-using GearsAPI.Settings;
 using HarmonyLib;
-using System.Reflection;
 using System.Collections.Generic;
-using UniLinq;
-using System.Reflection.Emit;
-using UnityEngine;
+using System.Globalization;
 using System.IO;
+using System.Reflection;
+using System.Reflection.Emit;
+using UniLinq;
+using UnityEngine;
 
 namespace CustomFPVFov
 {
@@ -30,7 +31,7 @@ namespace CustomFPVFov
     }
 
     [HarmonyPatch]
-    public class Patches
+    public static class Patches
     {
         [HarmonyPatch(typeof(vp_FPWeapon), nameof(vp_FPWeapon.Start))]
         [HarmonyPostfix]
@@ -49,6 +50,7 @@ namespace CustomFPVFov
             var fld_cur = AccessTools.Field(typeof(vp_FPWeapon), nameof(vp_FPWeapon.RenderingFieldOfView));
             var prop_value = AccessTools.PropertyGetter(typeof(FovOverrides), nameof(FovOverrides.CurrentFov));
             var prop_aimValue = AccessTools.PropertyGetter(typeof(FovOverrides), nameof(FovOverrides.CurrentAimFov));
+            var mtd_parseint = AccessTools.Method(typeof(StringParsers), nameof(StringParsers.ParseSInt32));
 
             for (int i = 1; i < codes.Count; i++)
             {
@@ -62,9 +64,13 @@ namespace CustomFPVFov
                     }
                     else if (codes[i - 1].opcode == OpCodes.Conv_R4)
                     {
+                        codes[i - 2].operand = AccessTools.Method(typeof(StringParsers), nameof(StringParsers.ParseFloat));
+                        codes[i - 3].opcode = OpCodes.Ldc_I4;
+                        codes[i - 3].operand = (int)NumberStyles.Any;
                         codes[i - 8] = new CodeInstruction(OpCodes.Call, prop_aimValue);
-                        codes.Insert(i - 7, new CodeInstruction(OpCodes.Conv_R4));
+                        codes.RemoveAt(i - 1);
                         codes.RemoveAt(i - 9);
+                        i -= 2;
                     }
                 }
             }
@@ -87,6 +93,68 @@ namespace CustomFPVFov
                 }
             }
             return codes;
+        }
+
+        [HarmonyPatch(typeof(vp_FPWeapon), nameof(vp_FPWeapon.Refresh))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_vp_FPWeapon_Refresh(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+            var mtd_smooth = AccessTools.Method(typeof(Mathf), nameof(Mathf.SmoothStep));
+
+            for (int i = 2; i < codes.Count; i++)
+            {
+                if (codes[i].Calls(mtd_smooth) && codes[i - 2].LoadsConstant())
+                {
+                    codes[i - 2].operand = 5f;
+                }
+            }
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(vp_FPWeapon), nameof(vp_FPWeapon.FixedUpdate))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_vp_FPWeapon_FixedUpdate(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var mtd_updatezoom = AccessTools.Method(typeof(vp_FPWeapon), nameof(vp_FPWeapon.UpdateZoom));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].Calls(mtd_updatezoom))
+                {
+                    codes.RemoveRange(i - 1, 2);
+                    break;
+                }
+            }
+
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(vp_FPWeapon), nameof(vp_FPWeapon.Update))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_vp_FPWeapon_Update(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var mtd_updateinput = AccessTools.Method(typeof(vp_FPWeapon), nameof(vp_FPWeapon.UpdateInput));
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].Calls(mtd_updateinput))
+                {
+                    codes.InsertRange(i + 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(vp_FPWeapon), nameof(vp_FPWeapon.UpdateZoom)))
+                    });
+                    break;
+                }
+            }
+
+            return codes;
+
         }
 
         [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.SetFirstPersonView))]
@@ -120,25 +188,29 @@ namespace CustomFPVFov
             (entity as EntityPlayerLocal)?.vp_FPWeapon?.CacheRenderers();
         }
 
-        private static (List<ScreenSpaceParticleAspectScaler> tempScalers, float scale) scalerPair = new(new List<ScreenSpaceParticleAspectScaler>(), 1);
+        internal static List<ScreenSpaceParticleAspectScaler> tempScalers = new();
         [HarmonyPatch(typeof(CameraMatrixOverride), nameof(CameraMatrixOverride.UpdateRendererList))]
         [HarmonyPostfix]
         private static void Postfix_CameraMatrixOverride_UpdateRendererList(CameraMatrixOverride __instance)
         {
-            scalerPair.tempScalers.Clear();
-            __instance.GetComponentsInChildren<ScreenSpaceParticleAspectScaler>(true, scalerPair.tempScalers);
-            scalerPair.scale = Mathf.Tan(__instance.fov * 0.5f * Mathf.Deg2Rad) / Mathf.Tan(45f * 0.5f * Mathf.Deg2Rad);
-        }
-
-        [HarmonyPatch(typeof(ScreenSpaceParticleAspectScaler), nameof(ScreenSpaceParticleAspectScaler.Update))]
-        [HarmonyPostfix]
-        private static void Postfix_ScreenSpaceParticleAspectScaler_Update(ScreenSpaceParticleAspectScaler __instance)
-        {
-            if (scalerPair.tempScalers.Contains(__instance))
+            tempScalers.Clear();
+            __instance.GetComponentsInChildren<ScreenSpaceParticleAspectScaler>(false, tempScalers);
+            float scale = Mathf.Tan(__instance.fov * 0.5f * Mathf.Deg2Rad) / Mathf.Tan(45f * 0.5f * Mathf.Deg2Rad);
+            foreach (var scaler in tempScalers)
             {
-                __instance.transform.localScale *= scalerPair.scale;
+                scaler.transform.localScale *= scale;
             }
         }
+
+        //[HarmonyPatch(typeof(ScreenSpaceParticleAspectScaler), nameof(ScreenSpaceParticleAspectScaler.Update))]
+        //[HarmonyPostfix]
+        //private static void Postfix_ScreenSpaceParticleAspectScaler_Update(ScreenSpaceParticleAspectScaler __instance)
+        //{
+        //    if (scalerPair.tempScalers.Contains(__instance))
+        //    {
+        //        __instance.transform.localScale *= scalerPair.scale;
+        //    }
+        //}
     }
 
     public class GearsImpl : IGearsModApi
@@ -158,7 +230,7 @@ namespace CustomFPVFov
             {
                 FovOverrides.defaultFov = cur;
             }
-            if (int.TryParse(aimFovSettings.CurrentValue, out int aimCur))
+            if (float.TryParse(aimFovSettings.CurrentValue, out float aimCur))
             {
                 FovOverrides.defaultAimFov = aimCur;
             }
@@ -172,7 +244,7 @@ namespace CustomFPVFov
             };
             aimFovSettings.OnSettingChanged += static (settings, value) =>
             {
-                if (int.TryParse(value, out int curAimFov))
+                if (float.TryParse(value, out float curAimFov))
                 {
                     FovOverrides.defaultAimFov = curAimFov;
                 }
@@ -189,11 +261,11 @@ namespace CustomFPVFov
     public static class FovOverrides
     {
         public static float CurrentFov { get; set; } = 45f;
-        public static int CurrentAimFov { get; set; } = 45;
+        public static float CurrentAimFov { get; set; } = 45f;
         public static float defaultFov = 45f;
-        public static int defaultAimFov = 45;
+        public static float defaultAimFov = 45f;
         public static string modPath = "";
-        public static Dictionary<int, (float fov, int aimFov)> dict_id_fov = new Dictionary<int, (float, int)>();
+        public static Dictionary<int, (float fov, float aimFov)> dict_id_fov = new Dictionary<int, (float, float)>();
 
         public static void LoadWeaponFovOverrides()
         {
@@ -225,13 +297,13 @@ namespace CustomFPVFov
                                     if (!GearsImpl.gearsLoaded)
                                     {
                                         defaultFov = fov;
-                                        if (parts.Length > 2 && int.TryParse(parts[2].Trim(), out int aimFov))
+                                        if (parts.Length > 2 && float.TryParse(parts[2].Trim(), out float aimFov))
                                         {
                                             defaultAimFov = aimFov;
                                         }
                                         else
                                         {
-                                            defaultAimFov = 45;
+                                            defaultAimFov = 45f;
                                         }
                                     }
                                 }
@@ -240,7 +312,7 @@ namespace CustomFPVFov
                                     ItemClass itemClass = ItemClass.GetItemClass(parts[0]);
                                     if (itemClass != null)
                                     {
-                                        dict_id_fov[itemClass.Id] = (fov, (parts.Length > 2 && int.TryParse(parts[2].Trim(), out int aimFov) ? aimFov : -1));
+                                        dict_id_fov[itemClass.Id] = (fov, (parts.Length > 2 && float.TryParse(parts[2].Trim(), out float aimFov) ? aimFov : -1));
                                     }
                                     else
                                     {
@@ -276,7 +348,7 @@ namespace CustomFPVFov
             }
             if (player.vp_FPWeapon)
             {
-                player.vp_FPWeapon.RenderingFieldOfView = CurrentFov;
+                player.vp_FPWeapon.RenderingFieldOfView = player.AimingGun ? CurrentAimFov : CurrentFov;
             }
         }
     }

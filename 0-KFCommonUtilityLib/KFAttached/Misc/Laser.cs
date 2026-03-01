@@ -72,6 +72,10 @@ public class LaserSight : MonoBehaviour
         dotObject.layer = 24;
         dotTrans = dotObject.transform;
         dotTrans.SetParent(transform, true);
+#if NotEditor
+        //this prevents the dot from scaling with weapon fov
+        dotTrans.AddMissingComponent<DummyScaler>().designTimeAspectRatio = 1f;
+#endif
 
         dotFilter = dotObject.AddComponent<MeshFilter>();
         dotFilter.mesh = dotMesh;
@@ -87,17 +91,18 @@ public class LaserSight : MonoBehaviour
 
         lineRenderer.useWorldSpace = true;
         lineRenderer.enabled = true;
+    }
+
 #if NotEditor
+    private void OnEnable()
+    {
         player = transform.GetLocalPlayerInParent();
         if (player)
         {
             var targets = AnimationRiggingManager.GetActiveRigTargetsFromPlayer(player);
-            if (targets && targets.IsAnimationSet)
+            if (player.bFirstPersonView && targets.ItemFpv)
             {
-                if (targets.IsFpv)
-                {
-                    scopeBase = targets.ItemFpv.GetComponentInChildren<ScopeBase>();
-                }
+                scopeBase = targets.ItemFpv.GetComponentInChildren<ScopeBase>();
             }
             if (!laserOrigin)
             {
@@ -112,8 +117,8 @@ public class LaserSight : MonoBehaviour
         {
             laserOrigin = transform;
         }
-#endif
     }
+#endif
 
     void LateUpdate()
     {
@@ -121,7 +126,7 @@ public class LaserSight : MonoBehaviour
         Vector3 origin = Vector3.zero;
         Vector3 direction = Vector3.forward;
 #if NotEditor
-        if (scopeBase && scopeBase.aimingModule != null)
+        if (scopeBase && scopeBase.aimingModule != null && player.bFirstPersonView)
         {
             var aimingModule = scopeBase.aimingModule;
             var dynamicLaserOrigin = aimingModule.CurAimRef;
@@ -136,8 +141,19 @@ public class LaserSight : MonoBehaviour
                 {
                     dynamicOriginTrans = dynamicLaserOrigin.laserOriginOverride ?? dynamicLaserOrigin.transform;
                 }
-                origin = Vector3.Lerp(laserOrigin.position, dynamicOriginTrans.position, aimingModule.aimProcValue);
-                direction = Vector3.Slerp(laserOrigin.forward, dynamicOriginTrans.forward, aimingModule.aimProcValue);
+
+                if (dynamicOriginTrans == dynamicLaserOrigin.transform)
+                {
+                    aimingModule.CalcCurrentWorldPos(out Vector3 curAimRefPosWorld, out Quaternion curAimRefRotWorld);
+                    origin = Vector3.Lerp(laserOrigin.position, curAimRefPosWorld, aimingModule.CurAimProcValue);
+                    direction = Quaternion.Slerp(laserOrigin.rotation, curAimRefRotWorld, aimingModule.CurAimProcValue) * Vector3.forward;
+                }
+                else
+                {
+                    origin = Vector3.Lerp(laserOrigin.position, dynamicOriginTrans.position, aimingModule.CurAimProcValue);
+                    direction = Vector3.Slerp(laserOrigin.forward, dynamicOriginTrans.forward, aimingModule.CurAimProcValue);
+                }
+
                 dynamicOriginSet = true;
             }
         }

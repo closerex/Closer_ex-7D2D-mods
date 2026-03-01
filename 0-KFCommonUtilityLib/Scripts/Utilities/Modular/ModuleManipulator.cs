@@ -44,9 +44,10 @@ namespace KFCommonUtilityLib
         public Instruction PostfixBegin;
         public Instruction PostfixEnd;
 
-        public MethodPatchInfo(MethodDefinition mtddef, Instruction postfixEnd, Instruction prefixBegin)
+        public MethodPatchInfo(MethodDefinition mtddef, Instruction postfixBegin, Instruction postfixEnd, Instruction prefixBegin)
         {
             Method = mtddef;
+            PostfixBegin = postfixBegin;
             PostfixEnd = postfixEnd;
             PrefixBegin = prefixBegin;
         }
@@ -290,12 +291,11 @@ namespace KFCommonUtilityLib
                         il.InsertBefore(mtdpinf_derived.PostfixEnd, ins);
                     }
                     il.InsertBefore(mtdpinf_derived.PostfixEnd, il.Create(mtddef_target.IsVirtual ? OpCodes.Callvirt : OpCodes.Call, module.ImportReference(mtddef_target)));
-                    if (mtdpinf_derived.PostfixBegin == null)
-                        mtdpinf_derived.PostfixBegin = list_inst_pars[0];
                 }
             }
 
             //Apply Prefixes
+            Dictionary<string, MethodPatchInfo> dict_prefix_patched_methods = new();
             for (int i = moduleTypes.Length - 1; i >= 0; i--)
             {
                 Type moduleType = moduleTypes[i];
@@ -303,21 +303,55 @@ namespace KFCommonUtilityLib
                 string moduleID = ModuleUtils.CreateFieldName(moduleType);
                 foreach (var pair in dict_targets)
                 {
+                    string id = pair.Key;
                     MethodDefinition mtddef_root = module.ImportReference(pair.Value.mtdinf_base.GetBaseDefinition()).Resolve();
                     MethodDefinition mtddef_target = module.ImportReference(pair.Value.mtdinf_target).Resolve();
-                    MethodPatchInfo mtdpinf_derived = GetOrCreateOverride(dict_overrides, pair.Key, pair.Value.mtdref_base);
+                    MethodPatchInfo mtdpinf_derived = GetOrCreateOverride(dict_overrides, id, pair.Value.mtdref_base);
                     MethodDefinition mtddef_derived = mtdpinf_derived.Method;
-                    dict_all_states.TryGetValue(pair.Key, out var dict_states);
-                    var list_inst_pars = MatchPatchArguments(mtddef_root, mtdpinf_derived, mtddef_target, i, false, dict_states, moduleID);
-                    //insert invocation
+                    dict_all_states.TryGetValue(id, out var dict_states);
                     var il = mtdpinf_derived.Method.Body.GetILProcessor();
                     Instruction ins_insert = mtdpinf_derived.PrefixBegin;
+                    //insert invocation
+                    var list_inst_pars = MatchPatchArguments(mtddef_root, mtdpinf_derived, mtddef_target, i, false, dict_states, moduleID);
                     foreach (var ins in list_inst_pars)
                     {
                         il.InsertBefore(ins_insert, ins);
                     }
                     il.InsertBefore(ins_insert, il.Create(mtddef_target.IsVirtual ? OpCodes.Callvirt : OpCodes.Call, module.ImportReference(mtddef_target)));
-                    il.InsertBefore(ins_insert, il.Create(OpCodes.Brfalse_S, mtdpinf_derived.PostfixBegin ?? mtdpinf_derived.PostfixEnd));
+                    if (mtddef_target.ReturnType.MetadataType != MetadataType.Void)
+                    {
+                        if (mtddef_target.ReturnType.MetadataType != MetadataType.Boolean)
+                        {
+                            il.InsertBefore(ins_insert, il.Create(OpCodes.Pop));
+                        }
+                        else
+                        {
+                            il.InsertBefore(ins_insert, il.Create(OpCodes.Ldloc_S, mtddef_derived.Body.Variables[0]));
+                            il.InsertBefore(ins_insert, il.Create(OpCodes.And));
+                            il.InsertBefore(ins_insert, il.Create(OpCodes.Stloc_S, mtddef_derived.Body.Variables[0]));
+                            if (!dict_prefix_patched_methods.ContainsKey(id))
+                            {
+                                dict_prefix_patched_methods.Add(id, mtdpinf_derived);
+                            }
+                        }
+                    }
+                    //il.InsertBefore(ins_insert, il.Create(OpCodes.Brfalse_S, mtdpinf_derived.PostfixBegin ?? mtdpinf_derived.PostfixEnd));
+                }
+            }
+
+            if (dict_prefix_patched_methods.Count > 0)
+            {
+                foreach (var mtdpinf_derived in dict_prefix_patched_methods.Values)
+                {
+                    var il = mtdpinf_derived.Method.Body.GetILProcessor();
+                    il.InsertBefore(mtdpinf_derived.PrefixBegin, il.Create(OpCodes.Ldloc_S, mtdpinf_derived.Method.Body.Variables[0]));
+                    il.InsertBefore(mtdpinf_derived.PrefixBegin, il.Create(OpCodes.Brfalse_S, mtdpinf_derived.PostfixBegin));
+                    if (mtdpinf_derived.Method.ReturnType.MetadataType != MetadataType.Void)
+                    {
+                        var insert = mtdpinf_derived.Method.Body.Instructions[0];
+                        il.InsertBefore(insert, il.Create(OpCodes.Ldloca_S, mtdpinf_derived.Method.Body.Variables[1]));
+                        il.InsertBefore(insert, il.Create(OpCodes.Initobj, module.ImportReference(mtdpinf_derived.Method.ReturnType)));
+                    }
                 }
             }
 
@@ -455,30 +489,37 @@ namespace KFCommonUtilityLib
                 mtddef_derived.Body.Variables.Add(new VariableDefinition(module.ImportReference(mtddef_base.ReturnType)));
             }
             var il = mtddef_derived.Body.GetILProcessor();
-            if (hasReturnVal)
-            {
-                il.Emit(OpCodes.Ldloca_S, mtddef_derived.Body.Variables[1]);
-                il.Emit(OpCodes.Initobj, module.ImportReference(mtddef_derived.ReturnType));
-            }
-            il.Emit(OpCodes.Ldc_I4_0);
+            //if (hasReturnVal)
+            //{
+            //    il.Emit(OpCodes.Ldloca_S, mtddef_derived.Body.Variables[1]);
+            //    il.Emit(OpCodes.Initobj, module.ImportReference(mtddef_derived.ReturnType));
+            //}
+            il.Emit(OpCodes.Ldc_I4_1);
             il.Emit(OpCodes.Stloc_S, mtddef_derived.Body.Variables[0]);
-            Instruction prefixBegin = il.Create(OpCodes.Ldc_I4_1);
+            //Instruction prefixBegin = il.Create(OpCodes.Ldloc_S, mtddef_derived.Body.Variables[0]);
+            //il.Append(prefixBegin);
+            //il.Emit(OpCodes.Brfalse_S, postfixBegin);
+            Instruction prefixBegin = il.Create(OpCodes.Ldarg_0);
             il.Append(prefixBegin);
-            il.Emit(OpCodes.Stloc_S, mtddef_derived.Body.Variables[0]);
-            il.Emit(OpCodes.Ldarg_0);
             for (int i = 0; i < mtddef_derived.Parameters.Count; i++)
             {
                 var par = mtddef_derived.Parameters[i];
                 il.Emit(OpCodes.Ldarg_S, par);
             }
             il.Emit(OpCodes.Call, mtddef_base_override ?? module.ImportReference(mtdref_base));
+            Instruction postfixBegin = il.Create(OpCodes.Nop);
             if (hasReturnVal)
             {
                 il.Emit(OpCodes.Stloc_S, mtddef_derived.Body.Variables[1]);
+                il.Append(postfixBegin);
                 il.Emit(OpCodes.Ldloc_S, mtddef_derived.Body.Variables[1]);
             }
+            else
+            {
+                il.Append(postfixBegin);
+            }
             il.Emit(OpCodes.Ret);
-            mtdpinf_derived = new MethodPatchInfo(mtddef_derived, mtddef_derived.Body.Instructions[mtddef_derived.Body.Instructions.Count - (hasReturnVal ? 2 : 1)], prefixBegin);
+            mtdpinf_derived = new MethodPatchInfo(mtddef_derived, postfixBegin, mtddef_derived.Body.Instructions[mtddef_derived.Body.Instructions.Count - (hasReturnVal ? 2 : 1)], prefixBegin);
             dict_overrides.Add(id, mtdpinf_derived);
             return mtdpinf_derived;
         }
@@ -706,9 +747,6 @@ namespace KFCommonUtilityLib
                         vardef = new VariableDefinition(module.ImportReference(par.ParameterType));
                         mtddef_derived.Body.Variables.Add(vardef);
                         dict_states.Add(moduleID, vardef);
-                        var ins = mtddef_derived.Body.Instructions[0];
-                        il.InsertBefore(ins, il.Create(OpCodes.Ldloca_S, vardef));
-                        il.InsertBefore(ins, il.Create(OpCodes.Initobj, module.ImportReference(par.ParameterType)));
                         list_inst_pars.Add(il.Create(OpCodes.Ldloc_S, vardef));
                     }
                     else

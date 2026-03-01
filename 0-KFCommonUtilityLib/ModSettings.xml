@@ -39,6 +39,16 @@
           <Property type="formatter" formatString="0" />
         </Slider>
       </Category>
+      <Category name="AimCorrection" displayKey="kflibCategoryAimCorrection" tooltipKey="">
+        <Selector name="AimCorrectionType" displayKey="kflibSettingsAimCorrectionTypeName" tooltipKey="kflibSettingsAimCorrectionTypeDesc" defaultValue="Both">
+          <Property type="arrayValues" allowedValues="None,FovByDistance,MixedOrtho,Both" />
+        </Selector>
+      </Category>
+      <Category name="PiPCamera" displayKey="kflibCategoryPiPCamera" tooltipKey="">
+        <Selector name="SyncAAQuality" displayKey="kflibSettingSyncAAQualityName" tooltipKey="kflibSettingSyncAAQualityDesc" defaultValue="Disabled">
+          <Property type="arrayValues" allowedValues="Disabled,Antialiasing" />
+        </Selector>
+      </Category>
     </Tab>
   </Global>
   <World />

@@ -40,8 +40,13 @@ public class ActionModuleDynamicMuzzleFlash
     }
 
     [HarmonyPatch(nameof(ItemAction.ItemActionEffects)), MethodTargetPrefix]
-    private bool Prefix_ItemActionEffects(ItemActionAttack __instance, DynamicMuzzleFlashData __customData, out State __state)
+    private void Prefix_ItemActionEffects(ItemActionAttack __instance, DynamicMuzzleFlashData __customData, bool __runOriginal, out State __state)
     {
+        if (!__runOriginal)
+        {
+            __state = new State();
+            return;
+        }
         __state = new State()
         {
             executed = true,
@@ -54,7 +59,6 @@ public class ActionModuleDynamicMuzzleFlash
         __instance.particlesMuzzleFireFpv = __customData .particlesMuzzleFireFpv;
         __instance.particlesMuzzleSmoke = __customData.particlesMuzzleSmoke;
         __instance.particlesMuzzleSmokeFpv = __customData.particlesMuzzleSmokeFpv;
-        return true;
     }
 
     [HarmonyPatch(nameof(ItemAction.ItemActionEffects)), MethodTargetPostfix]

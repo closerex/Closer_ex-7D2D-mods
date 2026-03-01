@@ -9,6 +9,7 @@ using System.Reflection.Emit;
 using System.Xml.Linq;
 using UniLinq;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 [HarmonyPatch]
@@ -19,15 +20,15 @@ public static class CommonUtilityPatch
     {
         if (!holdingEntity)
             return;
-        _actionData.isReloading = true;
-        _actionData.isWeaponReloading = true;
-        holdingEntity.MinEventContext.ItemActionData = _actionData;
-        holdingEntity.FireEvent(MinEventTypes.onReloadStart, true);
-        _actionData.isReloading = false;
-        _actionData.isWeaponReloading = false;
-        _actionData.isReloadCancelled = false;
-        _actionData.isWeaponReloadCancelled = false;
-        holdingEntity.FireEvent(MinEventTypes.onReloadStop);
+        //_actionData.isReloading = true;
+        //_actionData.isWeaponReloading = true;
+        //holdingEntity.MinEventContext.ItemActionData = _actionData;
+        //holdingEntity.FireEvent(MinEventTypes.onReloadStart, true);
+        //_actionData.isReloading = false;
+        //_actionData.isWeaponReloading = false;
+        //_actionData.isReloadCancelled = false;
+        //_actionData.isWeaponReloadCancelled = false;
+        //holdingEntity.FireEvent(MinEventTypes.onReloadStop);
 
         AnimationAmmoUpdateState.SetAmmoCountForEntity(holdingEntity, holdingEntity.inventory.holdingItemIdx);
     }
@@ -167,90 +168,91 @@ public static class CommonUtilityPatch
         return codes;
     }
 
-    //fix recoil animation does not match weapon RPM
-    private static int weaponFireHash = Animator.StringToHash("WeaponFire");
-    private static int aimHash = Animator.StringToHash("IsAiming");
-    private static HashSet<int> hash_shot_state = new HashSet<int>();
-    private static HashSet<int> hash_aimshot_state = new HashSet<int>();
+    #region removed vanilla weapon recoil anim fix, added in A20
+    ////fix recoil animation does not match weapon RPM
+    //private static int weaponFireHash = Animator.StringToHash("WeaponFire");
+    //private static int aimHash = Animator.StringToHash("IsAiming");
+    //private static HashSet<int> hash_shot_state = new HashSet<int>();
+    //private static HashSet<int> hash_aimshot_state = new HashSet<int>();
 
-    public static void InitShotStates(ref ModEvents.SGameAwakeData _)
-    {
-        string[] weapons =
-        {
-            "fpvAK47",
-            "fpvMagnum",
-            "fpvRocketLauncher",
-            "fpvSawedOffShotgun",
-            "fpvBlunderbuss",
-            "fpvCrossbow",
-            "fpvPistol",
-            "fpvHuntingRifle",
-            "fpvSMG",
-            "fpvSniperRifle",
-            "M60",
-            "fpvDoubleBarrelShotgun",
-            //"fpvJunkTurret",
-            "fpvTacticalAssaultRifle",
-            "fpvDesertEagle",
-            "fpvAutoShotgun",
-            "fpvSharpShooterRifle",
-            "fpvPipeMachineGun",
-            "fpvPipeRifle",
-            "fpvPipeRevolver",
-            "fpvPipeShotgun",
-            "fpvLeverActionRifle",
-        };
-        foreach (string weapon in weapons)
-        {
-            hash_shot_state.Add(Animator.StringToHash(weapon + "Fire"));
-            hash_aimshot_state.Add(Animator.StringToHash(weapon + "AimFire"));
-        }
-    }
+    //public static void InitShotStates(ref ModEvents.SGameAwakeData _)
+    //{
+    //    string[] weapons =
+    //    {
+    //        "fpvAK47",
+    //        "fpvMagnum",
+    //        "fpvRocketLauncher",
+    //        "fpvSawedOffShotgun",
+    //        "fpvBlunderbuss",
+    //        "fpvCrossbow",
+    //        "fpvPistol",
+    //        "fpvHuntingRifle",
+    //        "fpvSMG",
+    //        "fpvSniperRifle",
+    //        "M60",
+    //        "fpvDoubleBarrelShotgun",
+    //        //"fpvJunkTurret",
+    //        "fpvTacticalAssaultRifle",
+    //        "fpvDesertEagle",
+    //        "fpvAutoShotgun",
+    //        "fpvSharpShooterRifle",
+    //        "fpvPipeMachineGun",
+    //        "fpvPipeRifle",
+    //        "fpvPipeRevolver",
+    //        "fpvPipeShotgun",
+    //        "fpvLeverActionRifle",
+    //    };
+    //    foreach (string weapon in weapons)
+    //    {
+    //        hash_shot_state.Add(Animator.StringToHash(weapon + "Fire"));
+    //        hash_aimshot_state.Add(Animator.StringToHash(weapon + "AimFire"));
+    //    }
+    //}
 
-    [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.OnFired))]
-    [HarmonyPostfix]
-    private static void Postfix_OnFired_EntityPlayerLocal(EntityPlayerLocal __instance)
-    {
-        if (!__instance.bFirstPersonView)
-            return;
+    //[HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.OnFired))]
+    //[HarmonyPostfix]
+    //private static void Postfix_OnFired_EntityPlayerLocal(EntityPlayerLocal __instance)
+    //{
+    //    if (!__instance.bFirstPersonView)
+    //        return;
 
-        ItemActionRanged.ItemActionDataRanged _rangedData;
-        if ((_rangedData = __instance.inventory.holdingItemData.actionData[0] as ItemActionRanged.ItemActionDataRanged) == null && (_rangedData = __instance.inventory.holdingItemData.actionData[1] as ItemActionRanged.ItemActionDataRanged) == null)
-            return;
+    //    ItemActionRanged.ItemActionDataRanged _rangedData;
+    //    if ((_rangedData = __instance.inventory.holdingItemData.actionData[0] as ItemActionRanged.ItemActionDataRanged) == null && (_rangedData = __instance.inventory.holdingItemData.actionData[1] as ItemActionRanged.ItemActionDataRanged) == null)
+    //        return;
 
-        if (_rangedData.invData.model.TryGetComponent<AnimationTargetsAbs>(out var targets) && targets.ItemFpv)
-            return;
+    //    if (_rangedData.invData.model.TryGetComponent<AnimationTargetsAbs>(out var targets) && targets.ItemFpv)
+    //        return;
 
-        var anim = (__instance.emodel.avatarController as AvatarLocalPlayerController).FPSArms.Animator;
-        if (anim.IsInTransition(0))
-            return;
+    //    var anim = (__instance.emodel.avatarController as AvatarLocalPlayerController).FPSArms.Animator;
+    //    if (anim.IsInTransition(0))
+    //        return;
 
-        var curState = anim.GetCurrentAnimatorStateInfo(0);
-        if (curState.length > _rangedData.Delay)
-        {
-            bool aimState = anim.GetBool(aimHash);
-            short shotState = 0;
-            if (hash_shot_state.Contains(curState.shortNameHash))
-                shotState = 1;
-            else if (hash_aimshot_state.Contains(curState.shortNameHash))
-                shotState = 2;
-            if (shotState == 0 || (shotState == 1 && aimState) || (shotState == 2 && !aimState))
-            {
-                if (shotState > 0)
-                    anim.ResetTrigger(weaponFireHash);
-                return;
-            }
+    //    var curState = anim.GetCurrentAnimatorStateInfo(0);
+    //    if (curState.length > _rangedData.Delay)
+    //    {
+    //        bool aimState = anim.GetBool(aimHash);
+    //        short shotState = 0;
+    //        if (hash_shot_state.Contains(curState.shortNameHash))
+    //            shotState = 1;
+    //        else if (hash_aimshot_state.Contains(curState.shortNameHash))
+    //            shotState = 2;
+    //        if (shotState == 0 || (shotState == 1 && aimState) || (shotState == 2 && !aimState))
+    //        {
+    //            if (shotState > 0)
+    //                anim.ResetTrigger(weaponFireHash);
+    //            return;
+    //        }
 
-            //current state, layer 0, offset 0
-            anim.PlayInFixedTime(0, 0, 0);
-            anim.ResetTrigger(weaponFireHash);
-            if (_rangedData.invData.itemValue.Meta == 0)
-            {
-                __instance.emodel.avatarController.CancelEvent(weaponFireHash);
-                Log.Out("Cancel fire event because meta is 0");
-            }
-        }
-    }
+    //        //current state, layer 0, offset 0
+    //        anim.PlayInFixedTime(0, 0, 0);
+    //        anim.ResetTrigger(weaponFireHash);
+    //        if (_rangedData.invData.itemValue.Meta == 0)
+    //        {
+    //            __instance.emodel.avatarController.CancelEvent(weaponFireHash);
+    //            Log.Out("Cancel fire event because meta is 0");
+    //        }
+    //    }
+    //}
 
     //[HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ItemActionEffects))]
     //[HarmonyPostfix]
@@ -262,7 +264,9 @@ public static class CommonUtilityPatch
     //        //Log.Out("Cancel fire event because firing state is 0\n" + StackTraceUtility.ExtractStackTrace());
     //    }
     //}
+    #endregion
 
+    #region for reference
     //[HarmonyPatch(typeof(GameManager), "gmUpdate")]
     //[HarmonyTranspiler]
     //private static IEnumerable<CodeInstruction> Transpiler_gmUpdate_GameManager(IEnumerable<CodeInstruction> instructions)
@@ -301,6 +305,7 @@ public static class CommonUtilityPatch
     //        }
     //    }
     //}
+    #endregion
 
     [HarmonyPatch(typeof(DynamicProperties), nameof(DynamicProperties.Parse))]
     [HarmonyPrefix]
@@ -2438,71 +2443,220 @@ public static class CommonUtilityPatch
         return codes;
     }
 
-    //[HarmonyPatch(typeof(EntityBuffs), nameof(EntityBuffs.SetCustomVar))]
-    //[HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
-    //private static void SetCustomVarSelectiveSync(this EntityBuffs self, string _name, float _value, bool _netSync = true, CVarOperation _operation = CVarOperation.set)
+    [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.CloneModel), new[] {typeof(World), typeof(ItemValue), typeof(Vector3), typeof(Transform), typeof(BlockShape.MeshPurpose), typeof(TextureFullArray)})]
+    [HarmonyPostfix]
+    private static void Postfix_CloneModel_ItemClass(ItemClass __instance, Transform __result, ItemValue _itemValue, BlockShape.MeshPurpose _purpose)
+    {
+        bool useDropMesh = false;
+        switch (_purpose)
+        {
+            case BlockShape.MeshPurpose.Hold:
+                useDropMesh = false;
+                break;
+            case BlockShape.MeshPurpose.Drop:
+                useDropMesh = true;
+                break;
+            default:
+                return;
+        }
+
+        if (__result.TryGetComponent<SkinRendererList>(out var list))
+        {
+            string path = "";
+            if (__instance.Properties.Contains("KFMaterialReplacer"))
+            {
+                path = __instance.Properties.GetString("KFMaterialReplacer");
+                SkinMaterialReplacer replacer = DataLoader.LoadAsset<SkinMaterialReplacer>(path, true);
+                list.ApplySkinMaterials(replacer, useDropMesh);
+                Component.Destroy(replacer);
+            }
+
+            path = _itemValue.GetPropertyOverride("KFMaterialReplacer", "");
+            if (!string.IsNullOrEmpty(path))
+            {
+                SkinMaterialReplacer replacer = DataLoader.LoadAsset<SkinMaterialReplacer>(path, true);
+                list.ApplySkinMaterials(replacer, useDropMesh);
+                Component.Destroy(replacer);
+            }
+        }
+    }
+
+    #region upscaler fix for unity dlss and fsr3, might add them back when it actually works
+    //[HarmonyPatch(typeof(PostProcessLayer), "LateUpdate")]
+    //[HarmonyTranspiler]
+    //private static IEnumerable<CodeInstruction> Transpiler_LateUpdate_PostProcessLayer(IEnumerable<CodeInstruction> instructions)
     //{
-    //    _ = Transpiler(null);
+    //    var codes = instructions.ToList();
 
-    //    IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    //    var fld_original_rt = AccessTools.Field(typeof(PostProcessLayer), "m_originalTargetTexture");
+    //    var propset_camera_rt = AccessTools.PropertySetter(typeof(Camera), nameof(Camera.targetTexture));
+
+    //    for (int i = 0; i < codes.Count; i++)
     //    {
-    //        if (instructions == null)
+    //        if (codes[i].Calls(propset_camera_rt))
     //        {
-    //            return null;
-    //        }
-
-    //        return instructions.MethodReplacer(AccessTools.Method(typeof(EntityBuffs), nameof(EntityBuffs.SetCustomVarNetwork)),
-    //                                           AccessTools.Method(typeof(CommonUtilityPatch), nameof(SetCustomVarNetworkSelectiveSync)));
-    //    }
-    //}
-
-    //[HarmonyPatch(typeof(EntityBuffs), nameof(EntityBuffs.SetCustomVarNetwork))]
-    //[HarmonyReversePatch]
-    //private static void SetCustomVarNetworkSelectiveSync(this EntityBuffs self, string _name, float _value, CVarOperation _operation = CVarOperation.set)
-    //{
-    //    _ = Transpiler(null);
-
-    //    IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-    //    {
-    //        if (instructions == null)
-    //        {
-    //            return null;
-    //        }
-
-    //        var codes = instructions.ToList();
-
-    //        var mtd_send = AccessTools.Method(typeof(ConnectionManager), nameof(ConnectionManager.SendPackage), new[] { typeof(NetPackage), typeof(bool), typeof(int), typeof(int), typeof(int), typeof(Vector3?), typeof(int), typeof(bool) });
-
-    //        for (int i = 0; i < codes.Count; i++)
-    //        {
-    //            if (codes[i].Calls(mtd_send))
+    //            codes.InsertRange(i + 1, new[]
     //            {
-    //                for (int j = i - 1; j >= 2; j--)
+    //                new CodeInstruction(OpCodes.Ldarg_0),
+    //                new CodeInstruction(OpCodes.Ldfld, fld_original_rt),
+    //                new CodeInstruction(OpCodes.Ldarg_0),
+    //                CodeInstruction.LoadField(typeof(PostProcessLayer), "m_Camera"),
+    //                CodeInstruction.CallClosure<Action<RenderTexture, Camera>>(static (tex, cam) =>
     //                {
-    //                    if (codes[j].LoadsConstant(-1) && codes[j - 1].LoadsConstant(-1) && codes[j - 2].LoadsConstant(-1))
+    //                    if (cam.TryGetComponent<WeaponCameraFollow>(out var weaponCamera) && weaponCamera.magnifyScope)
     //                    {
-    //                        codes.RemoveAt(j - 1);
-    //                        codes.InsertRange(j - 1, new[]
-    //                        {
-    //                            new CodeInstruction(OpCodes.Ldarg_0),
-    //                            CodeInstruction.LoadField(typeof(EntityBuffs), nameof(EntityBuffs.parent)),
-    //                            CodeInstruction.CallClosure<Func<EntityAlive, int>>(static (entity) =>
-    //                            {
-    //                                var id = entity.isEntityRemote ? entity.entityId : -1;
-    //                                Log.Out($"Checking Modify Cvar entity {entity.GetDebugName()} is remote {entity.isEntityRemote} exclude id {id}");
-    //                                return id;
-    //                            })
-    //                        });
-    //                        break;
+    //                        float heightScale = tex.height / (float)cam.pixelHeight;
+    //                        float widthScale = tex.width / (float)cam.pixelWidth;
+    //                        cam.rect = new Rect(Mathf.Max(1E-07f, (1 - widthScale) / 2), (1 - heightScale) / 2, widthScale, heightScale);
+    //                        cam.aspect = weaponCamera.magnifyScope.aspectRatio;
     //                    }
-    //                }
-    //                break;
-    //            }
+    //                })
+    //            });
+    //            break;
     //        }
-
-    //        return codes;
     //    }
+
+    //    return codes;
     //}
+
+    //[HarmonyPatch(typeof(PostProcessLayer), "BuildCommandBuffers")]
+    //[HarmonyTranspiler]
+    //private static IEnumerable<CodeInstruction> Transpiler_BuildCommandBuffers_PostProcessLayer(IEnumerable<CodeInstruction> instructions)
+    //{
+    //    var codes = instructions.ToList();
+
+    //    var fld_original_rt = AccessTools.Field(typeof(PostProcessLayer), "m_originalTargetTexture");
+    //    var propset_camera_rt = AccessTools.PropertySetter(typeof(Camera), nameof(Camera.targetTexture));
+
+    //    for (int i = 1; i < codes.Count; i++)
+    //    {
+    //        if (codes[i].Calls(propset_camera_rt) && codes[i - 1].LoadsField(fld_original_rt))
+    //        {
+    //            codes.InsertRange(i + 1, new[]
+    //            {
+    //                new CodeInstruction(OpCodes.Ldarg_0),
+    //                CodeInstruction.LoadField(typeof(PostProcessLayer), "m_Camera"),
+    //                CodeInstruction.CallClosure<Action<Camera>>(static (cam) =>
+    //                {
+    //                    if (cam.TryGetComponent<WeaponCameraFollow>(out var weaponCamera) && weaponCamera.magnifyScope)
+    //                    {
+    //                        cam.rect = new Rect(0f, 0f, 1f, 1f);
+    //                        cam.aspect = weaponCamera.magnifyScope.aspectRatio;
+    //                    }
+    //                })
+    //            });
+    //            break;
+    //        }
+    //    }
+
+    //    return codes;
+    //}
+
+    //[HarmonyPatch(typeof(PostProcessLayer), "OnRenderImage")]
+    //[HarmonyTranspiler]
+    //private static IEnumerable<CodeInstruction> Transpiler_OnRenderImage_PostProcessLayer(IEnumerable<CodeInstruction> instructions)
+    //{
+    //    var codes = instructions.ToList();
+
+    //    var fld_original_rt = AccessTools.Field(typeof(PostProcessLayer), "m_originalTargetTexture");
+    //    var propset_camera_rt = AccessTools.PropertySetter(typeof(Camera), nameof(Camera.targetTexture));
+
+    //    for (int i = 1; i < codes.Count; i++)
+    //    {
+    //        if (codes[i].Calls(propset_camera_rt) && codes[i - 1].LoadsField(fld_original_rt))
+    //        {
+    //            codes.InsertRange(i + 1, new[]
+    //            {
+    //                new CodeInstruction(OpCodes.Ldarg_0),
+    //                CodeInstruction.LoadField(typeof(PostProcessLayer), "m_Camera"),
+    //                CodeInstruction.CallClosure<Action<Camera>>(static (cam) =>
+    //                {
+    //                    if (cam.TryGetComponent<WeaponCameraFollow>(out var weaponCamera) && weaponCamera.magnifyScope)
+    //                    {
+    //                        cam.rect = new Rect(0f, 0f, 1f, 1f);
+    //                        cam.aspect = weaponCamera.magnifyScope.aspectRatio;
+    //                    }
+    //                })
+    //            });
+    //            break;
+    //        }
+    //    }
+
+    //    return codes;
+    //}
+
+    //[HarmonyPatch(typeof(DLSS), "ConfigureCameraViewport")]
+    //[HarmonyTranspiler]
+    //private static IEnumerable<CodeInstruction> Transpiler_ConfigureCameraViewport_DLSS(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+    //{
+    //    var codes = instructions.ToList();
+        
+    //    var fld_rendersize = AccessTools.Field(typeof(DLSS), "renderSize");
+
+    //    for (int i = 0; i < codes.Count; i++)
+    //    {
+    //        if (codes[i].StoresField(fld_rendersize))
+    //        {
+    //            var lbl_ret = generator.DefineLabel();
+    //            codes.InsertRange(i + 1, new[]
+    //            {
+    //                new CodeInstruction(OpCodes.Ldloc_0),
+    //                CodeInstruction.CallClosure<Func<Camera, bool>>(static (cam) =>
+    //                {
+    //                    if (cam.TryGetComponent<WeaponCameraFollow>(out var weaponCamera) && weaponCamera.magnifyScope)
+    //                    {
+    //                        cam.rect = new Rect(0f, 0f, 1f, 1f);
+    //                        cam.aspect = weaponCamera.magnifyScope.aspectRatio;
+    //                        return true;
+    //                    }
+    //                    return false;
+    //                }),
+    //                new CodeInstruction(OpCodes.Brtrue_S, lbl_ret)
+    //            });
+    //            codes[codes.Count - 1].WithLabels(lbl_ret);
+    //            break;
+    //        }
+    //    }
+
+    //    return codes;
+    //}
+
+    //[HarmonyPatch(typeof(FSR3), "ConfigureCameraViewport")]
+    //[HarmonyTranspiler]
+    //private static IEnumerable<CodeInstruction> Transpiler_ConfigureCameraViewport_FSR3(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+    //{
+    //    var codes = instructions.ToList();
+        
+    //    var fld_rendersize = AccessTools.Field(typeof(FSR3), "_maxRenderSize");
+
+    //    for (int i = 0; i < codes.Count; i++)
+    //    {
+    //        if (codes[i].StoresField(fld_rendersize))
+    //        {
+    //            var lbl_ret = generator.DefineLabel();
+    //            codes.InsertRange(i + 1, new[]
+    //            {
+    //                new CodeInstruction(OpCodes.Ldloc_0),
+    //                CodeInstruction.CallClosure<Func<Camera, bool>>(static (cam) =>
+    //                {
+    //                    if (cam.TryGetComponent<WeaponCameraFollow>(out var weaponCamera) && weaponCamera.magnifyScope)
+    //                    {
+    //                        cam.rect = new Rect(0f, 0f, 1f, 1f);
+    //                        cam.aspect = weaponCamera.magnifyScope.aspectRatio;
+    //                        return true;
+    //                    }
+    //                    return false;
+    //                }),
+    //                new CodeInstruction(OpCodes.Brtrue_S, lbl_ret)
+    //            });
+    //            codes[codes.Count - 1].WithLabels(lbl_ret);
+    //            break;
+    //        }
+    //    }
+
+    //    return codes;
+    //}
+    #endregion
 
     public static void Test()
     {

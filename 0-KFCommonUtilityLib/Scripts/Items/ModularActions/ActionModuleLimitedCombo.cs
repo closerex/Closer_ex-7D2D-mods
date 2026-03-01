@@ -27,13 +27,12 @@ public class ActionModuleLimitedCombo
     }
 
     [HarmonyPatch(nameof(ItemAction.ExecuteAction)), MethodTargetPrefix]
-    public bool Prefix_ExecuteAction(bool _bReleased, LimitedComboData __customData)
+    public void Prefix_ExecuteAction(bool _bReleased, LimitedComboData __customData, bool __runOriginal)
     {
-        if (_bReleased)
+        if (__runOriginal && _bReleased)
         {
             __customData.ResetCombo();
         }
-        return true;
     }
 
     [HarmonyPatch(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.ExecuteAction)), MethodTargetTranspiler]

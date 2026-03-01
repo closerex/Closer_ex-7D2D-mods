@@ -550,6 +550,7 @@
     <Compile Include="KFAttached\Animation\MonoBehaviours\RigWeightOverTime.cs" />
     <Compile Include="KFAttached\Misc\AttachmentReferenceAppended.cs" />
     <Compile Include="KFAttached\KFUtilAttached\IActiveCountHandler.cs" />
+    <Compile Include="KFAttached\Misc\DummyScaler.cs" />
     <Compile Include="KFAttached\Misc\IgnoreTint.cs" />
     <Compile Include="KFAttached\Misc\ItemAnimatorUpdate.cs" />
     <Compile Include="KFAttached\Misc\Laser.cs" />
@@ -557,6 +558,8 @@
     <Compile Include="KFAttached\Misc\PlayerRigLateUpdate.cs" />
     <Compile Include="KFAttached\Misc\ProximityBeep.cs" />
     <Compile Include="KFAttached\Misc\ScopeBase.cs" />
+    <Compile Include="KFAttached\Misc\SkinMaterialReplacer.cs" />
+    <Compile Include="KFAttached\Misc\SkinRendererList.cs" />
     <Compile Include="KFAttached\Misc\WeaponCameraFollow.cs" />
     <Compile Include="KFAttached\Render\BokehBlurTargetRef.cs" />
     <Compile Include="KFAttached\Render\MagnifyScope.cs" />
@@ -729,6 +732,7 @@
     <Compile Include="Scripts\Requirements\RoundsInMagazineBase.cs" />
     <Compile Include="Scripts\StaticManagers\DelayLoadModuleManager.cs" />
     <Compile Include="Scripts\Utilities\AreaSweep.cs" />
+    <Compile Include="Scripts\Utilities\IValueDamper.cs" />
     <Compile Include="Scripts\Utilities\LocalPlayerCameraUpdater.cs" />
     <Compile Include="Scripts\Utilities\MiscExtensions.cs" />
     <Compile Include="Scripts\Utilities\Modular\ItemInventoryDataModuleProcessor.cs" />
@@ -771,6 +775,7 @@
     <Compile Include="Scripts\Utilities\MonoCecilExtensions.cs" />
     <Compile Include="Scripts\Utilities\MultiActionUtils.cs" />
     <Compile Include="Scripts\Utilities\MultiActionProjectileRewrites.cs" />
+    <Compile Include="Scripts\Utilities\MultiSourceBlender.cs" />
     <Compile Include="Scripts\Utilities\SaveTextureToFileUtility.cs" />
     <Compile Include="Scripts\Utilities\EntityInventoryExtension.cs" />
     <Compile Include="Scripts\Utilities\TemporaryMuzzleFlash.cs" />

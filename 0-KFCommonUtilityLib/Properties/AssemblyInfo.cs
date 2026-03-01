@@ -38,3 +38,5 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("FullautoLauncherAnimationRiggingCompatibilityPatch")]
 [assembly: InternalsVisibleTo("GearsSavingPatch")]
 [assembly: InternalsVisibleTo("RainstormPatches")]
+[assembly: InternalsVisibleTo("CustomAimFovCorrectionPatch")]
+[assembly: InternalsVisibleTo("FPVLegsPiPCameraPatches")]

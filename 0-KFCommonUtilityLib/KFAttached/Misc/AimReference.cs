@@ -1,7 +1,11 @@
-﻿using System;
+﻿using KFCommonUtilityLib;
+using System;
 using UnityEngine;
 
 public class AimReference : MonoBehaviour
+#if UNITY_EDITOR
+    , ISerializationCallbackReceiver
+#endif
 {
     [NonSerialized]
     public Vector3 positionOffset;
@@ -19,6 +23,30 @@ public class AimReference : MonoBehaviour
     public bool asReference;
     public Transform laserOriginOverride;
     public Transform akimboLaserOriginOverride;
+
+    [Range(1f, 85f)]
+    public float designedAimFov = 45;
+    public float designedAimDistance = -1;
+    [Range(0f, 1f)]
+    public float designedFlattenFactor = 0;
+    public bool applyAimFovCorrection = true;
+
+#if UNITY_EDITOR
+    public Transform aimDistanceTargetEditor;
+    public void OnBeforeSerialize()
+    {
+        if (aimDistanceTargetEditor)
+        {
+            designedAimDistance = Vector3.Distance(aimDistanceTargetEditor.position, transform.position);
+            aimDistanceTargetEditor = null;
+        }
+    }
+
+    public void OnAfterDeserialize()
+    {
+
+    }
+#endif
 
     private void OnEnable()
     {

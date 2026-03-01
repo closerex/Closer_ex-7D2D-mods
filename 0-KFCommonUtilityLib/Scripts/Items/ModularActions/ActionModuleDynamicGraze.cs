@@ -9,20 +9,19 @@ public class ActionModuleDynamicGraze
     private string dynamicSoundStart = null;
 
     [HarmonyPatch(nameof(ItemAction.ExecuteAction)), MethodTargetPrefix]
-    private bool Prefix_ExecuteAction(ItemActionDynamic __instance, ItemActionData _actionData, bool _bReleased, out (bool executed, string originalSound) __state)
+    private void Prefix_ExecuteAction(ItemActionDynamic __instance, ItemActionData _actionData, bool _bReleased, bool __runOriginal, out (bool executed, string originalSound) __state)
     {
-        if (!_bReleased && !string.IsNullOrEmpty(dynamicSoundStart) && _actionData.invData.holdingEntity is EntityPlayerLocal player)
+        if (__runOriginal && !_bReleased && !string.IsNullOrEmpty(dynamicSoundStart) && _actionData.invData.holdingEntity is EntityPlayerLocal player)
         {
             var targets = AnimationRiggingManager.GetHoldingRigTargetsFromPlayer(player);
             if (targets && targets.IsAnimationSet)
             {
                 __state = (true, __instance.soundStart);
                 __instance.soundStart = dynamicSoundStart;
-                return true;
+                return;
             }
         }
         __state = (false, null);
-        return true;
     }
 
     [HarmonyPatch(nameof(ItemAction.ExecuteAction)), MethodTargetPostfix]
@@ -42,9 +41,9 @@ public class ActionModuleDynamicGraze
     }
 
     [HarmonyPatch(nameof(ItemAction.OnHoldingUpdate)), MethodTargetPrefix]
-    private bool Prefix_OnHoldingUpdate(ItemActionDynamic __instance, ItemActionData _actionData, out (bool executed, bool useGrazeCast, float lastUseTime) __state)
+    private void Prefix_OnHoldingUpdate(ItemActionDynamic __instance, ItemActionData _actionData, bool __runOriginal, out (bool executed, bool useGrazeCast, float lastUseTime) __state)
     {
-        if (_actionData.invData.holdingEntity is EntityPlayerLocal player)
+        if (__runOriginal && _actionData.invData.holdingEntity is EntityPlayerLocal player)
         {
             var targets = AnimationRiggingManager.GetHoldingRigTargetsFromPlayer(player);
             if (targets && targets.IsAnimationSet)
@@ -52,11 +51,11 @@ public class ActionModuleDynamicGraze
                 __state = (true, __instance.UseGrazingHits, _actionData.lastUseTime);
                 _actionData.lastUseTime = Time.time;
                 __instance.UseGrazingHits = false;
-                return true;
+                //Log.Out($"Prefix lastUseTime: {_actionData.lastUseTime} item {_actionData.invData.item.GetItemName()} actionIdx {_actionData.indexInEntityOfAction}");
+                return;
             }
         }
         __state = (false, false, -1);
-        return true;
     }
 
     [HarmonyPatch(nameof(ItemAction.OnHoldingUpdate)), MethodTargetPostfix]
@@ -66,6 +65,7 @@ public class ActionModuleDynamicGraze
         {
             __instance.UseGrazingHits = __state.useGrazeCast;
             _actionData.lastUseTime = __state.lastUseTime;
+            //Log.Out($"Postfix lastUseTime: {_actionData.lastUseTime} item {_actionData.invData.item.GetItemName()} actionIdx {_actionData.indexInEntityOfAction}");
         }
     }
 

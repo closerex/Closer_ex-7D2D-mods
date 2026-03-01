@@ -20,12 +20,11 @@ public class ItemModuleMultiItem
     //}
 
     [HarmonyPatch(nameof(ItemClass.StartHolding)), MethodTargetPrefix]
-    public bool Prefix_StartHolding(ItemClass __instance, ItemInventoryData _data, MultiItemInvData __customData)
+    public void Prefix_StartHolding(ItemClass __instance, ItemInventoryData _data, MultiItemInvData __customData)
     {
         __instance.Properties.ParseString("BoundItemName", ref __customData.boundItemName);
         __customData.boundItemName = _data.itemValue.GetPropertyOverride("BoundItemName", __customData.boundItemName);
         __customData.UpdateBoundItem();
-        return true;
     }
 
     [HarmonyPatch(nameof(ItemClass.CleanupHoldingActions)), MethodTargetPostfix]
@@ -35,9 +34,9 @@ public class ItemModuleMultiItem
     }
 
     [HarmonyPatch(nameof(ItemClass.ConsumeScrollWheel)), MethodTargetPrefix]
-    public bool Prefix_ConsumeScrollWheel(MultiItemInvData __customData, float _scrollWheelInput, PlayerActionsLocal _playerInput, ref bool __result)
+    public bool Prefix_ConsumeScrollWheel(MultiItemInvData __customData, float _scrollWheelInput, PlayerActionsLocal _playerInput, bool __runOriginal, ref bool __result)
     {
-        if (__customData.useBound && __customData.boundItemClass != null)
+        if (__runOriginal && __customData.useBound && __customData.boundItemClass != null)
         {
             __customData.SetBoundParams();
             __result = __customData.boundItemClass.ConsumeScrollWheel(__customData.boundInvData, _scrollWheelInput, _playerInput);
@@ -48,11 +47,10 @@ public class ItemModuleMultiItem
     }
 
     [HarmonyPatch(nameof(ItemClass.ExecuteAction)), MethodTargetPrefix]
-    public bool Prefix_ExecuteAction(ItemInventoryData _data, bool _bReleased, PlayerActionsLocal _playerActions)
+    public void Prefix_ExecuteAction(ItemInventoryData _data, bool _bReleased, PlayerActionsLocal _playerActions)
     {
         if (!_bReleased && _playerActions != null)
             _data.holdingEntity.emodel.avatarController.UpdateBool("UseAltMelee", false);
-        return true;
     }
 
     [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.ExecuteAction)), MethodTargetTranspiler]
@@ -79,9 +77,9 @@ public class ItemModuleMultiItem
     }
 
     [HarmonyPatch(nameof(ItemClass.GetCameraShakeType)), MethodTargetPrefix]
-    public bool Prefix_GetCameraShakeType(MultiItemInvData __customData, ref EnumCameraShake __result)
+    public bool Prefix_GetCameraShakeType(MultiItemInvData __customData, ref EnumCameraShake __result, bool __runOriginal)
     {
-        if (__customData.useBound && __customData.boundItemClass != null)
+        if (__runOriginal && __customData.useBound && __customData.boundItemClass != null)
         {
             __customData.SetBoundParams();
             __result = __customData.boundItemClass.GetCameraShakeType(__customData.boundInvData);
@@ -92,9 +90,9 @@ public class ItemModuleMultiItem
     }
 
     [HarmonyPatch(nameof(ItemClass.GetFocusType)), MethodTargetPrefix]
-    public bool Prefix_GetFocusType(MultiItemInvData __customData, ref RenderCubeType __result)
+    public bool Prefix_GetFocusType(MultiItemInvData __customData, ref RenderCubeType __result, bool __runOriginal)
     {
-        if (__customData.useBound && __customData.boundItemClass != null)
+        if (__runOriginal && __customData.useBound && __customData.boundItemClass != null)
         {
             __customData.SetBoundParams();
             __result = __customData.boundItemClass.GetFocusType(__customData.boundInvData);
@@ -105,9 +103,9 @@ public class ItemModuleMultiItem
     }
 
     [HarmonyPatch(nameof(ItemClass.GetIronSights)), MethodTargetPrefix]
-    public bool Prefix_GetIronSights(MultiItemInvData __customData, ref float _fov)
+    public bool Prefix_GetIronSights(MultiItemInvData __customData, ref float _fov, bool __runOriginal)
     {
-        if (__customData.useBound && __customData.boundItemClass != null)
+        if (__runOriginal && __customData.useBound && __customData.boundItemClass != null)
         {
             __customData.SetBoundParams();
             __customData.boundItemClass.GetIronSights(__customData.boundInvData, out _fov);
@@ -178,9 +176,9 @@ public class ItemModuleMultiItem
     }
 
     [HarmonyPatch(nameof(ItemClass.OnHUD)), MethodTargetPrefix]
-    public bool Prefix_OnHUD(MultiItemInvData __customData, int _x, int _y)
+    public bool Prefix_OnHUD(MultiItemInvData __customData, int _x, int _y, bool __runOriginal)
     {
-        if (__customData.useBound && __customData.boundItemClass != null)
+        if (__runOriginal && __customData.useBound && __customData.boundItemClass != null)
         {
             bool useBound = __customData.useBound;
             __customData.SetBoundParams();
@@ -192,9 +190,9 @@ public class ItemModuleMultiItem
     }
 
     [HarmonyPatch(nameof(ItemClass.OnScreenOverlay)), MethodTargetPrefix]
-    public bool Prefix_OnScreenOverlay(MultiItemInvData __customData)
+    public bool Prefix_OnScreenOverlay(MultiItemInvData __customData, bool __runOriginal)
     {
-        if (__customData.useBound && __customData.boundItemClass != null)
+        if (__runOriginal && __customData.useBound && __customData.boundItemClass != null)
         {
             __customData.SetBoundParams();
             __customData.boundItemClass.OnScreenOverlay(__customData.boundInvData);
