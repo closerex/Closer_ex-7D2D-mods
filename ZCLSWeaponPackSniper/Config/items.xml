@@ -1373,6 +1373,7 @@
 			<property name="BoundItemName" value="meleeWpnStockBashKFM14EBR"/>
 			<property name="HoldType" value="77"/>
             <property name="Meshfile" value="#@modfolder:Resources/M14EBR.unity3d?m14ebr_m.prefab"/>
+            <property name="KFMaterialReplacer" value="#@modfolder:Resources/M14EBR.unity3d?m14ebr_reticle_replacer.prefab"/>
 			<property name="Material" value="MRifleParts"/>
 			<property name="Weight" value="4"/>
 			<property name="ScrapTimeOverride" value="10.0"/>

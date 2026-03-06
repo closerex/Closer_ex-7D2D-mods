@@ -10,22 +10,22 @@
 						<requirement name="CVarCompare" cvar="gunKFDual9mm" operation="GT" value="0"/>
 					</passive_effect>
 					<passive_effect name="CraftingTier" operation="base_set" value="6" tags="gunKFHRGSW500">
-						<requirement name="CVarCompare" cvar="gunKF9mm" operation="GT" value="0"/>
+						<requirement name="CVarCompare" cvar="gunKFHRGSW500" operation="GT" value="0"/>
 					</passive_effect>
 					<passive_effect name="CraftingTier" operation="base_set" value="6" tags="gunKFDualHRGSW500">
-						<requirement name="CVarCompare" cvar="gunKFDual9mm" operation="GT" value="0"/>
+						<requirement name="CVarCompare" cvar="gunKFDualHRGSW500" operation="GT" value="0"/>
 					</passive_effect>
 					<passive_effect name="CraftingTier" operation="base_set" value="6" tags="gunKFSW500">
-						<requirement name="CVarCompare" cvar="gunKF9mm" operation="GT" value="0"/>
+						<requirement name="CVarCompare" cvar="gunKFSW500" operation="GT" value="0"/>
 					</passive_effect>
 					<passive_effect name="CraftingTier" operation="base_set" value="6" tags="gunKFDualSW500">
-						<requirement name="CVarCompare" cvar="gunKFDual9mm" operation="GT" value="0"/>
+						<requirement name="CVarCompare" cvar="gunKFDualSW500" operation="GT" value="0"/>
 					</passive_effect>
 					<passive_effect name="CraftingTier" operation="base_set" value="6" tags="gunKFG18C">
-						<requirement name="CVarCompare" cvar="gunKF9mm" operation="GT" value="0"/>
+						<requirement name="CVarCompare" cvar="gunKFG18C" operation="GT" value="0"/>
 					</passive_effect>
 					<passive_effect name="CraftingTier" operation="base_set" value="6" tags="gunKFDualG18C">
-						<requirement name="CVarCompare" cvar="gunKFDual9mm" operation="GT" value="0"/>
+						<requirement name="CVarCompare" cvar="gunKFDualG18C" operation="GT" value="0"/>
 					</passive_effect>
 					<passive_effect name="CraftingTier" operation="base_set" value="6" tags="gunKFG18CShield">
 						<requirement name="CVarCompare" cvar="gunKFG18CShield" operation="GT" value="0"/>

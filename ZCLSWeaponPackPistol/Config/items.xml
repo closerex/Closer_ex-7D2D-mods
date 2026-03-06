@@ -38,7 +38,7 @@
 
             <property class="Action0">
                 <property name="Class" value="Ranged"/>
-                <property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
+                <property name="ItemActionModules" value="TranspilerTest,KFCommonUtilityLib;ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
                 <property name="allowEmptyInspect" value="true"/>
                 <property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
                 <property name="InternalCancelOnly" value="true"/>

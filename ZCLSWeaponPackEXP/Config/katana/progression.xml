@@ -8,11 +8,11 @@
 			</insertBefore>
 
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingBlades']/effect_group[1]">
-				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="50,75" value="1" tags="meleeWpnBladeT3KF2Katana"/>
+				<passive_effect name="RecipeTagUnlocked" operation="base_set" level="50,1000" value="1" tags="meleeWpnBladeT3KF2Katana"/>
 			</append>	
 
 			<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingBlades']/effect_group[1]">
-				<passive_effect name="CraftingTier" operation="base_add" level="55,60,65,70,75" value="1,2,3,4,5" tags="meleeWpnBladeT3KF2Katana"/>
+				<passive_effect name="CraftingTier" operation="base_add" level="55,60,65,70,75,1000" value="1,2,3,4,5,5" tags="meleeWpnBladeT3KF2Katana"/>
 			</append>
 		</else>
 	</conditional>
