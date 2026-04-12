@@ -28,7 +28,7 @@ namespace FPVLegsPiPCameraPatches
         {
             if (__instance.pipCamera)
             {
-                __instance.pipCamera.transform.AddMissingComponent<FPVLegCameraCallback>().Init(___player.vp_FPCamera);
+                __instance.pipCamera.transform.AddMissingComponent<FPVLegCameraCallback>().Init(___player.vp_FPCamera, ___player, ___player.emodel?.avatarController?.GetAnimator());
             }
         }
     }

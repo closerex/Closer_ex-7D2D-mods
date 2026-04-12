@@ -98,12 +98,11 @@ namespace FPVLegs
             //var animator = player.emodel?.GetModelTransform()?.GetComponent<Animator>();
             var animator = player.emodel?.avatarController?.GetAnimator();
             FPVLegCameraCallback callback = player.vp_FPCamera.gameObject.GetOrAddComponent<FPVLegCameraCallback>();
-            callback.Init(player.vp_FPCamera);
+            callback.Init(player.vp_FPCamera, player, animator);
             callback.enabled = player.bFirstPersonView;
             if (animator)
             {
                 animator.enabled = true;
-                animator.gameObject.GetOrAddComponent<FPVLegHelper>().Init(player);
             }
             else
             {
@@ -229,23 +228,25 @@ namespace FPVLegs
         //}
     }
 
-    public class FPVLegHelper : MonoBehaviour
+    public class FPVLegHelper
     {
         private Animator animator;
         private (int stateID, int layerID)[] layersToDisable;
         private EntityPlayerLocal player;
         public Transform spine, spine1, spine2, spine3, neck, head, fpvHead, lShoulder, rShoulder, lUpperArm, rUpperArm, lUpperArmRoll, rUpperArmRoll, lLowerArmRoll, rLowerArmRoll, lLowerArm, rLowerArm, lHand, rHand;
         private float spineAngle = -10, spine1Angle = 0, spine2Angle = 0, spine3Angle = -30;
+        private Quaternion spineRot, spine1Rot, spine2Rot, spine3Rot, neckRot, headRot, lShoulderRot, rShoulderRot;
 
-        public void Init(EntityPlayerLocal player)
+        public void Init(EntityPlayerLocal player, Animator animator)
         {
             this.player = player;
+            this.animator = animator;
             fpvHead = player.cameraTransform.FindInChildren("Head");
+            Awake();
         }
 
         private void Awake()
         {
-            animator = GetComponent<Animator>();
             layersToDisable = new[]
             {
                 (Animator.StringToHash("Empty"), animator.GetLayerIndex("RightHandHoldPoses")),
@@ -258,7 +259,7 @@ namespace FPVLegs
                 (Animator.StringToHash("Empty"), animator.GetLayerIndex("UpperBodyUseAndReload")),
                 (Animator.StringToHash("Empty"), animator.GetLayerIndex("AdditiveRangedAttack")),
             };
-            spine = transform.FindInChilds("Spine");
+            spine = animator.transform.FindInChilds("Spine");
             spine1 = spine.Find("Spine1");
             spine2 = spine1.Find("Spine2");
             spine3 = spine2.Find("Spine3");
@@ -278,17 +279,7 @@ namespace FPVLegs
             rHand = rLowerArm.Find("RightHand");
         }
 
-        internal void LateUpdateTransform()
-        {
-            spine.localEulerAngles = new Vector3(0f, 0f, 0f);
-            spine1.localEulerAngles = new Vector3(0f, 0f, 0f);
-            spine2.localEulerAngles = new Vector3(0f, 0f, 0f);
-            spine3.localEulerAngles = new Vector3(0f, 0f, 0f);
-            neck.localEulerAngles = new Vector3(0f, 0f, 0f);
-            head.localEulerAngles = new Vector3(0f, 0f, 0f);
-        }
-
-        private void Update()
+        public void Update()
         {
             if (animator && player && player.IsAlive() && player.bFirstPersonView)
             {
@@ -296,50 +287,63 @@ namespace FPVLegs
             }
         }
 
-        private void LateUpdate()
+        public void UpdateTransforms()
         {
             if (animator && player && player.emodel)
             {
+                spineRot = spine.localRotation;
+                spine1Rot = spine1.localRotation;
+                spine2Rot = spine2.localRotation;
+                spine3Rot = spine3.localRotation;
+                neckRot = neck.localRotation;
+                headRot = head.localRotation;
+                lShoulderRot = lShoulder.localRotation;
+                rShoulderRot = rShoulder.localRotation;
                 if (!player.emodel.IsRagdollActive)
                 {
-                    if (player.bFirstPersonView)
+                    foreach (var layer in layersToDisable)
                     {
-                        foreach (var layer in layersToDisable)
-                        {
-                            animator.Play(layer.stateID, layer.layerID, 0f);
-                        }
-
-                        if (!FPVLegMode.newMode)
-                        {
-                            spine.localEulerAngles = new Vector3(spineAngle, 0f, 0f);
-                            spine1.localEulerAngles = new Vector3(spine1Angle, 0f, 0f);
-                            spine2.localEulerAngles = new Vector3(spine2Angle, 0f, 0f);
-                            spine3.localEulerAngles = new Vector3(spine3Angle, 0f, 0f);
-                            neck.localEulerAngles = new Vector3(0f, 0f, 0f);
-                            head.localEulerAngles = new Vector3(0f, 0f, 0f);
-                        }
-                        lShoulder.localEulerAngles = new Vector3(0f, -7f, 0f);
-                        rShoulder.localEulerAngles = new Vector3(0f, 187f, 180f);
-                        lUpperArm.localScale = new Vector3(.00001f, .00001f, .00001f);
-                        rUpperArm.localScale = new Vector3(.00001f, .00001f, .00001f);
+                        animator.Play(layer.stateID, layer.layerID, 0f);
                     }
-                }
-                else
-                {
-                    lUpperArm.localScale = Vector3.one;
-                    rUpperArm.localScale = Vector3.one;
-                }
 
-                //lUpperArm.localEulerAngles = new Vector3(0f, 0f, 45f);
-                //rUpperArm.localEulerAngles = new Vector3(0f, 0f, 45f);
-                //lUpperArmRoll.localEulerAngles = new Vector3(0f, 0f, 0f);
-                //rUpperArmRoll.localEulerAngles = new Vector3(0f, 0f, 0f);
-                //lLowerArmRoll.localEulerAngles = new Vector3(0f, 45f, 0f);
-                //rLowerArmRoll.localEulerAngles = new Vector3(0f, 45f, 0f);
-                //lLowerArm.localEulerAngles = new Vector3(0f, 0f, 0f);
-                //rLowerArm.localEulerAngles = new Vector3(0f, 0f, 0f);
-                //lHand.localEulerAngles = new Vector3(0f, 0f, 0f);
-                //rHand.localEulerAngles = new Vector3(0f, 0f, 0f);
+                    if (!FPVLegMode.newMode)
+                    {
+                        spine.localEulerAngles = new Vector3(spineAngle, 0f, 0f);
+                        spine1.localEulerAngles = new Vector3(spine1Angle, 0f, 0f);
+                        spine2.localEulerAngles = new Vector3(spine2Angle, 0f, 0f);
+                        spine3.localEulerAngles = new Vector3(spine3Angle, 0f, 0f);
+                    }
+                    else
+                    {
+                        spine.localEulerAngles = new Vector3(0f, 0f, 0f);
+                        spine1.localEulerAngles = new Vector3(0f, 0f, 0f);
+                        spine2.localEulerAngles = new Vector3(0f, 0f, 0f);
+                        spine3.localEulerAngles = new Vector3(0f, 0f, 0f);
+                    }
+                    neck.localEulerAngles = new Vector3(0f, 0f, 0f);
+                    head.localEulerAngles = new Vector3(0f, 0f, 0f);
+                    lShoulder.localEulerAngles = new Vector3(0f, -7f, 0f);
+                    rShoulder.localEulerAngles = new Vector3(0f, 187f, 180f);
+                    lUpperArm.localScale = new Vector3(.001f, .001f, .001f);
+                    rUpperArm.localScale = new Vector3(.001f, .001f, .001f);
+                }
+            }
+        }
+
+        public void RestoreTransforms()
+        {
+            if (animator && player && player.emodel)
+            {
+                spine.localRotation = spineRot;
+                spine1.localRotation = spine1Rot;
+                spine2.localRotation = spine2Rot;
+                spine3.localRotation = spine3Rot;
+                neck.localRotation = neckRot;
+                head.localRotation = headRot;
+                lShoulder.localRotation = lShoulderRot;
+                rShoulder.localRotation= rShoulderRot;
+                lUpperArm.localScale = Vector3.one;
+                rUpperArm.localScale = Vector3.one;
             }
         }
     }
@@ -349,10 +353,19 @@ namespace FPVLegs
         private static Vector3 legOffset = new Vector3(0f, 0.25f, -0.4f);
         private static Vector3 headOffset = new Vector3(0f, 0.05f, -0.3f);
         private vp_FPCamera vp_camera;
+        private EntityPlayerLocal player;
+        private FPVLegHelper helper = new FPVLegHelper();
 
-        public void Init(vp_FPCamera vp_FPCamera)
+        public void Init(vp_FPCamera vp_FPCamera, EntityPlayerLocal player, Animator animator)
         {
             vp_camera = vp_FPCamera;
+            this.player = player;
+            helper.Init(player, animator);
+        }
+
+        private void Update()
+        {
+            helper.Update();
         }
 
         public void OnPreCull()
@@ -365,30 +378,26 @@ namespace FPVLegs
         {
             if (vp_camera)
             {
-                var model = vp_camera.FPController.localPlayer.emodel?.GetModelTransform();
+                var model = player.emodel?.GetModelTransform();
                 if (model)
                 {
                     model.localPosition = Vector3.zero;
                 }
+                helper.RestoreTransforms();
             }
         }
 
         private void UpdateTpvPosition()
         {
-            if (!vp_camera.FPController?.localPlayer)
-            {
-                return;
-            }
-            var model = vp_camera.FPController.localPlayer.emodel?.GetModelTransform();
+            helper.UpdateTransforms();
+            var model = player.emodel?.GetModelTransform();
             if (model && vp_camera.transform.parent)
             {
-                var helper = model.GetComponent<FPVLegHelper>();
                 if (FPVLegMode.newMode)
                 {
-                    helper.LateUpdateTransform();
                     var originalModelPos = model.position;
                     var targetHeadPos = vp_camera.transform.parent.TransformPoint(vp_camera.transform.localPosition + headOffset);
-                    var headTrans = vp_camera.FPController.localPlayer.emodel.GetHeadTransform();
+                    var headTrans = player.emodel.GetHeadTransform();
                     model.position += targetHeadPos - headTrans.position;
                 }
                 else
