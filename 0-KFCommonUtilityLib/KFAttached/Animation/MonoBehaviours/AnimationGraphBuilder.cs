@@ -275,10 +275,8 @@ public class AnimationGraphBuilder : MonoBehaviour
         if (CurrentTarget)
         {
             CurrentTarget.IsCurrent = false;
-        }
-        if (curTargetValid)
-        {
             CurrentTarget.SetEnabled(false);
+            CurrentTarget.RemoveAttachTrans(isFpv);
         }
 
         bool didUseGraph = curTargetValid && CurrentTarget.UseGraph;
@@ -300,10 +298,8 @@ public class AnimationGraphBuilder : MonoBehaviour
         if (target)
         {
             target.IsCurrent = true;
-        }
-        if (nextTargetValid)
-        {
             target.SetEnabled(true);
+            target.MoveAttachTrans(isFpv);
         }
         //        Log.Out($"\n#=================Rebuild Start");
         //#if NotEditor

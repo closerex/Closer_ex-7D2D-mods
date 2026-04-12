@@ -6,96 +6,70 @@ public class LaserSight : MonoBehaviour
     public LineRenderer lineRenderer;
     public Transform laserOrigin;
     public string laserOriginName = "laserOrigin";
-    public float maxDistance = 100f;
-    public float maxDotSizeDistance = 50f;
-    public LayerMask collisionMask = 1353162769;
     public bool useAkimboOrigin;
     public Transform defaultAkimboOrigin;
     public string akimboOriginName = "akimboLaserOrigin";
 
     [Header("Dot Settings")]
-    public float dotBaseSizeNear = 0.03f;
-    public float dotBaseSizeFar = 0.3f;
-    public float intensityFlickerSpeed = 5f;
-    public float intensityFlickerMax = 0.1f;
-    public float clippingOffset = 0.007f;
-    [Header("Material Settings")]
-    public Material dotMaterial;
-    [ColorUsage(true)]
+    [ColorUsage(false)]
     public Color dotBaseColor = new (.7f, .1f, .1f, 1f);
-    public float dotBaseIntensity = 0;
-    public string dotColorPropertyName = "_EmissionColor";
+    public float dotIntensityBase = 7.5f;
+    public float intensityFlickerSpeed = 5f;
+    public float intensityFlickerMax = 0.25f;
 
-    private static Mesh dotMesh;
+    private float maxDistance = 100f;
+    private float dotSizeFarDistance = 15f;
+    private float dotSizeBase = 0.01f;
+    [Range(0f, 1f)]
+    private float dotSizeFar = .75f;
+    private float dotProjectionRange = 0.25f;
+
+    private static LayerMask collisionMask = -538750997;
+    private static int intensityPropID = Shader.PropertyToID("_MaxIntensity");
     private Transform dotTrans;
-    private MeshRenderer dotRenderer;
-    private MeshFilter dotFilter;
-    private MaterialPropertyBlock props;
+    private Material dotMaterial;
+
 #if NotEditor
     private EntityPlayerLocal player;
     private ScopeBase scopeBase;
 #endif
 
-    //handle external attached prefab origin search
-
     void Awake()
     {
-        if (!lineRenderer || !dotMaterial)
+        if (!lineRenderer)
         {
             Destroy(this);
             return;
         }
-        // Create the quad mesh (XY plane)
-        if (!dotMesh)
-        {
-            dotMesh = new Mesh();
-            dotMesh.vertices = new Vector3[]
-            {
-                new Vector3(-0.5f, -0.5f, 0),
-                new Vector3( 0.5f, -0.5f, 0),
-                new Vector3(-0.5f,  0.5f, 0),
-                new Vector3( 0.5f,  0.5f, 0)
-            };
-            dotMesh.uv = new Vector2[]
-            {
-                new Vector2(0, 0),
-                new Vector2(1, 0),
-                new Vector2(0, 1),
-                new Vector2(1, 1)
-            };
-            dotMesh.triangles = new int[] { 0, 2, 1, 2, 3, 1 };
-            dotMesh.RecalculateNormals();
-        }
 
-        // Create the dot GameObject
-        var dotObject = new GameObject("LaserDot");
-        dotObject.layer = 24;
-        dotTrans = dotObject.transform;
-        dotTrans.SetParent(transform, true);
-#if NotEditor
-        //this prevents the dot from scaling with weapon fov
-        dotTrans.AddMissingComponent<DummyScaler>().designTimeAspectRatio = 1f;
-#endif
-
-        dotFilter = dotObject.AddComponent<MeshFilter>();
-        dotFilter.mesh = dotMesh;
-
-        dotRenderer = dotObject.AddComponent<MeshRenderer>();
-        dotRenderer.material = dotMaterial;
-        dotRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-        dotRenderer.receiveShadows = false;
-        dotRenderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
-        dotRenderer.enabled = false;
-
-        props = new MaterialPropertyBlock();
-
+        lineRenderer.transform.AddMissingComponent<LaserReferenced>();
         lineRenderer.useWorldSpace = true;
         lineRenderer.enabled = true;
     }
 
+    // Create the dot GameObject
+    private void CreateDot()
+    {
+        var dotObject = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        dotObject.name = "LaserDot";
+        dotTrans = dotObject.transform;
+        dotTrans.localScale = new Vector3(dotSizeBase, dotSizeBase, dotProjectionRange);
+        Destroy(dotObject.GetComponent<Collider>());
+        var dotRenderer = dotObject.GetComponent<MeshRenderer>();
 #if NotEditor
+        dotRenderer.material = SharedAssets.DefaultLaserDotMaterial;
+#endif
+        dotMaterial = dotRenderer.material;
+        dotMaterial.color = dotBaseColor;
+        dotRenderer.motionVectorGenerationMode = MotionVectorGenerationMode.ForceNoMotion;
+        dotRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        dotRenderer.receiveShadows = false;
+        dotRenderer.allowOcclusionWhenDynamic = false;
+    }
+
     private void OnEnable()
     {
+#if NotEditor
         player = transform.GetLocalPlayerInParent();
         if (player)
         {
@@ -117,8 +91,17 @@ public class LaserSight : MonoBehaviour
         {
             laserOrigin = transform;
         }
-    }
 #endif
+        CreateDot();
+    }
+
+    private void OnDisable()
+    {
+        if (dotTrans)
+        { 
+            Destroy(dotTrans.gameObject);
+        }
+    }
 
     void LateUpdate()
     {
@@ -177,25 +160,46 @@ public class LaserSight : MonoBehaviour
         }
 #endif
         Vector3 endPoint = origin + direction * maxDistance;
-        bool laserHit = Physics.Raycast(origin, direction, out RaycastHit hit, maxDistance, collisionMask);
+        bool laserHit =
+#if NotEditor
+            Voxel.Raycast(GameManager.Instance.World, new(origin + Origin.position, direction), maxDistance, collisionMask, 8, 0f);
+        if (laserHit)
+        {
+            //minDotVal = Mathf.Cos(Mathf.Deg2Rad * maxAdjustmentAngle);
+            if (Vector3.Dot(transform.forward, Voxel.phyxRaycastHit.point - transform.position) > 0)
+            {
+                endPoint = Voxel.phyxRaycastHit.point;
+            }
+        }
+#else
+            Physics.Raycast(origin, direction, out RaycastHit hit, maxDistance, collisionMask);
         if (laserHit)
         {
             //minDotVal = Mathf.Cos(Mathf.Deg2Rad * maxAdjustmentAngle);
             if (Vector3.Dot(transform.forward, hit.point - transform.position) > 0)
             {
-                endPoint = hit.point + hit.normal * clippingOffset;
+                endPoint = hit.point;
             }
         }
+#endif
 
         bool checkHit = false;
         if (dynamicOriginSet)
         {
-            checkHit = Physics.Raycast(transform.position, endPoint - transform.position, out RaycastHit hitCheck, Vector3.Distance(transform.position, endPoint), collisionMask);
+            checkHit =
+#if NotEditor
+                Voxel.Raycast(GameManager.Instance.World, new(transform.position + Origin.position, endPoint - transform.position), Vector3.Distance(transform.position, endPoint), collisionMask, 8, 0f);
             if (checkHit)
             {
-                hit = hitCheck;
-                endPoint = hit.point + hit.normal * clippingOffset;
+                endPoint = Voxel.phyxRaycastHit.point;
             }
+#else
+                Physics.Raycast(transform.position, endPoint - transform.position, out RaycastHit hitCheck, Vector3.Distance(transform.position, endPoint), collisionMask);
+            if (checkHit)
+            {
+                endPoint = hitCheck.point;
+            }
+#endif
         }
 
 #if NotEditor
@@ -207,37 +211,25 @@ public class LaserSight : MonoBehaviour
 
         if (laserHit || checkHit)
         {
-            Vector3 localImpact = transform.InverseTransformPoint(endPoint);
-
+#if NotEditor
             // Flicker intensity
-            float flicker = Mathf.PerlinNoise(Time.time * intensityFlickerSpeed, 0f) * intensityFlickerMax;
-            float intensity = Mathf.Pow(2, dotBaseIntensity + flicker);
-            Color emissive = new Color(dotBaseColor.r * intensity,
-                                       dotBaseColor.g * intensity,
-                                       dotBaseColor.b * intensity,
-                                       dotBaseColor.a);
-            //if (string.IsNullOrEmpty(dotIntensityPropertyName))
-            //{
-            //    emissive = dotBaseColor * intensity;
-            //}
-            //else
-            //{
-            //    props.SetFloat(dotIntensityPropertyName, intensity);
-            //}
-
-            props.SetColor(dotColorPropertyName, emissive);
-            dotRenderer.SetPropertyBlock(props);
-
-            dotTrans.SetParent(null, true);
+            dotMaterial.SetFloat(intensityPropID, dotIntensityBase + Mathf.PerlinNoise(Time.time * intensityFlickerSpeed, 0f) * intensityFlickerMax);
+#endif
+            if (Camera.main)
+            {
+                Transform cameraTrans = Camera.main.transform;
+                float hitDistance = Vector3.Dot(endPoint - cameraTrans.position, cameraTrans.forward);
+                float dotSizeReal = dotSizeBase * Mathf.Clamp(hitDistance, .75f, dotSizeFarDistance) * Mathf.Lerp(1, dotSizeFar, hitDistance / dotSizeFarDistance);
+                dotTrans.localScale = new(dotSizeReal, dotSizeReal, dotProjectionRange);
+                dotTrans.rotation = cameraTrans.rotation;
+            }
+            //dotTrans.forward = (endPoint - (Camera.main ? Camera.main.transform.position : transform.position)).normalized;
             dotTrans.position = endPoint;
-            dotTrans.forward = -hit.normal;
-            dotTrans.localScale = Vector3.one * Mathf.Lerp(dotBaseSizeNear, dotBaseSizeFar, hit.distance / maxDotSizeDistance);
-            dotTrans.SetParent(transform, true);
-            dotRenderer.enabled = true;
+            dotTrans.gameObject.SetActive(true);
         }
         else
         {
-            dotRenderer.enabled = false;
+            dotTrans.gameObject.SetActive(false);
         }
 
         // Update beam
@@ -249,7 +241,5 @@ public class LaserSight : MonoBehaviour
     {
         if (!lineRenderer)
             Debug.LogWarning("LaserSight: Missing LineRenderer!", this);
-        if (!dotMaterial)
-            Debug.LogWarning("LaserSight: Missing dotMaterial!", this);
     }
 }

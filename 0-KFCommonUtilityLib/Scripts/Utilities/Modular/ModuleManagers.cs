@@ -1,13 +1,14 @@
 ﻿using HarmonyLib;
 using KFCommonUtilityLib.Attributes;
-using Mono.Cecil;
+using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Reflection.Emit;
+using System.Security;
 using System.Security.Permissions;
 using UniLinq;
-using UnityEngine;
 
 namespace KFCommonUtilityLib
 {
@@ -15,20 +16,23 @@ namespace KFCommonUtilityLib
     {
         private static class ModuleExtensions<T>
         {
-            public readonly static List<Type> extensions = new List<Type>();
+            public readonly static List<Type> extensions = new();
         }
-        public static AssemblyDefinition WorkingAssembly { get; private set; } = null;
+        public static AssemblyBuilder WorkingAssembly { get; private set; } = null;
+        public static ModuleBuilder WorkingModule { get; private set; } = null;
         public static event Action OnAssemblyCreated;
-        public static event Action OnAssemblyLoaded;
+        public static event Action OnAssemblyFinished;
         public static bool Inited { get; private set; }
         private static bool extensionScanned;
-        private static readonly HashSet<string> list_registered_path = new HashSet<string>();
-        private static readonly List<Assembly> list_created = new List<Assembly>();
-        private static DefaultAssemblyResolver resolver;
-        private static ModuleAttributes moduleAttributes;
-        private static ModuleCharacteristics moduleCharacteristics;
-        private static MethodInfo mtdinf = AccessTools.Method(typeof(ModuleManagers), nameof(ModuleManagers.AddModuleExtension));
+        private static readonly HashSet<string> list_registered_path = new();
+        private static readonly List<Assembly> list_created = new();
+        private static readonly HashSet<Assembly> set_checked = new();
+        //private static DefaultAssemblyResolver resolver;
+        //private static ModuleAttributes moduleAttributes;
+        //private static ModuleCharacteristics moduleCharacteristics;
+        private static MethodInfo mtdinf_findext = AccessTools.Method(typeof(ModuleManagers), nameof(ModuleManagers.AddModuleExtension));
         private static bool debugLog = false;
+        private static readonly ConstructorInfo ctorinf_iact = typeof(System.Runtime.CompilerServices.IgnoresAccessChecksToAttribute).GetConstructor(new Type[] { typeof(string) });
 
         public static void LogOut(string msg)
         {
@@ -53,7 +57,7 @@ namespace KFCommonUtilityLib
                     var attr = type.GetCustomAttribute<TypeTargetExtensionAttribute>();
                     if (attr != null)
                     {
-                        if ((bool)mtdinf.MakeGenericMethod(attr.ModuleType).Invoke(null, new object[] { type }))
+                        if ((bool)mtdinf_findext.MakeGenericMethod(attr.ModuleType).Invoke(null, new object[] { type }))
                         {
                             Log.Out($"Found Module Extension {type.FullName}");
                         }
@@ -79,7 +83,7 @@ namespace KFCommonUtilityLib
         {
             if (typeof(T).GetCustomAttribute<TypeTargetAttribute>() == null)
             {
-                return Array.Empty<Type>();
+                return Type.EmptyTypes;
             }
 
             return ModuleExtensions<T>.extensions.ToArray();
@@ -128,77 +132,56 @@ namespace KFCommonUtilityLib
             {
                 return;
             }
+            set_checked.Clear();
             InitModuleExtensions();
-            WorkingAssembly?.Dispose();
-            if (resolver == null)
-            {
-                resolver = new DefaultAssemblyResolver();
-                resolver.AddSearchDirectory(Path.Combine(Application.dataPath, "Managed"));
-
-                foreach (var mod in ModManager.GetLoadedMods())
-                {
-                    resolver.AddSearchDirectory(mod.Path);
-                }
-
-                foreach (var path in list_registered_path)
-                {
-                    resolver.AddSearchDirectory(path);
-                }
-
-                AssemblyDefinition assdef_main = AssemblyDefinition.ReadAssembly($"{Application.dataPath}/Managed/Assembly-CSharp.dll", new ReaderParameters() { AssemblyResolver = resolver });
-                moduleAttributes = assdef_main.MainModule.Attributes;
-                moduleCharacteristics = assdef_main.MainModule.Characteristics;
-                Log.Out("Reading Attributes from assembly: " + assdef_main.FullName);
-            }
+            WorkingAssembly = null;
+            WorkingModule = null;
             string assname = "RuntimeAssembled" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            WorkingAssembly = AssemblyDefinition.CreateAssembly(new AssemblyNameDefinition(assname,
-                                                                                           new Version(0, 0, 0, 0)),
-                                                                                           assname + ".dll",
-                                                                                           new ModuleParameters()
-                                                                                           {
-                                                                                               Kind = ModuleKind.Dll,
-                                                                                               AssemblyResolver = resolver,
-                                                                                               Architecture = TargetArchitecture.I386,
-                                                                                               Runtime = TargetRuntime.Net_4_0,
-                                                                                           });
-            WorkingAssembly.MainModule.Attributes = moduleAttributes;
-            WorkingAssembly.MainModule.Characteristics = moduleCharacteristics;
-            //write security attributes so that calling non-public patch methods from this assembly is allowed
-            Mono.Cecil.SecurityAttribute sattr_permission = new Mono.Cecil.SecurityAttribute(WorkingAssembly.MainModule.ImportReference(typeof(SecurityPermissionAttribute)));
-            Mono.Cecil.CustomAttributeNamedArgument caarg_SkipVerification = new Mono.Cecil.CustomAttributeNamedArgument(nameof(SecurityPermissionAttribute.SkipVerification), new CustomAttributeArgument(WorkingAssembly.MainModule.TypeSystem.Boolean, true));
-            sattr_permission.Properties.Add(caarg_SkipVerification);
-            SecurityDeclaration sdec = new SecurityDeclaration(Mono.Cecil.SecurityAction.RequestMinimum);
-            sdec.SecurityAttributes.Add(sattr_permission);
-            WorkingAssembly.SecurityDeclarations.Add(sdec);
+            Mod self = ModManager.GetMod("CommonUtilityLib");
+            if (self == null)
+            {
+                Log.Warning("Failed to get mod!");
+                self = ModManager.GetModForAssembly(typeof(ModuleManagers).Assembly);
+            }
+            DirectoryInfo dirInfo = Directory.CreateDirectory(Path.Combine(self.Path, "AssemblyOutput"));
+            WorkingAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName(assname), AssemblyBuilderAccess.RunAndSave, dirInfo.FullName);
+            WorkingAssembly.SetCustomAttribute(new CustomAttributeBuilder(typeof(UnverifiableCodeAttribute).GetConstructor(Type.EmptyTypes), new object[0]));
+            WorkingAssembly.SetCustomAttribute(new CustomAttributeBuilder(typeof(SecurityPermissionAttribute).GetConstructor(new Type[] { typeof(SecurityAction) }),
+                                                                          new object[] { SecurityAction.RequestMinimum },
+                                                                          new[] { typeof(SecurityPermissionAttribute).GetProperty(nameof(SecurityPermissionAttribute.SkipVerification)),
+                                                                                  typeof(SecurityAttribute).GetProperty(nameof(SecurityAttribute.Unrestricted)) },
+                                                                          new object[] { true,
+                                                                                         true }));
+            WorkingModule = WorkingAssembly.DefineDynamicModule(assname, assname + ".dll", false);
+            WorkingAssembly.SetMonoCorlibInternal(true);
             OnAssemblyCreated?.Invoke();
             Inited = true;
             Log.Out("======Init New======");
         }
 
-        public static bool PatchType<T>(Type targetType, Type baseType, string moduleNames, out string typename) where T : IModuleProcessor, new()
+        public static bool PatchType<T>(Type targetType, Type baseType, TypeBuilder parentType, string moduleNames, out Type result) where T : IModuleProcessor, new()
         {
             Type[] moduleTypes = moduleNames.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
                                             .Select(s => new T().GetModuleTypeByName(s.Trim()))
                                             .Where(t => t.GetCustomAttribute<TypeTargetAttribute>().BaseType.IsAssignableFrom(targetType)).ToArray();
-            return PatchType(targetType, baseType, moduleTypes, new T(), out typename);
+            return PatchType(targetType, baseType, parentType, moduleTypes, new T(), out result);
         }
 
-        public static bool PatchType<T>(Type targetType, Type baseType, Type[] moduleTypes, out string typename) where T : IModuleProcessor, new()
+        public static bool PatchType<T>(Type targetType, Type baseType, TypeBuilder parentType, Type[] moduleTypes, out Type result) where T : IModuleProcessor, new()
         {
-            return PatchType(targetType, baseType, moduleTypes, new T(), out typename);
+            return PatchType(targetType, baseType, parentType, moduleTypes, new T(), out result);
         }
 
-        public static bool PatchType<T>(Type targetType, Type baseType, Type[] moduleTypes, T processor, out string typename) where T : IModuleProcessor
+        public static bool PatchType<T>(Type targetType, Type baseType, TypeBuilder parentType, Type[] moduleTypes, T processor, out Type result) where T : IModuleProcessor
         {
             if (moduleTypes.Length == 0)
             {
-                typename = string.Empty;
+                result = targetType;
                 return false;
             }
-            typename = ModuleUtils.CreateTypeName(targetType, moduleTypes);
-            //Log.Out(typename);
-            if (!ModuleManagers.TryFindType(typename, out _) && !ModuleManagers.TryFindInCur(typename, out _))
-                _ = new ModuleManipulator(ModuleManagers.WorkingAssembly, processor, targetType, baseType, moduleTypes);
+            string typename = ModuleUtils.CreateTypeName(targetType, moduleTypes);
+            if (!ModuleManagers.TryFindType(typename, out result) && !ModuleManagers.TryFindInCur(typename, out result))
+                _ = new ModuleManipulator(ModuleManagers.WorkingAssembly, processor, targetType, baseType, parentType, out result, moduleTypes);
             return true;
         }
 
@@ -209,53 +192,24 @@ namespace KFCommonUtilityLib
                 return;
             }
             //output assembly
-            Mod self = ModManager.GetMod("CommonUtilityLib");
-            if (self == null)
+            if (WorkingAssembly != null)
             {
-                Log.Warning("Failed to get mod!");
-                self = ModManager.GetModForAssembly(typeof(ItemActionModuleManager).Assembly);
-            }
-            if (self != null && WorkingAssembly != null)
-            {
-                if (WorkingAssembly.MainModule.Types.Count > 1)
+                if (WorkingAssembly.GetTypes().Length > 1)
                 {
                     Log.Out("Assembly is valid!");
-                    using (MemoryStream ms = new MemoryStream())
+                    try
                     {
-                        try
-                        {
-                            WorkingAssembly.Write(ms);
-                        }
-                        catch (Exception)
-                        {
-                            new ConsoleCmdShutdown().Execute(new List<string>(), new CommandSenderInfo());
-                        }
-                        DirectoryInfo dirInfo = Directory.CreateDirectory(Path.Combine(self.Path, "AssemblyOutput"));
-                        string filename = Path.Combine(dirInfo.FullName, WorkingAssembly.Name.Name + ".dll");
-                        Log.Out("Output Assembly: " + filename);
-                        bool fileWritten = false;
-                        using (FileStream fs = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Write))
-                        {
-                            try
-                            {
-                                ms.WriteTo(fs);
-                                fileWritten = true;
-                            }
-                            catch (Exception ex)
-                            {
-                                Log.Warning($"Failed to write assembly file: {ex.Message}\n{ex.StackTrace}");
-                                fileWritten = false;
-                                Log.Warning("Loading from raw data...");
-                            }
-                        }
-                        Assembly newAssembly = fileWritten ? Assembly.LoadFile(filename) : Assembly.Load(ms.ToArray());
-                        list_created.Add(newAssembly);
+                        WorkingAssembly.Save(WorkingAssembly.GetName().Name + ".dll");
                     }
+                    catch (Exception ex)
+                    {
+                        Log.Warning($"Failed to save assembly file: {ex.Message}\n{ex.StackTrace}");
+                    }
+                    list_created.Add(WorkingAssembly);
                 }
 
                 Log.Out("======Finish and Load======");
-                Inited = false;
-                OnAssemblyLoaded?.Invoke();
+                OnAssemblyFinished?.Invoke();
                 Cleanup();
             }
         }
@@ -264,8 +218,9 @@ namespace KFCommonUtilityLib
         internal static void Cleanup()
         {
             Inited = false;
-            WorkingAssembly?.Dispose();
             WorkingAssembly = null;
+            WorkingModule = null;
+            set_checked.Clear();
         }
 
         /// <summary>
@@ -298,12 +253,12 @@ namespace KFCommonUtilityLib
         /// Check if type is already generated in current working assembly definition.
         /// </summary>
         /// <param name="name">Full type name.</param>
-        /// <param name="typedef">The retrieved type definition, null if not found.</param>
+        /// <param name="type">The retrieved type, null if not found.</param>
         /// <returns>true if found.</returns>
-        public static bool TryFindInCur(string name, out TypeDefinition typedef)
+        public static bool TryFindInCur(string name, out Type type)
         {
-            typedef = WorkingAssembly?.MainModule.GetType(name);
-            return typedef != null;
+            type = WorkingAssembly?.GetType(name);
+            return type != null;
         }
     }
 }

@@ -13,6 +13,7 @@ public class AnimationHolsterState : StateMachineBehaviour
 #if NotEditor
     private EntityPlayerLocal player;
     private ItemModuleTrueHolster.TrueHolsterData holsterData;
+    private static readonly int holsterSpeedHash = Animator.StringToHash("WeaponHolsterSpeed");
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -27,9 +28,10 @@ public class AnimationHolsterState : StateMachineBehaviour
         }
         //holsterData = ((isHolstering ? player.inventory?.lastdrawnHoldingItemData : player.inventory?.holdingItemData) as IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData>)?.Instance;
         var activeRig = AnimationRiggingManager.GetActiveRigTargetsFromPlayer(player);
+        ItemInventoryData invData = player.inventory?.GetItemDataInSlot(activeRig.SlotIndex);
         if (activeRig)
         {
-            holsterData = (player.inventory?.GetItemDataInSlot(activeRig.SlotIndex) as IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData>)?.Instance;
+            holsterData = (invData as IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData>)?.Instance;
         }
         if (holsterData != null)
         {
@@ -41,6 +43,8 @@ public class AnimationHolsterState : StateMachineBehaviour
             {
                 holsterData.IsUnholstering = true;
             }
+            float holsterSpeed = Mathf.Max(0.1f, EffectManager.GetValue(CustomEnums.WeaponHolsterSpeed, invData.itemValue, 1, player));
+            animator.SetFloat(holsterSpeedHash, holsterSpeed);
         }
     }
 

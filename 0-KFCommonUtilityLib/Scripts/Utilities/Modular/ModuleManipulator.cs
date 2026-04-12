@@ -1,20 +1,16 @@
-﻿using HarmonyLib.Public.Patching;
-using HarmonyLib;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
+﻿using HarmonyLib;
+using HarmonyLib.Public.Patching;
+using KFCommonUtilityLib.Attributes;
+using KFCommonUtilityLib.Harmony;
 using MonoMod.Cil;
 using MonoMod.Utils;
+using MonoMod.Utils.Cil;
 using System;
 using System.Collections.Generic;
-using UniLinq;
 using System.Reflection;
-using KFCommonUtilityLib.Harmony;
+using System.Reflection.Emit;
+using UniLinq;
 using UnityEngine.Scripting;
-using TypeAttributes = Mono.Cecil.TypeAttributes;
-using MethodAttributes = Mono.Cecil.MethodAttributes;
-using FieldAttributes = Mono.Cecil.FieldAttributes;
-using Mono.Cecil.Rocks;
-using KFCommonUtilityLib.Attributes;
 
 namespace KFCommonUtilityLib
 {
@@ -25,110 +21,142 @@ namespace KFCommonUtilityLib
 
     public class TranspilerTarget
     {
-        public TranspilerTarget(Type type_action, MethodInfo mtdinf_original, PatchInfo patchinf_harmony)
+        public TranspilerTarget(Type type_target, MethodInfo mtdinf_original, PatchInfo patchinf_harmony)
         {
-            this.type_action = type_action;
+            this.type_target = type_target;
             this.mtdinf_original = mtdinf_original;
             this.patchinf_harmony = patchinf_harmony;
         }
 
-        public Type type_action;
+        public Type type_target;
         public MethodInfo mtdinf_original;
         public PatchInfo patchinf_harmony;
     }
 
     public class MethodPatchInfo
     {
-        public readonly MethodDefinition Method;
-        public Instruction PrefixBegin;
-        public Instruction PostfixBegin;
-        public Instruction PostfixEnd;
+        public readonly string ID;
+        public readonly MethodBuilder Method;
+        public readonly MethodInfo OriginalMethod;
+        public readonly MethodBuilder TranspilerBuilder;
+        public readonly bool HasReturnVal;
+        public int PrefixBegin, PostfixBegin, PostfixEnd;
+        internal readonly List<MethodOverrideInfo> Prefixes = new();
+        internal readonly List<MethodOverrideInfo> Postfixes = new();
+        internal readonly Dictionary<string, LocalBuilder> States = new();
+        internal bool HasRunOriginalCondition;
 
-        public MethodPatchInfo(MethodDefinition mtddef, Instruction postfixBegin, Instruction postfixEnd, Instruction prefixBegin)
+        public MethodPatchInfo(MethodBuilder mtdbd, MethodInfo originalMethod, MethodBuilder transpilerBuilder, string id)
         {
-            Method = mtddef;
-            PostfixBegin = postfixBegin;
-            PostfixEnd = postfixEnd;
-            PrefixBegin = prefixBegin;
+            Method = mtdbd;
+            OriginalMethod = originalMethod;
+            ID = id;
+            HasReturnVal = !mtdbd.ReturnType.IsVoid();
+            TranspilerBuilder = transpilerBuilder;
         }
     }
 
-    internal struct MethodOverrideInfo
+    public class MethodOverrideInfo
     {
-        public MethodInfo mtdinf_target;
-        public MethodInfo mtdinf_base;
-        public MethodReference mtdref_base;
-        public Type prefType;
+        public readonly MethodInfo mtdinf_target;
+        public readonly MethodInfo mtdinf_base;
+        public readonly Type prefType;
+        public readonly string moduleName;
+        public readonly int moduleIndex;
 
-        public MethodOverrideInfo(MethodInfo mtdinf_target, MethodInfo mtdinf_base, MethodReference mtddef_base, Type prefType)
+        public MethodOverrideInfo(MethodInfo mtdinf_target, MethodInfo mtdinf_base, Type prefType, string moduleName, int moduleIndex)
         {
             this.mtdinf_target = mtdinf_target;
             this.mtdinf_base = mtdinf_base;
-            this.mtdref_base = mtddef_base;
             this.prefType = prefType;
+            this.moduleName = moduleName;
+            this.moduleIndex = moduleIndex;
         }
     }
 
     public class ModuleManipulator
     {
-        public ModuleDefinition module;
+        private static class TranspilerReplacer
+        {
+            internal static Mono.Cecil.MethodReference mtdref_override_base { get; private set; } = null;
+            internal static DynamicMethodReference dmtdref_override_copy { get; private set; } = null;
+
+            public static void ILManipulator(ILContext il)
+            {
+                if (IsStateValid())
+                {
+                    foreach (var ins in il.Body.Instructions)
+                    {
+                        if (ins.OpCode == Mono.Cecil.Cil.OpCodes.Call && MonoModPatches.Equals(mtdref_override_base, ins.Operand as Mono.Cecil.MethodReference))
+                        {
+                            ModuleManagers.LogOut($"Adding Transpiler Replacer\nfrom {mtdref_override_base.FullName}\nto {dmtdref_override_copy.FullName}");
+                            ins.Operand = dmtdref_override_copy;
+                        }
+                    }
+                }
+            }
+
+            public static void UpdateState(Mono.Cecil.MethodReference mtdinf_base, DynamicMethodReference mtdinf_copy)
+            {
+                mtdref_override_base = mtdinf_base;
+                dmtdref_override_copy = mtdinf_copy;
+            }
+
+            public static bool IsStateValid()
+            {
+                return dmtdref_override_copy != null && mtdref_override_base != null;
+            }
+        }
+
         public IModuleProcessor processor;
         public Type targetType;
         public Type baseType;
         public Type[] moduleTypes;
         public Type[][] moduleExtensionTypes;
-        public TypeDefinition typedef_newTarget;
-        public TypeReference typeref_interface;
-        public FieldDefinition[] arr_flddef_modules;
-        private static MethodInfo mtdinf = AccessTools.Method(typeof(ModuleManagers), nameof(ModuleManagers.GetModuleExtensions));
+        public TypeBuilder typebd_newTarget;
+        public FieldBuilder[] arr_fldbd_modules;
+        private static MethodInfo mtdinf_getext = AccessTools.Method(typeof(ModuleManagers), nameof(ModuleManagers.GetModuleExtensions));
+        private const string HARMONY_INSTANCE_ID = "kflib.modular.manipulator";
 
-        public ModuleManipulator(AssemblyDefinition workingAssembly, IModuleProcessor processor, Type targetType, Type baseType, params Type[] moduleTypes)
+        public ModuleManipulator(AssemblyBuilder workingAssembly, IModuleProcessor processor, Type targetType, Type baseType, TypeBuilder parentTB, out Type resultTB, params Type[] moduleTypes)
         {
-            module = workingAssembly.MainModule;
             this.processor = processor;
             this.targetType = targetType;
             this.baseType = baseType;
             this.moduleTypes = moduleTypes;
-            moduleExtensionTypes = moduleTypes.Select(static t => (Type[])mtdinf.MakeGenericMethod(t).Invoke(null, null)).ToArray();
-            Patch();
+            moduleExtensionTypes = moduleTypes.Select(static t => (Type[])mtdinf_getext.MakeGenericMethod(t).Invoke(null, null)).ToArray();
+            resultTB = Patch(parentTB);
         }
 
-        private void Patch()
+        private Type Patch(TypeBuilder parentTB)
         {
-            typeref_interface = module.ImportReference(typeof(IModuleContainerFor<>));
+            var type_interface = typeof(IModuleContainerFor<>);
             //Create new override type
-            TypeReference typeref_target = module.ImportReference(targetType);
-            typedef_newTarget = new TypeDefinition(null, ModuleUtils.CreateTypeName(targetType, moduleTypes), TypeAttributes.AnsiClass | TypeAttributes.BeforeFieldInit | TypeAttributes.Public | TypeAttributes.Sealed, typeref_target);
-            typedef_newTarget.CustomAttributes.Add(new CustomAttribute(module.ImportReference(typeof(PreserveAttribute).GetConstructor(Array.Empty<Type>()))));
-            module.Types.Add(typedef_newTarget);
+            typebd_newTarget = parentTB != null ?
+                               parentTB.DefineNestedType(ModuleUtils.CreateTypeName(targetType, moduleTypes), TypeAttributes.AnsiClass | TypeAttributes.BeforeFieldInit | TypeAttributes.NestedPublic | TypeAttributes.Sealed, targetType) :
+                               ModuleManagers.WorkingModule.DefineType(ModuleUtils.CreateTypeName(targetType, moduleTypes), TypeAttributes.AnsiClass | TypeAttributes.BeforeFieldInit | TypeAttributes.Public | TypeAttributes.Sealed, targetType);
+            //typebd_newTarget.SetCustomAttribute(new CustomAttributeBuilder(AccessTools.DeclaredConstructor(typeof(PreserveAttribute)), new object[0]));
 
             //Create fields
-            arr_flddef_modules = new FieldDefinition[moduleTypes.Length];
+            arr_fldbd_modules = new FieldBuilder[moduleTypes.Length];
             for (int i = 0; i < moduleTypes.Length; i++)
             {
-                //Create ItemAction field
                 Type type_module = moduleTypes[i];
-                MakeContainerFor(typedef_newTarget, type_module, out var flddef_module);
-                arr_flddef_modules[i] = flddef_module;
+                MakeContainerFor(typebd_newTarget, type_interface, type_module, out var flddef_module);
+                arr_fldbd_modules[i] = flddef_module;
             }
 
-            //Create ItemAction constructor
-            MethodDefinition mtddef_ctor = new MethodDefinition(".ctor", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName, module.TypeSystem.Void);
-            if (processor == null || !processor.BuildConstructor(this, mtddef_ctor))
-            {
-                BuildDefaultConstructor(mtddef_ctor);
-            }
-            typedef_newTarget.Methods.Add(mtddef_ctor);
-
-            processor?.InitModules(this, targetType, baseType, moduleTypes);
+            processor.InitModules(this);
+            
+            //Create constructor
+            BuildConstructor();
 
             //<derived method name, method patch info>
             Dictionary<string, MethodPatchInfo> dict_overrides = new Dictionary<string, MethodPatchInfo>();
             //<derived method name, transpiler stub methods in inheritance order>
             Dictionary<string, List<TranspilerTarget>> dict_transpilers = new Dictionary<string, List<TranspilerTarget>>();
-            //<derived method name, <module type name, local variable>>
-            Dictionary<string, Dictionary<string, VariableDefinition>> dict_all_states = new Dictionary<string, Dictionary<string, VariableDefinition>>();
 
+            //List<(MethodInfo target, MethodInfo from, MethodInfo to)> list_replacers = new();
             //Get all transpilers
             for (int i = 0; i < moduleTypes.Length; i++)
             {
@@ -172,7 +200,7 @@ namespace KFCommonUtilityLib
 
                                 if (curNode != null)
                                 {
-                                    curNode.patchinf_harmony.AddTranspilers(CommonUtilityLibInit.HarmonyInstance.Id, new HarmonyMethod(mtd));
+                                    curNode.patchinf_harmony.AddTranspilers(HARMONY_INSTANCE_ID, new HarmonyMethod(mtd));
                                     ModuleManagers.LogOut($"Adding transpiler {mtd.FullDescription()}\nCurrent transpilers:\n{string.Join('\n', curNode.patchinf_harmony.transpilers.Select(p => p.PatchMethod.FullDescription()))}");
                                 }
                             }
@@ -181,10 +209,10 @@ namespace KFCommonUtilityLib
                                 bool childFound = false;
                                 foreach (var node in ((IEnumerable<TranspilerTarget>)list).Reverse())
                                 {
-                                    if (node.type_action.Equals(hm.declaringType))
+                                    if (node.type_target.Equals(hm.declaringType))
                                     {
                                         childFound = true;
-                                        node.patchinf_harmony.AddTranspilers(CommonUtilityLibInit.HarmonyInstance.Id, mtd);
+                                        node.patchinf_harmony.AddTranspilers(HARMONY_INSTANCE_ID, mtd);
                                         ModuleManagers.LogOut($"Adding transpiler {mtd.FullDescription()}\nCurrent transpilers:\n{string.Join('\n', node.patchinf_harmony.transpilers.Select(p => p.PatchMethod.FullDescription()))}");
                                         break;
                                     }
@@ -192,7 +220,7 @@ namespace KFCommonUtilityLib
 
                                 if (!childFound)
                                 {
-                                    Type nextType = list[list.Count - 1].type_action.BaseType;
+                                    Type nextType = list[list.Count - 1].type_target.BaseType;
                                     TranspilerTarget curNode = null;
                                     var hm_next = hm.Clone();
                                     while (hm.declaringType.IsAssignableFrom(nextType))
@@ -201,8 +229,7 @@ namespace KFCommonUtilityLib
                                         var mtdinfo_cur = hm_next.GetOriginalMethod() as MethodInfo;
                                         if (mtdinfo_cur != null)
                                         {
-                                            var patchinf_harmony = mtdinfo_cur.ToPatchInfoDontAdd().Copy();
-                                            curNode = new TranspilerTarget(mtdinfo_cur.DeclaringType, mtdinfo_cur, patchinf_harmony);
+                                            curNode = new TranspilerTarget(mtdinfo_cur.DeclaringType, mtdinfo_cur, new());
                                             list.Add(curNode);
                                         }
                                         nextType = nextType.BaseType;
@@ -210,7 +237,7 @@ namespace KFCommonUtilityLib
 
                                     if (curNode != null)
                                     {
-                                        curNode.patchinf_harmony.AddTranspilers(CommonUtilityLibInit.HarmonyInstance.Id, new HarmonyMethod(mtd));
+                                        curNode.patchinf_harmony.AddTranspilers(HARMONY_INSTANCE_ID, new HarmonyMethod(mtd));
                                         ModuleManagers.LogOut($"Adding transpiler {mtd.FullDescription()}\nCurrent transpilers:\n{string.Join('\n', curNode.patchinf_harmony.transpilers.Select(p => p.PatchMethod.FullDescription()))}");
                                     }
                                 }
@@ -220,172 +247,82 @@ namespace KFCommonUtilityLib
                 }
             }
 
+            List<(DynamicMethodDefinition, ILContext)> list_temp = new();
             //apply transpilers and replace method calls on base methods with patched ones
-            Dictionary<string, MethodDefinition> dict_replacers = new Dictionary<string, MethodDefinition>();
             foreach (var pair in dict_transpilers)
             {
                 List<TranspilerTarget> list = pair.Value;
 
                 //the top copy to call in the override method
-                MethodDefinition mtddef_override_copy = null;
-                MethodReference mtdref_override_base = null;
+                MethodInfo mtdinf_prev_original = null;
+                MethodBuilder mtdbd_prev_replace = null;
+                TranspilerReplacer.UpdateState(null, null);
                 for (int i = list.Count - 1; i >= 0; i--)
                 {
                     TranspilerTarget curNode = list[i];
+                    curNode.patchinf_harmony.AddILManipulators(HARMONY_INSTANCE_ID, new HarmonyMethod(AccessTools.Method(typeof(TranspilerReplacer), nameof(TranspilerReplacer.ILManipulator))), new HarmonyMethod(AccessTools.Method(typeof(CallClosureFixPatches), nameof(CallClosureFixPatches.DelegateManipulator))));
+                    //todo: dont add?
                     MethodPatcher patcher = curNode.mtdinf_original.GetMethodPatcher();
-                    DynamicMethodDefinition dmd = patcher.CopyOriginal();
-                    ILContext context = new ILContext(dmd.Definition);
-                    HarmonyManipulator.Manipulate(curNode.mtdinf_original, curNode.patchinf_harmony, context);
-                    var mtdref_original = module.ImportReference(curNode.mtdinf_original);
-                    var mtddef_copy = mtdref_original.Resolve().CloneToModuleAsStatic(context.Body, module.ImportReference(curNode.type_action), module);
-                    dmd.Dispose();
-                    context.Dispose();
-                    if (mtddef_override_copy != null && mtdref_override_base != null)
-                    {
-                        //replace calls to the base
-                        foreach (var ins in mtddef_copy.Body.Instructions)
-                        {
-                            if (ins.OpCode == OpCodes.Call && ((MethodReference)ins.Operand).FullName.Equals(mtdref_override_base.FullName))
-                            {
-                                ModuleManagers.LogOut($"replacing call to {mtdref_override_base.FullName} to {mtddef_override_copy.FullName}");
-                                ins.Operand = mtddef_override_copy;
-                            }
-                        }
-                    }
+                    var dmd = patcher.CopyOriginal();
+                    curNode.mtdinf_original.CopyParamInfoTo(dmd);
+                    var context = new ILContext(dmd.Definition);
+                    list_temp.Add((dmd, context));
                     //add patched copy to the class
-                    typedef_newTarget.Methods.Add(mtddef_copy);
                     //the iteration is reversed so make sure we grab the latest method
-                    mtddef_override_copy = mtddef_copy;
-                    mtdref_override_base = mtdref_original;
+                    CallClosureFixPatches.ApplyFix(typebd_newTarget);
+                    HarmonyManipulator.Manipulate(curNode.mtdinf_original, curNode.patchinf_harmony, context);
+                    CallClosureFixPatches.RemoveFix();
+                    mtdinf_prev_original = curNode.mtdinf_original;
+                    mtdbd_prev_replace = dmd.GenerateMethodBuilder(typebd_newTarget);
+                    TranspilerReplacer.UpdateState(dmd.Module.ImportReference(mtdinf_prev_original), new DynamicMethodReference(dmd.Module, mtdbd_prev_replace));
                 }
-                //create the method override that calls the patched copy
-                if (mtddef_override_copy != null && mtdref_override_base != null)
+                if (TranspilerReplacer.IsStateValid())
                 {
-                    GetOrCreateOverride(dict_overrides, pair.Key, mtdref_override_base, mtddef_override_copy);
+                    GetOrCreateOverride(dict_overrides, pair.Key, mtdinf_prev_original, mtdbd_prev_replace);
                 }
             }
+            TranspilerReplacer.UpdateState(null, null);
+
+            foreach (var pair in list_temp)
+            {
+                pair.Item1.Dispose();
+                pair.Item2.Dispose();
+            }
+            list_temp = null;
 
             //Apply Postfixes first so that Prefixes can jump to the right instruction
             for (int i = 0; i < moduleTypes.Length; i++)
             {
-                Type moduleType = moduleTypes[i];
                 Dictionary<string, MethodOverrideInfo> dict_targets = GetMethodOverrideTargets<MethodTargetPostfixAttribute>(i);
-                string moduleID = ModuleUtils.CreateFieldName(moduleType);
                 foreach (var pair in dict_targets)
                 {
-                    MethodDefinition mtddef_root = module.ImportReference(pair.Value.mtdinf_base.GetBaseDefinition()).Resolve();
-                    MethodDefinition mtddef_target = module.ImportReference(pair.Value.mtdinf_target).Resolve();
-                    MethodPatchInfo mtdpinf_derived = GetOrCreateOverride(dict_overrides, pair.Key, pair.Value.mtdref_base);
-                    MethodDefinition mtddef_derived = mtdpinf_derived.Method;
-
-                    if (!dict_all_states.TryGetValue(pair.Key, out var dict_states))
-                    {
-                        dict_states = new Dictionary<string, VariableDefinition>();
-                        dict_all_states.Add(pair.Key, dict_states);
-                    }
-                    var list_inst_pars = MatchPatchArguments(mtddef_root, mtdpinf_derived, mtddef_target, i, true, dict_states, moduleID);
-                    //insert invocation
-                    var il = mtddef_derived.Body.GetILProcessor();
-                    foreach (var ins in list_inst_pars)
-                    {
-                        il.InsertBefore(mtdpinf_derived.PostfixEnd, ins);
-                    }
-                    il.InsertBefore(mtdpinf_derived.PostfixEnd, il.Create(mtddef_target.IsVirtual ? OpCodes.Callvirt : OpCodes.Call, module.ImportReference(mtddef_target)));
+                    var mtdpinf_derived = GetOrCreateOverride(dict_overrides, pair.Key, pair.Value.mtdinf_base);
+                    mtdpinf_derived.Postfixes.Add(pair.Value);
                 }
             }
 
             //Apply Prefixes
-            Dictionary<string, MethodPatchInfo> dict_prefix_patched_methods = new();
             for (int i = moduleTypes.Length - 1; i >= 0; i--)
             {
-                Type moduleType = moduleTypes[i];
                 Dictionary<string, MethodOverrideInfo> dict_targets = GetMethodOverrideTargets<MethodTargetPrefixAttribute>(i);
-                string moduleID = ModuleUtils.CreateFieldName(moduleType);
                 foreach (var pair in dict_targets)
                 {
                     string id = pair.Key;
-                    MethodDefinition mtddef_root = module.ImportReference(pair.Value.mtdinf_base.GetBaseDefinition()).Resolve();
-                    MethodDefinition mtddef_target = module.ImportReference(pair.Value.mtdinf_target).Resolve();
-                    MethodPatchInfo mtdpinf_derived = GetOrCreateOverride(dict_overrides, id, pair.Value.mtdref_base);
-                    MethodDefinition mtddef_derived = mtdpinf_derived.Method;
-                    dict_all_states.TryGetValue(id, out var dict_states);
-                    var il = mtdpinf_derived.Method.Body.GetILProcessor();
-                    Instruction ins_insert = mtdpinf_derived.PrefixBegin;
-                    //insert invocation
-                    var list_inst_pars = MatchPatchArguments(mtddef_root, mtdpinf_derived, mtddef_target, i, false, dict_states, moduleID);
-                    foreach (var ins in list_inst_pars)
-                    {
-                        il.InsertBefore(ins_insert, ins);
-                    }
-                    il.InsertBefore(ins_insert, il.Create(mtddef_target.IsVirtual ? OpCodes.Callvirt : OpCodes.Call, module.ImportReference(mtddef_target)));
-                    if (mtddef_target.ReturnType.MetadataType != MetadataType.Void)
-                    {
-                        if (mtddef_target.ReturnType.MetadataType != MetadataType.Boolean)
-                        {
-                            il.InsertBefore(ins_insert, il.Create(OpCodes.Pop));
-                        }
-                        else
-                        {
-                            il.InsertBefore(ins_insert, il.Create(OpCodes.Ldloc_S, mtddef_derived.Body.Variables[0]));
-                            il.InsertBefore(ins_insert, il.Create(OpCodes.And));
-                            il.InsertBefore(ins_insert, il.Create(OpCodes.Stloc_S, mtddef_derived.Body.Variables[0]));
-                            if (!dict_prefix_patched_methods.ContainsKey(id))
-                            {
-                                dict_prefix_patched_methods.Add(id, mtdpinf_derived);
-                            }
-                        }
-                    }
-                    //il.InsertBefore(ins_insert, il.Create(OpCodes.Brfalse_S, mtdpinf_derived.PostfixBegin ?? mtdpinf_derived.PostfixEnd));
+                    MethodPatchInfo mtdpinf_derived = GetOrCreateOverride(dict_overrides, id, pair.Value.mtdinf_base);
+                    mtdpinf_derived.Prefixes.Add(pair.Value);
                 }
             }
 
-            if (dict_prefix_patched_methods.Count > 0)
+            foreach (var mtdpinf in dict_overrides.Values)
             {
-                foreach (var mtdpinf_derived in dict_prefix_patched_methods.Values)
+                ApplyMethodPatches(mtdpinf);
+                if (mtdpinf.States.Count > 0)
                 {
-                    var il = mtdpinf_derived.Method.Body.GetILProcessor();
-                    il.InsertBefore(mtdpinf_derived.PrefixBegin, il.Create(OpCodes.Ldloc_S, mtdpinf_derived.Method.Body.Variables[0]));
-                    il.InsertBefore(mtdpinf_derived.PrefixBegin, il.Create(OpCodes.Brfalse_S, mtdpinf_derived.PostfixBegin));
-                    if (mtdpinf_derived.Method.ReturnType.MetadataType != MetadataType.Void)
-                    {
-                        var insert = mtdpinf_derived.Method.Body.Instructions[0];
-                        il.InsertBefore(insert, il.Create(OpCodes.Ldloca_S, mtdpinf_derived.Method.Body.Variables[1]));
-                        il.InsertBefore(insert, il.Create(OpCodes.Initobj, module.ImportReference(mtdpinf_derived.Method.ReturnType)));
-                    }
+                    throw new Exception($"__state variable count does not match for {mtdpinf.ID}!");
                 }
             }
-
-            foreach (var pair in dict_all_states)
-            {
-                var dict_states = pair.Value;
-                if (dict_states.Count > 0)
-                {
-                    Log.Error($"__state variable count does not match in prefixes and postfixes for {pair.Key}! check following modules:\n" + string.Join("\n", dict_states.Keys));
-                    throw new Exception();
-                }
-            }
-
-            //Add all overrides to new type
-            foreach (var mtd in dict_overrides.Values)
-            {
-                typedef_newTarget.Methods.Add(mtd.Method);
-
-                //Log.Out($"Add method override to new action: {mtd.Method.Name}");
-            }
-        }
-
-        public void BuildDefaultConstructor(MethodDefinition mtddef_ctor)
-        {
-            var il = mtddef_ctor.Body.GetILProcessor();
-            il.Append(il.Create(OpCodes.Ldarg_0));
-            il.Append(il.Create(OpCodes.Call, module.ImportReference(targetType.GetConstructor(Array.Empty<Type>()))));
-            for (int i = 0; i < arr_flddef_modules.Length; i++)
-            {
-                il.Append(il.Create(OpCodes.Ldarg_0));
-                il.Append(il.Create(OpCodes.Newobj, module.ImportReference(moduleTypes[i].GetConstructor(Array.Empty<Type>()))));
-                il.Append(il.Create(OpCodes.Stfld, arr_flddef_modules[i]));
-            }
-            il.Append(il.Create(OpCodes.Ret));
+            var res = typebd_newTarget.CreateType();
+            return res;
         }
 
         /// <summary>
@@ -399,6 +336,7 @@ namespace KFCommonUtilityLib
         private Dictionary<string, MethodOverrideInfo> GetMethodOverrideTargets<T>(int moduleIndex) where T : Attribute, IMethodTarget
         {
             Type moduleType = moduleTypes[moduleIndex];
+            string moduleID = ModuleUtils.CreateFieldName(moduleType);
             Dictionary<string, MethodOverrideInfo> dict_overrides = new Dictionary<string, MethodOverrideInfo>();
             const BindingFlags searchFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
             const BindingFlags extensionFlags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
@@ -422,7 +360,6 @@ namespace KFCommonUtilityLib
                                 continue;
                             }
 
-                            MethodReference mtdref_base = module.ImportReference(mtdinf_base);
                             //Find preferred patch
                             if (dict_overrides.TryGetValue(id, out var info))
                             {
@@ -433,12 +370,12 @@ namespace KFCommonUtilityLib
                                 //means cur preferred type is closer to the action type in inheritance hierachy than the previous one
                                 if (hm.declaringType.IsAssignableFrom(targetType) && (info.prefType == null || hm.declaringType.IsSubclassOf(info.prefType)))
                                 {
-                                    dict_overrides[id] = new MethodOverrideInfo(mtd, mtdinf_base, mtdref_base, hm.declaringType);
+                                    dict_overrides[id] = new MethodOverrideInfo(mtd, mtdinf_base, hm.declaringType, moduleID, moduleIndex);
                                 }
                             }
                             else
                             {
-                                dict_overrides[id] = new MethodOverrideInfo(mtd, mtdinf_base, mtdref_base, hm.declaringType);
+                                dict_overrides[id] = new MethodOverrideInfo(mtd, mtdinf_base, hm.declaringType, moduleID, moduleIndex);
                             }
                             //Log.Out($"Add method override: {id} for {mtdref_base.FullName}/{mtdinf_base.Name}, action type: {itemActionType.Name}");
                         }
@@ -457,162 +394,237 @@ namespace KFCommonUtilityLib
         /// </summary>
         /// <param name="dict_overrides"></param>
         /// <param name="id"></param>
-        /// <param name="mtdref_base"></param>
+        /// <param name="mtdinf_base"></param>
         /// <param name="module"></param>
         /// <returns></returns>
-        private MethodPatchInfo GetOrCreateOverride(Dictionary<string, MethodPatchInfo> dict_overrides, string id, MethodReference mtdref_base, MethodDefinition mtddef_base_override = null)
+        private MethodPatchInfo GetOrCreateOverride(Dictionary<string, MethodPatchInfo> dict_overrides, string id, MethodInfo mtdinf_base, MethodBuilder mtdbd_base_override = null)
         {
-            //if (mtddef_base.FullName == "CreateModifierData")
-            //    throw new MethodAccessException($"YOU SHOULD NOT MANUALLY MODIFY CreateModifierData!");
             if (dict_overrides.TryGetValue(id, out var mtdpinf_derived))
             {
                 return mtdpinf_derived;
             }
             //when overriding, retain attributes of base but make sure to remove the 'new' keyword which presents if you are overriding the root method
-            MethodDefinition mtddef_base = mtdref_base.Resolve();
-            MethodDefinition mtddef_derived = new MethodDefinition(mtddef_base.Name, (mtddef_base.Attributes | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot) & ~MethodAttributes.NewSlot, module.ImportReference(mtddef_base.ReturnType));
+            ParameterInfo[] paramInfo = mtdinf_base.GetParameters();
+            var mtdbd_derived = typebd_newTarget.DefineMethod(mtdinf_base.Name,
+                                                              (mtdinf_base.Attributes | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.Final) & ~MethodAttributes.NewSlot,
+                                                              CallingConventions.HasThis,
+                                                              mtdinf_base.ReturnType,
+                                                              mtdinf_base.ReturnParameter.GetRequiredCustomModifiers().Length > 0 ? mtdinf_base.ReturnParameter.GetRequiredCustomModifiers() : null,
+                                                              mtdinf_base.ReturnParameter.GetOptionalCustomModifiers().Length > 0 ? mtdinf_base.ReturnParameter.GetOptionalCustomModifiers() : null,
+                                                              paramInfo.Select(static p => p.ParameterType).ToArray(),
+                                                              paramInfo.Select(static p => { var mod = p.GetRequiredCustomModifiers(); return mod != null && mod.Length > 0 ? mod : null; }).ToArray(),
+                                                              paramInfo.Select(static p => { var mod = p.GetOptionalCustomModifiers(); return mod != null && mod.Length > 0 ? mod : null; }).ToArray());
+            mtdinf_base.CopyParamInfoTo(mtdbd_derived);
+            var il = mtdbd_derived.GetILGenerator();
+            il.DeclareLocal(typeof(bool));
+            if (!mtdbd_derived.ReturnType.IsVoid())
+            {
+                il.DeclareLocal(mtdbd_derived.ReturnType);
+            }
 
-            //Log.Out($"Create method override: {id} for {mtdref_base.FullName}");
-            foreach (var par in mtddef_base_override?.Parameters?.Skip(1) ?? mtddef_base.Parameters)
-            {
-                ParameterDefinition pardef = new ParameterDefinition(par.Name, par.Attributes, module.ImportReference(par.ParameterType));
-                if (par.HasConstant)
-                    pardef.Constant = par.Constant;
-                mtddef_derived.Parameters.Add(pardef);
-            }
-            mtddef_derived.Body.Variables.Clear();
-            mtddef_derived.Body.InitLocals = true;
-            mtddef_derived.Body.Variables.Add(new VariableDefinition(module.TypeSystem.Boolean));
-            bool hasReturnVal = mtddef_derived.ReturnType.MetadataType != MetadataType.Void;
-            if (hasReturnVal)
-            {
-                mtddef_derived.Body.Variables.Add(new VariableDefinition(module.ImportReference(mtddef_base.ReturnType)));
-            }
-            var il = mtddef_derived.Body.GetILProcessor();
-            //if (hasReturnVal)
-            //{
-            //    il.Emit(OpCodes.Ldloca_S, mtddef_derived.Body.Variables[1]);
-            //    il.Emit(OpCodes.Initobj, module.ImportReference(mtddef_derived.ReturnType));
-            //}
-            il.Emit(OpCodes.Ldc_I4_1);
-            il.Emit(OpCodes.Stloc_S, mtddef_derived.Body.Variables[0]);
-            //Instruction prefixBegin = il.Create(OpCodes.Ldloc_S, mtddef_derived.Body.Variables[0]);
-            //il.Append(prefixBegin);
-            //il.Emit(OpCodes.Brfalse_S, postfixBegin);
-            Instruction prefixBegin = il.Create(OpCodes.Ldarg_0);
-            il.Append(prefixBegin);
-            for (int i = 0; i < mtddef_derived.Parameters.Count; i++)
-            {
-                var par = mtddef_derived.Parameters[i];
-                il.Emit(OpCodes.Ldarg_S, par);
-            }
-            il.Emit(OpCodes.Call, mtddef_base_override ?? module.ImportReference(mtdref_base));
-            Instruction postfixBegin = il.Create(OpCodes.Nop);
-            if (hasReturnVal)
-            {
-                il.Emit(OpCodes.Stloc_S, mtddef_derived.Body.Variables[1]);
-                il.Append(postfixBegin);
-                il.Emit(OpCodes.Ldloc_S, mtddef_derived.Body.Variables[1]);
-            }
-            else
-            {
-                il.Append(postfixBegin);
-            }
-            il.Emit(OpCodes.Ret);
-            mtdpinf_derived = new MethodPatchInfo(mtddef_derived, postfixBegin, mtddef_derived.Body.Instructions[mtddef_derived.Body.Instructions.Count - (hasReturnVal ? 2 : 1)], prefixBegin);
+            mtdpinf_derived = new MethodPatchInfo(mtdbd_derived, mtdinf_base, mtdbd_base_override, id);
             dict_overrides.Add(id, mtdpinf_derived);
             return mtdpinf_derived;
         }
 
-        public IEnumerable<Instruction> MatchConstructorArguments(MethodDefinition mtddef_original, MethodDefinition mtddef_target, int moduleIndex, Func<ParameterDefinition, MethodDefinition, MethodDefinition, int, List<Instruction>, bool> matchSpecialParDelegate)
+        private void BuildConstructor()
         {
-            var il = mtddef_original.Body.GetILProcessor();
-            yield return il.Create(OpCodes.Ldarg_0);
-            var list_special_args = new List<Instruction>();
-            foreach (var par in mtddef_target.Parameters)
+            ModuleManagers.LogOut($"Building ctor for {typebd_newTarget.Name}...");
+            ConstructorInfo ctorinf_default = targetType.GetDeclaredConstructors()[0];
+            ParameterInfo[] paramInfo = ctorinf_default.GetParameters();
+            Type[] paramTypes = paramInfo.Select(static p => p.ParameterType).ToArray();
+            var ctorbd_target = typebd_newTarget.DefineConstructor(MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName,
+                                                                         CallingConventions.HasThis,
+                                                                         paramTypes,
+                                                                         paramInfo.Select(static p => { var mod = p.GetRequiredCustomModifiers(); return mod != null && mod.Length > 0 ? mod : null; }).ToArray(),
+                                                                         paramInfo.Select(static p => { var mod = p.GetOptionalCustomModifiers(); return mod != null && mod.Length > 0 ? mod : null; }).ToArray());
+            if (!processor.DefineConstructorArgs(this, ctorbd_target, out var pbs))
             {
-                list_special_args.Clear();
+                pbs = ctorinf_default.CopyParamInfoTo(ctorbd_target);
+            }
+            ILGenerator generator = ctorbd_target.GetILGenerator();
+            ConstructorInfo ctorinf_original = targetType.GetDeclaredConstructors()[0];
+
+            generator.Emit(OpCodes.Ldarg_0);
+            for (int i = 0; i < ctorinf_original.GetParameters().Length; i++)
+            {
+                generator.LoadArg(i + 1);
+            }
+            generator.Emit(OpCodes.Call, ctorinf_original);
+
+            for (int i = 0; i < arr_fldbd_modules.Length; i++)
+            {
+                ConstructorInfo ctorinf_target = moduleTypes[i].GetDeclaredConstructors()[0];
+                MatchConstructorArguments(generator, pbs, paramTypes, ctorinf_target, i);
+            }
+            processor.BuildConstructor(this, generator);
+            generator.Emit(OpCodes.Ret);
+        }
+
+        private void ApplyMethodPatches(MethodPatchInfo info)
+        {
+            ModuleManagers.LogOut($"Building Method for {typebd_newTarget.Name}.{info.Method.Name}...");
+            var generator = info.Method.GetILGenerator();
+            generator.Emit(OpCodes.Ldc_I4_1);
+            generator.Emit(OpCodes.Stloc_0);
+            if (info.HasRunOriginalCondition && info.HasReturnVal)
+            {
+                generator.Emit(OpCodes.Ldloca_S, 1);
+                generator.Emit(OpCodes.Initobj, info.OriginalMethod.ReturnType);
+            }
+
+            foreach (var workingOverrideInfo in info.Prefixes)
+            {
+                //insert invocation
+                var mtddef_target = workingOverrideInfo.mtdinf_target;
+                var mtddef_derived = info.Method;
+                MatchPatchArguments(generator, info, workingOverrideInfo, false);
+                generator.Emit(mtddef_target.IsVirtual ? OpCodes.Callvirt : OpCodes.Call, mtddef_target);
+
+                if (!mtddef_target.ReturnType.IsVoid())
+                {
+                    if (mtddef_target.ReturnType != typeof(bool))
+                    {
+                        generator.Emit(OpCodes.Pop);
+                    }
+                    else
+                    {
+                        generator.Emit(OpCodes.Ldloc_0);
+                        generator.Emit(OpCodes.And);
+                        generator.Emit(OpCodes.Stloc_0);
+                        info.HasRunOriginalCondition = true;
+                    }
+                }
+            }
+
+            Label? lbl = null;
+            if (info.HasRunOriginalCondition)
+            {
+                lbl = generator.DefineLabel();
+                generator.Emit(OpCodes.Ldloc_0);
+                generator.Emit(OpCodes.Brfalse_S, lbl.Value);
+            }
+
+            generator.Emit(OpCodes.Ldc_I4_1);
+            generator.Emit(OpCodes.Stloc_0);
+            generator.Emit(OpCodes.Ldarg_0);
+            ParameterInfo[] paramInfo = info.OriginalMethod.GetParameters();
+            for (int i = 0; i < paramInfo.Length; i++)
+            {
+                generator.LoadArg(i + 1);
+            }
+            generator.Emit(OpCodes.Call, info.TranspilerBuilder ?? info.OriginalMethod);
+            if (info.HasReturnVal)
+            {
+                generator.Emit(OpCodes.Stloc_1);
+            }
+
+            bool postfixLabelApplied = lbl == null;
+            foreach (var workingOverrideInfo in info.Postfixes)
+            {
+                if (!postfixLabelApplied)
+                {
+                    generator.MarkLabel(lbl.Value);
+                    postfixLabelApplied = true;
+                }
+                //insert invocation
+                MatchPatchArguments(generator, info, workingOverrideInfo, true);
+                generator.Emit(workingOverrideInfo.mtdinf_target.IsVirtual ? OpCodes.Callvirt : OpCodes.Call, workingOverrideInfo.mtdinf_target);
+            }
+
+            if (!postfixLabelApplied)
+            {
+                generator.MarkLabel(lbl.Value);
+                postfixLabelApplied = true;
+            }
+            if (info.HasReturnVal)
+            {
+                generator.Emit(OpCodes.Ldloc_1);
+                generator.Emit(OpCodes.Ret);
+            }
+            else
+            {
+                generator.Emit(OpCodes.Ret);
+            }
+        }
+
+        public void MatchConstructorArguments(ILGenerator generator, ParameterBuilder[] paramInfo, Type[] paramTypes, ConstructorInfo ctorinf_target, int moduleIndex)
+        {
+            generator.Emit(OpCodes.Ldarg_0);
+            foreach (var par in ctorinf_target.GetParameters())
+            {
                 if (par.Name.StartsWith("___"))
                 {
                     //___ means non public fields
                     string str_fldname = par.Name.Substring(3);
-                    FieldDefinition flddef_target = module.ImportReference(targetType.GetField(str_fldname, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)).Resolve();
-                    if (flddef_target == null)
-                        throw new MissingFieldException($"Field with name \"{str_fldname}\" not found! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
-                    if (flddef_target.IsStatic)
+                    var fld_target = targetType.GetField(str_fldname, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                    if (fld_target == null)
+                        throw new MissingFieldException($"Field with name \"{str_fldname}\" not found! Patch method: {ctorinf_target.DeclaringType.FullName}.{ctorinf_target.Name}");
+                    if (fld_target.IsStatic)
                     {
-                        yield return il.Create((par.ParameterType.IsByReference) ? OpCodes.Ldsflda : OpCodes.Ldsfld, module.ImportReference(flddef_target));
+                        generator.Emit((par.ParameterType.IsByRef) ? OpCodes.Ldsflda : OpCodes.Ldsfld, fld_target);
                     }
                     else
                     {
-                        yield return il.Create(OpCodes.Ldarg_0);
-                        yield return il.Create(par.ParameterType.IsByReference ? OpCodes.Ldflda : OpCodes.Ldfld, module.ImportReference(flddef_target));
+                        generator.Emit(OpCodes.Ldarg_0);
+                        generator.Emit(par.ParameterType.IsByRef ? OpCodes.Ldflda : OpCodes.Ldfld, fld_target);
                     }
                 }
-                else if (matchSpecialParDelegate == null || !matchSpecialParDelegate(par, mtddef_original, mtddef_target, moduleIndex, list_special_args))
+                else if (!processor.MatchConstructorArgs(this, generator, par, paramInfo, paramTypes, ctorinf_target, moduleIndex))
                 {
                     //match param by name
                     int index = -1;
                     if (!par.Name.StartsWith("__") || !int.TryParse(par.Name.Substring(2), out index))
                     {
-                        for (int j = 0; j < mtddef_original.Parameters.Count; j++)
+                        for (int j = 0; j < paramInfo.Length; j++)
                         {
-                            if (mtddef_original.Parameters[j].Name == par.Name)
+                            if (paramInfo[j].Name == par.Name)
                             {
-                                index = mtddef_original.Parameters[j].Index;
+                                if (!par.ParameterType.IsAssignableFrom(paramTypes[j]))
+                                {
+                                    throw new Exception($"Parameter type does not match: Patch method: {ctorinf_target.DeclaringType.FullName}.{ctorinf_target.Name}, trying to match parameter original {par.Name} with target {paramInfo[j].Name}");
+                                }
+                                //ParameterBuilder.Position start at 1
+                                index = paramInfo[j].Position;
                                 break;
                             }
                         }
                     }
 
                     if (index < 0)
-                        throw new ArgumentException($"Parameter \"{par.Name}\" not found! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
-                    try
+                        throw new ArgumentException($"Parameter \"{par.Name}\" not found! Patch method: {ctorinf_target.DeclaringType.FullName}.{ctorinf_target.Name}\noriginal parameters: {string.Join(", ", paramInfo.Select(p => p.Name))}");
+                    if (!paramTypes[index - 1].IsByRef)
                     {
-                        //Log.Out($"Match Parameter {par.Name} to {mtddef_derived.Parameters[index].Name}/{mtddef_root.Parameters[index].Name} index: {index}");
-
-                    }
-                    catch (ArgumentOutOfRangeException e)
-                    {
-                        Log.Error($"index {index} parameter {par.Name}" +
-                                  $"root pars: {{{string.Join(",", mtddef_original.Parameters.Select(p => p.Name + "/" + p.Index).ToArray())}}}" +
-                                  $"derived pars: {{{string.Join(",", mtddef_target.Parameters.Select(p => p.Name + "/" + p.Index).ToArray())}}}");
-                        throw e;
-                    }
-                    if (!mtddef_original.Parameters[index].ParameterType.IsByReference)
-                    {
-                        yield return MonoCecilExtensions.LoadArgAtIndex(index, par.ParameterType.IsByReference, false, mtddef_original.Parameters, il);
-                        //yield return il.Create(par.ParameterType.IsByReference ? OpCodes.Ldarga_S : OpCodes.Ldarg_S, mtddef_original.Parameters[index]);
+                        generator.LoadArg(index, par.ParameterType.IsByRef);
                     }
                     else
                     {
-                        yield return MonoCecilExtensions.LoadArgAtIndex(index, true, false, mtddef_original.Parameters, il);
-                        //yield return il.Create(OpCodes.Ldarg_S, mtddef_original.Parameters[index]);
-                        if (!par.ParameterType.IsByReference)
+                        generator.LoadArg(index, true);
+                        if (!par.ParameterType.IsByRef)
                         {
-                            var opcode = par.ParameterType.LoadRefAsValue(out bool isStruct);
-                            yield return isStruct ? il.Create(opcode, par.ParameterType) : il.Create(opcode);
+                            var opcode = LoadRefAsValue(par.ParameterType, out bool isStruct);
+                            if (isStruct)
+                            {
+                                generator.Emit(opcode, par.ParameterType);
+                            }
+                            else
+                            {
+                                generator.Emit(opcode);
+                            }
                         }
                     }
                 }
-                else
-                {
-                    foreach (var ins in list_special_args)
-                    {
-                        yield return ins;
-                    }
-                }
             }
-            yield return il.Create(OpCodes.Newobj, module.ImportReference(mtddef_target));
-            yield return il.Create(OpCodes.Stfld, arr_flddef_modules[moduleIndex]);
+            generator.Emit(OpCodes.Newobj, ctorinf_target);
+            generator.Emit(OpCodes.Stfld, arr_fldbd_modules[moduleIndex]);
         }
 
         /// <summary>
         /// Create a List<Instruction> that loads all arguments required to call the method onto stack.
         /// </summary>
-        /// <param name="mtddef_root">The root definition of this method.</param>
+        /// <param name="mtdinf_root">The root definition of this method.</param>
         /// <param name="mtdpinf_derived">The override method.</param>
-        /// <param name="mtddef_target">The patch method to be called.</param>
+        /// <param name="mtdinf_target">The patch method to be called.</param>
         /// <param name="flddef_module">The injected module field.</param>
         /// <param name="flddef_data">The injected data field.</param>
         /// <param name="module">The assembly's main module.</param>
@@ -621,164 +633,196 @@ namespace KFCommonUtilityLib
         /// <exception cref="MissingFieldException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        private List<Instruction> MatchPatchArguments(MethodDefinition mtddef_root, MethodPatchInfo mtdpinf_derived, MethodDefinition mtddef_target, int moduleIndex, bool isPostfix, Dictionary<string, VariableDefinition> dict_states, string moduleID)
+        private void MatchPatchArguments(ILGenerator generator, MethodPatchInfo mtdpinf_derived, MethodOverrideInfo mtdoinf_target, bool isPostfix)
         {
-            FieldDefinition flddef_module = arr_flddef_modules[moduleIndex];
-            var mtddef_derived = mtdpinf_derived.Method;
-            var il = mtddef_derived.Body.GetILProcessor();
+            var moduleID = mtdoinf_target.moduleName;
+            int moduleIndex = mtdoinf_target.moduleIndex;
+            var mtdinf_target = mtdoinf_target.mtdinf_target;
+            var mtdinf_root = mtdoinf_target.mtdinf_base.GetBaseDefinition();
+            var fldbd_module = arr_fldbd_modules[moduleIndex];
             //Match parameters
-            List<Instruction> list_inst_pars = new List<Instruction>();
-            list_inst_pars.Add(il.Create(OpCodes.Ldarg_0));
-            list_inst_pars.Add(il.Create(OpCodes.Ldfld, flddef_module));
-            foreach (var par in mtddef_target.IsStatic ? mtddef_target.Parameters.Skip(1) : mtddef_target.Parameters)
+            generator.Emit(OpCodes.Ldarg_0);
+            generator.Emit(OpCodes.Ldfld, fldbd_module);
+            // module extension methods are static and first arg matches the module type, skip it
+            foreach (var par in mtdinf_target.IsStatic ? mtdinf_target.GetParameters().Skip(1) : mtdinf_target.GetParameters())
             {
                 if (par.Name.StartsWith("___"))
                 {
                     //___ means non public fields
                     string str_fldname = par.Name.Substring(3);
-                    FieldDefinition flddef_target = module.ImportReference(targetType.GetField(str_fldname, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)).Resolve();
-                    if (flddef_target == null)
-                        throw new MissingFieldException($"Field with name \"{str_fldname}\" not found! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
-                    if (flddef_target.IsStatic)
+                    var fld_target = AccessTools.Field(targetType, str_fldname);
+                    if (fld_target == null)
+                        throw new MissingFieldException($"Field with name \"{str_fldname}\" not found! Patch method: {mtdinf_target.DeclaringType.FullName}.{mtdinf_target.Name}");
+                    if (fld_target.IsStatic)
                     {
-                        list_inst_pars.Add(il.Create((par.ParameterType.IsByReference) ? OpCodes.Ldsflda : OpCodes.Ldsfld, module.ImportReference(flddef_target)));
+                        generator.Emit((par.ParameterType.IsByRef) ? OpCodes.Ldsflda : OpCodes.Ldsfld, fld_target);
                     }
                     else
                     {
-                        list_inst_pars.Add(il.Create(OpCodes.Ldarg_0));
-                        list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldflda : OpCodes.Ldfld, module.ImportReference(flddef_target)));
+                        generator.Emit(OpCodes.Ldarg_0);
+                        generator.Emit(par.ParameterType.IsByRef ? OpCodes.Ldflda : OpCodes.Ldfld, fld_target);
                     }
                 }
-                else if (!MatchPatchSpecialParameters(par, mtddef_target, mtdpinf_derived, moduleIndex, list_inst_pars, il, isPostfix, dict_states, moduleID))
+                else if (!MatchPatchSpecialParameters(generator, par, mtdpinf_derived, mtdoinf_target, isPostfix))
                 {
                     //match param by name
                     int index = -1;
                     if (!par.Name.StartsWith("__") || !int.TryParse(par.Name.Substring(2), out index))
                     {
-                        for (int j = 0; j < mtddef_root.Parameters.Count; j++)
+                        var rootPars = mtdinf_root.GetParameters();
+                        for (int j = 0; j < rootPars.Length; j++)
                         {
-                            if (mtddef_root.Parameters[j].Name == par.Name)
+                            if (rootPars[j].Name == par.Name)
                             {
-                                index = mtddef_root.Parameters[j].Index;
+                                index = rootPars[j].Position + 1;
                                 break;
                             }
                         }
                     }
 
-                    if (index < 0)
-                        throw new ArgumentException($"Parameter \"{par.Name}\" not found! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
-                    try
+                    if (index <= 0)
+                        throw new ArgumentException($"Parameter \"{par.Name}\" not found! Patch method: {mtdinf_target.DeclaringType.FullName}.{mtdinf_target.Name}\noriginal parameters: {string.Join(", ", mtdinf_root.GetParameters().Select(p => p.Name))}");
+                    if (!mtdinf_root.GetParameters()[index - 1].ParameterType.IsByRef)
                     {
-                        //Log.Out($"Match Parameter {par.Name} to {mtddef_derived.Parameters[index].Name}/{mtddef_root.Parameters[index].Name} index: {index}");
-
-                    }
-                    catch (ArgumentOutOfRangeException e)
-                    {
-                        Log.Error($"index {index} parameter {par.Name}" +
-                                  $"root pars: {{{string.Join(",", mtddef_root.Parameters.Select(p => p.Name + "/" + p.Index).ToArray())}}}" +
-                                  $"derived pars: {{{string.Join(",", mtddef_derived.Parameters.Select(p => p.Name + "/" + p.Index).ToArray())}}}");
-                        throw e;
-                    }
-                    if (!mtddef_derived.Parameters[index].ParameterType.IsByReference)
-                    {
-                        list_inst_pars.Add(MonoCecilExtensions.LoadArgAtIndex(index, par.ParameterType.IsByReference, false, mtddef_derived.Parameters, il));
-                        //list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldarga_S : OpCodes.Ldarg_S, mtddef_derived.Parameters[index]));
+                        generator.LoadArg(index, par.ParameterType.IsByRef);
                     }
                     else
                     {
-                        list_inst_pars.Add(MonoCecilExtensions.LoadArgAtIndex(index, true, false, mtddef_derived.Parameters, il));
-                        //list_inst_pars.Add(il.Create(OpCodes.Ldarg_S, mtddef_derived.Parameters[index]));
-                        if (!par.ParameterType.IsByReference)
+                        generator.LoadArg(index, true);
+                        if (!par.ParameterType.IsByRef)
                         {
-                            var opcode = par.ParameterType.LoadRefAsValue(out bool isStruct);
-                            list_inst_pars.Add(isStruct ? il.Create(opcode, par.ParameterType) : il.Create(opcode));
+                            var opcode = LoadRefAsValue(par.ParameterType, out bool isStruct);
+                            if (isStruct)
+                            {
+                                generator.Emit(opcode, par.ParameterType);
+                            }
+                            else
+                            {
+                                generator.Emit(opcode);
+                            }
                         }
                     }
                 }
             }
-            return list_inst_pars;
         }
 
-        private bool MatchPatchSpecialParameters(ParameterDefinition par, MethodDefinition mtddef_target, MethodPatchInfo mtdpinf_derived, int moduleIndex, List<Instruction> list_inst_pars, ILProcessor il, bool isPostfix, Dictionary<string, VariableDefinition> dict_states, string moduleID)
+        private bool MatchPatchSpecialParameters(ILGenerator generator, ParameterInfo par, MethodPatchInfo mtdpinf_derived, MethodOverrideInfo mtdoinf_target, bool isPostfix)
         {
-            MethodDefinition mtddef_derived = mtdpinf_derived.Method;
+            var mtdinf_target = mtdoinf_target.mtdinf_target;
+            var dict_states = mtdpinf_derived.States;
+            var moduleID = mtdoinf_target.moduleName;
+            int moduleIndex = mtdoinf_target.moduleIndex;
+            var mtddef_derived = mtdpinf_derived.Method;
             switch (par.Name)
             {
                 //load ItemAction instance
                 case "__instance":
-                    list_inst_pars.Add(il.Create(OpCodes.Ldarg_0));
+                    generator.Emit(OpCodes.Ldarg_0);
                     break;
                 //load return value
                 case "__result":
-                    if (mtddef_derived.ReturnType.MetadataType != MetadataType.Void)
+                    if (!mtddef_derived.ReturnType.IsVoid())
                     {
-                        list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldloca_S : OpCodes.Ldloc_S, mtddef_derived.Body.Variables[1]));
+                        if (par.ParameterType.IsByRef)
+                        {
+                            generator.Emit(OpCodes.Ldloca_S, 1);
+                        }
+                        else
+                        {
+                            generator.Emit(OpCodes.Ldloc_1);
+                        }
                     }
                     else
                     {
-                        throw new ArgumentException($"{mtddef_target.DeclaringType.FullName}.{mtddef_target.Name} does not have a return value!");
+                        throw new ArgumentException($"{mtdinf_target.DeclaringType.FullName}.{mtdinf_target.Name} does not have a return value!");
                     }
                     break;
-                //for postfix only, indicates whether original method is executed
                 case "__runOriginal":
-                    if (par.ParameterType.IsByReference)
-                        throw new ArgumentException($"__runOriginal is readonly! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
-                    list_inst_pars.Add(il.Create(OpCodes.Ldloc_S, mtddef_derived.Body.Variables[0]));
+                    if (par.ParameterType.IsByRef)
+                        throw new ArgumentException($"__runOriginal is readonly! Patch method: {mtdinf_target.DeclaringType.FullName}.{mtdinf_target.Name}");
+                    generator.Emit(OpCodes.Ldloc_0);
                     break;
                 case "__state":
-                    if (dict_states == null)
+                    if (isPostfix && !dict_states.TryGetValue(moduleID, out var lbd_var))
                     {
-                        throw new ArgumentNullException($"__state is found in prefix but no matching postfix exists! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
-                    }
-                    if (!isPostfix && !dict_states.TryGetValue(moduleID, out var vardef))
-                    {
-                        throw new KeyNotFoundException($"__state is found in prefix but not found in corresponding postfix! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
+                        throw new KeyNotFoundException($"__state is found in postfix but not found in corresponding prefix! Patch method: {mtdinf_target.DeclaringType.FullName}.{mtdinf_target.Name}");
                     }
                     if (par.IsOut && isPostfix)
                     {
-                        throw new ArgumentException($"__state is marked as out parameter in postfix! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
+                        throw new ArgumentException($"__state is marked as out parameter in postfix! Patch method: {mtdinf_target.DeclaringType.FullName}.{mtdinf_target.Name}");
                     }
                     if (!par.IsOut && !isPostfix)
                     {
-                        throw new ArgumentException($"__state is not marked as out in prefix! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
+                        throw new ArgumentException($"__state is not marked as out in prefix! Patch method: {mtdinf_target.DeclaringType.FullName}.{mtdinf_target.Name}");
                     }
                     if (isPostfix)
                     {
-                        vardef = new VariableDefinition(module.ImportReference(par.ParameterType));
-                        mtddef_derived.Body.Variables.Add(vardef);
-                        dict_states.Add(moduleID, vardef);
-                        list_inst_pars.Add(il.Create(OpCodes.Ldloc_S, vardef));
+                        lbd_var = dict_states[moduleID];
+                        dict_states.Remove(moduleID);
+                        generator.LoadLocal(lbd_var.LocalIndex);
                     }
                     else
                     {
-                        vardef = dict_states[moduleID];
-                        dict_states.Remove(moduleID);
-                        list_inst_pars.Add(il.Create(OpCodes.Ldloca_S, vardef));
+                        lbd_var = generator.DeclareLocal(par.ParameterType.GetElementType());
+                        dict_states.Add(moduleID, lbd_var);
+                        generator.LoadLocal(lbd_var.LocalIndex, true);
                     }
                     break;
                 default:
-                    return processor != null ? processor.MatchSpecialArgs(par, mtddef_target, mtdpinf_derived, moduleIndex, list_inst_pars, il) : false;
+                    return processor != null ? processor.MatchSpecialArgs(this, generator, par, mtdpinf_derived, mtdoinf_target) : false;
             }
             return true;
         }
 
-        public void MakeContainerFor(TypeDefinition typedef_container, Type type_module, out FieldDefinition flddef_module)
+        public void MakeContainerFor(TypeBuilder typebd_container, Type type_interface, Type type_module, out FieldBuilder fldbd_module)
         {
-            var typeref_module = module.ImportReference(type_module);
-            flddef_module = new FieldDefinition(ModuleUtils.CreateFieldName(type_module), FieldAttributes.Public, typeref_module);
-            typedef_container.Fields.Add(flddef_module);
-            typedef_container.Interfaces.Add(new InterfaceImplementation(typeref_interface.MakeGenericInstanceType(typeref_module)));
-            PropertyDefinition propdef_instance = new PropertyDefinition("Instance", Mono.Cecil.PropertyAttributes.None, typeref_module);
-            MethodDefinition mtddef_instance_getter = new MethodDefinition("get_Instance", MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Virtual | MethodAttributes.Final, typeref_module);
-            mtddef_instance_getter.Overrides.Add(module.ImportReference(AccessTools.Method(typeof(IModuleContainerFor<>).MakeGenericType(type_module), "get_Instance")));
-            typedef_container.Methods.Add(mtddef_instance_getter);
-            mtddef_instance_getter.Body = new Mono.Cecil.Cil.MethodBody(mtddef_instance_getter);
-            var generator = mtddef_instance_getter.Body.GetILProcessor();
-            generator.Emit(OpCodes.Ldarg_0);
-            generator.Emit(OpCodes.Ldfld, flddef_module);
-            generator.Emit(OpCodes.Ret);
-            propdef_instance.GetMethod = mtddef_instance_getter;
-            typedef_container.Properties.Add(propdef_instance);
+            typebd_container.AddInterfaceImplementation(type_interface.MakeGenericType(type_module));
+            fldbd_module = typebd_container.DefineField(ModuleUtils.CreateFieldName(type_module), type_module, System.Reflection.FieldAttributes.Public);
+            var propbd_instance = typebd_container.DefineProperty("Instance", System.Reflection.PropertyAttributes.None, type_module, Type.EmptyTypes);
+            var mtdbd_instance = typebd_container.DefineMethod("get_Instance", MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Virtual | MethodAttributes.Final, CallingConventions.HasThis, type_module, Type.EmptyTypes);
+            var il = mtdbd_instance.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldfld, fldbd_module);
+            il.Emit(OpCodes.Ret);
+            typebd_container.DefineMethodOverride(mtdbd_instance, typeof(IModuleContainerFor<>).MakeGenericType(type_module).GetMethod("get_Instance"));
+            propbd_instance.SetGetMethod(mtdbd_instance);
+        }
+
+        public static OpCode LoadRefAsValue(Type type, out bool isStruct)
+        {
+            isStruct = false;
+            if (type.IsClass())
+            {
+                return OpCodes.Ldind_Ref;
+            }
+            if (type.IsPointer)
+            {
+                return OpCodes.Ldind_I;
+            }
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.Boolean:
+                case TypeCode.SByte:
+                    return OpCodes.Ldind_I1;
+                case TypeCode.Byte:
+                    return OpCodes.Ldind_U1;
+                case TypeCode.Int16:
+                    return OpCodes.Ldind_I2;
+                case TypeCode.UInt16:
+                    return OpCodes.Ldind_U2;
+                case TypeCode.Int32:
+                case TypeCode.UInt32:
+                    return OpCodes.Ldind_I4;
+                case TypeCode.Int64:
+                case TypeCode.UInt64:
+                    return OpCodes.Ldind_I8;
+                case TypeCode.Single:
+                    return OpCodes.Ldind_R4;
+                case TypeCode.Double:
+                    return OpCodes.Ldind_R8;
+            }
+            isStruct = true;
+            return OpCodes.Ldobj;
         }
     }
 }

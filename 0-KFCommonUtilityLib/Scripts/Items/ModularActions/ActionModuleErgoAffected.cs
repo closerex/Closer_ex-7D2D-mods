@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Reflection.Emit;
 using UniLinq;
 using UnityEngine;
-using static ActionModuleErgoAffected;
 
 [TypeTarget(typeof(ItemActionZoom)), TypeDataTarget(typeof(ErgoData))]
 public class ActionModuleErgoAffected

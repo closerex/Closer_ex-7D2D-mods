@@ -2,13 +2,37 @@
 using GearsAPI.Settings.Global;
 using GearsAPI.Settings.World;
 using HarmonyLib;
+using KFCommonUtilityLib.KFAttached.Render;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Security;
+using System.Security.Permissions;
+using UnityEngine;
 
 namespace KFCommonUtilityLib
 {
+    public static class SharedAssets
+    {
+        public static Shader MagnifyScopeShader { get; private set; }
+        public static Material DefaultLaserDotMaterial { get; private set; }
+
+        public static void InitAssets()
+        {
+            if (!MagnifyScopeShader)
+            {
+                MagnifyScopeShader = LoadManager.LoadAsset<Shader>("#@modfolder(CommonUtilityLib):Resources/kf_shared_assets.unity3d?PIPScopeAimBlend.shadergraph", null, null, false, true).Asset;
+            }
+            if (!DefaultLaserDotMaterial)
+            {
+                DefaultLaserDotMaterial = LoadManager.LoadAsset<Material>("#@modfolder(CommonUtilityLib):Resources/kf_shared_assets.unity3d?DefaultLaserDotMaterial.mat", null, null, false, true).Asset;
+            }
+        }
+    }
     public static class KFLibEvents
     {
         public static event Action onXmlLoadingStart;
@@ -34,6 +58,7 @@ namespace KFCommonUtilityLib
             if (inited)
                 return;
             inited = true;
+            SharedAssets.InitAssets();
             Log.Out(" Loading Patch: " + GetType());
             unsafe
             {
@@ -54,8 +79,6 @@ namespace KFCommonUtilityLib
             CustomEffectEnumManager.RegisterEnumType<PassiveEffects>();
 
             ModuleManagers.Init();
-            ItemClassModuleManager.Init();
-            ItemActionModuleManager.Init();
 
             //ModEvents.GameAwake.RegisterHandler(CommonUtilityPatch.InitShotStates);
             ModEvents.GameAwake.RegisterHandler(CustomEffectEnumManager.InitDefault);
@@ -65,7 +88,8 @@ namespace KFCommonUtilityLib
             ModEvents.GameStartDone.RegisterHandler(MultiActionManager.PostloadCleanup);
             //ModEvents.GameStartDone.RegisterHandler(CustomEffectEnumManager.PrintResults);
             HarmonyInstance = new HarmonyLib.Harmony(GetType().ToString());
-            HarmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
+            HarmonyInstance.PatchAllUncategorized(Assembly.GetExecutingAssembly());
+            //Test.Do();
         }
 
         public static void RegisterKFEnums()
@@ -104,6 +128,7 @@ namespace KFCommonUtilityLib
             CustomEnums.BurstShotInterval = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("BurstShotInterval");
             CustomEnums.MaxWeaponSpread = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("MaxWeaponSpread");
             CustomEnums.HoldingItemDamageResistance = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("HoldingItemDamageResistance");
+            CustomEnums.WeaponHolsterSpeed = CustomEffectEnumManager.RegisterOrGetEnum<PassiveEffects>("WeaponHolsterSpeed");
         }
     }
 }

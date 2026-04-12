@@ -267,25 +267,28 @@ namespace KFCommonUtilityLib
                 if (!itemActionDataRanged.IsFlashSuppressed && particlesMuzzleFire != null)
                 {
                     Transform fire = GameManager.Instance.SpawnParticleEffectClientForceCreation(new ParticleEffect(particlesMuzzleFireFpv != null ? particlesMuzzleFireFpv : particlesMuzzleFire, Vector3.zero, 1f, Color.clear, null, null, false), player.entityId, true);
-                    ProcessMuzzleFlashParticle(fire, parent);
+                    ProcessMuzzleFlashParticle(fire, parent, isLocalFpv);
                 }
                 if (particlesMuzzleSmoke != null)
                 {
                     float num = GameManager.Instance.World.GetLightBrightness(World.worldToBlockPos(itemActionDataRanged.muzzle.transform.position)) / 2f;
                     Transform smoke = GameManager.Instance.SpawnParticleEffectClientForceCreation(new ParticleEffect(particlesMuzzleSmokeFpv != null ? particlesMuzzleSmokeFpv : particlesMuzzleSmoke, Vector3.zero, num, Color.clear, null, null, false), player.entityId, true);
-                    ProcessMuzzleFlashParticle(smoke, parent);
+                    ProcessMuzzleFlashParticle(smoke, parent, isLocalFpv);
                 }
             }
 
             return true;
         }
 
-        public static void ProcessMuzzleFlashParticle(Transform particlePrefab, Transform parent)
+        public static void ProcessMuzzleFlashParticle(Transform particlePrefab, Transform parent, bool isFpv)
         {
             if (particlePrefab != null)
             {
                 particlePrefab.transform.localPosition = Vector3.zero;
-                particlePrefab.transform.SetParent(parent, false);
+                if (parent != null)
+                {
+                    particlePrefab.transform.SetParent(parent, false);
+                }
                 Utils.SetLayerRecursively(particlePrefab.gameObject, 10, null);
                 foreach (var particle in particlePrefab.GetComponentsInChildren<ParticleSystem>())
                 {
@@ -297,7 +300,7 @@ namespace KFCommonUtilityLib
                 }
                 var temp = particlePrefab.gameObject.GetOrAddComponent<TemporaryMuzzleFlash>();
                 temp.life = 5;
-                if (particlePrefab.TryGetComponent<LODGroup>(out var lod))
+                if (isFpv && particlePrefab.TryGetComponent<LODGroup>(out var lod))
                     lod.enabled = false;
             }
         }

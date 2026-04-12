@@ -36,5 +36,6 @@
     public static PassiveEffects BurstShotInterval;
     public static PassiveEffects MaxWeaponSpread;
     public static PassiveEffects HoldingItemDamageResistance;
+    public static PassiveEffects WeaponHolsterSpeed;
     #endregion
 }

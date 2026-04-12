@@ -179,7 +179,7 @@ namespace CustomAimFovCorrectionPatch
                     //Log.Out("1");
                     i += 24;
                 }
-                else if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 4)
+                else if (codes[i].opcode == OpCodes.Stloc_S && codes[i].operand is LocalBuilder lbd1 && lbd1.LocalIndex == 4)
                 {
                     var lbl = generator.DefineLabel();
                     codes[i + 1].WithLabels(lbl);
@@ -196,7 +196,7 @@ namespace CustomAimFovCorrectionPatch
                     //Log.Out("2");
                     i += 8;
                 }
-                else if (codes[i].opcode == OpCodes.Ldloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == 4)
+                else if (codes[i].opcode == OpCodes.Ldloc_S && codes[i].operand is LocalBuilder lbd2 && lbd2.LocalIndex == 4)
                 {
                     var lbl_load_prev = generator.DefineLabel();
                     var lbl_loaded = generator.DefineLabel();

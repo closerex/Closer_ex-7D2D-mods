@@ -519,7 +519,7 @@ namespace KFCommonUtilityLib.Harmony
         //use custom script
         private static IEnumerable<CodeInstruction> Transpiler_instantiateProjectile_ItemActionLauncher_ReplaceScript(IEnumerable<CodeInstruction> instructions)
         {
-            MethodInfo mtd_addcomponent = AccessTools.Method(typeof(GameObject), nameof(GameObject.AddComponent), Array.Empty<Type>());
+            MethodInfo mtd_addcomponent = AccessTools.Method(typeof(GameObject), nameof(GameObject.AddComponent), Type.EmptyTypes);
             MethodInfo mtd_addcomponentprev = mtd_addcomponent.MakeGenericMethod(typeof(ProjectileMoveScript));
             MethodInfo mtd_addcomponentnew = mtd_addcomponent.MakeGenericMethod(typeof(CustomProjectileMoveScript));
             foreach (var code in instructions)
@@ -2653,9 +2653,13 @@ namespace KFCommonUtilityLib.Harmony
                             {
                                 offset = 7;
                             }
-                            else
+                            else if (Constants.cVersionInformation.Equals(VersionInformation.EGameReleaseType.V, 2, 5))
                             {
                                 offset = 6;
+                            }
+                            else
+                            {
+                                offset = 3;
                             }
                             codes[j - offset].WithLabels(codes[j - offset - 2].ExtractLabels());
                             codes.RemoveRange(j - offset - 2, 2);
