@@ -195,7 +195,7 @@ public class ActionModuleShellEjector
             {
                 float light = GameManager.Instance.World.GetLightBrightness(World.worldToBlockPos(shellJoint.transform.position)) / 2f;
                 Transform shell = GameManager.Instance.SpawnParticleEffectClientForceCreation(new ParticleEffect(shellPrefab, Vector3.zero, light, Color.clear, null, null, false), actionData.invData.holdingEntity.entityId, true);
-                AnimationRiggingManager.ProcessMuzzleFlashParticle(shell, shellJoint);
+                AnimationRiggingManager.ProcessMuzzleFlashParticle(shell, shellJoint, isLocalFpv);
             }
         }
 
@@ -235,7 +235,7 @@ public class ActionModuleShellEjector
             if (!string.IsNullOrEmpty(effectPrefab))
             {
                 Transform effect = GameManager.Instance.SpawnParticleEffectClientForceCreation(new ParticleEffect(effectPrefab, Vector3.zero, 1, Color.clear, null, null, false), actionData.invData.holdingEntity.entityId, true);
-                AnimationRiggingManager.ProcessMuzzleFlashParticle(effect, shellEffectJoint);
+                AnimationRiggingManager.ProcessMuzzleFlashParticle(effect, shellEffectJoint, isLocalFpv);
             }
         }
     }

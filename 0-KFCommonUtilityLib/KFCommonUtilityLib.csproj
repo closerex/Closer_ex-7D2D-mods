@@ -162,6 +162,10 @@
       <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine.AudioModule">
       <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
       <Private>False</Private>
@@ -550,11 +554,11 @@
     <Compile Include="KFAttached\Animation\MonoBehaviours\RigWeightOverTime.cs" />
     <Compile Include="KFAttached\Misc\AttachmentReferenceAppended.cs" />
     <Compile Include="KFAttached\KFUtilAttached\IActiveCountHandler.cs" />
-    <Compile Include="KFAttached\Misc\DummyScaler.cs" />
     <Compile Include="KFAttached\Misc\IgnoreTint.cs" />
     <Compile Include="KFAttached\Misc\ItemAnimatorUpdate.cs" />
     <Compile Include="KFAttached\Misc\Laser.cs" />
     <Compile Include="KFAttached\KFUtilAttached\MultiTargetStateController.cs" />
+    <Compile Include="KFAttached\Misc\LaserReferenced.cs" />
     <Compile Include="KFAttached\Misc\PlayerRigLateUpdate.cs" />
     <Compile Include="KFAttached\Misc\ProximityBeep.cs" />
     <Compile Include="KFAttached\Misc\ScopeBase.cs" />
@@ -606,6 +610,7 @@
     <Compile Include="Scripts\Attributes\MethodTargetAttribute.cs" />
     <Compile Include="Scripts\Attributes\TypeTargetAttribute.cs" />
     <Compile Include="Scripts\Attributes\TypeTargetExtensionAttribute.cs" />
+    <Compile Include="Scripts\ConsoleCmd\ConsoleCmdDumpHarmonyPatches.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdListParticleScripts.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdMultiActionItemValueDebug.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPrintLocalCache.cs" />
@@ -737,7 +742,6 @@
     <Compile Include="Scripts\Utilities\MiscExtensions.cs" />
     <Compile Include="Scripts\Utilities\Modular\ItemInventoryDataModuleProcessor.cs" />
     <Compile Include="Scripts\Utilities\Modular\ItemActionDataModuleProcessor.cs" />
-    <Compile Include="Scripts\Utilities\Modular\ItemActionModuleManager.cs" />
     <Compile Include="Scripts\StaticManagers\LocalItemTagsManager.cs" />
     <Compile Include="Scripts\StaticManagers\MultiActionManager.cs" />
     <Compile Include="Scripts\StaticManagers\RecoilManager.cs" />
@@ -767,7 +771,6 @@
     <Compile Include="Scripts\Utilities\ExpressionParser\Sprache\StringExtensions.cs" />
     <Compile Include="Scripts\Utilities\Modular\IModuleProcessor.cs" />
     <Compile Include="Scripts\Utilities\Modular\ItemActionModuleProcessor.cs" />
-    <Compile Include="Scripts\Utilities\Modular\ItemClassModuleManager.cs" />
     <Compile Include="Scripts\Utilities\Modular\ItemClassModuleProcessor.cs" />
     <Compile Include="Scripts\Utilities\Modular\ModuleManagers.cs" />
     <Compile Include="Scripts\Utilities\Modular\ModuleManipulator.cs" />
@@ -783,6 +786,7 @@
     <Compile Include="Scripts\Utilities\VoxelCaster.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ILVerification.dll" />
     <Content Include="ModSettings.xml" />
   </ItemGroup>
   <ItemGroup>

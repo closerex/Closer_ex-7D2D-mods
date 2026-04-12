@@ -4,6 +4,7 @@ using KFCommonUtilityLib.Scripts.Utilities;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml.Linq;
@@ -1292,8 +1293,7 @@ public static class CommonUtilityPatch
             tmp.StopAllCoroutines();
             Component.Destroy(tmp);
         }
-        tmp = trans.AddMissingComponent<TemporaryMuzzleFlash>();
-        tmp.life = 5f;
+        AnimationRiggingManager.ProcessMuzzleFlashParticle(trans, null, false);
     }
 
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.onHoldingEntityFired))]
@@ -2466,9 +2466,11 @@ public static class CommonUtilityPatch
             if (__instance.Properties.Contains("KFMaterialReplacer"))
             {
                 path = __instance.Properties.GetString("KFMaterialReplacer");
-                SkinMaterialReplacer replacer = DataLoader.LoadAsset<SkinMaterialReplacer>(path, true);
-                list.ApplySkinMaterials(replacer, useDropMesh);
-                Component.Destroy(replacer);
+                if (!string.IsNullOrEmpty(path))
+                {
+                    SkinMaterialReplacer replacer = DataLoader.LoadAsset<SkinMaterialReplacer>(path, true);
+                    list.ApplySkinMaterials(replacer, useDropMesh);
+                }
             }
 
             path = _itemValue.GetPropertyOverride("KFMaterialReplacer", "");
@@ -2476,9 +2478,169 @@ public static class CommonUtilityPatch
             {
                 SkinMaterialReplacer replacer = DataLoader.LoadAsset<SkinMaterialReplacer>(path, true);
                 list.ApplySkinMaterials(replacer, useDropMesh);
-                Component.Destroy(replacer);
             }
         }
+    }
+
+    [HarmonyPatch(typeof(CameraMatrixOverride), nameof(CameraMatrixOverride.OnPreRender))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_OnPreRender_CameraMatrixOverride(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+    {
+        var codes = instructions.ToList();
+
+        var mtd_setmatrix = AccessTools.Method(typeof(MaterialPropertyBlock), nameof(MaterialPropertyBlock.SetMatrix), new[] { typeof(string), typeof(Matrix4x4) });
+
+        var lbd_original_mat = generator.DeclareLocal(typeof(Matrix4x4));
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].opcode == OpCodes.Stloc_S && codes[i].operand is LocalBuilder lbd && lbd.LocalIndex == 9)
+            {
+                codes.InsertRange(i + 1, new CodeInstruction[]
+                {
+                    new(OpCodes.Ldloc_0),
+                    new(OpCodes.Ldc_I4_1),
+                    CodeInstruction.Call(typeof(GL), nameof(GL.GetGPUProjectionMatrix)),
+                    new(OpCodes.Ldloc_3),
+                    new(OpCodes.Call, AccessTools.Method(typeof(Matrix4x4), "op_Multiply", new[]{ typeof(Matrix4x4), typeof(Matrix4x4) })),
+                    new(OpCodes.Stloc_S, lbd_original_mat)
+                });
+                i += 6;
+            }
+            else if (codes[i].Calls(mtd_setmatrix))
+            {
+                codes.InsertRange(i, new CodeInstruction[]
+                {
+                    new(OpCodes.Dup),
+                    new(OpCodes.Ldloc_S, lbd_original_mat),
+                    new(OpCodes.Ldloc_S, 10),
+                    CodeInstruction.CallClosure<Action<Matrix4x4, Matrix4x4, Renderer>>(FixLaserLine)
+                });
+                i += 4;
+            }
+        }
+
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(CameraMatrixOverride), nameof(CameraMatrixOverride.OnPostRender))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_OnPostRender_CameraMatrixOverride(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+    {
+        var codes = instructions.ToList();
+
+        var mtd_setpropertyblock = AccessTools.Method(typeof(Renderer), nameof(Renderer.SetPropertyBlock), new[] { typeof(MaterialPropertyBlock) });
+
+        var lbd_matrix_original_inverse = generator.DeclareLocal(typeof(Matrix4x4));
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_setpropertyblock))
+            {
+                codes.InsertRange(i + 1, new CodeInstruction[]
+                {
+                    new(OpCodes.Ldloc_S, lbd_matrix_original_inverse),
+                    new(OpCodes.Ldloc_1),
+                    new(OpCodes.Ldloc_2),
+                    CodeInstruction.LoadField(typeof(CameraMatrixOverride.RendererSettings), nameof(CameraMatrixOverride.RendererSettings.overriddenProperties)),
+                    CodeInstruction.CallClosure<Action<Matrix4x4, Renderer, MaterialPropertyBlock>>(RestoreLaserLine)
+                });
+                break;
+            }
+        }
+
+        codes.InsertRange(0, new CodeInstruction[]
+        {
+            new(OpCodes.Ldarg_0),
+            CodeInstruction.LoadField(typeof(CameraMatrixOverride), nameof(CameraMatrixOverride.referenceCamera)),
+            new(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(Camera), nameof(Camera.projectionMatrix))),
+            new(OpCodes.Ldc_I4_1),
+            CodeInstruction.Call(typeof(GL), nameof(GL.GetGPUProjectionMatrix)),
+            new(OpCodes.Ldarg_0),
+            CodeInstruction.LoadField(typeof(CameraMatrixOverride), nameof(CameraMatrixOverride.referenceCamera)),
+            new(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(Camera), nameof(Camera.worldToCameraMatrix))),
+            new(OpCodes.Call, AccessTools.Method(typeof(Matrix4x4), "op_Multiply", new[]{ typeof(Matrix4x4), typeof(Matrix4x4) })),
+            CodeInstruction.Call(typeof(Matrix4x4), nameof(Matrix4x4.Inverse)),
+            new(OpCodes.Stloc_S, lbd_matrix_original_inverse)
+        });
+
+        return codes;
+    }
+
+    private static void FixLaserLine(Matrix4x4 matrixCustom, Matrix4x4 matrixOriginal, Renderer renderer)
+    {
+        if (renderer is LineRenderer lineRenderer && lineRenderer.TryGetComponent<LaserReferenced>(out _))
+        {
+            Vector3 worldEndPos = lineRenderer.GetPosition(1);
+            Vector4 worldEndPosNew = matrixCustom.inverse * (matrixOriginal * new Vector4(worldEndPos.x, worldEndPos.y, worldEndPos.z, 1));
+            worldEndPosNew /= worldEndPosNew.w;
+            lineRenderer.SetPosition(1, new(worldEndPosNew.x, worldEndPosNew.y, worldEndPosNew.z));
+        }
+    }
+
+    private static void RestoreLaserLine(Matrix4x4 matrixOriginalInverse, Renderer renderer, MaterialPropertyBlock materialPropertyBlock)
+    {
+        if (renderer is LineRenderer lineRenderer && lineRenderer.TryGetComponent<LaserReferenced>(out _))
+        {
+            Matrix4x4 matrixOverridden = materialPropertyBlock.GetMatrix("unity_MatrixVP");
+            Vector3 worldEndPos = lineRenderer.GetPosition(1);
+            Vector4 worldEndPosOriginal = matrixOriginalInverse * (matrixOverridden * new Vector4(worldEndPos.x, worldEndPos.y, worldEndPos.z, 1));
+            worldEndPosOriginal /= worldEndPosOriginal.w;
+            lineRenderer.SetPosition(1, new Vector3(worldEndPosOriginal.x, worldEndPosOriginal.y, worldEndPosOriginal.z));
+        }
+    }
+
+    [HarmonyPatch(typeof(AssetBundleManager), nameof(AssetBundleManager.LoadAssetBundle))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_LoadAssetBundle_AssetBundleManager(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+
+        var fld_ab = AccessTools.Field(typeof(AssetBundleManager.AssetBundleRef), nameof(AssetBundleManager.AssetBundleRef.assetBundle));
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].StoresField(fld_ab))
+            {
+                codes.InsertRange(i + 1, new CodeInstruction[]
+                {
+                    new(OpCodes.Ldloc_S, codes[i - 1].operand),
+                    new(OpCodes.Ldarg_1),
+                    new(OpCodes.Ldarg_2),
+                    CodeInstruction.CallClosure<Action<AssetBundle, string, bool>>(static (ab, bundleName, fromMod) =>
+                    {
+                        if (fromMod)
+                        {
+                            var depList = ab.LoadAsset<TextAsset>(Path.GetFileName(bundleName) + ".json");
+                            if (depList != null)
+                            {
+                                var content = JToken.Parse(depList.text) as JObject;
+                                var depArray = content?.Property("dependencies")?.Value as JArray;
+                                if (depArray != null)
+                                {
+                                    foreach (var dep in depArray)
+                                    {
+                                        DataLoader.DataPathIdentifier id = DataLoader.ParseDataPathIdentifier(ModManager.PatchModPathString((string)dep));
+                                        if (!AssetBundleManager.Instance.dictAssetBundleRefs.ContainsKey(id.BundlePath + "1"))
+                                        {
+                                            Log.Out($"Loading dependency bundle {id.BundlePath} for bundle {bundleName}...");
+                                            AssetBundleManager.Instance.LoadAssetBundle(id.BundlePath, id.FromMod);
+                                        }
+                                        //else
+                                        //{
+                                        //    Log.Out($"Dependency bundle {id.BundlePath} for bundle {bundleName} already loaded!");
+                                        //}
+	                                }
+                                }
+                            }
+                        }
+                    })
+                });
+                break;
+            }
+        }
+
+        return codes;
     }
 
     #region upscaler fix for unity dlss and fsr3, might add them back when it actually works

@@ -1,12 +1,10 @@
 ﻿using HarmonyLib;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
-using Mono.Cecil.Rocks;
+using MonoMod.Utils;
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace KFCommonUtilityLib
 {
@@ -17,33 +15,52 @@ namespace KFCommonUtilityLib
             return (moduleType.FullName + "_" + moduleType.Assembly.GetName().Name).ReplaceInvalidChar();
         }
 
-        public static string CreateFieldName(TypeReference moduleType)
+        public static string CreateTypeName(Type baseType, params Type[] moduleTypes)
         {
-            return (moduleType.FullName + "_" + moduleType.Module.Assembly.Name.Name).ReplaceInvalidChar();
-        }
-
-        public static string CreateTypeName(Type itemActionType, params Type[] moduleTypes)
-        {
-            string typeName = itemActionType.FullName + "_" + itemActionType.Assembly.GetName().Name;
-            foreach (Type type in moduleTypes)
-            {
-                if (type != null)
-                    typeName += "__" + type.FullName + "_" + type.Assembly.GetName().Name;
-            }
+            string typeName = baseType.FullName + "_" + baseType.Assembly.GetName().Name;
+            string moduleName = moduleTypes.Where(static type => type != null)
+                                           .Select(static type => type.FullName + "_" + type.Assembly.GetName().Name)
+                                           .Join(static s => s, "__");
+            typeName += "__" + ComputeHash(moduleName);
             typeName = typeName.ReplaceInvalidChar();
             return typeName;
         }
 
-        public static string CreateTypeName(TypeReference itemActionType, params TypeReference[] moduleTypes)
+        public static void CopyParamInfoTo(this MethodBase from, DynamicMethodDefinition to)
         {
-            string typeName = itemActionType.FullName + "_" + itemActionType.Module.Assembly.Name.Name;
-            foreach (TypeReference type in moduleTypes)
+            var paramInfo = from.GetParameters();
+            int offset = from.IsStatic ? 0 : 1;
+            if (!from.IsStatic)
             {
-                if (type != null)
-                    typeName += "__" + type.FullName + "_" + type.Module.Assembly.Name.Name;
+                to.Definition.Parameters[0].Name = "_self";
             }
-            typeName = typeName.ReplaceInvalidChar();
-            return typeName;
+            for (int i = 0; i < paramInfo.Length; i++)
+            {
+                to.Definition.Parameters[i + offset].Attributes = (Mono.Cecil.ParameterAttributes)paramInfo[i].Attributes;
+                to.Definition.Parameters[i + offset].Name = paramInfo[i].Name;
+            }
+        }
+
+        public static ParameterBuilder[] CopyParamInfoTo(this MethodBase from, MethodBuilder to)
+        {
+            var paramInfo = from.GetParameters();
+            ParameterBuilder[] res = new ParameterBuilder[paramInfo.Length];
+            for (int i = 0; i < paramInfo.Length; i++)
+            {
+                res[i] = to.DefineParameter(i + 1, paramInfo[i].Attributes, paramInfo[i].Name);
+            }
+            return res;
+        }
+
+        public static ParameterBuilder[] CopyParamInfoTo(this MethodBase from, ConstructorBuilder to)
+        {
+            var paramInfo = from.GetParameters();
+            ParameterBuilder[] res = new ParameterBuilder[paramInfo.Length];
+            for (int i = 0; i < paramInfo.Length; i++)
+            {
+                res[i] = to.DefineParameter(i + 1, paramInfo[i].Attributes, paramInfo[i].Name);
+            }
+            return res;
         }
 
         private static string ReplaceInvalidChar(this string self)
@@ -62,6 +79,15 @@ namespace KFCommonUtilityLib
                 }
             }
             return sb.ToString();
+        }
+
+        private static string ComputeHash(string input)
+        {
+            using var md5 = System.Security.Cryptography.MD5.Create();
+            byte[] bytes = Encoding.UTF8.GetBytes(input);
+            byte[] hash = md5.ComputeHash(bytes);
+
+            return hash.ToHexString();
         }
     }
 }

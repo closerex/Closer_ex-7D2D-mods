@@ -10,7 +10,7 @@ public static class KFExtensions
             return null;
         }
 
-        if (!onlyActive || (onlyActive && (bool)target.gameObject && target.gameObject.activeSelf))
+        if (target.gameObject && (!onlyActive || (onlyActive && target.gameObject.activeSelf)))
         {
             if (target.name == name)
             {

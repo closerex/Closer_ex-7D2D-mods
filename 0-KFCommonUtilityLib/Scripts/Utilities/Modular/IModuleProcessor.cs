@@ -1,19 +1,19 @@
-﻿using KFCommonUtilityLib;
-using Mono.Cecil.Cil;
-using Mono.Cecil;
+﻿using HarmonyLib;
+using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
+using System.Reflection.Emit;
 
 namespace KFCommonUtilityLib
 {
     public interface IModuleProcessor
     {
-        void InitModules(ModuleManipulator manipulator, Type targetType, Type baseType, params Type[] moduleTypes);
-        bool BuildConstructor(ModuleManipulator manipulator, MethodDefinition mtddef_ctor);
+        void InitModules(ModuleManipulator manipulator);
+        bool DefineConstructorArgs(ModuleManipulator manipulator, ConstructorBuilder ctorbd, out ParameterBuilder[] pbs);
+        void BuildConstructor(ModuleManipulator manipulator, ILGenerator generator);
         Type GetModuleTypeByName(string name);
-        bool MatchSpecialArgs(ParameterDefinition par, MethodDefinition mtddef_target, MethodPatchInfo mtdpinf_derived, int moduleIndex, List<Instruction> list_inst_pars, ILProcessor il);
+        bool MatchSpecialArgs(ModuleManipulator manipulator, ILGenerator generator, ParameterInfo par, MethodPatchInfo mtdpinf_derived, MethodOverrideInfo mtdoinf_target);
+        bool MatchConstructorArgs(ModuleManipulator manipulator, ILGenerator generator, ParameterInfo par, ParameterBuilder[] paramInfo, Type[] paramTypes, ConstructorInfo ctorinf_target, int moduleIndex);
     }
 }

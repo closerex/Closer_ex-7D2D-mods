@@ -1,32 +1,79 @@
 ﻿using HarmonyLib;
 using KFCommonUtilityLib.Attributes;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
-using Mono.Cecil.Rocks;
+using KFCommonUtilityLib.Harmony;
+using MonoMod.Utils;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
+using System.Reflection.Emit;
 using UniLinq;
-using MethodAttributes = Mono.Cecil.MethodAttributes;
 
 namespace KFCommonUtilityLib
 {
     public class ItemActionModuleProcessor : IModuleProcessor
     {
-        TypeDefinition typedef_newActionData;
-        FieldDefinition[] arr_flddef_data;
+        Type typebd_newActionData;
+        FieldBuilder[] arr_flddef_data;
 
         public Type GetModuleTypeByName(string name)
         {
             return ReflectionHelpers.GetTypeWithPrefix("ActionModule", name);
         }
 
-        public bool BuildConstructor(ModuleManipulator manipulator, MethodDefinition mtddef_ctor)
+        public void InitModules(ModuleManipulator manipulator)
         {
-            manipulator.BuildDefaultConstructor(mtddef_ctor);
-            var ins_ret = mtddef_ctor.Body.Instructions[mtddef_ctor.Body.Instructions.Count - 1];
-            mtddef_ctor.Body.Instructions.RemoveAt(mtddef_ctor.Body.Instructions.Count - 1);
-            var il = mtddef_ctor.Body.GetILProcessor();
+            //Find ItemActionData subtype
+            MethodInfo mtdinf_create_data = null;
+            {
+                Type type_itemActionBase = manipulator.targetType;
+                while (manipulator.baseType.IsAssignableFrom(type_itemActionBase))
+                {
+                    mtdinf_create_data = type_itemActionBase.GetMethod(nameof(ItemAction.CreateModifierData), BindingFlags.Public | BindingFlags.Instance);
+                    if (mtdinf_create_data != null)
+                        break;
+                    type_itemActionBase = type_itemActionBase.BaseType;
+                }
+            }
+
+            //ACTION MODULE DATA TYPES
+            var arr_type_data = manipulator.moduleTypes.Select(m => m.GetCustomAttribute<TypeDataTargetAttribute>()?.DataType).ToArray();
+            //Create new ItemActionData
+            //Find CreateModifierData
+            using (var dmd = new DynamicMethodDefinition(mtdinf_create_data))
+            {
+                //ItemActionData subtype is the return type of CreateModifierData
+                var typeref_actiondata = ((Mono.Cecil.MethodReference)dmd.Definition.Body.Instructions.Last(static i => i.OpCode == Mono.Cecil.Cil.OpCodes.Newobj).Operand).DeclaringType;
+                //Get type by assembly qualified name since it might be from mod assembly
+                Type type_itemActionData = typeref_actiondata.ResolveReflection();
+                ModuleManagers.LogOut($"CreateModifierData return type {type_itemActionData.AssemblyQualifiedName}");
+                if (ModuleManagers.PatchType(type_itemActionData, typeof(ItemActionData), manipulator.typebd_newTarget, arr_type_data.Where(static t => t != null).ToArray(), new ItemActionDataModuleProcessor(manipulator.typebd_newTarget, manipulator.moduleTypes, manipulator.arr_fldbd_modules.Where((f, i) => arr_type_data[i] != null).ToArray(), arr_type_data.Select(static t => t != null).ToArray(), out arr_flddef_data), out typebd_newActionData))
+                {
+                    var ctorinf_actiondata = typebd_newActionData.GetDeclaredConstructors().FirstOrDefault();
+                    var mtdbd_createdata = manipulator.typebd_newTarget.DefineMethod(nameof(ItemAction.CreateModifierData),
+                                                                                     MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot | MethodAttributes.Final,
+                                                                                     mtdinf_create_data.CallingConvention,
+                                                                                     mtdinf_create_data.ReturnType,
+                                                                                     mtdinf_create_data.ReturnParameter.GetRequiredCustomModifiers().Length > 0 ? mtdinf_create_data.ReturnParameter.GetRequiredCustomModifiers() : null,
+                                                                                     mtdinf_create_data.ReturnParameter.GetOptionalCustomModifiers().Length > 0 ? mtdinf_create_data.ReturnParameter.GetOptionalCustomModifiers() : null,
+                                                                                     mtdinf_create_data.GetParameters().Select(static p => p.ParameterType).ToArray(),
+                                                                                     mtdinf_create_data.GetParameters().Select(static p => { var mod = p.GetRequiredCustomModifiers(); return mod != null && mod.Length > 0 ? mod : null; }).ToArray(),
+                                                                                     mtdinf_create_data.GetParameters().Select(static p => { var mod = p.GetOptionalCustomModifiers(); return mod != null && mod.Length > 0 ? mod : null; }).ToArray());
+                    manipulator.typebd_newTarget.DefineMethodOverride(mtdbd_createdata, mtdinf_create_data);
+                    ParameterInfo[] paramInfo = mtdinf_create_data.GetParameters();
+                    for (int i = 0; i < paramInfo.Length; i++)
+                    {
+                        mtdbd_createdata.DefineParameter(i + 1, paramInfo[i].Attributes, paramInfo[i].Name);
+                    }
+                    var il = mtdbd_createdata.GetILGenerator();
+                    il.Emit(OpCodes.Ldarg_1);
+                    il.Emit(OpCodes.Ldarg_2);
+                    il.Emit(OpCodes.Newobj, ctorinf_actiondata);
+                    il.Emit(OpCodes.Ret);
+                }
+            }
+        }
+
+        public void BuildConstructor(ModuleManipulator manipulator, ILGenerator generator)
+        {
             // check and set required user data bits
             byte bitsUsed = 0;
             for (int i = 0; i < manipulator.moduleTypes.Length; i++)
@@ -51,94 +98,54 @@ namespace KFCommonUtilityLib
                 int shift = 32 - attr.Bits - bitsUsed;
                 int mask = ((1 << attr.Bits) - 1) << shift;
                 bitsUsed += attr.Bits;
-                var flddef_module = manipulator.arr_flddef_modules[i];
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldfld, flddef_module);
-                il.Emit(OpCodes.Dup);
-                il.Emit(OpCodes.Ldc_I4, mask);
-                il.Emit(OpCodes.Stfld, manipulator.module.ImportReference(fld_mask));
-                il.Emit(OpCodes.Ldc_I4, shift);
-                il.Emit(OpCodes.Stfld, manipulator.module.ImportReference(fld_shift));
+                var flddef_module = manipulator.arr_fldbd_modules[i];
+                generator.Emit(OpCodes.Ldarg_0);
+                generator.Emit(OpCodes.Ldfld, flddef_module);
+                generator.Emit(OpCodes.Dup);
+                generator.Emit(OpCodes.Ldc_I4, mask);
+                generator.Emit(OpCodes.Stfld, fld_mask);
+                generator.Emit(OpCodes.Ldc_I4, shift);
+                generator.Emit(OpCodes.Stfld, fld_shift);
             }
-            il.Append(ins_ret);
-            return true;
         }
 
-        public void InitModules(ModuleManipulator manipulator, Type targetType, Type baseType, params Type[] moduleTypes)
-        {
-            ModuleDefinition module = manipulator.module;
-            //Find ItemActionData subtype
-            MethodInfo mtdinf_create_data = null;
-            {
-                Type type_itemActionBase = targetType;
-                while (baseType.IsAssignableFrom(type_itemActionBase))
-                {
-                    mtdinf_create_data = type_itemActionBase.GetMethod(nameof(ItemAction.CreateModifierData), BindingFlags.Public | BindingFlags.Instance);
-                    if (mtdinf_create_data != null)
-                        break;
-                    mtdinf_create_data = mtdinf_create_data.GetBaseDefinition();
-                }
-            }
-
-            //ACTION MODULE DATA TYPES
-            var arr_type_data = moduleTypes.Select(m => m.GetCustomAttribute<TypeDataTargetAttribute>()?.DataType).ToArray();
-            //Create new ItemActionData
-            //Find CreateModifierData
-            MethodDefinition mtddef_create_data = module.ImportReference(mtdinf_create_data).Resolve();
-            //ItemActionData subtype is the return type of CreateModifierData
-            TypeReference typeref_actiondata = ((MethodReference)mtddef_create_data.Body.Instructions[mtddef_create_data.Body.Instructions.Count - 2].Operand).DeclaringType;
-            //Get type by assembly qualified name since it might be from mod assembly
-            Type type_itemActionData = Type.GetType(Assembly.CreateQualifiedName(typeref_actiondata.Module.Assembly.Name.Name, typeref_actiondata.FullName));
-            MethodReference mtdref_data_ctor;
-            if (ModuleManagers.PatchType(type_itemActionData, typeof(ItemActionData), arr_type_data.Where(static t => t != null).ToArray(), new ItemActionDataModuleProcessor(manipulator.typedef_newTarget, moduleTypes, manipulator.arr_flddef_modules, arr_type_data.Select(static t => t != null).ToArray(), out arr_flddef_data), out var str_data_type_name) && ModuleManagers.TryFindInCur(str_data_type_name, out typedef_newActionData))
-            {
-                module.Types.Remove(typedef_newActionData);
-                manipulator.typedef_newTarget.NestedTypes.Add(typedef_newActionData);
-                mtdref_data_ctor = typedef_newActionData.GetConstructors().FirstOrDefault();
-            }
-            else
-            {
-                mtdref_data_ctor = module.ImportReference(type_itemActionData.GetConstructor(new Type[] { typeof(ItemInventoryData), typeof(int) }));
-            }
-
-            //Create ItemAction.CreateModifierData override
-            MethodDefinition mtddef_create_modifier_data = new MethodDefinition(nameof(ItemAction.CreateModifierData), MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot, module.ImportReference(typeof(ItemActionData)));
-            mtddef_create_modifier_data.Parameters.Add(new ParameterDefinition("_invData", Mono.Cecil.ParameterAttributes.None, module.ImportReference(typeof(ItemInventoryData))));
-            mtddef_create_modifier_data.Parameters.Add(new ParameterDefinition("_indexInEntityOfAction", Mono.Cecil.ParameterAttributes.None, module.TypeSystem.Int32));
-            var il = mtddef_create_modifier_data.Body.GetILProcessor();
-            il.Emit(OpCodes.Ldarg_1);
-            il.Emit(OpCodes.Ldarg_2);
-            il.Emit(OpCodes.Newobj, mtdref_data_ctor);
-            il.Emit(OpCodes.Ret);
-            manipulator.typedef_newTarget.Methods.Add(mtddef_create_modifier_data);
-        }
-
-        public bool MatchSpecialArgs(ParameterDefinition par, MethodDefinition mtddef_target, MethodPatchInfo mtdpinf_derived, int moduleIndex, List<Instruction> list_inst_pars, ILProcessor il)
+        public bool MatchSpecialArgs(ModuleManipulator manipulator, ILGenerator generator, ParameterInfo par, MethodPatchInfo mtdpinf_derived, MethodOverrideInfo mtdoinf_target)
         {
             switch (par.Name)
             {
                 //load injected data instance
                 case "__customData":
-                    var flddef_data = arr_flddef_data[moduleIndex];
+                    var flddef_data = arr_flddef_data[mtdoinf_target.moduleIndex];
                     if (flddef_data == null)
-                        throw new ArgumentNullException($"No Injected ItemActionData in {mtddef_target.DeclaringType.FullName}! module index {moduleIndex}");
+                        throw new ArgumentNullException($"No Injected ItemActionData in {mtdoinf_target.mtdinf_target.DeclaringType.FullName}! module index {mtdoinf_target.moduleIndex}");
                     int index = -1;
-                    for (int j = 0; j < mtdpinf_derived.Method.Parameters.Count; j++)
+                    ParameterInfo[] paramInfo = mtdoinf_target.mtdinf_base.GetParameters();
+                    for (int i = 0; i < paramInfo.Length; i++)
                     {
-                        if (mtdpinf_derived.Method.Parameters[j].ParameterType.Name == "ItemActionData")
+                        if (typeof(ItemActionData).IsAssignableFrom(paramInfo[i].ParameterType))
                         {
-                            index = j;
+                            index = i + 1;
                             break;
                         }
                     }
                     if (index < 0)
-                        throw new ArgumentException($"ItemActionData is not present in target method! Patch method: {mtddef_target.DeclaringType.FullName}.{mtddef_target.Name}");
-                    list_inst_pars.Add(MonoCecilExtensions.LoadArgAtIndex(index, false, false, mtdpinf_derived.Method.Parameters, il));
-                    //list_inst_pars.Add(il.Create(OpCodes.Ldarg_S, mtdpinf_derived.Method.Parameters[index]));
-                    list_inst_pars.Add(il.Create(OpCodes.Castclass, typedef_newActionData));
-                    list_inst_pars.Add(il.Create(par.ParameterType.IsByReference ? OpCodes.Ldflda : OpCodes.Ldfld, flddef_data));
+                        throw new ArgumentException($"ItemActionData is not present in target method! Patch method: {mtdoinf_target.mtdinf_target.DeclaringType.FullName}.{mtdoinf_target.mtdinf_target.Name}");
+                    generator.LoadArg(index);
+                    generator.Emit(OpCodes.Castclass, typebd_newActionData);
+                    generator.Emit(par.ParameterType.IsByRef ? OpCodes.Ldflda : OpCodes.Ldfld, flddef_data);
                     return true;
             }
+            return false;
+        }
+
+        public bool MatchConstructorArgs(ModuleManipulator manipulator, ILGenerator generator, ParameterInfo par, ParameterBuilder[] paramInfo, Type[] paramTypes, ConstructorInfo ctorinf_target, int moduleIndex)
+        {
+            return false;
+        }
+
+        public bool DefineConstructorArgs(ModuleManipulator manipulator, ConstructorBuilder ctorbd, out ParameterBuilder[] pbs)
+        {
+            pbs = null;
             return false;
         }
     }

@@ -22,6 +22,12 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     }
     protected static readonly string[] ParentNames = { "Spine3", "LeftHand", "RightHand" };
     public static string GetParentName(ParentName name) => ParentNames[(int)name];
+    [Header("Attach Transform To")]
+    public Transform[] fpvAttachLeftHandTrans;
+    public Transform[] fpvAttachRightHandTrans;
+    public Transform[] tpvAttachLeftHandTrans;
+    public Transform[] tpvAttachRightHandTrans;
+
     [Header("TPV Fields")]
     [SerializeField]
     public Transform itemTpv;
@@ -273,13 +279,83 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
             Destroy();
             return;
         }
-        if (IsFpv && ItemFpv && !fpvSet)
+        if (IsFpv)
         {
-            fpvSet = SetupFpv();
+            if (ItemFpv && !fpvSet)
+            {
+                fpvSet = SetupFpv();
+            }
         }
-        else if (!IsFpv && ItemTpv && !tpvSet)
+        else
         {
-            tpvSet = SetupTpv();
+            if (ItemTpv && !tpvSet)
+            {
+                tpvSet = SetupTpv();
+            }
+        }
+    }
+
+    public void MoveAttachTrans(bool isFpv)
+    {
+        if (isFpv)
+        {
+            MoveAttachTrans("LeftHand", fpvAttachLeftHandTrans);
+            MoveAttachTrans("RightHand", fpvAttachRightHandTrans);
+        }
+        else
+        {
+            MoveAttachTrans("LeftHand", tpvAttachLeftHandTrans);
+            MoveAttachTrans("RightHand", tpvAttachRightHandTrans);
+        }
+    }
+
+    public void RemoveAttachTrans(bool isFpv)
+    {
+        if (isFpv)
+        {
+            RemoveAttachTrans(fpvAttachLeftHandTrans);
+            RemoveAttachTrans(fpvAttachRightHandTrans);
+        }
+        else
+        {
+            RemoveAttachTrans(tpvAttachLeftHandTrans);
+            RemoveAttachTrans(tpvAttachRightHandTrans);
+        }
+    }
+
+    private void MoveAttachTrans(string attachTo, Transform[] attachTrans)
+    {
+        if (attachTrans != null && attachTrans.Length > 0 && !string.IsNullOrEmpty(attachTo))
+        {
+            var AttachToTrans = PlayerAnimatorTrans.FindInAllChildren(attachTo);
+            //Log.Out($"move attach trans to {attachTo} AttachToTrans is null {attachTrans == null} isfpv {IsFpv} player animator trans {PlayerAnimatorTrans.name}");
+            if (AttachToTrans != null)
+            {
+                foreach (var trans in attachTrans)
+                {
+                    trans.SetParent(AttachToTrans, false);
+                    trans.localPosition = Vector3.zero;
+                    trans.localRotation = Quaternion.identity;
+                    trans.localScale = Vector3.one;
+                    trans.gameObject.SetActive(true);
+                }
+            }
+        }
+    }
+
+    private void RemoveAttachTrans(Transform[] attachTrans)
+    {
+        if (attachTrans != null && attachTrans.Length > 0)
+        {
+            //Log.Out($"remove attach trans isfpv {IsFpv} player animator trans {PlayerAnimatorTrans.name}\n{StackTraceUtility.ExtractStackTrace()}");
+            foreach (var trans in attachTrans)
+            {
+                trans.SetParent(transform);
+                trans.localPosition = Vector3.zero;
+                trans.localRotation = Quaternion.identity;
+                trans.localScale = Vector3.one;
+                trans.gameObject.SetActive(false);
+            }
         }
     }
 
@@ -331,14 +407,20 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
             Destroy();
             return;
         }
-        if (IsFpv && ItemFpv && fpvSet)
+        if (IsFpv)
         {
-            RemoveFpv();
+            if (ItemFpv && fpvSet)
+            {
+                RemoveFpv();
+            }
             fpvSet = false;
         }
-        else if (!IsFpv && ItemTpv && tpvSet)
+        else
         {
-            RemoveTpv();
+            if (ItemTpv && tpvSet)
+            {
+                RemoveTpv();
+            }
             tpvSet = false;
         }
     }
@@ -383,7 +465,6 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
 
     public virtual void Destroy()
     {
-
         if (AttachmentRef)
         {
             AttachmentRef.parent = transform;
@@ -394,6 +475,10 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
         {
             GraphBuilder.SetCurrentTarget(null);
         }
+        RemoveAttachTrans(fpvAttachLeftHandTrans);
+        RemoveAttachTrans(fpvAttachRightHandTrans);
+        RemoveAttachTrans(tpvAttachLeftHandTrans);
+        RemoveAttachTrans(tpvAttachRightHandTrans);
         DestroyFpv();
         DestroyTpv();
 #if NotEditor

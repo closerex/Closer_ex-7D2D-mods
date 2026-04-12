@@ -95,7 +95,6 @@ namespace KFCommonUtilityLib
                 collection.ConvertXmlData();
             }
         }
-#endif
 
         public void ConvertXmlData()
         {
@@ -133,7 +132,7 @@ namespace KFCommonUtilityLib
 
                 if (audio.audioSource)
                 {
-                    string audioSourcePath = $"#@modfolder:{BundlePath}?{audio.audioSource.name}";
+                    string audioSourcePath = $"#@modfolder:{BundlePath}?{Path.GetFileName(AssetDatabase.GetAssetPath(audio.audioSource))}";
                     XmlElement audioSource = xmlDoc.CreateElement("AudioSource");
                     audioSource.Attributes.Append(xmlDoc.CreateAttribute("name")).Value = audioSourcePath;
                     soundDataNode.AppendChild(audioSource);
@@ -141,7 +140,7 @@ namespace KFCommonUtilityLib
 
                 if (audio.networkAudioSource)
                 {
-                    string audioSourcePath = $"#@modfolder:{BundlePath}?{audio.networkAudioSource.name}";
+                    string audioSourcePath = $"#@modfolder:{BundlePath}?{Path.GetFileName(AssetDatabase.GetAssetPath(audio.networkAudioSource))}";
                     XmlElement audioSource = xmlDoc.CreateElement("NetworkAudioSource");
                     audioSource.Attributes.Append(xmlDoc.CreateAttribute("name")).Value = audioSourcePath;
                     soundDataNode.AppendChild(audioSource);
@@ -163,7 +162,7 @@ namespace KFCommonUtilityLib
                         if (clip)
                         {
                             XmlElement clipData = xmlDoc.CreateElement("AudioClip");
-                            clipData.Attributes.Append(xmlDoc.CreateAttribute("ClipName")).Value = $"#@modfolder:{BundlePath}?{clip.name}";
+                            clipData.Attributes.Append(xmlDoc.CreateAttribute("ClipName")).Value = $"#@modfolder:{BundlePath}?{Path.GetFileName(AssetDatabase.GetAssetPath(clip))}";
                             soundDataNode.AppendChild(clipData);
                         }
                     }
@@ -242,5 +241,6 @@ namespace KFCommonUtilityLib
                 GUIUtility.systemCopyBuffer = sw.ToString();
             }
         }
+#endif
     }
 }

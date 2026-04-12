@@ -13,7 +13,6 @@ namespace KFCommonUtilityLib.KFAttached.Render
     public class MagnifyScope : MonoBehaviour
     {
 #if NotEditor
-        internal static Shader newShader;
         internal static FieldInfo fieldResources = AccessTools.Field(typeof(PostProcessLayer), "m_Resources");
 #endif
         internal RenderTexture targetTexture;
@@ -78,18 +77,14 @@ namespace KFCommonUtilityLib.KFAttached.Render
             }
 #if NotEditor
 
-            if (newShader == null)
-            {
-                newShader = LoadManager.LoadAsset<Shader>("#@modfolder(CommonUtilityLib):Resources/PIPScope.unity3d?PIPScopeAimBlend.shadergraph", null, null, false, true).Asset;
-            }
             Material material = renderTarget.material;
             string curShaderName = material.shader.name;
             if (curShaderName == "Shader Graphs/MagnifyScope" || curShaderName == "Shader Graphs/PIPScopeNew" || curShaderName == "Shader Graphs/PIPScope")
             {
-                material.shader = newShader;
-                curShaderName = newShader.name;
+                material.shader = SharedAssets.MagnifyScopeShader;
+                curShaderName = SharedAssets.MagnifyScopeShader.name;
             }
-            if (curShaderName == newShader.name && !TryGetComponent<AimingMaterialBlender>(out _))
+            if (curShaderName == SharedAssets.MagnifyScopeShader.name && !TryGetComponent<AimingMaterialBlender>(out _))
             {
                 if (aimRef && aimRef.TryGetComponent<AimReference>(out var aimRefComp))
                 {
@@ -400,6 +395,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
 //#else
 //            pipCamera.CopyFrom(debugCamera);
 #endif
+            pipCamera.depthTextureMode = DepthTextureMode.Depth | DepthTextureMode.DepthNormals | DepthTextureMode.MotionVectors;
             pipCamera.targetTexture = targetTexture;
             pipCamera.depth = -2;
             pipCamera.fieldOfView = 55;
