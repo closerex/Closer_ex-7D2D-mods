@@ -109,4 +109,19 @@
 			</effect_group>
 		</item_modifier>
     </append>
+
+	<append xpath="/item_modifiers/item_modifier[@name='modGunLaserSight']">
+		<item_property_overrides name="gunMedicPistol">
+			<property name="CrosshairOnAim" value="false"/>
+		</item_property_overrides>
+		<item_property_overrides name="gunMedicSMG201">
+			<property name="CrosshairOnAim" value="false"/>
+		</item_property_overrides>
+		<item_property_overrides name="gunMedicShotgun301">
+			<property name="CrosshairOnAim" value="false"/>
+		</item_property_overrides>
+		<item_property_overrides name="gunMedicAssaultRifle401">
+			<property name="CrosshairOnAim" value="false"/>
+		</item_property_overrides>
+	</append>
 </configs>

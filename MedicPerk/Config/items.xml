@@ -9,6 +9,11 @@
 			<property name="BoundItemName" value="meleeWpnStockBashMedicPistol101"/>
 			<property name="HoldType" value="1"/>
 			<property name="Meshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_pistol.prefab"/>
+			<conditional>
+				<if cond="modsetting('MedicPerk', 'Global', 'ModeSetting.Main.UseOldMat') == 'Yes'">
+            		<property name="KFMaterialReplacer" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_pistol_old"/>
+				</if>
+			</conditional>
 			<property name="Material" value="MHandGunParts"/>
 			<property name="Weight" value="1"/>
 			<property name="RepairTools" value="resourceMedicGunRepairKit"/>
@@ -49,9 +54,9 @@
 				<property name="Sound_empty" value="kf_ak12_DryFire"/>
 				<property name="Sound_reload" value=""/>
 				<property name="AutoReload" value="false"/>
-				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_flash.prefab"/>
-				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_flash_fpv.prefab"/>
-				<property name="Particles_muzzle_smoke" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_smoke.prefab"/>
+				<property name="Particles_muzzle_fire" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_flash.prefab"/>
+				<property name="Particles_muzzle_fire_fpv" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_smoke" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_smoke.prefab"/>
 				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
 					<property name="triggerEffectTriggerPullDualsense" value="PistolTrigger"/>
 					<property name="triggerEffectTriggerPullXbox" value="PistolTrigger"/>
@@ -211,7 +216,11 @@
 			<property name="BoundItemName" value="meleeWpnStockBashMedicSMG201"/>
 			<property name="HoldType" value="6"/>
 			<property name="Meshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_smg.prefab"/>
-			<property name="DropMeshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_smg.prefab"/>
+			<conditional>
+				<if cond="modsetting('MedicPerk', 'Global', 'ModeSetting.Main.UseOldMat') == 'Yes'">
+            		<property name="KFMaterialReplacer" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_smg_old"/>
+				</if>
+			</conditional>
 			<property name="Material" value="MHandGunParts"/>
 			<property name="Weight" value="4"/>
 			<property name="RepairTools" value="resourceMedicGunRepairKit"/>
@@ -267,9 +276,9 @@
 				<property name="FireMode2.IsFullAuto" value="false"/>
 				<property name="FireMode2.ModeName" value="ttFiringModeBurst3"/>
 				<property name="FireModeSwitchingSound" value="kf_ui_mode_switch"/>
-				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_flash.prefab"/>
-				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_flash_fpv.prefab"/>
-				<property name="Particles_muzzle_smoke" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_smoke.prefab"/>
+				<property name="Particles_muzzle_fire" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_flash.prefab"/>
+				<property name="Particles_muzzle_fire_fpv" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_smoke" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_smoke.prefab"/>
 				<property name="ScopeOffset" value="0,0,0"/>
 				<property name="SideOffset" value="0,0,0"/>
 				<property name="BarrelOffset" value="0,0,0"/>
@@ -435,6 +444,11 @@
 			<property name="CustomIcon" value="medic_sg301"/>
 			<property name="HoldType" value="71"/>
 			<property name="Meshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_shotgun.prefab"/>
+			<conditional>
+				<if cond="modsetting('MedicPerk', 'Global', 'ModeSetting.Main.UseOldMat') == 'Yes'">
+            		<property name="KFMaterialReplacer" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_shotgun_old"/>
+				</if>
+			</conditional>
 			<property name="Material" value="MShotgunParts"/>
 			<property name="Weight" value="1"/>
 			<property name="RepairTools" value="resourceMedicGunRepairKit"/>
@@ -478,9 +492,9 @@
 				<property name="Sound_end" value=""/>
 				<property name="Sound_empty" value="kf_ak12_DryFire"/>
 				<property name="AutoReload" value="false"/>
-				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_shotgun_muzzle_flash.prefab"/>
-				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_shotgun_muzzle_flash_fpv.prefab"/>
-				<property name="Particles_muzzle_smoke" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_shotgun_muzzle_smoke.prefab"/>
+				<property name="Particles_muzzle_fire" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?medic_shotgun_muzzle_flash.prefab"/>
+				<property name="Particles_muzzle_fire_fpv" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?medic_shotgun_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_smoke" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?medic_shotgun_muzzle_smoke.prefab"/>
 				<property name="SideOffset" value="0,0,0"/>
 				<property name="BarrelOffset" value="0,0,0"/>
 				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
@@ -640,6 +654,11 @@
 			<property name="BoundItemName" value="meleeWpnStockBashMedicAR401"/>
 			<property name="HoldType" value="71"/>
 			<property name="Meshfile" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_ar.prefab"/>
+			<conditional>
+				<if cond="modsetting('MedicPerk', 'Global', 'ModeSetting.Main.UseOldMat') == 'Yes'">
+            		<property name="KFMaterialReplacer" value="#@modfolder:Resources/MedicWeapons.unity3d?medic_ar_old"/>
+				</if>
+			</conditional>
 			<property name="Material" value="MMachineGunParts"/>
 			<property name="Weight" value="1"/>
 			<property name="CrosshairOnAim" value="false"/> <!-- aimTest -->
@@ -685,9 +704,9 @@
 				<property name="FireMode2.IsFullAuto" value="false"/>
 				<property name="FireMode2.ModeName" value="ttFiringModeBurst3"/>
 				<property name="FireModeSwitchingSound" value="kf_ui_mode_switch"/>
-				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_ar_muzzle_flash.prefab"/>
-				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_ar_muzzle_flash_fpv.prefab"/>
-				<property name="Particles_muzzle_smoke" value="#@modfolder:Resources/MuzzleFlashes.unity3d?medic_ar_muzzle_smoke.prefab"/>
+				<property name="Particles_muzzle_fire" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?medic_ar_muzzle_flash.prefab"/>
+				<property name="Particles_muzzle_fire_fpv" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?medic_ar_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_smoke" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?medic_ar_muzzle_smoke.prefab"/>
 				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
 						<property name="triggerEffectTriggerPullDualsense" value="RifleTrigger"/>
 						<property name="triggerEffectTriggerPullXbox" value="PistolTrigger"/>

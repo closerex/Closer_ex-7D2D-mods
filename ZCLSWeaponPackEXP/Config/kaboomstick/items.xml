@@ -155,9 +155,9 @@
 				<property name="Sound_empty" value="kf_doublebarrel_DryFire"/>
 				<property name="RapidTrigger" value="true"/>
 				<property name="AutoReload" value="false"/>
-				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?kaboomstick_muzzle_flash.prefab"/>
-				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?kaboomstick_muzzle_flash_fpv.prefab"/>
-				<property name="Particles_muzzle_smoke" value="#@modfolder:Resources/MuzzleFlashes.unity3d?kaboomstick_muzzle_smoke.prefab"/>
+				<property name="Particles_muzzle_fire" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?kaboomstick_muzzle_flash.prefab"/>
+				<property name="Particles_muzzle_fire_fpv" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?kaboomstick_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_smoke" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?kaboomstick_muzzle_smoke.prefab"/>
 				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
 			</property>
 			<property class="Action1">

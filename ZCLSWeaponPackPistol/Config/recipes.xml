@@ -18,6 +18,23 @@
     </append>
 
     <conditional>
+        <if cond="!mod_loaded('CLSWeaponPackEXP')">
+            <recipe name="modDualGunLaserSight" count="1">
+                <ingredient name="modGunLaserSight" count="2"/>
+            </recipe>
+            <recipe name="modGunLaserSight" count="2">
+                <ingredient name="modDualGunLaserSight" count="1"/>
+            </recipe>
+            <recipe name="modDualGunFlashlight" count="1">
+                <ingredient name="modGunFlashlight" count="2"/>
+            </recipe>
+            <recipe name="modGunFlashlight" count="2">
+                <ingredient name="modDualGunFlashlight" count="1"/>
+            </recipe>
+        </if>
+    </conditional>
+
+    <conditional>
         <if cond="mod_loaded('EFT_Overhaul')">
             <append xpath="/recipes">
                 <recipe name="schematicsKF29mm" count="1">

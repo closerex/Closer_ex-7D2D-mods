@@ -6,6 +6,16 @@
 			<property name="Sound_end" value=""/>
 		</item_property_overrides>
 	</append>
+	
+	<append xpath="/item_modifiers/item_modifier[@name='modGunLaserSight']">
+		<item_property_overrides name="gunKFSPX464">
+			<property name="CrosshairOnAim" value="false"/>
+		</item_property_overrides>
+		<item_property_overrides name="gunKFM14EBR">
+			<property name="CrosshairOnAim" value="false"/>
+		</item_property_overrides>
+	</append>
+	
 	<!-- Reflex -->
 	<append xpath="/item_modifiers/item_modifier[@name='modGunReflexSight']">
 		<item_property_overrides name="gunKFM99">
@@ -97,6 +107,13 @@
 			<property name="ForceFovRange" value="3.375,3.375"/>
 			<property name="CrosshairOnAim" value="false"/>
 			<property name="Zoom_overlay" value=""/>
+		</item_property_overrides>
+	</append>
+	<append xpath="/item_modifiers/item_modifier[@name='modDyeBlack']">
+		<item_property_overrides name="gunKFM14EBR">
+			<property name="KFMaterialReplacer" value="#@modfolder:Resources/M14EBR.unity3d?m14ebr_black_ver"/>
+			<property name="TintColor" value="255,255,255"/>
+			<property name="CustomIconTint" value="47,47,47"/>
 		</item_property_overrides>
 	</append>
 </configs>

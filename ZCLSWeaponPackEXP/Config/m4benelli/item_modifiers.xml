@@ -1,4 +1,10 @@
 <configs>
+	<append xpath="/item_modifiers/item_modifier[@name='modGunLaserSight']">
+		<item_property_overrides name="gunT3M4Benelli">
+			<property name="CrosshairOnAim" value="false"/>
+		</item_property_overrides>
+	</append>
+	
 	<!-- Reflex -->
 	<append xpath="/item_modifiers/item_modifier[@name='modGunReflexSight']">
 		<item_property_overrides name="gunT3M4Benelli">

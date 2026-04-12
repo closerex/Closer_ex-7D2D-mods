@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModSettings>
+  <Global>
+    <Tab name="ModeSetting" displayKey="KFSniperModSettingsMainKey" tooltipKey="">
+      <Category name="Main" displayKey="" tooltipKey="">
+        <Switch name="UseAltReticle" displayKey="KFSniperModUseAltReticleKey" tooltipKey="KFSniperModUseAltReticleDesc" defaultValue="No" leftValue="No" rightValue="Yes" />
+      </Category>
+    </Tab>
+  </Global>
+  <World />
+</ModSettings>

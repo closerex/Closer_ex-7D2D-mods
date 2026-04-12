@@ -154,10 +154,10 @@
 				<property name="Sound_end" value=""/>
 				<property name="Sound_empty" value="kf_hz12_DryFire"/>
 				<property name="AutoReload" value="false"/>
-				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?hz12_muzzle_flash.prefab"/>
-				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?hz12_muzzle_flash_fpv.prefab"/>
-				<property name="Particles_muzzle_smoke" value="#@modfolder:Resources/MuzzleFlashes.unity3d?hz12_muzzle_smoke.prefab"/>
-				<property name="Particles_shell" value="#@modfolder:Resources/MuzzleFlashes.unity3d?hz12_shell.prefab"/>
+				<property name="Particles_muzzle_fire" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?hz12_muzzle_flash.prefab"/>
+				<property name="Particles_muzzle_fire_fpv" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?hz12_muzzle_flash_fpv.prefab"/>
+				<property name="Particles_muzzle_smoke" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?hz12_muzzle_smoke.prefab"/>
+				<property name="Particles_shell" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?hz12_shell.prefab"/>
 				<property name="ScopeOffset" value="0,0,0"/>
 				<property name="SideOffset" value="0,0,0"/>
 				<property name="BarrelOffset" value="0,0,0"/>

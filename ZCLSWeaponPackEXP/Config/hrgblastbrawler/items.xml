@@ -196,8 +196,8 @@
 				<property name="Sound_end" value=""/>
 				<property name="Sound_empty" value="dryfire"/>
 				<property name="AutoReload" value="false"/>
-				<property name="Particles_muzzle_fire" value="#@modfolder:Resources/MuzzleFlashes.unity3d?hrg_blastbrawler_muzzleflash.prefab"/>
-				<property name="Particles_muzzle_fire_fpv" value="#@modfolder:Resources/MuzzleFlashes.unity3d?hrg_blastbrawler_muzzleflash_fpv.prefab"/>
+				<property name="Particles_muzzle_fire" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?hrg_blastbrawler_muzzleflash.prefab"/>
+				<property name="Particles_muzzle_fire_fpv" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?hrg_blastbrawler_muzzleflash_fpv.prefab"/>
 				<property name="ScopeOffset" value="0,0,0"/>
 				<property name="SideOffset" value="0,0,0"/>
 				<property name="BarrelOffset" value="0,0,0"/>
@@ -288,15 +288,6 @@
                 <passive_effect name="DamageModifier" operation="perc_add" value="-.5" tags="metal,perkBrawler" match_all_tags="true"/>
                 <passive_effect name="DamageModifier" operation="perc_add" value="1.7" tags="organic,perkBrawler" match_all_tags="true"/>
             </effect_group>
-            <effect_group name="tpv mesh">
-                <requirement name="!IsFPV"/>
-                    <triggered_effect trigger="onSelfEquipStart" action="AddPart" part="LeftHRGBlastBrawler" prefab="#@modfolder:Resources/HRGBlastBrawler.unity3d?hrg_blastbrawler_l_3p_m.prefab" parentTransform="LeftHand" localPos="0,0,0" localRot="0,0,0" colorTint="true"/>
-                    <triggered_effect trigger="onSelfEquipStart" action="AddPart" part="RightHRGBlastBrawler" prefab="#@modfolder:Resources/HRGBlastBrawler.unity3d?hrg_blastbrawler_r_3p_m.prefab" parentTransform="RightHand" localPos="0,0,0" localRot="0,0,0" colorTint="true"/>
-            </effect_group>
-			<effect_group name="tpv mesh remove">
-				<triggered_effect trigger="onSelfEquipStop" action="RemovePart" part="RightHRGBlastBrawler"/>
-				<triggered_effect trigger="onSelfEquipStop" action="RemovePart" part="LeftHRGBlastBrawler"/>
-			</effect_group>
 			<effect_group name="Radiated dismember resistance">
 				<passive_effect name="DismemberChance" operation="perc_add" value="-.2" tags="head,secondary" match_all_tags="true">
 					<requirement name="EntityTagCompare" target="other" tags="feral"/>
