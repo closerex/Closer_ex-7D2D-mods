@@ -70,7 +70,7 @@ namespace KFCommonUtilityLib
                 return;
             }
             var data = aimRef.group.data;
-            if (data != null && aimRef.index > 0)
+            if (data != null && aimRef.index >= 0)
             {
                 Value = data.CurAimProcValue * data.targetSwitchBlender.GetTargetWeight(aimRef.index);
             }

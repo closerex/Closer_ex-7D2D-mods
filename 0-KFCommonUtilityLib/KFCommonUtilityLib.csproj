@@ -786,7 +786,6 @@
     <Compile Include="Scripts\Utilities\VoxelCaster.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ILVerification.dll" />
     <Content Include="ModSettings.xml" />
   </ItemGroup>
   <ItemGroup>
