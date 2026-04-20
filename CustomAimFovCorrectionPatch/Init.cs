@@ -1,10 +1,10 @@
-﻿using CustomFPVFov;
-using HarmonyLib;
-using KFCommonUtilityLib;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
+using CustomFPVFov;
+using HarmonyLib;
+using KFCommonUtilityLib;
 using UniLinq;
 using UnityEngine;
 
@@ -59,7 +59,7 @@ namespace CustomAimFovCorrectionPatch
                     if (defaultReference && defaultReference.designedAimFov > 0 && curAimRef.designedAimFov > 0 && curAimRef.designedAimDistance > 0 && (defaultReference.designedAimFov != curAimRef.designedAimFov || defaultReference.designedAimDistance != curAimRef.designedAimDistance))
                     {
                         __instance.targetAimRefOffset = defaultReference.designedAimDistance - curAimRef.designedAimDistance;
-                        __instance.targetPosOffset -= __instance.targetAimRefOffset * (__instance.targetRotOffset * Vector3.forward);
+                        __instance.targetPosOffset -= __instance.targetAimRefOffset * (__instance.targetRotOffset * Vector3.forward).normalized;
                         __instance.targetAimFov = AimFovCorrection(defaultReference.designedAimDistance, curAimRef.designedAimDistance, curAimRef.designedAimFov);
                     }
                 }
@@ -68,7 +68,7 @@ namespace CustomAimFovCorrectionPatch
 
         public static float AimFovCorrection(float weaponDistance, float scopeDistance, float scopeFov)
         {
-            if (weaponDistance == scopeDistance)
+            if (Mathf.Approximately(weaponDistance, scopeDistance))
             {
                 return scopeFov;
             }
@@ -179,7 +179,7 @@ namespace CustomAimFovCorrectionPatch
                     //Log.Out("1");
                     i += 24;
                 }
-                else if (codes[i].opcode == OpCodes.Stloc_S && codes[i].operand is LocalBuilder lbd1 && lbd1.LocalIndex == 4)
+                else if (codes[i].opcode == OpCodes.Stloc_S && codes[i].operand is LocalBuilder { LocalIndex: 4 })
                 {
                     var lbl = generator.DefineLabel();
                     codes[i + 1].WithLabels(lbl);
@@ -196,7 +196,7 @@ namespace CustomAimFovCorrectionPatch
                     //Log.Out("2");
                     i += 8;
                 }
-                else if (codes[i].opcode == OpCodes.Ldloc_S && codes[i].operand is LocalBuilder lbd2 && lbd2.LocalIndex == 4)
+                else if (codes[i].opcode == OpCodes.Ldloc_S && codes[i].operand is LocalBuilder { LocalIndex: 4 })
                 {
                     var lbl_load_prev = generator.DefineLabel();
                     var lbl_loaded = generator.DefineLabel();

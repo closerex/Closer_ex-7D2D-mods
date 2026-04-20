@@ -1,9 +1,8 @@
-﻿using GearsAPI.Settings.Global;
+﻿using System;
+using GearsAPI.Settings.Global;
 using HarmonyLib;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Attributes;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
@@ -42,13 +41,33 @@ public class AimRefData : IBlendSource
             targetAimFov = aimRef.designedAimFov;
             if (aimRef.asReference)
             {
-                Vector3 byReferenceOffset = Vector3.Project(targetPosOffset - aimingData.scopeBasePosTransform.InverseTransformPoint(aimingData.playerCameraPosRef.position), targetRotOffset * Vector3.forward);
-                if (aimRef.scopeBase?.defaultReference)
+                var forward = (targetRotOffset * Vector3.forward).normalized;
+                Vector3 byReferenceOffset = Vector3.Project(targetPosOffset - aimingData.scopeBasePosTransform.InverseTransformPoint(aimingData.playerCameraPosRef.position), forward);
+                var aimRefDefault = aimRef.scopeBase?.defaultReference;
+                if (aimRefDefault)
                 {
-                    byReferenceOffset -= Vector3.Project(aimRef.scopeBase.defaultReference.positionOffset - aimingData.scopeBasePosTransform.InverseTransformPoint(aimingData.playerCameraPosRef.position), targetRotOffset * Vector3.forward);
+                    byReferenceOffset -= Vector3.Project(aimRefDefault.positionOffset - aimingData.scopeBasePosTransform.InverseTransformPoint(aimingData.playerCameraPosRef.position), forward);
                 }
-                targetPosOffset -= byReferenceOffset;
-                targetAimRefOffset = byReferenceOffset.magnitude;
+
+                var aimDistanceCorrection = 0f;
+                if (aimRefDefault && aimRefDefault.designedAimDistance > 0)
+                {
+                    aimDistanceCorrection = aimRefDefault.designedAimDistance - aimRef.designedAimDistance;
+                }
+
+                var correctionOffset = byReferenceOffset.magnitude;
+                if (Vector3.Dot(byReferenceOffset, forward) > 0 && correctionOffset > aimDistanceCorrection)
+                {
+                    targetPosOffset -= byReferenceOffset;
+                    targetAimRefOffset = correctionOffset;
+                    // Log.Out($"aimref by reference correction applied: original offset {aimRef.positionOffset} corrected offset {targetPosOffset} target correction {correctionOffset} distance diff {aimDistanceCorrection} real diff {targetAimRefOffset}");
+                }
+                else if (aimDistanceCorrection > 0)
+                {
+                    targetPosOffset -= forward * aimDistanceCorrection;
+                    targetAimRefOffset = aimDistanceCorrection;
+                    // Log.Out($"aimref by reference correction not applied: original offset {aimRef.positionOffset} corrected offset {targetPosOffset} target correction {correctionOffset} distance diff {aimDistanceCorrection} real diff {targetAimRefOffset}");
+                }
             }
             UpdateAimFovOverride();
         }
