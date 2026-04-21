@@ -7,6 +7,7 @@ namespace KFCommonUtilityLib
     {
         public AimReference aimRef;
         public string materialPropertyName = "_MatBlendingScalar";
+        public string depthPropertyName = "";
         public bool isColorAlpha = false;
         [Range(0, 1)]
         public float minThres = 0f;
@@ -14,7 +15,9 @@ namespace KFCommonUtilityLib
         public float opaqueThres = 0.1f;
 #if NotEditor
         private Material material;
+        private int materialPropertyID = -1;
         private float recordedValue = -1f;
+        private float originalDepth = -1f;
         private float Value
         {
             set
@@ -23,9 +26,9 @@ namespace KFCommonUtilityLib
                 {
                     if (isColorAlpha)
                     {
-                        var color = material.GetColor(materialPropertyName);
+                        var color = material.GetColor(materialPropertyID);
                         color.a = Mathf.Lerp(1, minThres, value);
-                        material.SetColor(materialPropertyName, color);
+                        material.SetColor(materialPropertyID, color);
                         if (value <= opaqueThres)
                         {
                             material.renderQueue = 2000;
@@ -37,11 +40,16 @@ namespace KFCommonUtilityLib
                     }
                     else
                     {
-                        material.SetFloat(materialPropertyName, Mathf.Lerp(minThres, 1, value));
+                        material.SetFloat(materialPropertyID, Mathf.Lerp(minThres, 1, value));
                     }
                 }
                 recordedValue = value;
             }
+        }
+
+        public void Awake()
+        {
+            materialPropertyID = Shader.PropertyToID(materialPropertyName);
         }
 
         public void OnEnable()
@@ -58,6 +66,18 @@ namespace KFCommonUtilityLib
             }
         }
 
+        public void OnDisable()
+        {
+            if (material)
+            {
+                if (!string.IsNullOrEmpty(depthPropertyName) && originalDepth >= 0 && material.HasProperty(depthPropertyName))
+                {
+                    material.SetFloat(depthPropertyName, originalDepth);
+                }
+                originalDepth = -1;
+            }
+        }
+
         public void LateUpdate()
         {
             if (!aimRef || !aimRef.group)
@@ -69,10 +89,16 @@ namespace KFCommonUtilityLib
             if (data != null && aimRef.index >= 0)
             {
                 Value = data.CurAimProcValue * data.targetSwitchBlender.GetTargetWeight(aimRef.index);
+                if (aimRef.designedAimDistance > 0 && !string.IsNullOrEmpty(depthPropertyName) && originalDepth < 0 && material.HasProperty(depthPropertyName))
+                {
+                    originalDepth = material.GetFloat(depthPropertyName);
+                    material.SetFloat(depthPropertyName, originalDepth * (data.targetSwitchBlender[aimRef.index].targetAimRefOffset + aimRef.designedAimDistance) / aimRef.designedAimDistance);
+                }
             }
             else
             {
                 Value = 0f;
+                originalDepth = -1;
             }
         }
 #endif
