@@ -22,7 +22,7 @@ namespace KFCommonUtilityLib
         {
             set
             {
-                if (recordedValue != value)
+                if (recordedValue != value && material.HasProperty(materialPropertyID))
                 {
                     if (isColorAlpha)
                     {
