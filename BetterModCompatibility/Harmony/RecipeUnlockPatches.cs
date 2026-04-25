@@ -1,8 +1,8 @@
-﻿using Challenges;
-using HarmonyLib;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
+using Challenges;
+using HarmonyLib;
 using UniLinq;
 
 namespace BetterModCompatibility.Harmony
@@ -124,7 +124,7 @@ namespace BetterModCompatibility.Harmony
 
             var fld_co = AccessTools.Field(typeof(WorldStaticData), nameof(WorldStaticData.receivedConfigsHandlerCoroutine));
 
-            for (int i = codes.Count; i < 0; i--)
+            for (int i = codes.Count - 1; i >= 0; i--)
             {
                 if (codes[i].StoresField(fld_co))
                 {
