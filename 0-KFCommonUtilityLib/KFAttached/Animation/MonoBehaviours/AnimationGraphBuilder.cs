@@ -325,7 +325,14 @@ public class AnimationGraphBuilder : MonoBehaviour
             VanillaWrapper = new AnimatorWrapper(animator);
             if (nextTargetValid)
             {
-                WeaponWrapper = new AnimatorWrapper(target.ItemAnimator);
+                if (target.ItemAnimator.TryGetComponent(out ItemAnimatorUpdate updater))
+                {
+                    WeaponWrapper = new PlayableWrapper(updater.AnimatorControllerPlayable);
+                }
+                else
+                {
+                    WeaponWrapper = new AnimatorWrapper(target.ItemAnimator);
+                }
             }
             else
             {

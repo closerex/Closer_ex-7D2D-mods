@@ -33,7 +33,7 @@ public class MultiAimConstraintAdaptor : RigAdaptorAbs
         constraint.Reset();
         constraint.weight = weight;
         constraint.data.constrainedObject = targetRoot.FindInAllChildren(m_ConstrainedObject);
-        constraint.data.sourceObjects = m_SourceObjects;
+        constraint.data.sourceObjects = ReplaceWeaponTarget(ref m_SourceObjects);
         constraint.data.offset = m_Offset;
         constraint.data.limits = m_limits;
         constraint.data.aimAxis = m_AimAxis;

@@ -32,8 +32,8 @@ public class TwoBoneIKConstraintAdaptor : RigAdaptorAbs
         constraint.data.root = targetRoot.FindInAllChildren(m_Root);
         constraint.data.mid = targetRoot.FindInAllChildren(m_Mid);
         constraint.data.tip = targetRoot.FindInAllChildren(m_Tip);
-        constraint.data.target = m_Target;
-        constraint.data.hint = m_Hint;
+        constraint.data.target = ReplaceWeaponTarget(ref m_Target);
+        constraint.data.hint = ReplaceWeaponTarget(ref m_Hint);
         constraint.data.targetPositionWeight = m_TargetPositionWeight;
         constraint.data.targetRotationWeight = m_TargetRotationWeight;
         constraint.data.hintWeight = m_HintWeight;

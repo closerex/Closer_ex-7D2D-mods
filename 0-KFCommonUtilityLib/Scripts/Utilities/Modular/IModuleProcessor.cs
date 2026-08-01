@@ -15,5 +15,6 @@ namespace KFCommonUtilityLib
         Type GetModuleTypeByName(string name);
         bool MatchSpecialArgs(ModuleManipulator manipulator, ILGenerator generator, ParameterInfo par, MethodPatchInfo mtdpinf_derived, MethodOverrideInfo mtdoinf_target);
         bool MatchConstructorArgs(ModuleManipulator manipulator, ILGenerator generator, ParameterInfo par, ParameterBuilder[] paramInfo, Type[] paramTypes, ConstructorInfo ctorinf_target, int moduleIndex);
+        void ApplyPatchModifiers(PatchInfo patchInfo, string owner);
     }
 }

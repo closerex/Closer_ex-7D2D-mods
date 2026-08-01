@@ -10,6 +10,7 @@ using System.Linq;
 public class RigConverter : MonoBehaviour
 {
     public Transform targetRoot;
+    public Transform weaponRoot;
 
 #if UNITY_EDITOR
     [ContextMenu("Convert Rig Constraints to Adaptors")]
@@ -303,6 +304,7 @@ public class RigConverter : MonoBehaviour
         foreach (var adaptor in GetComponentsInChildren<RigAdaptorAbs>(true))
         {
             adaptor.targetRoot = targetRoot;
+            adaptor.weaponRoot = weaponRoot;
             adaptor.FindRigTargets();
         }
     }

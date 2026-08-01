@@ -110,7 +110,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         float length = attackDurationNormalized > 0 ? ClipLength * attackDurationNormalized : ClipLength;
         attacksPerMinute = 60f / length;
         FastTags<TagGroup.Global> fastTags = ((actionIndex != 1) ? ItemActionAttack.PrimaryTag : ItemActionAttack.SecondaryTag);
-        multiInvData = (entity.inventory.holdingItemData as IModuleContainerFor<ItemModuleMultiItem.MultiItemInvData>)?.Instance;
+        multiInvData = entity.inventory.holdingItemData.LoadModule<ItemModuleMultiItem.MultiItemInvData>();
         bool isValidAlternative = IsAlternative && multiInvData != null;
         var prevData = SetParams(isValidAlternative);
         ItemActionDynamicMelee.ItemActionDynamicMeleeData itemActionDynamicMeleeData = entity.inventory.holdingItemData.actionData[actionIndex] as ItemActionDynamicMelee.ItemActionDynamicMeleeData;

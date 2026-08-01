@@ -354,12 +354,10 @@ namespace CodeWriter.ExpressionParser
 
         public void RegisterVariable(string name, Expression<T> value)
         {
-            if (_variables.ContainsKey(name))
+            if (!_variables.TryAdd(name, value))
             {
                 throw new InvalidOperationException($"Variable {name} already registered");
             }
-
-            _variables.Add(name, value);
         }
 
         public Expression<T> GetVariable(string name, bool nullIsOk = false)
@@ -391,11 +389,6 @@ namespace CodeWriter.ExpressionParser
 
             throw new VariableNotDefinedException(name);
         }
-    }
-
-    [Obsolete("ExpresionContext contains a typo. Use ExpressionContext instead", true)]
-    public class ExpresionContext<T> : ExpressionContext<T>
-    {
     }
 
     public class VariableNotDefinedException : Exception

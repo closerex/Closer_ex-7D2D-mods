@@ -17,9 +17,8 @@ namespace KFCommonUtilityLib.Scripts.ConsoleCmd
                 return;
             int index = int.Parse(_params[0]);
             var player = GameManager.Instance.World.GetPrimaryPlayer();
-            if (player != null && player.inventory.holdingItemData.actionData[index] is IModuleContainerFor<ActionModuleLocalPassiveCache.LocalPassiveCacheData> module)
+            if (player != null && player.inventory.holdingItemData.actionData[index].IsModuleContainerFor(out ActionModuleLocalPassiveCache.LocalPassiveCacheData instance))
             {
-                ActionModuleLocalPassiveCache.LocalPassiveCacheData instance = module.Instance;
                 foreach (int hash in instance)
                 {
                     Log.Out($"cache {instance.GetCachedName(hash)} value {instance.GetCachedValue(hash)}");

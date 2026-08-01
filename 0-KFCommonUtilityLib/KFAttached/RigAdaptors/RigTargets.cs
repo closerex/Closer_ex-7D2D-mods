@@ -61,10 +61,10 @@ public class RigTargets : AnimationTargetsAbs
 
         if (IsFpv)
         {
-            if (ItemAnimatorFpv.TryGetComponent<AnimationDelayRender>(out var delayRenderer))
-            {
-                Destroy(delayRenderer);
-            }
+            // if (ItemAnimatorFpv.TryGetComponent<AnimationDelayRender>(out var delayRenderer))
+            // {
+            //     Destroy(delayRenderer);
+            // }
             itemFpv.SetParent(PlayerAnimatorTrans.parent, false);
             itemFpv.SetAsFirstSibling();
             itemFpv.position = Vector3.zero;
@@ -73,6 +73,9 @@ public class RigTargets : AnimationTargetsAbs
             var rc = rig.GetComponent<RigConverter>();
             rc.targetRoot = PlayerAnimatorTrans;
             rc.Rebind();
+#if NotEditor
+            ItemAnimatorFpv.transform.AddMissingComponent<ItemAnimatorUpdate>();
+#endif
         }
         else
         {
@@ -110,7 +113,11 @@ public class RigTargets : AnimationTargetsAbs
             }
         }
 #endif
-        BuildRig(rigBuilder.GetComponent<Animator>(), rigBuilder);
+
+        var animator = rigBuilder.GetComponent<Animator>();
+        animator.Play("idle", 0, 0f);
+        animator.Update(0f);
+        BuildRig(animator, rigBuilder);
         sw.Stop();
         string info = $"setup animation rig took {sw.ElapsedMilliseconds} ms";
         //info += $"\n{StackTraceUtility.ExtractStackTrace()}";
@@ -140,7 +147,10 @@ public class RigTargets : AnimationTargetsAbs
             }
         }
 #endif
-        BuildRig(rigBuilder.GetComponent<Animator>(), rigBuilder);
+        var animator = rigBuilder.GetComponent<Animator>();
+        BuildRig(animator, rigBuilder);
+        animator.Play("idle", 0, 0f);
+        animator.Update(0f);
         sw.Stop();
         string info = $"destroy animation rig took {sw.ElapsedMilliseconds} ms";
         //info += $"\n{StackTraceUtility.ExtractStackTrace()}";
@@ -175,10 +185,10 @@ public class RigTargets : AnimationTargetsAbs
         }
         base.SetEnabled(enabled);
 #if NotEditor
-        if (enabled && IsFpv && ItemAnimatorFpv && !ItemAnimatorFpv.TryGetComponent<AnimationDelayRender>(out var delayRenderer))
-        {
-            delayRenderer = ItemAnimatorFpv.gameObject.AddComponent<AnimationDelayRender>();
-        }
+        // if (enabled && IsFpv && ItemAnimatorFpv && !ItemAnimatorFpv.TryGetComponent<AnimationDelayRender>(out var delayRenderer))
+        // {
+        //     delayRenderer = ItemAnimatorFpv.gameObject.AddComponent<AnimationDelayRender>();
+        // }
 #endif
     }
 

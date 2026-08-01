@@ -28,11 +28,11 @@ namespace CodeWriter.ExpressionParser
         protected override float GreaterThan(float a, float b) => a > b ? 1 : 0;
         protected override float GreaterThanOrEqual(float a, float b) => a >= b ? 1 : 0;
         protected override bool IsTrue(float v) => !Mathf.Approximately(v, 0);
-        protected override float Round(float v) => (float) Math.Round(v);
-        protected override float Ceiling(float v) => (float) Math.Ceiling(v);
-        protected override float Floor(float v) => (float) Math.Floor(v);
-        protected override float Log10(float v) => (float) Math.Log10(v);
+        protected override float Round(float v) => Mathf.Round(v);
+        protected override float Ceiling(float v) => Mathf.Ceil(v);
+        protected override float Floor(float v) => Mathf.Floor(v);
+        protected override float Log10(float v) => Mathf.Log10(v);
 
-        protected override float Log(float v, float newBase) => (float) Math.Log(v, newBase);
+        protected override float Log(float v, float newBase) => Mathf.Log(v, newBase);
     }
 }

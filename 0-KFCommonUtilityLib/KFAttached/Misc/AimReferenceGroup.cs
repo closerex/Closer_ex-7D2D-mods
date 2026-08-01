@@ -22,7 +22,7 @@ public class AimReferenceGroup : MonoBehaviour
         }
 
         EntityPlayerLocal player = this.GetLocalPlayerInParent();
-        if (aimReferences == null || aimReferences.Length == 0 || !player || player.inventory?.holdingItemData?.actionData?[1] is not IModuleContainerFor<ActionModuleProceduralAiming.ProceduralAimingData> module)
+        if (aimReferences == null || aimReferences.Length == 0 || !player || !(player.inventory?.holdingItemData?.actionData?[1].IsModuleContainerFor(out ActionModuleProceduralAiming.ProceduralAimingData module) ?? false))
         {
             Destroy(this);
             if (aimReferences != null)
@@ -35,7 +35,7 @@ public class AimReferenceGroup : MonoBehaviour
             }
             return;
         }
-        data = module.Instance;
+        data = module;
     }
 
     private void OnEnable()

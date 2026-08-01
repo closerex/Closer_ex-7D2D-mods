@@ -1,8 +1,8 @@
-﻿using HarmonyLib;
-using KFCommonUtilityLib.Attributes;
-using System.Collections.Generic;
-using UniLinq;
+﻿using System.Collections.Generic;
 using System.Reflection.Emit;
+using HarmonyLib;
+using KFCommonUtilityLib.Attributes;
+using UniLinq;
 
 [TypeTarget(typeof(ItemAction))]
 public class ActionModuleInversedAction

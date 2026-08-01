@@ -10,13 +10,13 @@ using UnityEngine;
 //todo: cancel multi item action on switching item
 public class ItemActionBlocking : ItemAction
 {
-    public static int BlockingHash = Animator.StringToHash("IsBlocking");
-    public static int BlockingHitHash = Animator.StringToHash("BlockingHit");
-    public static int ParryingHitHash = Animator.StringToHash("ParryingHit");
+    public static readonly int BlockingHash = Animator.StringToHash("IsBlocking");
+    public static readonly int BlockingHitHash = Animator.StringToHash("BlockingHit");
+    public static readonly int ParryingHitHash = Animator.StringToHash("ParryingHit");
     public FastTags<TagGroup.Global> tagsStaminaOnBlocking;
     public FastTags<TagGroup.Global> tagsStaminaOnParrying;
-    public FastTags<TagGroup.Global> tagsDamageBlockingPrec;
-    public FastTags<TagGroup.Global> tagsDamageParryingPrec;
+    public FastTags<TagGroup.Global> tagsDamageBlockingPerc;
+    public FastTags<TagGroup.Global> tagsDamageParryingPerc;
     public FastTags<TagGroup.Global> tagDegradationBlocking;
     public FastTags<TagGroup.Global> tagDegradationParrying;
     public FastTags<TagGroup.Global> tagsParryDuration;
@@ -30,11 +30,11 @@ public class ItemActionBlocking : ItemAction
         base.ReadFrom(_props);
 
         _props.Values.TryGetValue("CommonBlockingTags", out string tags);
-        FastTags<TagGroup.Global> commonTags = string.IsNullOrEmpty(tags) ? FastTags<TagGroup.Global>.none : FastTags<TagGroup.Global>.Parse(tags);
+        var commonTags = string.IsNullOrEmpty(tags) ? FastTags<TagGroup.Global>.none : FastTags<TagGroup.Global>.Parse(tags);
         tagsStaminaOnBlocking = FastTags<TagGroup.Global>.Parse("StaminaOnBlocking") | commonTags;
         tagsStaminaOnParrying = FastTags<TagGroup.Global>.Parse("StaminaOnParrying") | commonTags;
-        tagsDamageBlockingPrec = FastTags<TagGroup.Global>.Parse("DamageBlockingPrec") | commonTags;
-        tagsDamageParryingPrec = FastTags<TagGroup.Global>.Parse("DamageParryingPrec") | commonTags;
+        tagsDamageBlockingPerc = FastTags<TagGroup.Global>.Parse("DamageBlockingPerc") | commonTags;
+        tagsDamageParryingPerc = FastTags<TagGroup.Global>.Parse("DamageParryingPerc") | commonTags;
         tagDegradationBlocking = FastTags<TagGroup.Global>.Parse("DegradationBlocking") | commonTags;
         tagDegradationParrying = FastTags<TagGroup.Global>.Parse("DegradationParrying") | commonTags;
         tagsParryDuration = FastTags<TagGroup.Global>.Parse("ParryDuration") | commonTags;
@@ -66,7 +66,7 @@ public class ItemActionBlocking : ItemAction
 
     public override void ExecuteAction(ItemActionData _actionData, bool _bReleased)
     {
-        var blockingData = _actionData as ItemActionBlockingData;
+        var blockingData = (ItemActionBlockingData)_actionData;
         if (_actionData.invData.holdingEntity is not EntityPlayerLocal player)
         {
             return;
@@ -113,8 +113,7 @@ public class ItemActionBlocking : ItemAction
 
     public override bool IsActionRunning(ItemActionData _actionData)
     {
-        var blockingData = _actionData as ItemActionBlockingData;
-        if (blockingData != null)
+        if (_actionData is ItemActionBlockingData blockingData)
         {
             return blockingData.isBlockingRunning;
         }
@@ -123,38 +122,28 @@ public class ItemActionBlocking : ItemAction
 
     public override bool IsAimingGunPossible(ItemActionData _actionData)
     {
-        var blockingData = _actionData as ItemActionBlockingData;
-        if (blockingData != null && blockingData.isBlockingRunning)
-        {
-            return false;
-        }
-        return base.IsAimingGunPossible(_actionData);
+        return _actionData is not ItemActionBlockingData { isBlockingRunning: true } && base.IsAimingGunPossible(_actionData);
     }
 
     public override void OnHoldingUpdate(ItemActionData _actionData)
     {
         base.OnHoldingUpdate(_actionData);
-        if (_actionData.invData.holdingEntity is not EntityPlayerLocal player)
+        if (_actionData.invData.holdingEntity is not EntityPlayerLocal player ||
+            _actionData is not ItemActionBlockingData { isBlockingRunning: true })
         {
             return;
         }
-        var blockingData = _actionData as ItemActionBlockingData;
-        if (blockingData != null)
+        
+        if (_actionData.invData.holdingEntity.Stamina <= 0)
         {
-            if (blockingData.isBlockingRunning)
-            {
-                if (_actionData.invData.holdingEntity.Stamina <= 0)
-                {
-                    player.emodel.avatarController.UpdateBool(BlockingHash, false);
-                }
-            }
+            player.emodel.avatarController.UpdateBool(BlockingHash, false);
         }
     }
 
     public override void StartHolding(ItemActionData _data)
     {
         base.StartHolding(_data);
-        var blockingData = _data as ItemActionBlockingData;
+        var blockingData = (ItemActionBlockingData)_data;
         if (blockingData != null)
         {
             blockingData.ResetBlocking();
@@ -171,7 +160,7 @@ public class ItemActionBlocking : ItemAction
     public override void StopHolding(ItemActionData _data)
     {
         base.StopHolding(_data);
-        var blockingData = _data as ItemActionBlockingData;
+        var blockingData = (ItemActionBlockingData)_data;
         if (blockingData != null)
         {
             blockingData.ResetBlocking();
@@ -274,9 +263,8 @@ public static class ItemActionBlockingPatches
         {
             Log.Out($"[KFLib] Incoming attack from {attacker.GetDebugName()} (id={attacker.entityId}), damage: {_strength}, critical hit: {_criticalHit}");
         }
-        if (__instance.AttachedToEntity == null && __instance.inventory.holdingItemData is IModuleContainerFor<ItemModuleMultiItem.MultiItemInvData> dataModule && __instance.inventory.holdingItemData.itemValue.PercentUsesLeft >= 0f)
+        if (__instance.AttachedToEntity == null && __instance.inventory.holdingItemData.IsModuleContainerFor(out ItemModuleMultiItem.MultiItemInvData multiInvData) && __instance.inventory.holdingItemData.itemValue.PercentUsesLeft >= 0f)
         {
-            var multiInvData = dataModule.Instance;
             if (multiInvData.boundItemClass?.Actions[2] is ItemActionBlocking blockingAction && multiInvData.boundInvData?.actionData[2] is ItemActionBlocking.ItemActionBlockingData blockingData)
             {
                 var prevData = __instance.MinEventContext.ItemActionData;
@@ -301,10 +289,10 @@ public static class ItemActionBlockingPatches
                     else
                     {
                         __instance.Stamina -= drainAmount;
-                        float damagePrec = EffectManager.GetValue(CustomEnums.CustomTaggedEffect, blockingData.invData.itemValue, 0f, blockingData.invData.holdingEntity, null, isParrying ? blockingAction.tagsDamageParryingPrec : blockingAction.tagsDamageBlockingPrec);
+                        float damagePerc = EffectManager.GetValue(CustomEnums.CustomTaggedEffect, blockingData.invData.itemValue, 0f, blockingData.invData.holdingEntity, null, isParrying ? blockingAction.tagsDamageParryingPerc : blockingAction.tagsDamageBlockingPerc);
                         if (ConsoleCmdReloadLog.LogInfo)
-                            Log.Out($"[KFLib] {(isParrying ? "Parried" : "Blocked")} attack from {attacker.GetDebugName()} (id={attacker.entityId}), original damage: {_strength}, damage reduction: {damagePrec * 100f}%, final damage: {Mathf.RoundToInt(_strength * (1f - damagePrec))}");
-                        _strength = Mathf.RoundToInt(_strength * (1f - damagePrec));
+                            Log.Out($"[KFLib] {(isParrying ? "Parried" : "Blocked")} attack from {attacker.GetDebugName()} (id={attacker.entityId}), original damage: {_strength}, damage reduction: {damagePerc * 100f}%, final damage: {Mathf.RoundToInt(_strength * (1f - damagePerc))}");
+                        _strength = Mathf.RoundToInt(_strength * (1f - damagePerc));
                         if (isParrying)
                         {
                             _criticalHit = false;
@@ -343,8 +331,8 @@ public static class ItemActionBlockingPatches
         }
     }
 
-    private static List<ItemAction> tempActionList = new List<ItemAction>();
-    private static List<ItemActionData> tempDataList = new List<ItemActionData>();
+    private static readonly List<ItemAction> tempActionList = new();
+    private static readonly List<ItemActionData> tempDataList = new();
     [HarmonyPatch(typeof(PlayerMoveController), nameof(PlayerMoveController.Update))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_Update_PlayerMoveController(IEnumerable<CodeInstruction> instructions)
@@ -375,7 +363,7 @@ public static class ItemActionBlockingPatches
                 codes.InsertRange(i + 1, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_0),
-                    CodeInstruction.CallClosure<Action<PlayerMoveController>>(static (PlayerMoveController controller) =>
+                    CodeInstruction.CallClosure<Action<PlayerMoveController>>(static controller =>
                     {
                         if (DroneManager.Debug_LocalControl || !controller.gameManager.gameStateManager.IsGameStarted() || GameStats.GetInt(EnumGameStats.GameState) != 1)
                             return;
@@ -400,7 +388,7 @@ public static class ItemActionBlockingPatches
                             return;
                         }
 
-                        if (player.inventory.holdingItemData is not IModuleContainerFor<ItemModuleMultiItem.MultiItemInvData> dataModule)
+                        if (!player.inventory.holdingItemData.IsModuleContainerFor(out ItemModuleMultiItem.MultiItemInvData multiInvData))
                         {
                             return;
                         }
@@ -410,12 +398,11 @@ public static class ItemActionBlockingPatches
                             return;
                         }
 
-                        var multiInvData = dataModule.Instance;
                         if (multiInvData.boundItemClass?.Actions[2] is ItemActionBlocking blockingAction && multiInvData.boundInvData?.actionData[2] is ItemActionBlocking.ItemActionBlockingData blockingData)
                         {
                             bool isActionRunning = false;
                             bool isAllRunningActionInterruptable = false;
-                            var interruptData = (blockingData as IModuleContainerFor<ActionModuleAnimationInterruptSource.AnimationInterruptSourceData>)?.Instance;
+                            var interruptData = blockingData.LoadModule<ActionModuleAnimationInterruptSource.AnimationInterruptSourceData>();
                             if (!wasReleased)
                             {
                                 tempActionList.Clear();
@@ -519,9 +506,8 @@ public static class ItemActionBlockingPatches
 
     private static bool IsPlayerBlocking(EntityPlayerLocal player)
     {
-        if (player.inventory.holdingItemData is IModuleContainerFor<ItemModuleMultiItem.MultiItemInvData> dataModule)
+        if (player.inventory.holdingItemData.IsModuleContainerFor(out ItemModuleMultiItem.MultiItemInvData multiInvData))
         {
-            var multiInvData = dataModule.Instance;
             if (multiInvData.boundItemClass?.Actions[2] is ItemActionBlocking blockingAction && multiInvData.boundInvData?.actionData[2] is ItemActionBlocking.ItemActionBlockingData blockingData)
             {
                 if (blockingData.isBlockingRunning)

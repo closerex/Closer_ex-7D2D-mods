@@ -19,7 +19,7 @@ public class MinEventActionModifyCVarWithLocalCache : MinEventActionModifyCVar
         {
             return;
         }
-        ActionModuleLocalPassiveCache.LocalPassiveCacheData _data = ((IModuleContainerFor<ActionModuleLocalPassiveCache.LocalPassiveCacheData>)(actionIndex < 0 ? _params.ItemActionData : _params.ItemInventoryData.actionData[actionIndex])).Instance;
+        ActionModuleLocalPassiveCache.LocalPassiveCacheData _data = (actionIndex < 0 ? _params.ItemActionData : _params.ItemInventoryData.actionData[actionIndex]).LoadModule<ActionModuleLocalPassiveCache.LocalPassiveCacheData>();
         float value = _data.GetCachedValue(targetHash);
         //Log.Out($"cache {targetHash.ToString()} value {value}");
         for (int i = 0; i < targets.Count; i++)

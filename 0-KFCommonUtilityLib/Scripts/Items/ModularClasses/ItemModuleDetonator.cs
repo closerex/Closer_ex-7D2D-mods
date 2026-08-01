@@ -275,9 +275,9 @@ public class ItemModuleDetonator
         private float GetAge(EntityItem entityItem)
         {
             var item = entityItem.itemClass;
-            if (item != null && item.Actions != null && item.Actions[0] is IModuleContainerFor<ActionModuleDynamicDropLifetime> module)
+            if (item?.Actions != null && item.Actions[0].IsModuleContainerFor(out ActionModuleDynamicDropLifetime module))
             {
-                return module.Instance.lifetime - entityItem.lifetime;
+                return module.lifetime - entityItem.lifetime;
             }
             return 60f - entityItem.lifetime;
         }

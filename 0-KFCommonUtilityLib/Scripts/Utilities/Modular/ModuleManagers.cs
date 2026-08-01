@@ -1,38 +1,38 @@
-﻿using HarmonyLib;
-using KFCommonUtilityLib.Attributes;
-using MonoMod.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Security;
 using System.Security.Permissions;
+using HarmonyLib;
+using KFCommonUtilityLib.Attributes;
+using MonoMod.Utils;
 using UniLinq;
 
 namespace KFCommonUtilityLib
 {
     public static class ModuleManagers
     {
+        // ReSharper disable once UnusedTypeParameter
         private static class ModuleExtensions<T>
         {
-            public readonly static List<Type> extensions = new();
+            public static readonly List<Type> extensions = new();
         }
-        public static AssemblyBuilder WorkingAssembly { get; private set; } = null;
-        public static ModuleBuilder WorkingModule { get; private set; } = null;
+        public static AssemblyBuilder WorkingAssembly { get; private set; }
+        public static ModuleBuilder WorkingModule { get; private set; }
         public static event Action OnAssemblyCreated;
         public static event Action OnAssemblyFinished;
         public static bool Inited { get; private set; }
         private static bool extensionScanned;
         private static readonly HashSet<string> list_registered_path = new();
         private static readonly List<Assembly> list_created = new();
-        private static readonly HashSet<Assembly> set_checked = new();
+        internal static readonly HashSet<Assembly> set_checked = new();
         //private static DefaultAssemblyResolver resolver;
         //private static ModuleAttributes moduleAttributes;
         //private static ModuleCharacteristics moduleCharacteristics;
-        private static MethodInfo mtdinf_findext = AccessTools.Method(typeof(ModuleManagers), nameof(ModuleManagers.AddModuleExtension));
-        private static bool debugLog = false;
-        private static readonly ConstructorInfo ctorinf_iact = typeof(System.Runtime.CompilerServices.IgnoresAccessChecksToAttribute).GetConstructor(new Type[] { typeof(string) });
+        private static readonly MethodInfo mtdinf_findext = AccessTools.Method(typeof(ModuleManagers), nameof(AddModuleExtension));
+        internal static bool debugLog = false;
 
         public static void LogOut(string msg)
         {
@@ -99,8 +99,8 @@ namespace KFCommonUtilityLib
 
         internal static void Init()
         {
-            KFLibEvents.onXmlLoadingStart += InitNew;
-            KFLibEvents.onXmlLoadingFinish += FinishAndLoad;
+            KFLibEvents.onXmlLoadingStart += () => InitNew();
+            KFLibEvents.onXmlLoadingFinish += () => FinishAndLoad();
 
             Mod self = ModManager.GetMod("CommonUtilityLib");
             string path = Path.Combine(self.Path, "AssemblyOutput");
@@ -126,7 +126,7 @@ namespace KFCommonUtilityLib
         }
 
 
-        internal static void InitNew()
+        internal static void InitNew(string name = null)
         {
             if (Inited)
             {
@@ -136,7 +136,7 @@ namespace KFCommonUtilityLib
             InitModuleExtensions();
             WorkingAssembly = null;
             WorkingModule = null;
-            string assname = "RuntimeAssembled" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            string assname = (string.IsNullOrEmpty(name) ? "RuntimeAssembled": name) + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             Mod self = ModManager.GetMod("CommonUtilityLib");
             if (self == null)
             {
@@ -145,8 +145,8 @@ namespace KFCommonUtilityLib
             }
             DirectoryInfo dirInfo = Directory.CreateDirectory(Path.Combine(self.Path, "AssemblyOutput"));
             WorkingAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName(assname), AssemblyBuilderAccess.RunAndSave, dirInfo.FullName);
-            WorkingAssembly.SetCustomAttribute(new CustomAttributeBuilder(typeof(UnverifiableCodeAttribute).GetConstructor(Type.EmptyTypes), new object[0]));
-            WorkingAssembly.SetCustomAttribute(new CustomAttributeBuilder(typeof(SecurityPermissionAttribute).GetConstructor(new Type[] { typeof(SecurityAction) }),
+            WorkingAssembly.SetCustomAttribute(new CustomAttributeBuilder(typeof(UnverifiableCodeAttribute).GetConstructor(Type.EmptyTypes), Array.Empty<object>()));
+            WorkingAssembly.SetCustomAttribute(new CustomAttributeBuilder(typeof(SecurityPermissionAttribute).GetConstructor(new[] { typeof(SecurityAction) }),
                                                                           new object[] { SecurityAction.RequestMinimum },
                                                                           new[] { typeof(SecurityPermissionAttribute).GetProperty(nameof(SecurityPermissionAttribute.SkipVerification)),
                                                                                   typeof(SecurityAttribute).GetProperty(nameof(SecurityAttribute.Unrestricted)) },
@@ -163,7 +163,7 @@ namespace KFCommonUtilityLib
         {
             Type[] moduleTypes = moduleNames.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
                                             .Select(s => new T().GetModuleTypeByName(s.Trim()))
-                                            .Where(t => t.GetCustomAttribute<TypeTargetAttribute>().BaseType.IsAssignableFrom(targetType)).ToArray();
+                                            .Where(t => t != null && t.GetCustomAttribute<TypeTargetAttribute>().BaseType.IsAssignableFrom(targetType)).ToArray();
             return PatchType(targetType, baseType, parentType, moduleTypes, new T(), out result);
         }
 
@@ -180,12 +180,25 @@ namespace KFCommonUtilityLib
                 return false;
             }
             string typename = ModuleUtils.CreateTypeName(targetType, moduleTypes);
-            if (!ModuleManagers.TryFindType(typename, out result) && !ModuleManagers.TryFindInCur(typename, out result))
-                _ = new ModuleManipulator(ModuleManagers.WorkingAssembly, processor, targetType, baseType, parentType, out result, moduleTypes);
+            if (!TryFindType(typename, out result) && !TryFindInCur(typename, out result))
+            {
+                _ = new ModuleManipulator(processor, targetType, baseType, parentType, out result, moduleTypes);
+                WorkingAssembly.SetCustomAttribute(
+                    new CustomAttributeBuilder(typeof(ModuleTypeReferenceAttribute).GetConstructor(Type.EmptyTypes),
+                        Array.Empty<object>(),
+                        new[]
+                        {
+                            typeof(ModuleTypeReferenceAttribute).GetProperty(nameof(ModuleTypeReferenceAttribute
+                                .FinalType)),
+                            typeof(ModuleTypeReferenceAttribute).GetProperty(
+                                nameof(ModuleTypeReferenceAttribute.ModuleTypes))
+                        },
+                        new object[] { result, moduleTypes }));
+            }
             return true;
         }
 
-        internal static void FinishAndLoad()
+        internal static void FinishAndLoad(bool load = true)
         {
             if (!Inited)
             {
@@ -205,7 +218,10 @@ namespace KFCommonUtilityLib
                     {
                         Log.Warning($"Failed to save assembly file: {ex.Message}\n{ex.StackTrace}");
                     }
-                    list_created.Add(WorkingAssembly);
+                    if (load)
+                    {
+                        list_created.Add(WorkingAssembly);
+                    }
                 }
 
                 Log.Out("======Finish and Load======");

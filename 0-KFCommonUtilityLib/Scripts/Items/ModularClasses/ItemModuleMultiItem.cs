@@ -66,8 +66,7 @@ public class ItemModuleMultiItem
             new CodeInstruction(OpCodes.Ldarg_3),
             new CodeInstruction(OpCodes.Brtrue_S, lbl),
             new CodeInstruction(OpCodes.Ldarg_2),
-            new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<MultiItemInvData>)),
-            new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(IModuleContainerFor<MultiItemInvData>), nameof(IModuleContainerFor<MultiItemInvData>.Instance))),
+            CodeInstruction.Call(typeof(ItemClassModuleProcessor), nameof(ItemClassModuleProcessor.LoadDataModule), null, new []{typeof(MultiItemInvData)}),
             CodeInstruction.Call(typeof(MultiItemInvData), nameof(MultiItemInvData.IsBoundActionRunning)),
             new CodeInstruction(OpCodes.Brfalse_S, lbl),
             new CodeInstruction(OpCodes.Ret)
@@ -288,7 +287,7 @@ public class ItemModuleMultiItem
 
         bool isActionRunning = false;
         bool isAllRunningActionInterruptable = false;
-        var interruptData = (meleeData as IModuleContainerFor<ActionModuleAnimationInterruptSource.AnimationInterruptSourceData>)?.Instance;
+        var interruptData = meleeData.LoadModule<ActionModuleAnimationInterruptSource.AnimationInterruptSourceData>();
         if (!bReleased)
         {
             tempActionList.Clear();
@@ -298,7 +297,7 @@ public class ItemModuleMultiItem
 
         bool isReloading = player.IsReloading();
         int actionIndex = MultiActionManager.GetActionIndexForEntity(player);
-        var reloadModule = player.inventory.holdingItem.Actions[actionIndex] as IModuleContainerFor<ActionModuleInterruptReload>;
+        var reloadModule = player.inventory.holdingItem.Actions[actionIndex].LoadModule<ActionModuleInterruptReload>();
 
         bool isActionOrReloadingInterruptable = false;
         if (isActionRunning)
@@ -337,7 +336,7 @@ public class ItemModuleMultiItem
                 {
                     var itemActionData = player.inventory.holdingItemData.actionData[actionIndex] as ItemActionRanged.ItemActionDataRanged;
                     itemActionData.m_LastShotTime = 0;
-                    reloadModule.Instance.Postfix_ExecuteAction(itemActionData, ((IModuleContainerFor<ActionModuleInterruptReload.InterruptData>)itemActionData).Instance, new ActionModuleInterruptReload.State
+                    reloadModule.Postfix_ExecuteAction(itemActionData, itemActionData.LoadModule<ActionModuleInterruptReload.InterruptData>(), new ActionModuleInterruptReload.State
                     {
                         executed = true,
                         lastShotTime = -1,
@@ -457,7 +456,7 @@ public class ItemModuleMultiItem
             boundInvData.itemStack.itemValue.Metadata = originalData.itemStack.itemValue.Metadata;
             boundInvData.itemStack.itemValue.Activated = originalData.itemStack.itemValue.Activated;
             boundInvData.itemStack.itemValue.UseTimes = 0;
-            if (originalData.actionData[0] is IModuleContainerFor<ActionModuleAlternative.AlternativeData> dataModule)
+            if (originalData.actionData[0].IsModuleContainerFor(out ActionModuleAlternative.AlternativeData _))
             {
                 MultiActionManager.SetMappingForEntity(originalData.holdingEntity.entityId, null);
             }
@@ -474,9 +473,9 @@ public class ItemModuleMultiItem
             param.ItemInventoryData = originalData;
             param.ItemValue = originalData.itemStack.itemValue;
             boundInvData.itemStack.itemValue.Meta = originalData.itemStack.itemValue.Meta;
-            if (originalData.actionData[0] is IModuleContainerFor<ActionModuleAlternative.AlternativeData> dataModule)
+            if (originalData.actionData[0].IsModuleContainerFor(out ActionModuleAlternative.AlternativeData dataModule))
             {
-                MultiActionManager.SetMappingForEntity(originalData.holdingEntity.entityId, dataModule.Instance.mapping);
+                MultiActionManager.SetMappingForEntity(originalData.holdingEntity.entityId, dataModule.mapping);
             }
         }
     }
@@ -489,9 +488,9 @@ public static class MultiItemPatches
     [HarmonyPrefix]
     public static bool Prefix_holdingCount_Inventory(ItemInventoryData[] ___slots, int ___m_HoldingItemIdx, ref int __result)
     {
-        if (___slots[___m_HoldingItemIdx] is IModuleContainerFor<MultiItemInvData> multiInvData && multiInvData.Instance.useBound && multiInvData.Instance.boundInvData != null)
+        if (___slots[___m_HoldingItemIdx].IsModuleContainerFor(out MultiItemInvData multiInvData) && multiInvData.useBound && multiInvData.boundInvData != null)
         {
-            __result = multiInvData.Instance.boundInvData.itemStack.count;
+            __result = multiInvData.boundInvData.itemStack.count;
             return false;
         }
         return true;
@@ -501,9 +500,9 @@ public static class MultiItemPatches
     [HarmonyPrefix]
     public static bool Prefix_holdingItem_Inventory(ItemInventoryData[] ___slots, int ___m_HoldingItemIdx, ref ItemClass __result)
     {
-        if (___slots[___m_HoldingItemIdx] is IModuleContainerFor<MultiItemInvData> multiInvData && multiInvData.Instance.useBound && multiInvData.Instance.boundInvData != null)
+        if (___slots[___m_HoldingItemIdx].IsModuleContainerFor(out MultiItemInvData multiInvData) && multiInvData.useBound && multiInvData.boundInvData != null)
         {
-            __result = multiInvData.Instance.boundInvData.item;
+            __result = multiInvData.boundInvData.item;
             return false;
         }
         return true;
@@ -513,9 +512,9 @@ public static class MultiItemPatches
     [HarmonyPrefix]
     public static bool Prefix_holdingItemData_Inventory(ItemInventoryData[] ___slots, int ___m_HoldingItemIdx, ref ItemInventoryData __result)
     {
-        if (___slots[___m_HoldingItemIdx] is IModuleContainerFor<MultiItemInvData> multiInvData && multiInvData.Instance.useBound && multiInvData.Instance.boundInvData != null)
+        if (___slots[___m_HoldingItemIdx].IsModuleContainerFor(out MultiItemInvData multiInvData) && multiInvData.useBound && multiInvData.boundInvData != null)
         {
-            __result = multiInvData.Instance.boundInvData;
+            __result = multiInvData.boundInvData;
             return false;
         }
         return true;
@@ -525,9 +524,9 @@ public static class MultiItemPatches
     [HarmonyPrefix]
     public static bool Prefix_holdingItemItemValue_Inventory(ItemInventoryData[] ___slots, int ___m_HoldingItemIdx, ref ItemValue __result)
     {
-        if (___slots[___m_HoldingItemIdx] is IModuleContainerFor<MultiItemInvData> multiInvData && multiInvData.Instance.useBound && multiInvData.Instance.boundInvData != null)
+        if (___slots[___m_HoldingItemIdx].IsModuleContainerFor(out MultiItemInvData multiInvData) && multiInvData.useBound && multiInvData.boundInvData != null)
         {
-            __result = multiInvData.Instance.boundInvData.itemStack.itemValue;
+            __result = multiInvData.boundInvData.itemStack.itemValue;
             return false;
         }
         return true;
@@ -537,9 +536,9 @@ public static class MultiItemPatches
     [HarmonyPrefix]
     public static bool Prefix_holdingItemStack_Inventory(ItemInventoryData[] ___slots, int ___m_HoldingItemIdx, ref ItemStack __result)
     {
-        if (___slots[___m_HoldingItemIdx] is IModuleContainerFor<MultiItemInvData> multiInvData && multiInvData.Instance.useBound && multiInvData.Instance.boundInvData != null)
+        if (___slots[___m_HoldingItemIdx].IsModuleContainerFor(out MultiItemInvData multiInvData) && multiInvData.useBound && multiInvData.boundInvData != null)
         {
-            __result = multiInvData.Instance.boundInvData.itemStack;
+            __result = multiInvData.boundInvData.itemStack;
             return false;
         }
         return true;
@@ -549,9 +548,9 @@ public static class MultiItemPatches
     [HarmonyPrefix]
     public static bool Prefix_Item_Inventory(ItemInventoryData[] ___slots, int _idx, ref ItemValue __result)
     {
-        if (___slots[_idx] is IModuleContainerFor<MultiItemInvData> multiInvData && multiInvData.Instance.useBound && multiInvData.Instance.boundInvData != null)
+        if (___slots[_idx].IsModuleContainerFor(out MultiItemInvData multiInvData) && multiInvData.useBound && multiInvData.boundInvData != null)
         {
-            __result = multiInvData.Instance.boundInvData.itemStack.itemValue;
+            __result = multiInvData.boundInvData.itemStack.itemValue;
             return false;
         }
         return true;
@@ -561,7 +560,7 @@ public static class MultiItemPatches
     [HarmonyPrefix]
     private static bool Prefix_SwapSelectedAmmo_ItemActionRanged(EntityAlive _entity, int _ammoIndex)
     {
-        if (_entity.inventory?.holdingItemData is IModuleContainerFor<MultiItemInvData> dataModule && dataModule.Instance.IsBoundActionRunning())
+        if ((_entity.inventory?.holdingItemData.IsModuleContainerFor(out MultiItemInvData multiInvData) ?? false) && multiInvData.IsBoundActionRunning())
         {
             return false;
         }
@@ -572,25 +571,24 @@ public static class MultiItemPatches
     [HarmonyPostfix]
     private static void Postfix_IsAimingGunPossible_EntityPlayerLocal(EntityPlayerLocal __instance, ref bool __result)
     {
-        if (__result && __instance.inventory?.holdingItemData is IModuleContainerFor<MultiItemInvData> dataModule)
+        if (__result && (__instance.inventory?.holdingItemData.IsModuleContainerFor(out MultiItemInvData multiInvData) ?? false))
         {
-            var multiItemData = dataModule.Instance;
-            if (multiItemData.boundInvData != null)
+            if (multiInvData.boundInvData != null)
             {
-                bool useBound = multiItemData.useBound;
+                bool useBound = multiInvData.useBound;
                 var prevData = __instance.MinEventContext.ItemActionData;
-                multiItemData.SetBoundParams();
-                for (int i = 0; i < multiItemData.boundInvData.actionData.Count; i++)
+                multiInvData.SetBoundParams();
+                for (int i = 0; i < multiInvData.boundInvData.actionData.Count; i++)
                 {
-                    var action = multiItemData.boundItemClass.Actions[i];
-                    var actionData = multiItemData.boundInvData.actionData[i];
+                    var action = multiInvData.boundItemClass.Actions[i];
+                    var actionData = multiInvData.boundInvData.actionData[i];
                     if (action != null && !action.IsAimingGunPossible(actionData))
                     {
                         __result = false;
                         break;
                     }
                 }
-                multiItemData.RestoreParams(useBound);
+                multiInvData.RestoreParams(useBound);
                 __instance.MinEventContext.ItemActionData = prevData;
             }
         }
@@ -603,12 +601,11 @@ public static class MultiItemPatches
         if (__result)
         {
             EntityAlive holdingEntity = _actionData.invData.holdingEntity;
-            if (holdingEntity.inventory.holdingItemData is IModuleContainerFor<MultiItemInvData> dataModule)
+            if (holdingEntity.inventory.holdingItemData.IsModuleContainerFor(out MultiItemInvData multiInvData))
             {
-                var multiItemData = dataModule.Instance;
-                if (multiItemData.boundInvData != null)
+                if (multiInvData.boundInvData != null)
                 {
-                    __result = !multiItemData.IsBoundActionRunning();
+                    __result = !multiInvData.IsBoundActionRunning();
                 }
             }
         }
@@ -671,9 +668,9 @@ public static class MultiItemPatches
             return;
         }
 
-        if (PlayerActionKFLib.Instance.Enabled && (player.inventory.GetIsFinishedSwitchingHeldItem() || wasReleased) && (wasPressed || wasReleased) && player.inventory.holdingItemData is IModuleContainerFor<MultiItemInvData> dataModule)
+        if (PlayerActionKFLib.Instance.Enabled && (player.inventory.GetIsFinishedSwitchingHeldItem() || wasReleased) && (wasPressed || wasReleased) && player.inventory.holdingItemData.IsModuleContainerFor(out MultiItemInvData multiInvData))
         {
-            ItemModuleMultiItem.CheckAltMelee(player, dataModule.Instance, wasReleased);
+            ItemModuleMultiItem.CheckAltMelee(player, multiInvData, wasReleased);
         }
     }
 

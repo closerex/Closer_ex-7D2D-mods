@@ -19,27 +19,7 @@ class MinEventActionModifyCVarWithSelfRef : MinEventActionModifyCVar
             for (int i = 0; i < targets.Count; i++)
             {
                 EntityAlive target = targets[i];
-                float num = target.Buffs.GetCustomVar(cvarName);
-                switch (operation)
-                {
-                    case CVarOperation.set:
-                    case CVarOperation.setvalue:
-                        num = value;
-                        break;
-                    case CVarOperation.add:
-                        num += value;
-                        break;
-                    case CVarOperation.subtract:
-                        num -= value;
-                        break;
-                    case CVarOperation.multiply:
-                        num *= value;
-                        break;
-                    case CVarOperation.divide:
-                        num /= ((value == 0f) ? 0.0001f : value);
-                        break;
-                }
-                target.Buffs.SetCustomVar(cvarName, num, (target.isEntityRemote && !_params.Self.isEntityRemote) || (!target.isEntityRemote && !_params.Self.isEntityRemote && target != _params.Self) || _params.IsLocal);
+                target.Buffs.SetCustomVar(cvarName, value, (target.isEntityRemote && !_params.Self.isEntityRemote) || (!target.isEntityRemote && !_params.Self.isEntityRemote && target != _params.Self) || _params.IsLocal, operation);
             }
         }
         else

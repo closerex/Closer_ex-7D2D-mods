@@ -109,8 +109,8 @@ public class ActionModuleInspectable
 
         public InspectableData(ItemInventoryData _inventoryData, ActionModuleInspectable __customModule)
         {
-            this.module = __customModule;
-            this.invData = _inventoryData;
+            module = __customModule;
+            invData = _inventoryData;
         }
 
         public bool CanInspect(int? meta = null)
@@ -125,7 +125,7 @@ public class ActionModuleInspectable
 
         public void TriggerInspect(bool useAlt = false)
         {
-            invData.holdingEntity.emodel.avatarController._setTrigger(weaponInspectHash, true);
+            invData.holdingEntity.emodel.avatarController._setTrigger(weaponInspectHash);
             invData.holdingEntity.emodel.avatarController._setBool(altInspectHash, useAlt);
             lastInspectTime = Time.time;
         }
@@ -139,12 +139,12 @@ public static class ActionModuleInspectablePatches
     [HarmonyPrefix]
     private static bool Prefix_SwapSelectedAmmo_ItemActionRanged(ItemActionRanged __instance, EntityAlive _entity, int _ammoIndex)
     {
-        if (_ammoIndex == (int)_entity.inventory.holdingItemItemValue.SelectedAmmoTypeIndex && _entity is EntityPlayerLocal player)
+        if (_ammoIndex == _entity.inventory.holdingItemItemValue.SelectedAmmoTypeIndex && _entity is EntityPlayerLocal)
         {
             ItemActionRanged.ItemActionDataRanged _actionData = _entity.inventory.holdingItemData.actionData[__instance.ActionIndex] as ItemActionRanged.ItemActionDataRanged;
-            if (!__instance.CanReload(_actionData) && _actionData is IModuleContainerFor<ActionModuleInspectable.InspectableData> dataModule && dataModule.Instance.CanInspect())
+            if (!__instance.CanReload(_actionData) && _actionData.IsModuleContainerFor(out ActionModuleInspectable.InspectableData inspectableData) && inspectableData.CanInspect())
             {
-                dataModule.Instance.TriggerInspect();
+                inspectableData.TriggerInspect();
                 return false;
             }
         }
@@ -176,9 +176,9 @@ public static class ActionModuleInspectablePatches
         if (PlayerActionKFLib.Instance.Enabled && PlayerActionKFLib.Instance.AltInspect.WasPressed)
         {
             var actionData = _player.inventory.holdingItemData.actionData[MultiActionManager.GetActionIndexForEntity(_player)];
-            if (actionData is IModuleContainerFor<ActionModuleInspectable.InspectableData> inspectableData && inspectableData.Instance.CanInspect())
+            if (actionData.IsModuleContainerFor(out ActionModuleInspectable.InspectableData inspectableData) && inspectableData.CanInspect())
             {
-                inspectableData.Instance.TriggerInspect(true);
+                inspectableData.TriggerInspect(true);
             }
         }
     }

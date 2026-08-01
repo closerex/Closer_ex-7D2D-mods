@@ -2,7 +2,7 @@
 
 namespace KFCommonUtilityLib.Attributes
 {
-    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, Inherited = false, AllowMultiple = false)]
     public sealed class TypeTargetAttribute : Attribute
     {
         // This is a positional argument

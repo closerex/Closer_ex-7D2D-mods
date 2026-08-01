@@ -24,7 +24,7 @@ public class OverrideTransformReverseAdaptor : RigAdaptorAbs
         var constraint = GetComponent<OverrideTransform>();
         constraint.Reset();
         constraint.weight = weight;
-        constraint.data.constrainedObject = m_ConstrainedObject;
+        constraint.data.constrainedObject = ReplaceWeaponTarget(ref m_ConstrainedObject);
         constraint.data.sourceObject = targetRoot.FindInAllChildren(m_OverrideSource);
         constraint.data.position = m_OverridePosition;
         constraint.data.rotation = m_OverrideRotation;

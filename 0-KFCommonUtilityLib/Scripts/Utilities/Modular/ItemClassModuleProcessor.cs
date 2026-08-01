@@ -3,17 +3,63 @@ using KFCommonUtilityLib.Attributes;
 using KFCommonUtilityLib.Harmony;
 using MonoMod.Utils;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using UniLinq;
 
 namespace KFCommonUtilityLib
 {
+    [TypeTarget(typeof(ItemClass))]
     public class ItemClassModuleProcessor : IModuleProcessor
     {
-        Type type_newInvData;
-        FieldBuilder[] arr_fldbd_data;
+        private static class TranspilerHelper
+        {
+            public static ItemClassModuleProcessor curProcessor;
 
+            private static readonly MethodInfo mtd_load_data_module =
+                AccessTools.Method(typeof(ItemClassModuleProcessor), nameof(LoadDataModule));
+
+            public static IEnumerable<CodeInstruction> LoadDataModuleHelper(IEnumerable<CodeInstruction> instructions)
+            {
+                var codes = instructions.ToList();
+
+                for (int i = 0; i < codes.Count; i++)
+                {
+                    var code = codes[i];
+                    if (code.opcode == OpCodes.Call &&
+                        code.operand is MethodInfo { IsGenericMethod: true, ContainsGenericParameters: false } mtd &&
+                        mtd.GetGenericMethodDefinition() == mtd_load_data_module)
+                    {
+                        int dataIndex =
+                            Array.IndexOf(Array.ConvertAll(curProcessor.arr_fldbd_data, fld => fld?.FieldType),
+                                mtd.GetGenericArguments()[0]);
+                        if (dataIndex >= 0)
+                        {
+                            code.operand = AccessTools.Method(curProcessor.type_newInvData,
+                                $"{ModuleUtils.CreateFieldName(curProcessor.arr_fldbd_data[dataIndex].FieldType)}.get_Instance");
+                            codes.Insert(i, new(OpCodes.Castclass, curProcessor.type_newInvData));
+                            i++;
+                        }
+                        else
+                        {
+                            Log.Error($"Accessing invalid ItemActionData module! method: {code.operand}");
+                        }
+                    }
+                }
+
+                return codes;
+            }
+        }
+
+        private Type type_newInvData;
+        private FieldBuilder[] arr_fldbd_data;
+        
+        public static T LoadDataModule<T>(ItemInventoryData invData) where T : class
+        {
+            return (invData as IModuleContainerFor<T>)?.Instance;
+        }
+        
         public Type GetModuleTypeByName(string name)
         {
             return ReflectionHelpers.GetTypeWithPrefix("ItemModule", name);
@@ -21,6 +67,7 @@ namespace KFCommonUtilityLib
 
         public void InitModules(ModuleManipulator manipulator)
         {
+            TranspilerHelper.curProcessor = this;
             //Find ItemInventoryData subtype
             MethodInfo mtdinf_create_invdata = null;
             {
@@ -113,6 +160,13 @@ namespace KFCommonUtilityLib
         public bool MatchConstructorArgs(ModuleManipulator manipulator, ILGenerator generator, ParameterInfo par, ParameterBuilder[] paramInfo, Type[] paramTypes, ConstructorInfo ctorinf_target, int moduleIndex)
         {
             return false;
+        }
+
+        public void ApplyPatchModifiers(PatchInfo patchInfo, string owner)
+        {
+            patchInfo.AddTranspilers(owner,
+                new HarmonyMethod(AccessTools.Method(typeof(TranspilerHelper),
+                    nameof(TranspilerHelper.LoadDataModuleHelper))));
         }
 
         public bool DefineConstructorArgs(ModuleManipulator manipulator, ConstructorBuilder ctorbd, out ParameterBuilder[] pbs)

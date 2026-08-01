@@ -23,8 +23,8 @@ public class MultiParentConstraintReverseAdaptor : RigAdaptorAbs
         var constraint = GetComponent<MultiParentConstraint>();
         constraint.Reset();
         constraint.weight = weight;
-        constraint.data.constrainedObject = m_ConstrainedObject;
-        constraint.data.sourceObjects = WeightedTransformArrayFromAdaptor(targetRoot, m_SourceObjectNames, m_SourceObjectWeights);
+        constraint.data.constrainedObject = ReplaceWeaponTarget(ref m_ConstrainedObject);
+        constraint.data.sourceObjects = WeightedTransformArrayFromAdaptor(m_SourceObjectNames, m_SourceObjectWeights);
         constraint.data.constrainedPositionXAxis = m_ConstrainedPositionAxes.x;
         constraint.data.constrainedPositionYAxis = m_ConstrainedPositionAxes.y;
         constraint.data.constrainedPositionZAxis = m_ConstrainedPositionAxes.z;

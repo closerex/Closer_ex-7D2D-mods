@@ -5,34 +5,31 @@ namespace KFCommonUtilityLib.Attributes
 {
     public interface IMethodTarget
     {
-
+        bool IsStatic { get; }
     }
 
     [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
     public sealed class MethodTargetPrefixAttribute : Attribute, IMethodTarget
     {
-        public MethodTargetPrefixAttribute()
-        {
-
-        }
+        public bool IsStatic => false;
     }
 
     [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
     public sealed class MethodTargetPostfixAttribute : Attribute, IMethodTarget
     {
-        public MethodTargetPostfixAttribute()
-        {
-
-        }
+        public bool IsStatic => false;
     }
 
     [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
     public sealed class MethodTargetTranspilerAttribute : Attribute, IMethodTarget
     {
-        public MethodTargetTranspilerAttribute()
-        {
+        public bool IsStatic => true;
+    }
 
-        }
+    [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
+    public sealed class TargetMethodsAttribute : Attribute
+    {
+        
     }
 
     public static class IMethodTargetExtension

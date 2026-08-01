@@ -22,16 +22,20 @@ public class ActionModuleLocalPassiveCache
         {
             if (invData.holdingEntity.isEntityRemote)
                 return;
-            if (!dict_hash_name.ContainsKey(targetHash))
-                dict_hash_name[targetHash] = targetStr;
+            dict_hash_name.TryAdd(targetHash, targetStr);
 
             dict_hash_value[targetHash] = EffectManager.GetValue(target, invData.itemValue, 0, invData.holdingEntity, null, tags);
             //markedForCache[index] = true;
         }
 
+        public bool HasCachedValue(int targetHash)
+        {
+            return dict_hash_value.ContainsKey(targetHash);
+        }
+
         public float GetCachedValue(int targetHash)
         {
-            return dict_hash_value.TryGetValue(targetHash, out float res) ? res : 0;
+            return dict_hash_value.GetValueOrDefault(targetHash, 0);
         }
 
         public string GetCachedName(int targetHash)

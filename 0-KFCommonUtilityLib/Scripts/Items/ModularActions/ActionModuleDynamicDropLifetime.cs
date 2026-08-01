@@ -34,9 +34,8 @@ public class ActionModuleDynamicDropLifetime
                 codes.InsertRange(i, new[]
                 {
                     CodeInstruction.LoadArgument(0),
-                    new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<ActionModuleDynamicDropLifetime>)),
-                    new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(IModuleContainerFor<ActionModuleDynamicDropLifetime>), nameof(IModuleContainerFor<ActionModuleDynamicDropLifetime>.Instance))),
-                    CodeInstruction.LoadField(typeof(ActionModuleDynamicDropLifetime), nameof(ActionModuleDynamicDropLifetime.lifetime))
+                    CodeInstruction.Call(typeof(ModuleExtensions), nameof(ModuleExtensions.LoadModule), null, new []{typeof(ActionModuleDynamicDropLifetime)}),
+                    CodeInstruction.LoadField(typeof(ActionModuleDynamicDropLifetime), nameof(lifetime))
                 });
                 break;
             }

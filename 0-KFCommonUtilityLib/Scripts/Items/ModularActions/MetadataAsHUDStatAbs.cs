@@ -118,7 +118,7 @@ public abstract class MetadataAsHUDStatAbs : IDisplayAsHUDStat
 
     protected T GetDataFromInvData<T>(ItemInventoryData invData) where T : MetadataAsHUDStatData
     {
-        return (invData.actionData[actionIndex] as IModuleContainerFor<T>)?.Instance;
+        return invData.actionData[actionIndex].LoadModule<T>();
     }
 
     protected ItemActionData GetActionDataFromInvData(ItemInventoryData invData)

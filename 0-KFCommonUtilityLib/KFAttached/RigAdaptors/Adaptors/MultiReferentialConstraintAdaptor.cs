@@ -16,7 +16,7 @@ public class MultiReferentialConstraintAdaptor : RigAdaptorAbs
         constraint.Reset();
         constraint.weight = weight;
         constraint.data.driver = m_Driver;
-        constraint.data.sourceObjects = m_SourceObjects;
+        constraint.data.sourceObjects = ReplaceWeaponTarget(m_SourceObjects);
     }
 
     public override void ReadRigData()

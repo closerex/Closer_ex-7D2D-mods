@@ -146,11 +146,17 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     {
         for (int i = list_activate_attachments.Count - 1; i >= 0; i--)
         {
-            if (!list_activate_attachments[i] || !list_activate_attachments[i].activeInHierarchy)
+            var attachment = list_activate_attachments[i];
+            if (!attachment || !attachment.activeInHierarchy)
             {
                 continue;
             }
-            Transform child = onlyActive ? GameUtils.FindDeepChildActive(list_activate_attachments[i].transform, path) : GameUtils.FindDeepChild(list_activate_attachments[i].transform, path);
+
+            if (attachment.name == path)
+            {
+                return attachment.transform;
+            }
+            Transform child = onlyActive ? GameUtils.FindDeepChildActive(attachment.transform, path) : GameUtils.FindDeepChild(attachment.transform, path);
             if (child)
             {
                 return child;
@@ -158,11 +164,17 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
         }
         for (int i = list_attached_attachments.Count - 1; i >= 0; i--)
         {
-            if (!list_attached_attachments[i] || !list_attached_attachments[i].activeInHierarchy)
+            var attachment = list_attached_attachments[i];
+            if (!attachment || !attachment.activeInHierarchy)
             {
                 continue;
             }
-            Transform child = onlyActive ? GameUtils.FindDeepChildActive(list_attached_attachments[i].transform, path) : GameUtils.FindDeepChild(list_attached_attachments[i].transform, path);
+
+            if (attachment.name == path)
+            {
+                return attachment.transform;
+            }
+            Transform child = onlyActive ? GameUtils.FindDeepChildActive(attachment.transform, path) : GameUtils.FindDeepChild(attachment.transform, path);
             if (child)
             {
                 return child;
@@ -565,8 +577,8 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     {
         animator.UnbindAllStreamHandles();
         animator.UnbindAllSceneHandles();
-        rb.Build();
         animator.Rebind();
+        rb.Build();
     }
 
     private readonly static int[] resetHashes = new int[]

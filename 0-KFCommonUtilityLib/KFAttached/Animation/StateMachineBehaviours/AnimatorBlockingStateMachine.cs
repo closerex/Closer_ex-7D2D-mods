@@ -6,6 +6,7 @@ public class AnimatorBlockingStateMachine : StateMachineBehaviour
     public string StartStateTag = "BlockingStart";
     public string ExitStateTag = "BlockingExit";
     public string ExitTransitionTag = "BlockingExitTransition";
+    private readonly int isBlockingRunningHash = Animator.StringToHash("IsBlockingRunning");
 #if NotEditor
     private EntityPlayerLocal player;
     private ItemModuleMultiItem.MultiItemInvData multiInvData;
@@ -13,26 +14,26 @@ public class AnimatorBlockingStateMachine : StateMachineBehaviour
 
     public void CheckAction(Animator animator)
     {
+        if (player)
+            return;
+        
+        player = animator.GetLocalPlayerInParent();
         if (!player)
+            return;
+        
+        var targets = AnimationRiggingManager.GetActiveRigTargetsFromPlayer(player);
+        if (!targets)
+            return;
+        
+        if (player.inventory.slots[targets.SlotIndex].IsModuleContainerFor(out multiInvData))
         {
-            player = animator.GetLocalPlayerInParent();
-            if (player)
-            {
-                var targets = AnimationRiggingManager.GetActiveRigTargetsFromPlayer(player);
-                if (targets)
-                {
-                    multiInvData = (player.inventory.slots[targets.SlotIndex] as IModuleContainerFor<ItemModuleMultiItem.MultiItemInvData>)?.Instance;
-                    if (multiInvData != null)
-                    {
-                        blockingData = multiInvData.boundInvData?.actionData?[2] as ItemActionBlocking.ItemActionBlockingData;
-                    }
-                }
-            }
+            blockingData = multiInvData.boundInvData?.actionData?[2] as ItemActionBlocking.ItemActionBlockingData;
         }
     }
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        animator.SetWrappedBool(isBlockingRunningHash, true);
         CheckAction(animator);
         if (blockingData != null)
         {
@@ -60,7 +61,7 @@ public class AnimatorBlockingStateMachine : StateMachineBehaviour
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (blockingData != null && !blockingData.isBlockingExited && stateInfo.IsTag(ExitStateTag) && animator.IsInTransition(layerIndex) && animator.GetAnimatorTransitionInfo(layerIndex).IsUserName(ExitTransitionTag) && !animator.GetNextAnimatorStateInfo(layerIndex).IsTag(StartStateTag))
+        if (blockingData is { isBlockingExited: false } && stateInfo.IsTag(ExitStateTag) && animator.IsInTransition(layerIndex) && animator.GetAnimatorTransitionInfo(layerIndex).IsUserName(ExitTransitionTag) && !animator.GetNextAnimatorStateInfo(layerIndex).IsTag(StartStateTag))
         {
             blockingData.isBlockingRunning = false;
             blockingData.isBlockingExited = true;
@@ -74,7 +75,8 @@ public class AnimatorBlockingStateMachine : StateMachineBehaviour
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (blockingData != null && !blockingData.isBlockingExited && stateInfo.IsTag(ExitStateTag) && !animator.GetCurrentAnimatorStateInfo(layerIndex).IsTag(StartStateTag))
+        animator.SetWrappedBool(isBlockingRunningHash, false);
+        if (blockingData is { isBlockingExited: false } && stateInfo.IsTag(ExitStateTag) && !animator.GetCurrentAnimatorStateInfo(layerIndex).IsTag(StartStateTag))
         {
             blockingData.isBlockingRunning = false;
             blockingData.isBlockingExited = true;

@@ -416,9 +416,9 @@ public static class FireModePatches
             }
 
             var actionData = _player.inventory.holdingItemData.actionData[MultiActionManager.GetActionIndexForEntity(_player)];
-            if (actionData is IModuleContainerFor<ActionModuleFireModeSelector.FireModeData> fireModeData)
+            if (actionData.IsModuleContainerFor(out ActionModuleFireModeSelector.FireModeData fireModeData))
             {
-                fireModeData.Instance.CycleFireMode(actionData);
+                fireModeData.CycleFireMode(actionData);
             }
         }
     }

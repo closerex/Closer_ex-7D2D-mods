@@ -59,9 +59,9 @@ namespace KFCommonUtilityLib.Harmony
                         for (int j = 0; j < invData.actionData.Count; j++)
                         {
                             var actionData = invData.actionData[j];
-                            if (actionData is IModuleContainerFor<IBackgroundInventoryUpdater> updater)
+                            if (actionData.IsModuleContainerFor(out IBackgroundInventoryUpdater updater))
                             {
-                                BackgroundInventoryUpdateManager.RegisterUpdater(__instance, i, updater.Instance);
+                                BackgroundInventoryUpdateManager.RegisterUpdater(__instance, i, updater);
                             }
                         }
                     }

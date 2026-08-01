@@ -9,7 +9,7 @@ using UniLinq;
 [TypeTarget(typeof(ItemAction)), TypeDataTarget(typeof(AnimationInterruptSourceData))]
 public class ActionModuleAnimationInterruptSource
 {
-    public bool ignoreShotTime = false;
+    public bool ignoreShotTime;
 
     [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPostfix]
     public void Postfix_StartHolding(AnimationInterruptSourceData __customData)
@@ -43,24 +43,29 @@ public class ActionModuleAnimationInterruptSource
         {
             itemExtFunc.GetAllExecutingActions(player.inventory.holdingItemData, actionList, dataList);
             isActionRunning = actionList.Count > 0;
-            isAllRunningActionInterruptable = interruptAction is IModuleContainerFor<ActionModuleAnimationInterruptSource> && !interruptAction.IsActionRunning(interruptData) && interruptData is IModuleContainerFor<AnimationInterruptSourceData> dataModule && !dataModule.Instance.interrupted;
+            isAllRunningActionInterruptable =
+                interruptAction.IsModuleContainerFor(out ActionModuleAnimationInterruptSource interruptModule) &&
+                !interruptAction.IsActionRunning(interruptData) &&
+                interruptData.IsModuleContainerFor(out AnimationInterruptSourceData dataModule) &&
+                !dataModule.interrupted;
             if (isAllRunningActionInterruptable)
             {
-                var interruptModule = ((IModuleContainerFor<ActionModuleAnimationInterruptSource>)interruptAction).Instance;
                 for (int i = 0; i < actionList.Count; i++)
                 {
-                    if (actionList[i] is not IModuleContainerFor<ActionModuleAnimationInterruptable> animationModule || dataList[i] is not IModuleContainerFor<ActionModuleAnimationInterruptable.AnimationInterruptableData> animationModuleData)
+                    if (!actionList[i].IsModuleContainerFor(out ActionModuleAnimationInterruptable animationModule) ||
+                        !dataList[i].IsModuleContainerFor(out ActionModuleAnimationInterruptable.AnimationInterruptableData animationModuleData))
                     {
-                        if (dataList[i] is IModuleContainerFor<ActionModuleMeleeShooter.MeleeShooterData> meleeShooterModule)
+                        if (dataList[i].IsModuleContainerFor(out ActionModuleMeleeShooter.MeleeShooterData meleeShooterModule))
                         {
-                            if (meleeShooterModule.Instance.animationRequested)
+                            if (meleeShooterModule.animationRequested)
                             {
                                 actionList.RemoveAt(i);
                                 i--;
                             }
                             continue;
                         }
-                        else if (interruptModule.ignoreShotTime && dataList[i] is ItemActionRanged.ItemActionDataRanged rangedData)
+
+                        if (interruptModule.ignoreShotTime && dataList[i] is ItemActionRanged.ItemActionDataRanged rangedData)
                         {
                             var action = actionList[i];
                             var data = dataList[i];
@@ -80,7 +85,7 @@ public class ActionModuleAnimationInterruptSource
                         break;
                     }
 
-                    isAllRunningActionInterruptable = animationModuleData.Instance.IsInterruptable();
+                    isAllRunningActionInterruptable = animationModuleData.IsInterruptable();
                     if (!isAllRunningActionInterruptable)
                     {
                         break;
@@ -97,9 +102,9 @@ public class ActionModuleAnimationInterruptSource
 
     public class AnimationInterruptSourceData
     {
-        public List<ItemAction> cachedActionList = new List<ItemAction>();
-        public List<ItemActionData> cachedDataList = new List<ItemActionData>();
-        public bool interrupted = false;
+        public List<ItemAction> cachedActionList = new();
+        public List<ItemActionData> cachedDataList = new();
+        public bool interrupted;
     }
 }
 
@@ -114,9 +119,8 @@ public static class ZAnimationInterruptSourcePatches
         ItemActionData curActionData = _data.actionData[_actionIdx];
         if (!_bReleased && _playerActions != null)
         {
-            if (curAction is IModuleContainerFor<ActionModuleAnimationInterruptSource> module && curActionData is IModuleContainerFor<ActionModuleAnimationInterruptSource.AnimationInterruptSourceData> dataModule)
+            if (curAction.IsModuleContainerFor(out ActionModuleAnimationInterruptSource _) && curActionData.IsModuleContainerFor(out ActionModuleAnimationInterruptSource.AnimationInterruptSourceData interruptData))
             {
-                ActionModuleAnimationInterruptSource.AnimationInterruptSourceData interruptData = dataModule.Instance;
                 interruptData.cachedActionList.Clear();
                 interruptData.cachedDataList.Clear();
                 ActionModuleAnimationInterruptSource.GetAllRunningAndInterruptableActions(_data.holdingEntity as EntityPlayerLocal, curAction, curActionData, interruptData.cachedActionList, interruptData.cachedDataList, out bool isActionRunning, out bool isAllRunningActionInterruptable);
@@ -139,9 +143,9 @@ public static class ZAnimationInterruptSourcePatches
         }
         else if (_bReleased)
         {
-            if (curActionData is IModuleContainerFor<ActionModuleAnimationInterruptSource.AnimationInterruptSourceData> dataModule)
+            if (curActionData.IsModuleContainerFor(out ActionModuleAnimationInterruptSource.AnimationInterruptSourceData dataModule))
             {
-                dataModule.Instance.interrupted = false;
+                dataModule.interrupted = false;
             }
         }
         return true;
@@ -186,9 +190,7 @@ public static class ZAnimationInterruptSourcePatches
                             CodeInstruction.LoadField(typeof(PlayerMoveController), nameof(PlayerMoveController.entityPlayerLocal)),
                             new CodeInstruction(codes[j - 2].opcode, codes[j - 2].operand),
                             CodeInstruction.CallClosure<Func<EntityPlayerLocal, int, bool>>(static (player, actionIndex) =>
-                            {
-                                return player.inventory.holdingItem.Actions[actionIndex] is not IModuleContainerFor<ActionModuleAnimationInterruptSource> module;
-                            })
+                                !player.inventory.holdingItem.Actions[actionIndex].IsModuleContainerFor(out ActionModuleAnimationInterruptSource _))
                         });
                         i += 5;
                         break;

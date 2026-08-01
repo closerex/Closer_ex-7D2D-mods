@@ -327,9 +327,9 @@ public class ActionModuleProceduralRecoil
 
     public static Ray GetLookRayOverride(ItemActionData data)
     {
-        if (data.invData.holdingEntity is EntityPlayerLocal player && player.bFirstPersonView && data is IModuleContainerFor<EFTProceduralRecoilData> dataModule && data.invData.holdingEntity.AimingGun)
+        if (data.invData.holdingEntity is EntityPlayerLocal player && player.bFirstPersonView && data.IsModuleContainerFor(out EFTProceduralRecoilData _) && data.invData.holdingEntity.AimingGun)
         {
-            var aimingModule = (data.invData.actionData[1] as IModuleContainerFor<ActionModuleProceduralAiming.ProceduralAimingData>)?.Instance;
+            var aimingModule = data.invData.actionData[1].LoadModule<ActionModuleProceduralAiming.ProceduralAimingData>();
             if (aimingModule != null)
             {
                 Transform transform = aimingModule.CurAimRef.transform;
@@ -546,7 +546,7 @@ public class ActionModuleProceduralRecoil
             {
                 return;
             }
-            var aimingData = ((IModuleContainerFor<ActionModuleProceduralAiming.ProceduralAimingData>)invData.actionData[1]).Instance;
+            var aimingData = invData.actionData[1].LoadModule<ActionModuleProceduralAiming.ProceduralAimingData>();
             //ProceduralRecoilUpdater.InverseWorldCamKickOffsetCur.ToAngleAxis(out float camRotAngle, out Vector3 camRotAxis);
             //playerOriginTransform.RotateAround(aimingData.aimRefTransform.position, camRotAxis, camRotAngle);
             AimRefData aimRefData = aimingData.CurAimRefData;
@@ -563,7 +563,7 @@ public class ActionModuleProceduralRecoil
             //                            * (Quaternion.AngleAxis(HandRotValueCur.y, playerCameraTransform.up) * playerCameraTransform.forward);
 
             //Quaternion.FromToRotation(playerCameraTransform.forward, targetHandForward).ToAngleAxis(out float worldAngleOffset, out Vector3 worldRotAxis);
-            ((playerCameraTransform.rotation * Quaternion.Euler(HandRotValueApply)) * Quaternion.Inverse(playerCameraTransform.rotation)).ToAngleAxis(out float worldAngleOffset, out Vector3 worldRotAxis);
+            (playerCameraTransform.rotation * Quaternion.Euler(HandRotValueApply) * Quaternion.Inverse(playerCameraTransform.rotation)).ToAngleAxis(out float worldAngleOffset, out Vector3 worldRotAxis);
             Vector3 worldPivotPos = recoilPivotTransform.position;
             playerOriginTransform.RotateAround(worldPivotPos, worldRotAxis, worldAngleOffset);
             playerOriginTransform.position += targetHandPosOffset;
@@ -577,8 +577,8 @@ public class ActionModuleProceduralRecoil
             //    playerOriginTransform.position += targetHandPosOffset;
             //    playerOriginTransform.RotateAround(recoilPivotTransform.position, worldRotAxis, worldAngleOffset);
             //}
-            Vector3 alignmentPos = aimRefData.aimRef.alignmentTarget?.position ?? (aimRefTransform.position - aimRefData.targetAimRefOffset * aimRefTransform.forward);
-            ((playerCameraTransform.rotation * Quaternion.Euler(ProceduralRecoilUpdater.CamAimRecoilRotOffsetCur)) * Quaternion.Inverse(playerCameraTransform.rotation)).ToAngleAxis(out worldAngleOffset, out worldRotAxis);
+            Vector3 alignmentPos = aimRefData.aimRef.alignmentTarget?.position ?? aimRefTransform.position - aimRefData.targetAimRefOffset * aimRefTransform.forward;
+            (playerCameraTransform.rotation * Quaternion.Euler(ProceduralRecoilUpdater.CamAimRecoilRotOffsetCur) * Quaternion.Inverse(playerCameraTransform.rotation)).ToAngleAxis(out worldAngleOffset, out worldRotAxis);
             playerOriginTransform.RotateAround(alignmentPos, worldRotAxis, worldAngleOffset);
             ProceduralRecoilUpdater.LateUpdateCamRecoilPosOffset(aimRefTransform.position - prevAimRefPos, dt, invData.holdingEntity.AimingGun);
             playerOriginTransform.position -= ProceduralRecoilUpdater.GetCurRecoilPosOffset();
@@ -809,13 +809,8 @@ public class ActionModuleProceduralRecoil
 public static class ProceduralRecoilUpdater
 {
     public static EntityPlayerLocal player;
-    public static ActionModuleProceduralRecoil.EFTProceduralRecoilData RecoilData
-    {
-        get
-        {
-            return (player?.inventory?.holdingItemData?.actionData?[MultiActionManager.GetActionIndexForEntity(player)] as IModuleContainerFor<ActionModuleProceduralRecoil.EFTProceduralRecoilData>)?.Instance;
-        }
-    }
+    public static ActionModuleProceduralRecoil.EFTProceduralRecoilData RecoilData =>
+        player?.inventory?.holdingItemData?.actionData?[MultiActionManager.GetActionIndexForEntity(player)].LoadModule<ActionModuleProceduralRecoil.EFTProceduralRecoilData>();
 
     private static float SetAimIntensity
     {

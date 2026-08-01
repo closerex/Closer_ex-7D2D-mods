@@ -90,11 +90,12 @@ namespace KFCommonUtilityLib.KFAttached.Render
                 {
                     var aimBlend = gameObject.AddComponent<AimingMaterialBlender>();
                     aimBlend.aimRef = aimRefComp;
+                    aimBlend.depthPropertyName = "_ReticleDepth";
                     //Log.Out($"Adding aim mat blender...");
                 }
             }
 
-            material.renderQueue = 3000;
+            // material.renderQueue = 3000;
             material.EnableKeyword("_BUILTIN_AlphaClip");
             material.EnableKeyword("_BUILTIN_ALPHATEST_ON");
             if (material.HasFloat("_ReticleScale"))
@@ -155,7 +156,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
                 return;
             }
             zoomActionData = (ItemActionZoom.ItemActionDataZoom)player.inventory.holdingItemData.actionData[1];
-            variableZoomData = (zoomActionData as IModuleContainerFor<ActionModuleVariableZoom.VariableZoomData>)?.Instance;
+            variableZoomData = zoomActionData.LoadModule<ActionModuleVariableZoom.VariableZoomData>();
             if (variableZoomData != null && (variableZoom || variableZoomData.forceFov))
             {
                 if (variableZoom)
@@ -418,7 +419,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
             WeaponCameraFollow weaponCameraFollow = cameraGO.AddComponent<WeaponCameraFollow>();
             weaponCameraFollow.magnifyScope = this;
             weaponCameraFollow.targetTexture = targetTexture;
-            weaponCameraFollow.dynamicSensitivityData = (zoomActionData as IModuleContainerFor<ActionModuleDynamicSensitivity.DynamicSensitivityData>)?.Instance;
+            weaponCameraFollow.dynamicSensitivityData = zoomActionData.LoadModule<ActionModuleDynamicSensitivity.DynamicSensitivityData>();
             weaponCameraFollow.player = player;
             var old = player.playerCamera.GetComponent<PostProcessLayer>();
             var layer = pipCamera.gameObject.GetOrAddComponent<PostProcessLayer>();

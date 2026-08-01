@@ -420,9 +420,9 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             {
                 return "";
             }
-            if (itemValue.ItemClass.Actions[itemValue.GetActionIndexByMetaData()] is IModuleContainerFor<ActionModuleMultiActionFix> module)
+            if (itemValue.ItemClass.Actions[itemValue.GetActionIndexByMetaData()].IsModuleContainerFor(out ActionModuleMultiActionFix module))
             {
-                return module.Instance.GetDisplayType(itemValue);
+                return module.GetDisplayType(itemValue);
             }
             return itemValue.ItemClass.DisplayType;
         }

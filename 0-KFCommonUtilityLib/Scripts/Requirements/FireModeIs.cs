@@ -12,9 +12,9 @@ public class FireModeIs : RequirementBase
             return false;
         }
         bool res = false;
-        if (_params.ItemActionData is IModuleContainerFor<ActionModuleFireModeSelector.FireModeData> dataModule)
+        if (_params.ItemActionData.IsModuleContainerFor(out ActionModuleFireModeSelector.FireModeData dataModule))
         {
-            res = dataModule.Instance.currentFireMode == index;
+            res = dataModule.currentFireMode == index;
         }
         return invert ? !res : res;
     }

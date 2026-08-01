@@ -1,36 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 using CodeWriter.ExpressionParser;
-using UnityEngine;
 
 public class MinEventActionCVarExpression : MinEventActionTargetedBase
 {
-    private enum VariableType
-    {
-        None,
-        CVar,
-        RandomInt,
-        RandomFloat,
-        TierList
-    }
-
-    private class VariableInfo
-    {
-        public VariableType varType;
-        public string cvarName;
-        public float[] valueList;
-        public float randomMin;
-        public float randomMax;
-    }
-    public string cvarName;
-    public CVarOperation operation;
-    private bool isValid = false;
-    private ExpressionContext<float> context;
-    private Expression<float> compiledExpr; 
-    private VariableInfo[] variableInfos;
-    private MinEventParams minEventContext;
-    private EntityAlive target;
+    private string cvarName;
+    private CVarOperation operation;
+    private bool isValid;
+    private MinEventEvaluator evaluator;
 
     public override bool CanExecute(MinEventTypes _eventType, MinEventParams _params)
     {
@@ -39,28 +15,28 @@ public class MinEventActionCVarExpression : MinEventActionTargetedBase
             Log.Out("CVar '{0}' is readonly", new object[] { cvarName });
             return false;
         }
-        if (!isValid)
+
+        if (isValid)
         {
-            Log.Out("Invalid expression!");
-            return false;
+            return base.CanExecute(_eventType, _params);
         }
-        return base.CanExecute(_eventType, _params);
+        
+        Log.Out("Invalid expression!");
+        return false;
     }
 
     public override void Execute(MinEventParams _params)
     {
-        if (compiledExpr == null)
-        {
-            return;
-        }
-        minEventContext = _params;
         for (int i = 0; i < targets.Count; i++)
         {
-            target = targets[i];
-            target.Buffs.SetCustomVar(cvarName, compiledExpr.Invoke(), (target.isEntityRemote && !_params.Self.isEntityRemote) || (!target.isEntityRemote && !_params.Self.isEntityRemote && target != _params.Self) || _params.IsLocal, operation);
+            var target = targets[i];
+            if (!evaluator.IsValid(_params, target, i))
+                continue;
+            target.Buffs.SetCustomVar(cvarName, evaluator.Evaluate(_params, target, i, targets.Count),
+                (target.isEntityRemote && !_params.Self.isEntityRemote) ||
+                (!target.isEntityRemote && !_params.Self.isEntityRemote && target != _params.Self) || _params.IsLocal,
+                operation);
         }
-        minEventContext = null;
-        target = null;
     }
 
     public override bool ParseXmlAttribute(XAttribute _attribute)
@@ -77,143 +53,22 @@ public class MinEventActionCVarExpression : MinEventActionTargetedBase
                 case "expression":
                     isValid = true;
                     string expr = _attribute.Value;
-                    context = new ExpressionContext<float>();
-                    List<VariableInfo> variableInfos = new List<VariableInfo>();
-                    Dictionary<string, int> varStrs = new Dictionary<string, int>();
-                    while (true)
+                    isValid = MinEventEvaluator.TryParse(expr, out evaluator);
+                    if (isValid)
                     {
-                        int nextVarStart = expr.IndexOf('[');
-                        if (nextVarStart < 0)
+                        foreach (var child in _attribute.Parent.Elements())
                         {
-                            break;
-                        }
-                        int nextVarEnd = expr.IndexOf(']', nextVarStart);
-                        if (nextVarEnd < 0)
-                        {
-                            isValid = false;
-                            break;
-                        }
-                        string varStr = expr.Substring(nextVarStart + 1, nextVarEnd - nextVarStart - 1);
-                        VariableInfo variableInfo = null;
-                        if (varStr.StartsWith("@"))
-                        {
-                            if (!varStrs.ContainsKey(varStr))
-                            {
-                                variableInfo = new VariableInfo();
-                                variableInfo.varType = VariableType.CVar;
-                                variableInfo.cvarName = varStr.Substring(1);
-                                varStrs.Add(varStr, variableInfos.Count);
-                            }
-                        }
-                        else if (varStr.StartsWith("randomInt", StringComparison.OrdinalIgnoreCase))
-                        {
-                            variableInfo = new VariableInfo();
-                            variableInfo.varType = VariableType.RandomInt;
-                            Vector2 vector = StringParsers.ParseVector2(varStr.Substring(varStr.IndexOf('(') + 1, varStr.IndexOf(')') - (varStr.IndexOf('(') + 1)));
-                            variableInfo.randomMin = (int)vector.x;
-                            variableInfo.randomMax = (int)vector.y;
-                        }
-                        else if (varStr.StartsWith("randomFloat", StringComparison.OrdinalIgnoreCase))
-                        {
-                            variableInfo = new VariableInfo();
-                            variableInfo.varType = VariableType.RandomFloat;
-                            Vector2 vector = StringParsers.ParseVector2(varStr.Substring(varStr.IndexOf('(') + 1, varStr.IndexOf(')') - (varStr.IndexOf('(') + 1)));
-                            variableInfo.randomMin = vector.x;
-                            variableInfo.randomMax = vector.y;
-                        }
-                        else if (varStr.Contains(','))
-                        {
-                            if (!varStrs.ContainsKey(varStr))
-                            {
-                                variableInfo = new VariableInfo();
-                                variableInfo.varType = VariableType.TierList;
-                                string[] array = varStr.Split(',', StringSplitOptions.None);
-                                variableInfo.valueList = new float[array.Length];
-                                for (int i = 0; i < array.Length; i++)
-                                {
-                                    variableInfo.valueList[i] = float.Parse(array[i]);
-                                }
-                                varStrs.Add(varStr, variableInfos.Count);
-                            }
-                        }
-                        else if (float.TryParse(varStr, out _))
-                        {
-                            
-                            expr = expr.Remove(nextVarEnd).Remove(nextVarStart);
-                        }
-                        else
-                        {
-                            isValid = false;
-                            break;
-                        }
-                        int curIndex = varStrs.TryGetValue(varStr, out var index) ? index : variableInfos.Count;
-                        string varName = "x" + curIndex;
-                        expr = expr.Remove(nextVarStart, nextVarEnd - nextVarStart + 1).Insert(nextVarStart, varName);
-                        //Log.Out($"cur index {curIndex} var name {varStr} is new var {curIndex == variableInfos.Count}");
-                        if (curIndex == variableInfos.Count)
-                        {
-                            context.RegisterVariable(varName, () => { return EvaluateVar(curIndex); });
-                        }
-                        if (variableInfo != null)
-                        {
-                            variableInfos.Add(variableInfo);
+                            evaluator.ParseAdditionalAttributes(child);
                         }
                     }
-                    if (!isValid)
-                    {
-                        Log.Out("Invalid expression: {0}", new object[] { expr });
-                        return false;
-                    }
-                    Log.Out($"Compiling expr {expr}...");
-                    compiledExpr = FloatExpressionParser.Instance.Compile(expr, context, true);
-                    this.variableInfos = variableInfos.ToArray();
                     flag = true;
                     break;
                 case "operation":
-                    this.operation = EnumUtils.Parse<CVarOperation>(_attribute.Value, true);
+                    operation = EnumUtils.Parse<CVarOperation>(_attribute.Value, true);
                     flag = true;
                     break;
             }
         }
         return flag;
-    }
-
-    private float EvaluateVar(int index)
-    {
-        var variableInfo = variableInfos[index];
-        switch (variableInfo.varType)
-        {
-            case VariableType.CVar:
-                var value = target.Buffs.GetCustomVar(variableInfo.cvarName);
-                //Log.Out($"Evaluate CVar {variableInfo.cvarName} = {value}");
-                return value;
-            case VariableType.RandomInt:
-                return Mathf.Clamp(minEventContext.Self.rand.RandomRange((int)variableInfo.randomMin, (int)variableInfo.randomMax + 1), variableInfo.randomMin, variableInfo.randomMax);
-            case VariableType.RandomFloat:
-                return Mathf.Clamp(minEventContext.Self.rand.RandomRange(variableInfo.randomMin, variableInfo.randomMax + 1), variableInfo.randomMin, variableInfo.randomMax);
-            case VariableType.TierList:
-                if (minEventContext.ParentType == MinEffectController.SourceParentType.ItemClass || minEventContext.ParentType == MinEffectController.SourceParentType.ItemModifierClass)
-                {
-                    if (!minEventContext.ItemValue.IsEmpty())
-                    {
-                        int tier = (int)(minEventContext.ItemValue.Quality - 1);
-                        if (tier >= 0)
-                        {
-                            return variableInfo.valueList[tier];
-                        }
-                    }
-                }
-                else if (minEventContext.ParentType == MinEffectController.SourceParentType.ProgressionClass && minEventContext.ProgressionValue != null)
-                {
-                    int level = minEventContext.ProgressionValue.CalculatedLevel(minEventContext.Self);
-                    if (level >= 0)
-                    {
-                        return variableInfo.valueList[level];
-                    }
-                }
-                return 0f;
-            default:
-                return 0f;
-        }
     }
 }

@@ -90,18 +90,33 @@ namespace KFCommonUtilityLib
         [MenuItem("Assets/Audio Collection to Xml")]
         public static void ToXmlData()
         {
-            if (Selection.activeObject is AudioClipCollection collection)
+            string mergedStr = "";
+            foreach (var guid in Selection.assetGUIDs)
             {
-                collection.ConvertXmlData();
+                string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                if (!string.IsNullOrEmpty(assetPath))
+                {
+                    var collection =  AssetDatabase.LoadAssetAtPath<AudioClipCollection>(assetPath);
+                    if (collection != null)
+                    {
+                        mergedStr += $"{collection.ConvertXmlData()}\n";
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(mergedStr))
+            {
+                GUIUtility.systemCopyBuffer = mergedStr;
             }
         }
 
-        public void ConvertXmlData()
+        public string ConvertXmlData()
         {
             if (audioData == null || audioData.Count == 0 || string.IsNullOrEmpty(BundlePath))
-                return;
+                return string.Empty;
 
             XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.AppendChild(xmlDoc.CreateComment($"#region {name}"));
 
             XmlElement root = xmlDoc.CreateElement("append");
             root.Attributes.Append(xmlDoc.CreateAttribute("xpath")).Value = "/Sounds";
@@ -227,6 +242,8 @@ namespace KFCommonUtilityLib
 
                 root.AppendChild(soundDataNode);
             }
+
+            xmlDoc.AppendChild(xmlDoc.CreateComment("#endregion"));
             using (StringWriter sw = new StringWriter())
             {
                 using (XmlWriter xr = XmlWriter.Create(sw, new()
@@ -238,7 +255,7 @@ namespace KFCommonUtilityLib
                 {
                     xmlDoc.Save(xr);
                 }
-                GUIUtility.systemCopyBuffer = sw.ToString();
+                return sw.ToString();
             }
         }
 #endif

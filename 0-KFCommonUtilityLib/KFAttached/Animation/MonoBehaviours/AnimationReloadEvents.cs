@@ -8,6 +8,8 @@ using UnityEngine;
 [AddComponentMenu("KFAttachments/Utils/Animation Reload Events")]
 public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
 {
+    [HideInInspector, Range(0, 1)] public float laserCorrectionWeight = 1f;
+    
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -78,9 +80,9 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
         actionData.isReloadCancelled = false;
         actionData.isWeaponReloadCancelled = false;
         actionData.isChangingAmmoType = false;
-        if (actionData is IModuleContainerFor<ActionModuleMultiBarrel.MultiBarrelData> dataModule)
+        if (actionData.IsModuleContainerFor(out ActionModuleMultiBarrel.MultiBarrelData dataModule))
         {
-            dataModule.Instance.SetCurrentBarrel(actionData.invData.itemValue.Meta);
+            dataModule.SetCurrentBarrel(actionData.invData.itemValue.Meta);
         }
 #if DEBUG
         Log.Out($"ANIMATION RELOAD EVENT FINISHED : {actionData.invData.item.Name}");
@@ -142,8 +144,7 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
         {
             return;
         }
-        var shellEjectorData = (player.inventory.holdingItemData.actionData[actionIndex] as IModuleContainerFor<ActionModuleShellEjector.ShellEjectorData>)?.Instance;
-        if (shellEjectorData != null)
+        if (player.inventory.holdingItemData.actionData[actionIndex].IsModuleContainerFor(out ActionModuleShellEjector.ShellEjectorData shellEjectorData))
         {
             shellEjectorData.SpawnShell();
         }
@@ -165,8 +166,7 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
         {
             return;
         }
-        var shellEjectorData = (player.inventory.holdingItemData.actionData[actionIndex] as IModuleContainerFor<ActionModuleShellEjector.ShellEjectorData>)?.Instance;
-        if (shellEjectorData != null)
+        if (player.inventory.holdingItemData.actionData[actionIndex].IsModuleContainerFor(out ActionModuleShellEjector.ShellEjectorData shellEjectorData))
         {
             shellEjectorData.SpawnEffect();
         }
@@ -190,9 +190,9 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
             return;
         }
         int barrelIndex = (int)eventData.floatParameter;
-        var shellEjectorData = (player.inventory.holdingItemData.actionData[actionIndex] as IModuleContainerFor<ActionModuleShellEjector.ShellEjectorData>)?.Instance;
-        var multiBarrelData = (player.inventory.holdingItemData.actionData[actionIndex] as IModuleContainerFor<ActionModuleMultiBarrel.MultiBarrelData>)?.Instance;
-        if (shellEjectorData != null && multiBarrelData != null && barrelIndex >= 0 && barrelIndex < multiBarrelData.shellEffectJoints.Length)
+        if (player.inventory.holdingItemData.actionData[actionIndex].IsModuleContainerFor(out ActionModuleShellEjector.ShellEjectorData shellEjectorData) &&
+            player.inventory.holdingItemData.actionData[actionIndex].IsModuleContainerFor(out ActionModuleMultiBarrel.MultiBarrelData multiBarrelData) &&
+            barrelIndex >= 0 && barrelIndex < multiBarrelData.shellEffectJoints.Length)
         {
             var originalShellJoint = shellEjectorData.shellJoint;
             shellEjectorData.shellJoint = multiBarrelData.shellJoints[barrelIndex];
@@ -219,9 +219,9 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
             return;
         }
         int barrelIndex = (int)eventData.floatParameter;
-        var shellEjectorData = (player.inventory.holdingItemData.actionData[actionIndex] as IModuleContainerFor<ActionModuleShellEjector.ShellEjectorData>)?.Instance;
-        var multiBarrelData = (player.inventory.holdingItemData.actionData[actionIndex] as IModuleContainerFor<ActionModuleMultiBarrel.MultiBarrelData>)?.Instance;
-        if (shellEjectorData != null && multiBarrelData != null && barrelIndex >= 0 && barrelIndex < multiBarrelData.shellEffectJoints.Length)
+        if (player.inventory.holdingItemData.actionData[actionIndex].IsModuleContainerFor(out ActionModuleShellEjector.ShellEjectorData shellEjectorData) &&
+            player.inventory.holdingItemData.actionData[actionIndex].IsModuleContainerFor(out ActionModuleMultiBarrel.MultiBarrelData multiBarrelData) &&
+            barrelIndex >= 0 && barrelIndex < multiBarrelData.shellEffectJoints.Length)
         {
             var originalShellJoint = shellEjectorData.shellEffectJoint;
             shellEjectorData.shellEffectJoint = multiBarrelData.shellEffectJoints[barrelIndex];
@@ -301,7 +301,7 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
             ItemValue ammoValue = ItemClass.GetItem(actionRanged.MagazineItemNames[itemValue.SelectedAmmoTypeIndex], false);
             if (ConsoleCmdReloadLog.LogInfo)
                 Log.Out($"loading ammo {ammoValue.ItemClass.Name}");
-            ItemActionLauncher.ItemActionDataLauncher itemActionDataLauncher = actionData as ItemActionLauncher.ItemActionDataLauncher;
+            ItemActionLauncher.ItemActionDataLauncher itemActionDataLauncher = (ItemActionLauncher.ItemActionDataLauncher)actionData;
             if (itemActionDataLauncher.isChangingAmmoType)
             {
                 if (ConsoleCmdReloadLog.LogInfo)
@@ -316,18 +316,18 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
                 projectileCount *= getProjectileCount(itemActionDataLauncher);
             }
             int times = 1;
-            IModuleContainerFor<ActionModuleMultiBarrel.MultiBarrelData> dataModule = actionData as IModuleContainerFor<ActionModuleMultiBarrel.MultiBarrelData>;
-            if (dataModule != null && dataModule.Instance.oneRoundMultishot)
+            var mbData = actionData.LoadModule<ActionModuleMultiBarrel.MultiBarrelData>();
+            if (mbData is { oneRoundMultishot: true })
             {
-                times = dataModule.Instance.roundsPerShot;
+                times = mbData.roundsPerShot;
             }
             for (int j = itemActionDataLauncher.projectileTs.Count; j < projectileCount; j++)
             {
                 for (int i = 0; i < times; i++)
                 {
-                    if (dataModule != null)
+                    if (mbData != null)
                     {
-                        itemActionDataLauncher.projectileJointT = dataModule.Instance.projectileJoints[i] ?? itemActionDataLauncher.projectileJointT;
+                        itemActionDataLauncher.projectileJointT = mbData.projectileJoints[i] ?? itemActionDataLauncher.projectileJointT;
                     }
                     itemActionDataLauncher.projectileTs.Add(itemActionLauncher.instantiateProjectile(actionData, Vector3.zero));
                 }

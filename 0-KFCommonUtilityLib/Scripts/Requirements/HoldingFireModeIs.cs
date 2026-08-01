@@ -12,9 +12,10 @@ public class HoldingFireModeIs : RequirementBase
             return false;
         }
         bool res = false;
-        if (_params.Self && _params.Self?.inventory?.holdingItemData?.actionData[MultiActionManager.GetActionIndexForEntity(_params.Self)] is IModuleContainerFor<ActionModuleFireModeSelector.FireModeData> dataModule)
+        if (_params.Self && (_params.Self?.inventory?.holdingItemData?.actionData[MultiActionManager.GetActionIndexForEntity(_params.Self)]
+                .IsModuleContainerFor(out ActionModuleFireModeSelector.FireModeData dataModule) ?? false))
         {
-            res = dataModule.Instance.currentFireMode == index;
+            res = dataModule.currentFireMode == index;
         }
         return invert ? !res : res;
     }

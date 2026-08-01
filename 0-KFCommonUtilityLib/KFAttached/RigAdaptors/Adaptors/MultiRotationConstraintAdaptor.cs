@@ -21,7 +21,7 @@ public class MultiRotationConstraintAdaptor : RigAdaptorAbs
         constraint.Reset();
         constraint.weight = weight;
         constraint.data.constrainedObject = targetRoot.FindInAllChildren(m_ConstrainedObject);
-        constraint.data.sourceObjects = m_SourceObjects;
+        constraint.data.sourceObjects = ReplaceWeaponTarget(ref m_SourceObjects);
         constraint.data.offset = m_Offset;
         constraint.data.constrainedXAxis = m_ConstrainedAxes.x;
         constraint.data.constrainedYAxis = m_ConstrainedAxes.y;

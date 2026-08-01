@@ -13,9 +13,9 @@ public class ItemClassExtendedFunction : ItemClass, ILateInitItem
             if (Actions[i] != null && Actions[i].IsActionRunning(_invData.actionData[i]))
             {
                 //Log.Out($"interrupt action on item {Actions[i].item.GetLocalizedItemName()} action{i}");
-                if (_invData.actionData[i] is IModuleContainerFor<ActionModuleAnimationInterruptable.AnimationInterruptableData> interruptData)
+                if (_invData.actionData[i].IsModuleContainerFor(out ActionModuleAnimationInterruptable.AnimationInterruptableData interruptData))
                 {
-                    interruptData.Instance.interruptRequested = true;
+                    interruptData.interruptRequested = true;
                 }
                 Actions[i].CancelAction(_invData.actionData[i]);
             }

@@ -59,8 +59,8 @@ public class ActionModuleVariableZoom
             __customData.forceFov = true;
         }
 
-        __customData.scopeValueIndex = _data.invData.itemValue.Modifications == null ? -1 : Array.FindIndex(_data.invData.itemValue.Modifications, static v => v?.ItemClass is IModuleContainerFor<ItemModuleVariableZoom>);
-        if (__customData.scopeValueIndex == -1 && _data.invData.itemValue.ItemClass is not IModuleContainerFor<ItemModuleVariableZoom>)
+        __customData.scopeValueIndex = _data.invData.itemValue.Modifications == null ? -1 : Array.FindIndex(_data.invData.itemValue.Modifications, static v => v?.ItemClass.IsModuleContainerFor(out ItemModuleVariableZoom _) ?? false);
+        if (__customData.scopeValueIndex == -1 && !_data.invData.itemValue.ItemClass.IsModuleContainerFor(out ItemModuleVariableZoom _))
         {
             __customData.scopeValueIndex = int.MinValue;
         }
@@ -89,7 +89,7 @@ public class ActionModuleVariableZoom
         public float minScale = 1f;
         public float curScale = 0f;
         public bool forceFov = false;
-        public FloatRange fovRange = new FloatRange(15f, 15f);
+        public FloatRange fovRange = new(15f, 15f);
         public float curStep = 0;
         public float stepSign = 1f;
         public bool isToggleOnly = false;
@@ -105,11 +105,13 @@ public class ActionModuleVariableZoom
                 {
                     return null;
                 }
+                
                 if (scopeValueIndex == -1)
                 {
                     return invData.itemValue;
                 }
-                else if (scopeValueIndex >= 0 && scopeValueIndex < invData.itemValue.Modifications.Length)
+
+                if (scopeValueIndex >= 0 && scopeValueIndex < invData.itemValue.Modifications.Length)
                 {
                     return invData.itemValue.Modifications[scopeValueIndex];
                 }
@@ -127,25 +129,11 @@ public class ActionModuleVariableZoom
         {
             if (stepSign > 0)
             {
-                if (this.curStep >= 1)
-                {
-                    this.curStep = 0;
-                }
-                else
-                {
-                    this.curStep = 1;
-                }
+                curStep = curStep >= 1 ? 0 : 1;
             }
             else
             {
-                if (this.curStep <= 0)
-                {
-                    this.curStep = 1;
-                }
-                else
-                {
-                    this.curStep = 0;
-                }
+                curStep = curStep <= 0 ? 1 : 0;
             }
             UpdateByStep();
             ItemValue scopeValue = ScopeValue;
@@ -191,9 +179,9 @@ public static class VariableZoomPatches
         if (PlayerActionKFLib.Instance.Enabled && PlayerActionKFLib.Instance.ToggleZoom.WasPressed)
         {
             var actionData = _player.inventory.holdingItemData.actionData[1];
-            if (actionData is IModuleContainerFor<ActionModuleVariableZoom.VariableZoomData> variableZoomData)
+            if (actionData.IsModuleContainerFor(out ActionModuleVariableZoom.VariableZoomData variableZoomData))
             {
-                variableZoomData.Instance.ToggleZoom();
+                variableZoomData.ToggleZoom();
             }
         }
     }

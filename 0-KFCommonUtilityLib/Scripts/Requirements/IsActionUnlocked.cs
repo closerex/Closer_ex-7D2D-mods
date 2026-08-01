@@ -9,8 +9,8 @@ public class IsActionUnlocked : TargetedCompareRequirementBase
     {
         return base.IsValid(_params) && 
                ((actionIndex == 0 ||
-                    (_params.ItemActionData?.invData?.actionData?[0] is IModuleContainerFor<ActionModuleAlternative.AlternativeData> alt
-                        && alt.Instance.IsActionUnlocked(actionIndex))) ^ invert);
+                    ((_params.ItemActionData?.invData?.actionData?[0].IsModuleContainerFor(out ActionModuleAlternative.AlternativeData alt) ?? false)
+                        && alt.IsActionUnlocked(actionIndex))) ^ invert);
     }
 
     public override bool ParseXAttribute(XAttribute _attribute)

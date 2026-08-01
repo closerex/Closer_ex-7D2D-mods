@@ -100,9 +100,8 @@ public static class AimingSettings
             }
 
             var player = GameManager.Instance?.World?.GetPrimaryPlayer();
-            if (player != null && player.inventory?.holdingItemData?.actionData?[1] is IModuleContainerFor<ActionModuleProceduralAiming.ProceduralAimingData> dataModule)
+            if (player != null && (player.inventory?.holdingItemData?.actionData?[1].IsModuleContainerFor(out ActionModuleProceduralAiming.ProceduralAimingData data) ?? false))
             {
-                var data = dataModule.Instance;
                 data.RefreshAimRefData();
                 data.UpdateCurrentReference(true);
             }
@@ -121,10 +120,10 @@ public class ActionModuleProceduralAiming
     [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
     public void Postfix_OnModificationsChanged(ItemActionZoom __instance, ItemActionData _data, ProceduralAimingData __customData)
     {
-        if (_data is IModuleContainerFor<ActionModuleErgoAffected.ErgoData> dataModule)
+        if (_data.IsModuleContainerFor(out ActionModuleErgoAffected.ErgoData dataModule))
         {
-            __customData.zoomInTime = dataModule.Instance.module.zoomInTimeBase / dataModule.Instance.module.aimSpeedModifierBase;
-            __customData.ergoData = dataModule.Instance;
+            __customData.zoomInTime = dataModule.module.zoomInTimeBase / dataModule.module.aimSpeedModifierBase;
+            __customData.ergoData = dataModule;
         }
         else
         {

@@ -1,12 +1,12 @@
-﻿using Audio;
-using HarmonyLib;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using UniLinq;
+using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml.Linq;
+using Audio;
+using HarmonyLib;
+using UniLinq;
 using UnityEngine;
-using System.Reflection;
 
 namespace KFCommonUtilityLib.Harmony
 {
@@ -67,7 +67,7 @@ namespace KFCommonUtilityLib.Harmony
                                 {
                                     dict_volume_modifiers[soundGroupName] = value;
                                 }
-                                else if (element.Name.LocalName == "FPVForce2D")
+                                else if (element.Name.LocalName == "Force2D")
                                 {
                                     set_force_2d_fpv.Add(soundGroupName);
                                 }

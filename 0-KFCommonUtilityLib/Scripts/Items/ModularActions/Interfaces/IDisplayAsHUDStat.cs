@@ -374,7 +374,7 @@ namespace KFCommonUtilityLib
             int actionIndex = MultiActionManager.GetActionIndexForEntity(localPlayer);
             if (actionIndex >= 0 && actionIndex < localPlayer.inventory.holdingItem.Actions.Length)
             {
-                return (localPlayer.inventory.holdingItem.Actions[actionIndex] as IModuleContainerFor<IDisplayAsHUDStat>)?.Instance;
+                return localPlayer.inventory.holdingItem.Actions[actionIndex].LoadModule<IDisplayAsHUDStat>();
             }
             return null;
         }

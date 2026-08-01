@@ -2415,8 +2415,8 @@ namespace KFCommonUtilityLib.Harmony
                                 CodeInstruction.CallClosure<Func<Inventory, bool>>(static (inv) =>
                                 {
                                     return !inv.GetIsFinishedSwitchingHeldItem() &&
-                                    ((inv.holdingItemData is IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData> data && data.Instance.IsUnholstering) ||
-                                     (inv.lastdrawnHoldingItemData is IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData> data1 && data1.Instance.IsHolstering));
+                                    ((inv.holdingItemData.IsModuleContainerFor(out ItemModuleTrueHolster.TrueHolsterData data) && data.IsUnholstering) ||
+                                     (inv.lastdrawnHoldingItemData.IsModuleContainerFor(out ItemModuleTrueHolster.TrueHolsterData lastData) && lastData.IsHolstering));
                                 }),
                                 new CodeInstruction(OpCodes.Brtrue_S, lbl),
                             });
@@ -2521,18 +2521,18 @@ namespace KFCommonUtilityLib.Harmony
                         new CodeInstruction(OpCodes.Ldloc_1),
                         CodeInstruction.CallClosure<Action<Inventory>>(static (Inventory inv) =>
                         {
-                            if(inv.lastdrawnHoldingItemData is IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData> data)
+                            if(inv.lastdrawnHoldingItemData.IsModuleContainerFor(out ItemModuleTrueHolster.TrueHolsterData data))
                             {
-                                if (data.Instance.module.holsterDelayActive)
+                                if (data.module.holsterDelayActive)
                                 {
                                     var targets = AnimationRiggingManager.GetLastRigTargetsFromInventory(inv);
                                     if (targets && targets.IsAnimationSet)
                                     {
                                         //Log.Out($"HolsterWeapon\n{StackTraceUtility.ExtractStackTrace()}");
-                                        data.Instance.IsHolstering = true;
+                                        data.IsHolstering = true;
                                     }
                                 }
-                                data.Instance.IsUnholstering = false;
+                                data.IsUnholstering = false;
                             }
                         })
                     });
@@ -2675,7 +2675,7 @@ namespace KFCommonUtilityLib.Harmony
 
         private static bool IsTrueHolster(Inventory inv, bool lastHolding, out ItemModuleTrueHolster.TrueHolsterData data)
         {
-            data = ((lastHolding ? inv.lastdrawnHoldingItemData : inv.holdingItemData) as IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData>)?.Instance;
+            data = (lastHolding ? inv.lastdrawnHoldingItemData : inv.holdingItemData).LoadModule<ItemModuleTrueHolster.TrueHolsterData>();
             var targets = lastHolding ? AnimationRiggingManager.GetLastRigTargetsFromInventory(inv) : AnimationRiggingManager.GetCurRigTargetsFromInventory(inv);
             return data != null && targets && targets.IsAnimationSet;
         }

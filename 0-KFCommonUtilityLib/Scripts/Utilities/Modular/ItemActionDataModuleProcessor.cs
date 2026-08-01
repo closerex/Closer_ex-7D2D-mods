@@ -3,10 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
+using KFCommonUtilityLib.Attributes;
 using UniLinq;
 
 namespace KFCommonUtilityLib
 {
+    [TypeTarget(typeof(ItemActionData))]
     public class ItemActionDataModuleProcessor : IModuleProcessor
     {
         TypeBuilder typebd_newAction;
@@ -61,9 +63,6 @@ namespace KFCommonUtilityLib
         {
             switch (par.Name)
             {
-                case "__instance":
-                    generator.Emit(OpCodes.Ldarg_0);
-                    return true;
                 case "__customModule":
                     generator.Emit(OpCodes.Ldarg_1);
                     generator.Emit(OpCodes.Ldfld, AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.item)));
@@ -76,6 +75,11 @@ namespace KFCommonUtilityLib
                 default:
                     return false;
             }
+        }
+
+        public void ApplyPatchModifiers(PatchInfo patchInfo, string owner)
+        {
+            
         }
 
         public bool MatchSpecialArgs(ModuleManipulator manipulator, ILGenerator generator, ParameterInfo par, MethodPatchInfo mtdpinf_derived, MethodOverrideInfo mtdoinf_target)

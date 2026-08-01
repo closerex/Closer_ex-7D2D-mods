@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -96,6 +96,10 @@
       <HintPath>..\0_TFP_Harmony\Mono.Cecil.Rocks.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="NCalc">
+      <HintPath>..\..\7DaysToDie_Data\Managed\NCalc.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\7DaysToDie_Data\Managed\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
@@ -114,13 +118,35 @@
       <HintPath>..\..\7DaysToDie_Data\Managed\System.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Core">
+        <HintPath>..\..\7DaysToDie_Data\Managed\System.Core.dll</HintPath>
+        <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe">
+      <HintPath>..\..\7DaysToDie_Data\Managed\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+        <HintPath>..\..\7DaysToDie_Data\Managed\System.Xml.Linq.dll</HintPath>
+        <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+        <HintPath>..\..\7DaysToDie_Data\Managed\System.Data.DataSetExtensions.dll</HintPath>
+        <Private>False</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.Data">
+        <HintPath>..\..\7DaysToDie_Data\Managed\System.Data.dll</HintPath>
+        <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Net.Http">
+        <HintPath>..\..\7DaysToDie_Data\Managed\System.Net.Http.dll</HintPath>
+        <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml">
+        <HintPath>..\..\7DaysToDie_Data\Managed\System.Xml.dll</HintPath>
+        <Private>False</Private>
+    </Reference>
     <Reference Include="TreeCollections, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\TreeCollections.dll</HintPath>
@@ -213,42 +239,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="KFAttached\LeanTween\License.txt" />
-    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\BlendConstraintAdaptor.cs.meta">
-      <DependentUpon>BlendConstraintReverseAdaptor.cs</DependentUpon>
-    </None>
-    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\ChainIKConstraintAdaptor.cs.meta">
-      <DependentUpon>ChainIKConstraintReverseAdaptor.cs</DependentUpon>
-    </None>
-    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\DampedTransformAdaptor.cs.meta">
-      <DependentUpon>DampedTransformReverseAdaptor.cs</DependentUpon>
-    </None>
-    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiAimConstraintAdaptor.cs.meta">
-      <DependentUpon>MultiAimConstraintReverseAdaptor.cs</DependentUpon>
-    </None>
-    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiParentConstraintAdaptor.cs.meta">
-      <DependentUpon>MultiParentConstraintReverseAdaptor.cs</DependentUpon>
-    </None>
-    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiPositionConstraintAdaptor.cs.meta">
-      <DependentUpon>MultiPositionConstraintReverseAdaptor.cs</DependentUpon>
-    </None>
-    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiReferentialConstraintAdaptor.cs.meta">
-      <DependentUpon>MultiReferentialConstraintReverseAdaptor.cs</DependentUpon>
-    </None>
-    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiRotationConstraintAdaptor.cs.meta">
-      <DependentUpon>MultiRotationConstraintReverseAdaptor.cs</DependentUpon>
-    </None>
-    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\OverrideTransformAdaptor.cs.meta">
-      <DependentUpon>OverrideTransformReverseAdaptor.cs</DependentUpon>
-    </None>
-    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\TwistChainConstraintAdaptor.cs.meta">
-      <DependentUpon>TwistChainConstraintReverseAdaptor.cs</DependentUpon>
-    </None>
-    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\TwistCorrectionAdaptor.cs.meta">
-      <DependentUpon>TwistCorrectionReverseAdaptor.cs</DependentUpon>
-    </None>
-    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\TwoBoneIKConstraintAdaptor.cs.meta">
-      <DependentUpon>TwoBoneIKConstraintReverseAdaptor.cs</DependentUpon>
-    </None>
     <None Include="ModInfo.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -450,6 +440,7 @@
     <Compile Include="Harmony\CameraPatches.cs" />
     <Compile Include="Harmony\EventHookPatches.cs" />
     <Compile Include="Harmony\VersionPatcher\VersionPatchManager.cs" />
+    <Compile Include="Harmony\XmlConditionPatches.cs" />
     <Compile Include="KFAttached\Misc\AimingMaterialBlender.cs" />
     <Compile Include="KFAttached\Misc\CustomAudioSnapshotHolder.cs" />
     <Compile Include="Harmony\DamagePatches.cs" />
@@ -568,15 +559,19 @@
     <Compile Include="KFAttached\Render\BokehBlurTargetRef.cs" />
     <Compile Include="KFAttached\Render\MagnifyScope.cs" />
     <Compile Include="KFAttached\Render\MagnifyScopeTargetRef.cs" />
+    <Compile Include="KFAttached\RigAdaptors\Adaptors\FingerFABRIKConstraintAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\Adaptors\SyncSimLocalRotationConstraintAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\BlendConstraintReverseAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\ChainIKConstraintReverseAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\DampedTransformReverseAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\FingerFABRIKConstraintReverseAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiAimConstraintReverseAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiParentConstraintReverseAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiPositionConstraintReverseAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiReferentialConstraintReverseAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiRotationConstraintReverseAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\OverrideTransformReverseAdaptor.cs" />
+    <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\SyncSimLocalRotationConstraintReverseAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\TwistChainConstraintReverseAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\TwistCorrectionReverseAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\ReverseAdaptors\TwoBoneIKConstraintReverseAdaptor.cs" />
@@ -585,6 +580,10 @@
     <Compile Include="KFAttached\RigAdaptors\RigConverterRole.cs" />
     <Compile Include="KFAttached\RigAdaptors\Utils\InventorySlotGurad.cs" />
     <Compile Include="KFAttached\RigAdaptors\Utils\QuaternionUtil.cs" />
+    <Compile Include="KFAttached\RigConstraints\FingerFABRIKConstraint.cs" />
+    <Compile Include="KFAttached\RigConstraints\FingerFABRIKJob.cs" />
+    <Compile Include="KFAttached\RigConstraints\SyncSimLocalRotationConstraint.cs" />
+    <Compile Include="KFAttached\RigConstraints\SyncSimLocalRotationJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="KFAttached\RigAdaptors\Adaptors\BlendConstraintAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\Adaptors\ChainIKConstraintAdaptor.cs" />
@@ -605,6 +604,7 @@
     <Compile Include="KFAttached\RigAdaptors\Adaptors\TwistCorrectionAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\Adaptors\TwoBoneIKConstraintAdaptor.cs" />
     <Compile Include="KFAttached\RigAdaptors\Utils\KFExtensions.cs" />
+    <Compile Include="Scripts\Attributes\ModuleTypeReferenceAttribute.cs" />
     <Compile Include="Scripts\Attributes\RequireUserDataBits.cs" />
     <Compile Include="Scripts\Attributes\TypeDataTargetAttribute.cs" />
     <Compile Include="Scripts\Attributes\MethodTargetAttribute.cs" />
@@ -614,6 +614,7 @@
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdListParticleScripts.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdMultiActionItemValueDebug.cs" />
     <Compile Include="Scripts\ConsoleCmd\ConsoleCmdPrintLocalCache.cs" />
+    <Compile Include="Scripts\ConsoleCmd\ConsoleCmdTestModule.cs" />
     <Compile Include="Scripts\Input\PlayerActionKFLib.cs" />
     <Compile Include="Scripts\Items\ItemActions\ItemActionBlocking.cs" />
     <Compile Include="Scripts\Items\ItemClasses\ILateInitItem.cs" />
@@ -649,6 +650,11 @@
     <Compile Include="Scripts\Items\ModularActions\ActionModuleTargetSeeker.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleThrowFromInventory.cs" />
     <Compile Include="Scripts\MinEventActions\MinEventActionLogParams.cs" />
+    <Compile Include="Scripts\MinEventActions\MinEventActionSetSkinMaterialProperty.cs" />
+    <Compile Include="Scripts\MinEventActions\Modular\CVarReplacer.cs" />
+    <Compile Include="Scripts\MinEventActions\Modular\MEAModuleComplexCondition.cs" />
+    <Compile Include="Scripts\MinEventActions\Modular\MEAModuleExpressionAsCVar.cs" />
+    <Compile Include="Scripts\MinEventActions\Modular\MEAModuleVariableAsCVar.cs" />
     <Compile Include="Scripts\Utilities\BodyPartSortingOrder.cs" />
     <Compile Include="Scripts\Items\ModularActions\MetadataAsHUDStatAbs.cs" />
     <Compile Include="Scripts\Items\ModularActions\ActionModuleMultiActionFix.cs" />
@@ -737,6 +743,8 @@
     <Compile Include="Scripts\Requirements\RoundsInMagazineBase.cs" />
     <Compile Include="Scripts\StaticManagers\DelayLoadModuleManager.cs" />
     <Compile Include="Scripts\Utilities\AreaSweep.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\MinEventEvaluator.cs" />
+    <Compile Include="Scripts\Utilities\ExpressionParser\VariableInfo.cs" />
     <Compile Include="Scripts\Utilities\IValueDamper.cs" />
     <Compile Include="Scripts\Utilities\LocalPlayerCameraUpdater.cs" />
     <Compile Include="Scripts\Utilities\MiscExtensions.cs" />
@@ -772,6 +780,7 @@
     <Compile Include="Scripts\Utilities\Modular\IModuleProcessor.cs" />
     <Compile Include="Scripts\Utilities\Modular\ItemActionModuleProcessor.cs" />
     <Compile Include="Scripts\Utilities\Modular\ItemClassModuleProcessor.cs" />
+    <Compile Include="Scripts\Utilities\Modular\MinEventActionModuleProcessor.cs" />
     <Compile Include="Scripts\Utilities\Modular\ModuleManagers.cs" />
     <Compile Include="Scripts\Utilities\Modular\ModuleManipulator.cs" />
     <Compile Include="Scripts\Utilities\Modular\ModuleUtils.cs" />
@@ -786,6 +795,68 @@
     <Compile Include="Scripts\Utilities\VoxelCaster.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Documents\Xml expression reference.md" />
+    <Content Include="Documents\zh_cn\Xml expression reference.md" />
+    <Content Include="KFAttached\RigAdaptors\Adaptors\FingerFABRIKConstraintAdaptor.cs.meta">
+      <DependentUpon>FingerFABRIKConstraintAdaptor.cs</DependentUpon>
+    </Content>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\BlendConstraintReverseAdaptor.cs.meta">
+      <DependentUpon>BlendConstraintReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\ChainIKConstraintReverseAdaptor.cs.meta">
+      <DependentUpon>ChainIKConstraintReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\DampedTransformReverseAdaptor.cs.meta">
+      <DependentUpon>DampedTransformReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\FingerFABRIKConstraintReverseAdaptor.cs.meta">
+      <DependentUpon>FingerFABRIKConstraintReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiAimConstraintReverseAdaptor.cs.meta">
+      <DependentUpon>MultiAimConstraintReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiParentConstraintReverseAdaptor.cs.meta">
+      <DependentUpon>MultiParentConstraintReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiPositionConstraintReverseAdaptor.cs.meta">
+      <DependentUpon>MultiPositionConstraintReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiReferentialConstraintReverseAdaptor.cs.meta">
+      <DependentUpon>MultiReferentialConstraintReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\MultiRotationConstraintReverseAdaptor.cs.meta">
+      <DependentUpon>MultiRotationConstraintReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\OverrideTransformReverseAdaptor.cs.meta">
+      <DependentUpon>OverrideTransformReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\TwistChainConstraintReverseAdaptor.cs.meta">
+      <DependentUpon>TwistChainConstraintReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\TwistCorrectionReverseAdaptor.cs.meta">
+      <DependentUpon>TwistCorrectionReverseAdaptor.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\RigAdaptors\ReverseAdaptors\TwoBoneIKConstraintReverseAdaptor.cs.meta">
+      <DependentUpon>TwoBoneIKConstraintReverseAdaptor.cs</DependentUpon>
+    </None>
+    <Content Include="KFAttached\RigAdaptors\Adaptors\SyncSimLocalRotationConstraintAdaptor.cs.meta">
+      <DependentUpon>SyncSimLocalRotationConstraintAdaptor.cs</DependentUpon>
+    </Content>
+    <Content Include="KFAttached\RigAdaptors\ReverseAdaptors\SyncSimLocalRotationConstraintReverseAdaptor.cs.meta">
+      <DependentUpon>SyncSimLocalRotationConstraintReverseAdaptor.cs</DependentUpon>
+    </Content>
+    <Content Include="KFAttached\RigConstraints\FingerFABRIKConstraint.cs.meta">
+      <DependentUpon>FingerFABRIKConstraint.cs</DependentUpon>
+    </Content>
+    <Content Include="KFAttached\RigConstraints\FingerFABRIKJob.cs.meta">
+      <DependentUpon>FingerFABRIKJob.cs</DependentUpon>
+    </Content>
+    <Content Include="KFAttached\RigConstraints\SyncSimLocalRotationConstraint.cs.meta">
+      <DependentUpon>SyncSimLocalRotationConstraint.cs</DependentUpon>
+    </Content>
+    <Content Include="KFAttached\RigConstraints\SyncSimLocalRotationJob.cs.meta">
+      <DependentUpon>SyncSimLocalRotationJob.cs</DependentUpon>
+    </Content>
     <Content Include="ModSettings.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -802,6 +873,14 @@
   <PropertyGroup>
     <AttachedScriptFolder>KFAttached</AttachedScriptFolder>
     <UnityProjectPath>J:\Unity Projects\AnimationPlayground\Assets\</UnityProjectPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+      if exist "$(UnityProjectPath)$(AttachedScriptFolder)" (
+      echo Syncing changes from Unity project back to mod project...
+      robocopy "$(UnityProjectPath)$(AttachedScriptFolder)" "$(ProjectDir)$(AttachedScriptFolder)" /E /XO /NP /R:0 /W:1 || set errorlevel=0
+      )
+    </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>

@@ -110,8 +110,6 @@ public class ActionModuleTargetSeeker
         var mtd_floortoint = AccessTools.Method(typeof(Mathf), nameof(Mathf.FloorToInt));
         var mtd_gettarget = AccessTools.Method(typeof(ItemAction), nameof(ItemAction.GetExecuteActionTarget));
         var mtd_isvalid = AccessTools.Method(typeof(ItemActionDynamic), nameof(ItemActionDynamic.isHitValid));
-        var prop_instance = AccessTools.PropertyGetter(typeof(IModuleContainerFor<TargetSeekerData>), nameof(IModuleContainerFor<TargetSeekerData>.Instance));
-        var fld_hitinfo = AccessTools.Field(typeof(TargetSeekerData), nameof(TargetSeekerData.list_hitinfo));
         var prop_count = AccessTools.PropertyGetter(typeof(List<EntityRayHitInfo>), nameof(List<EntityRayHitInfo>.Count));
         var prop_item = AccessTools.IndexerGetter(typeof(List<EntityRayHitInfo>), new[] { typeof(int) });
 
@@ -133,8 +131,7 @@ public class ActionModuleTargetSeeker
                         codes.InsertRange(j, new[]
                         {
                             CodeInstruction.LoadArgument(1).WithLabels(lbls_original),
-                            new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<TargetSeekerData>)),
-                            new CodeInstruction(OpCodes.Callvirt, prop_instance),
+                            CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(TargetSeekerData)}),
                             new CodeInstruction(OpCodes.Dup),
                             CodeInstruction.StoreLocal(lbd_data_module.LocalIndex),
                             CodeInstruction.Call(typeof(TargetSeekerData), nameof(TargetSeekerData.GetValidTargetsInRange)),
@@ -155,7 +152,7 @@ public class ActionModuleTargetSeeker
                             CodeInstruction.StoreLocal(lbd_targets.LocalIndex),
                             new CodeInstruction(OpCodes.Callvirt, prop_count),
                         });
-                        i = j + 21;
+                        i = j + 20;
                         break;
                     }
                 }

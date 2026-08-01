@@ -25,7 +25,7 @@ namespace KFCommonUtilityLib.Attributes
 
         public static int InjectUserDataBits(int userData, int bitsToInject, byte shift)
         {
-            return userData |= bitsToInject << shift;
+            return userData | (bitsToInject << shift);
         }
     }
 }

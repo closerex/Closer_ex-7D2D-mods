@@ -82,29 +82,29 @@ namespace KFCommonUtilityLib
                 Log.Error("SkinMaterialReplacer invalid!");
                 return;
             }
-            Renderer[] renderers = forDropMesh ? dropMeshRenderers : holdingItemRenderers;
-            int[] materialCount = forDropMesh ? dropMeshMaterialCount : holdingItemMaterialCount;
+            var renderers = forDropMesh ? dropMeshRenderers : holdingItemRenderers;
+            var materialCount = forDropMesh ? dropMeshMaterialCount : holdingItemMaterialCount;
 
-            if (renderers == null || renderers.Length == 0 || materialCount == null || materialCount.Length == 0)
+            if (renderers is not { Length: not 0 } || materialCount is not { Length: not 0 })
             {
                 return;
             }
 
-            Material[] materials = forDropMesh ? replacer.dropMeshMaterials : replacer.holdingItemMaterials;
-            int totalMaterialCount = materialCount.Sum();
+            var materials = forDropMesh ? replacer.dropMeshMaterials : replacer.holdingItemMaterials;
+            var totalMaterialCount = materialCount.Sum();
             if (materials.Length != totalMaterialCount)
             {
                 Log.Warning($"SkinMaterialReplacer material count does not match: expected {totalMaterialCount} actual {materials.Length}");
                 return;
             }
 
-            int materialOffset = 0;
-            for (int i = 0; i < renderers.Length; i++)
+            var materialOffset = 0;
+            for (var i = 0; i < renderers.Length; i++)
             {
-                Material[] replacedMaterials = renderers[i].materials;
-                for (int j = 0; j < materialCount[i]; j++)
+                var replacedMaterials = renderers[i].materials;
+                for (var j = 0; j < materialCount[i]; j++)
                 {
-                    int materialIndex = materialOffset + j;
+                    var materialIndex = materialOffset + j;
                     if (materials[materialIndex])
                     {
                         replacedMaterials[j] = materials[materialIndex];
@@ -113,6 +113,45 @@ namespace KFCommonUtilityLib
                 renderers[i].materials = replacedMaterials;
                 materialOffset += materialCount[i];
             }
+        }
+
+        public void ApplyTintColor(Vector3 colorVec, bool forDropMesh)
+        {
+            var renderers = forDropMesh ? dropMeshRenderers : holdingItemRenderers;
+            
+            if (renderers is not { Length: not 0 })
+            {
+                return;
+            }
+            
+            var color = new Color(colorVec.x, colorVec.y, colorVec.z, 1);
+            foreach (var renderer in renderers)
+            {
+                if (!renderer)
+                    continue;
+                
+                UpdateLight.SetTintColor(renderer, color);
+            }
+        }
+
+        public Material GetMaterial(int index, bool forDropMesh)
+        {
+            var renderers = forDropMesh ? dropMeshRenderers : holdingItemRenderers;
+            var materialCount = forDropMesh ? dropMeshMaterialCount : holdingItemMaterialCount;
+            
+            var materialOffset = 0;
+            for (var i = 0; i < renderers.Length; i++)
+            {
+                if (materialCount[i] + materialOffset <= index)
+                {
+                    materialOffset += materialCount[i];
+                    continue;
+                }
+
+                var matIndex = index - materialOffset;
+                return renderers[i].materials[matIndex];
+            }
+            return null;
         }
 #endif
     }

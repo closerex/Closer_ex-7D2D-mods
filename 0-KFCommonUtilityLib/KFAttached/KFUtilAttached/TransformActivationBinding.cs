@@ -197,7 +197,7 @@ public class TransformActivationBinding : MonoBehaviour
 #else
     internal void UpdateBoolEditor(bool enabled)
     {
-        if (animatorParamBindings != null && targets)
+        if (animatorParamBindings != null && targets && targets.GraphBuilder)
         {
             IAnimatorWrapper animator = targets.GraphBuilder.WeaponWrapper;
             if (animator == null || !animator.IsValid)

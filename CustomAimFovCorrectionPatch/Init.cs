@@ -96,9 +96,8 @@ namespace CustomAimFovCorrectionPatch
                         new CodeInstruction(OpCodes.Ldarg_0),
                         CodeInstruction.CallClosure<Action<EntityPlayerLocal>>(static (player) =>
                         {
-                            if (player.inventory?.holdingItemData?.actionData?[1] is IModuleContainerFor<ActionModuleProceduralAiming.ProceduralAimingData> dataModule)
+                            if (player.inventory?.holdingItemData?.actionData?[1].IsModuleContainerFor(out ActionModuleProceduralAiming.ProceduralAimingData data) ?? false)
                             {
-                                var data = dataModule.Instance;
                                 MatrixBlender.curAimData = data;
                             }
                             else

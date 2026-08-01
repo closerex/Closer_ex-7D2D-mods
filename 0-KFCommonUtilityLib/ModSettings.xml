@@ -49,6 +49,9 @@
           <Property type="arrayValues" allowedValues="Disabled,Antialiasing" />
         </Selector>
       </Category>
+      <Category name="VerboseLog" displayKey="kflibCategoryVerboseLog" tooltipKey="kflibCategoryVerboseLogDesc">
+        <Switch name="KFModuleManagerLog" displayKey="kflibSettingModuleManagerLogName" tooltipKey="kflibSettingModuleManagerLogDesc" defaultValue="Disabled" leftValue="Disabled" rightValue="Enabled" />
+      </Category>
     </Tab>
   </Global>
   <World />

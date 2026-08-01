@@ -22,8 +22,8 @@ public class TwistChainConstraintAdaptor : RigAdaptorAbs
         constraint.weight = weight;
         constraint.data.root = targetRoot.FindInAllChildren(m_Root);
         constraint.data.tip = targetRoot.FindInAllChildren(m_Tip);
-        constraint.data.rootTarget = m_RootTarget;
-        constraint.data.tipTarget = m_TipTarget;
+        constraint.data.rootTarget = ReplaceWeaponTarget(ref m_RootTarget);
+        constraint.data.tipTarget = ReplaceWeaponTarget(ref m_TipTarget);
         constraint.data.curve = m_Curve;
     }
 

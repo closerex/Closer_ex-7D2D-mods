@@ -1,8 +1,9 @@
-﻿using HarmonyLib;
+﻿using System.Collections.Generic;
+using System.Reflection.Emit;
+using HarmonyLib;
+using JetBrains.Annotations;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Attributes;
-using System.Collections.Generic;
-using System.Reflection.Emit;
 using UniLinq;
 using UnityEngine;
 using static AnimationDelayData;
@@ -10,24 +11,31 @@ using static AnimationDelayData;
 [TypeTarget(typeof(ItemAction))]
 public class ActionModuleCustomAnimationDelay
 {
-    public bool tpvUseCustomDelay = false;
+    public bool tpvUseCustomDelay;
     public float customDelay;
 
-    [HarmonyPatch(typeof(ItemActionEat), nameof(ItemAction.OnHoldingUpdate))]
-    [HarmonyPatch(typeof(ItemActionGainSkill), nameof(ItemAction.OnHoldingUpdate))]
-    [HarmonyPatch(typeof(ItemActionLearnRecipe), nameof(ItemAction.OnHoldingUpdate))]
-    [HarmonyPatch(typeof(ItemActionQuest), nameof(ItemAction.OnHoldingUpdate))]
-    [HarmonyPatch(typeof(ItemActionThrowAway), nameof(ItemAction.OnHoldingUpdate))]
-    [HarmonyPatch(typeof(ItemActionEat), nameof(ItemAction.IsActionRunning))]
-    [HarmonyPatch(typeof(ItemActionGainSkill), nameof(ItemAction.IsActionRunning))]
-    [HarmonyPatch(typeof(ItemActionLearnRecipe), nameof(ItemAction.IsActionRunning))]
-    [HarmonyPatch(typeof(ItemActionQuest), nameof(ItemAction.IsActionRunning))]
-    [HarmonyPatch(typeof(ItemActionThrowAway), nameof(ItemAction.IsActionRunning))]
+    [HarmonyPatch(nameof(Transpiler_DelayOverride))]
+    [TargetMethods]
+    [UsedImplicitly]
+    private static IEnumerable<HarmonyPatch> TargetMethods_DelayOverride()
+    {
+        yield return new(typeof(ItemActionEat), nameof(ItemAction.OnHoldingUpdate));
+        yield return new(typeof(ItemActionGainSkill), nameof(ItemAction.OnHoldingUpdate));
+        yield return new(typeof(ItemActionLearnRecipe), nameof(ItemAction.OnHoldingUpdate));
+        yield return new(typeof(ItemActionQuest), nameof(ItemAction.OnHoldingUpdate));
+        yield return new(typeof(ItemActionThrowAway), nameof(ItemAction.OnHoldingUpdate));
+        yield return new(typeof(ItemActionEat), nameof(ItemAction.IsActionRunning));
+        yield return new(typeof(ItemActionGainSkill), nameof(ItemAction.IsActionRunning));
+        yield return new(typeof(ItemActionLearnRecipe), nameof(ItemAction.IsActionRunning));
+        yield return new(typeof(ItemActionQuest), nameof(ItemAction.IsActionRunning));
+        yield return new(typeof(ItemActionThrowAway), nameof(ItemAction.IsActionRunning));
+    }
+
     [MethodTargetTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_OnHoldingUpdate(IEnumerable<CodeInstruction> instructions)
+    private static IEnumerable<CodeInstruction> Transpiler_DelayOverride(IEnumerable<CodeInstruction> instructions)
     {
         var codes = instructions.ToList();
-        var fld_delayarr = AccessTools.Field(typeof(AnimationDelayData), nameof(AnimationDelayData.AnimationDelay));
+        var fld_delayarr = AccessTools.Field(typeof(AnimationDelayData), nameof(AnimationDelay));
         var fld_raycast = AccessTools.Field(typeof(AnimationDelays), nameof(AnimationDelays.RayCast));
 
         for (var i = 0; i < codes.Count; i++)
@@ -46,11 +54,10 @@ public class ActionModuleCustomAnimationDelay
                         codes.InsertRange(start, new[]
                         {
                             new CodeInstruction(OpCodes.Ldarg_0).WithLabels(lbls),
-                            new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<ActionModuleCustomAnimationDelay>)),
-                            new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(IModuleContainerFor<ActionModuleCustomAnimationDelay>), nameof(IModuleContainerFor<ActionModuleCustomAnimationDelay>.Instance))),
-                            new CodeInstruction(OpCodes.Ldarg_1),
-                            new CodeInstruction(flag ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0),
-                            CodeInstruction.Call(typeof(ActionModuleCustomAnimationDelay), nameof(ActionModuleCustomAnimationDelay.GetDelayOverride))
+                            CodeInstruction.Call(typeof(ModuleExtensions), nameof(ModuleExtensions.LoadModule), null, new []{typeof(ActionModuleCustomAnimationDelay)}),
+                            new(OpCodes.Ldarg_1),
+                            new(flag ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0),
+                            CodeInstruction.Call(typeof(ActionModuleCustomAnimationDelay), nameof(GetDelayOverride))
                         });
                         break;
                     }
@@ -67,8 +74,8 @@ public class ActionModuleCustomAnimationDelay
     {
         if (__runOriginal && Constants.cVersionInformation.GTE(VersionInformation.EGameReleaseType.V, 2, 5))
         {
-            __state = (true, AnimationDelayData.AnimationDelay[_actionData.invData.item.HoldType.Value].RayCast);
-            AnimationDelayData.AnimationDelay[_actionData.invData.item.HoldType.Value].RayCast = customDelay;
+            __state = (true, AnimationDelay[_actionData.invData.item.HoldType.Value].RayCast);
+            AnimationDelay[_actionData.invData.item.HoldType.Value].RayCast = customDelay;
         }
         else
         {
@@ -81,7 +88,7 @@ public class ActionModuleCustomAnimationDelay
     {
         if (__state.exec)
         {
-            AnimationDelayData.AnimationDelay[_actionData.invData.item.HoldType.Value].RayCast = __state.delay;
+            AnimationDelay[_actionData.invData.item.HoldType.Value].RayCast = __state.delay;
         }
     }
 
@@ -91,7 +98,7 @@ public class ActionModuleCustomAnimationDelay
         {
             return customDelay;
         }
-        return AnimationDelayData.AnimationDelay[actionData.invData.item.HoldType.Value].RayCast * (conditionCheck ? 2f : 1f);
+        return AnimationDelay[actionData.invData.item.HoldType.Value].RayCast * (conditionCheck ? 2f : 1f);
     }
 
     [HarmonyPatch(nameof(ItemAction.ReadFrom)), MethodTargetPostfix]

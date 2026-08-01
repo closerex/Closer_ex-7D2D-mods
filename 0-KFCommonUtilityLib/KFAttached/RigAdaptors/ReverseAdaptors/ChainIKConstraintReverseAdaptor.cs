@@ -43,8 +43,8 @@ public class ChainIKConstraintReverseAdaptor : RigAdaptorAbs
         var constraint = GetComponent<ChainIKConstraint>();
         constraint.Reset();
         constraint.weight = weight;
-        constraint.data.root = m_Root;
-        constraint.data.tip = m_Tip;
+        constraint.data.root = ReplaceWeaponTarget(ref m_Root);
+        constraint.data.tip = ReplaceWeaponTarget(ref m_Tip);
         constraint.data.target = targetRoot.FindInAllChildren(m_Target);
         constraint.data.chainRotationWeight = m_ChainRotationWeight;
         constraint.data.tipRotationWeight = m_TipRotationWeight;

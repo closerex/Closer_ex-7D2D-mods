@@ -93,8 +93,7 @@ public class ActionModuleShellEjector
 
     private static void SpawnShellParticle(ItemActionData data)
     {
-        var customData = (data as IModuleContainerFor<ActionModuleShellEjector.ShellEjectorData>)?.Instance;
-        if (customData != null && !customData.manualEject)
+        if (data.IsModuleContainerFor(out ShellEjectorData customData) && !customData.manualEject)
         {
             customData.SpawnBoth();
         }

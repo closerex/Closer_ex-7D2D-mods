@@ -3,16 +3,62 @@ using KFCommonUtilityLib.Attributes;
 using KFCommonUtilityLib.Harmony;
 using MonoMod.Utils;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using UniLinq;
 
 namespace KFCommonUtilityLib
 {
+    [TypeTarget(typeof(ItemAction))]
     public class ItemActionModuleProcessor : IModuleProcessor
     {
-        Type typebd_newActionData;
-        FieldBuilder[] arr_flddef_data;
+        private static class TranspilerHelper
+        {
+            public static ItemActionModuleProcessor curProcessor;
+
+            private static readonly MethodInfo mtd_load_data_module =
+                AccessTools.Method(typeof(ItemActionModuleProcessor), nameof(LoadDataModule));
+
+            public static IEnumerable<CodeInstruction> LoadDataModuleHelper(IEnumerable<CodeInstruction> instructions)
+            {
+                var codes = instructions.ToList();
+
+                for (int i = 0; i < codes.Count; i++)
+                {
+                    var code = codes[i];
+                    if (code.opcode == OpCodes.Call &&
+                        code.operand is MethodInfo { IsGenericMethod: true, ContainsGenericParameters: false } mtd &&
+                        mtd.GetGenericMethodDefinition() == mtd_load_data_module)
+                    {
+                        int dataIndex =
+                            Array.IndexOf(Array.ConvertAll(curProcessor.arr_fldbd_data, fld => fld?.FieldType),
+                                mtd.GetGenericArguments()[0]);
+                        if (dataIndex >= 0)
+                        {
+                            code.operand = AccessTools.Method(curProcessor.typebd_newActionData,
+                                $"{ModuleUtils.CreateFieldName(curProcessor.arr_fldbd_data[dataIndex].FieldType)}.get_Instance");
+                            codes.Insert(i, new(OpCodes.Castclass, curProcessor.typebd_newActionData));
+                            i++;
+                        }
+                        else
+                        {
+                            Log.Error($"Accessing invalid ItemActionData module! method: {code.operand}");
+                        }
+                    }
+                }
+
+                return codes;
+            }
+        }
+
+        private Type typebd_newActionData;
+        private FieldBuilder[] arr_fldbd_data;
+
+        public static T LoadDataModule<T>(ItemActionData actionData) where T : class
+        {
+            return (actionData as IModuleContainerFor<T>)?.Instance;
+        }
 
         public Type GetModuleTypeByName(string name)
         {
@@ -21,6 +67,7 @@ namespace KFCommonUtilityLib
 
         public void InitModules(ModuleManipulator manipulator)
         {
+            TranspilerHelper.curProcessor = this;
             //Find ItemActionData subtype
             MethodInfo mtdinf_create_data = null;
             {
@@ -45,7 +92,7 @@ namespace KFCommonUtilityLib
                 //Get type by assembly qualified name since it might be from mod assembly
                 Type type_itemActionData = typeref_actiondata.ResolveReflection();
                 ModuleManagers.LogOut($"CreateModifierData return type {type_itemActionData.AssemblyQualifiedName}");
-                if (ModuleManagers.PatchType(type_itemActionData, typeof(ItemActionData), manipulator.typebd_newTarget, arr_type_data.Where(static t => t != null).ToArray(), new ItemActionDataModuleProcessor(manipulator.typebd_newTarget, manipulator.moduleTypes, manipulator.arr_fldbd_modules.Where((f, i) => arr_type_data[i] != null).ToArray(), arr_type_data.Select(static t => t != null).ToArray(), out arr_flddef_data), out typebd_newActionData))
+                if (ModuleManagers.PatchType(type_itemActionData, typeof(ItemActionData), manipulator.typebd_newTarget, arr_type_data.Where(static t => t != null).ToArray(), new ItemActionDataModuleProcessor(manipulator.typebd_newTarget, manipulator.moduleTypes, manipulator.arr_fldbd_modules.Where((f, i) => arr_type_data[i] != null).ToArray(), arr_type_data.Select(static t => t != null).ToArray(), out arr_fldbd_data), out typebd_newActionData))
                 {
                     var ctorinf_actiondata = typebd_newActionData.GetDeclaredConstructors().FirstOrDefault();
                     var mtdbd_createdata = manipulator.typebd_newTarget.DefineMethod(nameof(ItemAction.CreateModifierData),
@@ -115,7 +162,7 @@ namespace KFCommonUtilityLib
             {
                 //load injected data instance
                 case "__customData":
-                    var flddef_data = arr_flddef_data[mtdoinf_target.moduleIndex];
+                    var flddef_data = arr_fldbd_data[mtdoinf_target.moduleIndex];
                     if (flddef_data == null)
                         throw new ArgumentNullException($"No Injected ItemActionData in {mtdoinf_target.mtdinf_target.DeclaringType.FullName}! module index {mtdoinf_target.moduleIndex}");
                     int index = -1;
@@ -141,6 +188,13 @@ namespace KFCommonUtilityLib
         public bool MatchConstructorArgs(ModuleManipulator manipulator, ILGenerator generator, ParameterInfo par, ParameterBuilder[] paramInfo, Type[] paramTypes, ConstructorInfo ctorinf_target, int moduleIndex)
         {
             return false;
+        }
+
+        public void ApplyPatchModifiers(PatchInfo patchInfo, string owner)
+        {
+            patchInfo.AddTranspilers(owner,
+                new HarmonyMethod(AccessTools.Method(typeof(TranspilerHelper),
+                    nameof(TranspilerHelper.LoadDataModuleHelper))));
         }
 
         public bool DefineConstructorArgs(ModuleManipulator manipulator, ConstructorBuilder ctorbd, out ParameterBuilder[] pbs)

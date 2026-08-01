@@ -32,6 +32,7 @@ public class LaserSight : MonoBehaviour
 #if NotEditor
     private EntityPlayerLocal player;
     private ScopeBase scopeBase;
+    private AnimationReloadEvents reloadEvents;
 #endif
 
     void Awake()
@@ -78,6 +79,12 @@ public class LaserSight : MonoBehaviour
             {
                 scopeBase = targets.ItemFpv.GetComponentInChildren<ScopeBase>();
             }
+
+            if (targets.ItemAnimator)
+            {
+                reloadEvents = targets.ItemAnimator.GetComponent<AnimationReloadEvents>();
+            }
+            
             if (!laserOrigin)
             {
                 laserOrigin = AnimationRiggingManager.GetTransformOverrideByName(player.inventory.holdingItemData.model, laserOriginName);
@@ -152,8 +159,14 @@ public class LaserSight : MonoBehaviour
         }
 
 #if NotEditor
+        if (reloadEvents)
+        {
+            origin = Vector3.Lerp(transform.position, origin, reloadEvents.laserCorrectionWeight);
+            direction = Vector3.Slerp(transform.forward, direction, reloadEvents.laserCorrectionWeight);
+        }
+        
         int layer = 0;
-        if (player != null)
+        if (player)
         {
             layer = player.GetModelLayer();
             player.SetModelLayer(2);
@@ -203,7 +216,7 @@ public class LaserSight : MonoBehaviour
         }
 
 #if NotEditor
-        if (player != null)
+        if (player)
         {
             player.SetModelLayer(layer);
         }

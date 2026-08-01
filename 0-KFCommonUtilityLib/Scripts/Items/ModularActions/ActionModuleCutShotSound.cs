@@ -46,11 +46,10 @@ public class ActionModuleCutShotSound
                 codes.InsertRange(i + 1, new[]
                 {
                     CodeInstruction.LoadLocal(0),
-                    new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<CutShotSoundData>)),
-                    new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(IModuleContainerFor<CutShotSoundData>), nameof(IModuleContainerFor<CutShotSoundData>.Instance))),
+                    CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(CutShotSoundData)}),
                     new CodeInstruction(OpCodes.Stloc_S, lbd_data)
                 });
-                i += 5;
+                i += 4;
             }
         }
 

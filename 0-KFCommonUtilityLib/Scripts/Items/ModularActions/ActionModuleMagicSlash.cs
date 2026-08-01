@@ -27,13 +27,11 @@ public class ActionModuleMagicSlash
                 codes.InsertRange(i + 2, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_0),
-                    new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<ActionModuleMagicSlash>)),
-                    new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(IModuleContainerFor<ActionModuleMagicSlash>), nameof(IModuleContainerFor<ActionModuleMagicSlash>.Instance))),
+                    CodeInstruction.Call(typeof(ModuleExtensions), nameof(ModuleExtensions.LoadModule), null, new []{typeof(ActionModuleMagicSlash)}),
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new CodeInstruction(OpCodes.Ldarg_1),
                     new CodeInstruction(OpCodes.Ldarg_1),
-                    new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<MagicSlashData>)),
-                    new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(IModuleContainerFor<MagicSlashData>), nameof(IModuleContainerFor<MagicSlashData>.Instance))),
+                    CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(MagicSlashData)}),
                     CodeInstruction.Call(typeof(ActionModuleMagicSlash), nameof(FireSlash))
                 });
                 break;

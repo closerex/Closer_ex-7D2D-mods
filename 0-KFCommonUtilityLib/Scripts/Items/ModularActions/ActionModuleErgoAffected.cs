@@ -41,11 +41,11 @@ public class ActionModuleErgoAffected
         }
         holdingEntity.emodel.avatarController.UpdateFloat(AimSpeedModifierHash, aimSpeedModifier * aimSpeedModifierBase, true);
         holdingEntity.MinEventContext.ItemActionData = prevActionData;
-        if ((_actionData as ItemActionZoom.ItemActionDataZoom).aimingValue && !_bReleased)
+        if (((ItemActionZoom.ItemActionDataZoom)_actionData).aimingValue && !_bReleased)
         {
             __customData.aimStartTime = Time.time;
         }
-        else if (!(_actionData as ItemActionZoom.ItemActionDataZoom).aimingValue)
+        else if (!((ItemActionZoom.ItemActionDataZoom)_actionData).aimingValue)
         {
             __customData.aimStartTime = float.MaxValue;
         }
@@ -109,10 +109,9 @@ public static class ErgoPatches
 
     private static bool CalcErgoModifier(ItemActionData actionData, ref float accuracy, float targetValue, bool aiming)
     {
-        ItemActionRanged.ItemActionDataRanged rangedData = actionData as ItemActionRanged.ItemActionDataRanged;
-        if (aiming && rangedData.invData.actionData[1] is IModuleContainerFor<ActionModuleErgoAffected.ErgoData> dataModule && !dataModule.Instance.aimSet && Time.time - dataModule.Instance.aimStartTime > 0)
+        ItemActionRanged.ItemActionDataRanged rangedData = (ItemActionRanged.ItemActionDataRanged)actionData;
+        if (aiming && rangedData.invData.actionData[1].IsModuleContainerFor(out ActionModuleErgoAffected.ErgoData ergoData) && !ergoData.aimSet && Time.time - ergoData.aimStartTime > 0)
         {
-            ActionModuleErgoAffected.ErgoData ergoData = dataModule.Instance;
             float baseAimTime = ergoData.module.zoomInTimeBase;
             float baseAimMultiplier = ergoData.module.aimSpeedModifierBase;
             baseAimTime /= baseAimMultiplier;
@@ -135,7 +134,7 @@ public static class ErgoPatches
     [HarmonyPrefix]
     private static bool Prefix_onHoldingEntityFired_ItemActionRanged(ItemActionData _actionData, out float __state)
     {
-        __state = (_actionData as ItemActionRanged.ItemActionDataRanged).lastAccuracy;
+        __state = ((ItemActionRanged.ItemActionDataRanged)_actionData).lastAccuracy;
         return true;
     }
 
@@ -143,12 +142,11 @@ public static class ErgoPatches
     [HarmonyPostfix]
     private static void Postfix_onHoldingEntityFired_ItemActionRanged(ItemActionData _actionData, float __state)
     {
-        ItemActionRanged.ItemActionDataRanged rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
-        if (rangedData.invData.holdingEntity.AimingGun && rangedData.invData.actionData[1] is IModuleContainerFor<ActionModuleErgoAffected.ErgoData> dataModule)
+        ItemActionRanged.ItemActionDataRanged rangedData = (ItemActionRanged.ItemActionDataRanged)_actionData;
+        if (rangedData.invData.holdingEntity.AimingGun && rangedData.invData.actionData[1].IsModuleContainerFor(out ActionModuleErgoAffected.ErgoData ergoData))
         {
             float aimMultiplier = EffectManager.GetValue(PassiveEffects.SpreadMultiplierAiming, rangedData.invData.itemValue, .1f, rangedData.invData.holdingEntity);
             rangedData.lastAccuracy = Mathf.Lerp(__state, rangedData.lastAccuracy, aimMultiplier);
-            ActionModuleErgoAffected.ErgoData ergoData = dataModule.Instance;
             if (Time.time > ergoData.aimStartTime)
             {
                 ergoData.aimSet = false;

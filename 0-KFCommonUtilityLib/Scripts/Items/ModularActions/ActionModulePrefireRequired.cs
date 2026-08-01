@@ -50,7 +50,6 @@ public class ActionModulePrefireRequired
                 });
                 i += 4;
             }
-
         }
 
         var lbl_vanilla = generator.DefineLabel();
@@ -58,8 +57,7 @@ public class ActionModulePrefireRequired
         codes.InsertRange(0, new[]
         {
             new CodeInstruction(OpCodes.Ldarg_1),
-            new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<PrefireRequiredData>)),
-            new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(IModuleContainerFor<PrefireRequiredData>), nameof(IModuleContainerFor<PrefireRequiredData>.Instance))),
+            CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(PrefireRequiredData)}),
             new CodeInstruction(OpCodes.Stloc, lbd_data_module),
             new CodeInstruction(OpCodes.Ldloc, lbd_data_module),
             new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PrefireRequiredData), nameof(PrefireRequiredData.prefireRequired))),

@@ -34,14 +34,14 @@ public class MultiAimConstraintReverseAdaptor : RigAdaptorAbs
         var constraint = GetComponent<MultiAimConstraint>();
         constraint.Reset();
         constraint.weight = weight;
-        constraint.data.constrainedObject = m_ConstrainedObject;
-        constraint.data.sourceObjects = WeightedTransformArrayFromAdaptor(targetRoot, m_SourceObjectNames, m_SourceObjectWeights);
+        constraint.data.constrainedObject = ReplaceWeaponTarget(ref m_ConstrainedObject);
+        constraint.data.sourceObjects = WeightedTransformArrayFromAdaptor(m_SourceObjectNames, m_SourceObjectWeights);
         constraint.data.offset = m_Offset;
         constraint.data.limits = m_limits;
         constraint.data.aimAxis = m_AimAxis;
         constraint.data.upAxis = m_UpAxis;
         constraint.data.worldUpType = m_WorldUpType;
-        constraint.data.worldUpObject = m_WorldUpObject;
+        constraint.data.worldUpObject = ReplaceWeaponTarget(ref m_WorldUpObject);
         constraint.data.worldUpAxis = m_WorldUpAxis;
         constraint.data.maintainOffset = m_MaintainOffset;
         constraint.data.constrainedXAxis = m_ConstrainedAxes.x;

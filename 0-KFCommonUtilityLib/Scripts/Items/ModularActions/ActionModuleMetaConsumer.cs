@@ -1,9 +1,9 @@
-﻿using HarmonyLib;
-using KFCommonUtilityLib;
-using KFCommonUtilityLib.Attributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
+using HarmonyLib;
+using KFCommonUtilityLib;
+using KFCommonUtilityLib.Attributes;
 using UniLinq;
 
 [TypeTarget(typeof(ItemAction)), TypeDataTarget(typeof(MetaConsumerData))]
@@ -51,9 +51,7 @@ public class ActionModuleMetaConsumer
         var fld_infinite = AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.InfiniteAmmo));
         var mtd_consume = AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.ConsumeAmmo));
         var lbd_module = generator.DeclareLocal(typeof(ActionModuleMetaConsumer));
-        var lbd_data_module = generator.DeclareLocal(typeof(ActionModuleMetaConsumer.MetaConsumerData));
-        var prop_instance = AccessTools.PropertyGetter(typeof(IModuleContainerFor<ActionModuleMetaConsumer>), nameof(IModuleContainerFor<ActionModuleMetaConsumer>.Instance));
-        var prop_data_instance = AccessTools.PropertyGetter(typeof(IModuleContainerFor<ActionModuleMetaConsumer.MetaConsumerData>), nameof(IModuleContainerFor<ActionModuleMetaConsumer.MetaConsumerData>.Instance));
+        var lbd_data_module = generator.DeclareLocal(typeof(MetaConsumerData));
         var prop_itemvalue = AccessTools.PropertyGetter(typeof(ItemInventoryData), nameof(ItemInventoryData.itemValue));
 
         int localIndexEntity;
@@ -73,15 +71,13 @@ public class ActionModuleMetaConsumer
                 codes.InsertRange(i - 4, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_0).WithLabels(codes[i - 4].ExtractLabels()),
-                    new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<ActionModuleMetaConsumer>)),
-                    new CodeInstruction(OpCodes.Callvirt, prop_instance),
+                    CodeInstruction.Call(typeof(ModuleExtensions), nameof(ModuleExtensions.LoadModule), null, new []{typeof(ActionModuleMetaConsumer)}),
                     new CodeInstruction(OpCodes.Stloc_S, lbd_module),
                     new CodeInstruction(OpCodes.Ldarg_1),
-                    new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<ActionModuleMetaConsumer.MetaConsumerData>)),
-                    new CodeInstruction(OpCodes.Callvirt, prop_data_instance),
+                    CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(MetaConsumerData)}),
                     new CodeInstruction(OpCodes.Stloc_S, lbd_data_module),
                 });
-                i += 8;
+                i += 6;
             }
             else if (codes[i].StoresField(fld_started) && codes[i - 1].LoadsConstant(1))
             {
@@ -139,13 +135,11 @@ public class ActionModuleMetaConsumer
 
         var fld_attacking = AccessTools.Field(typeof(ItemActionDynamicMelee.ItemActionDynamicMeleeData), nameof(ItemActionDynamicMelee.ItemActionDynamicMeleeData.Attacking));
         var fld_released = AccessTools.Field(typeof(ItemActionDynamicMelee.ItemActionDynamicMeleeData), nameof(ItemActionDynamicMelee.ItemActionDynamicMeleeData.HasReleased));
-        var prop_instance = AccessTools.PropertyGetter(typeof(IModuleContainerFor<ActionModuleMetaConsumer>), nameof(IModuleContainerFor<ActionModuleMetaConsumer>.Instance));
-        var prop_data_instance = AccessTools.PropertyGetter(typeof(IModuleContainerFor<ActionModuleMetaConsumer.MetaConsumerData>), nameof(IModuleContainerFor<ActionModuleMetaConsumer.MetaConsumerData>.Instance));
         var prop_itemvalue = AccessTools.PropertyGetter(typeof(ItemInventoryData), nameof(ItemInventoryData.itemValue));
         var mtd_canstart = AccessTools.Method(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.canStartAttack));
 
         var lbd_module = generator.DeclareLocal(typeof(ActionModuleMetaConsumer));
-        var lbd_data_module = generator.DeclareLocal(typeof(ActionModuleMetaConsumer.MetaConsumerData));
+        var lbd_data_module = generator.DeclareLocal(typeof(MetaConsumerData));
 
         for (var i = 1; i < codes.Count; i++)
         {
@@ -154,15 +148,13 @@ public class ActionModuleMetaConsumer
                 codes.InsertRange(i + 1, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_0),
-                    new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<ActionModuleMetaConsumer>)),
-                    new CodeInstruction(OpCodes.Callvirt, prop_instance),
+                    CodeInstruction.Call(typeof(ModuleExtensions), nameof(ModuleExtensions.LoadModule), null, new []{typeof(ActionModuleMetaConsumer)}),
                     new CodeInstruction(OpCodes.Stloc_S, lbd_module),
                     new CodeInstruction(OpCodes.Ldloc_0),
-                    new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<ActionModuleMetaConsumer.MetaConsumerData>)),
-                    new CodeInstruction(OpCodes.Callvirt, prop_data_instance),
+                    CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(MetaConsumerData)}),
                     new CodeInstruction(OpCodes.Stloc_S, lbd_data_module),
                 });
-                i += 8;
+                i += 6;
             }
             else if (codes[i].StoresField(fld_attacking) && codes[i - 1].LoadsConstant(1))
             {
@@ -237,7 +229,7 @@ public class ActionModuleMetaConsumer
         {
             itemValue.SetMetadata(consumeDatas[i], customData.consumeStocks[i] - customData.consumeValues[i], TypedMetadataValue.TypeTag.Float);
             holdingEntity.MinEventContext.Tags = consumeTags[i];
-            holdingEntity.FireEvent(CustomEnums.onRechargeValueUpdate, true);
+            holdingEntity.FireEvent(CustomEnums.onRechargeValueUpdate);
         }
     }
 

@@ -22,8 +22,8 @@ public class MultiPositionConstraintReverseAdaptor : RigAdaptorAbs
         var constraint = GetComponent<MultiPositionConstraint>();
         constraint.Reset();
         constraint.weight = weight;
-        constraint.data.constrainedObject = m_ConstrainedObject;
-        constraint.data.sourceObjects = WeightedTransformArrayFromAdaptor(targetRoot, m_SourceObjectNames, m_SourceObjectWeights);
+        constraint.data.constrainedObject = ReplaceWeaponTarget(ref m_ConstrainedObject);
+        constraint.data.sourceObjects = WeightedTransformArrayFromAdaptor(m_SourceObjectNames, m_SourceObjectWeights);
         constraint.data.offset = m_Offset;
         constraint.data.constrainedXAxis = m_ConstrainedAxes.x;
         constraint.data.constrainedYAxis = m_ConstrainedAxes.y;

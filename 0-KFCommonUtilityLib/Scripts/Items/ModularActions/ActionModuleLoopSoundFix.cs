@@ -1,12 +1,12 @@
-﻿using Audio;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection.Emit;
+using Audio;
 using HarmonyLib;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Attributes;
 using KFCommonUtilityLib.Scripts.Utilities;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection.Emit;
 using UniLinq;
 using UnityEngine;
 using XmlData = Audio.XmlData;
@@ -23,9 +23,7 @@ public class ActionModuleLoopSoundFix
         var mtd_stop = AccessTools.Method(typeof(Manager), nameof(Manager.StopSequence));
         var mtd_play = AccessTools.Method(typeof(Manager), nameof(Manager.PlaySequence));
         var prop_time = AccessTools.PropertyGetter(typeof(AudioSettings), nameof(AudioSettings.dspTime));
-        var type_datamodule = typeof(IModuleContainerFor<LoopSoundFixData>);
         var type_data = typeof(LoopSoundFixData);
-        var prop_instance = AccessTools.PropertyGetter(type_datamodule, nameof(IModuleContainerFor<LoopSoundFixData>.Instance));
         var mtd_delaystop = AccessTools.Method(type_data, nameof(LoopSoundFixData.StopSequenceDelayed));
 
         for (var i = 0; i < codes.Count; i++)
@@ -36,18 +34,16 @@ public class ActionModuleLoopSoundFix
                 codes.InsertRange(i, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_2),
-                    new CodeInstruction(OpCodes.Castclass, type_datamodule),
-                    new CodeInstruction(OpCodes.Callvirt, prop_instance)
+                    CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(LoopSoundFixData)})
                 });
-                i += 3;
+                i += 2;
             }
             else if (codes[i].Calls(mtd_play))
             {
                 codes.InsertRange(i + 1, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_2),
-                    new CodeInstruction(OpCodes.Castclass, type_datamodule),
-                    new CodeInstruction(OpCodes.Callvirt, prop_instance),
+                    CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(LoopSoundFixData)}),
                     new CodeInstruction(OpCodes.Dup),
                     new CodeInstruction(OpCodes.Dup),
                     CodeInstruction.LoadField(typeof(LoopSoundFixPatches), nameof(LoopSoundFixPatches.LastScheduledNearSourcePlayTime)),
@@ -57,7 +53,7 @@ public class ActionModuleLoopSoundFix
                     new CodeInstruction(OpCodes.Call, prop_time),
                     CodeInstruction.StoreField(type_data, nameof(LoopSoundFixData.loopStartTime))
                 });
-                i += 11;
+                i += 10;
             }
         }
 
@@ -70,9 +66,7 @@ public class ActionModuleLoopSoundFix
         var codes = instructions.ToList();
 
         var mtd_call = AccessTools.Method(typeof(Inventory), nameof(Inventory.CallOnToolbeltChangedInternal));
-        var type_datamodule = typeof(IModuleContainerFor<LoopSoundFixData>);
         var type_data = typeof(LoopSoundFixData);
-        var prop_instance = AccessTools.PropertyGetter(type_datamodule, nameof(IModuleContainerFor<LoopSoundFixData>.Instance));
         var prop_time = AccessTools.PropertyGetter(typeof(AudioSettings), nameof(AudioSettings.dspTime));
 
         for (int i = 0; i < codes.Count; i++)
@@ -82,8 +76,7 @@ public class ActionModuleLoopSoundFix
                 codes.InsertRange(i + 1, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_1),
-                    new CodeInstruction(OpCodes.Castclass, type_datamodule),
-                    new CodeInstruction(OpCodes.Callvirt, prop_instance),
+                    CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(LoopSoundFixData)}),
                     new CodeInstruction(OpCodes.Call, prop_time),
                     CodeInstruction.StoreField(type_data, nameof(LoopSoundFixData.lastShotTime))
                 });
@@ -105,9 +98,7 @@ public class ActionModuleLoopSoundFix
         var codes = instructions.ToList();
 
         var mtd_stop = AccessTools.Method(typeof(Manager), nameof(Manager.StopSequence));
-        var type_datamodule = typeof(IModuleContainerFor<LoopSoundFixData>);
         var type_data = typeof(LoopSoundFixData);
-        var prop_instance = AccessTools.PropertyGetter(type_datamodule, nameof(IModuleContainerFor<LoopSoundFixData>.Instance));
         var mtd_delaystop = AccessTools.Method(type_data, nameof(LoopSoundFixData.StopSequenceDelayed));
 
         for (var i = 0; i < codes.Count; i++)
@@ -118,10 +109,9 @@ public class ActionModuleLoopSoundFix
                 codes.InsertRange(i, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_1),
-                    new CodeInstruction(OpCodes.Castclass, type_datamodule),
-                    new CodeInstruction(OpCodes.Callvirt, prop_instance)
+                    CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(LoopSoundFixData)})
                 });
-                i += 3;
+                i += 2;
             }
         }
 
@@ -215,7 +205,7 @@ public class ActionModuleLoopSoundFix
             }
             for (int i = 0; i < sequenceStopper.sequenceObjs.Count; i++)
             {
-                global::UnityEngine.Object.Destroy(sequenceStopper.sequenceObjs[i]);
+                UnityEngine.Object.Destroy(sequenceStopper.sequenceObjs[i]);
                 //AudioPoolManager.PoolObject(sequenceStopper.sequenceObjs[i]);
             }
         }
@@ -231,8 +221,8 @@ public class ActionModuleLoopSoundFix
             Manager.SequenceGOs sequenceGOs;
             if (Manager.sequenceOnEntity.TryGetValue(entity.entityId, out dictionary) && dictionary.TryGetValue(soundGroupName, out sequenceGOs))
             {
-                AudioSource nearAudioSource = null;
-                AudioSource farAudioSource = null;
+                AudioSource nearAudioSource;
+                AudioSource farAudioSource;
                 double nearEndScheduledTime = -1, farEndScheduledTime = -1;
                 float delay = 0;
                 if (sequenceGOs.nearLoop)
@@ -434,7 +424,7 @@ public static class LoopSoundFixPatches
                         codes.InsertRange(j + 1, new[]
                         {
                             new CodeInstruction(OpCodes.Ldloc_S, codes[j - 1].operand),
-                            CodeInstruction.StoreField(typeof(LoopSoundFixPatches), nameof(LoopSoundFixPatches.LastScheduledNearSourcePlayTime))
+                            CodeInstruction.StoreField(typeof(LoopSoundFixPatches), nameof(LastScheduledNearSourcePlayTime))
                         });
                         i += 2;
                         break;
@@ -450,7 +440,7 @@ public static class LoopSoundFixPatches
                         codes.InsertRange(j + 1, new[]
                         {
                             new CodeInstruction(OpCodes.Ldloc_S, codes[j - 1].operand),
-                            CodeInstruction.StoreField(typeof(LoopSoundFixPatches), nameof(LoopSoundFixPatches.LastScheduledFarSourcePlayTime))
+                            CodeInstruction.StoreField(typeof(LoopSoundFixPatches), nameof(LastScheduledFarSourcePlayTime))
                         });
                         i += 2;
                         break;

@@ -22,7 +22,7 @@ public class MultiParentConstraintAdaptor : RigAdaptorAbs
         constraint.Reset();
         constraint.weight = weight;
         constraint.data.constrainedObject = targetRoot.FindInAllChildren(m_ConstrainedObject);
-        constraint.data.sourceObjects = m_SourceObjects;
+        constraint.data.sourceObjects = ReplaceWeaponTarget(ref m_SourceObjects);
         constraint.data.constrainedPositionXAxis = m_ConstrainedPositionAxes.x;
         constraint.data.constrainedPositionYAxis = m_ConstrainedPositionAxes.y;
         constraint.data.constrainedPositionZAxis = m_ConstrainedPositionAxes.z;

@@ -44,8 +44,8 @@ public class BlendConstraintAdaptor : RigAdaptorAbs
         constraint.Reset();
         constraint.weight = weight;
         constraint.data.constrainedObject = targetRoot.FindInAllChildren(m_ConstrainedObject);
-        constraint.data.sourceObjectA = m_SourceA;
-        constraint.data.sourceObjectB = m_SourceB;
+        constraint.data.sourceObjectA = ReplaceWeaponTarget(ref m_SourceA);
+        constraint.data.sourceObjectB = ReplaceWeaponTarget(ref m_SourceB);
         constraint.data.blendPosition = m_BlendPosition;
         constraint.data.blendRotation = m_BlendRotation;
         constraint.data.positionWeight = m_PositionWeight;

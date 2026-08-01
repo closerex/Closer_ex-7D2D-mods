@@ -190,7 +190,7 @@ static class AnimationRiggingPatches
                 {
                     codes.InsertRange(i, new[]
                     {
-                        new CodeInstruction(OpCodes.Ldc_I4_0),
+                        new CodeInstruction(OpCodes.Ldc_I4_1),
                         CodeInstruction.Call(typeof(AnimationRiggingManager), nameof(AnimationRiggingManager.GetAddPartTransformOverride))
                     });
                     codes.RemoveAt(i - 1);
@@ -202,7 +202,7 @@ static class AnimationRiggingPatches
                     {
                         new CodeInstruction(OpCodes.Ldarg_0),
                         CodeInstruction.LoadField(typeof(MinEventActionAttachPrefabToHeldItem), nameof(MinEventActionAttachPrefabToHeldItem.parent_transform)),
-                        new CodeInstruction(OpCodes.Ldc_I4_0),
+                        new CodeInstruction(OpCodes.Ldc_I4_1),
                         CodeInstruction.Call(typeof(AnimationRiggingManager), nameof(AnimationRiggingManager.GetAddPartTransformOverride))
                     });
                     i += 4;
@@ -537,9 +537,9 @@ static class AnimationRiggingPatches
             {
                 foreach (var actionData in __instance.entity.inventory.holdingItemData.actionData)
                 {
-                    if (actionData is IModuleContainerFor<ActionModuleFireModeSelector.FireModeData> data)
+                    if (actionData.IsModuleContainerFor(out ActionModuleFireModeSelector.FireModeData data))
                     {
-                        avatarLocalPlayer.UpdateInt(ActionModuleFireModeSelector.FireModeParamHashes[actionData.indexInEntityOfAction], data.Instance.currentFireMode, true);
+                        avatarLocalPlayer.UpdateInt(ActionModuleFireModeSelector.FireModeParamHashes[actionData.indexInEntityOfAction], data.currentFireMode, true);
                     }
                 }
             }

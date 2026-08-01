@@ -70,3 +70,8 @@ kflibSettingsAimCorrectionTypeDesc,UI,Menu,x,"Choose the type of aim correction 
 kflibCategoryPiPCamera,UI,Menu,x,PiP Camera,瞄准镜相机
 kflibSettingSyncAAQualityName,UI,Menu,x,"Sync AA Quality",同步抗锯齿设置
 kflibSettingSyncAAQualityDesc,UI,Menu,x,"Use Antialiasing quality settings from video options for PiP cameras. Note that this setting takes the ordinary AA setting instead of FSR or DLSS: you'll need to disable upscaling option in order to change it, and set the upscaling back before applying.",为瞄准镜相机启用画质设置中的抗锯齿选项。该选项使用常规的抗锯齿设置而非FSR或DLSS：你需要暂时禁用超分辨率设置来修改抗锯齿设置，然后在应用修改之前重新启用超分辨率设置。
+
+kflibCategoryVerboseLog,UI,Menu,x,"Verbose Logging",详细日志输出
+kflibCategoryVerboseLogDesc,UI,Menu,x,"Enable verbose logging for individual modules. Keep them disabled unless being instructed to enable.",为各个模块单独启用详细日志输出。保持禁用，除非被指示开启。
+kflibSettingModuleManagerLogName,UI,Menu,x,"Module Manager Log",模块管理器日志
+kflibSettingModuleManagerLogDesc,UI,Menu,x,"Enable verbose logging for ModuleManager.",为模块管理器启用详细输出。

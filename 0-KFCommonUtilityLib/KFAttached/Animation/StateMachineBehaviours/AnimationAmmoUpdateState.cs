@@ -43,7 +43,7 @@ public class AnimationAmmoUpdateState : StateMachineBehaviour
             if (invData?.actionData != null)
             {
                 //var mapping = MultiActionManager.GetMappingForEntity(entity.entityId);
-                var mapping = (invData.actionData[0] as IModuleContainerFor<ActionModuleAlternative.AlternativeData>)?.Instance?.mapping;
+                var mapping = invData.actionData[0].LoadModule<ActionModuleAlternative.AlternativeData>()?.mapping;
                 if (mapping != null)
                 {
                     var metaIndices = mapping.indices;

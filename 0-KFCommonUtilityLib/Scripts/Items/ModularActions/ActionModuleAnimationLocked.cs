@@ -26,8 +26,8 @@ public class ActionModuleAnimationLocked
 
     public class AnimationLockedData
     {
-        public bool isLocked = false;
-        public bool isReloadLocked = false;
+        public bool isLocked;
+        public bool isReloadLocked;
     }
 }
 
@@ -35,18 +35,15 @@ public static class AnimationLockedExtension
 {
     public static bool IsAnyActionLocked(this ItemInventoryData self)
     {
-        if (self == null || self.actionData == null)
+        if (self?.actionData == null)
         {
             return false;
         }
         foreach (var actionData in self.actionData)
         {
-            if (actionData is IModuleContainerFor<ActionModuleAnimationLocked.AnimationLockedData> lockData)
+            if (actionData.IsModuleContainerFor(out ActionModuleAnimationLocked.AnimationLockedData lockData) && lockData.isLocked)
             {
-                if (lockData.Instance.isLocked)
-                {
-                    return true;
-                }
+                return true;
             }
         }
         return false;

@@ -1,17 +1,11 @@
-﻿using GearsAPI.Settings;
+﻿using System;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using GearsAPI.Settings;
 using GearsAPI.Settings.Global;
 using GearsAPI.Settings.World;
 using HarmonyLib;
-using KFCommonUtilityLib.KFAttached.Render;
 using KFCommonUtilityLib.Scripts.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Security;
-using System.Security.Permissions;
 using UnityEngine;
 
 namespace KFCommonUtilityLib
@@ -168,11 +162,23 @@ namespace KFCommonUtilityLib.Gears
             InspectSettings.InitSettings(modSettings);
             AimingSettings.InitSettings(modSettings);
             PiPCameraSettings.InitSettings(modSettings);
+            InitVerboseLog(modSettings);
         }
 
         public void OnWorldSettingsLoaded(IModWorldSettings worldSettings)
         {
 
+        }
+
+        private static void InitVerboseLog(IModGlobalSettings modSettings)
+        {
+            var cat = modSettings.GetTab("MiscSettings").GetCategory("VerboseLog");
+            var moduleManagerSettings = (ISwitchGlobalSetting)cat.GetSetting("KFModuleManagerLog");
+            ModuleManagers.debugLog = moduleManagerSettings.CurrentValue == "Enabled";
+            moduleManagerSettings.OnSettingChanged += static (_, value) =>
+            {
+                ModuleManagers.debugLog = value == "Enabled";
+            };
         }
     }
 

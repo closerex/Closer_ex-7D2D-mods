@@ -55,7 +55,7 @@ public class ActionModuleThrowFromInventory : IDisplayAsHUDStat
 
         var itemValue = __customData.invData.itemValue;
         byte curAmmoIndex = __customData.CurrentAmmoIndex;
-        if (curAmmoIndex < 0 || curAmmoIndex >= throwItemValues.Length)
+        if (curAmmoIndex >= throwItemValues.Length)
         {
             __customData.SetAmmoIndex(0);
         }
@@ -112,8 +112,7 @@ public class ActionModuleThrowFromInventory : IDisplayAsHUDStat
                 codes.InsertRange(i + 1, new[]
                 {
                     CodeInstruction.LoadArgument(1),
-                    new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<ThrowFromInventoryData>)),
-                    new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(IModuleContainerFor<ThrowFromInventoryData>), nameof(IModuleContainerFor<ThrowFromInventoryData>.Instance))),
+                    CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(ThrowFromInventoryData)}),
                     CodeInstruction.Call(typeof(ThrowFromInventoryData), nameof(ThrowFromInventoryData.OnThrowAnimationBegin))
                 });
                 break;
@@ -214,8 +213,7 @@ public class ActionModuleThrowFromInventory : IDisplayAsHUDStat
         codes.InsertRange(0, new[]
         {
             new CodeInstruction(OpCodes.Ldarg_1),
-            new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<ThrowFromInventoryData>)),
-            new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(IModuleContainerFor<ThrowFromInventoryData>), nameof(IModuleContainerFor<ThrowFromInventoryData>.Instance))),
+            CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(ThrowFromInventoryData)}),
             CodeInstruction.StoreLocal(lbd_data.LocalIndex)
         });
 
@@ -230,7 +228,6 @@ public class ActionModuleThrowFromInventory : IDisplayAsHUDStat
         var lbd_iv = generator.DeclareLocal(typeof(ItemValue));
 
         var prop_iv = AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItemItemValue));
-        var prop_instance = AccessTools.PropertyGetter(typeof(IModuleContainerFor<ThrowFromInventoryData>), nameof(IModuleContainerFor<ThrowFromInventoryData>.Instance));
         var prop_ammovalue = AccessTools.PropertyGetter(typeof(ThrowFromInventoryData), nameof(ThrowFromInventoryData.CurrentAmmoValue));
         var mtd_dec = AccessTools.Method(typeof(Inventory), nameof(Inventory.DecHoldingItem));
 
@@ -242,13 +239,12 @@ public class ActionModuleThrowFromInventory : IDisplayAsHUDStat
                 codes.InsertRange(i - 2, new[]
                 {
                     CodeInstruction.LoadArgument(1),
-                    new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<ThrowFromInventoryData>)),
-                    new CodeInstruction(OpCodes.Callvirt, prop_instance),
+                    CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(ThrowFromInventoryData)}),
                     new CodeInstruction(OpCodes.Call, prop_ammovalue),
                     new CodeInstruction(OpCodes.Dup),
                     CodeInstruction.StoreLocal(lbd_iv.LocalIndex)
                 });
-                i += 3;
+                i += 2;
             }
             else if (codes[i].Calls(mtd_dec))
             {
@@ -261,13 +257,12 @@ public class ActionModuleThrowFromInventory : IDisplayAsHUDStat
                     CodeInstruction.Call(typeof(EntityInventoryExtension), nameof(EntityInventoryExtension.TryRemoveItem)),
                     new CodeInstruction(OpCodes.Pop),
                     CodeInstruction.LoadArgument(1),
-                    new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<ThrowFromInventoryData>)),
-                    new CodeInstruction(OpCodes.Callvirt, prop_instance),
+                    CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(ThrowFromInventoryData)}),
                     CodeInstruction.LoadField(typeof(ThrowFromInventoryData), nameof(ThrowFromInventoryData.ammoCount)),
                     new CodeInstruction(OpCodes.Ldc_I4_0),
                     new CodeInstruction(OpCodes.Bgt_Un_S, lbl)
                 });
-                i += 6;
+                i += 5;
             }
         }
 
@@ -283,7 +278,7 @@ public class ActionModuleThrowFromInventory : IDisplayAsHUDStat
         }
         _xuiRadialWindow.ResetRadialEntries();
         int defaultIndex = -1;
-        ThrowFromInventoryData customData = ((IModuleContainerFor<ThrowFromInventoryData>)_epl.inventory.holdingItemData.actionData[action.ActionIndex]).Instance;
+        ThrowFromInventoryData customData = _epl.inventory.holdingItemData.actionData[action.ActionIndex].LoadModule<ThrowFromInventoryData>();
         for (int i = 0; i < throwItemValues.Length; i++)
         {
             ItemValue itemValue = throwItemValues[i];
@@ -326,11 +321,11 @@ public class ActionModuleThrowFromInventory : IDisplayAsHUDStat
         {
             return;
         }
-        if (customContext.data.invData.itemValue.SelectedAmmoTypeIndex == _commandIndex && customContext.data.invData.actionData[0] is IModuleContainerFor<ActionModuleInspectable.InspectableData> inspectData)
+        if (customContext.data.invData.itemValue.SelectedAmmoTypeIndex == _commandIndex && customContext.data.invData.actionData[0].IsModuleContainerFor(out ActionModuleInspectable.InspectableData inspectData))
         {
-            if (inspectData.Instance.CanInspect(customContext.data.ammoCount))
+            if (inspectData.CanInspect(customContext.data.ammoCount))
             {
-                inspectData.Instance.TriggerInspect();
+                inspectData.TriggerInspect();
             }
             return;
         }
@@ -350,11 +345,7 @@ public class ActionModuleThrowFromInventory : IDisplayAsHUDStat
 
     public string GetHUDStatValue(ItemInventoryData invData)
     {
-        if ((invData.actionData[action.ActionIndex] as IModuleContainerFor<ThrowFromInventoryData>)?.Instance is ThrowFromInventoryData data)
-        {
-            return data.ammoCount.ToString();
-        }
-        return "";
+        return invData.actionData[action.ActionIndex].IsModuleContainerFor(out ThrowFromInventoryData data) ? data.ammoCount.ToString() : "";
     }
 
     public string GetHUDStatValueWithMax(ItemInventoryData invData, int currentAmmoCount)
@@ -369,7 +360,7 @@ public class ActionModuleThrowFromInventory : IDisplayAsHUDStat
 
     public bool UpdateActiveItemAmmo(ItemInventoryData invData, ref int currentAmmoCount)
     {
-        if ((invData.actionData[action.ActionIndex] as IModuleContainerFor<ThrowFromInventoryData>)?.Instance is ThrowFromInventoryData data)
+        if (invData.actionData[action.ActionIndex].IsModuleContainerFor(out ThrowFromInventoryData data))
         {
             currentAmmoCount = data.ammoCount;
             return true;
@@ -379,7 +370,7 @@ public class ActionModuleThrowFromInventory : IDisplayAsHUDStat
 
     public void GetIconOverride(ItemInventoryData invData, ref string originalIcon)
     {
-        if ((invData.actionData[action.ActionIndex] as IModuleContainerFor<ThrowFromInventoryData>)?.Instance is ThrowFromInventoryData data)
+        if (invData.actionData[action.ActionIndex].IsModuleContainerFor(out ThrowFromInventoryData data))
         {
             originalIcon = data.CurrentAmmoValue.ItemClass.GetIconName();
         }
@@ -387,7 +378,7 @@ public class ActionModuleThrowFromInventory : IDisplayAsHUDStat
 
     public void GetIconTintOverride(ItemInventoryData invData, ref Color32 originalTint)
     {
-        if ((invData.actionData[action.ActionIndex] as IModuleContainerFor<ThrowFromInventoryData>)?.Instance is ThrowFromInventoryData data)
+        if (invData.actionData[action.ActionIndex].IsModuleContainerFor(out ThrowFromInventoryData data))
         {
             originalTint = data.CurrentAmmoValue.ItemClass.GetIconTint();
         }

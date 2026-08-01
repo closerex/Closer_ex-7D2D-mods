@@ -41,29 +41,20 @@ public class ActionModuleLimitedCombo
         var codes = instructions.ToList();
 
         var fld_atk = AccessTools.Field(typeof(ItemActionDynamicMelee.ItemActionDynamicMeleeData), nameof(ItemActionDynamicMelee.ItemActionDynamicMeleeData.Attacking));
-
+        
         for (int i = 1; i < codes.Count; i++)
         {
             if (codes[i].StoresField(fld_atk) && codes[i - 1].opcode == OpCodes.Ldc_I4_1)
             {
-                Label lbl_pop = generator.DefineLabel(), lbl_ret = generator.DefineLabel();
-                var code_original = codes[i - 2];
                 codes.InsertRange(i - 2, new[]
                 {
-                    new CodeInstruction(OpCodes.Ldarg_1).WithLabels(code_original.ExtractLabels()),
-                    new CodeInstruction(OpCodes.Isinst, typeof(IModuleContainerFor<LimitedComboData>)),
-                    new CodeInstruction(OpCodes.Dup),
-                    new CodeInstruction(OpCodes.Brfalse_S, lbl_pop),
-                    new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(IModuleContainerFor<LimitedComboData>), nameof(IModuleContainerFor<LimitedComboData>.Instance))),
+                    new CodeInstruction(OpCodes.Ldarg_1).WithLabels(codes[i - 2].ExtractLabels()),
+                    CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(LimitedComboData)}),
                     CodeInstruction.Call(typeof(LimitedComboData), nameof(LimitedComboData.AddCombo)),
-                    new CodeInstruction(OpCodes.Br_S, lbl_ret),
-                    new CodeInstruction(OpCodes.Pop).WithLabels(lbl_pop)
                 });
-                code_original.WithLabels(lbl_ret);
                 break;
             }
         }
-
 
         return codes;
     }
@@ -97,9 +88,8 @@ public static class ActionModuleLimitedComboPatches
     [HarmonyPrefix]
     private static bool Prefix_canStartAttack_ItemActionDynamicMelee(ItemActionData _actionData, ref bool __result)
     {
-        if (_actionData is IModuleContainerFor<ActionModuleLimitedCombo.LimitedComboData> dataModule)
+        if (_actionData.IsModuleContainerFor(out ActionModuleLimitedCombo.LimitedComboData customData))
         {
-            var customData = dataModule.Instance;
             if (!customData.CanContinue())
             {
                 //_actionData.lastUseTime = Time.time;
@@ -141,9 +131,9 @@ public static class ActionModuleLimitedComboPatches
         {
             return;
         }
-        if (invData.actionData[actionIdx] is IModuleContainerFor<ActionModuleLimitedCombo.LimitedComboData> dataModule)
+        if (invData.actionData[actionIdx].IsModuleContainerFor(out ActionModuleLimitedCombo.LimitedComboData customData))
         {
-            dataModule.Instance.ResetCombo();
+            customData.ResetCombo();
         }
     }
 }

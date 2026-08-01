@@ -16,7 +16,7 @@ public class MinEventActionUpdateLocalCache : MinEventActionBase
 
     public override void Execute(MinEventParams _params)
     {
-        ActionModuleLocalPassiveCache.LocalPassiveCacheData _data = ((IModuleContainerFor<ActionModuleLocalPassiveCache.LocalPassiveCacheData>)(actionIndex < 0 ? _params.ItemActionData : _params.ItemInventoryData.actionData[actionIndex])).Instance;
+        ActionModuleLocalPassiveCache.LocalPassiveCacheData _data = (actionIndex < 0 ? _params.ItemActionData : _params.ItemInventoryData.actionData[actionIndex]).LoadModule<ActionModuleLocalPassiveCache.LocalPassiveCacheData>();
 
         _data.CachePassive(passive, saveAs, saveAsStr, tags);
     }

@@ -45,7 +45,7 @@ public class ChainIKConstraintAdaptor : RigAdaptorAbs
         constraint.weight = weight;
         constraint.data.root = targetRoot.FindInAllChildren(m_Root);
         constraint.data.tip = targetRoot.FindInAllChildren(m_Tip);
-        constraint.data.target = m_Target;
+        constraint.data.target = ReplaceWeaponTarget(ref m_Target);
         constraint.data.chainRotationWeight = m_ChainRotationWeight;
         constraint.data.tipRotationWeight = m_TipRotationWeight;
         constraint.data.maxIterations = m_MaxIterations;

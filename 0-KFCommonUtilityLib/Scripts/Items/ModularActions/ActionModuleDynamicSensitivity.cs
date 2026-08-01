@@ -23,9 +23,9 @@ public class ActionModuleDynamicSensitivity
     [HarmonyPatch(nameof(ItemAction.OnModificationsChanged)), MethodTargetPostfix]
     private void Postfix_OnModificationsChanged(ItemActionZoom __instance, ItemActionData _data, DynamicSensitivityData __customData)
     {
-        if (_data is IModuleContainerFor<ActionModuleVariableZoom.VariableZoomData> variableZoomData)
+        if (_data.IsModuleContainerFor(out ActionModuleVariableZoom.VariableZoomData variableZoomData))
         {
-            __customData.variableZoomData = variableZoomData.Instance;
+            __customData.variableZoomData = variableZoomData;
         }
         else
         {

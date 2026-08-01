@@ -81,7 +81,7 @@ public class AnimationMeleeShooterState : StateMachineBehaviour
             if (invData != null)
             {
                 actionIndex = MultiActionManager.GetActionIndexForEntity(player);
-                data = (player.inventory?.GetItemDataInSlot(activeRig.SlotIndex)?.actionData?[actionIndex] as IModuleContainerFor<ActionModuleMeleeShooter.MeleeShooterData>)?.Instance;
+                data = player.inventory?.GetItemDataInSlot(activeRig.SlotIndex)?.actionData?[actionIndex].LoadModule<ActionModuleMeleeShooter.MeleeShooterData>();
                 if (data != null)
                 {
                     data.animationRequested = true;

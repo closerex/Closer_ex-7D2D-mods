@@ -15,9 +15,9 @@ public class ActionHasTags : TargetedCompareRequirementBase
         }
 
         bool flag = false;
-        if (_params.ItemActionData is IModuleContainerFor<ActionModuleTagged.TaggedData> tagged)
+        if (_params.ItemActionData.IsModuleContainerFor(out ActionModuleTagged.TaggedData tagged))
         {
-            flag = (hasAllTags ? tagged.Instance.tags.Test_AllSet(actionTags) : tagged.Instance.tags.Test_AnySet(actionTags));
+            flag = (hasAllTags ? tagged.tags.Test_AllSet(actionTags) : tagged.tags.Test_AnySet(actionTags));
         }
 
         if (!invert)

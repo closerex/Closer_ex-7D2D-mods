@@ -36,7 +36,7 @@ namespace KFCommonUtilityLib.Scripts.ConsoleCmd
                     self = ModManager.GetModForAssembly(typeof(ModuleManagers).Assembly);
                 }
                 DirectoryInfo dirInfo = Directory.CreateDirectory(Path.Combine(self.Path, "AssemblyOutput"));
-                AssemblyBuilder ab = AppDomain.CurrentDomain.DefineDynamicAssembly(new System.Reflection.AssemblyName(assname), AssemblyBuilderAccess.Save, dirInfo.FullName);
+                AssemblyBuilder ab = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName(assname), AssemblyBuilderAccess.Save, dirInfo.FullName);
                 ModuleBuilder mb = ab.DefineDynamicModule(assname, assname + ".dll", false);
                 DictionaryList<Type, TypeBuilder> allTBs = new();
                 foreach (var mtd in allPatchedMethods)

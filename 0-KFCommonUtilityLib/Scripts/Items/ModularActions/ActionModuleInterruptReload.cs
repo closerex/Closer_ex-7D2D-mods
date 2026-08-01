@@ -1,9 +1,9 @@
-﻿using HarmonyLib;
-using KFCommonUtilityLib;
-using KFCommonUtilityLib.Attributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
+using HarmonyLib;
+using KFCommonUtilityLib;
+using KFCommonUtilityLib.Attributes;
 using UniLinq;
 using UnityEngine;
 
@@ -12,8 +12,8 @@ public class ActionModuleInterruptReload
 {
     public float holdBeforeCancel = 0.06f;
     public string firingStateName = "";
-    public bool instantFiringCancel = false;
-    public bool internalCancelOnly = false;
+    public bool instantFiringCancel;
+    public bool internalCancelOnly;
 
     [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPrefix]
     public void Prefix_StartHolding(InterruptData __customData)
@@ -72,7 +72,7 @@ public class ActionModuleInterruptReload
             if (_actionData.invData.itemValue.Meta > 0)
             {
                 if (ConsoleCmdReloadLog.LogInfo)
-                    Log.Out($"instant firing cancel prefix!");
+                    Log.Out("instant firing cancel prefix!");
                 ItemActionRanged.ItemActionDataRanged rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
                 __state.executed = true;
                 __state.isReloading = rangedData.isReloading;
@@ -84,7 +84,7 @@ public class ActionModuleInterruptReload
             else
             {
                 if (ConsoleCmdReloadLog.LogInfo)
-                    Log.Out($"not fired! meta is 0");
+                    Log.Out("not fired! meta is 0");
                 __customData.isInterruptRequested = false;
                 __customData.instantFiringRequested = false;
                 return false;
@@ -99,7 +99,7 @@ public class ActionModuleInterruptReload
         if (__state.executed)
         {
             if (ConsoleCmdReloadLog.LogInfo)
-                Log.Out($"instant firing cancel postfix!");
+                Log.Out("instant firing cancel postfix!");
             ItemActionRanged.ItemActionDataRanged rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
             rangedData.isReloading = __state.isReloading;
             rangedData.isWeaponReloading = __state.isWeaponReloading;
@@ -108,7 +108,7 @@ public class ActionModuleInterruptReload
                 if (rangedData.m_LastShotTime > __state.lastShotTime && rangedData.m_LastShotTime < Time.time + 1f)
                 {
                     if (ConsoleCmdReloadLog.LogInfo)
-                        Log.Out($"executed!");
+                        Log.Out("executed!");
                     __customData.eventBridge.OnReloadEnd();
                     __customData.itemAnimator.Play(firingStateName, -1, 0f);
                     //__customData.itemAnimator.Update(0f);
@@ -145,7 +145,7 @@ public class ActionModuleInterruptReload
     {
         public bool isInterruptRequested;
         public float holdStartTime = -1f;
-        public bool instantFiringRequested = false;
+        public bool instantFiringRequested;
         public AnimationReloadEvents eventBridge;
         public IAnimatorWrapper itemAnimator;
 
@@ -170,36 +170,38 @@ internal static class ReloadInterruptionPatches
         if (curAction is ItemActionRanged || curAction is ItemActionZoom)
         {
             int curActionIndex = MultiActionManager.GetActionIndexForEntity(_data.holdingEntity);
-            var rangedAction = __instance.Actions[curActionIndex] as ItemActionRanged;
-            var rangedData = _data.actionData[curActionIndex] as ItemActionRanged.ItemActionDataRanged;
-            if (rangedData != null && rangedData is IModuleContainerFor<ActionModuleInterruptReload.InterruptData> dataModule && rangedAction is IModuleContainerFor<ActionModuleInterruptReload> actionModule && !actionModule.Instance.internalCancelOnly)
+            var rangedAction = (ItemActionRanged)__instance.Actions[curActionIndex];
+            if (_data.actionData[curActionIndex] is ItemActionRanged.ItemActionDataRanged rangedData &&
+                rangedData.IsModuleContainerFor(out ActionModuleInterruptReload.InterruptData dataModule) &&
+                rangedAction.IsModuleContainerFor(out ActionModuleInterruptReload actionModule) &&
+                !actionModule.internalCancelOnly)
             {
-                if (!_bReleased && _playerActions != null && actionModule.Instance.IsRequestPossible(dataModule.Instance) && (rangedData.isReloading || rangedData.isWeaponReloading) && !dataModule.Instance.isInterruptRequested)
+                if (!_bReleased && _playerActions != null && actionModule.IsRequestPossible(dataModule) && (rangedData.isReloading || rangedData.isWeaponReloading) && !dataModule.isInterruptRequested)
                 {
-                    bool isActionInversed = rangedAction is IModuleContainerFor<ActionModuleInversedAction>;
+                    bool isActionInversed = rangedAction.IsModuleContainerFor(out ActionModuleInversedAction _);
                     bool currentActionPressed = isActionInversed ? _playerActions.Secondary.IsPressed : _playerActions.Primary.IsPressed;
                     bool zoomActionPressed = isActionInversed ? _playerActions.Primary.IsPressed : _playerActions.Secondary.IsPressed;
                     if ((currentActionPressed && _actionIdx == curActionIndex && _data.itemValue.Meta > 0) || (zoomActionPressed && curAction is ItemActionZoom))
                     {
-                        if (dataModule.Instance.holdStartTime < 0)
+                        if (dataModule.holdStartTime < 0)
                         {
-                            dataModule.Instance.holdStartTime = Time.time;
+                            dataModule.holdStartTime = Time.time;
                             return false;
                         }
-                        if (Time.time - dataModule.Instance.holdStartTime >= actionModule.Instance.holdBeforeCancel)
+                        if (Time.time - dataModule.holdStartTime >= actionModule.holdBeforeCancel)
                         {
                             if (!ItemActionRanged.ReloadCancelled(rangedData))
                             {
                                 rangedAction.CancelReload(rangedData, false);
                             }
                             if (ConsoleCmdReloadLog.LogInfo)
-                                Log.Out($"interrupt requested!");
-                            dataModule.Instance.isInterruptRequested = true;
-                            if (actionModule.Instance.instantFiringCancel && curAction is ItemActionRanged)
+                                Log.Out("interrupt requested!");
+                            dataModule.isInterruptRequested = true;
+                            if (actionModule.instantFiringCancel && curAction is ItemActionRanged)
                             {
                                 if (ConsoleCmdReloadLog.LogInfo)
-                                    Log.Out($"instant firing cancel!");
-                                dataModule.Instance.instantFiringRequested = true;
+                                    Log.Out("instant firing cancel!");
+                                dataModule.instantFiringRequested = true;
                                 return true;
                             }
                         }
@@ -208,7 +210,7 @@ internal static class ReloadInterruptionPatches
                 }
                 if (_bReleased)
                 {
-                    dataModule.Instance.Reset();
+                    dataModule.Reset();
                 }
             }
         }
@@ -261,9 +263,9 @@ internal static class ReloadInterruptionPatches
                         CodeInstruction.LoadField(typeof(PlayerMoveController), nameof(PlayerMoveController.entityPlayerLocal)),
                         new CodeInstruction(codes[j - 2].opcode, codes[j - 2].operand),
                         CodeInstruction.CallClosure<Func<EntityPlayerLocal, int, bool>>(static (player, actionIndex) =>
-                        {
-                            return !(player.inventory.holdingItem.Actions[actionIndex] is IModuleContainerFor<ActionModuleInterruptReload> module) || module.Instance.internalCancelOnly;
-                        })
+                            !player.inventory.holdingItem.Actions[actionIndex]
+                                .IsModuleContainerFor(out ActionModuleInterruptReload module) ||
+                            module.internalCancelOnly)
                     });
                         break;
                     }

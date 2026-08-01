@@ -1,14 +1,19 @@
-﻿using HarmonyLib;
-using HarmonyLib.Public.Patching;
-using Mono.Collections.Generic;
-using MonoMod.Cil;
-using MonoMod.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
+using System.Xml.Linq;
+using HarmonyLib;
+using HarmonyLib.Public.Patching;
+using Mono.Cecil;
+using Mono.Collections.Generic;
+using MonoMod.Cil;
+using MonoMod.Utils;
 using UniLinq;
+using UnityEngine;
+using Logger = HarmonyLib.Tools.Logger;
+using MethodAttributes = System.Reflection.MethodAttributes;
 
 namespace KFCommonUtilityLib.Harmony
 {
@@ -28,7 +33,7 @@ namespace KFCommonUtilityLib.Harmony
             {
                 if (codes[i].opcode == OpCodes.Newobj && ctor_itemclass.Equals(codes[i].operand))
                 {
-                    codes.InsertRange(i + 1, new CodeInstruction[]
+                    codes.InsertRange(i + 1, new[]
                     {
                         new CodeInstruction(OpCodes.Ldloc_1).WithLabels(codes[i].ExtractLabels()),
                         CodeInstruction.CallClosure<Func<DynamicProperties, ItemClass>>(static (props) =>
@@ -47,7 +52,7 @@ namespace KFCommonUtilityLib.Harmony
                 {
                     if (typeof(ItemClass).Equals(codes[i + 1].operand))
                     {
-                        codes.InsertRange(i, new CodeInstruction[]
+                        codes.InsertRange(i, new[]
                         {
                             new(OpCodes.Ldloc_1),
                             CodeInstruction.CallClosure<Func<Type, DynamicProperties, Type>>(static (originalType, props) =>
@@ -83,7 +88,7 @@ namespace KFCommonUtilityLib.Harmony
                     }
                     else if (typeof(ItemAction).Equals(codes[i + 1].operand))
                     {
-                        codes.InsertRange(i, new CodeInstruction[]
+                        codes.InsertRange(i, new[]
                         {
                             new(OpCodes.Ldloc_1),
                             new(OpCodes.Ldloc_S, ((LocalBuilder)codes[i - 2].operand).LocalIndex - 2),
@@ -124,11 +129,97 @@ namespace KFCommonUtilityLib.Harmony
             return codes;
         }
 
+        private static List<XElement> xElementCache = new List<XElement>();
+        [HarmonyPatch(typeof(MinEventActionBase), nameof(MinEventActionBase.ParseAction))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_ParseAction_MinEventActionBase(
+            IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            var codes = instructions.ToList();
+
+            var mtd_create = AccessTools.Method(typeof(Activator), nameof(Activator.CreateInstance), new[] { typeof(Type) });
+            
+            var lbd_processor = generator.DeclareLocal(typeof(MinEventActionModuleProcessor));
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].Calls(mtd_create))
+                {
+                    codes.InsertRange(i - 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_0).WithLabels(codes[i - 1].ExtractLabels()),
+                        new(OpCodes.Ldloc_0),
+                        new(OpCodes.Ldloc_S, lbd_processor),
+                        CodeInstruction.CallClosure<Func<XElement, Type, MinEventActionModuleProcessor, Type>>(static (element, originalType, processor) =>
+                        {
+                            xElementCache.Clear();
+                            foreach (var child in element.Elements())
+                            {
+                                if (child.Name.LocalName == "mea_module" && child.HasAttribute("module"))
+                                {
+                                    string moduleName = child.Attribute("module").Value;
+                                    Type moduleType = processor.GetModuleTypeByName(moduleName);
+                                    if (moduleType != null)
+                                    {
+                                        xElementCache.Add(child);
+                                    }
+                                    else
+                                    {
+                                        Log.Error($"MinEventAction module type {moduleName} not found!");
+                                    }
+                                }
+                            }
+
+                            if (xElementCache.Count > 0)
+                            {
+                                string moduleNames = string.Join(',', xElementCache.Select(element => element.Attribute("module").Value));
+                                if (ModuleManagers.PatchType<MinEventActionModuleProcessor>(originalType,
+                                        typeof(MinEventActionBase), null, moduleNames, out Type result))
+                                {
+                                    return result;
+                                }
+
+                                Log.Error($"Failed to build type for {originalType.FullName} with modules {moduleNames}");
+                            }
+                            return originalType;
+                        }),
+                        new(OpCodes.Stloc_0)
+                    });
+                    i += 5;
+                }
+                else if (codes[i].opcode == OpCodes.Endfinally)
+                {
+                    codes.InsertRange(i + 1, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldloc_1).WithLabels(codes[i + 1].ExtractLabels()),
+                        CodeInstruction.LoadField(typeof(ModularPatches), nameof(xElementCache)),
+                        CodeInstruction.Call(typeof(MinEventActionModuleProcessor), nameof(MinEventActionModuleProcessor.ParseModuleAttribute))
+                    });
+                    i += 3;
+                }
+            }
+            return codes;
+        }
+        
         [HarmonyPatch(typeof(GameManager), nameof(GameManager.Disconnect))]
         [HarmonyPostfix]
         private static void Postfix_Disconnect_GameManager()
         {
             ModuleManagers.Cleanup();
+        }
+
+        [HarmonyPatch(typeof(BaseAssemblyResolver), MethodType.Constructor)]
+        [HarmonyPostfix]
+        private static void Postfix_ctor_BaseAssemblyResolver(Collection<string> ___directories)
+        {
+            ___directories.AddRange(ModManager.GetLoadedMods().Select(mod => mod.Path));
+        }
+
+        [HarmonyPatch(typeof(Logger), "Log")]
+        [HarmonyPostfix]
+        private static void Postfix_Log_Logger(Logger.LogChannel channel)
+        {
+            if (channel == Logger.LogChannel.Warn)
+                Log.Out($"Log stacktrace\n{StackTraceUtility.ExtractStackTrace()}");
         }
 
         [HarmonyPatch(typeof(PatchManager), "GetRealMethod")]
@@ -141,7 +232,7 @@ namespace KFCommonUtilityLib.Harmony
                 {
                     return null;
                 }
-                return new CodeInstruction[]
+                return new[]
                 {
                     CodeInstruction.LoadField(typeof(PatchManager), "ReplacementToOriginals"),
                     CodeInstruction.LoadField(typeof(PatchManager), "ReplacementToOriginalsMono"),
@@ -475,6 +566,28 @@ namespace KFCommonUtilityLib.Harmony
         }
 
         [HarmonyReversePatch]
+        public static MethodBase GetOriginalMethodNoWarning(this HarmonyMethod attr)
+        {
+            IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                if (instructions == null)
+                    return null;
+                
+                return instructions.MethodReplacer(AccessTools.Method(typeof(AccessTools), nameof(AccessTools.DeclaredMethod), new[] { typeof(Type), typeof(string), typeof(Type[]), typeof(Type[]) }),
+                                                   AccessTools.Method(typeof(WarningSuppressionPatches), nameof(WarningSuppressionPatches.DeclaredMethod), new[] { typeof(Type), typeof(string), typeof(Type[]), typeof(Type[]) }))
+                                   .MethodReplacer(AccessTools.Method(typeof(AccessTools), nameof(AccessTools.DeclaredIndexer)),
+                                                   AccessTools.Method(typeof(WarningSuppressionPatches), nameof(WarningSuppressionPatches.DeclaredIndexer)))
+                                   .MethodReplacer(AccessTools.Method(typeof(AccessTools), nameof(AccessTools.DeclaredProperty), new[] { typeof(Type), typeof(string) }),
+                                                   AccessTools.Method(typeof(WarningSuppressionPatches), nameof(WarningSuppressionPatches.DeclaredProperty), new[] { typeof(Type), typeof(string) }))
+                                   .MethodReplacer(AccessTools.Method(typeof(AccessTools), nameof(AccessTools.DeclaredConstructor)),
+                                                   AccessTools.Method(typeof(WarningSuppressionPatches), nameof(WarningSuppressionPatches.DeclaredConstructor)));
+            }
+
+            _ = Transpiler(null);
+            return null;
+        }
+
+        [HarmonyReversePatch]
         public static MethodBase GetBaseMethod(this HarmonyMethod attr)
         {
             IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -492,6 +605,250 @@ namespace KFCommonUtilityLib.Harmony
             }
             _ = Transpiler(null);
             return null;
+        }
+    }
+
+    [HarmonyPatch(typeof(AccessTools))]
+    public static class WarningSuppressionPatches
+    {
+        [HarmonyPatch(nameof(AccessTools.DeclaredConstructor))]
+        [HarmonyReversePatch]
+        public static ConstructorInfo DeclaredConstructor(Type type, Type[] parameters = null,
+            bool searchForStatic = false)
+        {
+            IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                return RemoveWarnings(instructions);
+            }
+            _ = Transpiler(null);
+
+            return null;
+        }
+
+        [HarmonyPatch(nameof(AccessTools.DeclaredField), typeof(string))]
+        [HarmonyReversePatch]
+        public static FieldInfo DeclaredField(string typeColonName)
+        {
+            IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                return RemoveWarnings(instructions);
+            }
+            _ = Transpiler(null);
+
+            return null;
+        }
+        
+        [HarmonyPatch(nameof(AccessTools.DeclaredField), typeof(Type), typeof(string))]
+        [HarmonyReversePatch]
+        public static FieldInfo DeclaredField(Type type, string name)
+        {
+            IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                return RemoveWarnings(instructions);
+            }
+            _ = Transpiler(null);
+
+            return null;
+        }
+        
+        [HarmonyPatch(nameof(AccessTools.DeclaredField), typeof(Type), typeof(int))]
+        [HarmonyReversePatch]
+        public static FieldInfo DeclaredField(Type type, int idx)
+        {
+            IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                return RemoveWarnings(instructions);
+            }
+            _ = Transpiler(null);
+
+            return null;
+        }
+        
+        [HarmonyPatch(nameof(AccessTools.DeclaredIndexer))]
+        [HarmonyReversePatch]
+        public static PropertyInfo DeclaredIndexer(Type type, Type[] parameters = null)
+        {
+            IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                return RemoveWarnings(instructions);
+            }
+            _ = Transpiler(null);
+
+            return null;
+        }
+
+        [HarmonyPatch(nameof(AccessTools.DeclaredIndexerGetter))]
+        [HarmonyReversePatch]
+        public static MethodInfo DeclaredIndexerGetter(Type type, Type[] parameters = null)
+        {
+            IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                return instructions?.MethodReplacer(
+                    AccessTools.Method(typeof(AccessTools), nameof(AccessTools.DeclaredIndexer)),
+                    AccessTools.Method(typeof(WarningSuppressionPatches), nameof(DeclaredIndexer)));
+            }
+            
+            _ = Transpiler(null);
+            return null;
+        }
+        
+        [HarmonyPatch(nameof(AccessTools.DeclaredIndexerSetter))]
+        [HarmonyReversePatch]
+        public static MethodInfo DeclaredIndexerSetter(Type type, Type[] parameters = null)
+        {
+            IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                return instructions?.MethodReplacer(
+                    AccessTools.Method(typeof(AccessTools), nameof(AccessTools.DeclaredIndexer)),
+                    AccessTools.Method(typeof(WarningSuppressionPatches), nameof(DeclaredIndexer)));
+            }
+            
+            _ = Transpiler(null);
+            return null;
+        }
+
+        [HarmonyPatch(nameof(AccessTools.DeclaredMethod), typeof(Type), typeof(string), typeof(Type[]), typeof(Type[]))]
+        [HarmonyReversePatch]
+        public static MethodInfo DeclaredMethod(Type type, string name, Type[] parameters = null, Type[] generics = null)
+        {
+            IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                return RemoveWarnings(instructions);
+            }
+            _ = Transpiler(null);
+
+            return null;
+        }
+        
+        [HarmonyPatch(nameof(AccessTools.DeclaredMethod), typeof(string), typeof(Type[]), typeof(Type[]))]
+        [HarmonyReversePatch]
+        public static MethodInfo DeclaredMethod(string typeColonName, Type[] parameters = null, Type[] generics = null)
+        {
+            IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                return instructions?.MethodReplacer(
+                    AccessTools.Method(typeof(AccessTools), nameof(AccessTools.DeclaredMethod), new[] { typeof(Type), typeof(string), typeof(Type[]), typeof(Type[]) }),
+                    AccessTools.Method(typeof(WarningSuppressionPatches), nameof(DeclaredMethod), new[] { typeof(Type), typeof(string), typeof(Type[]), typeof(Type[]) }));
+            }
+            
+            _ = Transpiler(null);
+            return null;
+        }
+        
+        [HarmonyPatch(nameof(AccessTools.DeclaredProperty), typeof(string))]
+        [HarmonyReversePatch]
+        public static PropertyInfo DeclaredProperty(string typeColonName)
+        {
+            IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                return RemoveWarnings(instructions);
+            }
+            _ = Transpiler(null);
+
+            return null;
+        }
+
+        [HarmonyPatch(nameof(AccessTools.DeclaredProperty), typeof(Type), typeof(string))]
+        [HarmonyReversePatch]
+        public static PropertyInfo DeclaredProperty(Type type, string name)
+        {
+            IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                return RemoveWarnings(instructions);
+            }
+            _ = Transpiler(null);
+
+            return null;
+        }
+        
+        [HarmonyPatch(nameof(AccessTools.DeclaredPropertyGetter), typeof(string))]
+        [HarmonyReversePatch]
+        public static MethodInfo DeclaredPropertyGetter(string typeColonName)
+        {
+            IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                return instructions?.MethodReplacer(
+                    AccessTools.Method(typeof(AccessTools), nameof(AccessTools.DeclaredProperty), new[] { typeof(string) }),
+                    AccessTools.Method(typeof(WarningSuppressionPatches), nameof(DeclaredProperty), new[] { typeof(string) }));
+            }
+            
+            _ = Transpiler(null);
+            return null;
+        }
+        
+        [HarmonyPatch(nameof(AccessTools.DeclaredPropertyGetter), typeof(Type), typeof(string))]
+        [HarmonyReversePatch]
+        public static MethodInfo DeclaredPropertyGetter(Type type, string name)
+        {
+            IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                return instructions?.MethodReplacer(
+                    AccessTools.Method(typeof(AccessTools), nameof(AccessTools.DeclaredProperty), new[] { typeof(Type), typeof(string) }),
+                    AccessTools.Method(typeof(WarningSuppressionPatches), nameof(DeclaredProperty), new[] { typeof(Type), typeof(string) }));
+            }
+            
+            _ = Transpiler(null);
+            return null;
+        }
+        
+        [HarmonyPatch(nameof(AccessTools.DeclaredPropertySetter), typeof(string))]
+        [HarmonyReversePatch]
+        public static MethodInfo DeclaredPropertySetter(string typeColonName)
+        {
+            IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                return instructions?.MethodReplacer(
+                    AccessTools.Method(typeof(AccessTools), nameof(AccessTools.DeclaredProperty), new[] { typeof(string) }),
+                    AccessTools.Method(typeof(WarningSuppressionPatches), nameof(DeclaredProperty), new[] { typeof(string) }));
+            }
+            
+            _ = Transpiler(null);
+            return null;
+        }
+        
+        [HarmonyPatch(nameof(AccessTools.DeclaredPropertySetter), typeof(Type), typeof(string))]
+        [HarmonyReversePatch]
+        public static MethodInfo DeclaredPropertySetter(Type type, string name)
+        {
+            IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                return instructions?.MethodReplacer(
+                    AccessTools.Method(typeof(AccessTools), nameof(AccessTools.DeclaredProperty), new[] { typeof(Type), typeof(string) }),
+                    AccessTools.Method(typeof(WarningSuppressionPatches), nameof(DeclaredProperty), new[] { typeof(Type), typeof(string) }));
+            }
+            
+            _ = Transpiler(null);
+            return null;
+        }
+
+        private static readonly MethodInfo mtd_logtext = AccessTools.Method(typeof(Logger), "LogText");
+        private static readonly MethodInfo mtd_log = AccessTools.Method(typeof(Logger), "Log");
+        private static IEnumerable<CodeInstruction> RemoveWarnings(IEnumerable<CodeInstruction> instructions)
+        {
+            if (instructions == null)
+                return null;
+            
+            var codes = instructions.ToList();
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].Calls(mtd_logtext) || codes[i].Calls(mtd_log))
+                {
+                    for (int j = i - 1; j >= 0; j--)
+                    {
+                        if (codes[j].opcode == OpCodes.Ldc_I4_8)
+                        {
+                            int remove = i - j + 1;
+                            codes[i + 1].WithLabels(codes[j].ExtractLabels());
+                            codes.RemoveRange(j, remove);
+                            i -= remove;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            return codes;
         }
     }
 
@@ -551,17 +908,20 @@ namespace KFCommonUtilityLib.Harmony
         {
             try
             {
+                if (self != null && other != null)
+                {
+                    ModuleManagers.LogOut($"comparing {self.FullName} with {other.FullName}");
+                }
                 return (self == null && other == null) ||
                        (self != null && other != null &&
-                           ((self is DynamicMethodReference dself && other is DynamicMethodReference dother && dself.DynamicMethod.Equals(dother.DynamicMethod)) ||
-                            (self is not DynamicMethodReference && other is not DynamicMethodReference && MethodReferenceComparePatch.MethodReferenceCompare(self, other))
-                           )
+                           ((self is DynamicMethodReference dself && other is DynamicMethodReference dother && dself.DynamicMethod == dother.DynamicMethod) ||
+                            (self is not DynamicMethodReference && other is not DynamicMethodReference && (MethodReferenceComparePatch.MethodReferenceCompare(self, other) || self.ResolveReflection() == other.ResolveReflection())))
                        );
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Log.Error($"failed comparing {self.GetType().FullDescription()} {self.Name} with {other.GetType().FullDescription()} {other.Name}");
-                throw e;
+                throw;
             }
         }
 
@@ -590,6 +950,7 @@ namespace KFCommonUtilityLib.Harmony
 
                 var codes = instructions.ToList();
                 ProcessParameterModifiers(codes);
+                FixIgnoreAccessCheck(codes);
                 return codes;
             }
 
@@ -650,7 +1011,7 @@ namespace KFCommonUtilityLib.Harmony
             }
 
             [HarmonyReversePatch]
-            public static void Generate(DynamicMethodDefinition dmd, MethodBase _mb, ILGenerator il)
+            public static void Generate_Instance(DynamicMethodDefinition dmd, MethodBase _mb, ILGenerator il)
             {
                 IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
                 {
@@ -661,7 +1022,8 @@ namespace KFCommonUtilityLib.Harmony
                     var prop_pars = AccessTools.PropertyGetter(typeof(Mono.Cecil.MethodReference), nameof(Mono.Cecil.MethodReference.Parameters));
                     var prop_index = AccessTools.PropertyGetter(typeof(Mono.Cecil.ParameterReference), nameof(Mono.Cecil.ParameterReference.Index));
                     var prop_hasthis = AccessTools.PropertyGetter(typeof(Mono.Cecil.MethodReference), nameof(Mono.Cecil.MethodReference.HasThis));
-
+                    var ctor_hashset = AccessTools.Constructor(typeof(HashSet<Assembly>), Type.EmptyTypes);
+                    
                     LocalBuilder lbd_par_offset = null;
                     for (int i = 0; i < codes.Count - 1; i++)
                     {
@@ -677,7 +1039,7 @@ namespace KFCommonUtilityLib.Harmony
                                     codes[j].WithLabels(lbl);
                                     codes.InsertRange(j, new[]
                                     {
-                                        CodeInstruction.LoadField(typeof(MonoModPatches), nameof(MonoModPatches.isStatic)),
+                                        CodeInstruction.LoadField(typeof(MonoModPatches), nameof(isStatic)),
                                         new CodeInstruction(OpCodes.Brtrue_S, lbl),
                                         new CodeInstruction(OpCodes.Ldloc_S, codes[i + 2].operand),
                                         CodeInstruction.Call(typeof(Collection<Mono.Cecil.ParameterDefinition>.Enumerator), nameof(Collection<Mono.Cecil.ParameterDefinition>.Enumerator.MoveNext)),
@@ -693,7 +1055,7 @@ namespace KFCommonUtilityLib.Harmony
                         else if (codes[i].Calls(prop_index))
                         {
                             codes[i + 1].opcode = OpCodes.Ldsfld;
-                            codes[i + 1].operand = AccessTools.Field(typeof(MonoModPatches), nameof(MonoModPatches.isStatic));
+                            codes[i + 1].operand = AccessTools.Field(typeof(MonoModPatches), nameof(isStatic));
                         }
                         else if (codes[i].Calls(prop_hasthis))
                         {
@@ -705,6 +1067,40 @@ namespace KFCommonUtilityLib.Harmony
                         else if (lbd_par_offset != null && codes[i].opcode == OpCodes.Ldloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == lbd_par_offset.LocalIndex && codes[i + 1].opcode == OpCodes.Add)
                         {
                             codes[i + 1].opcode = OpCodes.Sub;
+                        }
+                        else if (codes[i].opcode == OpCodes.Newobj && codes[i].OperandIs(ctor_hashset))
+                        {
+                            codes[i].opcode = OpCodes.Ldsfld;
+                            codes[i].operand = AccessTools.Field(typeof(ModuleManagers),
+                                nameof(ModuleManagers.set_checked));
+                        }
+                    }
+
+                    return codes;
+                }
+
+                _ = Transpiler(null, null);
+            }
+
+            [HarmonyReversePatch]
+            public static void Generate_IgnoreAccessToFixOnly(DynamicMethodDefinition dmd, MethodBase _mb, ILGenerator il)
+            {
+                IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions,
+                    ILGenerator generator)
+                {
+                    if (instructions == null || generator == null)
+                        return null;
+                    var codes = instructions.ToList();
+                    
+                    var ctor_hashset = AccessTools.Constructor(typeof(HashSet<Assembly>), Type.EmptyTypes);
+
+                    for (int i = 0; i < codes.Count; i++)
+                    {
+                        if (codes[i].opcode == OpCodes.Newobj && codes[i].OperandIs(ctor_hashset))
+                        {
+                            codes[i].opcode = OpCodes.Ldsfld;
+                            codes[i].operand = AccessTools.Field(typeof(ModuleManagers),
+                                nameof(ModuleManagers.set_checked));
                         }
                     }
 
@@ -877,7 +1273,20 @@ namespace KFCommonUtilityLib.Harmony
                 }
                 else if (codes[i].Calls(mtd_generate))
                 {
-                    codes[i].operand = AccessTools.Method(typeof(DMDEmit_GeneratePatch), nameof(DMDEmit_GeneratePatch.Generate));
+                    codes[i].operand = AccessTools.Method(typeof(DMDEmit_GeneratePatch), nameof(DMDEmit_GeneratePatch.Generate_Instance));
+                }
+            }
+        }
+
+        private static void FixIgnoreAccessCheck(List<CodeInstruction> codes)
+        {
+            var mtd_generate = AccessTools.Method(AccessTools.TypeByName("MonoMod.Utils._DMDEmit"), "Generate");
+
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].Calls(mtd_generate))
+                {
+                    codes[i].operand = AccessTools.Method(typeof(DMDEmit_GeneratePatch), nameof(DMDEmit_GeneratePatch.Generate_IgnoreAccessToFixOnly));
                 }
             }
         }
@@ -889,7 +1298,7 @@ namespace KFCommonUtilityLib.Harmony
             var mtd_definemtd = AccessTools.Method(typeof(TypeBuilder), nameof(TypeBuilder.DefineMethod), new[] { typeof(string), typeof(MethodAttributes), typeof(CallingConventions), typeof(Type), typeof(Type[]), typeof(Type[]), typeof(Type[]), typeof(Type[][]), typeof(Type[][]) });
             var mtd_getilgen = AccessTools.Method(typeof(MethodBuilder), nameof(MethodBuilder.GetILGenerator));
             var mtd_generate = AccessTools.Method(AccessTools.TypeByName("MonoMod.Utils._DMDEmit"), "Generate");
-            var mtd_generate_patched = AccessTools.Method(typeof(DMDEmit_GeneratePatch), nameof(DMDEmit_GeneratePatch.Generate));
+            var mtd_generate_patched = AccessTools.Method(typeof(DMDEmit_GeneratePatch), nameof(DMDEmit_GeneratePatch.Generate_Instance));
 
             var lbd_ctor = generator.DeclareLocal(typeof(ConstructorBuilder));
             for (int i = 0; i < codes.Count; i++)

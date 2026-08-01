@@ -68,6 +68,9 @@ public static class CommonUtilityPatch
         var mtd_get_perc_left = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.PercentUsesLeft));
         var mtd_check_ammo = AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.checkAmmo));
         var mtd_getkick = AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.GetKickbackForce));
+        // var fld_started = AccessTools.Field(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.burstShotStarted));
+        //
+        // var lbd_last_shot_time = generator.DeclareLocal(typeof(float));
 
         int take = -1, insert = -1;
         for (int i = 1; i < codes.Count; ++i)
@@ -94,7 +97,7 @@ public static class CommonUtilityPatch
         {
             localIndexBurstCount = 4;
         }
-        for (int i = 0; i < codes.Count - 1; i++)
+        for (int i = 1; i < codes.Count - 1; i++)
         {
             if (codes[i].Calls(mtd_check_ammo))
             {
@@ -164,6 +167,34 @@ public static class CommonUtilityPatch
                 });
                 i += 27;
             }
+            // else if (codes[i].opcode == OpCodes.Stloc_0)
+            // {
+            //     codes.InsertRange(i + 1, new CodeInstruction[]
+            //     {
+            //         new(OpCodes.Ldloc_0),
+            //         CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.m_LastShotTime)),
+            //         new CodeInstruction(OpCodes.Stloc_S, lbd_last_shot_time)
+            //     });
+            //     i += 3;
+            // }
+            // else if (codes[i].StoresField(fld_started) && codes[i - 1].LoadsConstant(1))
+            // {
+            //     static void Closure(ItemActionRanged.ItemActionDataRanged rangedData, float lastShotTime)
+            //     {
+            //         if (rangedData.curBurstCount > 1 && rangedData.m_LastShotTime - lastShotTime > rangedData.Delay)
+            //         {
+            //             Log.Out($"Fixing shot delay: last {lastShotTime} delay {rangedData.Delay} interval {rangedData.m_LastShotTime - lastShotTime} vanilla {rangedData.m_LastShotTime} corrected {lastShotTime + rangedData.Delay}");
+            //             rangedData.m_LastShotTime = lastShotTime + rangedData.Delay;
+            //         }
+            //     }
+            //     codes.InsertRange(i + 1, new CodeInstruction[]
+            //     {
+            //         new(OpCodes.Ldloc_0),
+            //         new(OpCodes.Ldloc_S,  lbd_last_shot_time),
+            //         CodeInstruction.CallClosure<Action<ItemActionRanged.ItemActionDataRanged, float>>(Closure)
+            //     });
+            //     i += 3;
+            // }
         }
 
         return codes;
@@ -1574,9 +1605,9 @@ public static class CommonUtilityPatch
                                 new CodeInstruction(OpCodes.Ldloc_2),
                                 CodeInstruction.CallClosure<Action<EntityPlayerLocal, int>>((player, index) =>
                                 {
-                                    if (player.inventory.holdingItemData.actionData[index] is IModuleContainerFor<ActionModuleAnimationInterruptable.AnimationInterruptableData> interruptData)
+                                    if (player.inventory.holdingItemData.actionData[index].IsModuleContainerFor(out ActionModuleAnimationInterruptable.AnimationInterruptableData interruptData))
                                     {
-                                        interruptData.Instance.interruptRequested = true;
+                                        interruptData.interruptRequested = true;
                                     }
                                 })
                             });
@@ -1598,9 +1629,9 @@ public static class CommonUtilityPatch
                             new CodeInstruction(codes[i - 1].opcode, codes[i - 1].operand).WithLabels(codes[j].ExtractLabels()),
                             CodeInstruction.CallClosure<Action<EntityPlayerLocal>>(static (player) =>
                             {
-                                if (player.inventory.holdingItemData is IModuleContainerFor<ItemModuleMultiItem.MultiItemInvData> dataModule)
+                                if (player.inventory.holdingItemData.IsModuleContainerFor(out ItemModuleMultiItem.MultiItemInvData dataModule))
                                 {
-                                    var multiInvData = dataModule.Instance;
+                                    var multiInvData = dataModule;
                                     if (multiInvData.boundInvData != null && multiInvData.boundItemClass != null && multiInvData.boundItemClass.Actions != null && multiInvData.boundInvData.actionData != null)
                                     {
                                         var prevData = player.MinEventContext.ItemActionData;
@@ -1614,9 +1645,9 @@ public static class CommonUtilityPatch
                                                 player.MinEventContext.ItemActionData = actionData;
                                                 if (action.IsActionRunning(actionData))
                                                 {
-                                                    if (actionData is IModuleContainerFor<ActionModuleAnimationInterruptable.AnimationInterruptableData> interruptData)
+                                                    if (actionData.IsModuleContainerFor(out ActionModuleAnimationInterruptable.AnimationInterruptableData interruptData))
                                                     {
-                                                        interruptData.Instance.interruptRequested = true;
+                                                        interruptData.interruptRequested = true;
                                                     }
                                                     action.CancelAction(actionData);
                                                 }
@@ -2479,6 +2510,10 @@ public static class CommonUtilityPatch
                 SkinMaterialReplacer replacer = DataLoader.LoadAsset<SkinMaterialReplacer>(path, true);
                 list.ApplySkinMaterials(replacer, useDropMesh);
             }
+
+            string originalValue = "255,255,255";
+            __instance.Properties.ParseString(Block.PropTintColor, ref originalValue);
+            list.ApplyTintColor(Block.StringToVector3(_itemValue.GetPropertyOverride(Block.PropTintColor, originalValue)), useDropMesh);
         }
     }
 
@@ -2620,7 +2655,7 @@ public static class CommonUtilityPatch
                                 {
                                     foreach (var dep in depArray)
                                     {
-                                        DataLoader.DataPathIdentifier id = DataLoader.ParseDataPathIdentifier(ModManager.PatchModPathString((string)dep));
+                                        DataLoader.DataPathIdentifier id = DataLoader.ParseDataPathIdentifier((string)dep);
                                         if (!AssetBundleManager.Instance.dictAssetBundleRefs.ContainsKey(id.BundlePath + "1"))
                                         {
                                             Log.Out($"Loading dependency bundle {id.BundlePath} for bundle {bundleName}...");
@@ -2636,6 +2671,65 @@ public static class CommonUtilityPatch
                         }
                     })
                 });
+                break;
+            }
+        }
+
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(MinEffectGroup), nameof(MinEffectGroup.ParseXml))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_ParseXml_MinEffectGroup(
+        IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+        
+        var mtd_parse_action = AccessTools.Method(typeof(MinEventActionBase), nameof(MinEventActionBase.ParseAction));
+        var mtd_add_trigger = AccessTools.Method(typeof(MinEffectGroup), nameof(MinEffectGroup.AddTriggeredEffect));
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_parse_action))
+            {
+                for (int j = i + 1; j < codes.Count; j++)
+                {
+                    if (codes[j].Calls(mtd_add_trigger))
+                    {
+                        codes.InsertRange(i - 1, new[]
+                        {
+                            new(codes[j - 2].opcode, codes[j - 2].operand),
+                            new(codes[i - 1].opcode, codes[i - 1].operand),
+                            CodeInstruction.CallClosure<Func<MinEffectGroup, XElement, bool>>(static (group, elem) =>
+                            {
+                                string triggers = elem.GetAttribute("trigger");
+                                if (!triggers.Contains(','))
+                                    return false;
+
+                                try
+                                {
+                                    foreach (var trigger in triggers.Split(','))
+                                    {
+                                        elem.SetAttributeValue("trigger", trigger);
+                                        var minEvent = MinEventActionBase.ParseAction(elem);
+                                        if (minEvent != null)
+                                        {
+                                            group.AddTriggeredEffect(minEvent);
+                                        }
+                                    }
+                                }
+                                finally
+                                {
+                                    elem.SetAttributeValue("trigger", triggers);
+                                }
+
+                                return true;
+                            }),
+                            new(OpCodes.Brtrue_S, codes[j + 1].operand)
+                        });
+                        break;
+                    }
+                }
                 break;
             }
         }

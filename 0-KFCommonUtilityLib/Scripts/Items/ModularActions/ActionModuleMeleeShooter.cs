@@ -1,8 +1,8 @@
-﻿using HarmonyLib;
+﻿using System.Collections.Generic;
+using System.Reflection.Emit;
+using HarmonyLib;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Attributes;
-using System.Collections.Generic;
-using System.Reflection.Emit;
 using UniLinq;
 using UnityEngine;
 
@@ -16,7 +16,7 @@ public class ActionModuleMeleeShooter
         var codes = instructions.ToList();
         var fld_started = AccessTools.Field(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.burstShotStarted));
         var mtd_checkammo = AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.checkAmmo));
-        var mtd_canreload = AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.CanReload));
+        var mtd_canreload = AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.CanReload));
         bool canReloadPatched = false;
 
         for (int i = 1; i < codes.Count; i++)
@@ -42,15 +42,13 @@ public class ActionModuleMeleeShooter
                 codes.InsertRange(i - 2, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_0).WithLabels(codes[i - 2].ExtractLabels()),
-                    new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<ActionModuleMeleeShooter>)),
-                    new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(IModuleContainerFor<ActionModuleMeleeShooter>), nameof(IModuleContainerFor<ActionModuleMeleeShooter>.Instance))),
+                    CodeInstruction.Call(typeof(ModuleExtensions), nameof(ModuleExtensions.LoadModule), null, new []{typeof(ActionModuleMeleeShooter)}),
                     new CodeInstruction(OpCodes.Ldloc_0),
-                    new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<MeleeShooterData>)),
-                    new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(IModuleContainerFor<MeleeShooterData>), nameof(IModuleContainerFor<MeleeShooterData>.Instance))),
-                    CodeInstruction.Call(typeof(ActionModuleMeleeShooter), nameof(ActionModuleMeleeShooter.ShouldCheckAmmo)),
+                    CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(MeleeShooterData)}),
+                    CodeInstruction.Call(typeof(ActionModuleMeleeShooter), nameof(ShouldCheckAmmo)),
                     new CodeInstruction(OpCodes.Brfalse_S, codes[i + 1].operand)
                 });
-                i += 8;
+                i += 6;
             }
             else if (codes[i].Calls(mtd_canreload) && !canReloadPatched)
             {
@@ -58,8 +56,8 @@ public class ActionModuleMeleeShooter
                 codes.InsertRange(i - 2, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_0).WithLabels(codes[i - 2].ExtractLabels()),
-                    new CodeInstruction(OpCodes.Castclass, typeof(IModuleContainerFor<ActionModuleMeleeShooter>)),
-                    CodeInstruction.LoadField(typeof(ActionModuleMeleeShooter), nameof(ActionModuleMeleeShooter.ignoreAmmoCheck)),
+                    CodeInstruction.Call(typeof(ModuleExtensions), nameof(ModuleExtensions.LoadModule), null, new []{typeof(ActionModuleMeleeShooter)}),
+                    CodeInstruction.LoadField(typeof(ActionModuleMeleeShooter), nameof(ignoreAmmoCheck)),
                     new CodeInstruction(OpCodes.Brtrue_S, codes[i + 1].operand)
                 });
                 i += 4;
@@ -81,26 +79,27 @@ public class ActionModuleMeleeShooter
             return false;
         }
 
-        var customData = ((IModuleContainerFor<MeleeShooterData>)_rangedData).Instance;
+        var customData = _rangedData.LoadModule<MeleeShooterData>();
         if (customData.executionRequested)
         {
             customData.executionRequested = false;
             return true;
         }
-        else if (customData.animationRequested)
+
+        if (customData.animationRequested)
         {
             _rangedData.m_LastShotTime = Time.time;
             return false;
         }
 
-        if (_rangedData.invData.holdingEntity is EntityPlayerLocal player && player.inventory.holdingItemData is IModuleContainerFor<ItemModuleMultiItem.MultiItemInvData> dataModule)
+        if (_rangedData.invData.holdingEntity is EntityPlayerLocal player && player.inventory.holdingItemData.IsModuleContainerFor(out ItemModuleMultiItem.MultiItemInvData dataModule))
         {
             _rangedData.m_LastShotTime = 0f;
-            customData.animationRequested = ItemModuleMultiItem.CheckAltMelee(player, dataModule.Instance, false, 1, false);
+            customData.animationRequested = ItemModuleMultiItem.CheckAltMelee(player, dataModule, false, 1, false);
             _rangedData.m_LastShotTime = Time.time;
             if (customData.animationRequested)
             {
-                ItemModuleMultiItem.CheckAltMelee(player, dataModule.Instance, true, 1, false);
+                ItemModuleMultiItem.CheckAltMelee(player, dataModule, true, 1, false);
             }
         }
         __instance.triggerReleased(_rangedData, __instance.ActionIndex);
@@ -177,7 +176,7 @@ public class ActionModuleMeleeShooter
 
         public MeleeShooterData(ItemInventoryData _inventoryData)
         {
-            this.invData = _inventoryData;
+            invData = _inventoryData;
         }
 
         public void ResetRequest()
