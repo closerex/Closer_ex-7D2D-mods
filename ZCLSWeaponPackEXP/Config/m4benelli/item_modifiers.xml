@@ -37,4 +37,22 @@
 			<property name="Sound_start" value="pump_shotgun_s_fire"/>
 		</item_property_overrides>
 	</append>
+
+	<conditional>
+		<if cond="mod_loaded('EFTX_Pack_Core')">
+			<append xpath="/item_modifiers/item_modifier[@name='modtacticalFlashlightSurefireX400' or @name='modtacticalNCStarBlueLaser' or @name='modtacticalANPEQ15' or @name='modtacticalHolosunLS321']">
+				<item_property_overrides name="gunT3M4Benelli">
+					<property name="CrosshairOnAim" value="false"/>
+					<property name="ItemTagsAppend" value="noflashlight"/>
+					<property name="ItemTagsRemove" value="sideAttachments"/>
+				</item_property_overrides>
+			</append>
+			<append xpath="/item_modifiers/item_modifier[@name='modtacticalFlashlightSurefireXC1' or @name='modtacticalFlashlightZenit2U' or @name='modtacticalFlashlightArmyTekPredator' or @name='modtacticalFlashlightUltraFire' or @name='modtacticalFlashlightWMX200']">
+				<item_property_overrides name="gunT3M4Benelli">
+					<property name="ItemTagsAppend" value="nolasersight"/>
+					<property name="ItemTagsRemove" value="sideAttachments"/>
+				</item_property_overrides>
+			</append>
+		</if>
+	</conditional>
 </configs>

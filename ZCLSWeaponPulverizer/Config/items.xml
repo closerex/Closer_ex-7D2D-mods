@@ -104,8 +104,8 @@
 			<effect_group>
 				<passive_effect name="CustomTaggedEffect" operation="base_set" value="14" tags="StaminaOnBlocking,perkSkullCrusher" match_all_tags="true"/>
 				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="StaminaOnParrying,perkSkullCrusher" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".5" tags="DamageBlockingPrec,perkSkullCrusher" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".6" tags="DamageParryingPrec,perkSkullCrusher" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".5" tags="DamageBlockingPerc,perkSkullCrusher" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".6" tags="DamageParryingPerc,perkSkullCrusher" match_all_tags="true"/>
 				<passive_effect name="CustomTaggedEffect" operation="base_set" value="2" tags="DegradationBlocking,perkSkullCrusher" match_all_tags="true"/>
 				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="DegradationParrying,perkSkullCrusher" match_all_tags="true"/>
 				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".47" tags="ParryDuration,perkSkullCrusher" match_all_tags="true"/>
@@ -146,6 +146,17 @@
 				<passive_effect name="DismemberChance" operation="perc_add" value="-.3" tags="head">
 					<requirement name="EntityTagCompare" target="other" tags="radiated"/>
 				</passive_effect>
+			</effect_group>
+			<effect_group name="Blood level on hit">
+				<requirements compare_type="or">
+					<requirement name="IsAlive" target="other"/>
+					<requirement name="IsCorpse" target="other"/>
+				</requirements>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit,onSelfPrimaryActionGrazeHit,onSelfSecondaryActionRayHit,onSelfSecondaryActionGrazeHit" action="AnimatorSetBool" property="HasBlood" value="true"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit,onSelfPrimaryActionGrazeHit,onSelfSecondaryActionRayHit,onSelfSecondaryActionGrazeHit" action="SetItemMetaFloat" change="0.25" relative="true" key="bloodLevel"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit,onSelfPrimaryActionGrazeHit,onSelfSecondaryActionRayHit,onSelfSecondaryActionGrazeHit" action="SetSkinMaterialProperty,KFCommonUtilityLib" use_holding_item="true" value="@bloodLevel" mat_index_fpv="0" mat_index_tpv="1" mat_prop="_BloodContrast" is_int="false">
+						<mea_module module="VariableAsCVar,KFCommonUtilityLib" var="#bloodLevel"/>
+					</triggered_effect>
 			</effect_group>
         </item>
 
@@ -281,6 +292,33 @@
 				<passive_effect name="DismemberChance" operation="perc_add" value="-.3" tags="head">
 					<requirement name="EntityTagCompare" target="other" tags="radiated"/>
 				</passive_effect>
+			</effect_group>
+            
+			<effect_group name="Blood level on equip">
+                <triggered_effect trigger="onSelfEquipStart" action="SetItemMetaFloat" change="0" relative="true" key="bloodLevel"/>
+				<triggered_effect trigger="onSelfEquipStart" action="SetSkinMaterialProperty,KFCommonUtilityLib" use_holding_item="true" value="@bloodLevel" mat_index_fpv="0" mat_index_tpv="1" mat_prop="_BloodContrast" is_int="false">
+					<mea_module module="VariableAsCVar,KFCommonUtilityLib" var="#bloodLevel"/>
+				</triggered_effect>
+				<triggered_effect trigger="onAnimatorStateEntered" action="AnimatorSetBoolRef,KFCommonUtilityLib" property="HasBlood" value="#bloodLevel">
+					<requirement name="TriggerHasTags" tags="HoldingStart"/>
+				</triggered_effect>
+			</effect_group>
+			<effect_group name="Blood level on hit">
+				<requirements compare_type="or">
+					<requirement name="IsAlive" target="other"/>
+					<requirement name="IsCorpse" target="other"/>
+				</requirements>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit,onSelfPrimaryActionGrazeHit,onSelfSecondaryActionRayHit,onSelfSecondaryActionGrazeHit" action="AnimatorSetBool" property="HasBlood" value="true"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit,onSelfPrimaryActionGrazeHit,onSelfSecondaryActionRayHit,onSelfSecondaryActionGrazeHit" action="SetItemMetaFloat" change="0.25" relative="true" key="bloodLevel"/>
+					<triggered_effect trigger="onSelfPrimaryActionRayHit,onSelfPrimaryActionGrazeHit,onSelfSecondaryActionRayHit,onSelfSecondaryActionGrazeHit" action="SetSkinMaterialProperty,KFCommonUtilityLib" use_holding_item="true" value="@bloodLevel" mat_index_fpv="0" mat_index_tpv="1" mat_prop="_BloodContrast" is_int="false">
+						<mea_module module="VariableAsCVar,KFCommonUtilityLib" var="#bloodLevel"/>
+					</triggered_effect>
+			</effect_group>
+			<effect_group name="Blood level clean up">
+				<requirement name="TriggerHasTags" tags="CleanBlood"/>
+					<triggered_effect trigger="onAnimationEventTrigger" action="AnimatorSetBool" property="HasBlood" value="false"/>
+					<triggered_effect trigger="onAnimationEventTrigger" action="SetItemMetaFloat" change="0" relative="false" key="bloodLevel"/>
+					<triggered_effect trigger="onAnimationEventTrigger" action="SetSkinMaterialProperty,KFCommonUtilityLib" use_holding_item="true" value="0" mat_index_fpv="0" mat_index_tpv="1" mat_prop="_BloodContrast" is_int="false"/>
 			</effect_group>
         </item>
 

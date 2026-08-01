@@ -144,4 +144,31 @@
 			<set xpath="//item_modifier[@name='modDualGunFlashlight']/@modifier_tags">dualFlashlight</set>
 		</if>
 	</conditional>
+
+	<conditional>
+		<if cond="mod_loaded('EFTX_Pack_Core')">
+			<append xpath="/item_modifiers/item_modifier[@name='modtacticalFlashlightSurefireX400' or @name='modtacticalNCStarBlueLaser']">
+				<item_property_overrides name="gunHandgunT3AF2011A1S">
+					<property name="CrosshairOnAim" value="false"/>
+					<property name="ItemTagsAppend" value="noflashlight"/>
+					<property name="ItemTagsRemove" value="sideAttachments"/>
+				</item_property_overrides>
+				<item_property_overrides name="gunHandgunT3DualAF2011A1S">
+					<property name="CrosshairOnAim" value="false"/>
+					<property name="ItemTagsAppend" value="noflashlight"/>
+					<property name="ItemTagsRemove" value="sideAttachments"/>
+				</item_property_overrides>
+			</append>
+			<append xpath="/item_modifiers/item_modifier[@name='modtacticalFlashlightSurefireXC1' or @name='modtacticalFlashlightZenit2U']">
+				<item_property_overrides name="gunHandgunT3AF2011A1S">
+					<property name="ItemTagsAppend" value="nolasersight"/>
+					<property name="ItemTagsRemove" value="sideAttachments"/>
+				</item_property_overrides>
+				<item_property_overrides name="gunHandgunT3DualAF2011A1S">
+					<property name="ItemTagsAppend" value="nolasersight"/>
+					<property name="ItemTagsRemove" value="sideAttachments"/>
+				</item_property_overrides>
+			</append>
+		</if>
+	</conditional>
 </configs>

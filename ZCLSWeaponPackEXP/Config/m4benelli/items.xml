@@ -78,24 +78,7 @@
 					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
 					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
 					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="1" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="15" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="2" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="30" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="3" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="45" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="4" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="60" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="5" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="75" />
+						<mea_module module="ComplexCondition,KFCommonUtilityLib" l_var="randomFloat(0,100)" op="LTE" r_var="%perkPummelPete(0,5=0,50)"/>
 					</triggered_effect>
 			</effect_group>
 		</item>
@@ -307,4 +290,10 @@
 			<set xpath="/items/item[@name='gunT3M4Benelli']/property[@name='UnlockedBy']/@value">craftingEFTShotguns</set>
         </if>
     </conditional>
+
+	<conditional>
+		<if cond="mod_loaded('EFTX_Pack_Core')">
+			<append xpath="/items/item[@name='gunT3M4Benelli']/property[@name='Tags']/@value">,tacticalDeviceAll</append>
+		</if>
+	</conditional>
 </configs>

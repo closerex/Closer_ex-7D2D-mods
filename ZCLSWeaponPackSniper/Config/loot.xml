@@ -8,6 +8,7 @@
             <append xpath="/lootcontainers/lootgroup[@name='groupRiflesT3' or @name='groupWeaponsT3']">
 				<item name="gunKFSPX464"/>
 				<item name="gunKFM14EBR"/>
+				<item name="gunKFFNFAL"/>
 				<item name="gunTCTD2Virginian" loot_prob_template="veryLow"/>
             </append>
             <append xpath="/lootcontainers/lootgroup[@name='groupRiflesT4' or @name='groupWeaponsT4']">
@@ -34,6 +35,7 @@
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT3']">
 				<item name="gunKFSPX464"/>
 				<item name="gunKFM14EBR"/>
+				<item name="gunKFFNFAL"/>
 				<item name="gunTCTD2Virginian" loot_prob_template="veryLow"/>
 			</append>
 			<append xpath="/lootcontainers/lootgroup[@name='groupWeaponsT4']">
@@ -46,6 +48,7 @@
 			<append xpath="//lootgroup[@name='groupQuestWeaponsRangedT3']">
 				<item name="gunKFSPX464" loot_prob_template="QuestT3Prob"/>
 				<item name="gunKFM14EBR" loot_prob_template="QuestT3Prob"/>
+				<item name="gunKFFNFAL" loot_prob_template="QuestT3Prob"/>
 				<item name="gunKFM99" loot_prob_template="QuestT4Prob"/>
 				<item name="gunTCTD2Virginian" loot_prob_template="QuestT4Prob"/>
 			</append>
@@ -86,6 +89,7 @@
 						<item name="gunKFMosin" count="1" quality="1"/>
 						<item name="gunKFSPX464" count="1" quality="1"/>
 						<item name="gunKFM14EBR" count="1" quality="1"/>
+						<item name="gunKFFNFAL" count="1" quality="1"/>
 						<item name="gunKFM99" count="1" quality="1" loot_prob_template="low"/>
 						<item name="gunTCTD2Virginian" count="1" quality="1" loot_prob_template="veryLow"/>
 					</append>
@@ -94,6 +98,7 @@
 						<item name="gunKFMosin" count="1" quality="2"/>
 						<item name="gunKFSPX464" count="1" quality="2"/>
 						<item name="gunKFM14EBR" count="1" quality="2"/>
+						<item name="gunKFFNFAL" count="1" quality="2"/>
 						<item name="gunKFM99" count="1" quality="2" loot_prob_template="low"/>
 						<item name="gunTCTD2Virginian" count="1" quality="2" loot_prob_template="veryLow"/>
 					</append>
@@ -102,6 +107,7 @@
 						<item name="gunKFMosin" count="1" quality="3"/>
 						<item name="gunKFSPX464" count="1" quality="3"/>
 						<item name="gunKFM14EBR" count="1" quality="3"/>
+						<item name="gunKFFNFAL" count="1" quality="3"/>
 						<item name="gunKFM99" count="1" quality="3" loot_prob_template="low"/>
 						<item name="gunTCTD2Virginian" count="1" quality="3" loot_prob_template="veryLow"/>
 					</append>
@@ -110,6 +116,7 @@
 						<item name="gunKFMosin" count="1" quality="4"/>
 						<item name="gunKFSPX464" count="1" quality="4"/>
 						<item name="gunKFM14EBR" count="1" quality="4"/>
+						<item name="gunKFFNFAL" count="1" quality="4"/>
 						<item name="gunKFM99" count="1" quality="4" loot_prob_template="low"/>
 						<item name="gunTCTD2Virginian" count="1" quality="4" loot_prob_template="veryLow"/>
 					</append>
@@ -118,6 +125,7 @@
 						<item name="gunKFMosin" count="1" quality="5"/>
 						<item name="gunKFSPX464" count="1" quality="5"/>
 						<item name="gunKFM14EBR" count="1" quality="5"/>
+						<item name="gunKFFNFAL" count="1" quality="5"/>
 						<item name="gunKFM99" count="1" quality="5" loot_prob_template="low"/>
 						<item name="gunTCTD2Virginian" count="1" quality="5" loot_prob_template="veryLow"/>
 					</append>
@@ -126,6 +134,7 @@
 						<item name="gunKFMosin" count="1" quality="6"/>
 						<item name="gunKFSPX464" count="1" quality="6"/>
 						<item name="gunKFM14EBR" count="1" quality="6"/>
+						<item name="gunKFFNFAL" count="1" quality="6"/>
 						<item name="gunKFM99" count="1" quality="6" loot_prob_template="low"/>
 						<item name="gunTCTD2Virginian" count="1" quality="6" loot_prob_template="veryLow"/>
 					</append>
@@ -134,21 +143,27 @@
 						<if cond="mod_loaded('Z9_EFTX_Lootable_Zs')">
 							<append xpath="//lootgroup[@name='GroupMaleHazmatRiflesT1']">
 								<item name="gunKFM14EBR" count="1" quality="1"/>
+								<item name="gunKFFNFAL" count="1" quality="1"/>
 							</append>
 							<append xpath="//lootgroup[@name='GroupMaleHazmatRiflesT2']">
 								<item name="gunKFM14EBR" count="1" quality="2"/>
+								<item name="gunKFFNFAL" count="1" quality="2"/>
 							</append>
 							<append xpath="//lootgroup[@name='GroupMaleHazmatRiflesT3']">
 								<item name="gunKFM14EBR" count="1" quality="3"/>
+								<item name="gunKFFNFAL" count="1" quality="3"/>
 							</append>
 							<append xpath="//lootgroup[@name='GroupMaleHazmatRiflesT4']">
 								<item name="gunKFM14EBR" count="1" quality="4"/>
+								<item name="gunKFFNFAL" count="1" quality="4"/>
 							</append>
 							<append xpath="//lootgroup[@name='GroupMaleHazmatRiflesT5']">
 								<item name="gunKFM14EBR" count="1" quality="5"/>
+								<item name="gunKFFNFAL" count="1" quality="5"/>
 							</append>
 							<append xpath="//lootgroup[@name='GroupMaleHazmatRiflesT6']">
 								<item name="gunKFM14EBR" count="1" quality="6"/>
+								<item name="gunKFFNFAL" count="1" quality="6"/>
 							</append>
 
 							<append xpath="//lootgroup[@name='GroupBowlerRiflesT1']">
@@ -263,6 +278,7 @@
 				<item name="gunKFSPX464" loot_prob_template="low"/>
 				<item name="gunKFMosin" loot_prob_template="low"/>
 				<item name="gunKFM14EBR" loot_prob_template="low"/>
+				<item name="gunKFFNFAL" loot_prob_template="low"/>
 				<item name="gunKFM99" loot_prob_template="veryLow"/>
 				<item name="gunTCTD2Virginian" loot_prob_template="veryLow"/>
 			</append>

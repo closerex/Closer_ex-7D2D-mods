@@ -102,8 +102,8 @@
 			<effect_group>
 				<passive_effect name="CustomTaggedEffect" operation="base_set" value="12" tags="StaminaOnBlocking,perkDeepCuts" match_all_tags="true"/>
 				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="StaminaOnParrying,perkDeepCuts" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".4" tags="DamageBlockingPrec,perkDeepCuts" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".6" tags="DamageParryingPrec,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".4" tags="DamageBlockingPerc,perkDeepCuts" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".6" tags="DamageParryingPerc,perkDeepCuts" match_all_tags="true"/>
 				<passive_effect name="CustomTaggedEffect" operation="base_set" value="3" tags="DegradationBlocking,perkDeepCuts" match_all_tags="true"/>
 				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="DegradationParrying,perkDeepCuts" match_all_tags="true"/>
 				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".49" tags="ParryDuration,perkDeepCuts" match_all_tags="true"/>

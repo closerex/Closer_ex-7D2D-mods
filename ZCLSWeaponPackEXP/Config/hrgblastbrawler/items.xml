@@ -93,8 +93,8 @@
 			<effect_group>
 				<passive_effect name="CustomTaggedEffect" operation="base_set" value="10" tags="StaminaOnBlocking,perkBrawler" match_all_tags="true"/>
 				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="StaminaOnParrying,perkBrawler" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".5" tags="DamageBlockingPrec,perkBrawler" match_all_tags="true"/>
-				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".8" tags="DamageParryingPrec,perkBrawler" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".5" tags="DamageBlockingPerc,perkBrawler" match_all_tags="true"/>
+				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".8" tags="DamageParryingPerc,perkBrawler" match_all_tags="true"/>
 				<passive_effect name="CustomTaggedEffect" operation="base_set" value="2" tags="DegradationBlocking,perkBrawler" match_all_tags="true"/>
 				<passive_effect name="CustomTaggedEffect" operation="base_set" value="0" tags="DegradationParrying,perkBrawler" match_all_tags="true"/>
 				<passive_effect name="CustomTaggedEffect" operation="base_set" value=".26" tags="ParryDuration,perkBrawler" match_all_tags="true"/>
@@ -117,24 +117,7 @@
 					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
 					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
 					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="1" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="10" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="2" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="20" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="3" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="30" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="4" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="40" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="5" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="50" />
+						<mea_module module="ComplexCondition,KFCommonUtilityLib" l_var="randomFloat(0,100)" op="LTE" r_var="%perkBrawler(0,5=0,50)"/>
 					</triggered_effect>
 			</effect_group>
 			<effect_group name="Radiated dismember resistance">

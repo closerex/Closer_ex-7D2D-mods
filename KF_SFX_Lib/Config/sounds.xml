@@ -1,5 +1,5 @@
 <config>
-    <!-- #region Attack Sounds -->
+    <!--#region AttackSoundCollection-->
     <append xpath="/Sounds">
         <SoundDataNode name="kf_9mm_Fire_1P_InDoor_Large">
             <Force2D />
@@ -1832,6 +1832,96 @@
             <LowestPitch value="0.917004" />
             <HighestPitch value="1.044274" />
         </SoundDataNode>
+        <SoundDataNode name="kf_fnfal_Fire_1P_Single_City">
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_fnfal_single.prefab" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_fnfal_Network.prefab" />
+            <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FN_FAL_Single_City_01.ogg" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FN_FAL_Single_City_02.ogg" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FN_FAL_Single_City_03.ogg" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FN_FAL_Single_City_04.ogg" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <HighestPitch value="1.060075" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_fnfal_Fire_1P_Single_mountain">
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_fnfal_single.prefab" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_fnfal_Network.prefab" />
+            <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FN_FAL_Single_Mountain_01.ogg" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FN_FAL_Single_Mountain_02.ogg" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FN_FAL_Single_Mountain_03.ogg" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FN_FAL_Single_Mountain_04.ogg" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <HighestPitch value="1.060075" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_fnfal_Fire_1P_Single_Large">
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_fnfal_single.prefab" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_fnfal_Network.prefab" />
+            <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FN_FAL_Single_Large_01.ogg" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FN_FAL_Single_Large_02.ogg" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FN_FAL_Single_Large_03.ogg" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FN_FAL_Single_Large_04.ogg" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <HighestPitch value="1.060075" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_fnfal_Fire_1P_Single_Medium">
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_fnfal_single.prefab" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_fnfal_Network.prefab" />
+            <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FN_FAL_Single_Medium_01.ogg" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FN_FAL_Single_Medium_02.ogg" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FN_FAL_Single_Medium_03.ogg" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FN_FAL_Single_Medium_04.ogg" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <HighestPitch value="1.060075" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_fnfal_Fire_1P_Single_Small">
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_fnfal_single.prefab" />
+            <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_fnfal_Network.prefab" />
+            <Noise ID="0" noise="95" time="2" muffled_when_crouched="0.8" heat_map_strength="4" heat_map_time="500" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FN_FAL_Single_Small_01.ogg" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FN_FAL_Single_Small_02.ogg" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FN_FAL_Single_Small_03.ogg" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FN_FAL_Single_Small_04.ogg" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="1" />
+            <NoiseScale value="1" />
+            <MaxVoices value="120" />
+            <MaxVoicesPerEntity value="60" />
+            <MaxRepeatRate value="0.001" />
+            <HighestPitch value="1.060075" />
+        </SoundDataNode>
         <SoundDataNode name="kf_pulverizer_Fire_1P_Single_Small">
             <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_pulverizer.prefab" />
@@ -2041,6 +2131,22 @@
             <MaxRepeatRate value="0.001" />
             <HighestPitch value="1.014545" />
         </SoundDataNode>
+        <SoundDataNode name="kf_fnfal_DryFire">
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_fnfal.prefab" />
+            <Noise ID="6" noise="7" time="2" muffled_when_crouched="0.5" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FNFAL_Handling_DryFire_01.ogg" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FNFAL_Handling_DryFire_02.ogg" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FNFAL_Handling_DryFire_03.ogg" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="30" />
+            <MaxVoicesPerEntity value="10" />
+            <MaxRepeatRate value="0.001" />
+            <HighestPitch value="1.029302" />
+        </SoundDataNode>
         <SoundDataNode name="kf_doublebarrel_DryFire">
             <Force2D />
             <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_doublebarrel_dryfire.prefab" />
@@ -2223,9 +2329,8 @@
             <HighestPitch value="1.95" />
         </SoundDataNode>
     </append>
-    <!-- #endregion -->
-
-    <!-- #region Editor Sounds-->
+    <!--#endregion-->
+    <!--#region EditorSoundCollection-->
     <append xpath="/Sounds">
         <SoundDataNode name="kf_ui_flashlight_on">
             <Force2D />
@@ -3654,6 +3759,113 @@
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_L85A2_Handling_Rustle_01.ogg" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_L85A2_Handling_Rustle_02.ogg" />
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_SA_L85A2_Handling_Rustle_03.ogg" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+            <HighestPitch value="1.014545" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_fnfal_Check_Handle_Back">
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_fnfal.prefab" />
+            <Noise ID="0" noise="8" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FNFAL_Check_Handle_Back.ogg" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_fnfal_Check_Handle_FWD">
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_fnfal.prefab" />
+            <Noise ID="0" noise="8" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FNFAL_Check_Handle_FWD.ogg" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_fnfal_Check_Mag_Out">
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_fnfal_check_magout.prefab" />
+            <Noise ID="0" noise="8" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FNFAL_Check_Mag_Out.ogg" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_fnfal_Half_Reload_Mag_Out">
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_fnfal.prefab" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FNFAL_Half_Reload_Mag_Out.ogg" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_fnfal_Reload_Handle_Back">
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_fnfal.prefab" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FNFAL_Reload_Handle_Back.ogg" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_fnfal_Reload_Handle_FWD">
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_fnfal.prefab" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FNFAL_Reload_Handle_FWD.ogg" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_fnfal_Reload_Mag_In">
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_fnfal.prefab" />
+            <Noise ID="0" noise="11" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FNFAL_Reload_Mag_In.ogg" />
+            <LocalCrouchVolumeScale value="1" />
+            <RunningVolumeScale value="1" />
+            <CrouchNoiseScale value="0.5" />
+            <NoiseScale value="1" />
+            <MaxVoices value="1" />
+            <MaxVoicesPerEntity value="5" />
+            <MaxRepeatRate value="0.001" />
+        </SoundDataNode>
+        <SoundDataNode name="kf_fnfal_Rustle">
+            <Force2D />
+            <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponHandling_fnfal.prefab" />
+            <Noise ID="0" noise="5" time="1" muffled_when_crouched="1" heat_map_strength="0" heat_map_time="100" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FNFAL_Handling_Rustle_01.ogg" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FNFAL_Handling_Rustle_02.ogg" />
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FNFAL_Handling_Rustle_03.ogg" />
             <LocalCrouchVolumeScale value="1" />
             <RunningVolumeScale value="1" />
             <CrouchNoiseScale value="0.5" />
@@ -5443,7 +5655,7 @@
             <MaxRepeatRate value="0.001" />
         </SoundDataNode>
     </append>
-    <!-- #endregion -->
+    <!--#endregion-->
 
     <!-- #region Dummy Sounds -->
     <append xpath="/Sounds">
@@ -5494,7 +5706,7 @@
             <AudioClip ClipName="@:Sounds/Twitch/Silly/hunting_rifle_fire_silly1.wav" AltSound="true"/>
             <AudioClip ClipName="@:Sounds/Twitch/Silly/hunting_rifle_fire_silly2.wav" AltSound="true"/>
             <AudioClip ClipName="@:Sounds/Twitch/Silly/hunting_rifle_fire_silly3.wav" AltSound="true"/>
-        <LocalCrouchVolumeScale value="1"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="20"/> <MaxVoicesPerEntity value="6"/> <MaxRepeatRate value="0.001"/> </SoundDataNode>
+        <LocalCrouchVolumeScale value="1"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="60"/> <MaxVoicesPerEntity value="30"/> <MaxRepeatRate value="0.001"/> </SoundDataNode>
     </append>
     <!-- #endregion -->
      
@@ -5577,6 +5789,14 @@
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?empty.ogg"/>
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18_Auto_3P_Loop.ogg" Loop="true"/>
             <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_G18_Auto_Loop_End_Large.ogg"/>
+            <LocalCrouchVolumeScale value="1"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="3"/> <MaxRepeatRate value="0.001"/> </SoundDataNode>
+
+        <SoundDataNode name="kf_fnfal_Fire_1P_Loop"> <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_fnfal_loop.prefab"/> <NetworkAudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_fnfal_Network.prefab"/>
+            <Noise ID="4" noise="60" time="5" heat_map_strength="1.0" heat_map_time="120"/>
+            <Sequence/>
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?empty.ogg"/>
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FN_FAL_Loop_City.ogg" Loop="true"/>
+            <AudioClip ClipName="#@modfolder:Resources/WeaponSoundCollection.unity3d?WEP_FN_FAL_EndLoop_Small.ogg" AudioSourceName="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_WeaponFire_fnfal_loopend.prefab"/>
             <LocalCrouchVolumeScale value="1"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="3"/> <MaxRepeatRate value="0.001"/> </SoundDataNode>
 
         <SoundDataNode name="ion_thruster_idle"> <AudioSource name="#@modfolder:Resources/WeaponSoundCollection.unity3d?KF_AudioSource_Melee_Swing_ion_thruster_handling.prefab"/>

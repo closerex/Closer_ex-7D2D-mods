@@ -104,9 +104,6 @@
 				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
 			</property>
 			<effect_group name="Common">
-				<triggered_effect trigger="onSelfEquipStart" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
-				<triggered_effect trigger="onReloadStop" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
-
 				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="true">
 					<requirement name="ProgressionLevel" progression_name="perkGunslinger" operation="GTE" value="5"/>
 				</triggered_effect>
@@ -144,15 +141,14 @@
 				<triggered_effect trigger="onSelfEquipStart" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
 				<triggered_effect trigger="onSelfHoldingItemCreated" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="AimRefGroupVanilla"/>
 			</effect_group>
-			<effect_group name="label color restore">
-				<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="GT" value="5"/>
-					<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#00EFFFE6" slot0="1"/>
-					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#00EFFFE6" slot0="1"/>
-			</effect_group>
 			<effect_group name="label color set">
-				<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="LTE" value="5"/>
-					<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1"/>
-					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1"/>
+				<triggered_effect trigger="onSelfEquipStart,onReloadStop" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
+				<triggered_effect trigger="onSelfEquipStart,onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#00EFFFE6" slot0="1">
+					<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="GT" value="5"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfEquipStart,onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1">
+					<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="LTE" value="5"/>
+				</triggered_effect>
 			</effect_group>
 			<effect_group name="Weapon mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="0"/>
@@ -204,6 +200,30 @@
 					<triggered_effect trigger="onRechargeValueUpdate" action="SetPassiveOnWeaponLabel,KFCommonUtilityLib" passive="CustomTaggedEffect" tags="medicWeapon,MedicStock,ConsumptionValue" pattern="$[passive]" slot="0"/>
 					<triggered_effect trigger="onRechargeValueUpdate" action="SetMetadataOnWeaponLabel,KFCommonUtilityLib" metadata="MedicStock" slot="0"/>
 					<triggered_effect trigger="onSelfItemSwitchMode" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
+					<!-- <triggered_effect trigger="onSelfRangedBurstShotEnd" action="CVarLogValue" cvar="@originalCVar">
+						<mea_module module="ExpressionAsCVar,KFCommonUtilityLib"
+									expression="$random:randomInt(1,[~@critMulti|2]);
+												$dmgMult:expr=[@baseDmg]*FLOOR([stat(Health,CurrentPerc)]*100)/100+[#weaponMeta]*MIN([@multiplier],5);
+												[randomFloat([@minRoll|0.5], [%perkGunslinger(1,2,3,4,5,6=0,1,5,1.5,10,2.0)])] * [{dmgMult}] * [randomInt(1,[~@critMulti|2])] *
+												IF([@critFlag] * [{random}] &gt; 0.5, [^CustomTaggedEffect(weapon)] * [{random}], 1 + [tier(1,3,5=[@t1],[@t2],[@t3])]) + LOG([$passiveCache] + 1, 10) * CEILING(MAX([@bonus|0], 0))">
+							<var name="@baseDmg" validate="true" use_self_target="false" />
+							<var name="@multiplier" validate="true" />
+							<var name="@minRoll|0.5" validate="true" use_self_target="false" />
+							<var name="[@critFlag]" validate="true" />
+							<var name="[~@critMulti|2]" validate="true" />
+							<var name="[@t1]" validate="true" />
+							<var name="[@t2]" validate="true" />
+							<var name="[@t3]" validate="true" />
+							<var name="[@bonus|0]" validate="true" />
+							<var name="{dmgMult}" validate="true" />
+							<var name="[#weaponMeta]" use_holding_item="true" />
+							<var name="[stat(Health,CurrentPerc)]" use_self_target="false" />
+							<var name="[^CustomTaggedEffect(weapon)]" tags="weapon" use_holding_item="true" use_equipment="false" use_buffs="false" />
+							<var name="[$passiveCache]" use_holding_item="true" action_index="0" />
+							<var name="[%perkGunslinger(1,2,3,4,5,6=0,1,5,1.5,10,2.0)]" use_self_target="true" />
+							<var name="[tier(1,3,5=[@t1],[@t2],[@t3])]" use_holding_item="false" />
+						</mea_module>
+					</triggered_effect> -->
 			</effect_group>
 		</item>
 
@@ -331,9 +351,6 @@
 			</property>
 			
 			<effect_group name="Common">
-				<triggered_effect trigger="onSelfEquipStart" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
-				<triggered_effect trigger="onReloadStop" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
-
 				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="true">
 					<requirement name="ProgressionLevel" progression_name="perkGunslinger" operation="GTE" value="5"/>
 				</triggered_effect>
@@ -371,15 +388,14 @@
 				<triggered_effect trigger="onSelfEquipStart" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
 				<triggered_effect trigger="onSelfHoldingItemCreated" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="AimRefGroupVanilla"/>
 			</effect_group>
-			<effect_group name="label color restore">
-				<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="GT" value="5"/>
-					<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#00EFFFE6" slot0="1"/>
-					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#00EFFFE6" slot0="1"/>
-			</effect_group>
 			<effect_group name="label color set">
-				<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="LTE" value="5"/>
-					<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1"/>
-					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1"/>
+				<triggered_effect trigger="onSelfEquipStart,onReloadStop" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
+				<triggered_effect trigger="onSelfEquipStart,onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#00EFFFE6" slot0="1">
+					<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="GT" value="5"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfEquipStart,onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1">
+					<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="LTE" value="5"/>
+				</triggered_effect>
 			</effect_group>
 			<effect_group name="Weapon mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="0"/>
@@ -545,9 +561,6 @@
 				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
 			</property>
 			<effect_group name="Common">
-				<triggered_effect trigger="onSelfEquipStart" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
-				<triggered_effect trigger="onReloadStop" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
-
 				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="true">
 					<requirement name="ProgressionLevel" progression_name="perkBoomstick" operation="GTE" value="5"/>
 				</triggered_effect>
@@ -585,15 +598,14 @@
 				<triggered_effect trigger="onSelfEquipStart" action="UpdateLocalCache,KFCommonUtilityLib" passive="CustomTaggedEffect" as="MedicWeaponHeal" tags="medicWeapon,MedicWeaponHeal" action_index="3"/>
 				<triggered_effect trigger="onSelfHoldingItemCreated" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="AimRefGroupVanilla"/>
 			</effect_group>
-			<effect_group name="label color restore">
-				<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="GT" value="5"/>
-					<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#00EFFFE6" slot0="1"/>
-					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#00EFFFE6" slot0="1"/>
-			</effect_group>
 			<effect_group name="label color set">
-				<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="LTE" value="5"/>
-					<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1"/>
-					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1"/>
+				<triggered_effect trigger="onSelfEquipStart,onReloadStop" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
+				<triggered_effect trigger="onSelfEquipStart,onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#00EFFFE6" slot0="1">
+					<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="GT" value="5"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfEquipStart,onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1">
+					<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="LTE" value="5"/>
+				</triggered_effect>
 			</effect_group>
 			<effect_group name="Weapon mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="0"/>
@@ -755,9 +767,6 @@
 				<requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
 			</property>
 			<effect_group name="Common">
-				<triggered_effect trigger="onSelfEquipStart" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
-				<triggered_effect trigger="onReloadStop" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
-
 				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="true">
 					<requirement name="ProgressionLevel" progression_name="perkMachineGunner" operation="GTE" value="5"/>
 				</triggered_effect>
@@ -832,15 +841,14 @@
 						<requirement name="RoundsInMagazine" operation="LTE" value="6"/>
 					</triggered_effect>
 			</effect_group>
-			<effect_group name="label color restore">
-				<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="GT" value="5"/>
-					<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#00EFFFE6" slot0="1"/>
-					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#00EFFFE6" slot0="1"/>
-			</effect_group>
 			<effect_group name="label color set">
-				<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="LTE" value="5"/>
-					<triggered_effect trigger="onSelfEquipStart" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1"/>
-					<triggered_effect trigger="onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1"/>
+				<triggered_effect trigger="onSelfEquipStart,onReloadStop" action="SetAmmoOnWeaponLabel,KFCommonUtilityLib" slot="1"/>
+				<triggered_effect trigger="onSelfEquipStart,onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#00EFFFE6" slot0="1">
+					<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="GT" value="5"/>
+				</triggered_effect>
+				<triggered_effect trigger="onSelfEquipStart,onReloadStop" action="SetWeaponLabelColor,KFCommonUtilityLib" color="#F70D1AFF" slot0="1">
+					<requirement name="RoundsInHoldingItem,KFCommonUtilityLib" operation="LTE" value="5"/>
+				</triggered_effect>
 			</effect_group>
 			<effect_group name="Dart mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="3"/>
@@ -1027,24 +1035,7 @@
 					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
 					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
 					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="1" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="10" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="2" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="20" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="3" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="30" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="4" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="40" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="5" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="50" />
+						<mea_module module="ComplexCondition,KFCommonUtilityLib" l_var="randomFloat(0,100)" op="LTE" r_var="%perkBrawler(0,5=0,50)"/>
 					</triggered_effect>
 			</effect_group>
 		</item>
@@ -1127,24 +1118,7 @@
 					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
 					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
 					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="1" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="15" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="2" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="30" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="3" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="45" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="4" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="60" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="5" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="75" />
+						<mea_module module="ComplexCondition,KFCommonUtilityLib" l_var="randomFloat(0,100)" op="LTE" r_var="%perkPummelPete(0,5=0,50)"/>
 					</triggered_effect>
 			</effect_group>
 		</item>
@@ -1227,24 +1201,7 @@
 					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
 					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
 					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="1" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="15" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="2" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="30" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="3" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="45" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="4" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="60" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="5" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="75" />
+						<mea_module module="ComplexCondition,KFCommonUtilityLib" l_var="randomFloat(0,100)" op="LTE" r_var="%perkPummelPete(0,5=0,50)"/>
 					</triggered_effect>
 			</effect_group>
 		</item>
@@ -1327,24 +1284,7 @@
 					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
 					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
 					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="1" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="15" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="2" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="30" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="3" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="45" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="4" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="60" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkPummelPete" operation="Equals" value="5" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="75" />
+						<mea_module module="ComplexCondition,KFCommonUtilityLib" l_var="randomFloat(0,100)" op="LTE" r_var="%perkPummelPete(0,5=0,50)"/>
 					</triggered_effect>
 			</effect_group>
 		</item>

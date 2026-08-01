@@ -90,24 +90,7 @@
 					<triggered_effect trigger="onSelfPrimaryActionGrazeHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
 					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryStunned01"/>
 					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="1" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="10" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="2" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="20" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="3" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="30" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="4" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="40" />
-					</triggered_effect>
-					<triggered_effect trigger="onSelfPrimaryActionRayHit" action="AddBuff" target="other" buff="buffInjuryKnockdown01">
-						<requirement name="ProgressionLevel" progression_name="perkBrawler" operation="Equals" value="5" />
-						<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="50" />
+						<mea_module module="ComplexCondition,KFCommonUtilityLib" l_var="randomFloat(0,100)" op="LTE" r_var="%perkBrawler(0,5=0,50)"/>
 					</triggered_effect>
 			</effect_group>
 		</item>
@@ -433,8 +416,7 @@
 		<if cond="mod_loaded('EFT_Overhaul') or mod_loaded('EFTX_Pack_Core')">
 			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/effect_group[@name='gunHandgunT3DualAF2011A1S']/passive_effect[@name='DegradationMax']/@value">2400,4800</set>
 			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='DegradationMax']/@value">1200,2400</set>
-			<append xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/property[@name='Tags']/@value">,ReflexSight,CompactReflexSight</append>
-			<append xpath="/items/item[@name='gunHandgunT3AF2011A1S']/property[@name='Tags']/@value">,ReflexSight,CompactReflexSight</append>
+			<append xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/property[@name='Tags']/@value">,ReflexSight,CompactReflexSight</append>
 			
 			<conditional>
 				<if cond="mod_version('EFTX_Pack_Core') &gt;= version(2,5,2,5)">
@@ -449,13 +431,9 @@
 
 	<conditional>
 		<if cond="mod_loaded('EFT_Overhaul')">
-			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/effect_group[@name='gunHandgunT3DualAF2011A1S']/passive_effect[@name='EntityDamage']/@value">0</set>
-			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/effect_group[@name='gunHandgunT3DualAF2011A1S']/passive_effect[@name='BlockDamage']/@value">0</set>
-			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/effect_group[@name='gunHandgunT3DualAF2011A1S']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
-			
-			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='EntityDamage']/@value">0</set>
-			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='BlockDamage']/@value">0</set>
-			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
+			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3DualAF2011A1S']/passive_effect[@name='EntityDamage']/@value">0</set>
+			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3DualAF2011A1S']/passive_effect[@name='BlockDamage']/@value">0</set>
+			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3DualAF2011A1S']/passive_effect[@name='ModPowerBonus' and @tags='EntityDamage,BlockDamage']/@value">0</set>
 			
 			<insertAfter xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group/triggered_effect[@trigger='onReloadAboutToStart' and @property='elite' and @value='true']/requirement[@name='ProgressionLevel']">
         		<requirement name="CVarCompare" cvar="$ASkill_Gun_ReloadBonus" operation="GTE" value=".3"/>
@@ -481,8 +459,7 @@
 			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group/passive_effect[@name='ReloadSpeedMultiplier' and @operation='perc_add']/@operation">perc_subtract</set>
 		</if>
         <if cond="mod_loaded('EFTX_Pack_Core')">
-			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S']/effect_group[@name='gunHandgunT3DualAF2011A1S']/passive_effect[@name='EntityDamage' and @operation='base_add']/@value">11</set>
-			<set xpath="/items/item[@name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3AF2011A1S']/passive_effect[@name='EntityDamage' and @operation='base_add']/@value">11</set>
+			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/effect_group[@name='gunHandgunT3DualAF2011A1S']/passive_effect[@name='EntityDamage' and @operation='base_add']/@value">11</set>
 		</if>
 	</conditional>
     <conditional>
@@ -508,4 +485,9 @@
 			<set xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/property[@name='UnlockedBy']/@value">craftingPistols</set>
         </if>
     </conditional>
+	<conditional>
+		<if cond="mod_loaded('EFTX_Pack_Core')">
+			<append xpath="/items/item[@name='gunHandgunT3DualAF2011A1S' or @name='gunHandgunT3AF2011A1S']/property[@name='Tags']/@value">,tacticalDeviceSmall</append>
+		</if>
+	</conditional>
 </configs>

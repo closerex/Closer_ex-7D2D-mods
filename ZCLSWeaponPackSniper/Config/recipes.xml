@@ -22,6 +22,10 @@
 					<ingredient name="gunKFM14EBR" count="1"/>
 					<ingredient name="resourceToolset" count="1"/>
 				</recipe>
+				<recipe name="schematicsKF2FNFAL" count="1">
+					<ingredient name="gunKFFNFAL" count="1"/>
+					<ingredient name="resourceToolset" count="1"/>
+				</recipe>
             </append>
         </if>
     </conditional>
@@ -48,6 +52,19 @@
                 </recipe>
 
                 <recipe name="gunKFM14EBR" count="1" craft_area="workbench" tags="learnable">
+                    <ingredient name="gunRifleT1HuntingRifleParts" count="1"/>
+                    <ingredient name="resourceWeaponParts" count="2"/>
+                    <ingredient name="resourceMetalPipe" count="1"/>
+                    <ingredient name="resourceSpring" count="1"/>
+                    <ingredient name="resourceMultitool" count="1"/>
+                    <effect_group>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="gunRifleT1HuntingRifleParts"/>
+                        <passive_effect name="CraftingIngredientCount" level="1,6" operation="perc_add" value="0,2" tags="resourceWeaponParts"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="1,5" tags="resourceMultitool"/>
+                    </effect_group>
+                </recipe>
+
+                <recipe name="gunKFFNFAL" count="1" craft_area="workbench" tags="learnable">
                     <ingredient name="gunRifleT1HuntingRifleParts" count="1"/>
                     <ingredient name="resourceWeaponParts" count="2"/>
                     <ingredient name="resourceMetalPipe" count="1"/>
@@ -135,6 +152,20 @@
                     </effect_group>
                 </recipe>
 
+                <recipe name="gunKFFNFAL" count="1" craft_area="workbench" tags="learnable,perkDeadEye,workbenchCrafting">
+                    <ingredient name="gunRifleT1HuntingRifleParts" count="26"/>
+                    <ingredient name="resourceForgedSteel" count="180"/>
+                    <ingredient name="resourceDuctTape" count="25"/>
+                    <ingredient name="resourceSpring" count="36"/>
+                    <ingredient name="resourceLegendaryParts" count="0"/>
+                    <effect_group>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="3,15" tags="gunRifleT1HuntingRifleParts,resourceDuctTape"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="3,15" tags="resourceSpring"/>
+                        <passive_effect name="CraftingIngredientCount" level="2,6" operation="base_add" value="15,75" tags="resourceForgedSteel"/>
+                        <passive_effect name="CraftingIngredientCount" level="6" operation="base_add" value="1" tags="resourceLegendaryParts"/>
+                    </effect_group>
+                </recipe>
+
                 <recipe name="gunKFMosin" count="1" craft_area="workbench" tags="learnable,perkDeadEye,workbenchCrafting">
                     <ingredient name="gunRifleT1HuntingRifleParts" count="16"/>
                     <ingredient name="resourceForgedSteel" count="120"/>
@@ -182,7 +213,7 @@
 
 	<conditional>
 		<if cond="mod_version('EFTX_Pack_Core') &gt;= version(2,5,2,5)">
-			<setattribute xpath="/recipes/recipe[@name='gunKFM99' or @name='gunKFMosin' or @name='gunKF1894' or @name='gunKFSPX464' or @name='gunKFM14EBR']/ingredient[@name='resourceWeaponParts']" name="name">resourceRifleRepairKit</setattribute>
+			<setattribute xpath="/recipes/recipe[@name='gunKFM99' or @name='gunKFMosin' or @name='gunKF1894' or @name='gunKFSPX464' or @name='gunKFM14EBR' or @name='gunKFFNFAL']/ingredient[@name='resourceWeaponParts']" name="name">resourceRifleRepairKit</setattribute>
             <remove xpath="/recipes/recipe[@name='ammoKF50BMGBulletBall']"/>
 		</if>
 	</conditional>
