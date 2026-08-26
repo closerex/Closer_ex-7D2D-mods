@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\0_TFP_Harmony\0Harmony.dll</HintPath>
+      <HintPath>..\..\Mods\0_TFP_Harmony\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
@@ -46,7 +46,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Quartz">
-      <HintPath>..\0-Quartz\Quartz.dll</HintPath>
+      <HintPath>..\..\Mods\0-Quartz\Quartz.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="mscorlib">

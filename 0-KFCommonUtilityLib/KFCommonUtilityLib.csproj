@@ -43,7 +43,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="MonoMod.Utils">
-      <HintPath>..\0_TFP_Harmony\MonoMod.Utils.dll</HintPath>
+      <HintPath>..\..\Mods\0_TFP_Harmony\MonoMod.Utils.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="mscorlib">
@@ -51,7 +51,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="0Harmony">
-      <HintPath>..\0_TFP_Harmony\0Harmony.dll</HintPath>
+      <HintPath>..\..\Mods\0_TFP_Harmony\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
@@ -81,19 +81,19 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Cecil">
-      <HintPath>..\0_TFP_Harmony\Mono.Cecil.dll</HintPath>
+      <HintPath>..\..\Mods\0_TFP_Harmony\Mono.Cecil.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Cecil.Mdb">
-      <HintPath>..\0_TFP_Harmony\Mono.Cecil.Mdb.dll</HintPath>
+      <HintPath>..\..\Mods\0_TFP_Harmony\Mono.Cecil.Mdb.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Cecil.Pdb">
-      <HintPath>..\0_TFP_Harmony\Mono.Cecil.Pdb.dll</HintPath>
+      <HintPath>..\..\Mods\0_TFP_Harmony\Mono.Cecil.Pdb.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Cecil.Rocks">
-      <HintPath>..\0_TFP_Harmony\Mono.Cecil.Rocks.dll</HintPath>
+      <HintPath>..\..\Mods\0_TFP_Harmony\Mono.Cecil.Rocks.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="NCalc">

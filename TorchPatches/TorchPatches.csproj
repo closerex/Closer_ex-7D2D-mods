@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\0_TFP_Harmony\0Harmony.dll</HintPath>
+      <HintPath>..\..\Mods\0_TFP_Harmony\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
@@ -78,7 +78,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Torch">
-      <HintPath>..\Torch\Torch.dll</HintPath>
+      <HintPath>..\..\Mods\Torch\Torch.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">

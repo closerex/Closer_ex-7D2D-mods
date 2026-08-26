@@ -42,7 +42,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="0Harmony">
-      <HintPath>..\0_TFP_Harmony\0Harmony.dll</HintPath>
+      <HintPath>..\..\Mods\0_TFP_Harmony\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
@@ -50,11 +50,11 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Gears">
-      <HintPath>..\00000-Gears\Gears.dll</HintPath>
+      <HintPath>..\..\Mods\00000-Gears\Gears.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="GearsAPI">
-      <HintPath>..\00000-Gears\GearsAPI.dll</HintPath>
+      <HintPath>..\..\Mods\00000-Gears\GearsAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json">
