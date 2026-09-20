@@ -870,24 +870,4 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <AttachedScriptFolder>KFAttached</AttachedScriptFolder>
-    <UnityProjectPath>J:\Unity Projects\AnimationPlayground\Assets\</UnityProjectPath>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PreBuildEvent>
-      if exist "$(UnityProjectPath)$(AttachedScriptFolder)" (
-      echo Syncing changes from Unity project back to mod project...
-      robocopy "$(UnityProjectPath)$(AttachedScriptFolder)" "$(ProjectDir)$(AttachedScriptFolder)" /E /XO /NP /R:0 /W:1 || set errorlevel=0
-      )
-    </PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>
-      if exist "$(UnityProjectPath)" (
-      echo Unity project found, copying attached scripts...
-      robocopy "$(ProjectDir)$(AttachedScriptFolder)" "$(UnityProjectPath)$(AttachedScriptFolder)"  /MIR || set errorlevel=0
-      )
-    </PostBuildEvent>
-  </PropertyGroup>
-</Project>
+  </Project>
