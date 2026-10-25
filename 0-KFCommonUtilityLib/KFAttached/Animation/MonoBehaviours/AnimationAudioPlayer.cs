@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 #if NotEditor
 using Audio;
@@ -9,12 +9,11 @@ namespace KFCommonUtilityLib
     [DisallowMultipleComponent]
     public class AnimationAudioPlayer : MonoBehaviour
     {
-        public Transform[] attachableNodes;
-
 #if NotEditor
         private EntityPlayerLocal player;
 #elif UNITY_EDITOR
         private Dictionary<string, AudioSourceGroup> dict_groups = new();
+        private Dictionary<AudioSource, AudioSource> dict_sources = new();
         private Dictionary<AudioSource, float> dict_volumes = new();
         public AudioCollectionHolder audioCollectionHolder;
 #endif
@@ -49,6 +48,7 @@ namespace KFCommonUtilityLib
 #endif
         }
 
+        // Legacy event integer parameters are ignored; all sounds use this default node.
         public void PlayRandomClip(AnimationEvent par)
         {
 #if NotEditor
@@ -59,33 +59,28 @@ namespace KFCommonUtilityLib
             var handle = Manager.Play(player, par.stringParameter, 1f, true);
             if (handle != null)
             {
-                Transform parent = FindParentNode(par.intParameter);
-                if (parent != null)
+                if (handle.nearSource != null)
                 {
-                    if (handle.nearSource != null)
-                    {
-                        handle.nearSource.transform.SetParent(parent);
-                        handle.nearSource.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-                    }
-                    if (handle.farSource != null)
-                    {
-                        handle.farSource.transform.SetParent(parent);
-                        handle.farSource.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-                    }
+                    handle.nearSource.transform.SetParent(transform);
+                    handle.nearSource.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+                }
+                if (handle.farSource != null)
+                {
+                    handle.farSource.transform.SetParent(transform);
+                    handle.farSource.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
                 }
             }
 #elif UNITY_EDITOR
             if (dict_groups.TryGetValue(par.stringParameter, out var group) && group.IsValid)
             {
-                AudioSource source = null;
-                Transform parent = FindParentNode(par.intParameter) ?? transform;
-                source = parent.Find(group.source.gameObject.name + "(Clone)")?.GetComponent<AudioSource>();
-                if (source == null)
+                if (!dict_sources.TryGetValue(group.source, out AudioSource source) || source == null)
                 {
-                    var sourceObj = GameObject.Instantiate(group.source.gameObject, parent);
+                    var sourceObj = GameObject.Instantiate(group.source.gameObject, transform);
                     sourceObj.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
                     source = sourceObj.GetComponent<AudioSource>();
+                    dict_sources[group.source] = source;
                 }
+                source.spatialBlend = 0f;
                 if (dict_volumes.TryGetValue(source, out float volume))
                 {
                     source.volume = volume;
@@ -101,21 +96,5 @@ namespace KFCommonUtilityLib
 #endif
         }
 
-        private Transform FindParentNode(int attachableNodeIndex)
-        {
-            if (attachableNodeIndex < 0)
-            {
-                return null;
-            }
-
-            if (attachableNodes != null && attachableNodes.Length > 0 && attachableNodes.Length > attachableNodeIndex && attachableNodes[attachableNodeIndex])
-            {
-                return attachableNodes[attachableNodeIndex];
-            }
-            else
-            {
-                return transform;
-            }
-        }
     }
 }

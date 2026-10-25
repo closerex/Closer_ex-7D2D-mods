@@ -4,13 +4,13 @@
     <Tab name="RecoilSettings" displayKey="kflibTabRecoilSettingsName" tooltipKey="">
       <Category name="Capping" displayKey="kflibCategoryRecoilCappingName" tooltipKey="">
         <Slider name="RecoilCompensationSensitivityMultiplier" displayKey="kflibSettingRecoilCSMName" tooltipKey="kflibSettingRecoilCSMDesc" defaultValue="0.00">
-          <Property increment="0.01" minValue="0.00" maxValue="1.00" type="incrementalValuesFloat" />
+          <Property increment="0.01" minValue="0" maxValue="1" type="incrementalValuesFloat" />
           <Property type="formatter" formatString="0.00" />
         </Slider>
         <Switch name="EnablePreRecoilCompensation" displayKey="kflibSettingEnablePreRecoilCompensationName" tooltipKey="kflibSettingEnablePreRecoilCompensationDesc" defaultValue="Disable" leftValue="Disable" rightValue="Enable" />
         <Switch name="EnableCap" displayKey="kflibSettingEnableCapName" tooltipKey="kflibSettingEnableCapDesc" defaultValue="Disable" leftValue="Disable" rightValue="Enable" />
         <Slider name="RecoilRemain" displayKey="kflibSettingRecoilRemainName" tooltipKey="kflibSettingRecoilRemainDesc" defaultValue="0.2">
-          <Property increment="0.01" minValue="0.00" maxValue="1.00" type="incrementalValuesFloat" />
+          <Property increment="0.01" minValue="0" maxValue="1" type="incrementalValuesFloat" />
           <Property type="formatter" formatString="0.00" />
         </Slider>
         <Switch name="EnableSoftCap" displayKey="kflibSettingEnableSoftCapName" tooltipKey="kflibSettingEnableSoftCapDesc" defaultValue="Disable" leftValue="Disable" rightValue="Enable" />
@@ -26,7 +26,7 @@
     <Tab name="CameraAnimationSettings" displayKey="kflibTabCameraAnimationSettingsName" tooltipKey="">
       <Category name="Default" displayKey="kflibCategoryCAIDefaultSettingsName" tooltipKey="">
         <Slider name="CameraAnimationIntensityMultiplier" displayKey="kflibSettingCAIMultiplierName" tooltipKey="kflibSettingCAIMultiplierDesc" defaultValue="1.00">
-          <Property increment="0.01" minValue="0.00" maxValue="1.00" type="incrementalValuesFloat" />
+          <Property increment="0.01" minValue="0" maxValue="1" type="incrementalValuesFloat" />
           <Property type="formatter" formatString="0.00" />
         </Slider>
       </Category>

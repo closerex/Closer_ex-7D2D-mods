@@ -1,8 +1,9 @@
-﻿using HarmonyLib;
+﻿using System;
 using System.Collections.Generic;
-using UniLinq;
 using System.Reflection;
 using System.Reflection.Emit;
+using HarmonyLib;
+using UniLinq;
 
 namespace MultiBlockLayerFix
 {
@@ -31,8 +32,8 @@ namespace MultiBlockLayerFix
         {
             var codes = instructions.ToList();
 
-            var mtd_trim = AccessTools.Method(typeof(string), nameof(string.Trim), new System.Type[] { });
-            var ctor_vec3i = AccessTools.Constructor(typeof(Vector3i), new System.Type[] { typeof(int), typeof(int), typeof(int) });
+            var mtd_trim = AccessTools.Method(typeof(string), nameof(string.Trim), Array.Empty<Type>());
+            var ctor_vec3i = AccessTools.Constructor(typeof(Vector3i), new[] { typeof(int), typeof(int), typeof(int) });
 
             for (int i = 5; i < codes.Count; i++)
             {
@@ -61,14 +62,7 @@ namespace MultiBlockLayerFix
                     }
 
                     int local_index;
-                    if (Constants.cVersionInformation.CompareTo(new VersionInformation(VersionInformation.EGameReleaseType.V, 2, 5, 0)) < 0)
-                    {
-                        local_index = 7;
-                    }
-                    else
-                    {
-                        local_index = 8;
-                    }
+                    local_index = 9;
                     codes.InsertRange(i + 2, new[]
                     {
                         new CodeInstruction(OpCodes.Ldloc_S, local_index).WithLabels(codes[i + 2].ExtractLabels()),

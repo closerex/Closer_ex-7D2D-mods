@@ -1,0 +1,120 @@
+
+==============================================================================
+xLua managed runtime sources found (top level of Assets/XLua/Src)
+==============================================================================
+count = 22
+  CodeEmit.cs  86911
+  CopyByValue.cs  5777
+  DelegateBridge.cs  7819
+  GenAttributes.cs  4577
+  GenericDelegateBridge.cs  8184
+  InternalGlobals.cs  3003
+  LuaBase.cs  4002
+  LuaDLL.cs  26769
+  LuaEnv.cs  25117
+  LuaException.cs  874
+  LuaFunction.cs  7928
+  LuaTable.cs  11972
+  MethodWarpsCache.cs  23177
+  ObjectCasters.cs  29142
+  ObjectPool.cs  4795
+  ObjectTranslator.cs  64943
+  ObjectTranslatorPool.cs  3418
+  RawObject.cs  2246
+  SignatureLoader.cs  2397
+  StaticLuaCallbacks.cs  47704
+  TypeExtensions.cs  4362
+  Utils.cs  49987
+
+Editor-only sources excluded from a library build: 5
+  Editor\Generator.cs
+  Editor\Hotfix.cs
+  Editor\Report.cs
+  Editor\TemplateRef.cs
+  Editor\LinkXmlGen.cs
+
+TemplateEngine sources REQUIRED at runtime by LuaEnv.cs line 103 (unconditional call to TemplateEngine.LuaTemplate.OpenLib): 1
+  TemplateEngine\TemplateEngine.cs
+
+==============================================================================
+Are DelegateBridge.cs / GenericDelegateBridge.cs real sources or generated stubs?
+==============================================================================
+
+--- DelegateBridge.cs (first 24 lines) ---
+  /*
+   * Tencent is pleased to support the open source community by making xLua available.
+   * Copyright (C) 2016 THL A29 Limited, a Tencent company. All rights reserved.
+   * Licensed under the MIT License (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+   * http://opensource.org/licenses/MIT
+   * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  */
+  
+  #if USE_UNI_LUA
+  using LuaAPI = UniLua.Lua;
+  using RealStatePtr = UniLua.ILuaState;
+  using LuaCSFunction = UniLua.CSharpFunctionDelegate;
+  #else
+  using LuaAPI = XLua.LuaDLL.Lua;
+  using RealStatePtr = System.IntPtr;
+  using LuaCSFunction = XLua.LuaDLL.lua_CSFunction;
+  #endif
+  
+  using System;
+  using System.Collections.Generic;
+  using System.Runtime.InteropServices;
+  
+  namespace XLua
+  {
+
+--- GenericDelegateBridge.cs (first 24 lines) ---
+  /*
+   * Tencent is pleased to support the open source community by making xLua available.
+   * Copyright (C) 2016 THL A29 Limited, a Tencent company. All rights reserved.
+   * Licensed under the MIT License (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+   * http://opensource.org/licenses/MIT
+   * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  */
+  
+  using System;
+  using LuaAPI = XLua.LuaDLL.Lua;
+  
+  namespace XLua {
+  	public partial class DelegateBridge : DelegateBridgeBase {
+  		public void Action() {
+  #if THREAD_SAFE || HOTFIX_ENABLE
+  			lock(luaEnv.luaEnvLock) {
+  #endif
+  				var L = luaEnv.L;
+                  int oldTop = LuaAPI.lua_gettop(L);
+                  int errFunc = LuaAPI.load_error_func(L, luaEnv.errorFuncRef);
+                  LuaAPI.lua_getref(L, luaReference);
+                  int error = LuaAPI.lua_pcall(L, 0, 0, errFunc);
+                  if (error != 0)
+                      luaEnv.ThrowExceptionFromError(oldTop);
+
+==============================================================================
+Generated throw-away project: C:\Users\close\AppData\Local\Temp\xlua-probe\build\XLuaStandaloneAttempt.csproj
+==============================================================================
+
+==============================================================================
+dotnet build (bounded to 180s)
+==============================================================================
+exit code = 0
+
+--- stdout ---
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:01.28
+
+--- stderr ---
+
+==============================================================================
+Distinct error codes observed
+==============================================================================
+
+==============================================================================
+Missing symbols reported by the compiler
+==============================================================================

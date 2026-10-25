@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configs>
+  <csv xpath="/items/item[@name='gunT3HZ12']/property[@name='Tags']/@value" delim="," op="add">kfSkin_gunT3HZ12</csv>
+</configs>

@@ -7,23 +7,23 @@ using System.Reflection.Emit;
 [HarmonyPatch]
 class Patches
 {
-    private static MethodInfo mtdinfo_fwgbn = AccessTools.Method(typeof(XUi), nameof(XUi.FindWindowGroupByName), new Type[] { typeof(string) });
-
-    [HarmonyPatch(typeof(XUiFromXml), nameof(XUiFromXml.LoadXui))]
+    [HarmonyPatch(typeof(XUiFromXml), nameof(XUiFromXml.parseWindowGroup))]
     [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_LoadXui_XUiFromXml(IEnumerable<CodeInstruction> instructions)
+    private static IEnumerable<CodeInstruction> Transpiler_parseWindowGroup_XUiFromXml(IEnumerable<CodeInstruction> instructions)
     {
+        var mtdinfo_fwgbn = AccessTools.Method(typeof(XUi), nameof(XUi.FindWindowGroupByName), new[] { typeof(string) });
+        
         var codes = new List<CodeInstruction>(instructions);
 
-        for (int i = 0, totali = codes.Count; i < totali; i++)
+        for (int i = 0; i < codes.Count; i++)
         {
             CodeInstruction code = codes[i];
             if (code.Calls(mtdinfo_fwgbn))
             {
-                codes.InsertRange(i + 6, new CodeInstruction[]
+                codes.InsertRange(i + 6, new[]
                 {
-                    new CodeInstruction(OpCodes.Ldloc_S, 5),
-                    CodeInstruction.Call(typeof(RandomBackgroundLoader), nameof(RandomBackgroundLoader.insert), new Type[] { typeof(string) })
+                    CodeInstruction.LoadLocal(0).WithLabels(codes[i + 6].ExtractLabels()),
+                    CodeInstruction.Call(typeof(RandomBackgroundLoader), nameof(RandomBackgroundLoader.insert), new[] { typeof(string) })
                 });
                 break;
             }
@@ -38,7 +38,7 @@ class Patches
     {
         var codes = new List<CodeInstruction>(instructions);
 
-        for (int i = 0, totali = codes.Count; i < totali; i++)
+        for (int i = 0; i < codes.Count; i++)
         {
             CodeInstruction code = codes[i];
             if (code.opcode == OpCodes.Ldloc_2)
@@ -61,7 +61,7 @@ class Patches
     {
         var codes = new List<CodeInstruction>(instructions);
 
-        for (int i = 0, totali = codes.Count; i < totali; i++)
+        for (int i = 0; i < codes.Count; i++)
         {
             CodeInstruction code = codes[i];
             if (code.opcode == OpCodes.Ldloc_2)

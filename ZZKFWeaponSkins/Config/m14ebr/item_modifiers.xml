@@ -1,0 +1,425 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configs>
+  <append xpath="/item_modifiers">
+    <item_modifier name="modKFSkin_m14ebr_SkinId_4636" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_4636" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_4636Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_4636__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_4637" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_4637" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_4637Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_4637__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_4638" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_4638" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_4638Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_4638__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_4724" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_4724" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_4724Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_4724__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_4725" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_4725" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_4725Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_4725__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_4726" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_4726" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_4726Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_4726__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_4793" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_4793" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_4793Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_4793__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_4971" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_4971" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_4971Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_4971__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_4972" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_4972" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_4972Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_4972__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_4973" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_4973" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_4973Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_4973__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_6060" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_6060" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_6060Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_6060__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_6061" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_6061" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_6061Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_6061__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_6062" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_6062" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_6062Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_6062__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_6141" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_6141" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_6141Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_6141__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_6142" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_6142" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_6142Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_6142__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_6143" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_6143" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_6143Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_6143__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_6180" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_6180" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_6180Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_6180__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_6339" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_6339" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_6339Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_6339__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_6771" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_6771" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_6771Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_6771__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_7513" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_7513" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_7513Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_7513__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_9310" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_9310" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_9310Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_9310__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_9311" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_9311" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_9311Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_9311__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_9312" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_9312" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_9312Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_9312__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_9313" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_9313" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_9313Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_9313__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_9314" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_9314" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_9314Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_9314__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_9315" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_9315" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_9315Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_9315__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_9435" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_9435" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_9435Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_9435__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_9439" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_9439" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_9439Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_9439__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_9582" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_9582" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_9582Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_9582__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m14ebr_SkinId_9586" installable_tags="kfSkin_gunKFM14EBR" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m14ebr_SkinId_9586" />
+      <property name="DescriptionKey" value="modKFSkin_m14ebr_SkinId_9586Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM14EBR">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m14ebr/kf_skin_m14ebr.unity3d?SkinId_9586__m14ebr_m" />
+      </item_property_overrides>
+    </item_modifier>
+  </append>
+</configs>

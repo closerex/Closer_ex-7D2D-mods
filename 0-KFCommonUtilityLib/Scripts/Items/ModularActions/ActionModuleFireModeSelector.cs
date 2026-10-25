@@ -28,7 +28,8 @@ public class ActionModuleFireModeSelector
             this.soundLoop = soundLoop;
             this.soundEnd = soundEnd;
         }
-        public readonly void SyncSounds(ItemActionData _data, FireModeData fireModeData, byte _fireMode)
+        
+        public void SyncSounds(ItemActionData _data, FireModeData fireModeData, byte _fireMode)
         {
             ItemActionRanged.ItemActionDataRanged rangedData = (ItemActionRanged.ItemActionDataRanged)_data;
             if (string.IsNullOrEmpty(soundStart))
@@ -85,22 +86,23 @@ public class ActionModuleFireModeSelector
         int actionIndex = _data.indexInEntityOfAction;
         for (int i = 0; i < 7; i++)
         {
-            if (!__instance.Properties.Contains($"FireMode{i}.BurstCount"))
+            DynamicProperties modeProperties = __instance.Properties.GetClass($"FireMode{i}");
+            if (modeProperties == null || !modeProperties.Contains("BurstCount"))
             {
                 break;
             }
             string burstCount = 1.ToString();
-            __instance.Properties.ParseString($"FireMode{i}.BurstCount", ref burstCount);
+            modeProperties.ParseString("BurstCount", ref burstCount);
             string isFullAuto = false.ToString();
-            __instance.Properties.ParseString($"FireMode{i}.IsFullAuto", ref isFullAuto);
+            modeProperties.ParseString("IsFullAuto", ref isFullAuto);
             string modeName = null;
-            __instance.Properties.ParseString($"FireMode{i}.ModeName", ref modeName);
+            modeProperties.ParseString("ModeName", ref modeName);
             string soundStart = null;
-            __instance.Properties.ParseString($"FireMode{i}.SoundStart", ref soundStart);
+            modeProperties.ParseString("SoundStart", ref soundStart);
             string soundLoop = null;
-            __instance.Properties.ParseString($"FireMode{i}.SoundLoop", ref soundLoop);
+            modeProperties.ParseString("SoundLoop", ref soundLoop);
             string soundEnd = null;
-            __instance.Properties.ParseString($"FireMode{i}.SoundEnd", ref soundEnd);
+            modeProperties.ParseString("SoundEnd", ref soundEnd);
             modeCache.Add(new FireMode
             (
                 byte.Parse(_data.invData.itemValue.GetPropertyOverrideForAction($"FireMode{i}.BurstCount", burstCount, actionIndex)),
@@ -142,12 +144,6 @@ public class ActionModuleFireModeSelector
         {
             __customData.currentFireMode = 0;
         }
-        if (__customData.delayFiringCo != null)
-        {
-            ThreadManager.StopCoroutine(__customData.delayFiringCo);
-            __customData.delayFiringCo = null;
-        }
-        __customData.isRequestedByCoroutine = false;
     }
 
     [HarmonyPatch(nameof(ItemActionRanged.getUserData)), MethodTargetPostfix]
@@ -184,12 +180,6 @@ public class ActionModuleFireModeSelector
     [HarmonyPatch(nameof(ItemAction.StopHolding)), MethodTargetPostfix]
     private static void Postfix_StopHolding(FireModeData __customData)
     {
-        if (__customData.delayFiringCo != null)
-        {
-            ThreadManager.StopCoroutine(__customData.delayFiringCo);
-            __customData.delayFiringCo = null;
-        }
-        __customData.isRequestedByCoroutine = false;
         __customData.inputReleased = true;
     }
 
@@ -200,42 +190,32 @@ public class ActionModuleFireModeSelector
         {
             return false;
         }
-        if (__customData.isRequestedByCoroutine)
+        __customData.inputReleased = _bReleased;
+        if (_bReleased || _actionData.invData.itemValue.Meta == 0 || _actionData.invData.itemValue.PercentUsesLeft <= 0)
         {
             return true;
         }
-        __customData.inputReleased = _bReleased;
-        if (__customData.delayFiringCo == null)
+        FireMode curFireMode = __customData.fireModes[__customData.currentFireMode];
+        if (curFireMode.isFullAuto)
         {
-            if (_bReleased || _actionData.invData.itemValue.Meta == 0 || _actionData.invData.itemValue.PercentUsesLeft <= 0)
+            var rangedData = (ItemActionRanged.ItemActionDataRanged)_actionData;
+            if (Time.time - rangedData.m_LastShotTime < __customData.burstDelay)
             {
-                return true;
+                return false;
             }
-            FireMode curFireMode = __customData.fireModes[__customData.currentFireMode];
-            if (curFireMode.isFullAuto)
+            if (rangedData.burstShotFinished)
             {
-                return true;
-            }
-            var rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
-            if (__instance.GetBurstCount(_actionData) > rangedData.curBurstCount)
-            {
-                __customData.StartFiring(__instance, _actionData);
+                __instance.ResetBurstShot(rangedData);
             }
         }
-        return false;
+        return true;
     }
 
     [HarmonyPatch(nameof(ItemActionRanged.GetBurstCount)), MethodTargetPostfix]
     private void Postfix_GetBurstCount(FireModeData __customData, ref int __result)
     {
         FireMode fireMode = __customData.fireModes[__customData.currentFireMode];
-        __result = fireMode.isFullAuto ? 999 : fireMode.burstCount;
-    }
-
-    [HarmonyPatch(nameof(ItemAction.IsActionRunning)), MethodTargetPostfix]
-    private void Postfix_IsActionRunning(FireModeData __customData, ref bool __result)
-    {
-        __result |= __customData.delayFiringCo != null;
+        __result = fireMode.burstCount;
     }
 
     public class FireModeData
@@ -244,8 +224,6 @@ public class ActionModuleFireModeSelector
         public FireMode[] fireModes;
         public string originalSoundStart, originalSoundLoop, originalSoundEnd;
         public byte currentFireMode;
-        public Coroutine delayFiringCo;
-        public bool isRequestedByCoroutine;
         public float shotDelay;
         public float burstDelay;
         public bool inputReleased;
@@ -260,7 +238,6 @@ public class ActionModuleFireModeSelector
             if (currentFireMode != _fireMode)
             {
                 currentFireMode = _fireMode;
-                FireMode curFireMode = fireModes[currentFireMode];
                 if (!string.IsNullOrEmpty(switchSound))
                 {
                     _data.invData.holdingEntity.PlayOneShot(switchSound);
@@ -287,9 +264,9 @@ public class ActionModuleFireModeSelector
                     itemValue.Metadata = new Dictionary<string, TypedMetadataValue>();
                 }
 
-                if (!itemValue.Metadata.TryGetValue(ActionModuleFireModeSelector.FireModeNames[_data.indexInEntityOfAction], out var metadata) || !metadata.SetValue((int)_fireMode))
+                if (!itemValue.Metadata.TryGetValue(FireModeNames[_data.indexInEntityOfAction], out var metadata) || !metadata.SetValue((int)_fireMode))
                 {
-                    itemValue.Metadata[ActionModuleFireModeSelector.FireModeNames[_data.indexInEntityOfAction]] = new TypedMetadataValue((int)_fireMode, TypedMetadataValue.TypeTag.Integer);
+                    itemValue.Metadata[FireModeNames[_data.indexInEntityOfAction]] = new TypedMetadataValue((int)_fireMode, TypedMetadataValue.TypeTag.Integer);
                 }
                 _data.invData.holdingEntity.inventory.CallOnToolbeltChangedInternal();
             }
@@ -299,8 +276,8 @@ public class ActionModuleFireModeSelector
         {
             FireMode curFireMode = fireModes[currentFireMode];
 
-            var rangedData = _data as ItemActionRanged.ItemActionDataRanged;
-            var rangedAction = _data.invData.item.Actions[_data.indexInEntityOfAction] as ItemActionRanged;
+            var rangedData = (ItemActionRanged.ItemActionDataRanged)_data;
+            var rangedAction = (ItemActionRanged)_data.invData.item.Actions[_data.indexInEntityOfAction];
             if (rangedAction.rapidTrigger)
             {
                 shotDelay = 0;
@@ -325,60 +302,6 @@ public class ActionModuleFireModeSelector
                     shotDelay = rangedData.Delay;
                     burstDelay = 0;
                 }
-            }
-        }
-
-        public void StartFiring(ItemActionRanged _instance, ItemActionData _data)
-        {
-            UpdateDelay(_data);
-            if (delayFiringCo != null)
-            {
-                ThreadManager.StopCoroutine(delayFiringCo);
-            }
-            ((ItemActionRanged.ItemActionDataRanged)_data).bPressed = true;
-            ((ItemActionRanged.ItemActionDataRanged)_data).bReleased = false;
-
-            delayFiringCo = ThreadManager.StartCoroutine(DelayFiring(_instance, _data));
-        }
-
-        private IEnumerator DelayFiring(ItemActionRanged _instance, ItemActionData _data)
-        {
-            FireMode curFireMode = fireModes[currentFireMode];
-            var rangedData = _data as ItemActionRanged.ItemActionDataRanged;
-            for (int i = 0; i < curFireMode.burstCount; i++)
-            {
-                isRequestedByCoroutine = true;
-                rangedData.bPressed = true;
-                rangedData.bReleased = false;
-                rangedData.m_LastShotTime = 0;
-                _instance.ExecuteAction(_data, false);
-                isRequestedByCoroutine = false;
-                if (rangedData.invData.itemValue.Meta <= 0 && !_instance.HasInfiniteAmmo(_data))
-                {
-                    _data.invData.gameManager.ItemActionEffectsServer(_data.invData.holdingEntity.entityId, _data.invData.slotIdx, _data.indexInEntityOfAction, 0, Vector3.zero, Vector3.zero, 0);
-                    rangedData.state = ItemActionFiringState.Off;
-                    goto cleanup;
-                }
-                if (i == curFireMode.burstCount - 1)
-                {
-                    _data.invData.gameManager.ItemActionEffectsServer(_data.invData.holdingEntity.entityId, _data.invData.slotIdx, _data.indexInEntityOfAction, 0, Vector3.zero, Vector3.zero, 0);
-                    rangedData.state = ItemActionFiringState.Off;
-                }
-                if (shotDelay > 0)
-                {
-                    yield return new WaitForSeconds(shotDelay);
-                }
-            }
-            if (burstDelay > 0)
-            {
-                yield return new WaitForSeconds(burstDelay);
-            }
-
-            cleanup:
-            delayFiringCo = null;
-            if (inputReleased)
-            {
-                _instance.ExecuteAction(_data, true);
             }
         }
     }

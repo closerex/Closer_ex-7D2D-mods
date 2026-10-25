@@ -15,42 +15,7 @@ public class Patches
     {
         if (!string.IsNullOrEmpty(_sourceText) && _sourceText.StartsWith("{keybindingEntryCount"))
         {
-            __instance.RefreshValue(true);
-        }
-    }
-
-    [HarmonyPatch]
-    public static class GetBindingValuePatch
-    {
-        private static IEnumerable<MethodBase> TargetMethods()
-        {
-            if (Constants.cVersionInformation.CompareTo(new VersionInformation(VersionInformation.EGameReleaseType.V, 2, 3, 0)) < 0)
-            {
-                yield return AccessTools.Method(typeof(XUiC_OptionsController), "GetBindingValue");
-            }
-            else
-            {
-                yield return AccessTools.Method(typeof(XUiC_OptionsController), "GetBindingValueInternal");
-            }
-        }
-
-        private static void Postfix(ref string _value, string _bindingName, ref bool __result, XUiC_OptionsController __instance)
-        {
-            if (__result)
-            {
-                return;
-            }
-            if (!string.IsNullOrEmpty(_bindingName) && _bindingName.StartsWith("keybindingEntryCount"))
-            {
-                if (CustomPlayerActionManager.arr_row_counts_controller == null)
-                {
-                    ReversePatches.InitControllerActionList(__instance);
-                }
-                int index = int.Parse(_bindingName.Substring(_bindingName.Length - 1));
-                _value = CustomPlayerActionManager.arr_row_counts_controller[index].ToString();
-                __result = true;
-                return;
-            }
+            __instance.RefreshValue();
         }
     }
 
@@ -80,12 +45,11 @@ public class Patches
 
         for(int i = 0; i < codes.Count; ++i)
         {
-            if (codes[i].opcode == OpCodes.Stloc_0)
+            if (codes[i].opcode == OpCodes.Stloc_1)
             {
                 codes.InsertRange(i - 1, new[]
                 {
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    CodeInstruction.LoadField(typeof(XUiC_OptionsController), nameof(XUiC_OptionsController.actionTabGroups)),
+                    new CodeInstruction(OpCodes.Ldloc_0),
                     CodeInstruction.Call(typeof(CustomPlayerActionManager), nameof(CustomPlayerActionManager.CreateControllerActions))
                 });
                 break;
@@ -95,87 +59,26 @@ public class Patches
         return codes;
     }
 
-
-    [HarmonyPatch(typeof(GameOptionsManager), nameof(GameOptionsManager.SaveControls))]
+    [HarmonyPatch(typeof(GameOptionsControls), nameof(GameOptionsControls.Save))]
     [HarmonyPostfix]
-    private static void Postfix_SaveControls_GameOptionsManager()
+    private static void Postfix_SaveControls_GameOptionsControls()
     {
         CustomPlayerActionManager.SaveCustomControls();
     }
 
-    [HarmonyPatch(typeof(XUiC_OptionsControls), nameof(XUiC_OptionsControls.storeCurrentBindings))]
+    [HarmonyPatch(typeof(XUiC_OptionsControlsBase), nameof(XUiC_OptionsControlsBase.storeCurrentBindings))]
     [HarmonyPostfix]
-    private static void Postfix_storeCurrentBindings_XUiC_OptionsControls()
+    private static void Postfix_storeCurrentBindings_XUiC_OptionsControlsBase()
     {
         CustomPlayerActionManager.CacheCustomControls();
     }
 
-    [HarmonyPatch(typeof(XUiC_OptionsController), nameof(XUiC_OptionsController.storeCurrentBindings))]
+    [HarmonyPatch(typeof(PlayerInputManager), nameof(PlayerInputManager.LoadActionSetsFromStrings))]
     [HarmonyPostfix]
-    private static void Postfix_storeCurrentBindings_XUiC_OptionsController()
+    private static void Postfix_LoadActionSetsFromStrings_PlayerInputManager()
     {
-        CustomPlayerActionManager.CacheCustomControls();
+        CustomPlayerActionManager.RestoreCustomControls();
     }
-
-    [HarmonyPatch(typeof(XUiC_OptionsControls), nameof(XUiC_OptionsControls.OnClose))]
-    [HarmonyPostfix]
-    private static void Postfix_OnClose_XUiC_OptionsControls(bool ___closedForNewBinding)
-    {
-        if (!___closedForNewBinding)
-            CustomPlayerActionManager.RestoreCustomControls();
-    }
-
-    [HarmonyPatch(typeof(XUiC_OptionsController), nameof(XUiC_OptionsController.OnClose))]
-    [HarmonyPostfix]
-    private static void Postfix_OnClose_XUiC_OptionsController(bool ___closedForNewBinding)
-    {
-        if (!___closedForNewBinding)
-            CustomPlayerActionManager.RestoreCustomControls();
-    }
-
-    [HarmonyPatch(typeof(XUiC_OptionsControls), nameof(XUiC_OptionsControls.BtnDefaults_OnOnPressed))]
-    [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_BtnDefaults_OnOnPressed_XUiC_OptionsControls(IEnumerable<CodeInstruction> instructions)
-    {
-        var codes = new List<CodeInstruction>(instructions);
-
-        var prop_actionset = AccessTools.PropertyGetter(typeof(PlayerInputManager), nameof(PlayerInputManager.ActionSets));
-
-        for (int i = 0; i < codes.Count; ++i)
-        {
-            if (codes[i].Calls(prop_actionset))
-            {
-                codes[i + 1].operand = AccessTools.Method(typeof(IEnumerable<PlayerActionsBase>), nameof(IEnumerable<PlayerActionsBase>.GetEnumerator));
-                codes.InsertRange(i + 1, new[]
-                {
-                    CodeInstruction.Call(typeof(Enumerable), nameof(Enumerable.ToArray), null, new[] { typeof(PlayerActionsBase) }),
-                    CodeInstruction.Call(typeof(CustomPlayerActionManager), nameof(CustomPlayerActionManager.CreateActionArray)),
-                    CodeInstruction.Call(typeof(Enumerable), nameof(Enumerable.ToList), null, new[] { typeof(PlayerActionsBase) })
-                });
-                i += 3;
-            }
-        }
-        return codes;
-    }
-
-    //[HarmonyPatch(typeof(GameOptionsManager), nameof(GameOptionsManager.ResetGameOptions))]
-    //[HarmonyTranspiler]
-    //private static IEnumerable<CodeInstruction> Transpiler_ResetGameOptions_GameOptionsManager(IEnumerable<CodeInstruction> instructions)
-    //{
-    //    var codes = new List<CodeInstruction>(instructions);
-    //    var mtd_save_controls = AccessTools.Method(typeof(GameOptionsManager), nameof(GameOptionsManager.SaveControls));
-
-    //    for (int i = 0; i < codes.Count; ++i)
-    //    {
-    //        if (codes[i].Calls(mtd_save_controls))
-    //        {
-    //            codes.Insert(i + 1, CodeInstruction.Call(typeof(CustomPlayerActionManager), nameof(CustomPlayerActionManager.ResetCustomControls)));
-    //            i++;
-    //        }
-    //    }
-
-    //    return codes;
-    //}
 
     [HarmonyPatch(typeof(ActionSetManager), nameof(ActionSetManager.LogActionSets))]
     [HarmonyTranspiler]

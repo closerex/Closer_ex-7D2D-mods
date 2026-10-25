@@ -27,11 +27,13 @@
             <property class="Action0">
                 <property name="Class" value="DynamicMelee"/>
                 <property name="Sphere" value=".15"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
-				<property name="Sound_start" value="kf_Movement_Bash"/>
+				<property name="Sound_start" value="Play_PC_Weapon_Bash"/>
 				<property name="DynamicSoundStart" value="bashSwingLight"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
 				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
-                <property name="ToolCategory.harvestingTools" value=".5" param1="1"/>
+                <property class="ToolCategory">
+                    <property name="harvestingTools" value=".5" param1="1"/>
+                </property>
                 <property name="UseGrazingHits" value="true"/>
                 <property name="GrazeStart" value=".515"/>
                 <property name="GrazeEnd" value=".52"/>
@@ -47,11 +49,13 @@
             <property class="Action1">
                 <property name="Class" value="DynamicMelee"/>
                 <property name="Sphere" value=".15"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
-				<property name="Sound_start" value="kf_Movement_Bash"/>
+				<property name="Sound_start" value="Play_PC_Weapon_Bash"/>
 				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib"/>
 				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
-                <property name="ToolCategory.harvestingTools" value=".5" param1="1"/>
+                <property class="ToolCategory">
+                    <property name="harvestingTools" value=".5" param1="1"/>
+                </property>
                 <property name="UsePowerAttackAnimation" value="true"/>
                 <property name="UseGrazingHits" value="true"/>
                 <property name="GrazeStart" value=".515"/>
@@ -196,7 +200,7 @@
                 <property name="Magazine_items" value="ammoPulverizer"/>
                 <property name="IgnoreAmmoCheck" value="true"/>
                 <property name="ExcludeTags" value="blunt,melee,grunting,heavy,sledge,meleeWeapon,attStrength,perkSkullCrusher,perkFlurryOfStrength,sledgeSkill"/>
-                <property name="Sound_start" value="kf_pulverizer_Fire_1P_Single_Small"/>
+                <property name="Sound_start" value="Play_WEP_MEL_Pulverizer_Fire_1P__Indoor_Small"/>
                 <property name="Sound_loop" value=""/>
                 <property name="Sound_end" value=""/>
                 <property name="Sound_empty" value=""/>
@@ -214,7 +218,9 @@
 				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
 				<property name="DynamicSoundStart" value="meleeEmptySwingLight"/>
                 <property name="Sound_start" value="sledge_swinglight"/>
-                <property name="ToolCategory.harvestingTools" value=".5" param1="1"/>
+                <property class="ToolCategory">
+                    <property name="harvestingTools" value=".5" param1="1"/>
+                </property>
                 <property name="ExcludeTags" value="ranged,reloadPenalty,gun,attPerception,perkDemolitionsExpert,explosivesSkill,shortRange"/>
                 <property name="UsePowerAttackAnimation" value="false"/>
                 <property name="UsePowerAttackTriggers" value="false"/>
@@ -354,11 +360,13 @@
 			<property name="Material" value="Mstone"/>
 			<property name="Canhold" value="false"/>
 			<property name="CreativeMode" value="None"/>
-			<property name="Explosion.ParticleIndex" value="#@modfolder:Resources/Pulverizer.unity3d?pulverizer_explosion.prefab$itemPulverizerExplosionData"/>
-			<property name="Explosion.RadiusBlocks" value="3"/>
-			<property name="Explosion.RadiusEntities" value="3.5"/>
-			<property name="Explosion.Duration" value="1"/>
-			<property name="Explosion.BlastPower" value="85"/>
+			<property class="Explosion">
+				<property name="ParticleIndex" value="#@modfolder:Resources/Pulverizer.unity3d?pulverizer_explosion.prefab$itemPulverizerExplosionData"/>
+				<property name="RadiusBlocks" value="3"/>
+				<property name="RadiusEntities" value="3.5"/>
+				<property name="Duration" value="1"/>
+				<property name="BlastPower" value="85"/>
+			</property>
 			<effect_group tiered="false">
 				<passive_effect name="ExplosionBlockDamage" operation="base_set" value="5" tags="perkDemolitionsExpert"/>
 				<passive_effect name="ExplosionEntityDamage" operation="base_set" value="430" tags="perkDemolitionsExpert"/>

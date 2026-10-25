@@ -40,7 +40,7 @@ public static class FLARMultiBarrelExt
                 Log.Warning($"null projectile joint on inventory slot {launcherData.invData.slotIdx}!!\n{StackTraceUtility.ExtractStackTrace()}");
             }
         }
-        self.Prefix_ItemActionEffects_ItemActionRanged(_actionData, _userData, _firingState, __customData);
+        self.Prefix_ItemActionRanged_ItemActionEffects(_actionData, _userData, _firingState, __customData);
     }
 }
 
@@ -105,54 +105,6 @@ public static class FLARProceduralRecoilExt
 [HarmonyPatch]
 public static class FLARPatch
 {
-    //Animation Rigging patch, find joint transform
-    //[HarmonyPatch(typeof(ItemActionBetterLauncher.ItemActionDataBetterLauncher), MethodType.Constructor, new Type[] { typeof(ItemInventoryData), typeof(int) })]
-    //[HarmonyPostfix]
-    //private static void Postfix_ctor_ItemActionDataBetterLauncher(ItemActionBetterLauncher.ItemActionDataBetterLauncher __instance, ItemInventoryData _invData)
-    //{
-    //    __instance.projectileJoint = AnimationRiggingManager.GetTransformOverrideByName("ProjectileJoint", _invData.model);
-    //}
-
-    ////projectile damage patch
-    //[HarmonyPatch(typeof(ProjectileParams), nameof(ProjectileParams.CheckCollision))]
-    //[HarmonyTranspiler]
-    //private static IEnumerable<CodeInstruction> Transpiler_checkCollision_ProjectileMoveScript(IEnumerable<CodeInstruction> instructions)
-    //{
-    //    var codes = instructions.ToList();
-    //    var mtd_block = AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.GetDamageBlock));
-    //    var mtd_entity = AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.GetDamageEntity));
-
-    //    for (int i = 0; i < codes.Count; i++)
-    //    {
-    //        if (codes[i].Calls(mtd_block))
-    //        {
-    //            codes.InsertRange(i + 1, new CodeInstruction[]
-    //            {
-    //                new CodeInstruction(OpCodes.Ldarg_0),
-    //                CodeInstruction.LoadField(typeof(ProjectileParams), nameof(ProjectileParams.info)),
-    //                CodeInstruction.LoadField(typeof(ProjectileParams.ItemInfo), nameof(ProjectileParams.ItemInfo.itemValueProjectile)),
-    //                new CodeInstruction(OpCodes.Ldarg_1),
-    //                CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(CommonUtilityPatch.GetProjectileBlockDamagePerc)),
-    //                new CodeInstruction(OpCodes.Mul)
-    //            });
-    //        }
-    //        else if (codes[i].Calls(mtd_entity))
-    //        {
-    //            codes.InsertRange(i + 1, new CodeInstruction[]
-    //            {
-    //                new CodeInstruction(OpCodes.Ldarg_0),
-    //                CodeInstruction.LoadField(typeof(ProjectileParams), nameof(ProjectileParams.info)),
-    //                CodeInstruction.LoadField(typeof(ProjectileParams.ItemInfo), nameof(ProjectileParams.ItemInfo.itemValueProjectile)),
-    //                new CodeInstruction(OpCodes.Ldarg_1),
-    //                CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(CommonUtilityPatch.GetProjectileEntityDamagePerc)),
-    //                new CodeInstruction(OpCodes.Mul)
-    //            });
-    //        }
-    //    }
-
-    //    return codes;
-    //}
-
     //multi action patch
     [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemActionBetterLauncher.StartHolding))]
     [HarmonyTranspiler]
@@ -201,17 +153,6 @@ public static class FLARPatch
         return codes;
     }
 
-    [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemActionBetterLauncher.StartHolding))]
-    [HarmonyPostfix]
-    private static void Postfix_StartHolding_ItemActionBetterLauncher(ItemActionData _actionData)
-    {
-        ItemActionBetterLauncher.ItemActionDataBetterLauncher ItemActionDataBetterLauncher = (ItemActionBetterLauncher.ItemActionDataBetterLauncher)_actionData;
-        var info = ItemActionDataBetterLauncher.info;
-        var projectileValue = info.itemValueProjectile;
-        var launcherValue = info.itemValueLauncher;
-        MultiActionUtils.CopyLauncherValueToProjectile(launcherValue, projectileValue, _actionData.indexInEntityOfAction);
-    }
-
     [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemActionBetterLauncher.OnModificationsChanged))]
     [HarmonyPostfix]
     private static void Postfix_OnModificationsChanged_ItemActionBetterLauncher(ItemActionData _data)
@@ -224,30 +165,19 @@ public static class FLARPatch
         }
     }
 
-    [HarmonyPatch(typeof(ItemActionBetterLauncher), nameof(ItemActionBetterLauncher.SwapAmmoType))]
-    [HarmonyPostfix]
-    private static void Postfix_SwapAmmoType_ItemActionBetterLauncher(EntityAlive _entity, ItemActionBetterLauncher __instance)
-    {
-        var ItemActionDataBetterLauncher = (ItemActionBetterLauncher.ItemActionDataBetterLauncher)_entity.inventory.holdingItemData.actionData[__instance.ActionIndex];
-        var info = ItemActionDataBetterLauncher.info;
-        var projectileValue = info.itemValueProjectile;
-        var launcherValue = info.itemValueLauncher;
-        MultiActionUtils.CopyLauncherValueToProjectile(launcherValue, projectileValue, ItemActionDataBetterLauncher.indexInEntityOfAction);
-    }
-
     [HarmonyPatch(typeof(ProjectileParams), nameof(ProjectileParams.Fire))]
     [HarmonyPrefix]
     private static bool Prefix_Fire_ProjectileParams(ProjectileParams.ItemInfo _info, Entity _firingEntity)
     {
         if (_firingEntity is EntityAlive entityAlive)
             entityAlive.MinEventContext.ItemActionData = _info.actionData;
-        if (_info.itemProjectile.IsSticky)
-        {
-            var projectileValue = _info.itemValueProjectile;
-            var launcherValue = _info.itemValueLauncher;
-            MultiActionUtils.CopyLauncherValueToProjectile(launcherValue, projectileValue, _info.actionData.indexInEntityOfAction);
-        }
         return true;
+    }
+
+    private static void ApplyLauncherProperties(ProjectileParams.ItemInfo info)
+    {
+        MultiActionUtils.CopyLauncherValueToProjectile(
+            info.itemValueLauncher, info.itemValueProjectile, info.actionData.indexInEntityOfAction);
     }
 
     [HarmonyPatch(typeof(ProjectileParams), nameof(ProjectileParams.Fire))]
@@ -258,15 +188,28 @@ public static class FLARPatch
 
         FieldInfo fld_launcher = AccessTools.Field(typeof(ProjectileParams.ItemInfo), nameof(ProjectileParams.ItemInfo.itemValueLauncher));
         FieldInfo fld_projectile = AccessTools.Field(typeof(ProjectileParams.ItemInfo), nameof(ProjectileParams.ItemInfo.itemValueProjectile));
+        FieldInfo fld_info = AccessTools.Field(typeof(ProjectileParams), nameof(ProjectileParams.info));
         MethodInfo mtd_getvalue = AccessTools.Method(typeof(EffectManager), nameof(EffectManager.GetValue));
         MethodInfo mtd_getvaluenew = AccessTools.Method(typeof(MultiActionReversePatches), nameof(MultiActionReversePatches.ProjectileGetValue));
+        bool infoAssigned = false;
         for (int i = 0; i < codes.Count; i++)
         {
-            if (codes[i].LoadsField(fld_launcher))
+            if (codes[i].StoresField(fld_info))
+            {
+                infoAssigned = true;
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Ldfld, fld_info),
+                    CodeInstruction.Call(typeof(FLARPatch), nameof(ApplyLauncherProperties))
+                });
+                i += 3;
+            }
+            else if (infoAssigned && codes[i].LoadsField(fld_launcher))
             {
                 codes[i].operand = fld_projectile;
             }
-            else if (codes[i].Calls(mtd_getvalue))
+            else if (infoAssigned && codes[i].Calls(mtd_getvalue))
             {
                 codes[i].operand = mtd_getvaluenew;
             }
@@ -280,23 +223,35 @@ public static class FLARPatch
     {
         World world = GameManager.Instance.World;
         Vector3 dir = __instance.currentPosition - __instance.previousPosition;
-        Vector3 dirNorm = dir.normalized;
         float magnitude = dir.magnitude;
         if (magnitude < 0.04f)
         {
             __result = false;
             return false;
         }
+
         Ray ray = new Ray(__instance.previousPosition, dir);
         __instance.waterCollisionParticles.CheckCollision(ray.origin, ray.direction, magnitude, (entityAlive != null) ? entityAlive.entityId : (-1));
         int hitmask = ((__instance.hmOverride == 0) ? 80 : __instance.hmOverride);
-        bool bHit = Voxel.Raycast(world, ray, magnitude, -538750997, hitmask, __instance.radius);
+        float collisionOffset = __instance.radius + __instance.collisionStartBack;
+        ray.origin -= ray.direction * collisionOffset;
+        magnitude += collisionOffset;
+        bool bHit = Voxel.Raycast(world, ray, magnitude, -538751005, hitmask, __instance.radius);
+        __instance.collisionStartBack = 0.1f;
         if (bHit && (GameUtils.IsBlockOrTerrain(Voxel.voxelRayHitInfo.tag) || Voxel.voxelRayHitInfo.tag.StartsWith("E_")))
         {
             if (entityAlive != null && !entityAlive.isEntityRemote)
             {
                 ProjectileParams.ItemInfo info = __instance.info;
-                entityAlive.MinEventContext.Other = ItemActionAttack.FindHitEntity(Voxel.voxelRayHitInfo) as EntityAlive;
+                EntityAlive hitEntity = ItemActionAttack.FindHitEntity(Voxel.voxelRayHitInfo) as EntityAlive;
+                EntityDrone hitDrone = hitEntity as EntityDrone;
+                if (hitDrone && hitDrone.isAlly(entityAlive))
+                {
+                    __result = false;
+                    return false;
+                }
+
+                entityAlive.MinEventContext.Other = hitEntity;
                 entityAlive.MinEventContext.ItemActionData = info.actionData;
                 entityAlive.MinEventContext.ItemValue = info.itemValueLauncher;
                 entityAlive.MinEventContext.Position = Voxel.voxelRayHitInfo.hit.pos;
@@ -304,11 +259,41 @@ public static class FLARPatch
                 {
                     WeaponTypeTag = ItemActionAttack.RangedTag
                 };
+
+                MinEventParams.CachedEventParam.Self = entityAlive;
+                MinEventParams.CachedEventParam.Position = Voxel.voxelRayHitInfo.hit.pos;
+                MinEventParams.CachedEventParam.ItemValue = info.itemValueProjectile;
+                MinEventParams.CachedEventParam.ItemActionData = info.actionData;
+                MinEventParams.CachedEventParam.Other = entityAlive.MinEventContext.Other;
+                info.itemProjectile.FireEvent(MinEventTypes.onProjectilePreImpact, MinEventParams.CachedEventParam);
+
+                float strainPercent = Mathf.Clamp01(__instance.ReadLaunchStrain());
+                float blockDamage = Mathf.Lerp(1f,
+                    info.itemActionProjectile.GetProjectileDamageBlock(info.itemValueProjectile,
+                        ItemActionAttack.GetBlockHit(world, Voxel.voxelRayHitInfo), entityAlive,
+                        info.actionData.indexInEntityOfAction),
+                    strainPercent);
+                float entityDamage = Mathf.Lerp(1f,
+                    info.itemActionProjectile.GetProjectileDamageEntity(info.itemValueProjectile, entityAlive,
+                        info.actionData.indexInEntityOfAction),
+                    strainPercent);
+                bool forceNoDamage;
+                if (entityAlive is EntityPlayer)
+                {
+                    entityDamage *= ItemActionAttack.RangedDamagePercent;
+                    forceNoDamage = ItemActionAttack.RangedDamagePercent == 0f;
+                }
+                else
+                {
+                    entityDamage *= ItemActionAttack.EntityPlayerDamagePercent;
+                    forceNoDamage = ItemActionAttack.EntityPlayerDamagePercent == 0f;
+                }
+
                 MultiActionProjectileRewrites.ProjectileHit(Voxel.voxelRayHitInfo,
                                        entityAlive.entityId,
                                        EnumDamageTypes.Piercing,
-                                       MultiActionProjectileRewrites.GetProjectileDamageBlock(info.itemActionProjectile, info.itemValueProjectile, ItemActionAttack.GetBlockHit(world, Voxel.voxelRayHitInfo), entityAlive, info.actionData.indexInEntityOfAction),
-                                       MultiActionProjectileRewrites.GetProjectileDamageEntity(info.itemActionProjectile, info.itemValueProjectile, entityAlive, info.actionData.indexInEntityOfAction),
+                                       blockDamage,
+                                       entityDamage,
                                        1f,
                                        1f,
                                        MultiActionReversePatches.ProjectileGetValue(PassiveEffects.CriticalChance, info.itemValueProjectile, info.itemProjectile.CritChance.Value, entityAlive, null, info.itemProjectile.ItemTags, true, false),
@@ -326,7 +311,9 @@ public static class FLARPatch
                                        null,
                                        -1,
                                        info.itemValueProjectile,
-                                       info.itemValueLauncher);
+                                       info.itemValueLauncher,
+                                       false,
+                                       forceNoDamage);
                 if (entityAlive.MinEventContext.Other == null)
                 {
                     entityAlive.FireEvent(MinEventTypes.onSelfPrimaryActionMissEntity, false);
@@ -336,27 +323,40 @@ public static class FLARPatch
                 MinEventParams.CachedEventParam.Position = Voxel.voxelRayHitInfo.hit.pos;
                 MinEventParams.CachedEventParam.ItemValue = info.itemValueProjectile;
                 MinEventParams.CachedEventParam.ItemActionData = info.actionData;
-                MinEventParams.CachedEventParam.Other = entityAlive.MinEventContext.Other;
+                MinEventParams.CachedEventParam.Other = hitEntity;
                 info.itemProjectile.FireEvent(MinEventTypes.onProjectileImpact, MinEventParams.CachedEventParam);
                 if (info.itemActionProjectile.Explosion.ParticleIndex > 0)
                 {
-                    Vector3 vector3 = Voxel.voxelRayHitInfo.hit.pos - dirNorm * 0.1f;
+                    Vector3 vector3 = Voxel.voxelRayHitInfo.hit.pos - dir.normalized * 0.1f;
                     Vector3i vector3i = World.worldToBlockPos(vector3);
                     if (!world.GetBlock(vector3i).isair)
                     {
                         BlockFace blockFace;
-                        vector3i = Voxel.OneVoxelStep(vector3i, vector3, -dirNorm, out vector3, out blockFace);
+                        vector3i = Voxel.OneVoxelStep(vector3i, vector3, -dir.normalized, out vector3, out blockFace);
                     }
-                    GameManager.Instance.ExplosionServer(Voxel.voxelRayHitInfo.hit.clrIdx, vector3, vector3i, Quaternion.identity, info.itemActionProjectile.Explosion, entityAlive.entityId, 0f, false, info.itemValueProjectile);
+                    GameManager.Instance.ExplosionServer(vector3, vector3i, Quaternion.identity, info.itemActionProjectile.Explosion, entityAlive.entityId, 0f, false, info.itemValueProjectile);
                 }
-                else if (info.itemProjectile.IsSticky)
+                else
                 {
+                    if (hitEntity is EntitySwarm)
+                    {
+                        __result = false;
+                        return false;
+                    }
+
+                    if (!info.itemProjectile.IsSticky)
+                    {
+                        __result = true;
+                        return false;
+                    }
+
                     GameRandom gameRandom = world.GetGameRandom();
+                    float stickRoll = __instance.stickyRoll ?? gameRandom.RandomFloat;
+                    __instance.stickyRoll = stickRoll;
                     if (GameUtils.IsBlockOrTerrain(Voxel.voxelRayHitInfo.tag))
                     {
-                        if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, info.itemValueProjectile, 0.5f, entityAlive, null, info.itemProjectile.ItemTags | FastTags<TagGroup.Global>.Parse(Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory), true, false))
+                        if (stickRoll < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, info.itemValueProjectile, 0.5f, entityAlive, null, info.itemProjectile.ItemTags | FastTags<TagGroup.Global>.Parse(Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory), true, false))
                         {
-                            MultiActionProjectileRewrites.RestoreProjectileValue(info.itemValueProjectile);
                             ProjectileManager.AddProjectileItem(ProjectileParams.CreateStickyProjectile(info, entityAlive, __instance), -1, Voxel.voxelRayHitInfo.hit.pos, dir.normalized, info.itemValueProjectile.type);
                         }
                         else
@@ -364,9 +364,8 @@ public static class FLARPatch
                             GameManager.Instance.SpawnParticleEffectServer(new ParticleEffect("impact_metal_on_wood", Voxel.voxelRayHitInfo.hit.pos, Utils.BlockFaceToRotation(Voxel.voxelRayHitInfo.fmcHit.blockFace), 1f, Color.white, string.Format("{0}hit{1}", Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory, info.itemProjectile.MadeOfMaterial.SurfaceCategory), null), entityAlive.entityId, false, false);
                         }
                     }
-                    else if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, info.itemValueProjectile, 0.5f, entityAlive, null, info.itemProjectile.ItemTags, true, false))
+                    else if (stickRoll < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, info.itemValueProjectile, 0.5f, entityAlive, null, info.itemProjectile.ItemTags, true, false))
                     {
-                        MultiActionProjectileRewrites.RestoreProjectileValue(info.itemValueProjectile);
                         int ProjectileID = ProjectileManager.AddProjectileItem(ProjectileParams.CreateStickyProjectile(info, entityAlive, __instance), -1, Voxel.voxelRayHitInfo.hit.pos, dir.normalized, info.itemValueProjectile.type);
                         Utils.SetLayerRecursively(ProjectileManager.GetProjectile(ProjectileID).gameObject, 14, null);
                     }
@@ -383,5 +382,32 @@ public static class FLARPatch
             __result = false;
         }
         return false;
+    }
+
+    [HarmonyPatch(typeof(ProjectileParams), nameof(ProjectileParams.CreateStickyProjectile))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_CreateStickyProjectile_ProjectileParams(IEnumerable<CodeInstruction> instructions)
+    { 
+        var codes = instructions.ToList();
+        FieldInfo initialImpactConsumed = AccessTools.Field(typeof(CustomProjectileMoveScript), nameof(CustomProjectileMoveScript.initialImpactConsumed));
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].operand is MethodInfo method &&
+                method.IsGenericMethod &&
+                method.Name == "GetOrAddComponent" &&
+                method.GetGenericArguments()[0] == typeof(ProjectileMoveScript))
+            {
+                codes[i].operand = method.GetGenericMethodDefinition().MakeGenericMethod(typeof(CustomProjectileMoveScript));
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Dup),
+                    new CodeInstruction(OpCodes.Ldc_I4_1),
+                    new CodeInstruction(OpCodes.Stfld, initialImpactConsumed)
+                });
+                return codes;
+            }
+        }
+
+        throw new System.InvalidOperationException("Failed to replace ProjectileMoveScript in ProjectileParams.CreateStickyProjectile.");
     }
 }

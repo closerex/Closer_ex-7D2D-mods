@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Emit;
 using HarmonyLib;
 using InControl;
@@ -13,6 +14,7 @@ public class ItemModuleInversedAction
 }
 
 [HarmonyPatch]
+[SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
 public static class InversedActionPatches
 {
     [HarmonyPatch(typeof(PlayerMoveController), nameof(PlayerMoveController.Update))]
@@ -26,30 +28,11 @@ public static class InversedActionPatches
         var fld_secondary = AccessTools.Field(typeof(PlayerActionsLocal), nameof(PlayerActionsLocal.Secondary));
 
         int li_holding_item, li_is_primary_pressed, li_is_secondary_pressed, li_can_run_primary, li_can_run_secondary;
-        if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 1))
-        {
-            li_holding_item = 35;
-            li_is_primary_pressed = 22;
-            li_is_secondary_pressed = 23;
-            li_can_run_primary = 21;
-            li_can_run_secondary = 20;
-        }
-        else if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
-        {
-            li_holding_item = 37;
-            li_is_primary_pressed = 24;
-            li_is_secondary_pressed = 25;
-            li_can_run_primary = 23;
-            li_can_run_secondary = 22;
-        }
-        else
-        {
-            li_holding_item = 40;
-            li_is_primary_pressed = 27;
-            li_is_secondary_pressed = 28;
-            li_can_run_primary = 26;
-            li_can_run_secondary = 25;
-        }
+        li_holding_item = 27;
+        li_is_primary_pressed = 23;
+        li_is_secondary_pressed = 24;
+        li_can_run_primary = 22;
+        li_can_run_secondary = 21;
 
         for (int i = 1; i < codes.Count - 2; i++)
         {
@@ -59,10 +42,9 @@ public static class InversedActionPatches
                 {
                     new CodeInstruction(OpCodes.Ldloc_S, li_is_secondary_pressed),
                     new CodeInstruction(OpCodes.Ldloc_S, li_holding_item),
-                    CodeInstruction.CallClosure<Func<bool, bool, ItemClass, bool>>(static (isPrimaryPressed, isSecondaryPressed, holdingItem) =>
-                    {
-                        return holdingItem is IModuleContainerFor<ItemModuleInversedAction> ? isSecondaryPressed : isPrimaryPressed;
-                    })
+                    CodeInstruction.CallClosure<Func<bool, bool, ItemClass, bool>>(
+                        static (isPrimaryPressed, isSecondaryPressed, holdingItem) =>
+                            holdingItem is IModuleContainerFor<ItemModuleInversedAction> ? isSecondaryPressed : isPrimaryPressed)
                 });
                 Log.Out("primary press patched!");
                 i += 3;
@@ -73,10 +55,9 @@ public static class InversedActionPatches
                 {
                     new CodeInstruction(OpCodes.Ldloc_S, li_is_primary_pressed),
                     new CodeInstruction(OpCodes.Ldloc_S, li_holding_item),
-                    CodeInstruction.CallClosure<Func<bool, bool, ItemClass, bool>>(static (isSecondaryPressed, isPrimaryPressed, holdingItem) =>
-                    {
-                        return holdingItem is IModuleContainerFor<ItemModuleInversedAction> ? isPrimaryPressed : isSecondaryPressed;
-                    })
+                    CodeInstruction.CallClosure<Func<bool, bool, ItemClass, bool>>(
+                        static (isSecondaryPressed, isPrimaryPressed, holdingItem) =>
+                            holdingItem is IModuleContainerFor<ItemModuleInversedAction> ? isPrimaryPressed : isSecondaryPressed)
                 });
                 Log.Out("secondary press patched!");
                 i += 3;
@@ -90,10 +71,9 @@ public static class InversedActionPatches
                     new CodeInstruction(OpCodes.Ldfld, fld_secondary),
                     new CodeInstruction(OpCodes.Callvirt, prop_wasreleased),
                     new CodeInstruction(OpCodes.Ldloc_S, li_holding_item),
-                    CodeInstruction.CallClosure<Func<bool, bool,ItemClass, bool>>(static (isPrimaryPressed, isSecondaryPressed, holdingItem) =>
-                    {
-                        return holdingItem is IModuleContainerFor<ItemModuleInversedAction> ? isSecondaryPressed : isPrimaryPressed;
-                    })
+                    CodeInstruction.CallClosure<Func<bool, bool,ItemClass, bool>>(
+                        static (isPrimaryPressed, isSecondaryPressed, holdingItem) =>
+                            holdingItem is IModuleContainerFor<ItemModuleInversedAction> ? isSecondaryPressed : isPrimaryPressed)
                 });
                 Log.Out("primary release patched!");
                 i += 6;
@@ -107,10 +87,9 @@ public static class InversedActionPatches
                     new CodeInstruction(OpCodes.Ldfld, fld_primary),
                     new CodeInstruction(OpCodes.Callvirt, prop_wasreleased),
                     new CodeInstruction(OpCodes.Ldloc_S, li_holding_item),
-                    CodeInstruction.CallClosure<Func<bool, bool, ItemClass, bool>>(static (isSecondaryPressed, isPrimaryPressed, holdingItem) =>
-                    {
-                        return holdingItem is IModuleContainerFor<ItemModuleInversedAction> ? isPrimaryPressed : isSecondaryPressed;
-                    })
+                    CodeInstruction.CallClosure<Func<bool, bool, ItemClass, bool>>(
+                        static (isSecondaryPressed, isPrimaryPressed, holdingItem) => 
+                            holdingItem is IModuleContainerFor<ItemModuleInversedAction> ? isPrimaryPressed : isSecondaryPressed)
                 });
                 Log.Out("secondary release patched!");
                 i += 6;

@@ -1,0 +1,93 @@
+2026-10-02T02:53:56 125.157 INF Executing command 'luaprobe bench sync all 100000 8000'
+2026-10-02T02:54:36 164.468 INF bench config: hotIterations=100000 dtoIterations=20000 callbackIterations=20000 callbackChunk=2000 compileIterations=50 coldInitIterations=10 totalWorkBudgetMs=8000 perMetricWorkBudgetMs=2000 cleanBaseline=True
+2026-10-02T02:54:36 164.469 INF SYNC bench: this call blocks the main thread for the whole run (use `luaprobe bench` without `sync` for the cross-frame job)
+2026-10-02T02:54:36 164.470 INF 
+2026-10-02T02:54:36 164.471 INF == benchmark: moonsharp (MoonSharp 2.0.0, declared lua 5.2) ==
+2026-10-02T02:54:36 164.472 INF   status=Completed measured lua version=MoonSharp 2.0.0.0
+2026-10-02T02:54:36 164.472 INF   active_work=6211ms  wall=12542ms  idle(waiting between advances)=0.622ms  overhead(setup/verify/GC inside advances)=6331ms  advances=49  setup=9.625ms
+2026-10-02T02:54:36 164.473 INF   setup is the backend initialise + module load + bridge install; it runs on the frame that starts this backend and is NOT bounded by the per-frame work budget
+2026-10-02T02:54:36 164.473 INF   metric                          iters(req/performed/warm)  active_ms  wall_ms   us/op    gen0/1/2   allocated  managed_delta  checksum  ok  flag
+2026-10-02T02:54:36 164.474 INF   csharp_baseline.add            100000/100000/1000         0.916     529.051   0.004    0/0/0      n/a        0              500000    Y   -
+2026-10-02T02:54:36 164.475 INF       note: minimal-work reference: a constant return in C#; NOT an upper bound for a Lua call
+2026-10-02T02:54:36 164.476 INF   csharp_baseline.build_dto      20000/20000/200            16.148    507.558   0.774    0/0/0      n/a        700416         60000     Y   -
+2026-10-02T02:54:36 164.476 INF       note: CLR object-graph construction only; the Lua DTO rows additionally build a Lua table
+2026-10-02T02:54:36 164.477 INF   csharp_baseline.bridge_direct  100000/100000/200          0.819     651.777   0.003    0/0/0      n/a        0              100000    Y   -
+2026-10-02T02:54:36 164.478 INF       note: direct CLR call to the same method Lua reaches through the binding layer
+2026-10-02T02:54:36 164.479 INF   lua_cold_init                  10/10/0                    84.774    664.672   8477     0/0/0      n/a        27467776       20        Y   -
+2026-10-02T02:54:36 164.479 INF       note: fresh interpreter + probe_helpers.lua + probe_core.lua + add(1,1) + shutdown
+2026-10-02T02:54:36 164.480 INF   lua_compile_core               50/50/2                    87.383    608.950   1678     0/0/0      n/a        21925888       686550    Y   -
+2026-10-02T02:54:36 164.481 INF       note: compile + execute probe_core.lua as a fresh chunk each time
+2026-10-02T02:54:36 164.481 INF   lua_hot_call.add               100000/100000/2000         550.478   1140      5.416    2/2/2      n/a        17506304       500000    Y   -
+2026-10-02T02:54:36 164.482 INF       note: resolved function handle + primitive args + return conversion (no table marshalling); every backend caches the resolved handle, so no per-iteration global lookup is included
+2026-10-02T02:54:36 164.483 INF   lua_dto_push_touch             20000/20000/100            667.257   1285      33.039   3/3/3      n/a        4247552        40000     Y   -
+2026-10-02T02:54:36 164.483 INF       note: end-to-end adapter cost of building the nested context table from a C# DTO and reading one field. The per-table construction strategy differs per adapter (see the backend notes), so this row compares adapter implementations, not the Lua engines.
+2026-10-02T02:54:36 164.484 INF   lua_dto_sum_ids                20000/16896/100            2002      2608      117.993  7/7/7      n/a        9457664        36309504  Y   T
+2026-10-02T02:54:36 164.484 INF       note: push + full nested traversal; checksum cross-checked against the C# re-implementation; per-metric work budget (2000 ms of measured work) reached; stopped by the work budget
+2026-10-02T02:54:36 164.485 INF   lua_dto_evaluate               20000/1024/100             2725      3483      2651     0/0/0      n/a        29143040       1024      Y   T
+2026-10-02T02:54:36 164.486 INF       note: push + traversal + rules; the checksum counts only iterations that actually returned "Engage"; per-metric work budget (2000 ms of measured work) reached; stopped by the work budget
+2026-10-02T02:54:36 164.486 INF   lua_to_csharp.boundary         20000/20000/0              76.387    1062      3.819    0/0/0      n/a        6340608        20010000  Y   -
+2026-10-02T02:54:36 164.487 INF       note: Lua -> C# crossings in chunks of 2000; chunking is what bounds how long a single Lua call can block the main thread, and each chunk restarts the emitted id sequence, so the expected sum is the sum of per-chunk triangles; emitCount=20000 emitSum=20010000 (expected emitCount=20000 emitSum=20010000)
+2026-10-02T02:54:36 164.488 INF   flag census: rows=10/10 measured=8 truncated=2 cancelled=0 skipped=0 aborted=0 unverified=0
+2026-10-02T02:54:36 164.489 INF   expected checksums: csharp_baseline.add => 5 * iterations | csharp_baseline.build_dto => 3 * iterations | csharp_baseline.bridge_direct => iterations | lua_cold_init => 2 * iterations | lua_compile_core => 13731 * iterations | lua_hot_call.add => 5 * iterations | lua_dto_push_touch => 2 * iterations | lua_dto_sum_ids => 2149 * iterations | lua_dto_evaluate => iterations | lua_to_csharp.boundary => <chunked triangles>
+2026-10-02T02:54:36 164.489 INF   flags: - measured, T truncated at the work budget, C cancelled (partial row, still verified against the iterations it did), S skipped (budget already spent), A aborted
+2026-10-02T02:54:36 164.490 INF   managed_delta is a live heap delta, not an allocation count, and may be negative; allocated=n/a means GC.GetTotalAllocatedBytes is unavailable on this runtime (never reported as 0).
+2026-10-02T02:54:36 164.491 INF 
+2026-10-02T02:54:36 164.492 INF == benchmark: nlua (NLua 1.7.9 + KeraLua 1.4.10, declared lua 5.4) ==
+2026-10-02T02:54:36 164.492 INF   status=Completed measured lua version=Lua 5.4
+2026-10-02T02:54:36 164.492 INF   active_work=6656ms  wall=14152ms  idle(waiting between advances)=0.771ms  overhead(setup/verify/GC inside advances)=7495ms  advances=89  setup=35.397ms
+2026-10-02T02:54:36 164.493 INF   setup is the backend initialise + module load + bridge install; it runs on the frame that starts this backend and is NOT bounded by the per-frame work budget
+2026-10-02T02:54:36 164.493 INF   metric                          iters(req/performed/warm)  active_ms  wall_ms   us/op    gen0/1/2   allocated  managed_delta  checksum  ok  flag
+2026-10-02T02:54:36 164.494 INF   csharp_baseline.add            100000/100000/1000         0.254     796.709   0.002    0/0/0      n/a        0              500000    Y   -
+2026-10-02T02:54:36 164.494 INF       note: minimal-work reference: a constant return in C#; NOT an upper bound for a Lua call
+2026-10-02T02:54:36 164.495 INF   csharp_baseline.build_dto      20000/20000/200            20.829    959.201   1.024    0/0/0      n/a        856064         60000     Y   -
+2026-10-02T02:54:36 164.495 INF       note: CLR object-graph construction only; the Lua DTO rows additionally build a Lua table
+2026-10-02T02:54:36 164.496 INF   csharp_baseline.bridge_direct  100000/100000/200          0.556     754.954   0.006    0/0/0      n/a        0              100000    Y   -
+2026-10-02T02:54:36 164.497 INF       note: direct CLR call to the same method Lua reaches through the binding layer
+2026-10-02T02:54:36 164.497 INF   lua_cold_init                  10/10/0                    200.940   1052      20094    0/0/0      n/a        4481024        20        Y   -
+2026-10-02T02:54:36 164.498 INF       note: fresh interpreter + probe_helpers.lua + probe_core.lua + add(1,1) + shutdown
+2026-10-02T02:54:36 164.498 INF   lua_compile_core               50/50/2                    22.246    768.414   424.406  0/0/0      n/a        864256         686550    Y   -
+2026-10-02T02:54:36 164.499 INF       note: compile + execute probe_core.lua as a fresh chunk each time
+2026-10-02T02:54:36 164.499 INF   lua_hot_call.add               100000/100000/2000         243.956   1096      2.389    0/0/0      n/a        24838144       500000    Y   -
+2026-10-02T02:54:36 164.500 INF       note: resolved function handle + primitive args + return conversion (no table marshalling); every backend caches the resolved handle, so no per-iteration global lookup is included
+2026-10-02T02:54:36 164.500 INF   lua_dto_push_touch             20000/16384/100            2039      2727      123.764  2/2/2      n/a        72237056       32768     Y   T
+2026-10-02T02:54:36 164.501 INF       note: end-to-end adapter cost of building the nested context table from a C# DTO and reading one field. The per-table construction strategy differs per adapter (see the backend notes), so this row compares adapter implementations, not the Lua engines.; per-metric work budget (2000 ms of measured work) reached; stopped by the work budget
+2026-10-02T02:54:36 164.501 INF   lua_dto_sum_ids                20000/11776/100            2062      2618      173.688  2/2/2      n/a        27693056       25306624  Y   T
+2026-10-02T02:54:36 164.502 INF       note: push + full nested traversal; checksum cross-checked against the C# re-implementation; per-metric work budget (2000 ms of measured work) reached; stopped by the work budget
+2026-10-02T02:54:36 164.503 INF   lua_dto_evaluate               20000/14336/100            2021      2713      139.880  2/2/2      n/a        42844160       14336     Y   T
+2026-10-02T02:54:36 164.503 INF       note: push + traversal + rules; the checksum counts only iterations that actually returned "Engage"; per-metric work budget (2000 ms of measured work) reached; stopped by the work budget
+2026-10-02T02:54:36 164.504 INF   lua_to_csharp.boundary         20000/20000/0              46.343    667.898   2.317    0/0/0      n/a        0              20010000  Y   -
+2026-10-02T02:54:36 164.505 INF       note: Lua -> C# crossings in chunks of 2000; chunking is what bounds how long a single Lua call can block the main thread, and each chunk restarts the emitted id sequence, so the expected sum is the sum of per-chunk triangles; emitCount=20000 emitSum=20010000 (expected emitCount=20000 emitSum=20010000)
+2026-10-02T02:54:36 164.505 INF   flag census: rows=10/10 measured=7 truncated=3 cancelled=0 skipped=0 aborted=0 unverified=0
+2026-10-02T02:54:36 164.507 INF   expected checksums: csharp_baseline.add => 5 * iterations | csharp_baseline.build_dto => 3 * iterations | csharp_baseline.bridge_direct => iterations | lua_cold_init => 2 * iterations | lua_compile_core => 13731 * iterations | lua_hot_call.add => 5 * iterations | lua_dto_push_touch => 2 * iterations | lua_dto_sum_ids => 2149 * iterations | lua_dto_evaluate => iterations | lua_to_csharp.boundary => <chunked triangles>
+2026-10-02T02:54:36 164.507 INF   flags: - measured, T truncated at the work budget, C cancelled (partial row, still verified against the iterations it did), S skipped (budget already spent), A aborted
+2026-10-02T02:54:36 164.508 INF   managed_delta is a live heap delta, not an allocation count, and may be negative; allocated=n/a means GC.GetTotalAllocatedBytes is unavailable on this runtime (never reported as 0).
+2026-10-02T02:54:36 164.508 INF 
+2026-10-02T02:54:36 164.509 INF == benchmark: xlua (XLua.Mini v2.1.16_ndkr21b_with_win, declared lua 5.4) ==
+2026-10-02T02:54:36 164.510 INF   status=Completed measured lua version=Lua 5.4
+2026-10-02T02:54:36 164.510 INF   active_work=5232ms  wall=12555ms  idle(waiting between advances)=43.776ms  overhead(setup/verify/GC inside advances)=7279ms  advances=50  setup=2.909ms
+2026-10-02T02:54:36 164.511 INF   setup is the backend initialise + module load + bridge install; it runs on the frame that starts this backend and is NOT bounded by the per-frame work budget
+2026-10-02T02:54:36 164.511 INF   metric                          iters(req/performed/warm)  active_ms  wall_ms   us/op    gen0/1/2   allocated  managed_delta  checksum  ok  flag
+2026-10-02T02:54:36 164.512 INF   csharp_baseline.add            100000/100000/1000         0.182     729.373   0.002    0/0/0      n/a        0              500000    Y   -
+2026-10-02T02:54:36 164.513 INF       note: minimal-work reference: a constant return in C#; NOT an upper bound for a Lua call
+2026-10-02T02:54:36 164.513 INF   csharp_baseline.build_dto      20000/20000/200            18.720    726.157   0.921    0/0/0      n/a        835584         60000     Y   -
+2026-10-02T02:54:36 164.514 INF       note: CLR object-graph construction only; the Lua DTO rows additionally build a Lua table
+2026-10-02T02:54:36 164.514 INF   csharp_baseline.bridge_direct  100000/100000/200          0.416     703.992   0.004    0/0/0      n/a        0              100000    Y   -
+2026-10-02T02:54:36 164.515 INF       note: direct CLR call to the same method Lua reaches through the binding layer
+2026-10-02T02:54:36 164.515 INF   lua_cold_init                  10/3/0                     2488      3369      829439   6/6/6      n/a        126976         6         Y   T
+2026-10-02T02:54:36 164.516 INF       note: fresh interpreter + probe_helpers.lua + probe_core.lua + add(1,1) + shutdown; per-metric work budget (2000 ms of measured work) reached
+2026-10-02T02:54:36 164.517 INF   lua_compile_core               50/50/2                    12.310    666.642   224.798  0/0/0      n/a        851968         686550    Y   -
+2026-10-02T02:54:36 164.517 INF       note: compile + execute probe_core.lua as a fresh chunk each time
+2026-10-02T02:54:36 164.518 INF   lua_hot_call.add               100000/100000/2000         175.774   897.614   1.735    0/0/0      n/a        24838144       500000    Y   -
+2026-10-02T02:54:36 164.519 INF       note: resolved function handle + primitive args + return conversion (no table marshalling); every backend caches the resolved handle, so no per-iteration global lookup is included
+2026-10-02T02:54:36 164.519 INF   lua_dto_push_touch             20000/20000/100            765.414   1484      38.054   0/0/0      n/a        24338432       40000     Y   -
+2026-10-02T02:54:36 164.520 INF       note: end-to-end adapter cost of building the nested context table from a C# DTO and reading one field. The per-table construction strategy differs per adapter (see the backend notes), so this row compares adapter implementations, not the Lua engines.
+2026-10-02T02:54:36 164.525 INF   lua_dto_sum_ids                20000/20000/100            771.913   1470      38.421   0/0/0      n/a        18038784       42980000  Y   -
+2026-10-02T02:54:36 164.526 INF       note: push + full nested traversal; checksum cross-checked against the C# re-implementation
+2026-10-02T02:54:36 164.527 INF   lua_dto_evaluate               20000/20000/100            995.652   1760      49.576   0/0/0      n/a        18046976       20000     Y   -
+2026-10-02T02:54:36 164.528 INF       note: push + traversal + rules; the checksum counts only iterations that actually returned "Engage"
+2026-10-02T02:54:36 164.528 INF   lua_to_csharp.boundary         20000/20000/0              3.525     729.638   0.176    0/0/0      n/a        0              20010000  Y   -
+2026-10-02T02:54:36 164.529 INF       note: Lua -> C# crossings in chunks of 2000; chunking is what bounds how long a single Lua call can block the main thread, and each chunk restarts the emitted id sequence, so the expected sum is the sum of per-chunk triangles; emitCount=20000 emitSum=20010000 (expected emitCount=20000 emitSum=20010000)
+2026-10-02T02:54:36 164.530 INF   flag census: rows=10/10 measured=9 truncated=1 cancelled=0 skipped=0 aborted=0 unverified=0
+2026-10-02T02:54:36 164.531 INF   expected checksums: csharp_baseline.add => 5 * iterations | csharp_baseline.build_dto => 3 * iterations | csharp_baseline.bridge_direct => iterations | lua_cold_init => 2 * iterations | lua_compile_core => 13731 * iterations | lua_hot_call.add => 5 * iterations | lua_dto_push_touch => 2 * iterations | lua_dto_sum_ids => 2149 * iterations | lua_dto_evaluate => iterations | lua_to_csharp.boundary => <chunked triangles>
+2026-10-02T02:54:36 164.532 INF   flags: - measured, T truncated at the work budget, C cancelled (partial row, still verified against the iterations it did), S skipped (budget already spent), A aborted
+2026-10-02T02:54:36 164.533 INF   managed_delta is a live heap delta, not an allocation count, and may be negative; allocated=n/a means GC.GetTotalAllocatedBytes is unavailable on this runtime (never reported as 0).

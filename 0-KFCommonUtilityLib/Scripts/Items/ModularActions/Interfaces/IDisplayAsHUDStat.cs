@@ -27,14 +27,7 @@ namespace KFCommonUtilityLib
         {
             private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 2))
-                {
-                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "GetBindingValue");
-                }
-                else
-                {
-                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "GetBindingValueInternal");
-                }
+                yield return AccessTools.Method(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.GetBindingValueInternal));
             }
 
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -45,7 +38,7 @@ namespace KFCommonUtilityLib
                 var fld_inventory = AccessTools.Field(typeof(EntityAlive), nameof(EntityAlive.inventory));
                 var fld_attackaction = AccessTools.Field(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.attackAction));
                 var fld_currentammo = AccessTools.Field(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.currentAmmoCount));
-                var mtd_localplayer = AccessTools.Method(typeof(VersionPatchManager), nameof(VersionPatchManager.GetLocalPlayer));
+                var fld_localplayer = AccessTools.Field(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.localPlayer));
                 var mtd_format = AccessTools.Method(typeof(CachedStringFormatter<int>), nameof(CachedStringFormatter<int>.Format), new[] { typeof(int) });
                 var mtd_getvalue = AccessTools.Method(typeof(EffectManager), nameof(EffectManager.GetValue));
                 var mtd_holdingitemdata = AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItemData));
@@ -81,7 +74,7 @@ namespace KFCommonUtilityLib
                                         CodeInstruction.LoadArgument(1),
                                         CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
                                         CodeInstruction.LoadArgument(0),
-                                        new CodeInstruction(OpCodes.Call, mtd_localplayer),
+                                        new CodeInstruction(OpCodes.Ldfld, fld_localplayer),
                                         new CodeInstruction(OpCodes.Ldfld, fld_inventory),
                                         new CodeInstruction(OpCodes.Callvirt, mtd_holdingitemdata),
                                         new CodeInstruction(OpCodes.Callvirt, mtd_getstat),
@@ -111,7 +104,7 @@ namespace KFCommonUtilityLib
                                         CodeInstruction.LoadArgument(1),
                                         CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
                                         CodeInstruction.LoadArgument(0),
-                                        new CodeInstruction(OpCodes.Call, mtd_localplayer),
+                                        new CodeInstruction(OpCodes.Ldfld, fld_localplayer),
                                         new CodeInstruction(OpCodes.Ldfld, fld_inventory),
                                         new CodeInstruction(OpCodes.Callvirt, mtd_holdingitemdata),
                                         CodeInstruction.LoadArgument(0),
@@ -189,7 +182,7 @@ namespace KFCommonUtilityLib
                                         new CodeInstruction(OpCodes.Brfalse, lbl_else),
                                         CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
                                         CodeInstruction.LoadArgument(0),
-                                        new CodeInstruction(OpCodes.Call, mtd_localplayer),
+                                        new CodeInstruction(OpCodes.Ldfld, fld_localplayer),
                                         new CodeInstruction(OpCodes.Ldfld, fld_inventory),
                                         new CodeInstruction(OpCodes.Callvirt, mtd_holdingitemdata),
                                         CodeInstruction.LoadArgument(0),
@@ -209,21 +202,14 @@ namespace KFCommonUtilityLib
                         Label lbl = generator.DefineLabel();
                         codes[i + 2].WithLabels(lbl);
                         CodeInstruction ins;
-                        if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
-                        {
-                            ins = CodeInstruction.LoadArgument(1);
-                        }
-                        else
-                        {
-                            ins = CodeInstruction.LoadLocal(3, true);
-                        }
+                        ins = CodeInstruction.LoadLocal(3, true);
                         codes.InsertRange(i + 2, new[]
                         {
                             CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
                             new CodeInstruction(OpCodes.Brfalse, lbl),
                             CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
                             CodeInstruction.LoadArgument(0),
-                            new CodeInstruction(OpCodes.Call, mtd_localplayer),
+                            new CodeInstruction(OpCodes.Ldfld, fld_localplayer),
                             new CodeInstruction(OpCodes.Ldfld, fld_inventory),
                             new CodeInstruction(OpCodes.Callvirt, mtd_holdingitemdata),
                             ins,
@@ -235,21 +221,14 @@ namespace KFCommonUtilityLib
                     else if (codes[i].Calls(mtd_geticontint))
                     {
                         int localIndex;
-                        if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
-                        {
-                            localIndex = 3;
-                        }
-                        else
-                        {
-                            localIndex = 1;
-                        }
+                        localIndex = 1;
                         codes.InsertRange(i + 3, new[]
                         {
                             CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
                             new CodeInstruction(OpCodes.Brfalse, codes[i + 3].labels[0]),
                             CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
                             CodeInstruction.LoadArgument(0),
-                            new CodeInstruction(OpCodes.Call, mtd_localplayer),
+                            new CodeInstruction(OpCodes.Ldfld, fld_localplayer),
                             new CodeInstruction(OpCodes.Ldfld, fld_inventory),
                             new CodeInstruction(OpCodes.Callvirt, mtd_holdingitemdata),
                             CodeInstruction.LoadLocal(localIndex, true),
@@ -276,14 +255,7 @@ namespace KFCommonUtilityLib
         {
             private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
-                {
-                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "RefreshFill");
-                }
-                else
-                {
-                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "refreshFill");
-                }
+                yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "refreshFill");
             }
 
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -291,7 +263,7 @@ namespace KFCommonUtilityLib
                 var codes = instructions.ToList();
                 var fld_inventory = AccessTools.Field(typeof(EntityAlive), nameof(EntityAlive.inventory));
                 var fld_currentammo = AccessTools.Field(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.currentAmmoCount));
-                var mtd_localplayer = AccessTools.Method(typeof(VersionPatchManager), nameof(VersionPatchManager.GetLocalPlayer));
+                var fld_localplayer = AccessTools.Field(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.localPlayer));
                 var mtd_holdingitemdata = AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItemData));
                 var mtd_getstatfill = AccessTools.Method(typeof(IDisplayAsHUDStat), nameof(IDisplayAsHUDStat.GetHUDStatFillFraction));
                 var mtd_getvalue = AccessTools.Method(typeof(EffectManager), nameof(EffectManager.GetValue));
@@ -326,7 +298,7 @@ namespace KFCommonUtilityLib
                                     new CodeInstruction(OpCodes.Brfalse, lbl_else),
                                     CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
                                     CodeInstruction.LoadArgument(0),
-                                    new CodeInstruction(OpCodes.Call, mtd_localplayer),
+                                    new CodeInstruction(OpCodes.Ldfld, fld_localplayer),
                                     new CodeInstruction(OpCodes.Ldfld, fld_inventory),
                                     new CodeInstruction(OpCodes.Callvirt, mtd_holdingitemdata),
                                     CodeInstruction.LoadArgument(0),
@@ -354,7 +326,7 @@ namespace KFCommonUtilityLib
             if (displayAsHUDStat != null)
             {
                 int currentAmmoCount = __instance.currentAmmoCount;
-                if (displayAsHUDStat.UpdateActiveItemAmmo(__instance.GetLocalPlayer().inventory.holdingItemData, ref currentAmmoCount))
+                if (displayAsHUDStat.UpdateActiveItemAmmo(__instance.localPlayer.inventory.holdingItemData, ref currentAmmoCount))
                 {
                     __instance.currentAmmoCount = currentAmmoCount;
                     return false;
@@ -365,8 +337,8 @@ namespace KFCommonUtilityLib
 
         private static IDisplayAsHUDStat GetDisplayAsHUDStatInterface(XUiC_HUDStatBar statBar)
         {
-            EntityPlayerLocal localPlayer = statBar.GetLocalPlayer();
-            if (statBar == null || statBar.StatType != HUDStatTypes.ActiveItem || localPlayer == null || statBar.GetVehicle() != null)
+            EntityPlayerLocal localPlayer = statBar.localPlayer;
+            if (statBar.StatType != HUDStatTypes.ActiveItem || localPlayer == null || statBar.vehicle != null)
             {
                 return null;
             }
@@ -384,14 +356,7 @@ namespace KFCommonUtilityLib
         {
             private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
-                {
-                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "SetupActiveItemEntry");
-                }
-                else
-                {
-                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "setupActiveItemEntry");
-                }
+                yield return AccessTools.Method(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.setupActiveItemEntry));
             }
 
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)

@@ -22,7 +22,7 @@ public class MinEventActionRangedExplosion : MinEventActionBase
 		//	layer = _params.Self.GetModelLayer();
 		//	_params.Self.SetModelLayer(24, false);
   //      }
-        GameManager.Instance.ExplosionServer(0, _params.Position, World.worldToBlockPos(_params.Position), hasEntity ? _params.Self.qrotation : Quaternion.identity, _useCustomParticle ? _explosionComponent.BoundExplosionData : _explosionData, hasEntity ? _params.Self.entityId : -1, Delay, false, ammoItem ?? _params.ItemValue);
+        GameManager.Instance.ExplosionServer(_params.Position, World.worldToBlockPos(_params.Position), hasEntity ? _params.Self.qrotation : Quaternion.identity, _useCustomParticle ? _explosionComponent.BoundExplosionData : _explosionData, hasEntity ? _params.Self.entityId : -1, Delay, false, ammoItem ?? _params.ItemValue);
 		//if (hasEntity)
 		//{
 		//	_params.Self.SetModelLayer(layer, false);

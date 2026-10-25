@@ -1,0 +1,16 @@
+LuaRuntimeProbe offline harness
+  modRoot      = E:\SteamLibrary\steamapps\common\7 Days To Die\ModsRepo\LuaRuntimeProbe
+  lauDir       = E:\SteamLibrary\steamapps\common\7 Days To Die\ModsRepo\LuaRuntimeProbe\Lua
+  nativeDir    = E:\SteamLibrary\steamapps\common\7 Days To Die\ModsRepo\LuaRuntimeProbe.OfflineProbe\bin\Release\net48\native
+  clr          = 4.0.30319.42000 (64-bit)
+  mono         = no
+  gcAllocProbe = unavailable
+  withXLua     = yes (the xLua backend is compiled in and must pass)
+  gameRunning  = true   <-- if true, this machine is also running the game, so timings are contended
+
+=== kernel self-check ===
+  PASS cancel-before-first-advance: status=Cancelled rows=0 error=<none>
+  PASS cancel-between-metrics: status=Cancelled rows=4 error=<none>
+  PASS cancel-mid-metric: status=Cancelled row=csharp_baseline.add flag=C performed=2242560 checksumOk=True error=<none>
+  PASS zero-iteration row is never verifiable: IsVerifiable=False
+SELFCHECK RESULT: all kernel edge checks passed

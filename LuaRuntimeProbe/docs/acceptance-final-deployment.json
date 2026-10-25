@@ -1,0 +1,75 @@
+{
+  "GameStopped": true,
+  "ArchivedFrom": "E:\\SteamLibrary\\steamapps\\common\\7 Days To Die\\ModsRepo\\LuaRuntimeProbe",
+  "Archive": "E:\\SteamLibrary\\steamapps\\common\\7 Days To Die\\artifacts\\luaprobe-tested-round2-archive-20261002",
+  "Candidate": "E:\\SteamLibrary\\steamapps\\common\\7 Days To Die\\artifacts\\luaprobe-final-candidate-20261002",
+  "ExpectedModuleVersionId": "61146efc-5903-48df-945d-a595bce19b02",
+  "Before": [
+    {
+      "RelativePath": "LuaRuntimeProbe.dll",
+      "Bytes": 127488
+    },
+    {
+      "RelativePath": "LuaRuntimeProbe.pdb",
+      "Bytes": 38900
+    },
+    {
+      "RelativePath": "MoonSharp.Interpreter.dll",
+      "Bytes": 366592
+    },
+    {
+      "RelativePath": "NLua.dll",
+      "Bytes": 92160
+    },
+    {
+      "RelativePath": "KeraLua.dll",
+      "Bytes": 32256
+    },
+    {
+      "RelativePath": "XLua.Mini.dll",
+      "Bytes": 164864
+    },
+    {
+      "RelativePath": "native\\lua54.dll",
+      "Bytes": 523264
+    },
+    {
+      "RelativePath": "native\\xlua.dll",
+      "Bytes": 570368
+    }
+  ],
+  "After": [
+    {
+      "RelativePath": "LuaRuntimeProbe.dll",
+      "Bytes": 128000
+    },
+    {
+      "RelativePath": "LuaRuntimeProbe.pdb",
+      "Bytes": 39000
+    },
+    {
+      "RelativePath": "MoonSharp.Interpreter.dll",
+      "Bytes": 366592
+    },
+    {
+      "RelativePath": "NLua.dll",
+      "Bytes": 92160
+    },
+    {
+      "RelativePath": "KeraLua.dll",
+      "Bytes": 32256
+    },
+    {
+      "RelativePath": "XLua.Mini.dll",
+      "Bytes": 164864
+    },
+    {
+      "RelativePath": "native\\lua54.dll",
+      "Bytes": 523264
+    },
+    {
+      "RelativePath": "native\\xlua.dll",
+      "Bytes": 570368
+    }
+  ]
+}

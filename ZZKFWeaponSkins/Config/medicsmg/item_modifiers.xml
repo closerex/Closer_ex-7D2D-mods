@@ -1,0 +1,299 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configs>
+  <append xpath="/item_modifiers">
+    <item_modifier name="modKFSkin_medicsmg_SkinId_3339" installable_tags="kfSkin_gunMedicSMG201" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_medicsmg_SkinId_3339" />
+      <property name="DescriptionKey" value="modKFSkin_medicsmg_SkinId_3339Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunMedicSMG201">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/medicsmg/kf_skin_medicsmg.unity3d?SkinId_3339__medic_smg" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_medicsmg_SkinId_3340" installable_tags="kfSkin_gunMedicSMG201" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_medicsmg_SkinId_3340" />
+      <property name="DescriptionKey" value="modKFSkin_medicsmg_SkinId_3340Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunMedicSMG201">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/medicsmg/kf_skin_medicsmg.unity3d?SkinId_3340__medic_smg" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_medicsmg_SkinId_3341" installable_tags="kfSkin_gunMedicSMG201" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_medicsmg_SkinId_3341" />
+      <property name="DescriptionKey" value="modKFSkin_medicsmg_SkinId_3341Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunMedicSMG201">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/medicsmg/kf_skin_medicsmg.unity3d?SkinId_3341__medic_smg" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_medicsmg_SkinId_3448" installable_tags="kfSkin_gunMedicSMG201" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_medicsmg_SkinId_3448" />
+      <property name="DescriptionKey" value="modKFSkin_medicsmg_SkinId_3448Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunMedicSMG201">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/medicsmg/kf_skin_medicsmg.unity3d?SkinId_3448__medic_smg" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_medicsmg_SkinId_3671" installable_tags="kfSkin_gunMedicSMG201" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_medicsmg_SkinId_3671" />
+      <property name="DescriptionKey" value="modKFSkin_medicsmg_SkinId_3671Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunMedicSMG201">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/medicsmg/kf_skin_medicsmg.unity3d?SkinId_3671__medic_smg" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_medicsmg_SkinId_3672" installable_tags="kfSkin_gunMedicSMG201" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_medicsmg_SkinId_3672" />
+      <property name="DescriptionKey" value="modKFSkin_medicsmg_SkinId_3672Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunMedicSMG201">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/medicsmg/kf_skin_medicsmg.unity3d?SkinId_3672__medic_smg" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_medicsmg_SkinId_3673" installable_tags="kfSkin_gunMedicSMG201" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_medicsmg_SkinId_3673" />
+      <property name="DescriptionKey" value="modKFSkin_medicsmg_SkinId_3673Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunMedicSMG201">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/medicsmg/kf_skin_medicsmg.unity3d?SkinId_3673__medic_smg" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_medicsmg_SkinId_4191" installable_tags="kfSkin_gunMedicSMG201" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_medicsmg_SkinId_4191" />
+      <property name="DescriptionKey" value="modKFSkin_medicsmg_SkinId_4191Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunMedicSMG201">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/medicsmg/kf_skin_medicsmg.unity3d?SkinId_4191__medic_smg" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_medicsmg_SkinId_4192" installable_tags="kfSkin_gunMedicSMG201" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_medicsmg_SkinId_4192" />
+      <property name="DescriptionKey" value="modKFSkin_medicsmg_SkinId_4192Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunMedicSMG201">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/medicsmg/kf_skin_medicsmg.unity3d?SkinId_4192__medic_smg" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_medicsmg_SkinId_4193" installable_tags="kfSkin_gunMedicSMG201" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_medicsmg_SkinId_4193" />
+      <property name="DescriptionKey" value="modKFSkin_medicsmg_SkinId_4193Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunMedicSMG201">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/medicsmg/kf_skin_medicsmg.unity3d?SkinId_4193__medic_smg" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_medicsmg_SkinId_6008" installable_tags="kfSkin_gunMedicSMG201" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_medicsmg_SkinId_6008" />
+      <property name="DescriptionKey" value="modKFSkin_medicsmg_SkinId_6008Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunMedicSMG201">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/medicsmg/kf_skin_medicsmg.unity3d?SkinId_6008__medic_smg" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_medicsmg_SkinId_6468" installable_tags="kfSkin_gunMedicSMG201" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_medicsmg_SkinId_6468" />
+      <property name="DescriptionKey" value="modKFSkin_medicsmg_SkinId_6468Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunMedicSMG201">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/medicsmg/kf_skin_medicsmg.unity3d?SkinId_6468__medic_smg" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_medicsmg_SkinId_6474" installable_tags="kfSkin_gunMedicSMG201" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_medicsmg_SkinId_6474" />
+      <property name="DescriptionKey" value="modKFSkin_medicsmg_SkinId_6474Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunMedicSMG201">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/medicsmg/kf_skin_medicsmg.unity3d?SkinId_6474__medic_smg" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_medicsmg_SkinId_6486" installable_tags="kfSkin_gunMedicSMG201" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_medicsmg_SkinId_6486" />
+      <property name="DescriptionKey" value="modKFSkin_medicsmg_SkinId_6486Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunMedicSMG201">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/medicsmg/kf_skin_medicsmg.unity3d?SkinId_6486__medic_smg" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_medicsmg_SkinId_6487" installable_tags="kfSkin_gunMedicSMG201" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_medicsmg_SkinId_6487" />
+      <property name="DescriptionKey" value="modKFSkin_medicsmg_SkinId_6487Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunMedicSMG201">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/medicsmg/kf_skin_medicsmg.unity3d?SkinId_6487__medic_smg" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_medicsmg_SkinId_6488" installable_tags="kfSkin_gunMedicSMG201" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_medicsmg_SkinId_6488" />
+      <property name="DescriptionKey" value="modKFSkin_medicsmg_SkinId_6488Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunMedicSMG201">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/medicsmg/kf_skin_medicsmg.unity3d?SkinId_6488__medic_smg" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_medicsmg_SkinId_7189" installable_tags="kfSkin_gunMedicSMG201" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_medicsmg_SkinId_7189" />
+      <property name="DescriptionKey" value="modKFSkin_medicsmg_SkinId_7189Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunMedicSMG201">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/medicsmg/kf_skin_medicsmg.unity3d?SkinId_7189__medic_smg" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_medicsmg_SkinId_7472" installable_tags="kfSkin_gunMedicSMG201" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_medicsmg_SkinId_7472" />
+      <property name="DescriptionKey" value="modKFSkin_medicsmg_SkinId_7472Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunMedicSMG201">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/medicsmg/kf_skin_medicsmg.unity3d?SkinId_7472__medic_smg" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_medicsmg_SkinId_7473" installable_tags="kfSkin_gunMedicSMG201" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_medicsmg_SkinId_7473" />
+      <property name="DescriptionKey" value="modKFSkin_medicsmg_SkinId_7473Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunMedicSMG201">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/medicsmg/kf_skin_medicsmg.unity3d?SkinId_7473__medic_smg" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_medicsmg_SkinId_7474" installable_tags="kfSkin_gunMedicSMG201" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_medicsmg_SkinId_7474" />
+      <property name="DescriptionKey" value="modKFSkin_medicsmg_SkinId_7474Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunMedicSMG201">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/medicsmg/kf_skin_medicsmg.unity3d?SkinId_7474__medic_smg" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_medicsmg_SkinId_7490" installable_tags="kfSkin_gunMedicSMG201" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_medicsmg_SkinId_7490" />
+      <property name="DescriptionKey" value="modKFSkin_medicsmg_SkinId_7490Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunMedicSMG201">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/medicsmg/kf_skin_medicsmg.unity3d?SkinId_7490__medic_smg" />
+      </item_property_overrides>
+    </item_modifier>
+  </append>
+</configs>

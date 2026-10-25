@@ -1,0 +1,327 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configs>
+  <append xpath="/item_modifiers">
+    <item_modifier name="modKFSkin_m99_SkinId_6315" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_6315" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_6315Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_6315__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m99_SkinId_6316" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_6316" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_6316Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_6316__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m99_SkinId_6317" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_6317" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_6317Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_6317__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m99_SkinId_6331" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_6331" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_6331Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_6331__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m99_SkinId_7221" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_7221" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_7221Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_7221__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m99_SkinId_7222" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_7222" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_7222Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_7222__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m99_SkinId_7223" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_7223" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_7223Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_7223__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m99_SkinId_7236" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_7236" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_7236Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_7236__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m99_SkinId_7457" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_7457" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_7457Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_7457__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m99_SkinId_7458" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_7458" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_7458Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_7458__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m99_SkinId_7459" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_7459" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_7459Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_7459__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m99_SkinId_7486" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_7486" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_7486Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_7486__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m99_SkinId_8309" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_8309" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_8309Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_8309__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m99_SkinId_8344" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_8344" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_8344Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_8344__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m99_SkinId_8354" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_8354" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_8354Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_8354__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m99_SkinId_8517" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_8517" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_8517Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_8517__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m99_SkinId_8527" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_8527" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_8527Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_8527__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m99_SkinId_9443" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_9443" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_9443Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_9443__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m99_SkinId_9447" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_9447" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_9447Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_9447__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m99_SkinId_9545" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_9545" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_9545Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_9545__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m99_SkinId_9549" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_9549" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_9549Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_9549__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m99_SkinId_9591" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_9591" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_9591Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_9591__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_m99_SkinId_9595" installable_tags="kfSkin_gunKFM99" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_m99_SkinId_9595" />
+      <property name="DescriptionKey" value="modKFSkin_m99_SkinId_9595Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFM99">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/m99/kf_skin_m99.unity3d?SkinId_9595__M99_m" />
+      </item_property_overrides>
+    </item_modifier>
+  </append>
+</configs>

@@ -1,0 +1,214 @@
+2026-10-02T02:52:50 58.819 INF Executing command 'luaprobe status'
+2026-10-02T02:52:50 58.831 INF == LuaRuntimeProbe LuaRuntimeProbe/1.0.0 ==
+2026-10-02T02:52:50 58.832 INF modDir=E:\SteamLibrary\steamapps\common\7 Days To Die\Mods\LuaRuntimeProbe
+2026-10-02T02:52:50 58.832 INF luaDir=E:\SteamLibrary\steamapps\common\7 Days To Die\Mods\LuaRuntimeProbe\Lua
+2026-10-02T02:52:50 58.833 INF nativeDir=E:\SteamLibrary\steamapps\common\7 Days To Die\Mods\LuaRuntimeProbe\native
+2026-10-02T02:52:50 58.835 INF nativeLoaded=<none>
+2026-10-02T02:52:50 58.835 INF 
+2026-10-02T02:52:50 58.836 INF -- environment --
+2026-10-02T02:52:50 58.837 INF   unity=2022.3.62f2 platform=WindowsPlayer isPlaying=True frame=2548
+2026-10-02T02:52:50 58.838 INF   clr=4.0.30319.42000 ptrSize=64-bit os=Microsoft Windows NT 10.0.26200.0
+2026-10-02T02:52:50 58.838 INF   mono=6.13.0 (Visual Studio built mono)
+2026-10-02T02:52:50 58.838 INF   assembly=Assembly-CSharp 0.0.0.0
+2026-10-02T02:52:50 58.839 INF   Constants.cArgSubmissionBuild=-submission
+2026-10-02T02:52:50 58.839 INF   GamePrefs.GameVersion=V 3.2.0
+2026-10-02T02:52:50 58.839 INF   gc.totalAllocatedBytes=unavailable on this runtime
+2026-10-02T02:52:50 58.840 INF 
+2026-10-02T02:52:50 58.840 INF -- backends --
+2026-10-02T02:52:50 58.841 INF   [moonsharp] MoonSharp (pure managed)
+2026-10-02T02:52:50 58.841 INF       available    : True
+2026-10-02T02:52:50 58.841 INF       embed        : MoonSharp 2.0.0
+2026-10-02T02:52:50 58.842 INF       lua language : declared=5.2 measured=<not initialised yet>
+2026-10-02T02:52:50 58.842 INF       runtime      : pure managed (AnyCPU CLR)
+2026-10-02T02:52:50 58.842 INF       native dep   : none
+2026-10-02T02:52:50 58.843 INF       source       : nuget.org MoonSharp 2.0.0 (asset selected for net48: lib/net40-client/MoonSharp.Interpreter.dll)
+2026-10-02T02:52:50 58.843 INF       state        : not initialised
+2026-10-02T02:52:50 58.843 INF   [nlua] NLua + KeraLua (native Lua)
+2026-10-02T02:52:50 58.843 INF       available    : True
+2026-10-02T02:52:50 58.844 INF       embed        : NLua 1.7.9 + KeraLua 1.4.10
+2026-10-02T02:52:50 58.844 INF       lua language : declared=5.4 measured=<not initialised yet>
+2026-10-02T02:52:50 58.844 INF       runtime      : native (P/Invoke into lua54.dll)
+2026-10-02T02:52:50 58.845 INF       native dep   : native/lua54.dll (KeraLua runtimes/win-x64/native/lua54.dll)
+2026-10-02T02:52:50 58.845 INF       source       : nuget.org NLua 1.7.9 (net46 asset) + KeraLua 1.4.10 (net46 asset); native lua54.dll copied from the KeraLua package
+2026-10-02T02:52:50 58.845 INF       state        : not initialised
+2026-10-02T02:52:50 58.846 INF   [xlua] xLua (official General build)
+2026-10-02T02:52:50 58.846 INF       available    : True
+2026-10-02T02:52:50 58.846 INF       embed        : XLua.Mini v2.1.16_ndkr21b_with_win
+2026-10-02T02:52:50 58.847 INF       lua language : declared=5.4 measured=<not initialised yet>
+2026-10-02T02:52:50 58.847 INF       runtime      : native (P/Invoke into xlua.dll) + managed reflection layer
+2026-10-02T02:52:50 58.848 INF       native dep   : native/xlua.dll (win-x64, from the matching release bundle)
+2026-10-02T02:52:50 58.848 INF       source       : GitHub Tencent/xLua v2.1.16_ndkr21b_with_win (no NuGet package); managed half compiled from source via the official General/vs2013/XLua.Mini.csproj configuration
+2026-10-02T02:52:50 58.849 INF       state        : not initialised
+2026-10-02T02:52:50 58.849 INF Executing command 'luaprobe test all --caps'
+2026-10-02T02:52:51 60.185 INF 
+2026-10-02T02:52:51 60.185 INF == functional suite: moonsharp (MoonSharp 2.0.0) ==
+2026-10-02T02:52:51 60.186 INF   [PASS] init expected=true actual=True :: state alive; _VERSION=MoonSharp 2.0.0.0; globals=probe(userdata); bridge: probe=userdata Emit=function emit=function PlayerField=function player_field=function | Version()=ok:LuaRuntimeProbe/1.0.0 Version:()=ok:LuaRuntimeProbe/1.0.0 | Emit(1)=ok:called Emit:(1)=ok:called | PlayerField('health')=ok:nil PlayerField:('health')=ok:nil
+2026-10-02T02:52:51 60.186 INF   [PASS] init_idempotent expected=true actual=True :: second Initialize() on the same instance returned true
+2026-10-02T02:52:51 60.187 INF   [PASS] load_helpers_module expected=true actual=True :: Lua/probe_helpers.lua loaded into global 'probe_helpers'
+2026-10-02T02:52:51 60.188 INF   [PASS] load_core_module expected=true actual=True :: Lua/probe_core.lua loaded into global 'probe_core'
+2026-10-02T02:52:51 60.189 INF   [PASS] module_info_schema_version expected=schema_version=2 actual=2
+2026-10-02T02:52:51 60.190 INF   [PASS] csharp_to_lua_number expected=5 actual=5
+2026-10-02T02:52:51 60.190 INF   [PASS] csharp_to_lua_float expected=3.75 actual=3.75
+2026-10-02T02:52:51 60.191 INF   [PASS] csharp_to_lua_string expected="abcdef" actual="abcdef"
+2026-10-02T02:52:51 60.191 INF   [PASS] csharp_to_lua_bool expected=false actual=false
+2026-10-02T02:52:51 60.192 INF   [PASS] scalar_int expected=42 actual=42
+2026-10-02T02:52:51 60.192 INF   [PASS] scalar_float expected=2.5 actual=2.5
+2026-10-02T02:52:51 60.192 INF   [PASS] scalar_negative expected=-7 actual=-7
+2026-10-02T02:52:51 60.193 INF   [PASS] scalar_bool_true expected=true actual=true
+2026-10-02T02:52:51 60.193 INF   [PASS] scalar_bool_false expected=false actual=false
+2026-10-02T02:52:51 60.194 INF   [PASS] scalar_string expected="hello" actual="hello"
+2026-10-02T02:52:51 60.194 INF   [PASS] scalar_nil_is_nil expected=nil actual=nil
+2026-10-02T02:52:51 60.195 INF   [PASS] scalar_enum_none expected=0 actual=0
+2026-10-02T02:52:51 60.196 INF   [PASS] scalar_enum_flee expected=1 actual=1
+2026-10-02T02:52:51 60.196 INF   [PASS] nil_vs_zero_zero expected=0 actual=0
+2026-10-02T02:52:51 60.197 INF   [PASS] nil_vs_zero_empty_string expected="" actual=""
+2026-10-02T02:52:51 60.197 INF   [PASS] nil_vs_zero_false expected=false actual=false
+2026-10-02T02:52:51 60.197 INF   [PASS] nil_vs_zero_missing_key expected=nil actual=nil
+2026-10-02T02:52:51 60.198 INF   [PASS] bridge_reinstall expected=true actual=true :: counting bridge installed without recreating the Lua state
+2026-10-02T02:52:51 60.198 INF   [PASS] lua_to_csharp_return_value expected=15 actual=15 :: probe_core.callback_probe(5) must return 1+2+3+4+5
+2026-10-02T02:52:51 60.198 INF   [PASS] lua_to_csharp_callback_count expected=5 actual=5 :: probe.emit() must have been invoked once per iteration
+2026-10-02T02:52:51 60.199 INF   [PASS] lua_to_csharp_callback_sum expected=15 actual=15 :: sum of ids delivered across the boundary
+2026-10-02T02:52:51 60.199 INF   [PASS] nested_traversal_checksum expected=2149 actual=2149 :: coverage: event id, each tag string length, floor(tags.threat*100), actor name length, actor.hostile (+1000) and actor.level, for the standard dataset's ASCII values. scenario, kind and the player sub-table are NOT part of this checksum.
+2026-10-02T02:52:51 60.199 INF   [PASS] reaction_standard expected="Engage" actual="Engage" :: dataset scenario=standard events=3
+2026-10-02T02:52:51 60.200 INF   [PASS] reaction_flee expected="Flee" actual="Flee" :: dataset scenario=flee events=1
+2026-10-02T02:52:51 60.201 INF   [PASS] reaction_reload expected="Reload" actual="Reload" :: dataset scenario=reload events=1
+2026-10-02T02:52:51 60.202 INF   [PASS] reaction_no_match_is_nil expected=nil actual=nil :: dataset scenario=no_match events=1
+2026-10-02T02:52:51 60.202 INF   [PASS] reaction_empty_is_nil expected=nil actual=nil :: dataset scenario=empty events=0
+2026-10-02T02:52:51 60.203 INF   [PASS] runtime_error_is_readable expected=message containing INTENTIONAL_RUNTIME_ERROR actual=ScriptRuntimeException: Lua/probe_core.lua:(412,7-83): INTENTIONAL_RUNTIME_ERROR: probe_core.error_probe was invoked on purpose :: deliberate error, invoked exactly once per run so it cannot spam the log
+2026-10-02T02:52:51 60.204 INF   [PASS] runtime_error_file_fails expected=false actual=False :: ScriptRuntimeException: Lua/errors/runtime_error.lua:(10,5-103): INTENTIONAL_RUNTIME_ERROR_FILE: Lua/errors/runtime_error.lua is expected to fail when executed
+2026-10-02T02:52:51 60.204 INF   [PASS] syntax_error_file_fails expected=false actual=False :: SyntaxErrorException: Lua/errors/syntax_error.lua:(11,2-8): ')' expected (to close '(' at line 10) near 'return'
+2026-10-02T02:52:51 60.205 INF   [INFO] syntax_error_names_chunk expected=chunk name in message actual=- :: message: SyntaxErrorException: Lua/errors/syntax_error.lua:(11,2-8): ')' expected (to close '(' at line 10) near 'return'
+2026-10-02T02:52:51 60.206 INF   [PASS] module_state_is_reused expected=5 actual=5 :: probe_core keeps call state, proving the loaded module instance is reused across calls
+2026-10-02T02:52:51 60.206 INF   [PASS] readonly_player_context expected=has_world=false with a world_unavailable/player_unavailable reason (context_error is a failure) actual=has_world=false reason=world_unavailable: no world loaded (main menu or still loading) :: explicit unavailability is required when no world is loaded; nothing is faked as 0
+2026-10-02T02:52:51 60.207 INF   [PASS] readonly_bridge_surface_shape expected=no public setter, no public mutable field, no mutating method name actual=none found :: limited STRUCTURAL check of the bridge declaration only. It is not a sandbox and does not audit method bodies, return values or inherited members. 'Read-only' here means the reviewed game access path (GameContextProvider.Capture) assigns nothing to game objects; the bridge deliberately exposes a bounded log list and a counter Reset().
+2026-10-02T02:52:51 60.207 INF   [INFO] capability_require expected=loaded module table or explicit failure actual=True :: require('probe_require_probe') returned <table> (loader: ModFolderScriptLoader over E:\SteamLibrary\steamapps\common\7 Days To Die\Mods\LuaRuntimeProbe\Lua)
+2026-10-02T02:52:51 60.208 INF   [INFO] capability_bridge_member_case expected=informational actual=- :: type(probe)="userdata" Emit="function" emit="function" PlayerField="function" player_field="function" || Version()="ok:LuaRuntimeProbe/1.0.0" | Version:()="ok:LuaRuntimeProbe/1.0.0" || Emit(1)="ok:called" | Emit:(1)="ok:called" || PlayerField('health')="ok:nil" | PlayerField:('health')="ok:nil"
+2026-10-02T02:52:51 60.208 INF   [INFO] capability_clr_enum expected=informational actual=- :: sample_reaction() appears in Lua as="number"; echo_reaction() round trip type="number"; error=nil
+2026-10-02T02:52:51 60.209 INF   [INFO] capability_language_features expected=informational actual=- :: version="MoonSharp 2.0.0.0" math.type=false utf8=false table.pack=true bit32=true string.pack=false package=true load=true loadstring=false setfenv=false coroutine.close=false warn=false math.maxinteger="nil"
+2026-10-02T02:52:51 60.209 INF   [INFO] capability_goto_compile expected=informational actual=- :: compiled=true error=nil
+2026-10-02T02:52:51 60.209 INF   [INFO] capability_intdiv_compile expected=informational actual=- :: compiled=false executed=false value=nil error="=intdiv_probe:(1,10-11): unexpected symbol near '/'"
+2026-10-02T02:52:51 60.210 INF   [INFO] capability_close_attrib_compile expected=informational actual=- :: local x <close> = ... compiled=false error="=close_probe:(1,8-9): unexpected symbol near '<'" (5.4-only syntax)
+2026-10-02T02:52:51 60.210 INF   [INFO] capability_measured_language_level expected=informational actual=5.2 (no // operator, bit32 present) :: embed version=MoonSharp 2.0.0; _VERSION=MoonSharp 2.0.0.0; declared=5.2
+2026-10-02T02:52:51 60.210 INF   [PASS] user_script_loads expected=true actual=True :: Lua/user_demo.lua loaded as user_module
+2026-10-02T02:52:51 60.211 INF   [PASS] user_script_main_callable expected=string containing user_demo actual="user_demo backend_version=LuaRuntimeProbe/1.0.0 args=2 has_world=false health=nil name=nil reason=world_unavailable: no world loaded (main menu or still loading)" :: the luaprobe run code path works for this backend
+2026-10-02T02:52:51 60.211 INF   [PASS] reinit_after_shutdown expected=true actual=True :: clean re-initialisation
+2026-10-02T02:52:51 60.211 INF   [PASS] reload_modules_after_reinit expected=true actual=True :: modules reloaded after re-init
+2026-10-02T02:52:51 60.212 INF   [PASS] usable_after_reinit expected=42 actual=42
+2026-10-02T02:52:51 60.212 INF   --> pass=43 fail=0 info=9
+2026-10-02T02:52:51 60.212 INF   measured lua version: MoonSharp 2.0.0.0
+2026-10-02T02:52:51 60.213 INF 
+2026-10-02T02:52:51 60.213 INF == functional suite: nlua (NLua 1.7.9 + KeraLua 1.4.10) ==
+2026-10-02T02:52:51 60.213 INF   [PASS] init expected=true actual=True :: state alive; _VERSION=Lua 5.4; native: loaded E:\SteamLibrary\steamapps\common\7 Days To Die\Mods\LuaRuntimeProbe\native\lua54.dll -> E:\SteamLibrary\steamapps\common\7 Days To Die\Mods\LuaRuntimeProbe\native\lua54.dll (LOAD_WITH_ALTERED_SEARCH_PATH, no process-wide DLL directory change); bridge: lua["probe"] = bridge (indexer); probe=userdata Emit=userdata emit=nil PlayerField=userdata player_field=nil | Version()=err:NLua.Exceptions.LuaScriptException: bridge_visibility:21: instance method 'Version' requir... Version:()=ok:LuaRuntimeProbe/1.0.0 | Emit(1)=err:NLua.Exceptions.LuaScriptException: bridge_visibility:23: instance method 'Emit' requires ... Emit:(1)=ok:called | PlayerField('health')=err:NLua.Exceptions.LuaScriptException: bridge_visibility:27: instance method 'PlayerField' re... PlayerField:('health')=ok:nil
+2026-10-02T02:52:51 60.214 INF   [PASS] init_idempotent expected=true actual=True :: second Initialize() on the same instance returned true
+2026-10-02T02:52:51 60.214 INF   [PASS] load_helpers_module expected=true actual=True :: Lua/probe_helpers.lua loaded into global 'probe_helpers'
+2026-10-02T02:52:51 60.214 INF   [PASS] load_core_module expected=true actual=True :: Lua/probe_core.lua loaded into global 'probe_core'
+2026-10-02T02:52:51 60.215 INF   [PASS] module_info_schema_version expected=schema_version=2 actual=2
+2026-10-02T02:52:51 60.215 INF   [PASS] csharp_to_lua_number expected=5 actual=5
+2026-10-02T02:52:51 60.215 INF   [PASS] csharp_to_lua_float expected=3.75 actual=3.75
+2026-10-02T02:52:51 60.216 INF   [PASS] csharp_to_lua_string expected="abcdef" actual="abcdef"
+2026-10-02T02:52:51 60.216 INF   [PASS] csharp_to_lua_bool expected=false actual=false
+2026-10-02T02:52:51 60.217 INF   [PASS] scalar_int expected=42 actual=42
+2026-10-02T02:52:51 60.217 INF   [PASS] scalar_float expected=2.5 actual=2.5
+2026-10-02T02:52:51 60.217 INF   [PASS] scalar_negative expected=-7 actual=-7
+2026-10-02T02:52:51 60.218 INF   [PASS] scalar_bool_true expected=true actual=true
+2026-10-02T02:52:51 60.218 INF   [PASS] scalar_bool_false expected=false actual=false
+2026-10-02T02:52:51 60.218 INF   [PASS] scalar_string expected="hello" actual="hello"
+2026-10-02T02:52:51 60.219 INF   [PASS] scalar_nil_is_nil expected=nil actual=nil
+2026-10-02T02:52:51 60.219 INF   [PASS] scalar_enum_none expected=0 actual=0
+2026-10-02T02:52:51 60.220 INF   [PASS] scalar_enum_flee expected=1 actual=1
+2026-10-02T02:52:51 60.220 INF   [PASS] nil_vs_zero_zero expected=0 actual=0
+2026-10-02T02:52:51 60.221 INF   [PASS] nil_vs_zero_empty_string expected="" actual=""
+2026-10-02T02:52:51 60.221 INF   [PASS] nil_vs_zero_false expected=false actual=false
+2026-10-02T02:52:51 60.222 INF   [PASS] nil_vs_zero_missing_key expected=nil actual=nil
+2026-10-02T02:52:51 60.222 INF   [PASS] bridge_reinstall expected=true actual=true :: counting bridge installed without recreating the Lua state
+2026-10-02T02:52:51 60.222 INF   [PASS] lua_to_csharp_return_value expected=15 actual=15 :: probe_core.callback_probe(5) must return 1+2+3+4+5
+2026-10-02T02:52:51 60.223 INF   [PASS] lua_to_csharp_callback_count expected=5 actual=5 :: probe.emit() must have been invoked once per iteration
+2026-10-02T02:52:51 60.223 INF   [PASS] lua_to_csharp_callback_sum expected=15 actual=15 :: sum of ids delivered across the boundary
+2026-10-02T02:52:51 60.223 INF   [PASS] nested_traversal_checksum expected=2149 actual=2149 :: coverage: event id, each tag string length, floor(tags.threat*100), actor name length, actor.hostile (+1000) and actor.level, for the standard dataset's ASCII values. scenario, kind and the player sub-table are NOT part of this checksum.
+2026-10-02T02:52:51 60.224 INF   [PASS] reaction_standard expected="Engage" actual="Engage" :: dataset scenario=standard events=3
+2026-10-02T02:52:51 60.224 INF   [PASS] reaction_flee expected="Flee" actual="Flee" :: dataset scenario=flee events=1
+2026-10-02T02:52:51 60.224 INF   [PASS] reaction_reload expected="Reload" actual="Reload" :: dataset scenario=reload events=1
+2026-10-02T02:52:51 60.225 INF   [PASS] reaction_no_match_is_nil expected=nil actual=nil :: dataset scenario=no_match events=1
+2026-10-02T02:52:51 60.225 INF   [PASS] reaction_empty_is_nil expected=nil actual=nil :: dataset scenario=empty events=0
+2026-10-02T02:52:51 60.225 INF   [PASS] runtime_error_is_readable expected=message containing INTENTIONAL_RUNTIME_ERROR actual=LuaScriptException: [string "Lua/probe_core.lua"]:412: INTENTIONAL_RUNTIME_ERROR: probe_core.error_probe was invoked on purpose stack traceback: 	[C]: in function 'error' 	[string "Lua/probe_core.lua"]:412: in function <[string "Lua/probe_core.lua"]:411> :: deliberate error, invoked exactly once per run so it cannot spam the log
+2026-10-02T02:52:51 60.226 INF   [PASS] runtime_error_file_fails expected=false actual=False :: LuaScriptException: [string "Lua/errors/runtime_error.lua"]:10: INTENTIONAL_RUNTIME_ERROR_FILE: Lua/errors/runtime_error.lua is expected to fail when executed stack traceback: 	[C]: in function 'error' 	[string "Lua/errors/runtime_error.lua"]:10: in main chunk
+2026-10-02T02:52:51 60.226 INF   [PASS] syntax_error_file_fails expected=false actual=False :: LuaScriptException: [string "Lua/errors/syntax_error.lua"]:11: ')' expected near 'return'
+2026-10-02T02:52:51 60.226 INF   [INFO] syntax_error_names_chunk expected=chunk name in message actual=- :: message: LuaScriptException: [string "Lua/errors/syntax_error.lua"]:11: ')' expected near 'return'
+2026-10-02T02:52:51 60.227 INF   [PASS] module_state_is_reused expected=5 actual=5 :: probe_core keeps call state, proving the loaded module instance is reused across calls
+2026-10-02T02:52:51 60.227 INF   [PASS] readonly_player_context expected=has_world=false with a world_unavailable/player_unavailable reason (context_error is a failure) actual=has_world=false reason=world_unavailable: no world loaded (main menu or still loading) :: explicit unavailability is required when no world is loaded; nothing is faked as 0
+2026-10-02T02:52:51 60.227 INF   [PASS] readonly_bridge_surface_shape expected=no public setter, no public mutable field, no mutating method name actual=none found :: limited STRUCTURAL check of the bridge declaration only. It is not a sandbox and does not audit method bodies, return values or inherited members. 'Read-only' here means the reviewed game access path (GameContextProvider.Capture) assigns nothing to game objects; the bridge deliberately exposes a bounded log list and a counter Reset().
+2026-10-02T02:52:51 60.228 INF   [INFO] capability_require expected=loaded module table or explicit failure actual=True :: require('probe_require_probe') returned <table> (package.path extended with E:\SteamLibrary\steamapps\common\7 Days To Die\Mods\LuaRuntimeProbe\Lua/?.lua)
+2026-10-02T02:52:51 60.228 INF   [INFO] capability_bridge_member_case expected=informational actual=- :: type(probe)="userdata" Emit="userdata" emit="nil" PlayerField="userdata" player_field="nil" || Version()="err:NLua.Exceptions.LuaScriptException: [string "Lua/probe_core.lua"]:325: instance method 'Ve..." | Version:()="ok:LuaRuntimeProbe/1.0.0" || Emit(1)="err:NLua.Exceptions.LuaScriptException: [string "Lua/probe_core.lua"]:327: instance method 'Em..." | Emit:(1)="ok:called" || PlayerField('health')="err:NLua.Exceptions.LuaScriptException: [string "Lua/probe_core.lua"]:329: instance method 'Pl..." | PlayerField:('health')="ok:nil"
+2026-10-02T02:52:51 60.228 INF   [INFO] capability_clr_enum expected=informational actual=- :: sample_reaction() appears in Lua as="userdata"; echo_reaction() round trip type="userdata"; error=nil
+2026-10-02T02:52:51 60.229 INF   [INFO] capability_language_features expected=informational actual=- :: version="Lua 5.4" math.type=true utf8=true table.pack=true bit32=false string.pack=true package=true load=true loadstring=false setfenv=false coroutine.close=true warn=true math.maxinteger="9223372036854775807"
+2026-10-02T02:52:51 60.229 INF   [INFO] capability_goto_compile expected=informational actual=- :: compiled=true error=nil
+2026-10-02T02:52:51 60.230 INF   [INFO] capability_intdiv_compile expected=informational actual=- :: compiled=true executed=true value="3" error=nil
+2026-10-02T02:52:51 60.230 INF   [INFO] capability_close_attrib_compile expected=informational actual=- :: local x <close> = ... compiled=true error=nil (5.4-only syntax)
+2026-10-02T02:52:51 60.231 INF   [INFO] capability_measured_language_level expected=informational actual=5.4 (5.4-only feature present: <close> attribute) :: embed version=NLua 1.7.9 + KeraLua 1.4.10; _VERSION=Lua 5.4; declared=5.4
+2026-10-02T02:52:51 60.231 INF   [PASS] user_script_loads expected=true actual=True :: Lua/user_demo.lua loaded as user_module
+2026-10-02T02:52:51 60.232 INF   [PASS] user_script_main_callable expected=string containing user_demo actual="user_demo backend_version=LuaRuntimeProbe/1.0.0 args=2 has_world=false health=nil name=nil reason=world_unavailable: no world loaded (main menu or still loading)" :: the luaprobe run code path works for this backend
+2026-10-02T02:52:51 60.232 INF   [PASS] reinit_after_shutdown expected=true actual=True :: clean re-initialisation
+2026-10-02T02:52:51 60.233 INF   [PASS] reload_modules_after_reinit expected=true actual=True :: modules reloaded after re-init
+2026-10-02T02:52:51 60.234 INF   [PASS] usable_after_reinit expected=42 actual=42
+2026-10-02T02:52:51 60.234 INF   --> pass=43 fail=0 info=9
+2026-10-02T02:52:51 60.235 INF   measured lua version: Lua 5.4
+2026-10-02T02:52:51 60.235 INF 
+2026-10-02T02:52:51 60.236 INF == functional suite: xlua (XLua.Mini v2.1.16_ndkr21b_with_win) ==
+2026-10-02T02:52:51 60.236 INF   [PASS] init expected=true actual=True :: state alive; _VERSION=Lua 5.4; native: loaded E:\SteamLibrary\steamapps\common\7 Days To Die\Mods\LuaRuntimeProbe\native\xlua.dll -> E:\SteamLibrary\steamapps\common\7 Days To Die\Mods\LuaRuntimeProbe\native\xlua.dll (LOAD_WITH_ALTERED_SEARCH_PATH, no process-wide DLL directory change); bridge: _env.Global["probe"] = bridge; probe=userdata Emit=function emit=nil PlayerField=function player_field=nil | Version()=err:c# exception:System.NullReferenceException: Object reference not set to an instance of an ... Version:()=ok:LuaRuntimeProbe/1.0.0 | Emit(1)=err:c# exception:System.NullReferenceExc... Emit:(1)=ok:called | PlayerField('health')=err:c# exception:System.NullReferenceExc... PlayerField:('health')=ok:nil
+2026-10-02T02:52:51 60.236 INF   [PASS] init_idempotent expected=true actual=True :: second Initialize() on the same instance returned true
+2026-10-02T02:52:51 60.237 INF   [PASS] load_helpers_module expected=true actual=True :: Lua/probe_helpers.lua loaded into global 'probe_helpers'
+2026-10-02T02:52:51 60.237 INF   [PASS] load_core_module expected=true actual=True :: Lua/probe_core.lua loaded into global 'probe_core'
+2026-10-02T02:52:51 60.238 INF   [PASS] module_info_schema_version expected=schema_version=2 actual=2
+2026-10-02T02:52:51 60.238 INF   [PASS] csharp_to_lua_number expected=5 actual=5
+2026-10-02T02:52:51 60.239 INF   [PASS] csharp_to_lua_float expected=3.75 actual=3.75
+2026-10-02T02:52:51 60.240 INF   [PASS] csharp_to_lua_string expected="abcdef" actual="abcdef"
+2026-10-02T02:52:51 60.241 INF   [PASS] csharp_to_lua_bool expected=false actual=false
+2026-10-02T02:52:51 60.241 INF   [PASS] scalar_int expected=42 actual=42
+2026-10-02T02:52:51 60.242 INF   [PASS] scalar_float expected=2.5 actual=2.5
+2026-10-02T02:52:51 60.242 INF   [PASS] scalar_negative expected=-7 actual=-7
+2026-10-02T02:52:51 60.243 INF   [PASS] scalar_bool_true expected=true actual=true
+2026-10-02T02:52:51 60.243 INF   [PASS] scalar_bool_false expected=false actual=false
+2026-10-02T02:52:51 60.244 INF   [PASS] scalar_string expected="hello" actual="hello"
+2026-10-02T02:52:51 60.244 INF   [PASS] scalar_nil_is_nil expected=nil actual=nil
+2026-10-02T02:52:51 60.245 INF   [PASS] scalar_enum_none expected=0 actual=0
+2026-10-02T02:52:51 60.245 INF   [PASS] scalar_enum_flee expected=1 actual=1
+2026-10-02T02:52:51 60.246 INF   [PASS] nil_vs_zero_zero expected=0 actual=0
+2026-10-02T02:52:51 60.247 INF   [PASS] nil_vs_zero_empty_string expected="" actual=""
+2026-10-02T02:52:51 60.247 INF   [PASS] nil_vs_zero_false expected=false actual=false
+2026-10-02T02:52:51 60.247 INF   [PASS] nil_vs_zero_missing_key expected=nil actual=nil
+2026-10-02T02:52:51 60.248 INF   [PASS] bridge_reinstall expected=true actual=true :: counting bridge installed without recreating the Lua state
+2026-10-02T02:52:51 60.249 INF   [PASS] lua_to_csharp_return_value expected=15 actual=15 :: probe_core.callback_probe(5) must return 1+2+3+4+5
+2026-10-02T02:52:51 60.249 INF   [PASS] lua_to_csharp_callback_count expected=5 actual=5 :: probe.emit() must have been invoked once per iteration
+2026-10-02T02:52:51 60.250 INF   [PASS] lua_to_csharp_callback_sum expected=15 actual=15 :: sum of ids delivered across the boundary
+2026-10-02T02:52:51 60.250 INF   [PASS] nested_traversal_checksum expected=2149 actual=2149 :: coverage: event id, each tag string length, floor(tags.threat*100), actor name length, actor.hostile (+1000) and actor.level, for the standard dataset's ASCII values. scenario, kind and the player sub-table are NOT part of this checksum.
+2026-10-02T02:52:51 60.251 INF   [PASS] reaction_standard expected="Engage" actual="Engage" :: dataset scenario=standard events=3
+2026-10-02T02:52:51 60.251 INF   [PASS] reaction_flee expected="Flee" actual="Flee" :: dataset scenario=flee events=1
+2026-10-02T02:52:51 60.252 INF   [PASS] reaction_reload expected="Reload" actual="Reload" :: dataset scenario=reload events=1
+2026-10-02T02:52:51 60.252 INF   [PASS] reaction_no_match_is_nil expected=nil actual=nil :: dataset scenario=no_match events=1
+2026-10-02T02:52:51 60.252 INF   [PASS] reaction_empty_is_nil expected=nil actual=nil :: dataset scenario=empty events=0
+2026-10-02T02:52:51 60.253 INF   [PASS] runtime_error_is_readable expected=message containing INTENTIONAL_RUNTIME_ERROR actual=LuaException: [string "Lua/probe_core.lua"]:412: INTENTIONAL_RUNTIME_ERROR: probe_core.error_probe was invoked on purpose stack traceback: 	[C]: in function 'error' 	[string "Lua/probe_core.lua"]:412: in function <[string "Lua/probe_core.lua"]:411> :: deliberate error, invoked exactly once per run so it cannot spam the log
+2026-10-02T02:52:51 60.253 INF   [PASS] runtime_error_file_fails expected=false actual=False :: LuaException: [string "Lua/errors/runtime_error.lua"]:10: INTENTIONAL_RUNTIME_ERROR_FILE: Lua/errors/runtime_error.lua is expected to fail when executed stack traceback: 	[C]: in function 'error' 	[string "Lua/errors/runtime_error.lua"]:10: in main chunk
+2026-10-02T02:52:51 60.254 INF   [PASS] syntax_error_file_fails expected=false actual=False :: LuaException: [string "Lua/errors/syntax_error.lua"]:11: ')' expected near 'return'
+2026-10-02T02:52:51 60.254 INF   [INFO] syntax_error_names_chunk expected=chunk name in message actual=- :: message: LuaException: [string "Lua/errors/syntax_error.lua"]:11: ')' expected near 'return'
+2026-10-02T02:52:51 60.254 INF   [PASS] module_state_is_reused expected=5 actual=5 :: probe_core keeps call state, proving the loaded module instance is reused across calls
+2026-10-02T02:52:51 60.255 INF   [PASS] readonly_player_context expected=has_world=false with a world_unavailable/player_unavailable reason (context_error is a failure) actual=has_world=false reason=world_unavailable: no world loaded (main menu or still loading) :: explicit unavailability is required when no world is loaded; nothing is faked as 0
+2026-10-02T02:52:51 60.255 INF   [PASS] readonly_bridge_surface_shape expected=no public setter, no public mutable field, no mutating method name actual=none found :: limited STRUCTURAL check of the bridge declaration only. It is not a sandbox and does not audit method bodies, return values or inherited members. 'Read-only' here means the reviewed game access path (GameContextProvider.Capture) assigns nothing to game objects; the bridge deliberately exposes a bounded log list and a counter Reset().
+2026-10-02T02:52:51 60.256 INF   [INFO] capability_require expected=loaded module table or explicit failure actual=True :: require('probe_require_probe') returned <table> (custom loader rooted at E:\SteamLibrary\steamapps\common\7 Days To Die\Mods\LuaRuntimeProbe\Lua)
+2026-10-02T02:52:51 60.256 INF   [INFO] capability_bridge_member_case expected=informational actual=- :: type(probe)="userdata" Emit="function" emit="nil" PlayerField="function" player_field="nil" || Version()="err:c# exception:System.NullReferenceException: Object reference not set to an instance of an ..." | Version:()="ok:LuaRuntimeProbe/1.0.0" || Emit(1)="err:c# exception:System.NullReferenceException: Object reference not set to an instance of an ..." | Emit:(1)="ok:called" || PlayerField('health')="err:c# exception:System.NullReferenceException: Object reference not set to an instance of an ..." | PlayerField:('health')="ok:nil"
+2026-10-02T02:52:51 60.257 INF   [INFO] capability_clr_enum expected=informational actual=- :: sample_reaction() appears in Lua as="userdata"; echo_reaction() round trip type="userdata"; error=nil
+2026-10-02T02:52:51 60.257 INF   [INFO] capability_language_features expected=informational actual=- :: version="Lua 5.4" math.type=true utf8=true table.pack=true bit32=false string.pack=true package=true load=true loadstring=false setfenv=true coroutine.close=true warn=true math.maxinteger="9223372036854775807"
+2026-10-02T02:52:51 60.258 INF   [INFO] capability_goto_compile expected=informational actual=- :: compiled=true error=nil
+2026-10-02T02:52:51 60.259 INF   [INFO] capability_intdiv_compile expected=informational actual=- :: compiled=true executed=true value="3" error=nil
+2026-10-02T02:52:51 60.259 INF   [INFO] capability_close_attrib_compile expected=informational actual=- :: local x <close> = ... compiled=true error=nil (5.4-only syntax)
+2026-10-02T02:52:51 60.259 INF   [INFO] capability_measured_language_level expected=informational actual=5.4 (5.4-only feature present: <close> attribute) :: embed version=XLua.Mini v2.1.16_ndkr21b_with_win; _VERSION=Lua 5.4; declared=5.4
+2026-10-02T02:52:51 60.260 INF   [PASS] user_script_loads expected=true actual=True :: Lua/user_demo.lua loaded as user_module
+2026-10-02T02:52:51 60.260 INF   [PASS] user_script_main_callable expected=string containing user_demo actual="user_demo backend_version=LuaRuntimeProbe/1.0.0 args=2 has_world=false health=nil name=nil reason=world_unavailable: no world loaded (main menu or still loading)" :: the luaprobe run code path works for this backend
+2026-10-02T02:52:51 60.261 INF   [PASS] reinit_after_shutdown expected=true actual=True :: clean re-initialisation
+2026-10-02T02:52:51 60.261 INF   [PASS] reload_modules_after_reinit expected=true actual=True :: modules reloaded after re-init
+2026-10-02T02:52:51 60.262 INF   [PASS] usable_after_reinit expected=42 actual=42
+2026-10-02T02:52:51 60.262 INF   --> pass=43 fail=0 info=9
+2026-10-02T02:52:51 60.262 INF   measured lua version: Lua 5.4
+2026-10-02T02:52:51 60.263 INF Executing command 'luaprobe run nlua Lua/acceptance_start_cue.lua'
+2026-10-02T02:52:51 60.275 INF user_module.main returned "CUE_ACCEPTANCE_BOOTSTRAP started=true" (string)
+replacing fieldspec for <>f__am$cache0
+replacing fieldspec for <>f__am$cache1

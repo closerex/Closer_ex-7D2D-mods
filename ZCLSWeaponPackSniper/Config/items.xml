@@ -124,16 +124,50 @@
 			<property name="UnlockedBy" value="craftingRifles"/>
 			<property name="RepairTools" value="resourceRepairKit"/>
 
+<stats>
+		<!-- Base_Random_Roll -->
+		<stat name="EntityDamage"			value="0,0,1,0,.1"/>
+
+		<stat name="DegradationMax" 		value="0,0,1,0,.1"/>
+		<!-- Q1_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="1,0,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="1,0,.3,.1,.5"/>
+		<!-- Q2_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="2,10,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="2,10,.3,.1,.5"/>
+		<!-- Q3_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="3,11,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="3,11,.3,.1,.5"/>
+		<!-- Q4_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="4,12,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="4,12,.3,.1,.5"/>
+		<!-- Q5_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="5,14,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="5,14,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,16,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="6,16,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,20,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="6,20,.3,.1,.5"/>
+	</stats>
             <property class="Action0">
                 <property name="Class" value="Ranged"/>
                 <property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
                 <property name="allowEmptyInspect" value="true"/>
                 <property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
                 <property name="InternalCancelOnly" value="true"/>
-                <property name="Sound_start" value="kf_m99_Fire_1P_Single_Mountain"/>
-                <property name="Sound_loop" value="kf_m99_Fire_1P_Single_Mountain"/>
-                <property name="Sound_end" value="kf_sw500_Boom"/>
-                <property name="Sound_empty" value="kf_m99_DryFire"/>
+                <property name="Sound_start" value="Play_WEP_M99_Fire_1P_Single__Outdoor_Mountain"/>
+                <property name="Sound_loop" value="Play_WEP_M99_Fire_1P_Single__Outdoor_Mountain"/>
+                <property name="Sound_end" value="Play_Quad_Shotgun_Fire_1P_Single__Subset_SW500_Boom"/>
+                <property name="Sound_empty" value="Play_WEP_M99_DryFire"/>
                 <property name="AutoReload" value="false"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?m99_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_fire_fpv" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?m99_muzzle_flash_fpv.prefab"/>
@@ -285,7 +319,9 @@
 				<property name="Sphere" value=".05"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
 				<property name="Sound_start" value="bashSwingReal"/>
 				<property name="DynamicSoundStart" value="bashSwingLight"/>
-				<property name="ToolCategory.harvestingTools" value="1" param1="1"/>
+				<property class="ToolCategory">
+					<property name="harvestingTools" value="1" param1="1"/>
+				</property>
 				<property name="UseGrazingHits" value="true"/>
 				<property name="GrazeStart" value=".25"/>
 				<property name="GrazeEnd" value=".32"/>
@@ -306,7 +342,9 @@
 				<property name="Range" value="3.6"/>
 				<property name="Sphere" value=".15"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
 				<property name="Sound_start" value="spear_fire"/>
-				<property name="ToolCategory.harvestingTools" value="1" param1="1"/>
+				<property class="ToolCategory">
+					<property name="harvestingTools" value="1" param1="1"/>
+				</property>
 				<property name="UsePowerAttackAnimation" value="true"/>
 			</property>
 			<property class="Action2">
@@ -396,6 +434,40 @@
 			<property name="UnlockedBy" value="craftingRifles"/>
 			<property name="RepairTools" value="resourceRepairKit"/>
 
+<stats>
+		<!-- Base_Random_Roll -->
+		<stat name="EntityDamage"			value="0,0,1,0,.1"/>
+
+		<stat name="DegradationMax" 		value="0,0,1,0,.1"/>
+		<!-- Q1_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="1,0,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="1,0,.3,.1,.5"/>
+		<!-- Q2_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="2,10,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="2,10,.3,.1,.5"/>
+		<!-- Q3_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="3,11,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="3,11,.3,.1,.5"/>
+		<!-- Q4_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="4,12,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="4,12,.3,.1,.5"/>
+		<!-- Q5_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="5,14,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="5,14,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,16,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="6,16,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,20,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="6,20,.3,.1,.5"/>
+	</stats>
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
                 <property name="ItemActionModules" value="InterruptReload,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
@@ -404,10 +476,10 @@
                 <property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="Delay" value=".5"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Reload_time" value="2.5"/>
-				<property name="Sound_start" value="kf_mosin_Fire_1P_Single_Forest"/>
-				<property name="Sound_loop" value="kf_mosin_Fire_1P_Single_Forest"/>
+				<property name="Sound_start" value="Play_MosinNagant_Shoot_1P__Outdoor_Forest"/>
+				<property name="Sound_loop" value="Play_MosinNagant_Shoot_1P__Outdoor_Forest"/>
 				<property name="Sound_end" value="kf_mosin_Boom"/>
-				<property name="Sound_empty" value="kf_mosin_DryFire"/>
+				<property name="Sound_empty" value="Play_MosinNagant_DryFire"/>
 				<property name="AutoReload" value="false"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?mosin_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_smoke" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?mosin_muzzle_smoke.prefab"/>
@@ -639,6 +711,40 @@
 			<property name="UnlockedBy" value="craftingRifles"/>
 			<property name="RepairTools" value="resourceRepairKit"/>
 
+<stats>
+		<!-- Base_Random_Roll -->
+		<stat name="EntityDamage"			value="0,0,1,0,.1"/>
+
+		<stat name="DegradationMax" 		value="0,0,1,0,.1"/>
+		<!-- Q1_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="1,0,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="1,0,.3,.1,.5"/>
+		<!-- Q2_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="2,10,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="2,10,.3,.1,.5"/>
+		<!-- Q3_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="3,11,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="3,11,.3,.1,.5"/>
+		<!-- Q4_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="4,12,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="4,12,.3,.1,.5"/>
+		<!-- Q5_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="5,14,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="5,14,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,16,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="6,16,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,20,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="6,20,.3,.1,.5"/>
+	</stats>
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
                 <property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
@@ -648,10 +754,10 @@
 				<property name="ManualEject" value="true"/>
                 <property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="Delay" value=".5"/> <!-- obsolete if rounds per minute exists -->
-				<property name="Sound_start" value="kf_1894_Fire_1P_Single_Forest"/>
-				<property name="Sound_loop" value="kf_1894_Fire_1P_Single_Forest"/>
-				<property name="Sound_end" value="kf_1894_top_end"/>
-				<property name="Sound_empty" value="kf_mosin_DryFire"/>
+				<property name="Sound_start" value="Play_WEP_SA_Winchester_Fire_Single_S__Outdoor_Forest"/>
+				<property name="Sound_loop" value="Play_WEP_SA_Winchester_Fire_Single_S__Outdoor_Forest"/>
+				<property name="Sound_end" value="Play_WEP_Centerfire_Fire_1P__Top_End"/>
+				<property name="Sound_empty" value="Play_MosinNagant_DryFire"/>
 				<property name="AutoReload" value="false"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?1894_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_smoke" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?1894_muzzle_smoke.prefab"/>
@@ -754,6 +860,40 @@
 			<property name="Extends" value="gunKF1894"/>
 			<property name="EconomicValue" value="4000"/>
 			
+			<stats>
+		<!-- Base_Random_Roll -->
+		<stat name="EntityDamage"			value="0,0,1,0,.1"/>
+
+		<stat name="DegradationMax" 		value="0,0,1,0,.1"/>
+		<!-- Q1_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="1,0,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="1,0,.3,.1,.5"/>
+		<!-- Q2_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="2,10,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="2,10,.3,.1,.5"/>
+		<!-- Q3_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="3,11,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="3,11,.3,.1,.5"/>
+		<!-- Q4_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="4,12,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="4,12,.3,.1,.5"/>
+		<!-- Q5_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="5,14,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="5,14,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,16,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="6,16,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,20,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="6,20,.3,.1,.5"/>
+	</stats>
 			<effect_group name="gunTCTD2Virginian">
 				<triggered_effect trigger="onSelfHoldingItemCreated" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="AimRefGroupVanilla"/>
 				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="true">
@@ -1032,6 +1172,40 @@
 			<property name="UnlockedBy" value="craftingRifles"/>
 			<property name="RepairTools" value="resourceRepairKit"/>
 
+<stats>
+		<!-- Base_Random_Roll -->
+		<stat name="EntityDamage"			value="0,0,1,0,.1"/>
+
+		<stat name="DegradationMax" 		value="0,0,1,0,.1"/>
+		<!-- Q1_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="1,0,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="1,0,.3,.1,.5"/>
+		<!-- Q2_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="2,10,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="2,10,.3,.1,.5"/>
+		<!-- Q3_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="3,11,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="3,11,.3,.1,.5"/>
+		<!-- Q4_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="4,12,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="4,12,.3,.1,.5"/>
+		<!-- Q5_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="5,14,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="5,14,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,16,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="6,16,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,20,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="6,20,.3,.1,.5"/>
+	</stats>
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
                 <property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
@@ -1041,10 +1215,10 @@
 				<property name="ManualEject" value="true"/>
                 <property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="Delay" value=".5"/> <!-- obsolete if rounds per minute exists -->
-				<property name="Sound_start" value="kf_spx464_Fire_1P_Single_Forest"/>
-				<property name="Sound_loop" value="kf_spx464_Fire_1P_Single_Forest"/>
-				<property name="Sound_end" value="kf_spx464_top_end"/>
-				<property name="Sound_empty" value="kf_mosin_DryFire"/>
+				<property name="Sound_start" value="Play_WEP_Centerfire_Fire_1P__Outdoor_Forest"/>
+				<property name="Sound_loop" value="Play_WEP_Centerfire_Fire_1P__Outdoor_Forest"/>
+				<property name="Sound_end" value="Play_WEP_Centerfire_Fire_1P__Top_End"/>
+				<property name="Sound_empty" value="Play_MosinNagant_DryFire"/>
 				<property name="AutoReload" value="false"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?spx464_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_smoke" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?spx464_muzzle_smoke.prefab"/>
@@ -1148,6 +1322,40 @@
 			<property name="CustomIcon" value="gunKFSPX464"/>
 			<property name="CreativeMode" value="None"/>
 
+<stats>
+		<!-- Base_Random_Roll -->
+		<stat name="EntityDamage"			value="0,0,1,0,.1"/>
+
+		<stat name="DegradationMax" 		value="0,0,1,0,.1"/>
+		<!-- Q1_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="1,0,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="1,0,.3,.1,.5"/>
+		<!-- Q2_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="2,10,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="2,10,.3,.1,.5"/>
+		<!-- Q3_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="3,11,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="3,11,.3,.1,.5"/>
+		<!-- Q4_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="4,12,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="4,12,.3,.1,.5"/>
+		<!-- Q5_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="5,14,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="5,14,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,16,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="6,16,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,20,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="6,20,.3,.1,.5"/>
+	</stats>
 			<effect_group name="gunKFSPX464">
 				<triggered_effect trigger="onSelfHoldingItemCreated" action="SetTransformActive" active="true" parent_transform="#HeldItemRoot" transform_path="AimRefGroupVanilla"/>
 				<triggered_effect trigger="onReloadAboutToStart" action="AnimatorSetBool" property="elite" value="true">
@@ -1346,6 +1554,40 @@
 			<property name="TakeOverReloadTime" value="true"/>
 			<property name="UnlockedBy" value="craftingRifles"/>
 			<property name="RepairTools" value="resourceRepairKit"/>
+			<stats>
+		<!-- Base_Random_Roll -->
+		<stat name="EntityDamage"			value="0,0,1,0,.1"/>
+
+		<stat name="DegradationMax" 		value="0,0,1,0,.1"/>
+		<!-- Q1_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="1,0,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="1,0,.3,.1,.5"/>
+		<!-- Q2_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="2,10,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="2,10,.3,.1,.5"/>
+		<!-- Q3_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="3,11,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="3,11,.3,.1,.5"/>
+		<!-- Q4_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="4,12,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="4,12,.3,.1,.5"/>
+		<!-- Q5_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="5,14,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="5,14,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,16,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="6,16,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,20,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="6,20,.3,.1,.5"/>
+	</stats>
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
                 <property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
@@ -1354,10 +1596,10 @@
                 <property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="Delay" value=".5"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Reload_time" value="2.5"/>
-				<property name="Sound_start" value="kf_ebr_Fire_1P_Single_Forest"/>
-				<property name="Sound_loop" value="kf_ebr_Fire_1P_Single_Forest"/>
+				<property name="Sound_start" value="Play_WEP_SA_EBR_Fire_Single_S__Outdoor_Forest"/>
+				<property name="Sound_loop" value="Play_WEP_SA_EBR_Fire_Single_S__Outdoor_Forest"/>
 				<property name="Sound_end" value=""/>
-				<property name="Sound_empty" value="kf_ebr_DryFire"/>
+				<property name="Sound_empty" value="Play_WEP_SA_AK12_Handling_DryFire__Variant_ebr_DryFire"/>
 				<property name="AutoReload" value="false"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?m14ebr_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_smoke" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?m14ebr_muzzle_smoke.prefab"/>
@@ -1597,21 +1839,25 @@
                 <property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="Delay" value=".5"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Reload_time" value="2.5"/>
-				<property name="Sound_start" value="kf_fnfal_Fire_1P_Single_City"/>
-				<property name="Sound_loop" value="kf_fnfal_Fire_1P_Single_City"/>
+				<property name="Sound_start" value="Play_WEP_FNFAL_Fire_1P_Single__Outdoor_City"/>
+				<property name="Sound_loop" value="Play_WEP_FNFAL_Fire_1P_Single__Outdoor_City"/>
 				<property name="Sound_end" value=""/>
-				<property name="Sound_empty" value="kf_fnfal_DryFire"/>
+				<property name="Sound_empty" value="Play_WEP_FNFAL_DryFire"/>
                 <property name="LoopSegmentLength" value="0.09"/>
 				<property name="AutoReload" value="false"/>
-				<property name="FireMode0.BurstCount" value="1"/>
-				<property name="FireMode0.IsFullAuto" value="false"/>
-				<property name="FireMode0.ModeName" value="ttFiringModeSemiAuto"/>
-				<property name="FireMode1.BurstCount" value="1"/>
-				<property name="FireMode1.IsFullAuto" value="true"/>
-				<property name="FireMode1.ModeName" value="ttFiringModeFullAuto"/>
-				<property name="FireMode1.SoundStart" value="kf_fnfal_Fire_1P_Loop"/>
-				<property name="FireMode1.SoundLoop" value=""/>
-				<property name="FireModeSwitchingSound" value="kf_ui_mode_switch"/>
+				<property class="FireMode0">
+					<property name="BurstCount" value="1"/>
+					<property name="IsFullAuto" value="false"/>
+					<property name="ModeName" value="ttFiringModeSemiAuto"/>
+				</property>
+				<property class="FireMode1">
+					<property name="BurstCount" value="0"/>
+					<property name="IsFullAuto" value="true"/>
+					<property name="ModeName" value="ttFiringModeFullAuto"/>
+					<property name="SoundStart" value="kf_fnfal_Fire_1P_Loop"/>
+					<property name="SoundLoop" value=""/>
+				</property>
+				<property name="FireModeSwitchingSound" value="Play_WEP_ModeSwitch"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?m14ebr_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_smoke" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?m14ebr_muzzle_smoke.prefab"/>
 				<property name="Particles_shell" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?m14ebr_shell.prefab"/>

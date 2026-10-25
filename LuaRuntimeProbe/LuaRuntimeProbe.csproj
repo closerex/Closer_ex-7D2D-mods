@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    LuaRuntimeProbe — standalone Lua runtime evaluation mod for 7 Days to Die.
+
+    This project is intentionally SDK-style so that it can be built on its own
+    with `dotnet build` without pulling in the rest of the (partly broken)
+    solution.  The game itself runs Unity Mono / .NET Framework 4.x, so the
+    target framework is net48 (matching the other mods in this repository).
+
+    Build (from the repository root):
+        dotnet build LuaRuntimeProbe\LuaRuntimeProbe.csproj -c Release
+    The build deploys the loadable mod payload into this folder (which is the
+    mod folder itself, symlinked from <game>\Mods\LuaRuntimeProbe).
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <AssemblyName>LuaRuntimeProbe</AssemblyName>
+    <RootNamespace>LuaRuntimeProbe</RootNamespace>
+    <Platforms>x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
+    <Deterministic>true</Deterministic>
+    <DebugType>portable</DebugType>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <Version>1.0.0</Version>
+    <Product>LuaRuntimeProbe</Product>
+    <Company>7DTD ModsRepo</Company>
+    <NoWarn>$(NoWarn);CS0649;CS0169;CS1591</NoWarn>
+    <!-- Suppress NU1701: MoonSharp's net40-client / netstandard1.6 assets are
+         selected for net48 and the SDK warns about the fallback. -->
+    <NoWarn>$(NoWarn);NU1701</NoWarn>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <!-- The .lua files live in this folder already; they must not be treated as
+         build items (the game reads them from disk at runtime). -->
+    <EnableDefaultNoneItems>false</EnableDefaultNoneItems>
+
+    <!--
+      CRITICAL: KeraLua ships build/net46/KeraLua.targets, which copies
+      runtimes/<rid>/native/lua54.dll into the build OUTPUT.  The mod folder IS
+      the deployment folder, and 7DTD's Mod.LoadAssemblies() does
+      Assembly.LoadFrom() on every *.dll found in the mod root.  A native DLL
+      there throws BadImageFormatException and the whole mod fails to load
+      (EModLoadState.FailedLoadingAssembly).  Disable the automatic copy and
+      place lua54.dll under native\ instead; NLuaBackend preloads it with
+      LoadLibraryW before the first KeraLua P/Invoke.
+    -->
+    <ShouldIncludeNativeLua>False</ShouldIncludeNativeLua>
+
+    <!-- The mod folder (this project folder) is where the game loads DLLs from.
+         Overridable so a build can be staged elsewhere without touching the
+         already-deployed, already-loaded payload. -->
+    <ModDeployDir Condition="'$(ModDeployDir)' == ''">$(MSBuildProjectDirectory)\</ModDeployDir>
+
+    <!--
+      OPTIONAL xLua route.  Off by default so the default build has no extra
+      dependency at all.  Build it with:
+
+        pwsh -File LuaRuntimeProbe\tools\Build-XLuaGeneral.ps1
+        dotnet build LuaRuntimeProbe\LuaRuntimeProbe.csproj -c Release `
+            -p:WithXLua=true -p:ModDeployDir=<staging>\
+
+      The managed half is xLua's OWN General configuration (XLUA_GENERAL), so no
+      upstream source is modified.
+    -->
+    <XLuaStagingDir Condition="'$(XLuaStagingDir)' == ''">$(MSBuildProjectDirectory)\staging\xlua</XLuaStagingDir>
+    <XLuaManagedPath Condition="'$(XLuaManagedPath)' == ''">$(XLuaStagingDir)\XLua.Mini.dll</XLuaManagedPath>
+    <XLuaNativePath Condition="'$(XLuaNativePath)' == ''">$(XLuaStagingDir)\native\xlua.dll</XLuaNativePath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(WithXLua)' == 'true'">
+    <DefineConstants>$(DefineConstants);LUA_PROBE_XLUA</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Pure-managed Lua 5.2 implementation. -->
+    <PackageReference Include="MoonSharp" Version="2.0.0" />
+
+    <!-- Native Lua 5.4 binding: NLua (managed) + KeraLua (P/Invoke to lua54.dll). -->
+    <PackageReference Include="NLua" Version="1.7.9" />
+    <PackageReference Include="KeraLua" Version="1.4.10" GeneratePathProperty="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Game assemblies: never copied (they are already loaded by the game). -->
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\7DaysToDie_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="LogLibrary">
+      <HintPath>..\..\7DaysToDie_Data\Managed\LogLibrary.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>..\..\Mods\0_TFP_Harmony\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(WithXLua)' == 'true'">
+    <!-- Managed half of the optional xLua route: xLua's own General build. -->
+    <Reference Include="XLua.Mini">
+      <HintPath>$(XLuaManagedPath)</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="VerifyXLuaInputs" BeforeTargets="ResolveAssemblyReferences" Condition="'$(WithXLua)' == 'true'">
+    <Error Condition="!Exists('$(XLuaManagedPath)')"
+           Text="WithXLua=true but the managed xLua assembly was not found: $(XLuaManagedPath). Run: pwsh -File tools\Build-XLuaGeneral.ps1" />
+    <Error Condition="!Exists('$(XLuaNativePath)')"
+           Text="WithXLua=true but the native xLua library was not found: $(XLuaNativePath). Run: pwsh -File tools\Build-XLuaGeneral.ps1" />
+  </Target>
+
+  <!--
+    Deploy: copy the managed payload plus the native Lua library into the mod
+    folder.  The native library goes into native\ so that
+    Mod.LoadAssemblies() (which scans the mod root only) never sees it.
+  -->
+  <Target Name="DeployLuaProbeMod" AfterTargets="Build">
+    <ItemGroup>
+      <LuaProbeDeployFiles Include="$(TargetPath)" />
+      <LuaProbeDeployFiles Include="$(TargetDir)$(TargetName).pdb" Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
+      <LuaProbeDeployFiles Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.CopyLocal)' == 'true'" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(LuaProbeDeployFiles)"
+          DestinationFolder="$(ModDeployDir)"
+          SkipUnchangedFiles="true" />
+
+    <ItemGroup>
+      <LuaProbeNative Include="$(PkgKeraLua)\runtimes\win-x64\native\lua54.dll" Condition="Exists('$(PkgKeraLua)\runtimes\win-x64\native\lua54.dll')" />
+      <LuaProbeNative Include="$(XLuaNativePath)" Condition="'$(WithXLua)' == 'true' and Exists('$(XLuaNativePath)')" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(LuaProbeNative)"
+          DestinationFolder="$(ModDeployDir)native"
+          SkipUnchangedFiles="true" />
+
+    <Message Importance="high" Text="LuaRuntimeProbe deployed to $(ModDeployDir) (@(LuaProbeDeployFiles->Count()) managed file(s), @(LuaProbeNative->Count()) native file(s); WithXLua=$(WithXLua))" />
+  </Target>
+
+  <!-- Fail loudly if the native Lua library could not be staged. -->
+  <Target Name="VerifyLuaProbeNative" AfterTargets="DeployLuaProbeMod">
+    <Error Condition="!Exists('$(ModDeployDir)native\lua54.dll')"
+           Text="Native lua54.dll was not deployed to $(ModDeployDir)native\. The NLua/KeraLua backend will report itself as unavailable. Run: dotnet restore $(MSBuildProjectFullPath)" />
+  </Target>
+
+</Project>

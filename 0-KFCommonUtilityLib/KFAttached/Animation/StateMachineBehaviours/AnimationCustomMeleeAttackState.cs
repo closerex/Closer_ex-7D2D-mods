@@ -1,18 +1,23 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
-#if UNITY_EDITOR
-using UnityEditor;
-using UnityEditor.Animations;
-#else
+#if !UNITY_EDITOR
 using KFCommonUtilityLib;
 #endif
 
 public class AnimationCustomMeleeAttackState : StateMachineBehaviour
-#if UNITY_EDITOR
-    , ISerializationCallbackReceiver
-#endif
 {
+    [Range(0f, 1f)]
+    public float GlobalDamageMultiplier = 1f;
+
+    public bool UseWindowDamage = false;
+
+    // Half-width of the full-damage plateau in normalized window time.
+    [Range(0f, 0.5f)]
+    public float WindowDamageSigma = 0.2f;
+
+    // Retained for old assets and the window-mode plateau center.
     public float RaycastTime = 0.3f;
+    public float[] RaycastTimes = System.Array.Empty<float>();
     public bool GrazeAsRaycast = false;
     public bool UseRaycast = true;
     public bool UseGraze = true;
@@ -37,29 +42,6 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
     [SerializeField]
     private float ClipLength = 0f;
 
-#if UNITY_EDITOR
-    public void OnBeforeSerialize()
-    {
-        var context = AnimatorController.FindStateMachineBehaviourContext(this);
-        if (context != null && context.Length > 0)
-        {
-            var state = context[0].animatorObject as AnimatorState;
-            if (state != null)
-            {
-                var clip = state.motion as AnimationClip;
-                if (clip != null)
-                {
-                    ClipLength = clip.length;
-                }
-            }
-        }
-    }
-
-    public void OnAfterDeserialize()
-    {
-    }
-#endif
-
 #if NotEditor
     private static readonly int AttackSpeedHash = Animator.StringToHash("MeleeAttackSpeed");
     private static readonly int MeleeRunningHash = Animator.StringToHash("IsMeleeRunning");
@@ -69,10 +51,8 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
     private float calculatedGrazeInterval;
     private float calculatedImpactDuration;
     private float calculatedImpactPlaybackSpeed;
-    private bool hasFired;
     private int actionIndex;
     private float originalMeleeAttackSpeed;
-    //private bool playingImpact;
     private EntityAlive entity;
     private float attacksPerMinute;
     private float speedMultiplierToKeep = 1f;
@@ -81,11 +61,17 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
     private bool impactSpeedRestored;
     private bool forceStopCalled;
     private bool stateExited = true, stateGuarded = false;
+    private bool windowDamageThisAttack;
 
-    private Coroutine impactCo, grazeCo;
+    private Coroutine raycastCo, impactCo, grazeCo;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        if (raycastCo != null)
+        {
+            ThreadManager.StopCoroutine(raycastCo);
+            raycastCo = null;
+        }
         if (!stateExited)
         {
             stateGuarded = true;
@@ -93,7 +79,6 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         stateExited = false;
         impactSpeedRestored = false;
         forceStopCalled = false;
-        hasFired = false;
         if (IsAlternative)
         {
             animator.SetWrappedBool(Animator.StringToHash("UseAltMelee"), false);
@@ -161,11 +146,17 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
                 Log.Out("Item class: null");
             }
         }
-        if (UseRaycast && !GrazeAsRaycast)
+        windowDamageThisAttack = UseWindowDamage && CanRunWindowDamage(isValidAlternative);
+        ClearWindowDamageActive();
+        if (!windowDamageThisAttack && UseRaycast && !GrazeAsRaycast)
         { 
-            impactCo = ThreadManager.StartCoroutine(impactStart(animator, layerIndex, length));
+            raycastCo = ThreadManager.StartCoroutine(impactStart(animator, layerIndex, length));
         }
-        if (UseGraze || GrazeAsRaycast)
+        if (windowDamageThisAttack)
+        {
+            grazeCo = ThreadManager.StartCoroutine(windowDamageStart(animator, layerIndex, length));
+        }
+        else if (UseGraze || GrazeAsRaycast)
         {
             grazeCo = ThreadManager.StartCoroutine(customGrazeStart(length));
         }
@@ -175,58 +166,74 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
 
     private IEnumerator impactStart(Animator animator, int layer, float length)
     {
-        yield return new WaitForSeconds(Mathf.Max(calculatedRaycastTime, 0));
-        impactCo = null;
-        if (!hasFired)
+        float startTime = Time.time;
+        float[] times = RaycastTimes;
+        bool hasTimes = times is { Length: > 0 };
+        int count = hasTimes ? times.Length : 1;
+        for (int i = 0; i < count; i++)
         {
-            hasFired = true;
-            if (entity != null && !entity.isEntityRemote && actionIndex >= 0)
+            // Times are attack-start offsets; casts are serial and hit-stop does not delay the schedule.
+            float triggerTime = hasTimes
+                ? (originalMeleeAttackSpeed != 0f ? times[i] / originalMeleeAttackSpeed : 0.001f)
+                : calculatedRaycastTime;
+            float remaining = triggerTime - (Time.time - startTime);
+            if (i == 0 || remaining > 0f)
             {
-                bool isValidAlternative = IsAlternative && multiInvData != null && multiInvData.boundInvData != null;
-                var prevData = SetParams(isValidAlternative);
-                float alternativeDeltaUseTimes = isValidAlternative ? multiInvData.boundInvData.itemStack.itemValue.UseTimes : 0f;
-                ItemActionDynamicMelee.ItemActionDynamicMeleeData itemActionDynamicMeleeData = entity.inventory.holdingItemData.actionData[actionIndex] as ItemActionDynamicMelee.ItemActionDynamicMeleeData;
-                if (itemActionDynamicMeleeData != null)
-                {
-                    ItemActionDynamicMelee itemActionDynamicMelee = (ItemActionDynamicMelee)entity.inventory.holdingItem.Actions[actionIndex];
-                    float originalSwingAngle = itemActionDynamicMelee.SwingAngle;
-                    float originalSwingDegrees = itemActionDynamicMelee.SwingDegrees;
-                    itemActionDynamicMelee.SwingAngle = SwingAngle;
-                    itemActionDynamicMelee.SwingDegrees = SwingDegrees;
-                    bool hit = itemActionDynamicMelee.Raycast(itemActionDynamicMeleeData);
-                    itemActionDynamicMelee.SwingAngle = originalSwingAngle;
-                    itemActionDynamicMelee.SwingDegrees = originalSwingDegrees;
-                    if (hit)
-                    {
-                        if (isValidAlternative)
-                        {
-                            multiInvData.originalData.itemStack.itemValue.UseTimes += multiInvData.boundInvData.itemStack.itemValue.UseTimes - alternativeDeltaUseTimes;
-                        }
-                        if (ConsoleCmdReloadLog.LogInfo)
-                        {
-                            Log.Out("Raycast hit!");
-                        }
-                        impactCo = ThreadManager.StartCoroutine(impactStop(animator, layer, length));
-                    }
-                    else
-                    {
-                        if (ConsoleCmdReloadLog.LogInfo)
-                        {
-                            Log.Out("Raycast miss!");
-                        }
-                    }
-                }
-                RestoreParams(isValidAlternative, prevData);
+                yield return new WaitForSeconds(Mathf.Max(remaining, 0f));
             }
+            if (entity == null || entity.isEntityRemote || actionIndex < 0
+                || !slotGurad.IsValid(entity) || entity.IsDead()) break;
+
+            bool isValidAlternative = IsAlternative && multiInvData is { boundInvData: not null };
+            var prevData = SetParams(isValidAlternative);
+            var data = entity.inventory.holdingItemData.actionData[actionIndex]
+                as ItemActionDynamicMelee.ItemActionDynamicMeleeData;
+            if (data == null || (i > 0 && !CheckMeleeRunning(data)))
+            {
+                RestoreParams(isValidAlternative, prevData);
+                break;
+            }
+            float alternativeDeltaUseTimes = isValidAlternative ? multiInvData.boundInvData.itemStack.itemValue.UseTimes : 0f;
+            var action = (ItemActionDynamicMelee)entity.inventory.holdingItem.Actions[actionIndex];
+            float originalSwingAngle = action.SwingAngle;
+            float originalSwingDegrees = action.SwingDegrees;
+            action.SwingAngle = SwingAngle;
+            action.SwingDegrees = SwingDegrees;
+            // A new configured cast must not inherit the previous cast's penetration ray.
+            data.useExistingRay = false;
+            bool hit = CastWithDamageMultiplier(action, data, true);
+            action.SwingAngle = originalSwingAngle;
+            action.SwingDegrees = originalSwingDegrees;
+            if (hit)
+            {
+                if (isValidAlternative)
+                {
+                    multiInvData.originalData.itemStack.itemValue.UseTimes += multiInvData.boundInvData.itemStack.itemValue.UseTimes - alternativeDeltaUseTimes;
+                }
+                if (ConsoleCmdReloadLog.LogInfo)
+                {
+                    Log.Out("Raycast hit!");
+                }
+                if (impactCo != null)
+                {
+                    ThreadManager.StopCoroutine(impactCo);
+                }
+                impactCo = ThreadManager.StartCoroutine(impactStop(animator, layer, length));
+            }
+            else if (ConsoleCmdReloadLog.LogInfo)
+            {
+                Log.Out("Raycast miss!");
+            }
+            RestoreParams(isValidAlternative, prevData);
         }
-        yield break;
+        raycastCo = null;
     }
 
     private IEnumerator impactStop(Animator animator, int layer, float length)
     {
+        impactSpeedRestored = false;
         if (animator)
         {
-            //Log.Out("Impact start!");
             animator.SetWrappedFloat(AttackSpeedHash, calculatedImpactPlaybackSpeed);
         }
         speedMultiplierToKeep = calculatedImpactPlaybackSpeed;
@@ -234,14 +241,12 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         yield return new WaitForSeconds(calculatedImpactDuration);
         if (animator)
         {
-            //Log.Out("Impact stop!");
             animator.SetWrappedFloat(AttackSpeedHash, originalMeleeAttackSpeed);
         }
         speedMultiplierToKeep = originalMeleeAttackSpeed;
         animator.SetWrappedFloat(AttackSpeedHash, speedMultiplierToKeep);
         impactSpeedRestored = true;
         impactCo = null;
-        yield break;
     }
 
     private IEnumerator customGrazeStart(float length)
@@ -254,7 +259,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         grazeCo = null;
         if (entity != null && !entity.isEntityRemote && actionIndex >= 0)
         {
-            bool isValidAlternative = IsAlternative && multiInvData != null && multiInvData.boundInvData != null;
+            bool isValidAlternative = IsAlternative && multiInvData is { boundInvData: not null };
             var prevData = SetParams(isValidAlternative);
             ItemActionDynamicMelee.ItemActionDynamicMeleeData itemActionDynamicMeleeData = entity.inventory.holdingItemData.actionData[actionIndex] as ItemActionDynamicMelee.ItemActionDynamicMeleeData;
             if (itemActionDynamicMeleeData != null)
@@ -286,7 +291,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             }
             if (!GrazeAsRaycast || UseRaycast)
             {
-                bool isValidAlternative = IsAlternative && multiInvData != null && multiInvData.boundInvData != null;
+                bool isValidAlternative = IsAlternative && multiInvData is { boundInvData: not null };
                 var prevData = SetParams(isValidAlternative);
                 var action = entity.inventory.holdingItem.Actions[actionIndex] as ItemActionDynamicMelee;
                 if (action != null)
@@ -295,7 +300,9 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
                     float originalSwingDegrees = action.SwingDegrees;
                     action.SwingAngle = SwingAngle;
                     action.SwingDegrees = SwingDegrees;
-                    bool grazeResult = GrazeAsRaycast ? action.Raycast(data) : action.GrazeCast(data, normalizedTime % 1);
+                    // GrazeCast expects clip time, not normalized window progress.
+                    bool grazeResult = CastWithDamageMultiplier(action, data, GrazeAsRaycast,
+                        Mathf.Lerp(action.GrazeStart, action.GrazeEnd, normalizedTime % 1f));
                     if (GrazeCanHitSameTarget)
                     {
                         data.alreadyHitEnts.Clear();
@@ -331,11 +338,286 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         yield break;
     }
 
+    // Loop attacks and raycast-as-graze retain legacy scheduling.
+    private bool CanRunWindowDamage(bool isValidAlternative)
+    {
+        if (calculatedGrazeDuration <= 0f || attackDurationNormalized <= 0f || GrazeAsRaycast) return false;
+        if (entity == null || entity.isEntityRemote || actionIndex < 0 || !slotGurad.IsValid(entity)) return false;
+        if (entity.inventory?.holdingItem?.Actions == null) return false;
+        if (!(entity.inventory.holdingItem.Actions[actionIndex] is ItemActionDynamicMelee)) return false;
+        return entity.inventory.holdingItemData.actionData[actionIndex]
+            .IsModuleContainerFor(out ActionModuleDynamicGraze.WindowDamageData _);
+    }
+
+    private void ClearWindowDamageActive()
+    {
+        if (entity == null || actionIndex < 0) return;
+        if (entity.inventory?.holdingItem?.Actions == null) return;
+        if (!(entity.inventory.holdingItem.Actions[actionIndex] is ItemActionDynamicMelee)) return;
+        if (entity.inventory.holdingItemData.actionData[actionIndex]
+            .IsModuleContainerFor(out ActionModuleDynamicGraze.WindowDamageData data))
+        {
+            data.Active = false;
+        }
+    }
+
+    private IEnumerator windowDamageStart(Animator animator, int layerIndex, float length)
+    {
+        yield return new WaitForSeconds(Mathf.Max(calculatedGrazeTime, 0f));
+        if (entity == null || entity.isEntityRemote || actionIndex < 0 || !slotGurad.IsValid(entity)) yield break;
+
+        bool isValidAlternative = IsAlternative && multiInvData is { boundInvData: not null };
+        var prevData = SetParams(isValidAlternative);
+        var data = entity.inventory.holdingItemData.actionData[actionIndex]
+            as ItemActionDynamicMelee.ItemActionDynamicMeleeData;
+        RestoreParams(isValidAlternative, prevData);
+        if (data == null || !data.IsModuleContainerFor(out ActionModuleDynamicGraze.WindowDamageData windowData))
+        {
+            grazeCo = null;
+            yield break;
+        }
+
+        // Freeze the authored peak for this swing.
+        float peakOffset = MeleeWindowDamage.PeakOffsetForRaycast(
+            calculatedRaycastTime, calculatedGrazeTime, calculatedGrazeDuration);
+        windowData.PeakOffset = peakOffset;
+        windowData.Sigma = WindowDamageSigma;
+
+        // Keep hit history for the whole swing so direct and grazing hits share it.
+        // GrazeCanHitSameTarget is intentionally ignored in window mode.
+        data.alreadyHitEnts.Clear();
+        data.alreadyHitBlocks.Clear();
+        data.alreadyHitProps?.Clear();
+        data.lastWeaponHeadPosition = Vector3.zero;
+
+        float grazeStart = Time.time;
+        float normalizedTime = 0f;
+
+        float previousPhase = -1f;
+        bool directHitDone = false;
+        bool raycastHitDone = false;
+        bool centerRaycastDone = false;
+
+        // One post-window sample covers plateaus skipped between frames.
+        bool finalTick = false;
+        while (finalTick || normalizedTime <= 1 || attackDurationNormalized <= 0)
+        {
+            if (!slotGurad.IsValid(entity) || entity.IsDead()) break;
+
+            prevData = SetParams(isValidAlternative);
+            if (entity.inventory.holdingItem.Actions[actionIndex] is ItemActionDynamicMelee action
+                && data.invData.itemValue.PercentUsesLeft > 0f
+                && entity.inventory.GetIsFinishedSwitchingHeldItem())
+            {
+                float originalSwingAngle = action.SwingAngle;
+                float originalSwingDegrees = action.SwingDegrees;
+                action.SwingAngle = SwingAngle;
+                action.SwingDegrees = SwingDegrees;
+
+                bool centerRaycastDue = !centerRaycastDone && normalizedTime >= 0.5f;
+                float alternativeDeltaUseTimes = isValidAlternative ? multiInvData.boundInvData.itemStack.itemValue.UseTimes : 0f;
+
+                // Classify every crossed sample, not the whole frame, by its own window phase.
+                windowData.Active = true;
+                bool hit = ProcessWindowSweep(action, data, previousPhase, normalizedTime, windowData,
+                    ref directHitDone, ref raycastHitDone, out bool raycastThisTick);
+
+                // Sweep first; only the one midpoint sight ray may also hit solids.
+                if (centerRaycastDue)
+                {
+                    windowData.Phase = 0.5f;
+                    hit |= CastWindowRaycast(action, data, entity.GetMeleeRay(), windowData,
+                        true, ref directHitDone, ref raycastHitDone);
+                    centerRaycastDone = true;
+                }
+                if (hit)
+                {
+                    if (isValidAlternative)
+                    {
+                        multiInvData.originalData.itemStack.itemValue.UseTimes += multiInvData.boundInvData.itemStack.itemValue.UseTimes - alternativeDeltaUseTimes;
+                    }
+                    if (impactCo != null)
+                    {
+                        ThreadManager.StopCoroutine(impactCo);
+                    }
+                    impactCo = ThreadManager.StartCoroutine(impactStop(animator, layerIndex, length));
+                }
+                if ((raycastThisTick || centerRaycastDue) && entity.emodel.avatarController)
+                {
+                    entity.emodel.avatarController.UpdateBool("RayHit", hit);
+                }
+
+                previousPhase = Mathf.Clamp01(normalizedTime);
+                windowData.Active = false;
+
+                action.SwingAngle = originalSwingAngle;
+                action.SwingDegrees = originalSwingDegrees;
+
+            }
+            RestoreParams(isValidAlternative, prevData);
+
+            if (attackDurationNormalized <= 0)
+            {
+                data.lastUseTime = Time.time;
+            }
+            if (!CheckMeleeRunning(data)) break;
+
+            yield return calculatedGrazeInterval > 0f ? new WaitForSeconds(calculatedGrazeInterval) : null;
+            normalizedTime = (Time.time - grazeStart) / calculatedGrazeDuration;
+
+            if (finalTick) break;
+            finalTick = attackDurationNormalized > 0f && normalizedTime > 1f;
+        }
+        grazeCo = null;
+    }
+
+    private Ray GetWindowSweepRay(ItemActionDynamicMelee action,
+        ItemActionDynamicMelee.ItemActionDynamicMeleeData data, float phase, out Vector3 weaponHead)
+    {
+        Ray ray = entity.GetMeleeRay();
+        Transform cameraTransform = ((EntityPlayerLocal)entity).cameraTransform;
+        ray.direction = Quaternion.AngleAxis(Mathf.Lerp(action.SwingDegrees * 0.5f,
+            -action.SwingDegrees * 0.5f, phase), cameraTransform.right) * ray.direction;
+        if (action.SwingAngle != 0f)
+        {
+            ray.direction = Quaternion.AngleAxis(action.SwingAngle, cameraTransform.forward) * ray.direction;
+        }
+        float range = EffectManager.GetValue(PassiveEffects.MaxRange, data.invData.itemValue,
+            2f, entity, null, data.ActionTags);
+        weaponHead = ray.origin + ray.direction * range;
+        return ray;
+    }
+
+    private bool ProcessWindowSweep(ItemActionDynamicMelee action,
+        ItemActionDynamicMelee.ItemActionDynamicMeleeData data, float previousPhase, float currentPhase,
+        ActionModuleDynamicGraze.WindowDamageData windowData,
+        ref bool directHitDone, ref bool raycastHitDone, out bool raycastThisTick)
+    {
+        float from = Mathf.Max(previousPhase, 0f);
+        float to = Mathf.Clamp01(currentPhase);
+        float peak = MeleeWindowDamage.PeakPhase(windowData.PeakOffset);
+        float width = MeleeWindowDamage.DirectWindowWidth(windowData.Sigma, windowData.PeakOffset);
+        float plateauStart = peak - width;
+        float plateauEnd = peak + width;
+        float spacing = action.SphereRadius * 1.25f;
+        if (spacing == 0f) spacing = 0.15f;
+        float range = EffectManager.GetValue(PassiveEffects.MaxRange, data.invData.itemValue,
+            2f, entity, null, data.ActionTags);
+        bool hit = false;
+        raycastThisTick = false;
+
+        // Emit phase zero once, then process (previousPhase, currentPhase] including each boundary.
+        if (previousPhase < 0f)
+            hit |= CastWindowSample(action, data, from, windowData,
+                ref directHitDone, ref raycastHitDone, ref raycastThisTick);
+        while (from < to)
+        {
+            float end = to;
+            if (from < plateauStart && plateauStart < end) end = plateauStart;
+            if (from < plateauEnd && plateauEnd < end) end = plateauEnd;
+            float arcLength = Mathf.Abs(action.SwingDegrees) * Mathf.Deg2Rad * range * (end - from);
+            int steps = Mathf.Max(1, Mathf.CeilToInt(arcLength / spacing));
+            for (int i = 1; i <= steps; i++)
+            {
+                float phase = i == steps ? end : Mathf.Lerp(from, end, (float)i / steps);
+                hit |= CastWindowSample(action, data, phase, windowData,
+                    ref directHitDone, ref raycastHitDone, ref raycastThisTick);
+            }
+            from = end;
+        }
+        return hit;
+    }
+
+    private bool CastWindowSample(ItemActionDynamicMelee action,
+        ItemActionDynamicMelee.ItemActionDynamicMeleeData data, float phase,
+        ActionModuleDynamicGraze.WindowDamageData windowData,
+        ref bool directHitDone, ref bool raycastHitDone, ref bool raycastThisTick)
+    {
+        Ray ray = GetWindowSweepRay(action, data, phase, out Vector3 weaponHead);
+        windowData.Phase = phase;
+        data.lastWeaponHeadPosition = weaponHead;
+        float peak = MeleeWindowDamage.PeakPhase(windowData.PeakOffset);
+        float width = MeleeWindowDamage.DirectWindowWidth(windowData.Sigma, windowData.PeakOffset);
+        if (phase >= peak - width && phase <= peak + width)
+        {
+            raycastThisTick = true;
+            return CastWindowRaycast(action, data, ray, windowData, false,
+                ref directHitDone, ref raycastHitDone);
+        }
+
+        // Seed the native endpoint so GrazeCast samples this phase instead of resweeping history.
+        CastWithDamageMultiplier(action, data, false, Mathf.Lerp(action.GrazeStart, action.GrazeEnd, phase));
+        return false;
+    }
+
+    private bool CastWindowRaycast(ItemActionDynamicMelee action,
+        ItemActionDynamicMelee.ItemActionDynamicMeleeData data, Ray ray,
+        ActionModuleDynamicGraze.WindowDamageData windowData, bool allowBlockHits,
+        ref bool directHitDone, ref bool raycastHitDone)
+    {
+        Ray previousRay = data.ray;
+        Vector3 previousRayStart = data.rayStartPos;
+        bool previousUseExistingRay = data.useExistingRay;
+        ray.origin -= ray.direction * action.SphereRadius;
+        data.ray = ray;
+        data.rayStartPos = ray.origin;
+        data.useExistingRay = true;
+
+        // Only the first direct cast pays natively; later successful casts use graze stamina scaling.
+        float staminaUsage = data.StaminaUsage;
+        if (directHitDone) data.StaminaUsage = 0f;
+        directHitDone = true;
+        windowData.AllowBlockHits = allowBlockHits;
+        bool hit = CastWithDamageMultiplier(action, data, true);
+        windowData.AllowBlockHits = false;
+        data.StaminaUsage = staminaUsage;
+        if (hit)
+        {
+            if (raycastHitDone)
+            {
+                entity.Stats.Stamina.Value -= staminaUsage * EffectManager.GetValue(
+                    PassiveEffects.GrazeStaminaMultiplier,
+                    data.invData.holdingEntity.inventory.holdingItemItemValue,
+                    action.GrazeStaminaPercentage * ItemActionAttack.StaminaUsageMultiplier,
+                    data.invData.holdingEntity, null, data.invData.holdingEntity.inventory.holdingItem.ItemTags);
+            }
+            raycastHitDone = true;
+        }
+
+        data.ray = previousRay;
+        data.rayStartPos = previousRayStart;
+        data.useExistingRay = previousUseExistingRay;
+        return hit;
+    }
+
+    // Restore the previous scale so nested casts and shared action data stay isolated.
+    private bool CastWithDamageMultiplier(ItemActionDynamicMelee action,
+        ItemActionDynamicMelee.ItemActionDynamicMeleeData data, bool raycast, float grazeTime = 0f)
+    {
+        bool hasModule = data.IsModuleContainerFor(out ActionModuleDynamicGraze.WindowDamageData damageData);
+        float previousMultiplier = hasModule ? damageData.GlobalDamageMultiplier : 1f;
+        if (hasModule)
+        {
+            damageData.GlobalDamageMultiplier = GlobalDamageMultiplier;
+        }
+        bool hit = raycast ? action.Raycast(data) : action.GrazeCast(data, grazeTime);
+        if (hasModule)
+        {
+            damageData.GlobalDamageMultiplier = previousMultiplier;
+        }
+        return hit;
+    }
+
     private void ForceStopCoroutines()
     {
         if (forceStopCalled)
         {
             return;
+        }
+        if (raycastCo != null)
+        {
+            ThreadManager.StopCoroutine(raycastCo);
+            raycastCo = null;
         }
         if (impactCo != null)
         {
@@ -350,7 +632,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         speedMultiplierToKeep = originalMeleeAttackSpeed;
         if (entity != null && !entity.isEntityRemote && actionIndex >= 0)
         {
-            bool isValidAlternative = IsAlternative && multiInvData != null && multiInvData.boundInvData != null;
+            bool isValidAlternative = IsAlternative && multiInvData is { boundInvData: not null };
             var prevData = SetParams(isValidAlternative);
             var itemActionDynamicMelee = entity.inventory.holdingItem.Actions[actionIndex] as ItemActionDynamicMelee;
             var itemActionDynamicMeleeData = entity.inventory.holdingItemData.actionData[actionIndex] as ItemActionDynamicMelee.ItemActionDynamicMeleeData;

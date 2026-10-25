@@ -39,6 +39,56 @@
 			<property name="SoundPickup" value="pistol_grab"/>
 			<property name="SoundPlace" value="pistol_place"/>
 			<property name="TakeOverReloadTime" value="true"/>
+			<stats>
+				<!-- Base_Random_Roll -->
+				<stat name="EntityDamage"			value="0,0,1,0,.1"/>
+				<stat name="MagazineSize" 			value="0,0,1,0,.1"/>
+				<stat name="RoundsPerMinute" 		value="0,0,1,0,.02"/>
+				<stat name="DamageFalloffRange" 	value="0,0,1,0,.1"/>
+				<stat name="DegradationMax" 		value="0,0,1,0,.1"/>
+				<!-- Q1_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="1,0,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="1,0,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="1,0,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="1,0,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="1,0,.3,.1,.5"/>
+				<!-- Q2_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="2,10,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="2,10,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="2,10,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="2,10,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="2,10,.3,.1,.5"/>
+				<!-- Q3_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="3,11,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="3,11,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="3,11,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="3,11,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="3,11,.3,.1,.5"/>
+				<!-- Q4_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="4,12,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="4,12,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="4,12,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="4,12,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="4,12,.3,.1,.5"/>
+				<!-- Q5_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="5,14,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="5,14,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="5,14,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="5,14,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="5,14,.3,.1,.5"/>
+				<!-- Q6_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="6,16,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="6,16,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="6,16,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="6,16,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="6,16,.3,.1,.5"/>
+				<!-- Q6_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="6,20,.3,.5,.7"/>
+				<stat name="MagazineSize" 			value="6,20,.3,.5,1"/>
+				<stat name="RoundsPerMinute" 		value="6,20,.3,.1,.3"/>
+				<stat name="DamageFalloffRange" 	value="6,20,.3,.5,.7"/>
+				<stat name="DegradationMax" 		value="6,20,.3,.5,.7"/>
+			</stats>
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
@@ -46,12 +96,12 @@
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>
-				<property name="ToggleActionSound" value="kf_medic_Alert_Locked"/>
+				<property name="ToggleActionSound" value="Play_WEP_SA_Medic_Alert_Locked"/>
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
-				<property name="Sound_start" value="kf_medicpistol_Fire_1P_InDoor_Large"/>
-				<property name="Sound_loop" value="kf_medicpistol_Fire_1P_InDoor_Large"/>
+				<property name="Sound_start" value="Play_SA_MedicPistol_Fire_1P__Indoor_Large"/>
+				<property name="Sound_loop" value="Play_SA_MedicPistol_Fire_1P__Indoor_Large"/>
 				<property name="Sound_end" value=""/>
-				<property name="Sound_empty" value="kf_ak12_DryFire"/>
+				<property name="Sound_empty" value="Play_WEP_SA_AK12_Handling_DryFire__Variant_ak12_DryFire"/>
 				<property name="Sound_reload" value=""/>
 				<property name="AutoReload" value="false"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_flash.prefab"/>
@@ -92,11 +142,11 @@
 				<property name="IconTintOverride" value="255,255,255"/>
 				<property name="PassiveMaxEffect" value="CustomTaggedEffect"/>
 				<property name="PassiveMaxTags" value="medicWeapon,MedicStock,RechargeDataMaximum"/>
-				<property name="Sound_start" value="kf_medicdart_Fire_1p"/>
-				<property name="Sound_loop" value="kf_medicdart_Fire_1p"/>
+				<property name="Sound_start" value="Play_WEP_SA_Medic_Dart_Fire_1P"/>
+				<property name="Sound_loop" value="Play_WEP_SA_Medic_Dart_Fire_1P"/>
 				<property name="Sound_repeat" value=""/>
 				<property name="Sound_end" value=""/>
-				<property name="Sound_empty" value="kf_medicdart_DryFire"/>
+				<property name="Sound_empty" value="Play_WEP_SA_Medic_Dart_DryFire"/>
 				<property name="AutoReload" value="false"/>
 				<property name="Infinite_ammo" value="true"/>
 				<property name="ExcludeTags" value="attAgility,9mmGun"/>
@@ -268,6 +318,56 @@
 			<property name="SoundPickup" value="rifle_polymer_grab"/>
 			<property name="SoundPlace" value="rifle_polymer_place"/>
 			<property name="TakeOverReloadTime" value="true"/>
+			<stats>
+				<!-- Base_Random_Roll -->
+				<stat name="EntityDamage"			value="0,0,1,0,.1"/>
+				<stat name="MagazineSize" 			value="0,0,1,0,.1"/>
+				<stat name="RoundsPerMinute" 		value="0,0,1,0,.02"/>
+				<stat name="DamageFalloffRange" 	value="0,0,1,0,.1"/>
+				<stat name="DegradationMax" 		value="0,0,1,0,.1"/>
+				<!-- Q1_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="1,0,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="1,0,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="1,0,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="1,0,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="1,0,.3,.1,.5"/>
+				<!-- Q2_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="2,10,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="2,10,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="2,10,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="2,10,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="2,10,.3,.1,.5"/>
+				<!-- Q3_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="3,11,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="3,11,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="3,11,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="3,11,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="3,11,.3,.1,.5"/>
+				<!-- Q4_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="4,12,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="4,12,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="4,12,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="4,12,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="4,12,.3,.1,.5"/>
+				<!-- Q5_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="5,14,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="5,14,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="5,14,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="5,14,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="5,14,.3,.1,.5"/>
+				<!-- Q6_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="6,16,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="6,16,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="6,16,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="6,16,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="6,16,.3,.1,.5"/>
+				<!-- Q6_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="6,20,.3,.5,.7"/>
+				<stat name="MagazineSize" 			value="6,20,.3,.5,1"/>
+				<stat name="RoundsPerMinute" 		value="6,20,.3,.1,.3"/>
+				<stat name="DamageFalloffRange" 	value="6,20,.3,.5,.7"/>
+				<stat name="DegradationMax" 		value="6,20,.3,.5,.7"/>
+			</stats>
 
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
@@ -275,27 +375,33 @@
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>
-				<property name="ToggleActionSound" value="kf_medic_Alert_Locked"/>
+				<property name="ToggleActionSound" value="Play_WEP_SA_Medic_Alert_Locked"/>
 				<property name="Delay" value=".150"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammo9mmBulletBall,ammo9mmBulletHP,ammo9mmBulletAP"/>
 				<property name="Reload_time" value="4.1"/>
 				<property name="Sound_start" value="kf_medicsmg_Fire_1P_Loop"/>
 				<property name="Sound_loop" value=""/>
 				<property name="Sound_end" value=""/>
-				<property name="Sound_empty" value="kf_ak12_DryFire"/>
+				<property name="Sound_empty" value="Play_WEP_SA_AK12_Handling_DryFire__Variant_ak12_DryFire"/>
 				<property name="Sound_reload" value=""/>
 				<property name="LoopSegmentLength" value="0.075"/>
 				<property name="AutoReload" value="false"/>
-				<property name="FireMode0.BurstCount" value="1"/>
-				<property name="FireMode0.IsFullAuto" value="true"/>
-				<property name="FireMode0.ModeName" value="ttFiringModeFullAuto"/>
-				<property name="FireMode1.BurstCount" value="1"/>
-				<property name="FireMode1.IsFullAuto" value="false"/>
-				<property name="FireMode1.ModeName" value="ttFiringModeSemiAuto"/>
-				<property name="FireMode2.BurstCount" value="3"/>
-				<property name="FireMode2.IsFullAuto" value="false"/>
-				<property name="FireMode2.ModeName" value="ttFiringModeBurst3"/>
-				<property name="FireModeSwitchingSound" value="kf_ui_mode_switch"/>
+				<property class="FireMode0">
+					<property name="BurstCount" value="0"/>
+					<property name="IsFullAuto" value="true"/>
+					<property name="ModeName" value="ttFiringModeFullAuto"/>
+				</property>
+				<property class="FireMode1">
+					<property name="BurstCount" value="1"/>
+					<property name="IsFullAuto" value="false"/>
+					<property name="ModeName" value="ttFiringModeSemiAuto"/>
+				</property>
+				<property class="FireMode2">
+					<property name="BurstCount" value="3"/>
+					<property name="IsFullAuto" value="false"/>
+					<property name="ModeName" value="ttFiringModeBurst3"/>
+				</property>
+				<property name="FireModeSwitchingSound" value="Play_WEP_ModeSwitch"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_fire_fpv" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_flash_fpv.prefab"/>
 				<property name="Particles_muzzle_smoke" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?medic_pistol_muzzle_smoke.prefab"/>
@@ -337,11 +443,11 @@
 				<property name="IconTintOverride" value="255,255,255"/>
 				<property name="PassiveMaxEffect" value="CustomTaggedEffect"/>
 				<property name="PassiveMaxTags" value="medicWeapon,MedicStock,RechargeDataMaximum"/>
-				<property name="Sound_start" value="kf_medicdart_Fire_1p"/>
-				<property name="Sound_loop" value="kf_medicdart_Fire_1p"/>
+				<property name="Sound_start" value="Play_WEP_SA_Medic_Dart_Fire_1P"/>
+				<property name="Sound_loop" value="Play_WEP_SA_Medic_Dart_Fire_1P"/>
 				<property name="Sound_repeat" value=""/>
 				<property name="Sound_end" value=""/>
-				<property name="Sound_empty" value="kf_medicdart_DryFire"/>
+				<property name="Sound_empty" value="Play_WEP_SA_Medic_Dart_DryFire"/>
 				<property name="LoopSegmentLength" value="0.0751"/>
 				<property name="AutoReload" value="false"/>
 				<property name="Infinite_ammo" value="true"/>
@@ -400,7 +506,7 @@
 			<effect_group name="Weapon mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="0"/>
 					<passive_effect name="RoundsPerMinute" operation="base_set" value="800" tags="perkGunslinger"/>
-					<passive_effect name="BurstRoundCount" operation="base_set" value="1000" tags="perkGunslinger"/>
+					<passive_effect name="BurstRoundCount" operation="base_set" value="0" tags="perkGunslinger"/>
 					<passive_effect name="MaxRange" operation="base_set" value="65" tags="perkGunslinger,9mmGun"/>
 					<passive_effect name="DamageFalloffRange" operation="base_set" value="30" tags="perkGunslinger,9mmGun"/>
 					<passive_effect name="EntityDamage" operation="base_add" value="6" tags="perkGunslinger"/> <!-- damage offset -->
@@ -491,6 +597,56 @@
 			<property name="SoundPickup" value="shotgun_polymer_grab"/>
 			<property name="SoundPlace" value="shotgun_polymer_place"/>
 			<property name="TakeOverReloadTime" value="true"/>
+			<stats>
+				<!-- Base_Random_Roll -->
+				<stat name="EntityDamage"			value="0,0,1,0,.1"/>
+				<stat name="MagazineSize" 			value="0,0,1,0,.1"/>
+				<stat name="RoundsPerMinute" 		value="0,0,1,0,.02"/>
+				<stat name="DamageFalloffRange" 	value="0,0,1,0,.1"/>
+				<stat name="DegradationMax" 		value="0,0,1,0,.1"/>
+				<!-- Q1_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="1,0,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="1,0,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="1,0,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="1,0,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="1,0,.3,.1,.5"/>
+				<!-- Q2_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="2,10,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="2,10,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="2,10,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="2,10,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="2,10,.3,.1,.5"/>
+				<!-- Q3_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="3,11,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="3,11,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="3,11,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="3,11,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="3,11,.3,.1,.5"/>
+				<!-- Q4_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="4,12,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="4,12,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="4,12,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="4,12,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="4,12,.3,.1,.5"/>
+				<!-- Q5_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="5,14,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="5,14,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="5,14,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="5,14,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="5,14,.3,.1,.5"/>
+				<!-- Q6_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="6,16,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="6,16,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="6,16,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="6,16,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="6,16,.3,.1,.5"/>
+				<!-- Q6_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="6,20,.3,.5,.7"/>
+				<stat name="MagazineSize" 			value="6,20,.3,.5,1"/>
+				<stat name="RoundsPerMinute" 		value="6,20,.3,.1,.3"/>
+				<stat name="DamageFalloffRange" 	value="6,20,.3,.5,.7"/>
+				<stat name="DegradationMax" 		value="6,20,.3,.5,.7"/>
+			</stats>
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
@@ -498,15 +654,15 @@
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>
-				<property name="ToggleActionSound" value="kf_medic_Alert_Locked"/>
+				<property name="ToggleActionSound" value="Play_WEP_SA_Medic_Alert_Locked"/>
 				<property name="Delay" value=".8"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammoShotgunShell,ammoShotgunSlug,ammoShotgunBreachingSlug"/>
 				<property name="Reload_time" value="2.6"/>
-				<property name="Sound_start" value="kf_medicshotgun_Fire_1P_OutDoor_Surround"/>
-				<property name="Sound_loop" value="kf_medicshotgun_Fire_1P_OutDoor_Surround"/>
+				<property name="Sound_start" value="Play_SA_MedicShotgun_Fire_1P"/>
+				<property name="Sound_loop" value="Play_SA_MedicShotgun_Fire_1P"/>
 				<property name="Sound_repeat" value=""/>
 				<property name="Sound_end" value=""/>
-				<property name="Sound_empty" value="kf_ak12_DryFire"/>
+				<property name="Sound_empty" value="Play_WEP_SA_AK12_Handling_DryFire__Variant_ak12_DryFire"/>
 				<property name="AutoReload" value="false"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?medic_shotgun_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_fire_fpv" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?medic_shotgun_muzzle_flash_fpv.prefab"/>
@@ -549,11 +705,11 @@
 				<property name="IconTintOverride" value="255,255,255"/>
 				<property name="PassiveMaxEffect" value="CustomTaggedEffect"/>
 				<property name="PassiveMaxTags" value="medicWeapon,MedicStock,RechargeDataMaximum"/>
-				<property name="Sound_start" value="kf_medicdart_Fire_1p"/>
-				<property name="Sound_loop" value="kf_medicdart_Fire_1p"/>
+				<property name="Sound_start" value="Play_WEP_SA_Medic_Dart_Fire_1P"/>
+				<property name="Sound_loop" value="Play_WEP_SA_Medic_Dart_Fire_1P"/>
 				<property name="Sound_repeat" value=""/>
 				<property name="Sound_end" value=""/>
-				<property name="Sound_empty" value="kf_medicdart_DryFire"/>
+				<property name="Sound_empty" value="Play_WEP_SA_Medic_Dart_DryFire"/>
 				<property name="AutoReload" value="false"/>
 				<property name="Infinite_ammo" value="true"/>
 				<property name="ExcludeTags" value="shotgun,shotgunSkill,attStrength"/>
@@ -691,6 +847,56 @@
 			<property name="SoundPickup" value="rifle_polymer_grab"/>
 			<property name="SoundPlace" value="rifle_polymer_place"/>
 			<property name="TakeOverReloadTime" value="true"/>
+			<stats>
+				<!-- Base_Random_Roll -->
+				<stat name="EntityDamage"			value="0,0,1,0,.1"/>
+				<stat name="MagazineSize" 			value="0,0,1,0,.1"/>
+				<stat name="RoundsPerMinute" 		value="0,0,1,0,.02"/>
+				<stat name="DamageFalloffRange" 	value="0,0,1,0,.1"/>
+				<stat name="DegradationMax" 		value="0,0,1,0,.1"/>
+				<!-- Q1_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="1,0,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="1,0,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="1,0,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="1,0,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="1,0,.3,.1,.5"/>
+				<!-- Q2_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="2,10,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="2,10,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="2,10,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="2,10,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="2,10,.3,.1,.5"/>
+				<!-- Q3_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="3,11,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="3,11,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="3,11,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="3,11,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="3,11,.3,.1,.5"/>
+				<!-- Q4_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="4,12,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="4,12,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="4,12,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="4,12,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="4,12,.3,.1,.5"/>
+				<!-- Q5_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="5,14,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="5,14,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="5,14,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="5,14,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="5,14,.3,.1,.5"/>
+				<!-- Q6_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="6,16,.3,.1,.5"/>
+				<stat name="MagazineSize" 			value="6,16,.3,.1,.5"/>
+				<stat name="RoundsPerMinute" 		value="6,16,.3,.02,.1"/>
+				<stat name="DamageFalloffRange" 	value="6,16,.3,.1,.5"/>
+				<stat name="DegradationMax" 		value="6,16,.3,.1,.5"/>
+				<!-- Q6_Boosted_Rolls -->
+				<stat name="EntityDamage" 			value="6,20,.3,.5,.7"/>
+				<stat name="MagazineSize" 			value="6,20,.3,.5,1"/>
+				<stat name="RoundsPerMinute" 		value="6,20,.3,.2,.3"/>
+				<stat name="DamageFalloffRange" 	value="6,20,.3,.5,.7"/>
+				<stat name="DegradationMax" 		value="6,20,.3,.5,.7"/>
+			</stats>
 		
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
@@ -698,24 +904,30 @@
 				<property name="allowEmptyInspect" value="true"/>
 				<property name="FiringStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="InternalCancelOnly" value="true"/>
-				<property name="ToggleActionSound" value="kf_medic_Alert_Locked"/>
+				<property name="ToggleActionSound" value="Play_WEP_SA_Medic_Alert_Locked"/>
 				<property name="Delay" value=".150"/> <!-- obsolete if rounds per minute exists -->
 				<property name="Magazine_items" value="ammo762mmBulletBall,ammo762mmBulletHP,ammo762mmBulletAP"/>
 				<property name="LoopSegmentLength" value="0.08"/>
 				<property name="Sound_start" value="kf_medicar_Fire_1P_Loop"/>
 				<property name="Sound_loop" value=""/>
-				<property name="Sound_empty" value="kf_ak12_DryFire"/>
+				<property name="Sound_empty" value="Play_WEP_SA_AK12_Handling_DryFire__Variant_ak12_DryFire"/>
 				<property name="AutoReload" value="false"/>
-				<property name="FireMode0.BurstCount" value="1"/>
-				<property name="FireMode0.IsFullAuto" value="true"/>
-				<property name="FireMode0.ModeName" value="ttFiringModeFullAuto"/>
-				<property name="FireMode1.BurstCount" value="1"/>
-				<property name="FireMode1.IsFullAuto" value="false"/>
-				<property name="FireMode1.ModeName" value="ttFiringModeSemiAuto"/>
-				<property name="FireMode2.BurstCount" value="3"/>
-				<property name="FireMode2.IsFullAuto" value="false"/>
-				<property name="FireMode2.ModeName" value="ttFiringModeBurst3"/>
-				<property name="FireModeSwitchingSound" value="kf_ui_mode_switch"/>
+				<property class="FireMode0">
+					<property name="BurstCount" value="0"/>
+					<property name="IsFullAuto" value="true"/>
+					<property name="ModeName" value="ttFiringModeFullAuto"/>
+				</property>
+				<property class="FireMode1">
+					<property name="BurstCount" value="1"/>
+					<property name="IsFullAuto" value="false"/>
+					<property name="ModeName" value="ttFiringModeSemiAuto"/>
+				</property>
+				<property class="FireMode2">
+					<property name="BurstCount" value="3"/>
+					<property name="IsFullAuto" value="false"/>
+					<property name="ModeName" value="ttFiringModeBurst3"/>
+				</property>
+				<property name="FireModeSwitchingSound" value="Play_WEP_ModeSwitch"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?medic_ar_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_fire_fpv" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?medic_ar_muzzle_flash_fpv.prefab"/>
 				<property name="Particles_muzzle_smoke" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?medic_ar_muzzle_smoke.prefab"/>
@@ -754,11 +966,11 @@
 				<property name="IconTintOverride" value="255,255,255"/>
 				<property name="PassiveMaxEffect" value="CustomTaggedEffect"/>
 				<property name="PassiveMaxTags" value="medicWeapon,MedicStock,RechargeDataMaximum"/>
-				<property name="Sound_start" value="kf_medicdart_Fire_1p"/>
-				<property name="Sound_loop" value="kf_medicdart_Fire_1p"/>
+				<property name="Sound_start" value="Play_WEP_SA_Medic_Dart_Fire_1P"/>
+				<property name="Sound_loop" value="Play_WEP_SA_Medic_Dart_Fire_1P"/>
 				<property name="Sound_repeat" value=""/>
 				<property name="Sound_end" value=""/>
-				<property name="Sound_empty" value="kf_medicdart_DryFire"/>
+				<property name="Sound_empty" value="Play_WEP_SA_Medic_Dart_DryFire"/>
 				<property name="LoopSegmentLength" value="0.09231"/>
 				<property name="AutoReload" value="false"/>
 				<property name="Infinite_ammo" value="true"/>
@@ -807,7 +1019,7 @@
 			<effect_group name="Weapon mode">
 				<requirement name="ActionIndexIs,KFCommonUtilityLib" index="0"/>
 					<passive_effect name="RoundsPerMinute" operation="base_set" value="750" tags="perkMachineGunner"/>
-					<passive_effect name="BurstRoundCount" operation="base_set" value="999" tags="perkMachineGunner"/>
+					<passive_effect name="BurstRoundCount" operation="base_set" value="0" tags="perkMachineGunner"/>
 					<passive_effect name="MaxRange" operation="base_set" value="90" tags="perkMachineGunner,9mmGun"/>
 					<passive_effect name="DamageFalloffRange" operation="base_set" value="50" tags="perkMachineGunner,9mmGun"/>
 					<passive_effect name="DamageFalloffRange" operation="perc_add" value="-.1,.05" tier="1,6" tags="perkMachineGunner"/> <!-- random effective rng -->

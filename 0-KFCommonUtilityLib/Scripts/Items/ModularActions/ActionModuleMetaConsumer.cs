@@ -11,13 +11,12 @@ public class ActionModuleMetaConsumer
 {
     public string[] consumeDatas;
     public FastTags<TagGroup.Global>[] consumeTags;
-    private static FastTags<TagGroup.Global> TagsConsumption = FastTags<TagGroup.Global>.Parse("ConsumptionValue");
+    private static readonly FastTags<TagGroup.Global> TagsConsumption = FastTags<TagGroup.Global>.Parse("ConsumptionValue");
 
     [HarmonyPatch(nameof(ItemAction.ReadFrom)), MethodTargetPostfix]
     private void Postfix_ReadFrom(DynamicProperties _props, ItemAction __instance)
     {
-        string consumeData = string.Empty;
-        _props.Values.TryGetValue("ConsumeData", out consumeData);
+        _props.Values.TryGetValue("ConsumeData", out var consumeData);
         if (string.IsNullOrEmpty(consumeData))
         {
             Log.Error($"No consume data found on item {__instance.item.Name} action {__instance.ActionIndex}");
@@ -40,92 +39,6 @@ public class ActionModuleMetaConsumer
     {
         __customData.consumeStocks = new float[consumeDatas.Length];
         __customData.consumeValues = new float[consumeDatas.Length];
-    }
-
-    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemAction.ExecuteAction)), MethodTargetTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_ItemActionRanged_ExecuteAction(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
-    {
-        var codes = instructions.ToList();
-
-        var fld_started = AccessTools.Field(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.burstShotStarted));
-        var fld_infinite = AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.InfiniteAmmo));
-        var mtd_consume = AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.ConsumeAmmo));
-        var lbd_module = generator.DeclareLocal(typeof(ActionModuleMetaConsumer));
-        var lbd_data_module = generator.DeclareLocal(typeof(MetaConsumerData));
-        var prop_itemvalue = AccessTools.PropertyGetter(typeof(ItemInventoryData), nameof(ItemInventoryData.itemValue));
-
-        int localIndexEntity;
-        if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
-        {
-            localIndexEntity = 6;
-        }
-        else
-        {
-            localIndexEntity = 7;
-        }
-
-        for (int i = 0; i < codes.Count; i++)
-        {
-            if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == localIndexEntity)
-            {
-                codes.InsertRange(i - 4, new[]
-                {
-                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(codes[i - 4].ExtractLabels()),
-                    CodeInstruction.Call(typeof(ModuleExtensions), nameof(ModuleExtensions.LoadModule), null, new []{typeof(ActionModuleMetaConsumer)}),
-                    new CodeInstruction(OpCodes.Stloc_S, lbd_module),
-                    new CodeInstruction(OpCodes.Ldarg_1),
-                    CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(MetaConsumerData)}),
-                    new CodeInstruction(OpCodes.Stloc_S, lbd_data_module),
-                });
-                i += 6;
-            }
-            else if (codes[i].StoresField(fld_started) && codes[i - 1].LoadsConstant(1))
-            {
-                var lbl = generator.DefineLabel();
-                var original = codes[i - 2];
-                codes.InsertRange(i - 2, new[]
-                {
-                    new CodeInstruction(OpCodes.Ldloc_S, lbd_module).WithLabels(original.ExtractLabels()),
-                    new CodeInstruction(OpCodes.Ldloc_0),
-                    CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
-                    new CodeInstruction(OpCodes.Callvirt, prop_itemvalue),
-                    new CodeInstruction(OpCodes.Ldloc_S, localIndexEntity),
-                    new CodeInstruction(OpCodes.Ldloc_S, lbd_data_module),
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    CodeInstruction.LoadField(typeof(ItemActionAttack), nameof(ItemActionAttack.soundEmpty)),
-                    CodeInstruction.Call(typeof(ActionModuleMetaConsumer), nameof(CheckAndCacheMetaData)),
-                    new CodeInstruction(OpCodes.Brtrue_S, lbl),
-                    new CodeInstruction(OpCodes.Ret)
-                });
-                original.WithLabels(lbl);
-                i += 11;
-            }
-            else if (codes[i].Calls(mtd_consume))
-            {
-                var lbl = generator.DefineLabel();
-                for (int j = i - 1; j >= 0; j--)
-                {
-                    if (codes[j].LoadsField(fld_infinite) && codes[j + 1].Branches(out _))
-                    {
-                        codes[j + 1].operand = lbl;
-                        break;
-                    }
-                }
-                codes.InsertRange(i + 1, new[]
-                {
-                    new CodeInstruction(OpCodes.Ldloc_S, lbd_module).WithLabels(lbl),
-                    new CodeInstruction(OpCodes.Ldloc_0),
-                    CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
-                    new CodeInstruction(OpCodes.Callvirt, prop_itemvalue),
-                    new CodeInstruction(OpCodes.Ldloc_S, localIndexEntity),
-                    new CodeInstruction(OpCodes.Ldloc_S, lbd_data_module),
-                    CodeInstruction.Call(typeof(ActionModuleMetaConsumer), nameof(ConsumeMetaData)),
-                });
-                break;
-            }
-        }
-
-        return codes;
     }
 
     [HarmonyPatch(typeof(ItemActionDynamicMelee), nameof(ItemAction.ExecuteAction)), MethodTargetTranspiler]
@@ -237,5 +150,95 @@ public class ActionModuleMetaConsumer
     {
         public float[] consumeStocks;
         public float[] consumeValues;
+    }
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.TryExecuteAction)), MethodTargetTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_ItemActionRanged_TryExecuteAction(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+    {
+        var codes = instructions.ToList();
+
+        var fld_itemvalue = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.ItemValue));
+        var fld_infinite = AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.InfiniteAmmo));
+        var mtd_getburst = AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.GetBurstCount));
+        var mtd_consume = AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.ConsumeAmmo));
+        var lbd_module = generator.DeclareLocal(typeof(ActionModuleMetaConsumer));
+        var lbd_data_module = generator.DeclareLocal(typeof(MetaConsumerData));
+        var prop_itemvalue = AccessTools.PropertyGetter(typeof(ItemInventoryData), nameof(ItemInventoryData.itemValue));
+
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].Calls(mtd_getburst))
+            {
+                codes.InsertRange(i + 2, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(codes[i + 2].ExtractLabels()),
+                    CodeInstruction.Call(typeof(ModuleExtensions), nameof(ModuleExtensions.LoadModule), null, new []{typeof(ActionModuleMetaConsumer)}),
+                    new CodeInstruction(OpCodes.Stloc_S, lbd_module),
+                    new CodeInstruction(OpCodes.Ldarg_1),
+                    CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(MetaConsumerData)}),
+                    new CodeInstruction(OpCodes.Stloc_S, lbd_data_module),
+                });
+                i += 8;
+            }
+            else if (codes[i].StoresField(fld_itemvalue))
+            {
+                for (int j = i - 1; j >= 0; j--)
+                {
+                    if (codes[j].opcode == OpCodes.Ret)
+                    {
+                        var lbl = generator.DefineLabel();
+                        var original = codes[j + 1];
+                        codes.InsertRange(j + 1, new[]
+                        {
+                            new CodeInstruction(OpCodes.Ldloc_S, lbd_module).WithLabels(original.ExtractLabels()),
+                            new CodeInstruction(OpCodes.Ldloc_0),
+                            CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
+                            new CodeInstruction(OpCodes.Callvirt, prop_itemvalue),
+                            new CodeInstruction(OpCodes.Ldloc_0),
+                            CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
+                            CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity)),
+                            new CodeInstruction(OpCodes.Ldloc_S, lbd_data_module),
+                            new CodeInstruction(OpCodes.Ldarg_0),
+                            CodeInstruction.LoadField(typeof(ItemActionAttack), nameof(ItemActionAttack.soundEmpty)),
+                            CodeInstruction.Call(typeof(ActionModuleMetaConsumer), nameof(CheckAndCacheMetaData)),
+                            new CodeInstruction(OpCodes.Brtrue_S, lbl),
+                            new CodeInstruction(OpCodes.Ldarg_0),
+                            new CodeInstruction(OpCodes.Ldloc_0),
+                            CodeInstruction.Call(typeof(ItemActionRanged), nameof(ItemActionRanged.ResetBurstShot)),
+                            new CodeInstruction(OpCodes.Ret)
+                        });
+                        original.WithLabels(lbl);
+                        i += 16;
+                        break;
+                    }
+                }
+            }
+            else if (codes[i].Calls(mtd_consume))
+            {
+                var lbl = generator.DefineLabel();
+                for (int j = i - 1; j >= 0; j--)
+                {
+                    if (codes[j].LoadsField(fld_infinite) && codes[j + 1].Branches(out _))
+                    {
+                        codes[j + 1].operand = lbl;
+                        break;
+                    }
+                }
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldloc_S, lbd_module).WithLabels(lbl),
+                    new CodeInstruction(OpCodes.Ldloc_0),
+                    CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
+                    new CodeInstruction(OpCodes.Callvirt, prop_itemvalue),
+                    new CodeInstruction(OpCodes.Ldloc_0),
+                    CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
+                    CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity)),
+                    new CodeInstruction(OpCodes.Ldloc_S, lbd_data_module),
+                    CodeInstruction.Call(typeof(ActionModuleMetaConsumer), nameof(ConsumeMetaData)),
+                });
+                break;
+            }
+        }
+
+        return codes;
     }
 }

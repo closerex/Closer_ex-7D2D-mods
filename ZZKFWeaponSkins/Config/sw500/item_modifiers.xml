@@ -1,0 +1,549 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configs>
+  <append xpath="/item_modifiers">
+    <item_modifier name="modKFSkin_sw500_SkinId_3316" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_3316" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_3316Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_3316__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_3316__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_3317" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_3317" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_3317Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_3317__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_3317__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_3318" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_3318" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_3318Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_3318__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_3318__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_3439" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_3439" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_3439Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_3439__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_3439__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_3442" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_3442" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_3442Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_3442__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_3442__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_3443" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_3443" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_3443Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_3443__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_3443__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_3444" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_3444" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_3444Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_3444__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_3444__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_4739" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_4739" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_4739Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_4739__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_4739__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_4740" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_4740" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_4740Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_4740__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_4740__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_4741" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_4741" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_4741Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_4741__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_4741__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_6479" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_6479" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_6479Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_6479__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_6479__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_6504" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_6504" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_6504Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_6504__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_6504__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_6505" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_6505" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_6505Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_6505__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_6505__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_6506" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_6506" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_6506Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_6506__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_6506__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_6611" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_6611" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_6611Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_6611__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_6611__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_6971" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_6971" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_6971Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_6971__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_6971__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_6972" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_6972" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_6972Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_6972__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_6972__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_6973" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_6973" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_6973Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_6973__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_6973__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_7163" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_7163" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_7163Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_7163__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_7163__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_7200" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_7200" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_7200Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_7200__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_7200__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_7201" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_7201" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_7201Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_7201__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_7201__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_7202" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_7202" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_7202Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_7202__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_7202__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_7229" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_7229" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_7229Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_7229__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_7229__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_7503" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_7503" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_7503Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_7503__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_7503__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_8097" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_8097" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_8097Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_8097__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_8097__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_8108" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_8108" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_8108Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_8108__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_8108__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_8997" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_8997" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_8997Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_8997__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_8997__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_9007" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_9007" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_9007Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_9007__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_9007__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_9674" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_9674" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_9674Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_9674__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_9674__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_9678" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_9678" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_9678Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_9678__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_9678__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_9711" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_9711" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_9711Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_9711__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_9711__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_sw500_SkinId_9712" installable_tags="kfSkin_gunKFDualSW500,kfSkin_gunKFSW500" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_sw500_SkinId_9712" />
+      <property name="DescriptionKey" value="modKFSkin_sw500_SkinId_9712Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_9712__sw_500_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSW500">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/sw500/kf_skin_sw500.unity3d?SkinId_9712__sw_500_m" />
+      </item_property_overrides>
+    </item_modifier>
+  </append>
+</configs>

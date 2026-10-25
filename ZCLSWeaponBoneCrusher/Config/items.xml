@@ -25,7 +25,7 @@
 		
 			<property class="Action0">
 				<property name="Class" value="DynamicMelee"/>
-				<property name="Sound_start" value="kf_Movement_Bash"/>
+				<property name="Sound_start" value="Play_PC_Weapon_Bash"/>
 				<property name="DynamicSoundStart" value="bashSwingLight"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
 				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
@@ -38,7 +38,7 @@
 			</property>
 			<property class="Action1">
 				<property name="Class" value="DynamicMelee"/>
-				<property name="Sound_start" value="kf_Movement_Bash"/>
+				<property name="Sound_start" value="Play_PC_Weapon_Bash"/>
 				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
 				<property name="Sphere" value=".15"/>
@@ -147,6 +147,40 @@
             <property name="SoundPickup" value="club_metal_grab"/>
             <property name="SoundPlace" value="club_metal_place"/>
 
+<stats>
+		<!-- Base_Random_Roll -->
+		<stat name="EntityDamage"			value="0,0,1,0,.1"/>
+
+		<stat name="DegradationMax" 		value="0,0,1,0,.1"/>
+		<!-- Q1_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="1,0,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="1,0,.3,.1,.5"/>
+		<!-- Q2_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="2,10,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="2,10,.3,.1,.5"/>
+		<!-- Q3_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="3,11,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="3,11,.3,.1,.5"/>
+		<!-- Q4_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="4,12,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="4,12,.3,.1,.5"/>
+		<!-- Q5_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="5,14,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="5,14,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,16,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="6,16,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,20,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="6,20,.3,.1,.5"/>
+	</stats>
             <property class="Action0">
                 <property name="Class" value="DynamicMelee"/>
                 <property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib"/>
@@ -155,7 +189,9 @@
 				<property name="DynamicSoundStart" value="meleeEmptySwingLight"/>
                 <property name="Sound_start" value="batwood_swinglight"/>
                 <property name="Sphere" value=".1"/>
-                <property name="ToolCategory.harvestingTools" value=".5" param1="1"/>
+                <property class="ToolCategory">
+                    <property name="harvestingTools" value=".5" param1="1"/>
+                </property>
                 <property name="UseGrazingHits" value="true"/>
                 <property name="GrazeStart" value=".25"/>
                 <property name="GrazeEnd" value=".32"/>
@@ -175,7 +211,9 @@
 				<property name="DynamicSoundStart" value="meleeEmptySwingHeavy"/>
                 <property name="Sound_start" value="batwood_swingheavy"/>
                 <property name="Sphere" value=".15"/>
-                <property name="ToolCategory.harvestingTools" value=".5" param1="1"/>
+                <property class="ToolCategory">
+                    <property name="harvestingTools" value=".5" param1="1"/>
+                </property>
                 <property name="UsePowerAttackAnimation" value="true"/>
                 <property name="UseGrazingHits" value="true"/>
                 <property name="IsHorizontalSwing" value="true"/>
@@ -232,6 +270,7 @@
 				<passive_effect name="EntityDamage" operation="base_add" value="9" tags="secondary"/>
                 <passive_effect name="EntityDamage" operation="perc_add" value="1" tags="secondary"/>
                 <passive_effect name="BlockDamage" operation="perc_add" value="1" tags="secondary"/>
+				<passive_effect name="DismemberChance" operation="base_add" value=".6" tags="secondary"/>
 				
 				<triggered_effect trigger="onSelfEquipStart,onSelfEquipStop" action="RemoveBuff" buff="buffBoneCrusherHeavyMaceAttack,buffBoneCrusherHeavyShieldAttack"/>
 				<triggered_effect trigger="onAnimatorStateEntered" action="AddBuff" buff="buffBoneCrusherHeavyMaceAttack">
@@ -243,17 +282,13 @@
             </effect_group>
 			<effect_group name="Heavy Mace Attack">
 				<requirement name="HasBuff" buff="buffBoneCrusherHeavyMaceAttack"/>
-					<passive_effect name="DismemberChance" operation="base_add" value="1.2" tags="secondary"/>
+					<passive_effect name="DismemberChance" operation="base_add" value=".6" tags="secondary"/>
 			</effect_group>
 			<effect_group name="Heavy Shield Attack">
 				<requirement name="HasBuff" buff="buffBoneCrusherHeavyShieldAttack"/>
 					<triggered_effect trigger="onSelfAttackedOther" action="Ragdoll" duration="1" force="120" target="other">
 						<requirement name="!EntityTagCompare" target="other" tags="player"/>
 					</triggered_effect>
-                	<passive_effect name="EntityDamage" operation="base_add" value="-4" tags="secondary"/>
-					<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".8" tags="secondary"/>
-					<passive_effect name="GrazeDamageMultiplier" operation="base_set" value=".5" tags="secondary"/>
-					<passive_effect name="DismemberChance" operation="base_add" value=".6" tags="secondary"/>
 			</effect_group>
 			<effect_group name="Radiated dismember resistance">
 				<passive_effect name="DismemberChance" operation="perc_add" value="-.2" tags="head">

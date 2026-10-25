@@ -38,8 +38,7 @@ public class ActionModuleAnimationInterruptSource
 
     public static void GetAllRunningAndInterruptableActions(EntityPlayerLocal player, ItemAction interruptAction, ItemActionData interruptData, List<ItemAction> actionList, List<ItemActionData> dataList, out bool isActionRunning, out bool isAllRunningActionInterruptable)
     {
-        var itemExtFunc = player.inventory.holdingItem as ItemClassExtendedFunction;
-        if (itemExtFunc != null)
+        if (player.inventory.holdingItem is ItemClassExtendedFunction itemExtFunc)
         {
             itemExtFunc.GetAllExecutingActions(player.inventory.holdingItemData, actionList, dataList);
             isActionRunning = actionList.Count > 0;
@@ -159,21 +158,8 @@ public static class ZAnimationInterruptSourcePatches
 
         var mtd_isrunning = AccessTools.Method(typeof(ItemAction), nameof(ItemAction.IsActionRunning));
         int localIndexAction0, localIndexAction1;
-        if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 1))
-        {
-            localIndexAction0 = 38;
-            localIndexAction1 = 37;
-        }
-        else if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
-        {
-            localIndexAction0 = 40;
-            localIndexAction1 = 39;
-        }
-        else
-        {
-            localIndexAction0 = 43;
-            localIndexAction1 = 42;
-        }
+        localIndexAction0 = 30;
+        localIndexAction1 = 29;
 
         for (int i = 0; i < codes.Count; i++)
         {

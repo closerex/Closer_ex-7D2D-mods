@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -64,7 +64,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
 
         public static string GetPropertyName(int index, string prop)
         {
-            return $"Action{index}.{prop}";
+            return $"Action{index}";
         }
 
         public static void FixedItemReloadServer(int entityId, int actionIndex)
@@ -108,6 +108,8 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             Array.Copy(launcherValue.Modifications, projectileValue.Modifications, launcherValue.Modifications.Length);
             projectileValue.CosmeticMods = new ItemValue[launcherValue.CosmeticMods.Length];
             Array.Copy(launcherValue.CosmeticMods, projectileValue.CosmeticMods, launcherValue.CosmeticMods.Length);
+            //shallow copy because original stats is reconstructed everytime it's touched
+            projectileValue.Stats = launcherValue.Stats;
         }
 
         public static void SetMinEventParamsActionData(EntityAlive entity, int actionIndex)
@@ -191,28 +193,45 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 return false;
             string _itemName = _item.GetItemName();
             string itemNameWithActionIndex = $"{_itemName}_{actionIndex}";
-            if (mod.PropertyOverrides.ContainsKey(itemNameWithActionIndex) && mod.PropertyOverrides[itemNameWithActionIndex].Values.ContainsKey(_propertyName))
+            if (mod.PropertyOverrides.ContainsKey(itemNameWithActionIndex) && TryGetPropertyValue(mod.PropertyOverrides[itemNameWithActionIndex], _propertyName, out string propertyValue))
             {
-                _value = mod.PropertyOverrides[itemNameWithActionIndex].Values[_propertyName];
+                _value = propertyValue;
                 return true;
             }
-            if (mod.PropertyOverrides.ContainsKey(_itemName) && mod.PropertyOverrides[_itemName].Values.ContainsKey(_propertyName))
+            if (mod.PropertyOverrides.ContainsKey(_itemName) && TryGetPropertyValue(mod.PropertyOverrides[_itemName], _propertyName, out propertyValue))
             {
-                _value = mod.PropertyOverrides[_itemName].Values[_propertyName];
+                _value = propertyValue;
                 return true;
             }
             itemNameWithActionIndex = $"*_{actionIndex}";
-            if (mod.PropertyOverrides.ContainsKey(itemNameWithActionIndex) && mod.PropertyOverrides[itemNameWithActionIndex].Values.ContainsKey(_propertyName))
+            if (mod.PropertyOverrides.ContainsKey(itemNameWithActionIndex) && TryGetPropertyValue(mod.PropertyOverrides[itemNameWithActionIndex], _propertyName, out propertyValue))
             {
-                _value = mod.PropertyOverrides[itemNameWithActionIndex].Values[_propertyName];
+                _value = propertyValue;
                 return true;
             }
-            if (mod.PropertyOverrides.ContainsKey("*") && mod.PropertyOverrides["*"].Values.ContainsKey(_propertyName))
+            if (mod.PropertyOverrides.ContainsKey("*") && TryGetPropertyValue(mod.PropertyOverrides["*"], _propertyName, out propertyValue))
             {
-                _value = mod.PropertyOverrides["*"].Values[_propertyName];
+                _value = propertyValue;
                 return true;
             }
             return false;
+        }
+
+        private static bool TryGetPropertyValue(DynamicProperties properties, string propertyPath, out string value)
+        {
+            value = null;
+            int separatorIndex = propertyPath.IndexOf('.');
+            while (separatorIndex >= 0)
+            {
+                properties = properties.GetClass(propertyPath.Substring(0, separatorIndex));
+                if (properties == null)
+                    return false;
+
+                propertyPath = propertyPath.Substring(separatorIndex + 1);
+                separatorIndex = propertyPath.IndexOf('.');
+            }
+
+            return properties.Values.TryGetValue(propertyPath, out value);
         }
 
         public static int GetMode(this ItemValue self)
@@ -341,14 +360,14 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 int actionIndex = indices.GetActionIndexForMode(i);
                 if (item.Actions[actionIndex] is ItemActionRanged ranged && !(ranged is ItemActionTextureBlock))
                 {
-                    object meta = itemValue.GetMetadata(MultiActionUtils.ActionMetaNames[metaIndex]);
-                    object ammoIndex = itemValue.GetMetadata(MultiActionUtils.ActionSelectedAmmoNames[metaIndex]);
+                    object meta = itemValue.GetMetadata(ActionMetaNames[metaIndex]);
+                    object ammoIndex = itemValue.GetMetadata(ActionSelectedAmmoNames[metaIndex]);
                     if (meta is int && ammoIndex is int && (int)meta > 0)
                     {
-                        itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[metaIndex], 0, TypedMetadataValue.TypeTag.Integer);
+                        itemValue.SetMetadata(ActionMetaNames[metaIndex], 0, TypedMetadataValue.TypeTag.Integer);
                         ItemStack ammoStack = new ItemStack(ItemClass.GetItem(ranged.MagazineItemNames[(int)ammoIndex]), (int)meta);
                         result.Add(ammoStack);
-                        Log.Out($"Remove ammo: metadata {MultiActionUtils.ActionMetaNames[metaIndex]}, meta {(int)meta}, left {itemValue.GetMetadata(MultiActionUtils.ActionMetaNames[metaIndex])}");
+                        Log.Out($"Remove ammo: metadata {ActionMetaNames[metaIndex]}, meta {(int)meta}, left {itemValue.GetMetadata(ActionMetaNames[metaIndex])}");
                     }
                 }
             }
@@ -391,7 +410,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                     meta = 0;
                 }
                 if (indice.GetMetaIndexForMode(i) == indice.GetActionIndexForMode(i))
-                    itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[indice.GetMetaIndexForMode(i)], meta, TypedMetadataValue.TypeTag.Integer);
+                    itemValue.SetMetadata(ActionMetaNames[indice.GetMetaIndexForMode(i)], meta, TypedMetadataValue.TypeTag.Integer);
             }
             MinEventParams.CachedEventParam.ItemValue = prevItemValue;
             MinEventParams.CachedEventParam.ItemActionData = prevActionData;
@@ -403,7 +422,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             ItemClass itemClass = itemValue?.ItemClass;
             if (itemClass != null)
             {
-                MinEventParams.CachedEventParam.ItemActionData = MultiActionUtils.DummyActionDatas[itemValue.GetMode()];
+                MinEventParams.CachedEventParam.ItemActionData = DummyActionDatas[itemValue.GetMode()];
                 MinEventParams.CachedEventParam.ItemValue = itemValue;
                 MinEventParams.CachedEventParam.Seed = itemValue.Seed;
             }

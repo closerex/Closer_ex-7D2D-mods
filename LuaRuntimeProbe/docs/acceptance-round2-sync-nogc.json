@@ -1,0 +1,45 @@
+{
+  "context": "Actual 7DTD V3.2.0 b10 / Unity 2022.3.62f2 / Mono 6.13, main menu, 2026-10-02 Asia/Shanghai",
+  "profile": "Synchronous main-thread kernel, smaller equal workload, CleanBaselineBeforeEachRow=false; excludes cross-frame driver acceptance per latest user instruction.",
+  "source": "public static class CodexLuaRound2SyncSample {\n public static string Run() {\n  var output=new System.Text.StringBuilder(\"PROFILE:sync;forcedGC=false;hot=20000;dto=2000;callback=5000;compile=10;cold=2\\n\");\n  foreach(var b in LuaRuntimeProbe.Backends.LuaBackendRegistry.All) {\n   var c=LuaRuntimeProbe.Harness.BenchConfig.Default();\n   c.CleanBaselineBeforeEachRow=false;c.HotIterations=20000;c.BridgeDirectIterations=20000;\n   c.DtoIterations=2000;c.CallbackIterations=5000;c.CompileIterations=10;c.ColdInitIterations=2;\n   c.TotalWorkBudgetMs=8000;c.PerMetricWorkBudgetMs=2000;\n   var r=LuaRuntimeProbe.Harness.ProbeBench.Run(b,c);\n   output.AppendLine(b.Info.Id+\"|status=\"+r.Status+\"|wall=\"+r.WallMs+\"|setup=\"+r.SetupMs+\"|\"+r.FlagCensus());\n   foreach(var row in r.Rows) output.AppendLine(row.Metric+\"|n=\"+row.PerformedIterations+\"|us=\"+row.PerOpMicros+\"|ok=\"+row.ChecksumOk+\"|flag=\"+row.Flag);\n  }\n  return output.ToString();\n }\n}",
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"summary\":\"Console execution result\",\"data\":{\"mutationCommitted\":true,\"cancellationObserved\":false,\"highRisk\":true,\"action\":\"evaluate\",\"compiled\":true,\"invocationAttempted\":true,\"invocationCompleted\":true,\"valueTruncated\":false,\"diagnosticTotalCount\":0,\"diagnosticsTruncated\":false,\"outputOriginalLength\":0,\"outputTruncated\":false,\"registeredImportTotalCount\":0,\"registeredImportsTruncated\":false,\"importsMode\":\"Namespace imports are global to CUE\\u0027s evaluator: imports calls ConsoleController.AddUsing for each requested namespace and returns Evaluator.GetUsing text; request-scoped assembly references are unsupported.\",\"responseTruncated\":false,\"value\":{\"kind\":\"string\",\"typeName\":\"System.String\",\"text\":\"PROFILE:sync;forcedGC=false;hot=20000;dto=2000;callback=5000;compile=10;cold=2\\nmoonsharp|status=Completed|wall=654.1356|setup=4.7065|rows=10/10 measured=10 truncated=0 cancelled=0 skipped=0 aborted=0 unverified=0\\r\\ncsharp_baseline.add|n=20000|us=0.002115|ok=True|flag=-\\r\\ncsharp_baseline.build_dto|n=2000|us=0.65425|ok=True|flag=-\\r\\ncsharp_baseline.bridge_direct|n=20000|us=0.003185|ok=True|flag=-\\r\\nlua_cold_init|n=2|us=5643.65|ok=True|flag=-\\r\\nlua_compile_core|n=10|us=1353.13|ok=True|flag=-\\r\\nlua_hot_call.add|n=20000|us=4.705525|ok=True|flag=-\\r\\nlua_dto_push_touch|n=2000|us=39.7719|ok=True|flag=-\\r\\nlua_dto_sum_ids|n=2000|us=92.859|ok=True|flag=-\\r\\nlua_dto_evaluate|n=2000|us=86.6798|ok=True|flag=-\\r\\nlua_to_csharp.boundary|n=5000|us=11.13878|ok=True|flag=-\\r\\nnlua|status=Completed|wall=675.889|setup=13.8246|rows=10/10 measured=10 truncated=0 cancelled=0 skipped=0 aborted=0 unverified=0\\r\\ncsharp_baseline.add|n=20000|us=0.00179|ok=True|flag=-\\r\\ncsharp_baseline.build_dto|n=2000|us=1.2254|ok=True|flag=-\\r\\ncsharp_baseline.bridge_direct|n=20000|us=0.00341|ok=True|flag=-\\r\\nlua_cold_init|n=2|us=15647.95|ok=True|flag=-\\r\\nlua_compile_core|n=10|us=177.97|ok=True|flag=-\\r\\nlua_hot_call.add|n=20000|us=1.65188|ok=True|flag=-\\r\\nlua_dto_push_touch|n=2000|us=89.0188|ok=True|flag=-\\r\\nlua_dto_sum_ids|n=2000|us=73.25295|ok=True|flag=-\\r\\nlua_dto_evaluate|n=2000|us=124.62445|ok=True|flag=-\\r\\nlua_to_csharp.boundary|n=5000|us=1.44336|ok=True|flag=-\\r\\nxlua|status=Completed|wall=1244.5175|setup=1.8887|rows=10/10 measured=10 truncated=0 cancelled=0 skipped=0 aborted=0 unverified=0\\r\\ncsharp_baseline.add|n=20000|us=0.00178|ok=True|flag=-\\r\\ncsharp_baseline.build_dto|n=2000|us=0.5904|ok=True|flag=-\\r\\ncsharp_baseline.bridge_direct|n=20000|us=0.002795|ok=True|flag=-\\r\\nlua_cold_init|n=2|us=532674.55|ok=True|flag=-\\r\\nlua_compile_core|n=10|us=160.08|ok=True|flag=-\\r\\nlua_hot_call.add|n=20000|us=0.966|ok=True|flag=-\\r\\nlua_dto_push_touch|n=2000|us=23.8216|ok=True|flag=-\\r\\nlua_dto_sum_ids|n=2000|us=24.2411|ok=True|flag=-\\r\\nlua_dto_evaluate|n=2000|us=25.0495|ok=True|flag=-\\r\\nlua_to_csharp.boundary|n=5000|us=0.19326|ok=True|flag=-\\r\\n\",\"json\":\"{}\",\"truncated\":false,\"items\":[],\"entries\":[]},\"dataRef\":\"d_8034ee3f8b1a03cf7bf5910a87f81aff\",\"resultKind\":\"console.execute:evaluate\"}}"
+      }
+    ],
+    "structuredContent": {
+      "summary": "Console execution result",
+      "data": {
+        "mutationCommitted": true,
+        "cancellationObserved": false,
+        "highRisk": true,
+        "action": "evaluate",
+        "compiled": true,
+        "invocationAttempted": true,
+        "invocationCompleted": true,
+        "valueTruncated": false,
+        "diagnosticTotalCount": 0,
+        "diagnosticsTruncated": false,
+        "outputOriginalLength": 0,
+        "outputTruncated": false,
+        "registeredImportTotalCount": 0,
+        "registeredImportsTruncated": false,
+        "importsMode": "Namespace imports are global to CUE's evaluator: imports calls ConsoleController.AddUsing for each requested namespace and returns Evaluator.GetUsing text; request-scoped assembly references are unsupported.",
+        "responseTruncated": false,
+        "value": {
+          "kind": "string",
+          "typeName": "System.String",
+          "text": "PROFILE:sync;forcedGC=false;hot=20000;dto=2000;callback=5000;compile=10;cold=2\nmoonsharp|status=Completed|wall=654.1356|setup=4.7065|rows=10/10 measured=10 truncated=0 cancelled=0 skipped=0 aborted=0 unverified=0\r\ncsharp_baseline.add|n=20000|us=0.002115|ok=True|flag=-\r\ncsharp_baseline.build_dto|n=2000|us=0.65425|ok=True|flag=-\r\ncsharp_baseline.bridge_direct|n=20000|us=0.003185|ok=True|flag=-\r\nlua_cold_init|n=2|us=5643.65|ok=True|flag=-\r\nlua_compile_core|n=10|us=1353.13|ok=True|flag=-\r\nlua_hot_call.add|n=20000|us=4.705525|ok=True|flag=-\r\nlua_dto_push_touch|n=2000|us=39.7719|ok=True|flag=-\r\nlua_dto_sum_ids|n=2000|us=92.859|ok=True|flag=-\r\nlua_dto_evaluate|n=2000|us=86.6798|ok=True|flag=-\r\nlua_to_csharp.boundary|n=5000|us=11.13878|ok=True|flag=-\r\nnlua|status=Completed|wall=675.889|setup=13.8246|rows=10/10 measured=10 truncated=0 cancelled=0 skipped=0 aborted=0 unverified=0\r\ncsharp_baseline.add|n=20000|us=0.00179|ok=True|flag=-\r\ncsharp_baseline.build_dto|n=2000|us=1.2254|ok=True|flag=-\r\ncsharp_baseline.bridge_direct|n=20000|us=0.00341|ok=True|flag=-\r\nlua_cold_init|n=2|us=15647.95|ok=True|flag=-\r\nlua_compile_core|n=10|us=177.97|ok=True|flag=-\r\nlua_hot_call.add|n=20000|us=1.65188|ok=True|flag=-\r\nlua_dto_push_touch|n=2000|us=89.0188|ok=True|flag=-\r\nlua_dto_sum_ids|n=2000|us=73.25295|ok=True|flag=-\r\nlua_dto_evaluate|n=2000|us=124.62445|ok=True|flag=-\r\nlua_to_csharp.boundary|n=5000|us=1.44336|ok=True|flag=-\r\nxlua|status=Completed|wall=1244.5175|setup=1.8887|rows=10/10 measured=10 truncated=0 cancelled=0 skipped=0 aborted=0 unverified=0\r\ncsharp_baseline.add|n=20000|us=0.00178|ok=True|flag=-\r\ncsharp_baseline.build_dto|n=2000|us=0.5904|ok=True|flag=-\r\ncsharp_baseline.bridge_direct|n=20000|us=0.002795|ok=True|flag=-\r\nlua_cold_init|n=2|us=532674.55|ok=True|flag=-\r\nlua_compile_core|n=10|us=160.08|ok=True|flag=-\r\nlua_hot_call.add|n=20000|us=0.966|ok=True|flag=-\r\nlua_dto_push_touch|n=2000|us=23.8216|ok=True|flag=-\r\nlua_dto_sum_ids|n=2000|us=24.2411|ok=True|flag=-\r\nlua_dto_evaluate|n=2000|us=25.0495|ok=True|flag=-\r\nlua_to_csharp.boundary|n=5000|us=0.19326|ok=True|flag=-\r\n",
+          "json": "{}",
+          "truncated": false,
+          "items": [],
+          "entries": []
+        },
+        "dataRef": "d_8034ee3f8b1a03cf7bf5910a87f81aff",
+        "resultKind": "console.execute:evaluate"
+      }
+    }
+  }
+}

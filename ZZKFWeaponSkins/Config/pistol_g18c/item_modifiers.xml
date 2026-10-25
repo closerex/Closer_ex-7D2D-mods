@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configs>
+  <append xpath="/item_modifiers">
+    <item_modifier name="modKFSkin_pistol_g18c_SkinId_8293" installable_tags="kfSkin_gunKFDualG18C,kfSkin_gunKFG18C" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pistol_g18c_SkinId_8293" />
+      <property name="DescriptionKey" value="modKFSkin_pistol_g18c_SkinId_8293Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualG18C">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pistol_g18c/kf_skin_pistol_g18c.unity3d?SkinId_8293__g18c_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFG18C">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pistol_g18c/kf_skin_pistol_g18c.unity3d?SkinId_8293__g18c_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pistol_g18c_SkinId_8294" installable_tags="kfSkin_gunKFDualG18C,kfSkin_gunKFG18C" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pistol_g18c_SkinId_8294" />
+      <property name="DescriptionKey" value="modKFSkin_pistol_g18c_SkinId_8294Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualG18C">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pistol_g18c/kf_skin_pistol_g18c.unity3d?SkinId_8294__g18c_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFG18C">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pistol_g18c/kf_skin_pistol_g18c.unity3d?SkinId_8294__g18c_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pistol_g18c_SkinId_8295" installable_tags="kfSkin_gunKFDualG18C,kfSkin_gunKFG18C" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pistol_g18c_SkinId_8295" />
+      <property name="DescriptionKey" value="modKFSkin_pistol_g18c_SkinId_8295Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualG18C">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pistol_g18c/kf_skin_pistol_g18c.unity3d?SkinId_8295__g18c_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFG18C">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pistol_g18c/kf_skin_pistol_g18c.unity3d?SkinId_8295__g18c_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pistol_g18c_SkinId_8296" installable_tags="kfSkin_gunKFDualG18C,kfSkin_gunKFG18C" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pistol_g18c_SkinId_8296" />
+      <property name="DescriptionKey" value="modKFSkin_pistol_g18c_SkinId_8296Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualG18C">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pistol_g18c/kf_skin_pistol_g18c.unity3d?SkinId_8296__g18c_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFG18C">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pistol_g18c/kf_skin_pistol_g18c.unity3d?SkinId_8296__g18c_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pistol_g18c_SkinId_8297" installable_tags="kfSkin_gunKFDualG18C,kfSkin_gunKFG18C" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pistol_g18c_SkinId_8297" />
+      <property name="DescriptionKey" value="modKFSkin_pistol_g18c_SkinId_8297Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualG18C">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pistol_g18c/kf_skin_pistol_g18c.unity3d?SkinId_8297__g18c_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFG18C">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pistol_g18c/kf_skin_pistol_g18c.unity3d?SkinId_8297__g18c_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pistol_g18c_SkinId_8298" installable_tags="kfSkin_gunKFDualG18C,kfSkin_gunKFG18C" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pistol_g18c_SkinId_8298" />
+      <property name="DescriptionKey" value="modKFSkin_pistol_g18c_SkinId_8298Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFDualG18C">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pistol_g18c/kf_skin_pistol_g18c.unity3d?SkinId_8298__g18c_dual_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFG18C">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pistol_g18c/kf_skin_pistol_g18c.unity3d?SkinId_8298__g18c_m" />
+      </item_property_overrides>
+    </item_modifier>
+  </append>
+</configs>

@@ -216,28 +216,33 @@ public static class CustomExplosionManager
     {
         string str_index = null;
         component = null;
-        _props.ParseString("Explosion.ParticleIndex", ref str_index);
+        DynamicProperties explosionProperties = _props.GetClass("Explosion");
+        if (explosionProperties == null)
+            return false;
+        explosionProperties.ParseString("ParticleIndex", ref str_index);
         if (str_index != null && str_index.StartsWith("#"))
         {
             Log.Out("Original path:" + str_index);
             int hashed_index = getHashCode(str_index);
-            _props.Values["Explosion.ParticleIndex"] = hashed_index.ToString();
-            Log.Out("Hashed index:" + _props.Values["Explosion.ParticleIndex"]);
+            explosionProperties.Values["ParticleIndex"] = hashed_index.ToString();
+            Log.Out("Hashed index:" + explosionProperties.Values["ParticleIndex"]);
             if (!hash_paths.ContainsKey(hashed_index))
                 hash_paths.Add(hashed_index, str_index);
             bool overwrite = false;
-            _props.ParseBool("Explosion.Overwrite", ref overwrite);
+            explosionProperties.ParseBool("Overwrite", ref overwrite);
             if (overwrite || !GetCustomParticleComponents(hashed_index, out _))
             {
                 string sound_name = null;
-                _props.ParseString("Explosion.AudioName", ref sound_name);
+                explosionProperties.ParseString("AudioName", ref sound_name);
                 float duration_audio = -1;
-                _props.ParseFloat("Explosion.AudioDuration", ref duration_audio);
+                explosionProperties.ParseFloat("AudioDuration", ref duration_audio);
                 bool sync = false;
-                _props.ParseBool("Explosion.SyncOnConnect", ref sync);
+                explosionProperties.ParseBool("SyncOnConnect", ref sync);
                 bool observe = false;
-                _props.ParseBool("Explosion.IsChunkObserver", ref observe);
-                getTypeListFromString(_props.Values["Explosion.CustomScriptTypes"], out List<Type> list_customtypes);
+                explosionProperties.ParseBool("IsChunkObserver", ref observe);
+                string customScriptTypes = null;
+                explosionProperties.ParseString("CustomScriptTypes", ref customScriptTypes);
+                getTypeListFromString(customScriptTypes, out List<Type> list_customtypes);
                 bool flag = LoadParticleEffect(str_index, new ExplosionData(_props), out component, sound_name, duration_audio, list_customtypes);
                 if (flag && component != null)
                 {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Reflection.Emit;
 using HarmonyLib;
 using KFCommonUtilityLib;
@@ -10,35 +11,49 @@ using UnityEngine;
 public class ActionModuleMeleeShooter
 {
     public bool ignoreAmmoCheck;
-    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ExecuteAction)), MethodTargetTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_ItemActionRanged_ExecuteAction(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.TryExecuteAction)), MethodTargetTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_ItemActionRanged_TryExecuteAction(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
     {
         var codes = instructions.ToList();
-        var fld_started = AccessTools.Field(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.burstShotStarted));
         var mtd_checkammo = AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.checkAmmo));
         var mtd_canreload = AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.CanReload));
-        bool canReloadPatched = false;
+        bool shouldCheckAmmoPatched = false, canReloadPatched = false;
 
-        for (int i = 1; i < codes.Count; i++)
+        for (int i = 0; i < codes.Count - 1; i++)
         {
-            if (codes[i].StoresField(fld_started) && codes[i - 1].opcode == OpCodes.Ldc_I4_1)
+            if (codes[i].Calls(mtd_checkammo))
             {
-                var lbl = generator.DefineLabel();
-                var ins = codes[i - 2];
-                codes.InsertRange(i - 2, new[]
+                if (shouldCheckAmmoPatched || 
+                    (codes[i + 1].opcode != OpCodes.Brtrue && codes[i + 1].opcode != OpCodes.Brtrue_S) ||
+                    codes[i + 1].operand is not Label lbl)
                 {
-                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(ins.ExtractLabels()),
-                    new CodeInstruction(OpCodes.Ldloc_0),
-                    new CodeInstruction(OpCodes.Ldarg_2),
-                    CodeInstruction.Call(typeof(ActionModuleMeleeShooter), nameof(CheckMelee)),
-                    new CodeInstruction(OpCodes.Brtrue_S, lbl),
-                    new CodeInstruction(OpCodes.Ret),
-                });
-                ins.WithLabels(lbl);
-                i += 6;
-            }
-            else if (codes[i].Calls(mtd_checkammo))
-            {
+                    throw new InvalidOperationException("MeleeShooter TryExecuteAction checkAmmo branch changed");
+                }
+
+                bool ammoSuccessPatched = false;
+                for (int j = i + 2; j < codes.Count; j++)
+                {
+                    if (codes[j].labels.Contains(lbl))
+                    {
+                        ammoSuccessPatched = true;
+                        var lbl_continue = generator.DefineLabel();
+                        var ammoSuccess = codes[j];
+                        codes.InsertRange(j, new[]
+                        {
+                            new CodeInstruction(OpCodes.Ldarg_0).WithLabels(ammoSuccess.ExtractLabels()),
+                            new CodeInstruction(OpCodes.Ldloc_0),
+                            CodeInstruction.Call(typeof(ActionModuleMeleeShooter), nameof(CheckMelee)),
+                            new CodeInstruction(OpCodes.Brtrue_S, lbl_continue),
+                            new CodeInstruction(OpCodes.Ret),
+                        });
+                        ammoSuccess.WithLabels(lbl_continue);
+                    }
+                }
+                
+                if (!ammoSuccessPatched)
+                {
+                    throw new InvalidOperationException("MeleeShooter TryExecuteAction ammo success target not found");
+                }
                 codes.InsertRange(i - 2, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_0).WithLabels(codes[i - 2].ExtractLabels()),
@@ -49,6 +64,7 @@ public class ActionModuleMeleeShooter
                     new CodeInstruction(OpCodes.Brfalse_S, codes[i + 1].operand)
                 });
                 i += 6;
+                shouldCheckAmmoPatched = true;
             }
             else if (codes[i].Calls(mtd_canreload) && !canReloadPatched)
             {
@@ -64,6 +80,16 @@ public class ActionModuleMeleeShooter
             }
         }
 
+        if (!shouldCheckAmmoPatched)
+        {
+            throw new InvalidOperationException("MeleeShooter TryExecuteAction checkAmmo not patched");
+        }
+
+        if (!canReloadPatched)
+        {
+            throw new InvalidOperationException("MeleeShooter TryExecuteAction CanReload not patched");
+        }
+
         return codes;
     }
 
@@ -72,37 +98,34 @@ public class ActionModuleMeleeShooter
         return !ignoreAmmoCheck || customData.executionRequested;
     }
 
-    private static bool CheckMelee(ItemActionRanged __instance, ItemActionRanged.ItemActionDataRanged _rangedData, bool bReleased)
+    private static bool CheckMelee(ItemActionRanged action, ItemActionRanged.ItemActionDataRanged rangedData)
     {
-        if (bReleased)
-        {
-            return false;
-        }
-
-        var customData = _rangedData.LoadModule<MeleeShooterData>();
+        var customData = rangedData.LoadModule<MeleeShooterData>();
         if (customData.executionRequested)
         {
             customData.executionRequested = false;
             return true;
         }
 
+        // Animation requests must not retain the native burst state created before checkAmmo.
+        action.ResetBurstShot(rangedData);
         if (customData.animationRequested)
         {
-            _rangedData.m_LastShotTime = Time.time;
+            rangedData.m_LastShotTime = Time.time;
             return false;
         }
 
-        if (_rangedData.invData.holdingEntity is EntityPlayerLocal player && player.inventory.holdingItemData.IsModuleContainerFor(out ItemModuleMultiItem.MultiItemInvData dataModule))
+        if (rangedData.invData.holdingEntity is EntityPlayerLocal player && player.inventory.holdingItemData.IsModuleContainerFor(out ItemModuleMultiItem.MultiItemInvData dataModule))
         {
-            _rangedData.m_LastShotTime = 0f;
+            rangedData.m_LastShotTime = 0f;
             customData.animationRequested = ItemModuleMultiItem.CheckAltMelee(player, dataModule, false, 1, false);
-            _rangedData.m_LastShotTime = Time.time;
+            rangedData.m_LastShotTime = Time.time;
             if (customData.animationRequested)
             {
                 ItemModuleMultiItem.CheckAltMelee(player, dataModule, true, 1, false);
             }
         }
-        __instance.triggerReleased(_rangedData, __instance.ActionIndex);
+        action.triggerReleased(rangedData, action.ActionIndex);
         return false;
     }
 

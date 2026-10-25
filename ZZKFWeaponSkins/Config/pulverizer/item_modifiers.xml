@@ -1,0 +1,621 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configs>
+  <append xpath="/item_modifiers">
+    <item_modifier name="modKFSkin_pulverizer_SkinId_3053" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_3053" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_3053Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_3053__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_3054" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_3054" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_3054Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_3054__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_3055" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_3055" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_3055Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_3055__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_3430" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_3430" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_3430Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_3430__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_3587" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_3587" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_3587Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_3587__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_3588" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_3588" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_3588Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_3588__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_3589" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_3589" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_3589Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_3589__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_3643" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_3643" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_3643Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_3643__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_3644" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_3644" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_3644Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_3644__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_3645" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_3645" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_3645Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_3645__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_4126" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_4126" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_4126Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_4126__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_4127" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_4127" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_4127Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_4127__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_4128" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_4128" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_4128Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_4128__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_5921" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_5921" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_5921Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_5921__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_5922" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_5922" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_5922Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_5922__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_5923" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_5923" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_5923Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_5923__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_6343" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_6343" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_6343Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_6343__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_6776" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_6776" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_6776Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_6776__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_6947" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_6947" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_6947Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_6947__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_6948" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_6948" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_6948Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_6948__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_6949" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_6949" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_6949Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_6949__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_7478" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_7478" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_7478Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_7478__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_7479" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_7479" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_7479Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_7479__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_7480" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_7480" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_7480Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_7480__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_7493" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_7493" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_7493Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_7493__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_7519" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_7519" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_7519Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_7519__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_7807" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_7807" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_7807Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_7807__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_7808" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_7808" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_7808Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_7808__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_7809" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_7809" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_7809Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_7809__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_7833" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_7833" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_7833Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_7833__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_8198" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_8198" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_8198Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_8198__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_8208" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_8208" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_8208Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_8208__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_8518" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_8518" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_8518Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_8518__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_8528" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_8528" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_8528Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_8528__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_8995" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_8995" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_8995Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_8995__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_9005" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_9005" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_9005Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_9005__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_9496" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_9496" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_9496Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_9496__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_9500" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_9500" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_9500Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_9500__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_9631" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_9631" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_9631Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_9631__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_9632" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_9632" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_9632Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_9632__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_9633" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_9633" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_9633Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_9633__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_9634" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_9634" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_9634Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_9634__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_9635" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_9635" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_9635Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_9635__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_pulverizer_SkinId_9636" installable_tags="kfSkin_meleeWpnSledgeT3Pulverizer" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_pulverizer_SkinId_9636" />
+      <property name="DescriptionKey" value="modKFSkin_pulverizer_SkinId_9636Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnSledgeT3Pulverizer">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/pulverizer/kf_skin_pulverizer.unity3d?SkinId_9636__pulverizer_m" />
+      </item_property_overrides>
+    </item_modifier>
+  </append>
+</configs>

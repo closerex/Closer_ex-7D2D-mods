@@ -1,0 +1,273 @@
+LuaRuntimeProbe offline harness
+  modRoot      = E:\SteamLibrary\steamapps\common\7 Days To Die\ModsRepo\LuaRuntimeProbe
+  lauDir       = E:\SteamLibrary\steamapps\common\7 Days To Die\ModsRepo\LuaRuntimeProbe\Lua
+  nativeDir    = E:\SteamLibrary\steamapps\common\7 Days To Die\ModsRepo\LuaRuntimeProbe.OfflineProbe\bin\Release\net48\native
+  clr          = 4.0.30319.42000 (64-bit)
+  mono         = no
+  gcAllocProbe = unavailable
+  withXLua     = yes (the xLua backend is compiled in and must pass)
+  gameRunning  = true   <-- if true, this machine is also running the game, so timings are contended
+
+================ functional suite: moonsharp ================
+  embed        : MoonSharp 2.0.0
+  lua language : declared=5.2 measured=<not initialised>
+  runtime      : pure managed (AnyCPU CLR)
+  native dep   : none
+  available    : True
+  [PASS] init expected=true actual=True :: state alive; _VERSION=MoonSharp 2.0.0.0; globals=probe(userdata); bridge: probe=userdata Emit=function emit=function PlayerField=function player_field=function | Version()=ok:LuaRuntimeProbe/1.0.0 Version:()=ok:LuaRuntimeProbe/1.0.0 | Emit(1)=ok:called Emit:(1)=ok:called | PlayerField('health')=ok:nil PlayerField:('health')=ok:nil
+  [PASS] init_idempotent expected=true actual=True :: second Initialize() on the same instance returned true
+  [PASS] load_helpers_module expected=true actual=True :: Lua/probe_helpers.lua loaded into global 'probe_helpers'
+  [PASS] load_core_module expected=true actual=True :: Lua/probe_core.lua loaded into global 'probe_core'
+  [PASS] module_info_schema_version expected=schema_version=2 actual=2
+  [PASS] csharp_to_lua_number expected=5 actual=5
+  [PASS] csharp_to_lua_float expected=3.75 actual=3.75
+  [PASS] csharp_to_lua_string expected="abcdef" actual="abcdef"
+  [PASS] csharp_to_lua_bool expected=false actual=false
+  [PASS] scalar_int expected=42 actual=42
+  [PASS] scalar_float expected=2.5 actual=2.5
+  [PASS] scalar_negative expected=-7 actual=-7
+  [PASS] scalar_bool_true expected=true actual=true
+  [PASS] scalar_bool_false expected=false actual=false
+  [PASS] scalar_string expected="hello" actual="hello"
+  [PASS] scalar_nil_is_nil expected=nil actual=nil
+  [PASS] scalar_enum_none expected=0 actual=0
+  [PASS] scalar_enum_flee expected=1 actual=1
+  [PASS] nil_vs_zero_zero expected=0 actual=0
+  [PASS] nil_vs_zero_empty_string expected="" actual=""
+  [PASS] nil_vs_zero_false expected=false actual=false
+  [PASS] nil_vs_zero_missing_key expected=nil actual=nil
+  [PASS] bridge_reinstall expected=true actual=true :: counting bridge installed without recreating the Lua state
+  [PASS] lua_to_csharp_return_value expected=15 actual=15 :: probe_core.callback_probe(5) must return 1+2+3+4+5
+  [PASS] lua_to_csharp_callback_count expected=5 actual=5 :: probe.emit() must have been invoked once per iteration
+  [PASS] lua_to_csharp_callback_sum expected=15 actual=15 :: sum of ids delivered across the boundary
+  [PASS] nested_traversal_checksum expected=2149 actual=2149 :: coverage: event id, each tag string length, floor(tags.threat*100), actor name length, actor.hostile (+1000) and actor.level, for the standard dataset's ASCII values. scenario, kind and the player sub-table are NOT part of this checksum.
+  [PASS] reaction_standard expected="Engage" actual="Engage" :: dataset scenario=standard events=3
+  [PASS] reaction_flee expected="Flee" actual="Flee" :: dataset scenario=flee events=1
+  [PASS] reaction_reload expected="Reload" actual="Reload" :: dataset scenario=reload events=1
+  [PASS] reaction_no_match_is_nil expected=nil actual=nil :: dataset scenario=no_match events=1
+  [PASS] reaction_empty_is_nil expected=nil actual=nil :: dataset scenario=empty events=0
+  [PASS] runtime_error_is_readable expected=message containing INTENTIONAL_RUNTIME_ERROR actual=ScriptRuntimeException: Lua/probe_core.lua:(412,7-83): INTENTIONAL_RUNTIME_ERROR: probe_core.error_probe was invoked on purpose :: deliberate error, invoked exactly once per run so it cannot spam the log
+  [PASS] runtime_error_file_fails expected=false actual=False :: ScriptRuntimeException: Lua/errors/runtime_error.lua:(10,5-103): INTENTIONAL_RUNTIME_ERROR_FILE: Lua/errors/runtime_error.lua is expected to fail when executed
+  [PASS] syntax_error_file_fails expected=false actual=False :: SyntaxErrorException: Lua/errors/syntax_error.lua:(11,2-8): ')' expected (to close '(' at line 10) near 'return'
+  [INFO] syntax_error_names_chunk expected=chunk name in message actual=- :: message: SyntaxErrorException: Lua/errors/syntax_error.lua:(11,2-8): ')' expected (to close '(' at line 10) near 'return'
+  [PASS] module_state_is_reused expected=5 actual=5 :: probe_core keeps call state, proving the loaded module instance is reused across calls
+  [PASS] readonly_player_context expected=has_world=false with a world_unavailable/player_unavailable reason (context_error is a failure) actual=has_world=false reason=world_unavailable: offline probe host has no game world (expected outside 7 Days to Die) :: explicit unavailability is required when no world is loaded; nothing is faked as 0
+  [PASS] readonly_bridge_surface_shape expected=no public setter, no public mutable field, no mutating method name actual=none found :: limited STRUCTURAL check of the bridge declaration only. It is not a sandbox and does not audit method bodies, return values or inherited members. 'Read-only' here means the reviewed game access path (GameContextProvider.Capture) assigns nothing to game objects; the bridge deliberately exposes a bounded log list and a counter Reset().
+  [INFO] capability_require expected=loaded module table or explicit failure actual=True :: require('probe_require_probe') returned <table> (loader: ModFolderScriptLoader over E:\SteamLibrary\steamapps\common\7 Days To Die\ModsRepo\LuaRuntimeProbe\Lua)
+  [INFO] capability_bridge_member_case expected=informational actual=- :: type(probe)="userdata" Emit="function" emit="function" PlayerField="function" player_field="function" || Version()="ok:LuaRuntimeProbe/1.0.0" | Version:()="ok:LuaRuntimeProbe/1.0.0" || Emit(1)="ok:called" | Emit:(1)="ok:called" || PlayerField('health')="ok:nil" | PlayerField:('health')="ok:nil"
+  [INFO] capability_clr_enum expected=informational actual=- :: sample_reaction() appears in Lua as="number"; echo_reaction() round trip type="number"; error=nil
+  [INFO] capability_language_features expected=informational actual=- :: version="MoonSharp 2.0.0.0" math.type=false utf8=false table.pack=true bit32=true string.pack=false package=true load=true loadstring=false setfenv=false coroutine.close=false warn=false math.maxinteger="nil"
+  [INFO] capability_goto_compile expected=informational actual=- :: compiled=true error=nil
+  [INFO] capability_intdiv_compile expected=informational actual=- :: compiled=false executed=false value=nil error="=intdiv_probe:(1,10-11): unexpected symbol near '/'"
+  [INFO] capability_close_attrib_compile expected=informational actual=- :: local x <close> = ... compiled=false error="=close_probe:(1,8-9): unexpected symbol near '<'" (5.4-only syntax)
+  [INFO] capability_measured_language_level expected=informational actual=5.2 (no // operator, bit32 present) :: embed version=MoonSharp 2.0.0; _VERSION=MoonSharp 2.0.0.0; declared=5.2
+  [PASS] user_script_loads expected=true actual=True :: Lua/user_demo.lua loaded as user_module
+  [PASS] user_script_main_callable expected=string containing user_demo actual="user_demo backend_version=LuaRuntimeProbe/1.0.0 args=2 has_world=false health=nil name=nil reason=world_unavailable: offline probe host has no game world (expected outside 7 Days to Die)" :: the luaprobe run code path works for this backend
+  [PASS] reinit_after_shutdown expected=true actual=True :: clean re-initialisation
+  [PASS] reload_modules_after_reinit expected=true actual=True :: modules reloaded after re-init
+  [PASS] usable_after_reinit expected=42 actual=42
+  --> pass=43 fail=0 info=9
+
+================ functional suite: nlua ================
+  embed        : NLua 1.7.9 + KeraLua 1.4.10
+  lua language : declared=5.4 measured=<not initialised>
+  runtime      : native (P/Invoke into lua54.dll)
+  native dep   : native/lua54.dll (KeraLua runtimes/win-x64/native/lua54.dll)
+  available    : True
+  [PASS] init expected=true actual=True :: state alive; _VERSION=Lua 5.4; native: loaded E:\SteamLibrary\steamapps\common\7 Days To Die\ModsRepo\LuaRuntimeProbe.OfflineProbe\bin\Release\net48\native\lua54.dll -> E:\SteamLibrary\steamapps\common\7 Days To Die\ModsRepo\LuaRuntimeProbe.OfflineProbe\bin\Release\net48\native\lua54.dll (LOAD_WITH_ALTERED_SEARCH_PATH, no process-wide DLL directory change); bridge: lua["probe"] = bridge (indexer); probe=userdata Emit=userdata emit=nil PlayerField=userdata player_field=nil | Version()=err:NLua.Exceptions.LuaScriptException: bridge_visibility:21: instance method 'Version' requir... Version:()=ok:LuaRuntimeProbe/1.0.0 | Emit(1)=err:NLua.Exceptions.LuaScriptException: bridge_visibility:23: instance method 'Emit' requires ... Emit:(1)=ok:called | PlayerField('health')=err:NLua.Exceptions.LuaScriptException: bridge_visibility:27: instance method 'PlayerField' re... PlayerField:('health')=ok:nil
+  [PASS] init_idempotent expected=true actual=True :: second Initialize() on the same instance returned true
+  [PASS] load_helpers_module expected=true actual=True :: Lua/probe_helpers.lua loaded into global 'probe_helpers'
+  [PASS] load_core_module expected=true actual=True :: Lua/probe_core.lua loaded into global 'probe_core'
+  [PASS] module_info_schema_version expected=schema_version=2 actual=2
+  [PASS] csharp_to_lua_number expected=5 actual=5
+  [PASS] csharp_to_lua_float expected=3.75 actual=3.75
+  [PASS] csharp_to_lua_string expected="abcdef" actual="abcdef"
+  [PASS] csharp_to_lua_bool expected=false actual=false
+  [PASS] scalar_int expected=42 actual=42
+  [PASS] scalar_float expected=2.5 actual=2.5
+  [PASS] scalar_negative expected=-7 actual=-7
+  [PASS] scalar_bool_true expected=true actual=true
+  [PASS] scalar_bool_false expected=false actual=false
+  [PASS] scalar_string expected="hello" actual="hello"
+  [PASS] scalar_nil_is_nil expected=nil actual=nil
+  [PASS] scalar_enum_none expected=0 actual=0
+  [PASS] scalar_enum_flee expected=1 actual=1
+  [PASS] nil_vs_zero_zero expected=0 actual=0
+  [PASS] nil_vs_zero_empty_string expected="" actual=""
+  [PASS] nil_vs_zero_false expected=false actual=false
+  [PASS] nil_vs_zero_missing_key expected=nil actual=nil
+  [PASS] bridge_reinstall expected=true actual=true :: counting bridge installed without recreating the Lua state
+  [PASS] lua_to_csharp_return_value expected=15 actual=15 :: probe_core.callback_probe(5) must return 1+2+3+4+5
+  [PASS] lua_to_csharp_callback_count expected=5 actual=5 :: probe.emit() must have been invoked once per iteration
+  [PASS] lua_to_csharp_callback_sum expected=15 actual=15 :: sum of ids delivered across the boundary
+  [PASS] nested_traversal_checksum expected=2149 actual=2149 :: coverage: event id, each tag string length, floor(tags.threat*100), actor name length, actor.hostile (+1000) and actor.level, for the standard dataset's ASCII values. scenario, kind and the player sub-table are NOT part of this checksum.
+  [PASS] reaction_standard expected="Engage" actual="Engage" :: dataset scenario=standard events=3
+  [PASS] reaction_flee expected="Flee" actual="Flee" :: dataset scenario=flee events=1
+  [PASS] reaction_reload expected="Reload" actual="Reload" :: dataset scenario=reload events=1
+  [PASS] reaction_no_match_is_nil expected=nil actual=nil :: dataset scenario=no_match events=1
+  [PASS] reaction_empty_is_nil expected=nil actual=nil :: dataset scenario=empty events=0
+  [PASS] runtime_error_is_readable expected=message containing INTENTIONAL_RUNTIME_ERROR actual=LuaScriptException: [string "Lua/probe_core.lua"]:412: INTENTIONAL_RUNTIME_ERROR: probe_core.error_probe was invoked on purpose stack traceback: 	[C]: in function 'error' 	[string "Lua/probe_core.lua"]:412: in function <[string "Lua/probe_core.lua"]:411> :: deliberate error, invoked exactly once per run so it cannot spam the log
+  [PASS] runtime_error_file_fails expected=false actual=False :: LuaScriptException: [string "Lua/errors/runtime_error.lua"]:10: INTENTIONAL_RUNTIME_ERROR_FILE: Lua/errors/runtime_error.lua is expected to fail when executed stack traceback: 	[C]: in function 'error' 	[string "Lua/errors/runtime_error.lua"]:10: in main chunk
+  [PASS] syntax_error_file_fails expected=false actual=False :: LuaScriptException: [string "Lua/errors/syntax_error.lua"]:11: ')' expected near 'return'
+  [INFO] syntax_error_names_chunk expected=chunk name in message actual=- :: message: LuaScriptException: [string "Lua/errors/syntax_error.lua"]:11: ')' expected near 'return'
+  [PASS] module_state_is_reused expected=5 actual=5 :: probe_core keeps call state, proving the loaded module instance is reused across calls
+  [PASS] readonly_player_context expected=has_world=false with a world_unavailable/player_unavailable reason (context_error is a failure) actual=has_world=false reason=world_unavailable: offline probe host has no game world (expected outside 7 Days to Die) :: explicit unavailability is required when no world is loaded; nothing is faked as 0
+  [PASS] readonly_bridge_surface_shape expected=no public setter, no public mutable field, no mutating method name actual=none found :: limited STRUCTURAL check of the bridge declaration only. It is not a sandbox and does not audit method bodies, return values or inherited members. 'Read-only' here means the reviewed game access path (GameContextProvider.Capture) assigns nothing to game objects; the bridge deliberately exposes a bounded log list and a counter Reset().
+  [INFO] capability_require expected=loaded module table or explicit failure actual=True :: require('probe_require_probe') returned <table> (package.path extended with E:\SteamLibrary\steamapps\common\7 Days To Die\ModsRepo\LuaRuntimeProbe\Lua/?.lua)
+  [INFO] capability_bridge_member_case expected=informational actual=- :: type(probe)="userdata" Emit="userdata" emit="nil" PlayerField="userdata" player_field="nil" || Version()="err:NLua.Exceptions.LuaScriptException: [string "Lua/probe_core.lua"]:325: instance method 'Ve..." | Version:()="ok:LuaRuntimeProbe/1.0.0" || Emit(1)="err:NLua.Exceptions.LuaScriptException: [string "Lua/probe_core.lua"]:327: instance method 'Em..." | Emit:(1)="ok:called" || PlayerField('health')="err:NLua.Exceptions.LuaScriptException: [string "Lua/probe_core.lua"]:329: instance method 'Pl..." | PlayerField:('health')="ok:nil"
+  [INFO] capability_clr_enum expected=informational actual=- :: sample_reaction() appears in Lua as="userdata"; echo_reaction() round trip type="userdata"; error=nil
+  [INFO] capability_language_features expected=informational actual=- :: version="Lua 5.4" math.type=true utf8=true table.pack=true bit32=false string.pack=true package=true load=true loadstring=false setfenv=false coroutine.close=true warn=true math.maxinteger="9223372036854775807"
+  [INFO] capability_goto_compile expected=informational actual=- :: compiled=true error=nil
+  [INFO] capability_intdiv_compile expected=informational actual=- :: compiled=true executed=true value="3" error=nil
+  [INFO] capability_close_attrib_compile expected=informational actual=- :: local x <close> = ... compiled=true error=nil (5.4-only syntax)
+  [INFO] capability_measured_language_level expected=informational actual=5.4 (5.4-only feature present: <close> attribute) :: embed version=NLua 1.7.9 + KeraLua 1.4.10; _VERSION=Lua 5.4; declared=5.4
+  [PASS] user_script_loads expected=true actual=True :: Lua/user_demo.lua loaded as user_module
+  [PASS] user_script_main_callable expected=string containing user_demo actual="user_demo backend_version=LuaRuntimeProbe/1.0.0 args=2 has_world=false health=nil name=nil reason=world_unavailable: offline probe host has no game world (expected outside 7 Days to Die)" :: the luaprobe run code path works for this backend
+  [PASS] reinit_after_shutdown expected=true actual=True :: clean re-initialisation
+  [PASS] reload_modules_after_reinit expected=true actual=True :: modules reloaded after re-init
+  [PASS] usable_after_reinit expected=42 actual=42
+  --> pass=43 fail=0 info=9
+
+================ functional suite: xlua ================
+  embed        : XLua.Mini v2.1.16_ndkr21b_with_win
+  lua language : declared=5.4 measured=<not initialised>
+  runtime      : native (P/Invoke into xlua.dll) + managed reflection layer
+  native dep   : native/xlua.dll (win-x64, from the matching release bundle)
+  available    : True
+  [PASS] init expected=true actual=True :: state alive; _VERSION=Lua 5.4; native: loaded E:\SteamLibrary\steamapps\common\7 Days To Die\ModsRepo\LuaRuntimeProbe.OfflineProbe\bin\Release\net48\native\xlua.dll -> E:\SteamLibrary\steamapps\common\7 Days To Die\ModsRepo\LuaRuntimeProbe.OfflineProbe\bin\Release\net48\native\xlua.dll (LOAD_WITH_ALTERED_SEARCH_PATH, no process-wide DLL directory change); bridge: _env.Global["probe"] = bridge; probe=userdata Emit=function emit=nil PlayerField=function player_field=nil | Version()=err:c# exception:System.NullReferenceException: δ�������������õ������ʵ����
+   �� ProbeBri... Version:()=ok:LuaRuntimeProbe/1.0.0 | Emit(1)=err:c# exception:System.NullReferenceExc... Emit:(1)=ok:called | PlayerField('health')=err:c# exception:System.NullReferenceExc... PlayerField:('health')=ok:nil
+  [PASS] init_idempotent expected=true actual=True :: second Initialize() on the same instance returned true
+  [PASS] load_helpers_module expected=true actual=True :: Lua/probe_helpers.lua loaded into global 'probe_helpers'
+  [PASS] load_core_module expected=true actual=True :: Lua/probe_core.lua loaded into global 'probe_core'
+  [PASS] module_info_schema_version expected=schema_version=2 actual=2
+  [PASS] csharp_to_lua_number expected=5 actual=5
+  [PASS] csharp_to_lua_float expected=3.75 actual=3.75
+  [PASS] csharp_to_lua_string expected="abcdef" actual="abcdef"
+  [PASS] csharp_to_lua_bool expected=false actual=false
+  [PASS] scalar_int expected=42 actual=42
+  [PASS] scalar_float expected=2.5 actual=2.5
+  [PASS] scalar_negative expected=-7 actual=-7
+  [PASS] scalar_bool_true expected=true actual=true
+  [PASS] scalar_bool_false expected=false actual=false
+  [PASS] scalar_string expected="hello" actual="hello"
+  [PASS] scalar_nil_is_nil expected=nil actual=nil
+  [PASS] scalar_enum_none expected=0 actual=0
+  [PASS] scalar_enum_flee expected=1 actual=1
+  [PASS] nil_vs_zero_zero expected=0 actual=0
+  [PASS] nil_vs_zero_empty_string expected="" actual=""
+  [PASS] nil_vs_zero_false expected=false actual=false
+  [PASS] nil_vs_zero_missing_key expected=nil actual=nil
+  [PASS] bridge_reinstall expected=true actual=true :: counting bridge installed without recreating the Lua state
+  [PASS] lua_to_csharp_return_value expected=15 actual=15 :: probe_core.callback_probe(5) must return 1+2+3+4+5
+  [PASS] lua_to_csharp_callback_count expected=5 actual=5 :: probe.emit() must have been invoked once per iteration
+  [PASS] lua_to_csharp_callback_sum expected=15 actual=15 :: sum of ids delivered across the boundary
+  [PASS] nested_traversal_checksum expected=2149 actual=2149 :: coverage: event id, each tag string length, floor(tags.threat*100), actor name length, actor.hostile (+1000) and actor.level, for the standard dataset's ASCII values. scenario, kind and the player sub-table are NOT part of this checksum.
+  [PASS] reaction_standard expected="Engage" actual="Engage" :: dataset scenario=standard events=3
+  [PASS] reaction_flee expected="Flee" actual="Flee" :: dataset scenario=flee events=1
+  [PASS] reaction_reload expected="Reload" actual="Reload" :: dataset scenario=reload events=1
+  [PASS] reaction_no_match_is_nil expected=nil actual=nil :: dataset scenario=no_match events=1
+  [PASS] reaction_empty_is_nil expected=nil actual=nil :: dataset scenario=empty events=0
+  [PASS] runtime_error_is_readable expected=message containing INTENTIONAL_RUNTIME_ERROR actual=LuaException: [string "Lua/probe_core.lua"]:412: INTENTIONAL_RUNTIME_ERROR: probe_core.error_probe was invoked on purpose stack traceback: 	[C]: in function 'error' 	[string "Lua/probe_core.lua"]:412: in function <[string "Lua/probe_core.lua"]:411> :: deliberate error, invoked exactly once per run so it cannot spam the log
+  [PASS] runtime_error_file_fails expected=false actual=False :: LuaException: [string "Lua/errors/runtime_error.lua"]:10: INTENTIONAL_RUNTIME_ERROR_FILE: Lua/errors/runtime_error.lua is expected to fail when executed stack traceback: 	[C]: in function 'error' 	[string "Lua/errors/runtime_error.lua"]:10: in main chunk
+  [PASS] syntax_error_file_fails expected=false actual=False :: LuaException: [string "Lua/errors/syntax_error.lua"]:11: ')' expected near 'return'
+  [INFO] syntax_error_names_chunk expected=chunk name in message actual=- :: message: LuaException: [string "Lua/errors/syntax_error.lua"]:11: ')' expected near 'return'
+  [PASS] module_state_is_reused expected=5 actual=5 :: probe_core keeps call state, proving the loaded module instance is reused across calls
+  [PASS] readonly_player_context expected=has_world=false with a world_unavailable/player_unavailable reason (context_error is a failure) actual=has_world=false reason=world_unavailable: offline probe host has no game world (expected outside 7 Days to Die) :: explicit unavailability is required when no world is loaded; nothing is faked as 0
+  [PASS] readonly_bridge_surface_shape expected=no public setter, no public mutable field, no mutating method name actual=none found :: limited STRUCTURAL check of the bridge declaration only. It is not a sandbox and does not audit method bodies, return values or inherited members. 'Read-only' here means the reviewed game access path (GameContextProvider.Capture) assigns nothing to game objects; the bridge deliberately exposes a bounded log list and a counter Reset().
+  [INFO] capability_require expected=loaded module table or explicit failure actual=True :: require('probe_require_probe') returned <table> (custom loader rooted at E:\SteamLibrary\steamapps\common\7 Days To Die\ModsRepo\LuaRuntimeProbe\Lua)
+  [INFO] capability_bridge_member_case expected=informational actual=- :: type(probe)="userdata" Emit="function" emit="nil" PlayerField="function" player_field="nil" || Version()="err:c# exception:System.NullReferenceException: δ�������������õ������ʵ����
+   �� ProbeBri..." | Version:()="ok:LuaRuntimeProbe/1.0.0" || Emit(1)="err:c# exception:System.NullReferenceException: δ�������������õ������ʵ����
+   �� ProbeBri..." | Emit:(1)="ok:called" || PlayerField('health')="err:c# exception:System.NullReferenceException: δ�������������õ������ʵ����
+   �� ProbeBri..." | PlayerField:('health')="ok:nil"
+  [INFO] capability_clr_enum expected=informational actual=- :: sample_reaction() appears in Lua as="userdata"; echo_reaction() round trip type="userdata"; error=nil
+  [INFO] capability_language_features expected=informational actual=- :: version="Lua 5.4" math.type=true utf8=true table.pack=true bit32=false string.pack=true package=true load=true loadstring=false setfenv=true coroutine.close=true warn=true math.maxinteger="9223372036854775807"
+  [INFO] capability_goto_compile expected=informational actual=- :: compiled=true error=nil
+  [INFO] capability_intdiv_compile expected=informational actual=- :: compiled=true executed=true value="3" error=nil
+  [INFO] capability_close_attrib_compile expected=informational actual=- :: local x <close> = ... compiled=true error=nil (5.4-only syntax)
+  [INFO] capability_measured_language_level expected=informational actual=5.4 (5.4-only feature present: <close> attribute) :: embed version=XLua.Mini v2.1.16_ndkr21b_with_win; _VERSION=Lua 5.4; declared=5.4
+  [PASS] user_script_loads expected=true actual=True :: Lua/user_demo.lua loaded as user_module
+  [PASS] user_script_main_callable expected=string containing user_demo actual="user_demo backend_version=LuaRuntimeProbe/1.0.0 args=2 has_world=false health=nil name=nil reason=world_unavailable: offline probe host has no game world (expected outside 7 Days to Die)" :: the luaprobe run code path works for this backend
+  [PASS] reinit_after_shutdown expected=true actual=True :: clean re-initialisation
+  [PASS] reload_modules_after_reinit expected=true actual=True :: modules reloaded after re-init
+  [PASS] usable_after_reinit expected=42 actual=42
+  --> pass=43 fail=0 info=9
+
+================ benchmark: moonsharp ================
+  budget total=8000ms perMetric=2000ms hot=100000 dto=10000 callback=20000 compile=50 coldInit=10
+  active_work=1261ms  wall=1524ms  idle=0.033ms  overhead=262.195ms  setup=6.904ms  status=Completed measured lua=MoonSharp 2.0.0.0
+  metric                         iters(req/done/warm)    active_ms wall_ms   us/op     gen0/1/2   allocated   managed     checksum  ok  flag
+  csharp_baseline.add            100000/100000/1000      1.470     12.867    0.003     0/0/0      n/a         8192        500000    Y   -
+      note: minimal-work reference: a constant return in C#; NOT an upper bound for a Lua call
+  csharp_baseline.build_dto      10000/10000/200         1.476     6.789     0.127     0/0/0      n/a         4751360     30000     Y   -
+      note: CLR object-graph construction only; the Lua DTO rows additionally build a Lua table
+  csharp_baseline.bridge_direct  20000/20000/200         0.283     9.547     0.003     0/0/0      n/a         8192        20000     Y   -
+      note: direct CLR call to the same method Lua reaches through the binding layer
+  lua_cold_init                  10/10/0                 83.706    89.230    8371      4/3/2      n/a         11940080    20        Y   -
+      note: fresh interpreter + probe_helpers.lua + probe_core.lua + add(1,1) + shutdown
+  lua_compile_core               50/50/2                 168.266   179.635   3318      8/3/1      n/a         15778544    686550    Y   -
+      note: compile + execute probe_core.lua as a fresh chunk each time
+  lua_hot_call.add               100000/100000/2000      195.274   255.327   1.911     33/0/0     n/a         4375944     500000    Y   -
+      note: resolved function handle + primitive args + return conversion (no table marshalling); every backend caches the resolved handle, so no per-iteration global lookup is included
+  lua_dto_push_touch             10000/10000/100         89.193    124.487   8.730     23/1/0     n/a         927576      20000     Y   -
+      note: end-to-end adapter cost of building the nested context table from a C# DTO and reading one field. The per-table construction strategy differs per adapter (see the backend notes), so this row compares adapter implementations, not the Lua engines.
+  lua_dto_sum_ids                10000/10000/100         355.268   397.735   35.032    61/2/0     n/a         2631904     21490000  Y   -
+      note: push + full nested traversal; checksum cross-checked against the C# re-implementation
+  lua_dto_evaluate               10000/10000/100         342.078   384.586   33.887    58/2/0     n/a         1449280     10000     Y   -
+      note: push + traversal + rules; the checksum counts only iterations that actually returned "Engage"
+  lua_to_csharp.boundary         20000/20000/0           24.313    60.638    1.216     3/0/0      n/a         3131464     20010000  Y   -
+      note: Lua -> C# crossings in chunks of 2000; chunking is what bounds how long a single Lua call can block the main thread, and each chunk restarts the emitted id sequence, so the expected sum is the sum of per-chunk triangles; emitCount=20000 emitSum=20010000 (expected emitCount=20000 emitSum=20010000)
+  flag census: rows=10/10 measured=10 truncated=0 cancelled=0 skipped=0 aborted=0 unverified=0
+
+================ benchmark: nlua ================
+  budget total=8000ms perMetric=2000ms hot=100000 dto=10000 callback=20000 compile=50 coldInit=10
+  active_work=3022ms  wall=3443ms  idle=0.050ms  overhead=420.836ms  setup=8.298ms  status=Completed measured lua=Lua 5.4
+  metric                         iters(req/done/warm)    active_ms wall_ms   us/op     gen0/1/2   allocated   managed     checksum  ok  flag
+  csharp_baseline.add            100000/100000/1000      0.200     42.248    0.002     0/0/0      n/a         8192        500000    Y   -
+      note: minimal-work reference: a constant return in C#; NOT an upper bound for a Lua call
+  csharp_baseline.build_dto      10000/10000/200         2.514     33.442    0.246     0/0/0      n/a         4751360     30000     Y   -
+      note: CLR object-graph construction only; the Lua DTO rows additionally build a Lua table
+  csharp_baseline.bridge_direct  20000/20000/200         0.066     37.651    0.003     0/0/0      n/a         8192        20000     Y   -
+      note: direct CLR call to the same method Lua reaches through the binding layer
+  lua_cold_init                  10/10/0                 132.737   174.810   13274     1/0/0      n/a         2134192     20        Y   -
+      note: fresh interpreter + probe_helpers.lua + probe_core.lua + add(1,1) + shutdown
+  lua_compile_core               50/50/2                 27.243    75.817    506.560   0/0/0      n/a         1052640     686550    Y   -
+      note: compile + execute probe_core.lua as a fresh chunk each time
+  lua_hot_call.add               100000/100000/2000      128.885   170.148   1.262     6/0/0      n/a         1549504     500000    Y   -
+      note: resolved function handle + primitive args + return conversion (no table marshalling); every backend caches the resolved handle, so no per-iteration global lookup is included
+  lua_dto_push_touch             10000/10000/100         912.712   944.870   90.625    24/3/0     n/a         3367256     20000     Y   -
+      note: end-to-end adapter cost of building the nested context table from a C# DTO and reading one field. The per-table construction strategy differs per adapter (see the backend notes), so this row compares adapter implementations, not the Lua engines.
+  lua_dto_sum_ids                10000/10000/100         893.384   945.150   87.949    24/0/0     n/a         4817744     21490000  Y   -
+      note: push + full nested traversal; checksum cross-checked against the C# re-implementation
+  lua_dto_evaluate               10000/10000/100         902.044   939.281   89.367    24/0/0     n/a         5132608     10000     Y   -
+      note: push + traversal + rules; the checksum counts only iterations that actually returned "Engage"
+  lua_to_csharp.boundary         20000/20000/0           22.375    79.477    1.119     0/0/0      n/a         1613824     20010000  Y   -
+      note: Lua -> C# crossings in chunks of 2000; chunking is what bounds how long a single Lua call can block the main thread, and each chunk restarts the emitted id sequence, so the expected sum is the sum of per-chunk triangles; emitCount=20000 emitSum=20010000 (expected emitCount=20000 emitSum=20010000)
+  flag census: rows=10/10 measured=10 truncated=0 cancelled=0 skipped=0 aborted=0 unverified=0
+
+================ benchmark: xlua ================
+  budget total=8000ms perMetric=2000ms hot=100000 dto=10000 callback=20000 compile=50 coldInit=10
+  active_work=2760ms  wall=3537ms  idle=0.103ms  overhead=777.603ms  setup=2.841ms  status=Completed measured lua=Lua 5.4
+  metric                         iters(req/done/warm)    active_ms wall_ms   us/op     gen0/1/2   allocated   managed     checksum  ok  flag
+  csharp_baseline.add            100000/100000/1000      0.217     30.949    0.002     0/0/0      n/a         8192        500000    Y   -
+      note: minimal-work reference: a constant return in C#; NOT an upper bound for a Lua call
+  csharp_baseline.build_dto      10000/10000/200         2.296     33.181    0.223     0/0/0      n/a         4748680     30000     Y   -
+      note: CLR object-graph construction only; the Lua DTO rows additionally build a Lua table
+  csharp_baseline.bridge_direct  20000/20000/200         0.062     40.774    0.003     0/0/0      n/a         8192        20000     Y   -
+      note: direct CLR call to the same method Lua reaches through the binding layer
+  lua_cold_init                  10/10/0                 935.737   966.864   93574     20/20/20   n/a         34056       20        Y   -
+      note: fresh interpreter + probe_helpers.lua + probe_core.lua + add(1,1) + shutdown
+  lua_compile_core               50/50/2                 35.639    119.455   685.678   0/0/0      n/a         733152      686550    Y   -
+      note: compile + execute probe_core.lua as a fresh chunk each time
+  lua_hot_call.add               100000/100000/2000      132.244   183.755   1.288     6/0/0      n/a         1549232     500000    Y   -
+      note: resolved function handle + primitive args + return conversion (no table marshalling); every backend caches the resolved handle, so no per-iteration global lookup is included
+  lua_dto_push_touch             10000/10000/100         512.733   553.568   49.028    1/0/0      n/a         6404896     20000     Y   -
+      note: end-to-end adapter cost of building the nested context table from a C# DTO and reading one field. The per-table construction strategy differs per adapter (see the backend notes), so this row compares adapter implementations, not the Lua engines.
+  lua_dto_sum_ids                10000/10000/100         607.769   735.603   60.230    1/0/0      n/a         4308672     21490000  Y   -
+      note: push + full nested traversal; checksum cross-checked against the C# re-implementation
+  lua_dto_evaluate               10000/10000/100         528.434   776.426   52.382    1/0/0      n/a         4582280     10000     Y   -
+      note: push + traversal + rules; the checksum counts only iterations that actually returned "Engage"
+  lua_to_csharp.boundary         20000/20000/0           4.425     96.507    0.221     0/0/0      n/a         8192        20010000  Y   -
+      note: Lua -> C# crossings in chunks of 2000; chunking is what bounds how long a single Lua call can block the main thread, and each chunk restarts the emitted id sequence, so the expected sum is the sum of per-chunk triangles; emitCount=20000 emitSum=20010000 (expected emitCount=20000 emitSum=20010000)
+  flag census: rows=10/10 measured=10 truncated=0 cancelled=0 skipped=0 aborted=0 unverified=0
+
+RESULT: all assertions passed

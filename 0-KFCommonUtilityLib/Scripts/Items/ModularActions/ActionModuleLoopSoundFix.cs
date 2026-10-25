@@ -22,9 +22,9 @@ public class ActionModuleLoopSoundFix
 
         var mtd_stop = AccessTools.Method(typeof(Manager), nameof(Manager.StopSequence));
         var mtd_play = AccessTools.Method(typeof(Manager), nameof(Manager.PlaySequence));
-        var prop_time = AccessTools.PropertyGetter(typeof(AudioSettings), nameof(AudioSettings.dspTime));
         var type_data = typeof(LoopSoundFixData);
-        var mtd_delaystop = AccessTools.Method(type_data, nameof(LoopSoundFixData.StopSequenceDelayed));
+        var mtd_delaystop = AccessTools.Method(type_data, nameof(LoopSoundFixData.StopSequenceForEffects));
+        var mtd_playsequence = AccessTools.Method(type_data, nameof(LoopSoundFixData.PlaySequence));
 
         for (var i = 0; i < codes.Count; i++)
         {
@@ -34,34 +34,28 @@ public class ActionModuleLoopSoundFix
                 codes.InsertRange(i, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_2),
-                    CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(LoopSoundFixData)})
+                    CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(LoopSoundFixData)}),
+                    new CodeInstruction(OpCodes.Ldarg_3)
                 });
-                i += 2;
+                i += 3;
             }
             else if (codes[i].Calls(mtd_play))
             {
-                codes.InsertRange(i + 1, new[]
+                codes[i].operand = mtd_playsequence;
+                codes.InsertRange(i, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_2),
-                    CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(LoopSoundFixData)}),
-                    new CodeInstruction(OpCodes.Dup),
-                    new CodeInstruction(OpCodes.Dup),
-                    CodeInstruction.LoadField(typeof(LoopSoundFixPatches), nameof(LoopSoundFixPatches.LastScheduledNearSourcePlayTime)),
-                    CodeInstruction.StoreField(type_data, nameof(LoopSoundFixData.nearScheduledTime)),
-                    CodeInstruction.LoadField(typeof(LoopSoundFixPatches), nameof(LoopSoundFixPatches.LastScheduledFarSourcePlayTime)),
-                    CodeInstruction.StoreField(type_data, nameof(LoopSoundFixData.farScheduledTime)),
-                    new CodeInstruction(OpCodes.Call, prop_time),
-                    CodeInstruction.StoreField(type_data, nameof(LoopSoundFixData.loopStartTime))
+                    CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(LoopSoundFixData)})
                 });
-                i += 10;
+                i += 2;
             }
         }
 
         return codes;
     }
 
-    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ExecuteAction)), MethodTargetTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_ItemActionRanged_ExecuteAction(IEnumerable<CodeInstruction> instructions)
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.TryExecuteAction)), MethodTargetTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_ItemActionRanged_TryExecuteAction(IEnumerable<CodeInstruction> instructions)
     {
         var codes = instructions.ToList();
 
@@ -80,7 +74,7 @@ public class ActionModuleLoopSoundFix
                     new CodeInstruction(OpCodes.Call, prop_time),
                     CodeInstruction.StoreField(type_data, nameof(LoopSoundFixData.lastShotTime))
                 });
-                break;
+                i += 4;
             }
         }
 
@@ -90,16 +84,27 @@ public class ActionModuleLoopSoundFix
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ReloadGun))]
     [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.ReloadGun))]
     [HarmonyPatch(typeof(ItemActionCatapult), nameof(ItemActionCatapult.ReloadGun))]
-    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ExecuteAction))]
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.TryExecuteAction))]
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.StopHolding))]
     [MethodTargetTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_ItemActionRanged_DelayStopSequence(IEnumerable<CodeInstruction> instructions)
+    {
+        return ReplaceStopSequence(instructions, nameof(LoopSoundFixData.StopSequenceDelayed));
+    }
+
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ExecuteAction)), MethodTargetTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_ItemActionRanged_ExecuteAction(IEnumerable<CodeInstruction> instructions)
+    {
+        return ReplaceStopSequence(instructions, nameof(LoopSoundFixData.StopSequenceOnTriggerRelease));
+    }
+
+    private static IEnumerable<CodeInstruction> ReplaceStopSequence(IEnumerable<CodeInstruction> instructions, string stopMethod)
     {
         var codes = instructions.ToList();
 
         var mtd_stop = AccessTools.Method(typeof(Manager), nameof(Manager.StopSequence));
         var type_data = typeof(LoopSoundFixData);
-        var mtd_delaystop = AccessTools.Method(type_data, nameof(LoopSoundFixData.StopSequenceDelayed));
+        var mtd_delaystop = AccessTools.Method(type_data, stopMethod);
 
         for (var i = 0; i < codes.Count; i++)
         {
@@ -122,6 +127,17 @@ public class ActionModuleLoopSoundFix
     public void Postfix_onHoldingEntityFired(LoopSoundFixData __customData)
     {
         __customData.shotCount++;
+    }
+
+    [HarmonyPatch(nameof(ItemActionRanged.ItemActionEffects)), MethodTargetPostfix]
+    public void Postfix_ItemActionEffects(int _firingState, LoopSoundFixData __customData)
+    {
+        // Remote ammo is an asynchronous snapshot; remote sequences end on firing state 0.
+        if (__customData.enabled && !__customData.rangedData.invData.holdingEntity.isEntityRemote
+            && _firingState != 0 && __customData.rangedData.invData.itemValue.Meta == 0)
+        {
+            LoopSoundFixData.StopSequenceDelayed(__customData.rangedData.invData.holdingEntity, __customData.rangedData.SoundStart, __customData);
+        }
     }
 
     [HarmonyPatch(nameof(ItemActionRanged.StopHolding)), MethodTargetPostfix]
@@ -178,6 +194,40 @@ public class ActionModuleLoopSoundFix
             nearScheduledTime = -1;
             farScheduledTime = -1;
             shotCount = 0;
+        }
+
+        public static void PlaySequence(Entity entity, string soundGroupName, LoopSoundFixData data)
+        {
+            Manager.PlaySequence(entity, soundGroupName);
+            // PlaySequence is called for every round, but an existing sequence is kept alive.
+            if (data.loopStartTime < 0)
+            {
+                Manager.ConvertName(ref soundGroupName, entity);
+                if (Manager.sequenceOnEntity.TryGetValue(entity.entityId, out var sequences) && sequences.ContainsKey(soundGroupName))
+                {
+                    data.nearScheduledTime = LoopSoundFixPatches.LastScheduledNearSourcePlayTime;
+                    data.farScheduledTime = LoopSoundFixPatches.LastScheduledFarSourcePlayTime;
+                    data.loopStartTime = AudioSettings.dspTime;
+                }
+            }
+        }
+
+        public static void StopSequenceOnTriggerRelease(Entity entity, string soundGroupName, LoopSoundFixData data)
+        {
+            // Releasing the input does not cancel the remaining rounds of a burst.
+            if (data.enabled && data.rangedData.burstShotStarted && !data.rangedData.burstShotFinished)
+            {
+                return;
+            }
+            StopSequenceDelayed(entity, soundGroupName, data);
+        }
+
+        public static void StopSequenceForEffects(Entity entity, string soundGroupName, LoopSoundFixData data, int firingState)
+        {
+            if (!data.enabled || firingState == 0)
+            {
+                StopSequenceDelayed(entity, soundGroupName, data);
+            }
         }
 
         public static void StopSequenceDelayed(Entity entity, string soundGroupName, LoopSoundFixData data)
@@ -390,6 +440,7 @@ public class ActionModuleLoopSoundFix
     }
 }
 
+//todo: check new loop sound system
 [HarmonyPatch]
 public static class LoopSoundFixPatches
 {

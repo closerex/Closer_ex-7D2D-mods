@@ -12,6 +12,6 @@
             return false;
         }
 
-        return invert ^ itemValue.Activated > 0;
+        return invert ^ itemValue.Activated;
     }
 }

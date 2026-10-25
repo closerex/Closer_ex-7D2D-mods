@@ -102,10 +102,8 @@ public class SubExplosionController : MonoBehaviour
                                 return;
                             }
                             SubExplosionInitializer initializer = trans.gameObject.AddComponent<SubExplosionInitializer>();
-                            int clrIdx = cur_value.CurrentExplosionParams._clrIdx;
                             //Log.Out(initializer.name);
                             initializer.entityAlive = entityAlive;
-                            initializer.clrIdx = clrIdx;
                             initializer.data = component.BoundExplosionData;
                             if (component.BoundItemClass != null)
                                 initializer.value = new ItemValue(component.BoundItemClass.Id);

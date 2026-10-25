@@ -1,0 +1,40 @@
+LuaRuntimeProbe - assertion counts per mode, and why the operator saw 42 in world
+Generated: 2026-10-02 02:45:40
+Build under test: the current source tree, offline harness with -p:WithXLua=true,
+  filter=moonsharp (the count is per backend).
+
+MODE MEASUREMENTS (this build)
+withcaps-noworld             | exit=0 | --> pass=43 fail=0 info=9 | readonly_bridge_surface_shape=1 | readonly_player_context=PASS
+nocaps-noworld               | exit=0 | --> pass=43 fail=0 info=1 | readonly_bridge_surface_shape=1 | readonly_player_context=PASS
+nocaps-worldavailable        | exit=0 | --> pass=43 fail=0 info=1 | readonly_bridge_surface_shape=1 | readonly_player_context=PASS
+
+READONLY CHECKS IN EACH MODE
+  Every mode above reports readonly_bridge_surface_shape=1 and readonly_player_context=PASS,
+  including "nocaps-worldavailable", which exercises the world-IS-loaded branch that the
+  in-game run took.
+
+WHY THE OPERATOR SAW pass=42 (their log, unmodified: docs/acceptance-20261002-inworld.log)
+  Check names present in the offline baseline but absent from that in-world log:
+    missing: readonly_bridge_surface_shape
+    missing: capability_require
+    missing: capability_bridge_member_case
+    missing: capability_clr_enum
+    missing: capability_language_features
+    missing: capability_goto_compile
+    missing: capability_intdiv_compile
+    missing: capability_close_attrib_compile
+    missing: capability_measured_language_level
+  Of those, the 8 capability_* checks are informational and are absent simply because the
+  in-world run did not pass --caps.  The remaining one is readonly_bridge_surface_shape,
+  and that is the entire 42-vs-43 difference: 43 - 1 = 42, with fail=0.
+
+ROOT CAUSE (fixed in this build)
+  readonly_bridge_surface_shape used to be the last statement of RunReadOnlyChecks, after
+  the world-available branch returned early - so it disappeared exactly when a world was
+  loaded.  It is now a separate step (RunBridgeSurfaceCheck) invoked unconditionally from
+  ProbeSuite.Run, which is why the fixed build reports 43 in world too.
+
+TRIPWIRE FOR THE NEXT IN-GAME RUN
+  Deploy the staged build, run "luaprobe test <backend>" (no --caps) in world, and expect
+  pass=43 fail=0 info=1.  A result of pass=42 would mean this fix did not take effect and
+  must be investigated, NOT accepted as the baseline.

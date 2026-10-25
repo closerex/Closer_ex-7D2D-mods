@@ -1,5 +1,7 @@
 ﻿using KFCommonUtilityLib;
+using HarmonyLib;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using UnityEngine;
 
 namespace KFCommonUtilityLib.Scripts.Utilities
@@ -9,13 +11,50 @@ namespace KFCommonUtilityLib.Scripts.Utilities
     /// - projectile ItemValue fields are reused for custom passive calculation:
     /// -- Meta => launcher ItemClass id
     /// -- SelectedAmmoIndex => launcher action index
-    /// -- Activated => launcher data strain perc
+    /// -- RawStrain metadata => raw launcher strain captured when Fire starts
     /// -- cosmetics and mods reference launcher ItemValue
     /// -- Quality and Durability is copied from launcher ItemValue
     /// - MinEventParams.itemActionData is set to correct launcher data.
     /// </summary>
     public class CustomProjectileMoveScript : ProjectileMoveScript
     {
+        private const string RawStrainKey = "RawStrain";
+        [System.NonSerialized]
+        private ItemValue pickupValueSnapshot;
+
+        public bool initialImpactConsumed;
+
+        public void InitializeValueCopies()
+        {
+            var source = itemValueProjectile;
+            pickupValueSnapshot = source.Clone();
+            pickupValueSnapshot.Metadata?.Remove(RawStrainKey);
+            itemValueProjectile = source.Clone();
+            itemValueProjectile.Metadata?.Remove(RawStrainKey);
+            MultiActionUtils.CopyLauncherValueToProjectile(
+                itemValueLauncher, itemValueProjectile, actionData.indexInEntityOfAction);
+        }
+
+        public void CaptureLaunchStrain()
+        {
+            itemValueProjectile.SetMetadata(RawStrainKey, actionData.strainPercent);
+        }
+
+        public float ReadLaunchStrain()
+        {
+            return (float)itemValueProjectile.GetMetadata(RawStrainKey);
+        }
+
+        public ItemValue CreatePickupValue()
+        {
+            // FullautoLauncher compatibility also creates already-consumed sticky
+            // components directly, without this class's normal launch factory.
+            var source = pickupValueSnapshot ?? (initialImpactConsumed ? itemValueProjectile : null);
+            var clean = source.Clone();
+            clean.Metadata?.Remove(RawStrainKey);
+            return clean;
+        }
+
         public override void checkCollision()
         {
             GameManager gameManager = GameManager.Instance;
@@ -43,6 +82,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             }
             EntityAlive firingEntity = (EntityAlive)this.firingEntity;
             Ray ray = new Ray(previousPosition, dir.normalized);
+            previousPosition = checkPos;
             waterCollisionParticles.CheckCollision(ray.origin, ray.direction, magnitude, (firingEntity != null) ? firingEntity.entityId : (-1));
             int prevLayer = 0;
             if (firingEntity != null && firingEntity.emodel != null)
@@ -50,7 +90,11 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 prevLayer = firingEntity.GetModelLayer();
                 firingEntity.SetModelLayer(2);
             }
-            bool flag = Voxel.Raycast(world, ray, magnitude, -538750997, hitMask, 0);
+            float colOffset = radius + collisionStartBack;
+            ray.origin -= ray.direction * colOffset;
+            magnitude += colOffset;
+            bool flag = Voxel.Raycast(world, ray, magnitude, -538751005, hitMask, radius);
+            collisionStartBack = 0.1f;
             if (firingEntity != null && firingEntity.emodel != null)
             {
                 firingEntity.SetModelLayer(prevLayer);
@@ -59,90 +103,151 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             {
                 if (firingEntity != null && !firingEntity.isEntityRemote)
                 {
-                    firingEntity.MinEventContext.Other = ItemActionAttack.FindHitEntity(Voxel.voxelRayHitInfo) as EntityAlive;
-                    firingEntity.MinEventContext.ItemActionData = actionData;
-                    firingEntity.MinEventContext.ItemValue = itemValueLauncher;
-                    firingEntity.MinEventContext.Position = Voxel.voxelRayHitInfo.hit.pos;
-                    ItemActionAttack.AttackHitInfo attackHitInfo = new ItemActionAttack.AttackHitInfo
+                    var attackedEntity = ItemActionAttack.FindHitEntity(Voxel.voxelRayHitInfo) as EntityAlive;
+                    var droneEntity = attackedEntity as EntityDrone;
+                    if (droneEntity && firingEntity && droneEntity.isAlly(firingEntity))
                     {
-                        WeaponTypeTag = ItemActionAttack.RangedTag
-                    };
-                    float strainPerc = itemValueProjectile.Activated / (float)byte.MaxValue;
-                    MultiActionProjectileRewrites.ProjectileHit(Voxel.voxelRayHitInfo,
-                                 ProjectileOwnerID,
-                                 EnumDamageTypes.Piercing,
-                                 Mathf.Lerp(1f, MultiActionProjectileRewrites.GetProjectileDamageBlock(itemActionProjectile, itemValueProjectile, ItemActionAttack.GetBlockHit(world, Voxel.voxelRayHitInfo), firingEntity, actionData.indexInEntityOfAction), strainPerc),
-                                 Mathf.Lerp(1f, MultiActionProjectileRewrites.GetProjectileDamageEntity(itemActionProjectile, itemValueProjectile, firingEntity, actionData.indexInEntityOfAction), strainPerc),
-                                 1f,
-                                 1f,
-                                 MultiActionReversePatches.ProjectileGetValue(PassiveEffects.CriticalChance, itemValueProjectile, itemProjectile.CritChance.Value, firingEntity, null, itemProjectile.ItemTags, true, false),
-                                 ItemAction.GetDismemberChance(actionData, Voxel.voxelRayHitInfo),
-                                 itemProjectile.MadeOfMaterial.SurfaceCategory,
-                                 itemActionProjectile.GetDamageMultiplier(),
-                                 getBuffActions(),
-                                 attackHitInfo,
-                                 1,
-                                 itemActionProjectile.ActionExp,
-                                 itemActionProjectile.ActionExpBonusMultiplier,
-                                 null,
-                                 null,
-                                 ItemActionAttack.EnumAttackMode.RealNoHarvesting,
-                                 null,
-                                 -1,
-                                 itemValueProjectile,
-                                 itemValueLauncher);
-                    if (firingEntity.MinEventContext.Other == null)
-                    {
-                        firingEntity.FireEvent(MinEventTypes.onSelfPrimaryActionMissEntity, false);
-                    }
-                    firingEntity.FireEvent(MinEventTypes.onProjectileImpact, false);
-                    MinEventParams.CachedEventParam.Self = firingEntity;
-                    MinEventParams.CachedEventParam.Position = Voxel.voxelRayHitInfo.hit.pos;
-                    MinEventParams.CachedEventParam.ItemValue = itemValueProjectile;
-                    MinEventParams.CachedEventParam.ItemActionData = actionData;
-                    MinEventParams.CachedEventParam.Other = firingEntity.MinEventContext.Other;
-                    itemProjectile.FireEvent(MinEventTypes.onProjectileImpact, MinEventParams.CachedEventParam);
-                    if (itemActionProjectile.Explosion.ParticleIndex > 0)
-                    {
-                        Vector3 vector3 = Voxel.voxelRayHitInfo.hit.pos - dir.normalized * 0.1f;
-                        Vector3i vector3i = World.worldToBlockPos(vector3);
-                        if (!world.GetBlock(vector3i).isair)
-                        {
-                            BlockFace blockFace;
-                            vector3i = Voxel.OneVoxelStep(vector3i, vector3, -dir.normalized, out vector3, out blockFace);
-                        }
-                        gameManager.ExplosionServer(Voxel.voxelRayHitInfo.hit.clrIdx, vector3, vector3i, Quaternion.identity, itemActionProjectile.Explosion, ProjectileOwnerID, 0f, false, itemValueProjectile);
-                        SetState(State.Dead);
                         return;
                     }
-                    if (itemProjectile.IsSticky)
+
+                    if (!initialImpactConsumed)
                     {
-                        GameRandom gameRandom = world.GetGameRandom();
-                        if (GameUtils.IsBlockOrTerrain(Voxel.voxelRayHitInfo.tag))
+                        firingEntity.MinEventContext.Other = attackedEntity;
+                        firingEntity.MinEventContext.ItemActionData = actionData;
+                        firingEntity.MinEventContext.ItemValue = itemValueLauncher;
+                        firingEntity.MinEventContext.Position = Voxel.voxelRayHitInfo.hit.pos;
+                        ItemActionAttack.AttackHitInfo attackHitInfo = new ItemActionAttack.AttackHitInfo
                         {
-                            if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, itemValueProjectile, 0.5f, firingEntity, null, itemProjectile.ItemTags | FastTags<TagGroup.Global>.Parse(Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory), true, false))
-                            {
-                                MultiActionProjectileRewrites.RestoreProjectileValue(itemValueProjectile);
-                                ProjectileID = ProjectileManager.AddProjectileItem(transform, -1, Voxel.voxelRayHitInfo.hit.pos, dir.normalized, itemValueProjectile.type);
-                                SetState(State.Sticky);
-                            }
-                            else
-                            {
-                                gameManager.SpawnParticleEffectServer(new ParticleEffect("impact_metal_on_wood", Voxel.voxelRayHitInfo.hit.pos, Utils.BlockFaceToRotation(Voxel.voxelRayHitInfo.fmcHit.blockFace), 1f, Color.white, string.Format("{0}hit{1}", Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial.SurfaceCategory, itemProjectile.MadeOfMaterial.SurfaceCategory), null), firingEntity.entityId, false, false);
-                                SetState(State.Dead);
-                            }
-                        }
-                        else if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ProjectileStickChance, itemValueProjectile, 0.5f, firingEntity, null, itemProjectile.ItemTags, true, false))
+                            WeaponTypeTag = ItemActionAttack.RangedTag
+                        };
+                        MinEventParams.CachedEventParam.Self = firingEntity;
+                        MinEventParams.CachedEventParam.Position = Voxel.voxelRayHitInfo.hit.pos;
+                        MinEventParams.CachedEventParam.ItemValue = itemValueProjectile;
+                        MinEventParams.CachedEventParam.ItemActionData = actionData;
+                        MinEventParams.CachedEventParam.Other = firingEntity.MinEventContext.Other;
+                        itemProjectile.FireEvent(MinEventTypes.onProjectilePreImpact, MinEventParams.CachedEventParam);
+                        
+                        float strainPerc = Mathf.Clamp01(ReadLaunchStrain());
+                        float blockDamage = Mathf.Lerp(1f, itemActionProjectile.GetProjectileDamageBlock(itemValueProjectile, ItemActionAttack.GetBlockHit(world, Voxel.voxelRayHitInfo), firingEntity, actionData.indexInEntityOfAction), strainPerc);
+                        float entityDamage = Mathf.Lerp(1f, itemActionProjectile.GetProjectileDamageEntity(itemValueProjectile, firingEntity, actionData.indexInEntityOfAction), strainPerc);
+                        bool forceNoDamage;
+                        if (firingEntity is EntityPlayer)
                         {
-                            MultiActionProjectileRewrites.RestoreProjectileValue(itemValueProjectile);
-                            ProjectileID = ProjectileManager.AddProjectileItem(transform, -1, Voxel.voxelRayHitInfo.hit.pos, dir.normalized, itemValueProjectile.type);
-                            Utils.SetLayerRecursively(ProjectileManager.GetProjectile(ProjectileID).gameObject, 14, null);
-                            SetState(State.Sticky);
+                            entityDamage *= ItemActionAttack.RangedDamagePercent;
+                            forceNoDamage = ItemActionAttack.RangedDamagePercent == 0;
                         }
                         else
                         {
-                            gameManager.SpawnParticleEffectServer(new ParticleEffect("impact_metal_on_wood", Voxel.voxelRayHitInfo.hit.pos, Utils.BlockFaceToRotation(Voxel.voxelRayHitInfo.fmcHit.blockFace), 1f, Color.white, "bullethitwood", null), firingEntity.entityId, false, false);
+                            entityDamage *= ItemActionAttack.EntityPlayerDamagePercent;
+                            forceNoDamage = ItemActionAttack.EntityPlayerDamagePercent == 0;
+                        }
+                        
+                        MultiActionProjectileRewrites.ProjectileHit(Voxel.voxelRayHitInfo,
+                                     ProjectileOwnerID,
+                                     EnumDamageTypes.Piercing,
+                                     blockDamage,
+                                     entityDamage,
+                                     1f,
+                                     1f,
+                                     MultiActionReversePatches.ProjectileGetValue(PassiveEffects.CriticalChance, itemValueProjectile, itemProjectile.CritChance.Value, firingEntity, null, itemProjectile.ItemTags, true, false),
+                                     ItemAction.GetDismemberChance(actionData, Voxel.voxelRayHitInfo),
+                                     itemProjectile.MadeOfMaterial.SurfaceCategory,
+                                     itemActionProjectile.GetDamageMultiplier(),
+                                     getBuffActions(),
+                                     attackHitInfo,
+                                     1,
+                                     itemActionProjectile.ActionExp,
+                                     itemActionProjectile.ActionExpBonusMultiplier,
+                                     null,
+                                     null,
+                                     ItemActionAttack.EnumAttackMode.RealNoHarvesting,
+                                     null,
+                                     -1,
+                                     itemValueProjectile,
+                                     itemValueLauncher,
+                                     false,
+                                     forceNoDamage);
+                        if (firingEntity.MinEventContext.Other == null)
+                        {
+                            firingEntity.FireEvent(MinEventTypes.onSelfPrimaryActionMissEntity, false);
+                        }
+                        firingEntity.FireEvent(MinEventTypes.onProjectileImpact, false);
+                        MinEventParams.CachedEventParam.Self = firingEntity;
+                        MinEventParams.CachedEventParam.Position = Voxel.voxelRayHitInfo.hit.pos;
+                        MinEventParams.CachedEventParam.ItemValue = itemValueProjectile;
+                        MinEventParams.CachedEventParam.ItemActionData = actionData;
+                        MinEventParams.CachedEventParam.Other = firingEntity.MinEventContext.Other;
+                        itemProjectile.FireEvent(MinEventTypes.onProjectileImpact, MinEventParams.CachedEventParam);
+                        if (itemActionProjectile.Explosion.ParticleIndex > 0 && !explosionDisabled)
+                        {
+                            Vector3 vector3 = Voxel.voxelRayHitInfo.hit.pos - dir.normalized * 0.1f;
+                            Vector3i vector3i = World.worldToBlockPos(vector3);
+                            if (!world.GetBlock(vector3i).isair)
+                            {
+                                BlockFace blockFace;
+                                vector3i = Voxel.OneVoxelStep(vector3i, vector3, -dir.normalized, out vector3, out blockFace);
+                            }
+                            gameManager.ExplosionServer(vector3, vector3i, Quaternion.identity, itemActionProjectile.Explosion, ProjectileOwnerID, 0f, false, itemValueProjectile);
                             SetState(State.Dead);
+                            return;
+                        }
+                    }
+
+                    if (attackedEntity is EntitySwarm)
+                    {
+                        return;
+                    }
+
+                    if (itemProjectile.IsSticky)
+                    {
+                        if (initialImpactConsumed)
+                        {
+                            DoStick(ray, magnitude);
+                        }
+                        else
+                        {
+                            initialImpactConsumed = true;
+                            var gameRandom = world.GetGameRandom();
+                            if (GameUtils.IsBlockOrTerrain(Voxel.voxelRayHitInfo.tag))
+                            {
+                                if (gameRandom.RandomFloat < MultiActionReversePatches.ProjectileGetValue(
+                                        PassiveEffects.ProjectileStickChance, itemValueProjectile, 0.5f,
+                                        firingEntity, null,
+                                        itemProjectile.ItemTags |
+                                        FastTags<TagGroup.Global>.Parse(Voxel.voxelRayHitInfo.fmcHit.blockValue
+                                            .Block.blockMaterial.SurfaceCategory), true, false))
+                                {
+                                    DoStick(ray, magnitude);
+                                }
+                                else
+                                {
+                                    gameManager.SpawnParticleEffectServer(
+                                        new ParticleEffect("impact_metal_on_wood", Voxel.voxelRayHitInfo.hit.pos,
+                                            Utils.BlockFaceToRotation(Voxel.voxelRayHitInfo.fmcHit.blockFace), 1f,
+                                            Color.white,
+                                            string.Format("{0}hit{1}",
+                                                Voxel.voxelRayHitInfo.fmcHit.blockValue.Block.blockMaterial
+                                                    .SurfaceCategory,
+                                                itemProjectile.MadeOfMaterial.SurfaceCategory), null),
+                                        firingEntity.entityId, false, false);
+                                    SetState(State.Dead);
+                                }
+                            }
+                            else if (gameRandom.RandomFloat <
+                                     MultiActionReversePatches.ProjectileGetValue(
+                                         PassiveEffects.ProjectileStickChance, itemValueProjectile, 0.5f,
+                                         firingEntity, null, itemProjectile.ItemTags, true, false))
+                            {
+                                DoStick(ray, magnitude);
+                            }
+                            else
+                            {
+                                gameManager.SpawnParticleEffectServer(
+                                    new ParticleEffect("impact_metal_on_wood", Voxel.voxelRayHitInfo.hit.pos,
+                                        Utils.BlockFaceToRotation(Voxel.voxelRayHitInfo.fmcHit.blockFace), 1f,
+                                        Color.white, "bullethitwood", null), firingEntity.entityId, false, false);
+                                SetState(State.Dead);
+                            }
                         }
                     }
                     else
@@ -160,7 +265,51 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                     SetState(State.Dead);
                 }
             }
-            previousPosition = checkPos;
+        }
+
+        private void DoStick(Ray ray, float magnitude)
+        {
+            itemValueProjectile = CreatePickupValue();
+            if (GameUtils.IsBlockOrTerrain(Voxel.voxelRayHitInfo.tag))
+            {
+                ProjectileID = ProjectileManager.AddProjectileItem(transform, -1, Voxel.voxelRayHitInfo.hit.pos, ray.direction, itemValueProjectile.type);
+                stickyRay = ray;
+                stickyRayDistance = magnitude;
+                stickyRoll = 1f;
+            }
+            else
+            {
+                ProjectileID = ProjectileManager.AddProjectileItem(transform, -1, Voxel.voxelRayHitInfo.hit.pos, ray.direction, itemValueProjectile.type);
+                Utils.SetLayerRecursively(ProjectileManager.GetProjectile(ProjectileID).gameObject, 14, null);
+            }
+            SetState(State.Sticky);
+        }
+    }
+
+    [HarmonyPatch(typeof(ProjectileMoveScript), nameof(ProjectileMoveScript.TryCollect))]
+    public static class CleanCustomProjectilePickupPatch
+    {
+        public static ItemValue GetPickupValue(ProjectileMoveScript script)
+        {
+            return script is CustomProjectileMoveScript custom
+                ? custom.CreatePickupValue()
+                : script.itemValueProjectile;
+        }
+
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var field = AccessTools.Field(typeof(ProjectileMoveScript), nameof(ProjectileMoveScript.itemValueProjectile));
+            var replacement = AccessTools.Method(typeof(CleanCustomProjectilePickupPatch), nameof(GetPickupValue));
+            foreach (var instruction in instructions)
+            {
+                if (instruction.LoadsField(field))
+                {
+                    instruction.opcode = OpCodes.Call;
+                    instruction.operand = replacement;
+                }
+                yield return instruction;
+            }
         }
     }
 
@@ -174,6 +323,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             itemValueProjectile.UseTimes = 0;
             itemValueProjectile.Meta = 0;
             itemValueProjectile.SelectedAmmoTypeIndex = 0;
+            itemValueProjectile.Stats = null;
         }
 
         public static void ProjectileHit(WorldRayHitInfo hitInfo, int _attackerEntityId, EnumDamageTypes _damageType, float _blockDamage,
@@ -183,11 +333,13 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                                float _actionExpBonus = 0f, ItemActionAttack rangeCheckedAction = null,
                                Dictionary<string, ItemActionAttack.Bonuses> _toolBonuses = null,
                                ItemActionAttack.EnumAttackMode _attackMode = ItemActionAttack.EnumAttackMode.RealNoHarvesting,
-                               Dictionary<string, string> _hitSoundOverrides = null, int ownedEntityId = -1, ItemValue projectileValue = null, ItemValue launcherValue = null)
+                               Dictionary<string, string> _hitSoundOverrides = null, int ownedEntityId = -1, ItemValue projectileValue = null,
+                               ItemValue launcherValue = null, bool _isGrazingHit = false, bool _forceNoDamage = false,
+                               bool _canHitSpecialBodyParts = true, Dictionary<string, float> _soundImpactVolumeScale = null)
         {
             if (_attackDetails != null)
             {
-                _attackDetails.hitPosition = Vector3i.zero;
+                _attackDetails.hitRef = default;
                 _attackDetails.bKilled = false;
             }
             if (hitInfo == null || hitInfo.tag == null)
@@ -209,10 +361,12 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             }
             string blockFaceParticle = null;
             string surfaceCategory = null;
+            string armorImpactSound = null;
             float lightValueAtBlockPos = 1f;
             Color blockFaceColor = Color.white;
             bool isProtectionApplied = false;
             EntityAlive attackerEntity = world.GetEntity(_attackerEntityId) as EntityAlive;
+            bool isEntityHit = hitInfo.tag.StartsWith("E_");
             bool isHoldingDamageItem = false;
             if (attackerEntity != null)
             {
@@ -230,27 +384,27 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 {
                     DebugLines.Create(null, attackerEntity.RootTransform, Camera.main.transform.position + Origin.position, hitInfo.hit.pos, new Color(1f, 0.5f, 1f), new Color(1f, 0f, 1f), ItemAction.DebugDisplayHitSize * 2f, ItemAction.DebugDisplayHitSize, ItemAction.DebugDisplayHitTime);
                 }
-                ChunkCluster hittedChunk = world.ChunkClusters[hitInfo.hit.clrIdx];
+                ChunkCluster hittedChunk = world.ChunkCache;
                 if (hittedChunk == null)
                 {
                     return;
                 }
-                Vector3i hitBlockPos = hitInfo.hit.blockPos;
-                BlockValue hitBlockValue = hittedChunk.GetBlock(hitBlockPos);
+                BlockValueRef hitBlockRef = BlockValueRef.Create(hitInfo);
+                BlockValue hitBlockValue = hittedChunk.GetBlock(hitBlockRef);
                 if (hitBlockValue.isair && hitInfo.hit.blockValue.Block.IsDistantDecoration && hitInfo.hit.blockValue.damage >= hitInfo.hit.blockValue.Block.MaxDamage - 1)
                 {
                     hitBlockValue = hitInfo.hit.blockValue;
-                    world.SetBlockRPC(hitBlockPos, hitBlockValue);
+                    world.SetBlockRPC(hitBlockRef, hitBlockValue);
                 }
                 Block hitBlock = hitBlockValue.Block;
                 if (hitBlock == null)
                 {
                     return;
                 }
-                if (hitBlockValue.ischild)
+                if (hitBlockRef.Type == BlockValueRefType.Block && hitBlockValue.ischild)
                 {
-                    hitBlockPos = hitBlock.multiBlockPos.GetParentPos(hitBlockPos, hitBlockValue);
-                    hitBlockValue = hittedChunk.GetBlock(hitBlockPos);
+                    hitBlockRef = new BlockValueRef(hitBlock.multiBlockPos.GetParentPos(hitBlockRef.BlockPosition, hitBlockValue));
+                    hitBlockValue = hittedChunk.GetBlock(hitBlockRef.BlockPosition);
                     hitBlock = hitBlockValue.Block;
                     if (hitBlock == null)
                     {
@@ -261,39 +415,48 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 {
                     return;
                 }
-                float landProtectionModifier = 0;
-                if (!world.IsWithinTraderArea(hitInfo.hit.blockPos) && hitBlock.blockMaterial.id != "Mbedrock")
+                float landProtectionModifier = world.GetLandProtectionHardnessModifier(hitInfo.hit.blockPos, attackerEntity, world.GetGameManager().GetPersistentLocalPlayer());
+                if (World.SandboxUseTraderArea == TraderAreaStates.Default && world.IsWithinTraderArea(hitInfo.hit.blockPos))
                 {
-                    landProtectionModifier = world.GetLandProtectionHardnessModifier(hitInfo.hit.blockPos, attackerEntity, world.GetGameManager().GetPersistentLocalPlayer());
+                    landProtectionModifier = 0f;
+                }
+                if (world.InBoundsForPlayersPercent(hitInfo.hit.blockPos.ToVector3CenterXZ()) < 0.5f)
+                {
+                    landProtectionModifier = 0f;
+                }
+                if (!hitBlock.blockMaterial.CanDestroy)
+                {
+                    landProtectionModifier = 0f;
                 }
                 if (landProtectionModifier != 1f)
                 {
                     if (attackerEntity && _attackMode != ItemActionAttack.EnumAttackMode.Simulate && attackerEntity is EntityPlayer && !launcherValue.ItemClass.ignoreKeystoneSound && !launcherValue.ToBlockValue().Block.IgnoreKeystoneOverlay)
                     {
-                        attackerEntity.PlayOneShot("keystone_impact_overlay", false);
+                        attackerEntity.PlayOneShot("keystone_impact_overlay");
                     }
                     if (landProtectionModifier < 1f)
                     {
                         isProtectionApplied = true;
                     }
                 }
-                if (hitBlockPos != _attackDetails.hitPosition || landProtectionModifier != _attackDetails.hardnessScale || hitBlockValue.type != _attackDetails.blockBeingDamaged.type || (isHoldingDamageItem && projectileValue.SelectedAmmoTypeIndex != _attackDetails.ammoIndex))
+                bool isBlockDamageDisabled = hitBlockValue.isTerrain ? ItemActionAttack.TerrainDamagePercent == 0f : ItemActionAttack.BlockDamagePercent == 0f;
+                if (hitBlockRef != _attackDetails.hitRef || landProtectionModifier != _attackDetails.hardnessScale || hitBlockValue.type != _attackDetails.blockBeingDamaged.type || (isHoldingDamageItem && projectileValue.SelectedAmmoTypeIndex != _attackDetails.ammoIndex))
                 {
                     float finalHardness = Mathf.Max(hitBlock.GetHardness(), 0.1f) * landProtectionModifier;
                     float finalBlockDamage = _blockDamage * ((_damageMultiplier != null) ? _damageMultiplier.Get(hitBlock.blockMaterial.DamageCategory) : 1f);
                     if (attackerEntity)
                     {
-                        finalBlockDamage *= attackerEntity.GetBlockDamageScale();
+                        finalBlockDamage *= attackerEntity.GetBlockDamageScale(hitBlockValue.isTerrain);
                     }
                     if (_toolBonuses != null && _toolBonuses.Count > 0)
                     {
                         finalBlockDamage *= calculateHarvestToolDamageBonus(_toolBonuses, hitBlock.itemsToDrop);
                         _attackDetails.bHarvestTool = true;
                     }
-                    _attackDetails.damagePerHit = isProtectionApplied ? 0f : (finalBlockDamage / finalHardness);
+                    _attackDetails.damagePerHit = isProtectionApplied || isBlockDamageDisabled ? 0f : (finalBlockDamage / finalHardness);
                     _attackDetails.damage = 0f;
                     _attackDetails.hardnessScale = landProtectionModifier;
-                    _attackDetails.hitPosition = hitBlockPos;
+                    _attackDetails.hitRef = hitBlockRef;
                     _attackDetails.blockBeingDamaged = hitBlockValue;
                     if (isHoldingDamageItem)
                     {
@@ -314,18 +477,27 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                     modifiedBlockDamage = (int)MultiActionReversePatches.ProjectileGetValue(PassiveEffects.DamageModifier, projectileValue, modifiedBlockDamage, attackerEntity, null, FastTags<TagGroup.Global>.Parse(blockFaceDamageCategory) | _attackDetails.WeaponTypeTag | hitInfo.fmcHit.blockValue.Block.Tags, true, false);
                 }
                 modifiedBlockDamage = ItemActionAttack.DegradationModifier(modifiedBlockDamage, _weaponCondition);
-                modifiedBlockDamage = isProtectionApplied ? 0f : Utils.FastMax(1f, modifiedBlockDamage);
+                modifiedBlockDamage = isProtectionApplied || isBlockDamageDisabled || materialForSide.CheckDamageIgnore(projectileValue.ItemClass.ItemTags, attackerEntity) ? 0f : Utils.FastMax(1f, modifiedBlockDamage);
                 _attackDetails.damage += modifiedBlockDamage;
                 _attackDetails.bKilled = false;
                 _attackDetails.damageTotalOfTarget = hitBlockValue.damage + _attackDetails.damage;
                 if (_attackDetails.damage > 0f)
                 {
-                    BlockFace blockFaceFromHitInfo = GameUtils.GetBlockFaceFromHitInfo(hitBlockPos, hitBlockValue, hitInfo.hitCollider, hitInfo.hitTriangleIdx, out _, out _);
-                    int blockFaceTexture = hittedChunk.GetBlockFaceTexture(hitBlockPos, blockFaceFromHitInfo, 0);
+                    int blockFaceTexture;
+                    if (_attackDetails.hitRef.Type == BlockValueRefType.Block)
+                    {
+                        Vector3i hitBlockPos = _attackDetails.hitRef.BlockPosition;
+                        BlockFace blockFaceFromHitInfo = GameUtils.GetBlockFaceFromHitInfo(hitBlockPos, hitBlockValue, hitInfo.hitCollider, hitInfo.hitTriangleIdx, out _, out _);
+                        blockFaceTexture = hittedChunk.GetBlockFaceTexture(hitBlockPos, blockFaceFromHitInfo, 0);
+                    }
+                    else
+                    {
+                        blockFaceTexture = 0;
+                    }
                     int blockCurDamage = hitBlockValue.damage;
                     bool isBlockBroken = blockCurDamage >= hitBlock.MaxDamage;
                     int ownerAttackerID = ((ownedEntityId != -1 && ownedEntityId != -2) ? ownedEntityId : _attackerEntityId);
-                    int blockNextDamage = (_attackMode != ItemActionAttack.EnumAttackMode.Simulate) ? hitBlock.DamageBlock(world, hittedChunk.ClusterIdx, hitBlockPos, hitBlockValue, (int)_attackDetails.damage, ownerAttackerID, _attackDetails, _attackDetails.bHarvestTool, false) : 0;
+                    int blockNextDamage = (_attackMode != ItemActionAttack.EnumAttackMode.Simulate) ? hitBlock.DamageBlock(world, _attackDetails.hitRef, hitBlockValue, (int)_attackDetails.damage, ownerAttackerID, _attackDetails, _attackDetails.bHarvestTool) : 0;
                     if (blockNextDamage == 0)
                     {
                         _attackDetails.damage = 0f;
@@ -364,26 +536,27 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                     }
                 }
             }
-            else if (hitInfo.tag.StartsWith("E_"))
+            else if (isEntityHit)
             {
+                bool canHitSelf = ownedEntityId == -2;
                 Entity hitEntity = ItemActionAttack.FindHitEntityNoTagCheck(hitInfo, out string hitBodyPart);
-                if (hitEntity == null)
-                {
-                    return;
-                }
-                if (hitEntity.entityId == _attackerEntityId)
-                {
-                    return;
-                }
-                if (!hitEntity.CanDamageEntity(_attackerEntityId))
+                if (hitEntity == null || (!canHitSelf && hitEntity.entityId == _attackerEntityId) || !hitEntity.CanDamageEntity(_attackerEntityId))
                 {
                     return;
                 }
                 EntityAlive hitEntityAlive = hitEntity as EntityAlive;
-                DamageSourceEntity damageSourceEntity = new DamageSourceEntity(EnumDamageSource.External, _damageType, _attackerEntityId, hitInfo.ray.direction, hitInfo.transform.name, hitInfo.hit.pos, Voxel.phyxRaycastHit.textureCoord);
+                Vector2 uvHit = Vector2.zero;
+                MeshCollider meshCollider = Voxel.phyxRaycastHit.collider as MeshCollider;
+                if (meshCollider != null && meshCollider.sharedMesh != null && meshCollider.sharedMesh.HasVertexAttribute(UnityEngine.Rendering.VertexAttribute.TexCoord0))
+                {
+                    uvHit = Voxel.phyxRaycastHit.textureCoord;
+                }
+                DamageSourceEntity damageSourceEntity = new DamageSourceEntity(EnumDamageSource.External, _damageType, _attackerEntityId, hitInfo.ray.direction, hitInfo.transform.name, hitInfo.hit.pos, uvHit);
                 damageSourceEntity.AttackingItem = projectileValue;
                 damageSourceEntity.DismemberChance = _dismemberChance;
                 damageSourceEntity.CreatorEntityId = ownedEntityId;
+                damageSourceEntity.canHitSpecialBodyParts = _canHitSpecialBodyParts;
+                damageSourceEntity.bIgnorePartyShare = (_flags & 2) > 0;
                 bool isCriticalHit = _attackDetails.isCriticalHit;
                 int finalEntityDamage = (int)_entityDamage;
                 if (attackerEntity != null && hitEntityAlive != null)
@@ -395,11 +568,16 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                         equipmentTags |= DamagePatches.GetBodyPartTags(damageSourceEntity.GetEntityDamageBodyPart(hitEntityAlive));
                     }
                     finalEntityDamage = (int)MultiActionReversePatches.ProjectileGetValue(PassiveEffects.DamageModifier, projectileValue, finalEntityDamage, attackerEntity, null, equipmentTags | _attackDetails.WeaponTypeTag | hitEntityAlive.EntityClass.Tags, true, false);
+                    if (ItemActionAttack.HeadshotMultiplier > 0f && equipmentTags.Test_AnySet(ItemAction.headTag))
+                    {
+                        finalEntityDamage = (int)MultiActionReversePatches.ProjectileGetValue(PassiveEffects.HeadshotDamageModifier, projectileValue, finalEntityDamage, attackerEntity, null, equipmentTags | _attackDetails.WeaponTypeTag | hitEntityAlive.EntityClass.Tags, true, false);
+                        finalEntityDamage = (int)(ItemActionAttack.HeadshotMultiplier * finalEntityDamage);
+                    }
                     finalEntityDamage = (int)MultiActionReversePatches.ProjectileGetValue(PassiveEffects.InternalDamageModifier, projectileValue, finalEntityDamage, hitEntityAlive, null, equipmentTags | projectileValue.ItemClass.ItemTags, true, false);
                 }
                 if (!hitEntityAlive || hitEntityAlive.Health > 0)
                 {
-                    finalEntityDamage = Utils.FastMax(1, ItemActionAttack.difficultyModifier(finalEntityDamage, world.GetEntity(_attackerEntityId), hitEntity));
+                    finalEntityDamage = Utils.FastMax(_forceNoDamage ? 0 : 1, ItemActionAttack.difficultyModifier(finalEntityDamage, world.GetEntity(_attackerEntityId), hitEntity));
                 }
                 else if (_toolBonuses != null)
                 {
@@ -450,13 +628,18 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                             {
                                 attackerEntity.FireEvent(MinEventTypes.onSelfKilledOther, isHoldingDamageItem);
                             }
-                            if (hitEntityAlive && hitEntityAlive.RecordedDamage.ArmorDamage > hitEntityAlive.RecordedDamage.Strength)
+                            if (hitEntityAlive)
                             {
-                                surfaceCategory = "metal";
+                                EquipmentSlots equipmentSlot = damageSourceEntity.GetEntityDamageEquipmentSlot(hitEntityAlive);
+                                armorImpactSound = hitEntityAlive.GetArmorImpactSound(equipmentSlot, _isGrazingHit);
+                                if (hitEntityAlive.RecordedDamage.ArmorDamage > hitEntityAlive.RecordedDamage.Strength)
+                                {
+                                    surfaceCategory = hitEntityAlive.GetArmorMaterial(equipmentSlot);
+                                }
                             }
-                            else
+                            if (string.IsNullOrEmpty(surfaceCategory))
                             {
-                                surfaceCategory = EntityClass.list[hitEntity.entityClass].Properties.Values["SurfaceCategory"];
+                                surfaceCategory = EntityClass.list[hitEntity.entityClass].Properties.GetValue("SurfaceCategory");
                             }
                             blockFaceParticle = surfaceCategory;
                             lightValueAtBlockPos = hitEntity.GetLightBrightness();
@@ -472,7 +655,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                     }
                     if (isHitTargetPlayer)
                     {
-                        int damageDealt = hitEntity.DamageEntity(damageSourceEntity, finalEntityDamage, isCriticalHit, 1f);
+                        int damageDealt = hitEntity.DamageEntity(damageSourceEntity, finalEntityDamage, isCriticalHit);
                         if (damageDealt != -1 && attackerEntity)
                         {
                             MinEventParams attackerMinEventParams = attackerEntity.MinEventContext;
@@ -502,20 +685,25 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                                     float bufProcChance = MultiActionReversePatches.ProjectileGetValue(PassiveEffects.BuffProcChance, null, 1f, attackerEntity, null, FastTags<TagGroup.Global>.Parse(buff.Name), true, false);
                                     if (hitEntityAlive.rand.RandomFloat <= bufProcChance)
                                     {
-                                        hitEntityAlive.Buffs.AddBuff(_buffActions[i], attackerEntity.entityId, true, false, -1f);
+                                        hitEntityAlive.Buffs.AddBuff(_buffActions[i], attackerEntity.entityId);
                                     }
                                 }
                             }
                         }
                     }
                 }
-                if (hitEntityAlive && hitEntityAlive.RecordedDamage.ArmorDamage > hitEntityAlive.RecordedDamage.Strength)
+                if (hitEntityAlive)
                 {
-                    surfaceCategory = "metal";
+                    EquipmentSlots equipmentSlot = damageSourceEntity.GetEntityDamageEquipmentSlot(hitEntityAlive);
+                    armorImpactSound = hitEntityAlive.GetArmorImpactSound(equipmentSlot, _isGrazingHit);
+                    if (hitEntityAlive.RecordedDamage.ArmorDamage > hitEntityAlive.RecordedDamage.Strength)
+                    {
+                        surfaceCategory = hitEntityAlive.GetArmorMaterial(equipmentSlot);
+                    }
                 }
-                else
+                if (string.IsNullOrEmpty(surfaceCategory))
                 {
-                    surfaceCategory = EntityClass.list[hitEntity.entityClass].Properties.Values["SurfaceCategory"];
+                    surfaceCategory = EntityClass.list[hitEntity.entityClass].Properties.GetValue("SurfaceCategory");
                 }
                 blockFaceParticle = surfaceCategory;
                 lightValueAtBlockPos = hitEntity.GetLightBrightness();
@@ -539,12 +727,12 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                             float trapXP = MultiActionReversePatches.ProjectileGetValue(PassiveEffects.ElectricalTrapXP, attackerPlayer.inventory.holdingItemItemValue, 0f, attackerPlayer, null, default, true, false);
                             if (trapXP > 0f)
                             {
-                                attackerPlayer.AddKillXP(hitEntityAlive, trapXP);
+                                attackerPlayer.AddKillXP(hitEntityAlive, launcherValue, trapXP);
                             }
                         }
                         else
                         {
-                            attackerPlayer.AddKillXP(hitEntityAlive, 1f);
+                            attackerPlayer.AddKillXP(hitEntityAlive, launcherValue);
                         }
                     }
                 }
@@ -559,17 +747,28 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             }
             if (isHitTargetPlayer && _attackMode != ItemActionAttack.EnumAttackMode.Simulate && canHarvest && blockFaceParticle != null && ((_attackDetails.bBlockHit && !_attackDetails.bKilled) || !_attackDetails.bBlockHit))
             {
-                string hitParticle = string.Format("impact_{0}_on_{1}", _attackingDeviceMadeOf, blockFaceParticle);
+                string hitParticle = $"impact_{_attackingDeviceMadeOf}_on_{blockFaceParticle}";
                 if (_attackMode == ItemActionAttack.EnumAttackMode.RealAndHarvesting && (_flags & 4) > 0 && ParticleEffect.IsAvailable(hitParticle + "_harvest"))
                 {
                     hitParticle += "_harvest";
                 }
-                string hitSound = (surfaceCategory != null) ? string.Format("{0}hit{1}", _attackingDeviceMadeOf, surfaceCategory) : null;
-                if (_hitSoundOverrides != null && _hitSoundOverrides.ContainsKey(surfaceCategory))
+                string hitSound = armorImpactSound;
+                float hitSoundVolumeScale = 1f;
+                if (string.IsNullOrEmpty(hitSound))
                 {
-                    hitSound = _hitSoundOverrides[surfaceCategory];
+                    hitSound = (surfaceCategory != null) ? $"{_attackingDeviceMadeOf}hit{surfaceCategory}" : null;
+                    if (_hitSoundOverrides != null && _hitSoundOverrides.TryGetValue(surfaceCategory, out var hitSoundOverride))
+                    {
+                        hitSound = hitSoundOverride;
+                    }
                 }
-                world.GetGameManager().SpawnParticleEffectServer(new ParticleEffect(hitParticle, hitInfo.fmcHit.pos, Utils.BlockFaceToRotation(hitInfo.fmcHit.blockFace), lightValueAtBlockPos, blockFaceColor, hitSound, null), _attackerEntityId, false, true);
+                if (_soundImpactVolumeScale != null && _soundImpactVolumeScale.TryGetValue(surfaceCategory, out float volumeScale))
+                {
+                    hitSoundVolumeScale = volumeScale;
+                }
+                Block impactedBlock = _attackDetails.blockBeingDamaged.Block;
+                string additionalHitSound = impactedBlock != null && !isEntityHit ? impactedBlock.SoundHitAdditional : string.Empty;
+                world.GetGameManager().SpawnParticleEffectServer(new ParticleEffect(hitParticle, hitInfo.fmcHit.pos, Utils.BlockFaceToRotation(hitInfo.fmcHit.blockFace), lightValueAtBlockPos, blockFaceColor, hitSound, null, hitSoundVolumeScale, additionalHitSound), _attackerEntityId, false, true);
             }
             if ((_flags & 1) > 0 && attackerEntity != null && attackerEntity.inventory != null)
             {
@@ -579,16 +778,16 @@ namespace KFCommonUtilityLib.Scripts.Utilities
 
         private static float calculateHarvestToolDamageBonus(Dictionary<string, ItemActionAttack.Bonuses> _toolBonuses, Dictionary<EnumDropEvent, List<Block.SItemDropProb>> _harvestItems)
         {
-            if (!_harvestItems.ContainsKey(EnumDropEvent.Harvest))
+            if (!_harvestItems.TryGetValue(EnumDropEvent.Harvest, out var list))
             {
                 return 1f;
             }
-            List<Block.SItemDropProb> list = _harvestItems[EnumDropEvent.Harvest];
+
             for (int i = 0; i < list.Count; i++)
             {
-                if (list[i].toolCategory != null && _toolBonuses.ContainsKey(list[i].toolCategory))
+                if (list[i].toolCategory != null && _toolBonuses.TryGetValue(list[i].toolCategory, out var bonuses))
                 {
-                    return _toolBonuses[list[i].toolCategory].Damage;
+                    return bonuses.Damage;
                 }
             }
             return 1f;
@@ -598,7 +797,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
         {
             FastTags<TagGroup.Global> tmpTag = ((actionIndex != 1) ? ItemActionAttack.PrimaryTag : ItemActionAttack.SecondaryTag);
             ItemClass launcherClass = ItemClass.GetForId(_itemValue.Meta);
-            tmpTag |= ((launcherClass == null) ? ItemActionAttack.MeleeTag : launcherClass.ItemTags);
+            tmpTag |= launcherClass?.ItemTags ?? ItemActionAttack.MeleeTag;
             if (_holdingEntity != null)
             {
                 tmpTag |= _holdingEntity.CurrentStanceTag | _holdingEntity.CurrentMovementTag;
@@ -614,7 +813,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
         {
             FastTags<TagGroup.Global> tmpTag = ((actionIndex != 1) ? ItemActionAttack.PrimaryTag : ItemActionAttack.SecondaryTag);
             ItemClass launcherClass = ItemClass.GetForId(_itemValue.Meta);
-            tmpTag |= ((launcherClass == null) ? ItemActionAttack.MeleeTag : launcherClass.ItemTags);
+            tmpTag |= launcherClass?.ItemTags ?? ItemActionAttack.MeleeTag;
             if (_holdingEntity != null)
             {
                 tmpTag |= _holdingEntity.CurrentStanceTag | _holdingEntity.CurrentMovementTag;
@@ -661,10 +860,7 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 if (launcherClass.Actions != null && launcherClass.Actions.Length != 0 && launcherClass.Actions[actionIndex] is ItemActionRanged)
                 {
                     ItemClass ammoClass = _projectileItemValue.ItemClass;
-                    if (ammoClass != null && ammoClass.Effects != null)
-                    {
-                        ammoClass.Effects.ModifyValue(_entity, _passiveEffect, ref _originalValue, ref _perc_value, 0f, _tags);
-                    }
+                    ammoClass?.Effects?.ModifyValue(_entity, _passiveEffect, ref _originalValue, ref _perc_value, 0f, _tags);
                 }
 
                 if (launcherClass.Effects != null)
@@ -713,6 +909,11 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             else
             {
                 Log.Warning($"launcher class not found: item id{_projectileItemValue.Meta}");
+            }
+
+            if (_projectileItemValue.Stats != null)
+            {
+                _projectileItemValue.StatModifyValue(_passiveEffect, ref _originalValue);
             }
 
             if (_useMods)

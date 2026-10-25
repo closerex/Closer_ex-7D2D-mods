@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configs>
+  <csv xpath="/items/item[@name='meleeWpnClubT3KF2BoneCrusher']/property[@name='Tags']/@value" delim="," op="add">kfSkin_meleeWpnClubT3KF2BoneCrusher</csv>
+</configs>

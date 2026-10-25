@@ -29,7 +29,7 @@
 				<property name="Class" value="DynamicMelee"/>
 				<property name="Sphere" value=".1"/>
 				<property name="Damage_type" value="Bashing"/>
-				<property name="Sound_start" value="kf_Movement_Bash"/>
+				<property name="Sound_start" value="Play_PC_Weapon_Bash"/>
 				<property name="DynamicSoundStart" value="bashSwingLight"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib"/>
 				<property name="InterruptStateFullName" value="Base Layer.FiringCancel"/>
@@ -47,7 +47,7 @@
 			</property>
 			<property class="Action1"> <!-- UseAction -->
 				<property name="Class" value="DynamicMelee"/>
-				<property name="Sound_start" value="kf_Movement_Bash"/>
+				<property name="Sound_start" value="Play_PC_Weapon_Bash"/>
 				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
 				<property name="Sphere" value=".1"/> <!-- limit to 0.15, else the sphere cast can overlap the target already -->
@@ -130,6 +130,40 @@
 			<property name="SoundPlace" value="pistol_place"/>
             <property name="TakeOverReloadTime" value="true"/>
 		
+		<stats>
+		<!-- Base_Random_Roll -->
+		<stat name="EntityDamage"			value="0,0,1,0,.1"/>
+
+		<stat name="DegradationMax" 		value="0,0,1,0,.1"/>
+		<!-- Q1_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="1,0,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="1,0,.3,.1,.5"/>
+		<!-- Q2_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="2,10,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="2,10,.3,.1,.5"/>
+		<!-- Q3_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="3,11,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="3,11,.3,.1,.5"/>
+		<!-- Q4_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="4,12,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="4,12,.3,.1,.5"/>
+		<!-- Q5_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="5,14,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="5,14,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,16,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="6,16,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,20,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="6,20,.3,.1,.5"/>
+	</stats>
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
 				<property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
@@ -141,10 +175,10 @@
 				<property name="RoundsPerShot" value="2"/>
 				<property name="BarrelCount" value="4"/>
 				<property name="Magazine_items" value="ammo44MagnumBulletBall,ammo44MagnumBulletHP,ammo44MagnumBulletAP"/>
-				<property name="Sound_start" value="kf_af2011_Fire_1P_InDoor_Large"/>
-				<property name="Sound_loop" value="kf_af2011_Fire_1P_InDoor_Large"/>
+				<property name="Sound_start" value="Play_WEP_SA_1911_Fire_1P__Indoor_Large__Variant_af2011_Fire_1P_InDoor_Large"/>
+				<property name="Sound_loop" value="Play_WEP_SA_1911_Fire_1P__Indoor_Large__Variant_af2011_Fire_1P_InDoor_Large"/>
 				<property name="Sound_end" value=""/>
-				<property name="Sound_empty" value="kf_af2011_DryFire"/>
+				<property name="Sound_empty" value="Play_SA_WEP_DoubleBarrel_Fire_DryFire__Variant_af2011_DryFire"/>
 				<property name="AutoReload" value="false"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?af2011_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_fire_fpv" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?af2011_muzzle_flash_fpv.prefab"/>
@@ -282,6 +316,40 @@
 			<property name="SoundPlace" value="pistol_place"/>
             <property name="TakeOverReloadTime" value="true"/>
 		
+		<stats>
+		<!-- Base_Random_Roll -->
+		<stat name="EntityDamage"			value="0,0,1,0,.1"/>
+
+		<stat name="DegradationMax" 		value="0,0,1,0,.1"/>
+		<!-- Q1_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="1,0,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="1,0,.3,.1,.5"/>
+		<!-- Q2_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="2,10,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="2,10,.3,.1,.5"/>
+		<!-- Q3_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="3,11,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="3,11,.3,.1,.5"/>
+		<!-- Q4_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="4,12,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="4,12,.3,.1,.5"/>
+		<!-- Q5_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="5,14,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="5,14,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,16,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="6,16,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,20,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="6,20,.3,.1,.5"/>
+	</stats>
 			<property class="Action0">
 				<property name="Class" value="Ranged"/>
 				<property name="ItemActionModules" value="ShellEjector,KFCommonUtilityLib;InterruptReload,KFCommonUtilityLib;Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;InvariableRPM,KFCommonUtilityLib;MultiBarrel,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
@@ -293,10 +361,10 @@
 				<property name="RoundsPerShot" value="2"/>
 				<property name="BarrelCount" value="2"/>
 				<property name="Magazine_items" value="ammo44MagnumBulletBall,ammo44MagnumBulletHP,ammo44MagnumBulletAP"/>
-				<property name="Sound_start" value="kf_af2011_Fire_1P_InDoor_Large"/>
-				<property name="Sound_loop" value="kf_af2011_Fire_1P_InDoor_Large"/>
+				<property name="Sound_start" value="Play_WEP_SA_1911_Fire_1P__Indoor_Large__Variant_af2011_Fire_1P_InDoor_Large"/>
+				<property name="Sound_loop" value="Play_WEP_SA_1911_Fire_1P__Indoor_Large__Variant_af2011_Fire_1P_InDoor_Large"/>
 				<property name="Sound_end" value=""/>
-				<property name="Sound_empty" value="kf_af2011_DryFire"/>
+				<property name="Sound_empty" value="Play_SA_WEP_DoubleBarrel_Fire_DryFire__Variant_af2011_DryFire"/>
 				<property name="AutoReload" value="false"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?af2011_muzzle_flash.prefab"/>
 				<property name="Particles_muzzle_fire_fpv" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?af2011_muzzle_flash_fpv.prefab"/>

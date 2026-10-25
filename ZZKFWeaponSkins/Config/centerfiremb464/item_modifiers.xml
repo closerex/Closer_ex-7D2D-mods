@@ -1,0 +1,260 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configs>
+  <append xpath="/item_modifiers">
+    <item_modifier name="modKFSkin_centerfiremb464_SkinId_4933" installable_tags="kfSkin_gunKFSPX464" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_centerfiremb464_SkinId_4933" />
+      <property name="DescriptionKey" value="modKFSkin_centerfiremb464_SkinId_4933Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFSPX464">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_4933__spx464_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSPX464Cheat">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_4933__spx464_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_centerfiremb464_SkinId_6093" installable_tags="kfSkin_gunKFSPX464" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_centerfiremb464_SkinId_6093" />
+      <property name="DescriptionKey" value="modKFSkin_centerfiremb464_SkinId_6093Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFSPX464">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6093__spx464_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSPX464Cheat">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6093__spx464_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_centerfiremb464_SkinId_6094" installable_tags="kfSkin_gunKFSPX464" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_centerfiremb464_SkinId_6094" />
+      <property name="DescriptionKey" value="modKFSkin_centerfiremb464_SkinId_6094Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFSPX464">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6094__spx464_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSPX464Cheat">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6094__spx464_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_centerfiremb464_SkinId_6095" installable_tags="kfSkin_gunKFSPX464" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_centerfiremb464_SkinId_6095" />
+      <property name="DescriptionKey" value="modKFSkin_centerfiremb464_SkinId_6095Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFSPX464">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6095__spx464_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSPX464Cheat">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6095__spx464_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_centerfiremb464_SkinId_6129" installable_tags="kfSkin_gunKFSPX464" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_centerfiremb464_SkinId_6129" />
+      <property name="DescriptionKey" value="modKFSkin_centerfiremb464_SkinId_6129Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFSPX464">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6129__spx464_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSPX464Cheat">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6129__spx464_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_centerfiremb464_SkinId_6130" installable_tags="kfSkin_gunKFSPX464" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_centerfiremb464_SkinId_6130" />
+      <property name="DescriptionKey" value="modKFSkin_centerfiremb464_SkinId_6130Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFSPX464">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6130__spx464_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSPX464Cheat">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6130__spx464_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_centerfiremb464_SkinId_6131" installable_tags="kfSkin_gunKFSPX464" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_centerfiremb464_SkinId_6131" />
+      <property name="DescriptionKey" value="modKFSkin_centerfiremb464_SkinId_6131Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFSPX464">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6131__spx464_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSPX464Cheat">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6131__spx464_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_centerfiremb464_SkinId_6220" installable_tags="kfSkin_gunKFSPX464" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_centerfiremb464_SkinId_6220" />
+      <property name="DescriptionKey" value="modKFSkin_centerfiremb464_SkinId_6220Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFSPX464">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6220__spx464_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSPX464Cheat">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6220__spx464_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_centerfiremb464_SkinId_6303" installable_tags="kfSkin_gunKFSPX464" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_centerfiremb464_SkinId_6303" />
+      <property name="DescriptionKey" value="modKFSkin_centerfiremb464_SkinId_6303Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFSPX464">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6303__spx464_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSPX464Cheat">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6303__spx464_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_centerfiremb464_SkinId_6304" installable_tags="kfSkin_gunKFSPX464" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_centerfiremb464_SkinId_6304" />
+      <property name="DescriptionKey" value="modKFSkin_centerfiremb464_SkinId_6304Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFSPX464">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6304__spx464_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSPX464Cheat">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6304__spx464_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_centerfiremb464_SkinId_6305" installable_tags="kfSkin_gunKFSPX464" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_centerfiremb464_SkinId_6305" />
+      <property name="DescriptionKey" value="modKFSkin_centerfiremb464_SkinId_6305Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFSPX464">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6305__spx464_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSPX464Cheat">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6305__spx464_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_centerfiremb464_SkinId_6327" installable_tags="kfSkin_gunKFSPX464" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_centerfiremb464_SkinId_6327" />
+      <property name="DescriptionKey" value="modKFSkin_centerfiremb464_SkinId_6327Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFSPX464">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6327__spx464_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSPX464Cheat">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6327__spx464_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_centerfiremb464_SkinId_6888" installable_tags="kfSkin_gunKFSPX464" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_centerfiremb464_SkinId_6888" />
+      <property name="DescriptionKey" value="modKFSkin_centerfiremb464_SkinId_6888Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFSPX464">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6888__spx464_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSPX464Cheat">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_6888__spx464_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_centerfiremb464_SkinId_9427" installable_tags="kfSkin_gunKFSPX464" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_centerfiremb464_SkinId_9427" />
+      <property name="DescriptionKey" value="modKFSkin_centerfiremb464_SkinId_9427Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFSPX464">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_9427__spx464_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSPX464Cheat">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_9427__spx464_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_centerfiremb464_SkinId_9431" installable_tags="kfSkin_gunKFSPX464" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_centerfiremb464_SkinId_9431" />
+      <property name="DescriptionKey" value="modKFSkin_centerfiremb464_SkinId_9431Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFSPX464">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_9431__spx464_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFSPX464Cheat">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d?SkinId_9431__spx464_m" />
+      </item_property_overrides>
+    </item_modifier>
+  </append>
+</configs>

@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configs>
+  <append xpath="/item_modifiers">
+    <item_modifier name="modKFSkin_g18_SkinId_7850" installable_tags="kfSkin_gunKFG18CShield" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_g18_SkinId_7850" />
+      <property name="DescriptionKey" value="modKFSkin_g18_SkinId_7850Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFG18CShield">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/g18/kf_skin_g18.unity3d?SkinId_7850__gunKFG18CShield" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_g18_SkinId_7851" installable_tags="kfSkin_gunKFG18CShield" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_g18_SkinId_7851" />
+      <property name="DescriptionKey" value="modKFSkin_g18_SkinId_7851Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFG18CShield">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/g18/kf_skin_g18.unity3d?SkinId_7851__gunKFG18CShield" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_g18_SkinId_7852" installable_tags="kfSkin_gunKFG18CShield" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_g18_SkinId_7852" />
+      <property name="DescriptionKey" value="modKFSkin_g18_SkinId_7852Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFG18CShield">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/g18/kf_skin_g18.unity3d?SkinId_7852__gunKFG18CShield" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_g18_SkinId_7853" installable_tags="kfSkin_gunKFG18CShield" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_g18_SkinId_7853" />
+      <property name="DescriptionKey" value="modKFSkin_g18_SkinId_7853Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFG18CShield">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/g18/kf_skin_g18.unity3d?SkinId_7853__gunKFG18CShield" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_g18_SkinId_7854" installable_tags="kfSkin_gunKFG18CShield" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_g18_SkinId_7854" />
+      <property name="DescriptionKey" value="modKFSkin_g18_SkinId_7854Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFG18CShield">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/g18/kf_skin_g18.unity3d?SkinId_7854__gunKFG18CShield" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_g18_SkinId_7855" installable_tags="kfSkin_gunKFG18CShield" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_g18_SkinId_7855" />
+      <property name="DescriptionKey" value="modKFSkin_g18_SkinId_7855Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFG18CShield">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/g18/kf_skin_g18.unity3d?SkinId_7855__gunKFG18CShield" />
+      </item_property_overrides>
+    </item_modifier>
+  </append>
+</configs>

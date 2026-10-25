@@ -1,0 +1,97 @@
+{
+  "status": "partial_acceptance_followup_required",
+  "date": "2026-10-02",
+  "timezone": "Asia/Shanghai",
+  "game": "V3.2.0 b10",
+  "unity": "2022.3.62f2",
+  "mono": "6.13.0",
+  "runtimeGeneration": "a15ed4f4fb014d2b9537c9ac3d7ae227",
+  "mainMenu": {
+    "command": "luaprobe test all --caps",
+    "moonsharp": {
+      "pass": 43,
+      "fail": 0,
+      "info": 9
+    },
+    "nlua": {
+      "pass": 43,
+      "fail": 0,
+      "info": 9
+    },
+    "xlua": "full suite not integrated"
+  },
+  "inWorld": {
+    "save": "__mcp_work_luaprobe_20261002",
+    "sourceBaselineUnmodified": true,
+    "command": "luaprobe test all",
+    "moonsharp": {
+      "pass": 42,
+      "fail": 0,
+      "info": 1
+    },
+    "nlua": {
+      "pass": 42,
+      "fail": 0,
+      "info": 1
+    },
+    "crossCheck": "Player health/maxHealth 100/100 and name agree with sdtd_players and CUE direct game reads",
+    "resetAndReinitialize": "both backends user_demo passed after reset",
+    "exitFreshness": "both backends report has_world=false and health/name=nil after native Disconnect"
+  },
+  "xluaSmoke": {
+    "outcome": "XLUA_GAME_SMOKE:Lua 5.4|2|7|missed",
+    "coverage": "existing paired xLua binaries; native load, LuaEnv init, Lua execution, CLR static call, reaction string; LuaEnv disposed",
+    "notCovered": "full adapter suite, cross-frame benchmarks"
+  },
+  "cue": {
+    "initialFailure": "Deployed CUE loader lacks RuntimeAdapterBootstrap.Start",
+    "recovery": "Explicit acceptance_start_cue.lua invoked already-loaded public bootstrap through NLua; CUE reports ready; no loader assembly modified"
+  },
+  "pending": [
+    "DSH to integrate xLua in common suite",
+    "DSH to make game benchmark yield across frames and distinguish active work timing from wait",
+    "Reconcile recorded truncated benchmark rows and no-caps assertion counts with documentation",
+    "Stage corrected build without overwriting loaded DLLs; perform targeted in-game reacceptance before user code review"
+  ],
+  "finalGameState": "main_menu, paused=false; test copy retained; no foreground activation",
+  "cuePlayerCheck": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"summary\":\"Console execution result\",\"data\":{\"mutationCommitted\":true,\"cancellationObserved\":false,\"highRisk\":true,\"action\":\"evaluate\",\"compiled\":true,\"invocationAttempted\":true,\"invocationCompleted\":true,\"valueTruncated\":false,\"diagnosticTotalCount\":0,\"diagnosticsTruncated\":false,\"outputOriginalLength\":0,\"outputTruncated\":false,\"registeredImportTotalCount\":0,\"registeredImportsTruncated\":false,\"importsMode\":\"Namespace imports are global to CUE\\u0027s evaluator: imports calls ConsoleController.AddUsing for each requested namespace and returns Evaluator.GetUsing text; request-scoped assembly references are unsupported.\",\"responseTruncated\":false,\"value\":{\"kind\":\"string\",\"typeName\":\"System.String\",\"text\":\"CUE_PLAYER_CHECK name=closer_ex;health=100;max=100;probe=True\",\"json\":\"{}\",\"truncated\":false,\"items\":[],\"entries\":[]},\"dataRef\":\"d_ce88040feea2f9c1a6941a2f1ed90601\",\"resultKind\":\"console.execute:evaluate\"}}"
+      }
+    ],
+    "structuredContent": {
+      "summary": "Console execution result",
+      "data": {
+        "mutationCommitted": true,
+        "cancellationObserved": false,
+        "highRisk": true,
+        "action": "evaluate",
+        "compiled": true,
+        "invocationAttempted": true,
+        "invocationCompleted": true,
+        "valueTruncated": false,
+        "diagnosticTotalCount": 0,
+        "diagnosticsTruncated": false,
+        "outputOriginalLength": 0,
+        "outputTruncated": false,
+        "registeredImportTotalCount": 0,
+        "registeredImportsTruncated": false,
+        "importsMode": "Namespace imports are global to CUE's evaluator: imports calls ConsoleController.AddUsing for each requested namespace and returns Evaluator.GetUsing text; request-scoped assembly references are unsupported.",
+        "responseTruncated": false,
+        "value": {
+          "kind": "string",
+          "typeName": "System.String",
+          "text": "CUE_PLAYER_CHECK name=closer_ex;health=100;max=100;probe=True",
+          "json": "{}",
+          "truncated": false,
+          "items": [],
+          "entries": []
+        },
+        "dataRef": "d_ce88040feea2f9c1a6941a2f1ed90601",
+        "resultKind": "console.execute:evaluate"
+      }
+    }
+  }
+}

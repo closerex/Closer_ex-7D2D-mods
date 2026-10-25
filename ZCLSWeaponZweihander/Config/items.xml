@@ -29,7 +29,7 @@
 			<property class="Action0">
 				<property name="Class" value="DynamicMelee"/>
 				<property name="Damage_type" value="Piercing"/>
-				<property name="Sound_start" value="kf_Movement_Bash"/>
+				<property name="Sound_start" value="Play_PC_Weapon_Bash"/>
 				<property name="DynamicSoundStart" value="bashSwingLight"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib"/>
 				<property name="InterruptStateFullName" value="Base Layer.MeleeCancel"/>
@@ -50,7 +50,7 @@
 				<property name="Class" value="DynamicMelee"/>
 				<property name="Damage_type" value="Piercing"/>
 				<property name="Sphere" value=".1"/>
-				<property name="Sound_start" value="kf_Movement_Bash"/>
+				<property name="Sound_start" value="Play_PC_Weapon_Bash"/>
 				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib"/>
 				<property name="MaxComboCount" value="1"/>
@@ -170,6 +170,56 @@
 			<property name="SoundPickup" value="machete_grab"/>
 			<property name="SoundPlace" value="machete_place"/>
 		
+		<stats>
+		<!-- Base_Random_Roll -->
+		<stat name="EntityDamage"			value="0,0,1,0,.1"/>
+		<stat name="BlockDamage" 			value="0,0,1,0,.1"/>
+		<stat name="AttacksPerMinute" 		value="0,0,1,0,.02"/>
+		<stat name="StaminaLoss" 			value="0,0,1,-.01,0"/>
+		<stat name="DegradationMax" 		value="0,0,1,0,.1"/>
+		<!-- Q1_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="1,0,.3,.1,.5"/>
+		<stat name="BlockDamage" 			value="1,0,.3,.1,.5"/>
+		<stat name="AttacksPerMinute" 		value="1,0,.3,.02,.1"/>
+		<stat name="StaminaLoss" 			value="1,0,.3,-.5,-.1"/>
+		<stat name="DegradationMax" 		value="1,0,.3,.1,.5"/>
+		<!-- Q2_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="2,10,.3,.1,.5"/>
+		<stat name="BlockDamage" 			value="2,10,.3,.1,.5"/>
+		<stat name="AttacksPerMinute" 		value="2,10,.3,.02,.1"/>
+		<stat name="StaminaLoss" 			value="2,10,.3,-.5,-.1"/>
+		<stat name="DegradationMax" 		value="2,10,.3,.1,.5"/>
+		<!-- Q3_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="3,11,.3,.1,.5"/>
+		<stat name="BlockDamage" 			value="3,11,.3,.1,.5"/>
+		<stat name="AttacksPerMinute" 		value="3,11,.3,.02,.1"/>
+		<stat name="StaminaLoss" 			value="3,11,.3,-.5,-.1"/>
+		<stat name="DegradationMax" 		value="3,11,.3,.1,.5"/>
+		<!-- Q4_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="4,12,.3,.1,.5"/>
+		<stat name="BlockDamage" 			value="4,12,.3,.1,.5"/>
+		<stat name="AttacksPerMinute" 		value="4,12,.3,.02,.1"/>
+		<stat name="StaminaLoss" 			value="4,12,.3,-.5,-.1"/>
+		<stat name="DegradationMax" 		value="4,12,.3,.1,.5"/>
+		<!-- Q5_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="5,14,.3,.1,.5"/>
+		<stat name="BlockDamage" 			value="5,14,.3,.1,1"/>
+		<stat name="AttacksPerMinute" 		value="5,14,.3,.02,.1"/>
+		<stat name="StaminaLoss" 			value="5,14,.3,-.5,-.1"/>
+		<stat name="DegradationMax" 		value="5,14,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,16,.3,.1,.5"/>
+		<stat name="BlockDamage" 			value="6,16,.3,.1,1"/>
+		<stat name="AttacksPerMinute" 		value="6,16,.3,.02,.1"/>
+		<stat name="StaminaLoss" 			value="6,16,.3,-.5,-.1"/>
+		<stat name="DegradationMax" 		value="6,16,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,20,.3,.1,.5"/>
+		<stat name="BlockDamage" 			value="6,20,.3,.1,1"/>
+		<stat name="AttacksPerMinute" 		value="6,20,.3,.04,.05"/>
+		<stat name="StaminaLoss" 			value="6,20,.3,-.5,-.4"/>
+		<stat name="DegradationMax" 		value="6,20,.3,.1,.5"/>
+	</stats>
 			<property class="Action0">
 				<property name="Class" value="DynamicMelee"/>
 				<property name="ItemActionModules" value="Inspectable,KFCommonUtilityLib;AnimationLocked,KFCommonUtilityLib;DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib;AnimationInterruptSource,KFCommonUtilityLib;LimitedCombo,KFCommonUtilityLib"/>
@@ -239,7 +289,7 @@
 				<passive_effect name="ModSlots" operation="base_set" value="3,3,3,4,5,6" tier="1,2,3,4,5,6"/>
 				<passive_effect name="ModPowerBonus" operation="perc_add" value=".10" tags="EntityDamage,BlockDamage"/>
 				<passive_effect name="ModPowerBonus" operation="base_add" value="300" tags="EconomicValue"/>
-				<passive_effect name="EntityDamage" operation="base_set" value="35" tags="perkDeepCuts"/>
+				<passive_effect name="EntityDamage" operation="base_set" value="42" tags="perkDeepCuts"/>
 				<passive_effect name="EntityDamage" operation="perc_add" value="-.04,.04" tags="perkDeepCuts"/>
 				<passive_effect name="EntityDamage" operation="perc_add" value=".1,.5" tier="2,6" tags="perkDeepCuts"/> <!-- tier bonus -->
 				<passive_effect name="BlockDamage" operation="base_set" value="23" tags="perkDeepCuts"/>
@@ -259,7 +309,7 @@
 				<passive_effect name="AttacksPerMinute" operation="base_set" value="52" tags="secondary"/>
 				<passive_effect name="GrazeStaminaMultiplier" operation="base_set" value=".8" tags="secondary"/>
 				<passive_effect name="GrazeDamageMultiplier" operation="base_set" value="1" tags="secondary"/>
-				<passive_effect name="EntityDamage" operation="base_set" value="42" tags="secondary"/>
+				<passive_effect name="EntityDamage" operation="base_set" value="50" tags="secondary"/>
 				<passive_effect name="EntityDamage" operation="perc_add" value="1" tags="secondary"/>
 				<passive_effect name="BlockDamage" operation="perc_add" value="1" tags="secondary"/>
 				<passive_effect name="StaminaLoss" operation="base_set" value="52" tags="secondary"/> <!-- - 10% -->
@@ -280,7 +330,6 @@
 				<requirement name="HasBuff" buff="buffZweihanderHeavyAttackVer"/>
 				<requirement name="!EntityTagCompare" target="other" tags="player"/>
 		        	<passive_effect name="TargetArmor" operation="perc_add" value="-.2" tags="perkDeepCuts"/>
-					<passive_effect name="EntityDamage" operation="base_add" value="8" tags="secondary"/>
 					<triggered_effect trigger="onSelfSecondaryActionGrazeHit" action="Ragdoll" duration="0" force="25" target="other"/>
 					<triggered_effect trigger="onSelfSecondaryActionRayHit" action="Ragdoll" duration="0" force="40" target="other"/>
 			</effect_group>

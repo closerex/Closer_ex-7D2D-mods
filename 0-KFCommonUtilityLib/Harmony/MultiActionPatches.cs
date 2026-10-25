@@ -68,12 +68,12 @@ namespace KFCommonUtilityLib.Harmony
                     codes.InsertRange(i, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), "actionData"),
+                        CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.actionData)),
                         CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
                         CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity)),
                         CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.MinEventContext)),
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), "actionData"),
+                        CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.actionData)),
                         CodeInstruction.StoreField(typeof(MinEventParams), nameof(MinEventParams.ItemActionData))
                     });
                     break;
@@ -533,16 +533,17 @@ namespace KFCommonUtilityLib.Harmony
             }
         }
 
-        //copy ItemValue to projectile
+        //Isolate flight calculations from the original and collectible ItemValue.
         [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemActionLauncher.instantiateProjectile))]
         [HarmonyPostfix]
         private static void Postfix_instantiateProjectile_ItemActionLauncher(Transform __result)
         {
-            var script = __result.GetComponent<ProjectileMoveScript>();
-            var projectileValue = script.itemValueProjectile;
-            var launcherValue = script.itemValueLauncher;
-            projectileValue.Activated = (byte)(Mathf.Clamp01(script.actionData.strainPercent) * byte.MaxValue);
-            MultiActionUtils.CopyLauncherValueToProjectile(launcherValue, projectileValue, script.actionData.indexInEntityOfAction);
+            if (__result != null)
+            {
+                var script = __result.GetComponent<CustomProjectileMoveScript>();
+                if (script != null)
+                    script.InitializeValueCopies();
+            }
         }
 
         //
@@ -552,9 +553,10 @@ namespace KFCommonUtilityLib.Harmony
         {
             if (_firingEntity is EntityAlive entityAlive)
                 entityAlive.MinEventContext.ItemActionData = __instance.actionData;
-            if (__instance is CustomProjectileMoveScript)
+            if (__instance is CustomProjectileMoveScript script)
             {
-                __instance.ProjectileFire(_idealStartPos, _dirOrPos, _firingEntity, _hmOverride, _radius, _isBallistic);
+                script.CaptureLaunchStrain();
+                script.ProjectileFire(_idealStartPos, _dirOrPos, _firingEntity, _hmOverride, _radius, _isBallistic);
                 return false;
             }
 
@@ -582,9 +584,9 @@ namespace KFCommonUtilityLib.Harmony
         }
 
         //why? ask TFP the fuck they are doing
-        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ExecuteAction))]
+        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.TryExecuteAction))]
         [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_ExecuteAction_ItemActionRanged(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler_TryExecuteAction_ItemActionRanged(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             var codes = instructions.ToList();
 
@@ -956,19 +958,12 @@ namespace KFCommonUtilityLib.Harmony
         {
             private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 2))
-                {
-                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "GetBindingValue");
-                }
-                else
-                {
-                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "GetBindingValueInternal");
-                }
+                yield return AccessTools.Method(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.GetBindingValueInternal));
             }
 
             private static void Prefix(XUiC_HUDStatBar __instance, out ItemActionData __state)
             {
-                EntityPlayerLocal localPlayer = __instance.GetLocalPlayer();
+                EntityPlayerLocal localPlayer = __instance.localPlayer;
                 if (__instance.statType != HUDStatTypes.ActiveItem || localPlayer == null)
                 {
                     __state = null;
@@ -980,7 +975,7 @@ namespace KFCommonUtilityLib.Harmony
 
             private static void Postfix(XUiC_HUDStatBar __instance, ItemActionData __state)
             {
-                EntityPlayerLocal localPlayer = __instance.GetLocalPlayer();
+                EntityPlayerLocal localPlayer = __instance.localPlayer;
                 if (__instance.statType == HUDStatTypes.ActiveItem && localPlayer != null)
                 {
                     localPlayer.MinEventContext.ItemActionData = __state;
@@ -993,19 +988,12 @@ namespace KFCommonUtilityLib.Harmony
         {
             private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
-                {
-                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "SetupActiveItemEntry");
-                }
-                else
-                {
-                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "setupActiveItemEntry");
-                }
+                yield return AccessTools.Method(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.setupActiveItemEntry));
             }
 
             private static void Prefix(XUiC_HUDStatBar __instance, out ItemActionData __state)
             {
-                EntityPlayerLocal localPlayer = __instance.GetLocalPlayer();
+                EntityPlayerLocal localPlayer = __instance.localPlayer;
                 if (localPlayer == null)
                 {
                     __state = null;
@@ -1017,7 +1005,7 @@ namespace KFCommonUtilityLib.Harmony
 
             private static void Postfix(XUiC_HUDStatBar __instance, ItemActionData __state)
             {
-                EntityPlayerLocal localPlayer = __instance.GetLocalPlayer();
+                EntityPlayerLocal localPlayer = __instance.localPlayer;
                 if (localPlayer != null)
                 {
                     localPlayer.MinEventContext.ItemActionData = __state;
@@ -1033,14 +1021,7 @@ namespace KFCommonUtilityLib.Harmony
                 FieldInfo fld_ammoindex = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
 
                 int localIndex;
-                if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
-                {
-                    localIndex = 2;
-                }
-                else
-                {
-                    localIndex = 1;
-                }
+                localIndex = 1;
 
                 for (int i = 0; i < codes.Count; i++)
                 {
@@ -1163,9 +1144,9 @@ namespace KFCommonUtilityLib.Harmony
                 var code = codes[i];
                 if (code.LoadsField(fld_actionindex) && codes[i + 2].opcode == OpCodes.Ldstr)
                 {
-                    string property = codes[i + 2].operand.ToString();
-                    property = property.Split('.')[1];
+                    string property = codes[i + 5].operand.ToString();
                     codes.RemoveRange(i + 1, 4);
+                    codes[i + 1].labels.Clear();
                     codes.InsertRange(i + 1, new[]
                     {
                         new CodeInstruction(OpCodes.Ldstr, property),
@@ -1315,295 +1296,6 @@ namespace KFCommonUtilityLib.Harmony
             MultiActionUtils.SetMinEventParamsByEntityInventory(_data.holdingEntity);
         }
 
-        //should be fixed in Harmony 2.12.0.0
-        //[HarmonyPatch(typeof(ItemClassesFromXml), nameof(ItemClassesFromXml.parseItem))]
-        //[HarmonyPrefix]
-        //private static bool Prefix_parseItem_ItemClassesFromXml(XElement _node)
-        //{
-        //    DynamicProperties dynamicProperties = new DynamicProperties();
-        //    string attribute = _node.GetAttribute("name");
-        //    if (attribute.Length == 0)
-        //    {
-        //        throw new Exception("Attribute 'name' missing on item");
-        //    }
-        //    //here
-        //    List<IRequirement>[] array = new List<IRequirement>[ItemClass.cMaxActionNames];
-        //    for (int i = 0; i < array.Length; i++)
-        //    {
-        //        array[i] = new List<IRequirement>();
-        //    }
-
-        //    foreach (XElement item in _node.Elements("property"))
-        //    {
-        //        dynamicProperties.Add(item);
-        //        string attribute2 = item.GetAttribute("class");
-        //        if (attribute2.StartsWith("Action"))
-        //        {
-        //            int num = attribute2[attribute2.Length - 1] - '0';
-        //            array[num].AddRange(RequirementBase.ParseRequirements(item));
-        //        }
-        //    }
-
-        //    if (dynamicProperties.Values.ContainsKey("Extends"))
-        //    {
-        //        string text = dynamicProperties.Values["Extends"];
-        //        ItemClass itemClass = ItemClass.GetItemClass(text);
-        //        if (itemClass == null)
-        //        {
-        //            throw new Exception($"Extends item {text} is not specified for item {attribute}'");
-        //        }
-
-        //        HashSet<string> hashSet = new HashSet<string> { Block.PropCreativeMode };
-        //        if (dynamicProperties.Params1.ContainsKey("Extends"))
-        //        {
-        //            string[] array2 = dynamicProperties.Params1["Extends"].Split(new[] { ',' }, StringSplitOptions.None);
-        //            foreach (string text2 in array2)
-        //            {
-        //                hashSet.Add(text2.Trim());
-        //            }
-        //        }
-
-        //        DynamicProperties dynamicProperties2 = new DynamicProperties();
-        //        dynamicProperties2.CopyFrom(itemClass.Properties, hashSet);
-        //        dynamicProperties2.CopyFrom(dynamicProperties);
-        //        dynamicProperties = dynamicProperties2;
-        //    }
-
-        //    ItemClass itemClass2;
-        //    if (dynamicProperties.Values.ContainsKey("Class"))
-        //    {
-        //        string text3 = dynamicProperties.Values["Class"];
-        //        if (!text3.Contains(","))
-        //        {
-        //            text3 += ",Assembly-CSharp";
-        //        }
-        //        try
-        //        {
-        //            itemClass2 = (ItemClass)Activator.CreateInstance(Type.GetType(text3));
-        //        }
-        //        catch (Exception)
-        //        {
-        //            throw new Exception("No item class '" + text3 + " found!");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        itemClass2 = new ItemClass();
-        //    }
-
-        //    itemClass2.Properties = dynamicProperties;
-        //    if (dynamicProperties.Params1.ContainsKey("Extends"))
-        //    {
-        //        string text4 = dynamicProperties.Values["Extends"];
-        //        if (ItemClass.GetItemClass(text4) == null)
-        //        {
-        //            throw new Exception($"Extends item {text4} is not specified for item {attribute}'");
-        //        }
-        //    }
-
-        //    itemClass2.Effects = MinEffectController.ParseXml(_node, null, MinEffectController.SourceParentType.ItemClass, itemClass2.Id);
-        //    itemClass2.SetName(attribute);
-        //    itemClass2.setLocalizedItemName(Localization.Get(attribute));
-        //    if (dynamicProperties.Values.ContainsKey("Stacknumber"))
-        //    {
-        //        itemClass2.Stacknumber = new DataItem<int>(int.Parse(dynamicProperties.Values["Stacknumber"]));
-        //    }
-        //    else
-        //    {
-        //        itemClass2.Stacknumber = new DataItem<int>(500);
-        //    }
-
-        //    if (dynamicProperties.Values.ContainsKey("Canhold"))
-        //    {
-        //        itemClass2.SetCanHold(StringParsers.ParseBool(dynamicProperties.Values["Canhold"]));
-        //    }
-
-        //    if (dynamicProperties.Values.ContainsKey("Candrop"))
-        //    {
-        //        itemClass2.SetCanDrop(StringParsers.ParseBool(dynamicProperties.Values["Candrop"]));
-        //    }
-
-        //    if (!dynamicProperties.Values.ContainsKey("Material"))
-        //    {
-        //        throw new Exception("Attribute 'material' missing on item '" + attribute + "'");
-        //    }
-
-        //    itemClass2.MadeOfMaterial = MaterialBlock.fromString(dynamicProperties.Values["Material"]);
-        //    if (itemClass2.MadeOfMaterial == null)
-        //    {
-        //        throw new Exception("Attribute 'material' '" + dynamicProperties.Values["Material"] + "' refers to not existing material in item '" + attribute + "'");
-        //    }
-
-        //    if (!dynamicProperties.Values.ContainsKey("Meshfile") && itemClass2.CanHold())
-        //    {
-        //        throw new Exception("Attribute 'Meshfile' missing on item '" + attribute + "'");
-        //    }
-
-        //    itemClass2.MeshFile = dynamicProperties.Values["Meshfile"];
-        //    DataLoader.PreloadBundle(itemClass2.MeshFile);
-        //    StringParsers.TryParseFloat(dynamicProperties.Values["StickyOffset"], out itemClass2.StickyOffset);
-        //    StringParsers.TryParseFloat(dynamicProperties.Values["StickyColliderRadius"], out itemClass2.StickyColliderRadius);
-        //    StringParsers.TryParseSInt32(dynamicProperties.Values["StickyColliderUp"], out itemClass2.StickyColliderUp);
-        //    StringParsers.TryParseFloat(dynamicProperties.Values["StickyColliderLength"], out itemClass2.StickyColliderLength);
-        //    itemClass2.StickyMaterial = dynamicProperties.Values["StickyMaterial"];
-        //    if (dynamicProperties.Values.ContainsKey("ImageEffectOnActive"))
-        //    {
-        //        itemClass2.ImageEffectOnActive = new DataItem<string>(dynamicProperties.Values["ImageEffectOnActive"]);
-        //    }
-
-        //    if (dynamicProperties.Values.ContainsKey("Active"))
-        //    {
-        //        itemClass2.Active = new DataItem<bool>(_startValue: false);
-        //    }
-
-        //    if (dynamicProperties.Values.ContainsKey(ItemClass.PropIsSticky))
-        //    {
-        //        itemClass2.IsSticky = StringParsers.ParseBool(dynamicProperties.Values[ItemClass.PropIsSticky]);
-        //    }
-
-        //    if (dynamicProperties.Values.ContainsKey("DropMeshfile") && itemClass2.CanHold())
-        //    {
-        //        itemClass2.DropMeshFile = dynamicProperties.Values["DropMeshfile"];
-        //        DataLoader.PreloadBundle(itemClass2.DropMeshFile);
-        //    }
-
-        //    if (dynamicProperties.Values.ContainsKey("HandMeshfile") && itemClass2.CanHold())
-        //    {
-        //        itemClass2.HandMeshFile = dynamicProperties.Values["HandMeshfile"];
-        //        DataLoader.PreloadBundle(itemClass2.HandMeshFile);
-        //    }
-
-        //    if (dynamicProperties.Values.ContainsKey("HoldType"))
-        //    {
-        //        string s = dynamicProperties.Values["HoldType"];
-        //        int result = 0;
-        //        if (!int.TryParse(s, out result))
-        //        {
-        //            throw new Exception("Cannot parse attribute hold_type for item '" + attribute + "'");
-        //        }
-
-        //        itemClass2.HoldType = new DataItem<int>(result);
-        //    }
-
-        //    if (dynamicProperties.Values.ContainsKey("RepairTools"))
-        //    {
-        //        string[] array3 = dynamicProperties.Values["RepairTools"].Replace(" ", "").Split(new[] { ',' }, StringSplitOptions.None);
-        //        DataItem<string>[] array4 = new DataItem<string>[array3.Length];
-        //        for (int k = 0; k < array3.Length; k++)
-        //        {
-        //            array4[k] = new DataItem<string>(array3[k]);
-        //        }
-
-        //        itemClass2.RepairTools = new ItemData.DataItemArrayRepairTools(array4);
-        //    }
-
-        //    if (dynamicProperties.Values.ContainsKey("RepairAmount"))
-        //    {
-        //        int result2 = 0;
-        //        int.TryParse(dynamicProperties.Values["RepairAmount"], out result2);
-        //        itemClass2.RepairAmount = new DataItem<int>(result2);
-        //    }
-
-        //    if (dynamicProperties.Values.ContainsKey("RepairTime"))
-        //    {
-        //        float _result = 0f;
-        //        StringParsers.TryParseFloat(dynamicProperties.Values["RepairTime"], out _result);
-        //        itemClass2.RepairTime = new DataItem<float>(_result);
-        //    }
-        //    else if (itemClass2.RepairAmount != null)
-        //    {
-        //        itemClass2.RepairTime = new DataItem<float>(1f);
-        //    }
-
-        //    if (dynamicProperties.Values.ContainsKey("Degradation"))
-        //    {
-        //        itemClass2.MaxUseTimes = new DataItem<int>(int.Parse(dynamicProperties.Values["Degradation"]));
-        //    }
-        //    else
-        //    {
-        //        itemClass2.MaxUseTimes = new DataItem<int>(0);
-        //        itemClass2.MaxUseTimesBreaksAfter = new DataItem<bool>(_startValue: false);
-        //    }
-
-        //    if (dynamicProperties.Values.ContainsKey("DegradationBreaksAfter"))
-        //    {
-        //        itemClass2.MaxUseTimesBreaksAfter = new DataItem<bool>(StringParsers.ParseBool(dynamicProperties.Values["DegradationBreaksAfter"]));
-        //    }
-        //    else if (dynamicProperties.Values.ContainsKey("Degradation"))
-        //    {
-        //        itemClass2.MaxUseTimesBreaksAfter = new DataItem<bool>(_startValue: true);
-        //    }
-
-        //    if (dynamicProperties.Values.ContainsKey("EconomicValue"))
-        //    {
-        //        itemClass2.EconomicValue = StringParsers.ParseFloat(dynamicProperties.Values["EconomicValue"]);
-        //    }
-
-        //    if (dynamicProperties.Classes.ContainsKey("Preview"))
-        //    {
-        //        DynamicProperties dynamicProperties3 = dynamicProperties.Classes["Preview"];
-        //        itemClass2.Preview = new PreviewData();
-        //        if (dynamicProperties3.Values.ContainsKey("Zoom"))
-        //        {
-        //            itemClass2.Preview.Zoom = new DataItem<int>(int.Parse(dynamicProperties3.Values["Zoom"]));
-        //        }
-
-        //        if (dynamicProperties3.Values.ContainsKey("Pos"))
-        //        {
-        //            itemClass2.Preview.Pos = new DataItem<Vector2>(StringParsers.ParseVector2(dynamicProperties3.Values["Pos"]));
-        //        }
-        //        else
-        //        {
-        //            itemClass2.Preview.Pos = new DataItem<Vector2>(Vector2.zero);
-        //        }
-
-        //        if (dynamicProperties3.Values.ContainsKey("Rot"))
-        //        {
-        //            itemClass2.Preview.Rot = new DataItem<Vector3>(StringParsers.ParseVector3(dynamicProperties3.Values["Rot"]));
-        //        }
-        //        else
-        //        {
-        //            itemClass2.Preview.Rot = new DataItem<Vector3>(Vector3.zero);
-        //        }
-        //    }
-
-        //    for (int l = 0; l < itemClass2.Actions.Length; l++)
-        //    {
-        //        string text5 = ItemClass.itemActionNames[l];
-        //        if (dynamicProperties.Classes.ContainsKey(text5))
-        //        {
-        //            if (!dynamicProperties.Values.ContainsKey(text5 + ".Class"))
-        //            {
-        //                throw new Exception("No class attribute found on " + text5 + " in item with '" + attribute + "'");
-        //            }
-
-        //            string text6 = dynamicProperties.Values[text5 + ".Class"];
-        //            ItemAction itemAction;
-        //            try
-        //            {
-        //                itemAction = (ItemAction)Activator.CreateInstance(ReflectionHelpers.GetTypeWithPrefix("ItemAction", text6));
-        //            }
-        //            catch (Exception)
-        //            {
-        //                throw new Exception("ItemAction class '" + text6 + " could not be instantiated");
-        //            }
-
-        //            itemAction.item = itemClass2;
-        //            itemAction.ActionIndex = l;
-        //            itemAction.ReadFrom(dynamicProperties.Classes[text5]);
-        //            if (array[l].Count > 0)
-        //            {
-        //                itemAction.ExecutionRequirements = array[l];
-        //            }
-
-        //            itemClass2.Actions[l] = itemAction;
-        //        }
-        //    }
-
-        //    itemClass2.Init();
-        //    return false;
-        //}
-
         /// <summary>
         /// fix requirement array count
         /// </summary>
@@ -1648,298 +1340,7 @@ namespace KFCommonUtilityLib.Harmony
             }
             return codes;
         }
-
-        /*
-        [HarmonyPatch(typeof(ItemClassesFromXml), nameof(ItemClassesFromXml.parseItem))]
-        [HarmonyPrefix]
-        private static bool Prefix_parseItem_ItemClassesFromXml(XElement _node)
-        {
-            //throw new Exception("Exception thrown from here!");
-            DynamicProperties dynamicProperties = new DynamicProperties();
-            string attribute = _node.GetAttribute("name");
-            if (attribute.Length == 0)
-            {
-                throw new Exception("Attribute 'name' missing on item");
-            }
-            //Log.Out($"Parsing item {attribute}...");
-            List<IRequirement>[] array = new List<IRequirement>[5];
-            for (int i = 0; i < array.Length; i++)
-            {
-                array[i] = new List<IRequirement>();
-            }
-
-            foreach (XElement item in _node.Elements("property"))
-            {
-                dynamicProperties.Add(item);
-                string attribute2 = item.GetAttribute("class");
-                if (attribute2.StartsWith("Action"))
-                {
-                    int num = attribute2[attribute2.Length - 1] - 48;
-                    array[num].AddRange(RequirementBase.ParseRequirements(item));
-                }
-            }
-
-            if (dynamicProperties.Values.ContainsKey("Extends"))
-            {
-                string text = dynamicProperties.Values["Extends"];
-                ItemClass itemClass = ItemClass.GetItemClass(text);
-                if (itemClass == null)
-                {
-                    throw new Exception($"Extends item {text} is not specified for item {attribute}'");
-                }
-
-                HashSet<string> hashSet = new HashSet<string> { Block.PropCreativeMode };
-                if (dynamicProperties.Params1.ContainsKey("Extends"))
-                {
-                    string[] array2 = dynamicProperties.Params1["Extends"].Split(',');
-                    foreach (string text2 in array2)
-                    {
-                        hashSet.Add(text2.Trim());
-                    }
-                }
-
-                DynamicProperties dynamicProperties2 = new DynamicProperties();
-                dynamicProperties2.CopyFrom(itemClass.Properties, hashSet);
-                dynamicProperties2.CopyFrom(dynamicProperties);
-                dynamicProperties = dynamicProperties2;
-            }
-
-            ItemClass itemClass2;
-            if (dynamicProperties.Values.ContainsKey("Class"))
-            {
-                string text3 = dynamicProperties.Values["Class"];
-                if (!text3.Contains(","))
-                {
-                    text3 += ",Assembly-CSharp";
-                }
-                try
-                {
-                    itemClass2 = (ItemClass)Activator.CreateInstance(Type.GetType(text3));
-                }
-                catch (Exception)
-                {
-                    throw new Exception("No item class '" + text3 + "' found!");
-                }
-            }
-            else
-            {
-                itemClass2 = new ItemClass();
-            }
-
-            itemClass2.Properties = dynamicProperties;
-            if (dynamicProperties.Params1.ContainsKey("Extends"))
-            {
-                string text4 = dynamicProperties.Values["Extends"];
-                if (ItemClass.GetItemClass(text4) == null)
-                {
-                    throw new Exception($"Extends item {text4} is not specified for item {attribute}'");
-                }
-            }
-
-            itemClass2.Effects = MinEffectController.ParseXml(_node, null, MinEffectController.SourceParentType.ItemClass, itemClass2.Id);
-            itemClass2.SetName(attribute);
-            itemClass2.setLocalizedItemName(Localization.Get(attribute));
-            if (dynamicProperties.Values.ContainsKey("Stacknumber"))
-            {
-                itemClass2.Stacknumber = new DataItem<int>(int.Parse(dynamicProperties.Values["Stacknumber"]));
-            }
-            else
-            {
-                itemClass2.Stacknumber = new DataItem<int>(500);
-            }
-
-            if (dynamicProperties.Values.ContainsKey("Canhold"))
-            {
-                itemClass2.SetCanHold(StringParsers.ParseBool(dynamicProperties.Values["Canhold"]));
-            }
-
-            if (dynamicProperties.Values.ContainsKey("Candrop"))
-            {
-                itemClass2.SetCanDrop(StringParsers.ParseBool(dynamicProperties.Values["Candrop"]));
-            }
-
-            if (!dynamicProperties.Values.ContainsKey("Material"))
-            {
-                throw new Exception("Attribute 'material' missing on item '" + attribute + "'");
-            }
-
-            itemClass2.MadeOfMaterial = MaterialBlock.fromString(dynamicProperties.Values["Material"]);
-            if (itemClass2.MadeOfMaterial == null)
-            {
-                throw new Exception("Attribute 'material' '" + dynamicProperties.Values["Material"] + "' refers to not existing material in item '" + attribute + "'");
-            }
-
-            if (!dynamicProperties.Values.ContainsKey("Meshfile") && itemClass2.CanHold())
-            {
-                throw new Exception("Attribute 'Meshfile' missing on item '" + attribute + "'");
-            }
-
-            itemClass2.MeshFile = dynamicProperties.Values["Meshfile"];
-            DataLoader.PreloadBundle(itemClass2.MeshFile);
-            StringParsers.TryParseFloat(dynamicProperties.Values["StickyOffset"], out itemClass2.StickyOffset);
-            StringParsers.TryParseFloat(dynamicProperties.Values["StickyColliderRadius"], out itemClass2.StickyColliderRadius);
-            StringParsers.TryParseSInt32(dynamicProperties.Values["StickyColliderUp"], out itemClass2.StickyColliderUp);
-            StringParsers.TryParseFloat(dynamicProperties.Values["StickyColliderLength"], out itemClass2.StickyColliderLength);
-            itemClass2.StickyMaterial = dynamicProperties.Values["StickyMaterial"];
-            if (dynamicProperties.Values.ContainsKey("ImageEffectOnActive"))
-            {
-                itemClass2.ImageEffectOnActive = new DataItem<string>(dynamicProperties.Values["ImageEffectOnActive"]);
-            }
-
-            if (dynamicProperties.Values.ContainsKey("Active"))
-            {
-                itemClass2.Active = new DataItem<bool>(_startValue: false);
-            }
-
-            if (dynamicProperties.Values.ContainsKey(ItemClass.PropIsSticky))
-            {
-                itemClass2.IsSticky = StringParsers.ParseBool(dynamicProperties.Values[ItemClass.PropIsSticky]);
-            }
-
-            if (dynamicProperties.Values.ContainsKey("DropMeshfile") && itemClass2.CanHold())
-            {
-                itemClass2.DropMeshFile = dynamicProperties.Values["DropMeshfile"];
-                DataLoader.PreloadBundle(itemClass2.DropMeshFile);
-            }
-
-            if (dynamicProperties.Values.ContainsKey("HandMeshfile") && itemClass2.CanHold())
-            {
-                itemClass2.HandMeshFile = dynamicProperties.Values["HandMeshfile"];
-                DataLoader.PreloadBundle(itemClass2.HandMeshFile);
-            }
-
-            if (dynamicProperties.Values.ContainsKey("HoldType"))
-            {
-                string s = dynamicProperties.Values["HoldType"];
-                int result = 0;
-                if (!int.TryParse(s, out result))
-                {
-                    throw new Exception("Cannot parse attribute hold_type for item '" + attribute + "'");
-                }
-
-                itemClass2.HoldType = new DataItem<int>(result);
-            }
-
-            if (dynamicProperties.Values.ContainsKey("RepairTools"))
-            {
-                string[] array3 = dynamicProperties.Values["RepairTools"].Replace(" ", "").Split(',');
-                DataItem<string>[] array4 = new DataItem<string>[array3.Length];
-                for (int k = 0; k < array3.Length; k++)
-                {
-                    array4[k] = new DataItem<string>(array3[k]);
-                }
-
-                itemClass2.RepairTools = new ItemData.DataItemArrayRepairTools(array4);
-            }
-
-            if (dynamicProperties.Values.ContainsKey("RepairAmount"))
-            {
-                int result2 = 0;
-                int.TryParse(dynamicProperties.Values["RepairAmount"], out result2);
-                itemClass2.RepairAmount = new DataItem<int>(result2);
-            }
-
-            if (dynamicProperties.Values.ContainsKey("RepairTime"))
-            {
-                float _result = 0f;
-                StringParsers.TryParseFloat(dynamicProperties.Values["RepairTime"], out _result);
-                itemClass2.RepairTime = new DataItem<float>(_result);
-            }
-            else if (itemClass2.RepairAmount != null)
-            {
-                itemClass2.RepairTime = new DataItem<float>(1f);
-            }
-
-            if (dynamicProperties.Values.ContainsKey("Degradation"))
-            {
-                itemClass2.MaxUseTimes = new DataItem<int>(int.Parse(dynamicProperties.Values["Degradation"]));
-            }
-            else
-            {
-                itemClass2.MaxUseTimes = new DataItem<int>(0);
-                itemClass2.MaxUseTimesBreaksAfter = new DataItem<bool>(_startValue: false);
-            }
-
-            if (dynamicProperties.Values.ContainsKey("DegradationBreaksAfter"))
-            {
-                itemClass2.MaxUseTimesBreaksAfter = new DataItem<bool>(StringParsers.ParseBool(dynamicProperties.Values["DegradationBreaksAfter"]));
-            }
-            else if (dynamicProperties.Values.ContainsKey("Degradation"))
-            {
-                itemClass2.MaxUseTimesBreaksAfter = new DataItem<bool>(_startValue: true);
-            }
-
-            if (dynamicProperties.Values.ContainsKey("EconomicValue"))
-            {
-                itemClass2.EconomicValue = StringParsers.ParseFloat(dynamicProperties.Values["EconomicValue"]);
-            }
-
-            if (dynamicProperties.Classes.ContainsKey("Preview"))
-            {
-                DynamicProperties dynamicProperties3 = dynamicProperties.Classes["Preview"];
-                itemClass2.Preview = new PreviewData();
-                if (dynamicProperties3.Values.ContainsKey("Zoom"))
-                {
-                    itemClass2.Preview.Zoom = new DataItem<int>(int.Parse(dynamicProperties3.Values["Zoom"]));
-                }
-
-                if (dynamicProperties3.Values.ContainsKey("Pos"))
-                {
-                    itemClass2.Preview.Pos = new DataItem<Vector2>(StringParsers.ParseVector2(dynamicProperties3.Values["Pos"]));
-                }
-                else
-                {
-                    itemClass2.Preview.Pos = new DataItem<Vector2>(Vector2.zero);
-                }
-
-                if (dynamicProperties3.Values.ContainsKey("Rot"))
-                {
-                    itemClass2.Preview.Rot = new DataItem<Vector3>(StringParsers.ParseVector3(dynamicProperties3.Values["Rot"]));
-                }
-                else
-                {
-                    itemClass2.Preview.Rot = new DataItem<Vector3>(Vector3.zero);
-                }
-            }
-
-            for (int l = 0; l < itemClass2.Actions.Length; l++)
-            {
-                string text5 = ItemClass.itemActionNames[l];
-                if (dynamicProperties.Classes.ContainsKey(text5))
-                {
-                    if (!dynamicProperties.Values.ContainsKey(text5 + ".Class"))
-                    {
-                        throw new Exception("No class attribute found on " + text5 + " in item with '" + attribute + "'");
-                    }
-
-                    string text6 = dynamicProperties.Values[text5 + ".Class"];
-                    ItemAction itemAction;
-                    try
-                    {
-                        itemAction = (ItemAction)Activator.CreateInstance(ReflectionHelpers.GetTypeWithPrefix("ItemAction", text6));
-                    }
-                    catch (Exception)
-                    {
-                        throw new Exception("ItemAction class '" + text6 + " could not be instantiated");
-                    }
-
-                    itemAction.item = itemClass2;
-                    itemAction.ActionIndex = l;
-                    itemAction.ReadFrom(dynamicProperties.Classes[text5]);
-                    if (array[l].Count > 0)
-                    {
-                        itemAction.ExecutionRequirements = array[l];
-                    }
-
-                    itemClass2.Actions[l] = itemAction;
-                }
-            }
-
-            itemClass2.Init();
-            return false;
-        }
-        */
-
+        
         [HarmonyPatch(typeof(Inventory), nameof(Inventory.onInventoryChanged))]
         [HarmonyPrefix]
         private static bool Prefix_onInventoryChanged_Inventory(Inventory __instance)
@@ -1961,7 +1362,7 @@ namespace KFCommonUtilityLib.Harmony
             codes.InsertRange(codes.Count - 1, new[]
             {
                 new CodeInstruction(OpCodes.Ldarg_0),
-                CodeInstruction.LoadField(typeof(NetPackagePlayerStats), nameof(NetPackagePlayerStats.entityId)),
+                CodeInstruction.LoadField(typeof(NetPackageEntityTargeted), nameof(NetPackageEntityTargeted.entityId)),
                 new CodeInstruction(OpCodes.Ldarg_0),
                 CodeInstruction.LoadField(typeof(NetPackagePlayerStats), nameof(NetPackagePlayerStats.entityNetworkStats)),
                 CodeInstruction.LoadField(typeof(EntityAlive.EntityNetworkStats), nameof(EntityAlive.EntityNetworkStats.holdingItemStack)),
@@ -2050,14 +1451,7 @@ namespace KFCommonUtilityLib.Harmony
         {
             private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
-                {
-                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "HasChanged");
-                }
-                else
-                {
-                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "hasChanged");
-                }
+                yield return AccessTools.Method(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.hasChanged));
             }
 
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -2093,16 +1487,7 @@ namespace KFCommonUtilityLib.Harmony
         {
             private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 2))
-                {
-                    Log.Out($"Choosing old GetBindingValue for XUiC_ItemInfoWindow for game version {Constants.cVersionInformation.Major}.{Constants.cVersionInformation.Minor}");
-                    yield return AccessTools.Method(typeof(XUiC_ItemInfoWindow), "GetBindingValue");
-                }
-                else
-                {
-                    Log.Out($"Choosing new GetBindingValueInternal for XUiC_ItemInfoWindow for game version {Constants.cVersionInformation.Major}.{Constants.cVersionInformation.Minor}");
-                    yield return AccessTools.Method(typeof(XUiC_ItemInfoWindow), "GetBindingValueInternal");
-                }
+                yield return AccessTools.Method(typeof(XUiC_ItemInfoWindow), nameof(XUiC_ItemInfoWindow.GetBindingValueInternal));
             }
 
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -2118,12 +1503,12 @@ namespace KFCommonUtilityLib.Harmony
                         codes.RemoveAt(i + 1);
                         codes.InsertRange(i + 1, new[]
                         {
-                        new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(XUiC_ItemInfoWindow), nameof(XUiC_ItemInfoWindow.itemStack)),
-                        CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)),
-                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetActionIndexByMetaData))
-                    });
-                        i += 3;
+                            new CodeInstruction(OpCodes.Ldarg_0),
+                            CodeInstruction.LoadField(typeof(XUiC_ItemInfoWindow), nameof(XUiC_ItemInfoWindow.itemStack)),
+                            CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)),
+                            CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetActionIndexByMetaData))
+                        });
+                        i += 4;
                     }
                 }
 
@@ -2149,42 +1534,10 @@ namespace KFCommonUtilityLib.Harmony
             FieldInfo fld_data = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.actionData));
 
             int localIndex;
-            if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 1))
-            {
-                localIndex = 35;
-            }
-            else if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
-            {
-                localIndex = 37;
-            }
-            else
-            {
-                localIndex = 40;
-            }
+            localIndex = 27;
 
             for (int i = 0; i < codes.Count; i++)
             {
-                // not present in v2.1
-                //if (codes[i].Calls(mtd_getgun))
-                //{
-                //    codes[i].operand = mtd_getprimary;
-                //}
-
-                // added by tfp?
-                //else if (codes[i].LoadsField(fld_reload))
-                //{
-                //    var label = codes[i + 6].operand;
-                //    codes.InsertRange(i + 7, new[]
-                //    {
-                //        new CodeInstruction(OpCodes.Ldarg_0),
-                //        CodeInstruction.LoadField(typeof(PlayerMoveController), nameof(PlayerMoveController.entityPlayerLocal)),
-                //        CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.inventory)),
-                //        CodeInstruction.Call(typeof(Inventory), nameof(Inventory.GetIsFinishedSwitchingHeldItem)),
-                //        new CodeInstruction(OpCodes.Brfalse, label)
-                //    });
-                //    i += 5;
-                //}
-
                 // holding item
                 if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == localIndex)
                 {
@@ -2519,7 +1872,7 @@ namespace KFCommonUtilityLib.Harmony
                     codes.InsertRange(i + 1, new[]
                     {
                         new CodeInstruction(OpCodes.Ldloc_1),
-                        CodeInstruction.CallClosure<Action<Inventory>>(static (Inventory inv) =>
+                        CodeInstruction.CallClosure<Action<Inventory>>(static (inv) =>
                         {
                             if(inv.lastdrawnHoldingItemData.IsModuleContainerFor(out ItemModuleTrueHolster.TrueHolsterData data))
                             {
@@ -2649,18 +2002,7 @@ namespace KFCommonUtilityLib.Harmony
                                 new CodeInstruction(OpCodes.Ble_Un_S, lbl_next)
                             });
                             int offset;
-                            if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
-                            {
-                                offset = 7;
-                            }
-                            else if (Constants.cVersionInformation.Equals(VersionInformation.EGameReleaseType.V, 2, 5))
-                            {
-                                offset = 6;
-                            }
-                            else
-                            {
-                                offset = 3;
-                            }
+                            offset = 3;
                             codes[j - offset].WithLabels(codes[j - offset - 2].ExtractLabels());
                             codes.RemoveRange(j - offset - 2, 2);
                             break;
@@ -2696,6 +2038,22 @@ namespace KFCommonUtilityLib.Harmony
         {
             MultiActionUtils.SetCachedEventParamsDummyAction(itemValue);
             return true;
+        }
+
+        [HarmonyPatch(typeof(XUiM_ItemStack), nameof(XUiM_ItemStack.GetStatItemValueTextWithModColoring))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_GetStatItemValueTextWithModColoring_XUiM_ItemStack(IEnumerable<CodeInstruction> instructions)
+        {
+            // Calculations deliberately receive no player; UI visibility still uses the local UI.
+            var playerUiGetter = AccessTools.PropertyGetter(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.PlayerUI));
+            var matcher = new CodeMatcher(instructions)
+                .MatchStartForward(new CodeMatch(OpCodes.Ldarg_1), new CodeMatch(code => code.Calls(playerUiGetter)))
+                .ThrowIfInvalid("Item stat coloring player UI access not found");
+            matcher.InstructionAt(0).opcode = OpCodes.Call;
+            matcher.InstructionAt(0).operand = AccessTools.Method(typeof(LocalPlayerUI), nameof(LocalPlayerUI.GetUIForPrimaryPlayer));
+            matcher.InstructionAt(1).opcode = OpCodes.Nop;
+            matcher.InstructionAt(1).operand = null;
+            return matcher.InstructionEnumeration();
         }
 
         [HarmonyPatch(typeof(XUiM_ItemStack), nameof(XUiM_ItemStack.GetStatItemValueTextWithCompareInfo))]
@@ -2735,47 +2093,86 @@ namespace KFCommonUtilityLib.Harmony
 
             return codes.Manipulator(static ins => ins.IsLdarg(2), static ins => ins.opcode = OpCodes.Ldnull);
         }
+        
+        [HarmonyPatch(typeof(XUiM_ItemStack), nameof(XUiM_ItemStack.degradationMaxMod))]
+        [HarmonyPrefix]
+        private static void Prefix_degradationMaxMod_XUiM_ItemStack(ItemValue _itemValue)
+        {
+            MultiActionUtils.SetCachedEventParamsDummyAction(_itemValue);
+        }
 
         [HarmonyPatch]
         public static class GetBindingValuePatch2
         {
             private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 2))
-                {
-                    Log.Out($"Choosing old GetBindingValue for XUiC_ItemStack for game version {Constants.cVersionInformation.Major}.{Constants.cVersionInformation.Minor}");
-                    yield return AccessTools.Method(typeof(XUiC_ItemStack), "GetBindingValue");
-                }
-                else
-                {
-                    Log.Out($"Choosing new GetBindingValueInternal for XUiC_ItemStack for game version {Constants.cVersionInformation.Major}.{Constants.cVersionInformation.Minor}");
-                    yield return AccessTools.Method(typeof(XUiC_ItemStack), "GetBindingValueInternal");
-                }
+                yield return AccessTools.Method(typeof(XUiC_ItemStack), nameof(XUiC_ItemStack.GetBindingValueInternal));
+                yield return AccessTools.Method(typeof(XUiC_ItemInfoWindow), nameof(XUiC_ItemInfoWindow.GetBindingValueInternal));
             }
 
-            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase __originalMethod)
             {
                 var codes = instructions.ToList();
 
-                var prop_perc = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.PercentUsesLeft));
+                var prop_maxui = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.MaxUseTimesUI));
+                var prop_max = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.MaxUseTimes));
+                var fld_itemstack = AccessTools.Field(__originalMethod.DeclaringType, "itemStack");
 
                 for (int i = 0; i < codes.Count; i++)
                 {
-                    if (codes[i].Calls(prop_perc))
+                    if (codes[i].Calls(prop_maxui))
                     {
-                        codes.InsertRange(i - 3, new[]
+                        for (int j =  i - 1; j >= 1; j--)
                         {
-                        new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(XUiC_ItemStack), nameof(XUiC_ItemStack.itemStack)),
-                        CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)),
-                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.SetCachedEventParamsDummyAction))
-                    });
+                            if (codes[j].opcode == OpCodes.Dup && codes[j - 1].LoadsField(fld_itemstack))
+                            {
+                                for (int k = j + 1; k < i; k++)
+                                {
+                                    if (codes[k].Calls(prop_max))
+                                    {
+                                        codes.InsertRange(k - 3, new[]
+                                        {
+                                            new CodeInstruction(OpCodes.Ldarg_0),
+                                            new CodeInstruction(OpCodes.Ldfld, fld_itemstack),
+                                            CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)),
+                                            CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.SetCachedEventParamsDummyAction))
+                                        });
+                                        break;
+                                    }
+                                }
+
+                                break;
+                            }
+                        }
                         break;
                     }
                 }
 
                 return codes;
             }
+        }
+
+        [HarmonyPatch(typeof(XUiC_ItemStackSlot), nameof(XUiC_ItemStackSlot.durabilityFill))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_durabilityFill_XUiC_ItemStackSlot(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+
+            var prop_max = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.MaxUseTimes));
+            for (int i = 0; i < codes.Count - 1; i++)
+            {
+                if (codes[i].Calls(prop_max) && codes[i + 1].Branches(out _))
+                {
+                    codes.InsertRange(i + 2, new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_1),
+                        CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)),
+                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.SetCachedEventParamsDummyAction))
+                    });
+                    break;
+                }
+            }
+            return codes;
         }
 
         [HarmonyPatch(typeof(PassiveEffect), nameof(PassiveEffect.ModifyValue))]
@@ -3100,14 +2497,7 @@ namespace KFCommonUtilityLib.Harmony
         {
             private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
-                {
-                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "Update");
-                }
-                else
-                {
-                    yield return AccessTools.Method(typeof(XUiC_HUDStatBar), "hasChanged");
-                }
+                yield return AccessTools.Method(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.hasChanged));
             }
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
@@ -3323,11 +2713,6 @@ namespace KFCommonUtilityLib.Harmony
     {
         private static IEnumerable<MethodBase> TargetMethods()
         {
-            if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
-            {
-                yield return AccessTools.Method(typeof(ItemActionEntryAssemble), "HandleRemoveAmmo");
-                yield return AccessTools.Method(typeof(ItemActionEntrySell), "HandleRemoveAmmo");
-            }
             yield return AccessTools.Method(typeof(ItemActionEntryScrap), nameof(ItemActionEntryScrap.HandleRemoveAmmo));
         }
 
@@ -3355,28 +2740,15 @@ namespace KFCommonUtilityLib.Harmony
                     return false;
                 }),
                 new CodeInstruction(OpCodes.Brtrue_S, lbl),
-                CodeInstruction.LoadArgument(Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4) ? 1 : 0),
+                CodeInstruction.LoadArgument(0),
                 new CodeInstruction(OpCodes.Ret)
             });
 
-            if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
+            codes.InsertRange(0, new[]
             {
-                codes.InsertRange(0, new[]
-                {
-                    new CodeInstruction(OpCodes.Ldarg_1),
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    new CodeInstruction(OpCodes.Call, AccessTools.PropertyGetter(typeof(BaseItemActionEntry), nameof(BaseItemActionEntry.ItemController))),
-                    new CodeInstruction(OpCodes.Call, AccessTools.PropertyGetter(typeof(XUiController), nameof(XUiController.xui)))
-                });
-            }
-            else
-            {
-                codes.InsertRange(0, new[]
-                {
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    new CodeInstruction(OpCodes.Ldarg_1)
-                });
-            }
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldarg_1)
+            });
 
             return codes;
         }

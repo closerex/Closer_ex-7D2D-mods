@@ -1,0 +1,264 @@
+{
+  "status": "passed_for_user_requested_main_thread_scope",
+  "date": "2026-10-02",
+  "timezone": "Asia/Shanghai",
+  "game": "V3.2.0 b10",
+  "unity": "2022.3.62f2",
+  "mono": "6.13.0",
+  "finalModuleVersionId": "61146efc-5903-48df-945d-a595bce19b02",
+  "finalDllBytes": 128000,
+  "runtimeVersions": {
+    "moonsharp": "MoonSharp 2.0.0 / Lua 5.2 language level",
+    "nlua": "NLua 1.7.9 + KeraLua 1.4.10 / Lua 5.4",
+    "xlua": "Official XLua.General (XLua.Mini), tag v2.1.16_ndkr21b_with_win / Lua 5.4"
+  },
+  "functional": {
+    "finalMainMenu": "Each of 3 backends pass=43 fail=0 info=9",
+    "inWorld": "Each of 3 backends pass=43 fail=0 info=1, preceding round2 build; player-context implementation unchanged in final build",
+    "context": "Real player name and health/max=100/100 cross-checked against sdtd_players; world exit invalidates snapshot",
+    "lifecycle": "Reset/reinitialization and script execution passed, including xLua in-world"
+  },
+  "benchmarks": {
+    "profile": "Synchronous main thread; no forced GC per row; hot=20000, dto=2000, callbacks=5000, compile=10, cold=2",
+    "finalRows": "30/30 complete and checksum verified; no truncation/skip/abort",
+    "metrics": {
+      "moonsharp": {
+        "csharp_baseline.add": {
+          "iterations": 20000,
+          "microsecondsPerOperation": 0.00409,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "csharp_baseline.build_dto": {
+          "iterations": 2000,
+          "microsecondsPerOperation": 0.6884,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "csharp_baseline.bridge_direct": {
+          "iterations": 20000,
+          "microsecondsPerOperation": 0.00264,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "lua_cold_init": {
+          "iterations": 2,
+          "microsecondsPerOperation": 6947,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "lua_compile_core": {
+          "iterations": 10,
+          "microsecondsPerOperation": 1880.44,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "lua_hot_call.add": {
+          "iterations": 20000,
+          "microsecondsPerOperation": 6.112145,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "lua_dto_push_touch": {
+          "iterations": 2000,
+          "microsecondsPerOperation": 21.28675,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "lua_dto_sum_ids": {
+          "iterations": 2000,
+          "microsecondsPerOperation": 89.98405,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "lua_dto_evaluate": {
+          "iterations": 2000,
+          "microsecondsPerOperation": 89.59,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "lua_to_csharp.boundary": {
+          "iterations": 5000,
+          "microsecondsPerOperation": 2.5507,
+          "checksumOk": true,
+          "flag": "-"
+        }
+      },
+      "nlua": {
+        "csharp_baseline.add": {
+          "iterations": 20000,
+          "microsecondsPerOperation": 0.00178,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "csharp_baseline.build_dto": {
+          "iterations": 2000,
+          "microsecondsPerOperation": 0.6183,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "csharp_baseline.bridge_direct": {
+          "iterations": 20000,
+          "microsecondsPerOperation": 0.00265,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "lua_cold_init": {
+          "iterations": 2,
+          "microsecondsPerOperation": 10081.45,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "lua_compile_core": {
+          "iterations": 10,
+          "microsecondsPerOperation": 245.1,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "lua_hot_call.add": {
+          "iterations": 20000,
+          "microsecondsPerOperation": 1.522325,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "lua_dto_push_touch": {
+          "iterations": 2000,
+          "microsecondsPerOperation": 70.87425,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "lua_dto_sum_ids": {
+          "iterations": 2000,
+          "microsecondsPerOperation": 120.28975,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "lua_dto_evaluate": {
+          "iterations": 2000,
+          "microsecondsPerOperation": 86.2749,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "lua_to_csharp.boundary": {
+          "iterations": 5000,
+          "microsecondsPerOperation": 1.55234,
+          "checksumOk": true,
+          "flag": "-"
+        }
+      },
+      "xlua": {
+        "csharp_baseline.add": {
+          "iterations": 20000,
+          "microsecondsPerOperation": 0.001765,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "csharp_baseline.build_dto": {
+          "iterations": 2000,
+          "microsecondsPerOperation": 0.5885,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "csharp_baseline.bridge_direct": {
+          "iterations": 20000,
+          "microsecondsPerOperation": 0.002665,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "lua_cold_init": {
+          "iterations": 2,
+          "microsecondsPerOperation": 666209.95,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "lua_compile_core": {
+          "iterations": 10,
+          "microsecondsPerOperation": 222.57,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "lua_hot_call.add": {
+          "iterations": 20000,
+          "microsecondsPerOperation": 1.0501,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "lua_dto_push_touch": {
+          "iterations": 2000,
+          "microsecondsPerOperation": 30.6589,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "lua_dto_sum_ids": {
+          "iterations": 2000,
+          "microsecondsPerOperation": 35.18385,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "lua_dto_evaluate": {
+          "iterations": 2000,
+          "microsecondsPerOperation": 29.9921,
+          "checksumOk": true,
+          "flag": "-"
+        },
+        "lua_to_csharp.boundary": {
+          "iterations": 5000,
+          "microsecondsPerOperation": 0.14264,
+          "checksumOk": true,
+          "flag": "-"
+        }
+      }
+    },
+    "rawCUE": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"summary\":\"Console execution result\",\"data\":{\"mutationCommitted\":true,\"cancellationObserved\":false,\"highRisk\":true,\"action\":\"evaluate\",\"compiled\":true,\"invocationAttempted\":true,\"invocationCompleted\":true,\"valueTruncated\":false,\"diagnosticTotalCount\":0,\"diagnosticsTruncated\":false,\"outputOriginalLength\":0,\"outputTruncated\":false,\"registeredImportTotalCount\":0,\"registeredImportsTruncated\":false,\"importsMode\":\"Namespace imports are global to CUE\\u0027s evaluator: imports calls ConsoleController.AddUsing for each requested namespace and returns Evaluator.GetUsing text; request-scoped assembly references are unsupported.\",\"responseTruncated\":false,\"value\":{\"kind\":\"string\",\"typeName\":\"System.String\",\"text\":\"PROFILE:sync;forcedGC=false;hot=20000;dto=2000;callback=5000;compile=10;cold=2\\nmoonsharp|status=Completed|wall=609.5158|setup=5.9511|rows=10/10 measured=10 truncated=0 cancelled=0 skipped=0 aborted=0 unverified=0\\r\\ncsharp_baseline.add|n=20000|us=0.00409|ok=True|flag=-\\r\\ncsharp_baseline.build_dto|n=2000|us=0.6884|ok=True|flag=-\\r\\ncsharp_baseline.bridge_direct|n=20000|us=0.00264|ok=True|flag=-\\r\\nlua_cold_init|n=2|us=6947|ok=True|flag=-\\r\\nlua_compile_core|n=10|us=1880.44|ok=True|flag=-\\r\\nlua_hot_call.add|n=20000|us=6.112145|ok=True|flag=-\\r\\nlua_dto_push_touch|n=2000|us=21.28675|ok=True|flag=-\\r\\nlua_dto_sum_ids|n=2000|us=89.98405|ok=True|flag=-\\r\\nlua_dto_evaluate|n=2000|us=89.59|ok=True|flag=-\\r\\nlua_to_csharp.boundary|n=5000|us=2.5507|ok=True|flag=-\\r\\nnlua|status=Completed|wall=646.7441|setup=11.8731|rows=10/10 measured=10 truncated=0 cancelled=0 skipped=0 aborted=0 unverified=0\\r\\ncsharp_baseline.add|n=20000|us=0.00178|ok=True|flag=-\\r\\ncsharp_baseline.build_dto|n=2000|us=0.6183|ok=True|flag=-\\r\\ncsharp_baseline.bridge_direct|n=20000|us=0.00265|ok=True|flag=-\\r\\nlua_cold_init|n=2|us=10081.45|ok=True|flag=-\\r\\nlua_compile_core|n=10|us=245.1|ok=True|flag=-\\r\\nlua_hot_call.add|n=20000|us=1.522325|ok=True|flag=-\\r\\nlua_dto_push_touch|n=2000|us=70.87425|ok=True|flag=-\\r\\nlua_dto_sum_ids|n=2000|us=120.28975|ok=True|flag=-\\r\\nlua_dto_evaluate|n=2000|us=86.2749|ok=True|flag=-\\r\\nlua_to_csharp.boundary|n=5000|us=1.55234|ok=True|flag=-\\r\\nxlua|status=Completed|wall=1569.3156|setup=1.8821|rows=10/10 measured=10 truncated=0 cancelled=0 skipped=0 aborted=0 unverified=0\\r\\ncsharp_baseline.add|n=20000|us=0.001765|ok=True|flag=-\\r\\ncsharp_baseline.build_dto|n=2000|us=0.5885|ok=True|flag=-\\r\\ncsharp_baseline.bridge_direct|n=20000|us=0.002665|ok=True|flag=-\\r\\nlua_cold_init|n=2|us=666209.95|ok=True|flag=-\\r\\nlua_compile_core|n=10|us=222.57|ok=True|flag=-\\r\\nlua_hot_call.add|n=20000|us=1.0501|ok=True|flag=-\\r\\nlua_dto_push_touch|n=2000|us=30.6589|ok=True|flag=-\\r\\nlua_dto_sum_ids|n=2000|us=35.18385|ok=True|flag=-\\r\\nlua_dto_evaluate|n=2000|us=29.9921|ok=True|flag=-\\r\\nlua_to_csharp.boundary|n=5000|us=0.14264|ok=True|flag=-\\r\\n\",\"json\":\"{}\",\"truncated\":false,\"items\":[],\"entries\":[]},\"dataRef\":\"d_9ed8f0b422abfcdd8453a57b29273e5c\",\"resultKind\":\"console.execute:evaluate\"}}"
+        }
+      ],
+      "structuredContent": {
+        "summary": "Console execution result",
+        "data": {
+          "mutationCommitted": true,
+          "cancellationObserved": false,
+          "highRisk": true,
+          "action": "evaluate",
+          "compiled": true,
+          "invocationAttempted": true,
+          "invocationCompleted": true,
+          "valueTruncated": false,
+          "diagnosticTotalCount": 0,
+          "diagnosticsTruncated": false,
+          "outputOriginalLength": 0,
+          "outputTruncated": false,
+          "registeredImportTotalCount": 0,
+          "registeredImportsTruncated": false,
+          "importsMode": "Namespace imports are global to CUE's evaluator: imports calls ConsoleController.AddUsing for each requested namespace and returns Evaluator.GetUsing text; request-scoped assembly references are unsupported.",
+          "responseTruncated": false,
+          "value": {
+            "kind": "string",
+            "typeName": "System.String",
+            "text": "PROFILE:sync;forcedGC=false;hot=20000;dto=2000;callback=5000;compile=10;cold=2\nmoonsharp|status=Completed|wall=609.5158|setup=5.9511|rows=10/10 measured=10 truncated=0 cancelled=0 skipped=0 aborted=0 unverified=0\r\ncsharp_baseline.add|n=20000|us=0.00409|ok=True|flag=-\r\ncsharp_baseline.build_dto|n=2000|us=0.6884|ok=True|flag=-\r\ncsharp_baseline.bridge_direct|n=20000|us=0.00264|ok=True|flag=-\r\nlua_cold_init|n=2|us=6947|ok=True|flag=-\r\nlua_compile_core|n=10|us=1880.44|ok=True|flag=-\r\nlua_hot_call.add|n=20000|us=6.112145|ok=True|flag=-\r\nlua_dto_push_touch|n=2000|us=21.28675|ok=True|flag=-\r\nlua_dto_sum_ids|n=2000|us=89.98405|ok=True|flag=-\r\nlua_dto_evaluate|n=2000|us=89.59|ok=True|flag=-\r\nlua_to_csharp.boundary|n=5000|us=2.5507|ok=True|flag=-\r\nnlua|status=Completed|wall=646.7441|setup=11.8731|rows=10/10 measured=10 truncated=0 cancelled=0 skipped=0 aborted=0 unverified=0\r\ncsharp_baseline.add|n=20000|us=0.00178|ok=True|flag=-\r\ncsharp_baseline.build_dto|n=2000|us=0.6183|ok=True|flag=-\r\ncsharp_baseline.bridge_direct|n=20000|us=0.00265|ok=True|flag=-\r\nlua_cold_init|n=2|us=10081.45|ok=True|flag=-\r\nlua_compile_core|n=10|us=245.1|ok=True|flag=-\r\nlua_hot_call.add|n=20000|us=1.522325|ok=True|flag=-\r\nlua_dto_push_touch|n=2000|us=70.87425|ok=True|flag=-\r\nlua_dto_sum_ids|n=2000|us=120.28975|ok=True|flag=-\r\nlua_dto_evaluate|n=2000|us=86.2749|ok=True|flag=-\r\nlua_to_csharp.boundary|n=5000|us=1.55234|ok=True|flag=-\r\nxlua|status=Completed|wall=1569.3156|setup=1.8821|rows=10/10 measured=10 truncated=0 cancelled=0 skipped=0 aborted=0 unverified=0\r\ncsharp_baseline.add|n=20000|us=0.001765|ok=True|flag=-\r\ncsharp_baseline.build_dto|n=2000|us=0.5885|ok=True|flag=-\r\ncsharp_baseline.bridge_direct|n=20000|us=0.002665|ok=True|flag=-\r\nlua_cold_init|n=2|us=666209.95|ok=True|flag=-\r\nlua_compile_core|n=10|us=222.57|ok=True|flag=-\r\nlua_hot_call.add|n=20000|us=1.0501|ok=True|flag=-\r\nlua_dto_push_touch|n=2000|us=30.6589|ok=True|flag=-\r\nlua_dto_sum_ids|n=2000|us=35.18385|ok=True|flag=-\r\nlua_dto_evaluate|n=2000|us=29.9921|ok=True|flag=-\r\nlua_to_csharp.boundary|n=5000|us=0.14264|ok=True|flag=-\r\n",
+            "json": "{}",
+            "truncated": false,
+            "items": [],
+            "entries": []
+          },
+          "dataRef": "d_9ed8f0b422abfcdd8453a57b29273e5c",
+          "resultKind": "console.execute:evaluate"
+        }
+      }
+    },
+    "budget": "Prior round2 console low-budget run verified T/S: 10 rows, 2 full, 2 truncated, 6 skipped, 0 aborted; truncation logic unchanged in final build"
+  },
+  "notAcceptedOrNotCovered": [
+    "Cross-frame driver/cancellation/conflict explicitly deferred by user",
+    "No universal VM ranking or statistical confidence intervals",
+    "Cold-init sample count is 2 and timings include adapter setup",
+    "No arbitrary script watchdog, multiplayer/EAC-enabled testing, or native-heap endurance test"
+  ],
+  "reviewRecord": "docs/REVIEW.md contains GPT-6.1 Sol inline findings, reject verdicts and implementer dispositions; operator verified the requested game scope, not a fourth external approval.",
+  "deployment": "Final candidate frozen outside mod folder; tested round2 DLL archived before final deployment; deployment record docs/acceptance-final-deployment.json",
+  "processDeviation": "Implementer overwrote live files during staging-only instruction and later updated staging during acceptance. Recorded, backed up/archived, and resolved by explicit final freeze and exact game MVID check.",
+  "finalState": "Game main menu, no foreground window activation; control leases released after this report."
+}

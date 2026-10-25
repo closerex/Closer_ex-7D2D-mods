@@ -130,19 +130,20 @@ public class ActionModuleInspectable
             lastInspectTime = Time.time;
         }
     }
-}
 
-[HarmonyPatch]
-public static class ActionModuleInspectablePatches
-{
-    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SwapSelectedAmmo))]
-    [HarmonyPrefix]
-    private static bool Prefix_SwapSelectedAmmo_ItemActionRanged(ItemActionRanged __instance, EntityAlive _entity, int _ammoIndex)
+    // Was a standalone [HarmonyPatch] class member, so it ran for every ranged action in the game.
+    // As a module member it only runs for weapons carrying this module, which is also what makes
+    // the IsModuleContainerFor check below meaningful rather than a guard that is almost always
+    // false. The behaviour is unchanged, including the __instance parameter: the module class is a
+    // plain data holder and does not derive from the action, so the action instance is reached
+    // through __instance, which the module system binds to the generated per-weapon type.
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SwapSelectedAmmo)), MethodTargetPrefix]
+    private bool Prefix_SwapSelectedAmmo_ItemActionRanged(ItemActionRanged __instance, EntityAlive _entity, int _ammoIndex)
     {
         if (_ammoIndex == _entity.inventory.holdingItemItemValue.SelectedAmmoTypeIndex && _entity is EntityPlayerLocal)
         {
-            ItemActionRanged.ItemActionDataRanged _actionData = _entity.inventory.holdingItemData.actionData[__instance.ActionIndex] as ItemActionRanged.ItemActionDataRanged;
-            if (!__instance.CanReload(_actionData) && _actionData.IsModuleContainerFor(out ActionModuleInspectable.InspectableData inspectableData) && inspectableData.CanInspect())
+            ItemActionRanged.ItemActionDataRanged actionData = _entity.inventory.holdingItemData.actionData[__instance.ActionIndex] as ItemActionRanged.ItemActionDataRanged;
+            if (!__instance.CanReload(actionData) && actionData.IsModuleContainerFor(out InspectableData inspectableData) && inspectableData.CanInspect())
             {
                 inspectableData.TriggerInspect();
                 return false;
@@ -150,8 +151,11 @@ public static class ActionModuleInspectablePatches
         }
         return true;
     }
+}
 
-
+[HarmonyPatch]
+public static class ActionModuleInspectablePatches
+{
     [HarmonyPatch(typeof(PlayerMoveController), nameof(PlayerMoveController.Update))]
     [HarmonyPrefix]
     private static bool Prefix_Update_PlayerMoveController(PlayerMoveController __instance)

@@ -176,7 +176,7 @@ namespace KFCommonUtilityLib
                     Voxel.voxelRayHitInfo.fmcHit.pos = hitOrigin;
                 }
 
-                bool blockIsSeeThrough = block.IsSeeThrough(_world, Voxel.voxelRayHitInfo.hit.clrIdx, Voxel.voxelRayHitInfo.hit.blockPos, Voxel.voxelRayHitInfo.hit.blockValue);
+                bool blockIsSeeThrough = block.IsSeeThrough(_world, Voxel.voxelRayHitInfo.hit.blockPos, Voxel.voxelRayHitInfo.hit.blockValue);
                 // add a bound check to filter the mysterious underground hits
                 if (hitMaskFlags.CanCollideWithBlock(block, blockIsSeeThrough, isOnlyWater))
                 {

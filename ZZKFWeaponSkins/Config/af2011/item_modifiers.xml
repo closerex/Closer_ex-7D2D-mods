@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configs>
+  <append xpath="/item_modifiers">
+    <item_modifier name="modKFSkin_af2011_SkinId_5955" installable_tags="kfSkin_gunHandgunT3AF2011A1S,kfSkin_gunHandgunT3DualAF2011A1S" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_af2011_SkinId_5955" />
+      <property name="DescriptionKey" value="modKFSkin_af2011_SkinId_5955Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunHandgunT3AF2011A1S">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/af2011/kf_skin_af2011.unity3d?SkinId_5955__af2011_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunHandgunT3DualAF2011A1S">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/af2011/kf_skin_af2011.unity3d?SkinId_5955__af2011_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_af2011_SkinId_6297" installable_tags="kfSkin_gunHandgunT3AF2011A1S,kfSkin_gunHandgunT3DualAF2011A1S" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_af2011_SkinId_6297" />
+      <property name="DescriptionKey" value="modKFSkin_af2011_SkinId_6297Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunHandgunT3AF2011A1S">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/af2011/kf_skin_af2011.unity3d?SkinId_6297__af2011_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunHandgunT3DualAF2011A1S">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/af2011/kf_skin_af2011.unity3d?SkinId_6297__af2011_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_af2011_SkinId_6298" installable_tags="kfSkin_gunHandgunT3AF2011A1S,kfSkin_gunHandgunT3DualAF2011A1S" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_af2011_SkinId_6298" />
+      <property name="DescriptionKey" value="modKFSkin_af2011_SkinId_6298Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunHandgunT3AF2011A1S">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/af2011/kf_skin_af2011.unity3d?SkinId_6298__af2011_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunHandgunT3DualAF2011A1S">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/af2011/kf_skin_af2011.unity3d?SkinId_6298__af2011_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_af2011_SkinId_6299" installable_tags="kfSkin_gunHandgunT3AF2011A1S,kfSkin_gunHandgunT3DualAF2011A1S" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_af2011_SkinId_6299" />
+      <property name="DescriptionKey" value="modKFSkin_af2011_SkinId_6299Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunHandgunT3AF2011A1S">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/af2011/kf_skin_af2011.unity3d?SkinId_6299__af2011_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunHandgunT3DualAF2011A1S">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/af2011/kf_skin_af2011.unity3d?SkinId_6299__af2011_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_af2011_SkinId_6325" installable_tags="kfSkin_gunHandgunT3AF2011A1S,kfSkin_gunHandgunT3DualAF2011A1S" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_af2011_SkinId_6325" />
+      <property name="DescriptionKey" value="modKFSkin_af2011_SkinId_6325Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunHandgunT3AF2011A1S">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/af2011/kf_skin_af2011.unity3d?SkinId_6325__af2011_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunHandgunT3DualAF2011A1S">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/af2011/kf_skin_af2011.unity3d?SkinId_6325__af2011_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_af2011_SkinId_6891" installable_tags="kfSkin_gunHandgunT3AF2011A1S,kfSkin_gunHandgunT3DualAF2011A1S" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_af2011_SkinId_6891" />
+      <property name="DescriptionKey" value="modKFSkin_af2011_SkinId_6891Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunHandgunT3AF2011A1S">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/af2011/kf_skin_af2011.unity3d?SkinId_6891__af2011_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunHandgunT3DualAF2011A1S">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/af2011/kf_skin_af2011.unity3d?SkinId_6891__af2011_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_af2011_SkinId_8089" installable_tags="kfSkin_gunHandgunT3AF2011A1S,kfSkin_gunHandgunT3DualAF2011A1S" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_af2011_SkinId_8089" />
+      <property name="DescriptionKey" value="modKFSkin_af2011_SkinId_8089Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunHandgunT3AF2011A1S">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/af2011/kf_skin_af2011.unity3d?SkinId_8089__af2011_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunHandgunT3DualAF2011A1S">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/af2011/kf_skin_af2011.unity3d?SkinId_8089__af2011_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_af2011_SkinId_8100" installable_tags="kfSkin_gunHandgunT3AF2011A1S,kfSkin_gunHandgunT3DualAF2011A1S" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_af2011_SkinId_8100" />
+      <property name="DescriptionKey" value="modKFSkin_af2011_SkinId_8100Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunHandgunT3AF2011A1S">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/af2011/kf_skin_af2011.unity3d?SkinId_8100__af2011_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunHandgunT3DualAF2011A1S">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/af2011/kf_skin_af2011.unity3d?SkinId_8100__af2011_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+  </append>
+</configs>

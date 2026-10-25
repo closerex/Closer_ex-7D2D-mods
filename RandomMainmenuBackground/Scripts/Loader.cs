@@ -8,20 +8,19 @@ public class RandomBackgroundLoader
     public static void insert(string name)
     {
         if (name.StartsWith(prefix_bg))
-            insert(list_bg, prefix_bg, name.Substring(prefix_bg.Length));
+            insert(list_bg, prefix_bg, name[prefix_bg.Length..]);
         else if (name.StartsWith(prefix_logo))
-            insert(list_logos, prefix_logo,name.Substring(prefix_logo.Length));
-        else
-            return;
+            insert(list_logos, prefix_logo,name[prefix_logo.Length..]);
     }
 
     public static string modWindowName(string name, GUIWindowManager wm)
     {
-        if (name == prefix_bg)
-            return getCurrentOrNext(wm, list_bg, prefix_bg, ref cur_bg);
-        if (name == prefix_logo)
-            return getCurrentOrNext(wm, list_logos, prefix_logo, ref cur_logo);
-        return name;
+        return name switch
+        {
+            prefix_bg => getCurrentOrNext(wm, list_bg, prefix_bg, ref cur_bg),
+            prefix_logo => getCurrentOrNext(wm, list_logos, prefix_logo, ref cur_logo),
+            _ => name
+        };
     }
 
     private static string getCurrentOrNext(GUIWindowManager wm, List<string> list_names, string prefix, ref string curName)
@@ -32,7 +31,8 @@ public class RandomBackgroundLoader
             Log.Out($"No override found for {prefix}, loading default.");
             return prefix;
         }
-        else if (wm.IsWindowOpen(winId))
+
+        if (wm.IsWindowOpen(winId))
         {
             Log.Out($"Window is open, using current override for {prefix}: {winId}");
             return winId;
@@ -50,16 +50,13 @@ public class RandomBackgroundLoader
             return;
         Log.Out($"reading override for {prefix}: {name}");
 
-        if (list.Contains(name))
-            Log.Warning($"Window group already exists: {prefix + name}.");
-        else
+        if (!list.Contains(name))
             list.Add(name);
     }
 
-    private static List<string> list_bg = new();
-    private static List<string> list_logos = new();
+    private static readonly List<string> list_bg = new();
+    private static readonly List<string> list_logos = new();
     private const string prefix_bg = "menuBackground";
     private const string prefix_logo = "mainMenuLogo";
     private static string cur_bg = string.Empty, cur_logo = string.Empty;
 }
-

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net8.0;net48</TargetFrameworks>
+    <RuntimeFrameworkVersion Condition="'$(TargetFramework)' == 'net8.0'">8.0.30</RuntimeFrameworkVersion>
+    <LangVersion>9.0</LangVersion>
+    <DebugType>portable</DebugType>
+    <AssemblyName>ComboImplementationEvidence</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../AllowComboKeys/ComboBindingArbitrator.cs" Link="Production/ComboBindingArbitrator.cs" />
+    <Compile Include="../AllowComboKeys/KeyBindingSnapshotBuilder.cs" Link="Production/KeyBindingSnapshotBuilder.cs" />
+    <Compile Include="../AllowComboKeys/Init.cs" Link="Production/Init.cs" />
+    <Reference Include="InControl"><HintPath>../../7DaysToDie_Data/Managed/InControl.dll</HintPath></Reference>
+    <Reference Include="UnityEngine.CoreModule"><HintPath>../../7DaysToDie_Data/Managed/UnityEngine.CoreModule.dll</HintPath></Reference>
+    <Reference Include="0Harmony"><HintPath>../../Mods/0_TFP_Harmony/0Harmony.dll</HintPath></Reference>
+    <Reference Include="Assembly-CSharp"><HintPath>../../7DaysToDie_Data/Managed/Assembly-CSharp.dll</HintPath></Reference>
+    <Reference Include="LogLibrary"><HintPath>../../7DaysToDie_Data/Managed/LogLibrary.dll</HintPath></Reference>
+  </ItemGroup>
+</Project>

@@ -1,18 +1,18 @@
-﻿using HarmonyLib;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
+using HarmonyLib;
 using UnityEngine;
 
 [HarmonyPatch(typeof(GameManager))]
 internal class ExplosionEffectPatch
 {
-    public static void SendCustomExplosionPackage(int _clrIdx, Vector3 _center, Vector3i _blockpos, Quaternion _rotation, ExplosionData _explosionData, int _playerId, ItemValue _itemValueExplosive, List<BlockChangeInfo> _explosionChanges, GameObject result)
+    public static void SendCustomExplosionPackage(Vector3 _center, Vector3i _blockpos, Quaternion _rotation, ExplosionData _explosionData, int _playerId, ItemValue _itemValueExplosive, List<BlockChangeInfo> _explosionChanges, GameObject result)
     {
         uint id = CustomExplosionManager.LastInitializedComponent != null ? CustomExplosionManager.LastInitializedComponent.CurrentExplosionParams._explId : uint.MaxValue;
-        SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageExplosionParams>().Setup(_clrIdx, _center, _blockpos, _rotation, _explosionData, _playerId, id, _itemValueExplosive, _explosionChanges, result), true);
+        SingletonMonoBehaviour<ConnectionManager>.Instance.SendPackage(NetPackageManager.GetPackage<NetPackageExplosionParams>().Setup(_center, _blockpos, _rotation, _explosionData, _playerId, id, _itemValueExplosive, _explosionChanges, result), true);
     }
 
     private struct ExplodeState
@@ -23,7 +23,7 @@ internal class ExplosionEffectPatch
 
     [HarmonyPatch(nameof(GameManager.explode))]
     [HarmonyPrefix]
-    private static bool explode_Prefix(GameManager __instance, int _clrIdx, Vector3 _worldPos, Vector3i _blockPos, Quaternion _rotation, ExplosionData _explosionData, int _entityId, ItemValue _itemValueExplosionSource, out ExplodeState __state)
+    private static bool explode_Prefix(GameManager __instance, Vector3 _worldPos, Vector3i _blockPos, Quaternion _rotation, ExplosionData _explosionData, int _entityId, ItemValue _itemValueExplosionSource, out ExplodeState __state)
     {
         __state = new ExplodeState()
         {
@@ -44,11 +44,11 @@ internal class ExplosionEffectPatch
                 ExplosionValue value = new ExplosionValue()
                 {
                     Component = components,
-                    CurrentExplosionParams = new ExplosionParams(_clrIdx, _worldPos, _blockPos, _rotation, _explosionData, _entityId, CustomExplosionManager.NextExplosionIndex++),
+                    CurrentExplosionParams = new ExplosionParams(_worldPos, _blockPos, _rotation, _explosionData, _entityId, CustomExplosionManager.NextExplosionIndex++),
                     CurrentItemValue = _itemValueExplosionSource
                 };
-                //Log.Out("params:" + _clrIdx + _blockPos + _playerId + _rotation + _worldPos + _explosionData.ParticleIndex);
-                //Log.Out("params:" + components.CurrentExplosionParams._clrIdx + components.CurrentExplosionParams._blockPos + components.CurrentExplosionParams._playerId + components.CurrentExplosionParams._rotation + components.CurrentExplosionParams._worldPos + components.CurrentExplosionParams._explosionData.ParticleIndex);
+                //Log.Out("params:" + _blockPos + _playerId + _rotation + _worldPos + _explosionData.ParticleIndex);
+                //Log.Out("params:" + components.CurrentExplosionParams._blockPos + components.CurrentExplosionParams._playerId + components.CurrentExplosionParams._rotation + components.CurrentExplosionParams._worldPos + components.CurrentExplosionParams._explosionData.ParticleIndex);
                 CustomExplosionManager.PushLastInitComponent(value);
                 __state.useCustom = true;
             }
@@ -78,13 +78,13 @@ internal class ExplosionEffectPatch
     private static IEnumerable<CodeInstruction> explode_Transpiler(IEnumerable<CodeInstruction> instructions)
     {
         var codes = new List<CodeInstruction>(instructions);
-        MethodInfo mtd_sendpackage = AccessTools.Method(typeof(ConnectionManager), nameof(ConnectionManager.SendPackage), new Type[] { typeof(NetPackage), typeof(bool), typeof(int), typeof(int), typeof(int), typeof(Vector3?), typeof(int), typeof(bool) });
+        MethodInfo mtd_sendpackage = AccessTools.Method(typeof(ConnectionManager), nameof(ConnectionManager.SendPackage), new[] { typeof(NetPackage), typeof(bool), typeof(int), typeof(int), typeof(int), typeof(Vector3?), typeof(int), typeof(bool) });
 
-        for (int i = 0, totali = codes.Count; i < totali; i++)
+        for (int i = 0 ; i < codes.Count; i++)
         {
             if (codes[i].opcode == OpCodes.Callvirt && codes[i].Calls(mtd_sendpackage))
             {
-                codes.InsertRange(i + 1, new CodeInstruction[]
+                codes.InsertRange(i + 1, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_1),
                     new CodeInstruction(OpCodes.Ldarg_2),
@@ -92,13 +92,12 @@ internal class ExplosionEffectPatch
                     new CodeInstruction(OpCodes.Ldarg, 4),
                     new CodeInstruction(OpCodes.Ldarg, 5),
                     new CodeInstruction(OpCodes.Ldarg, 6),
-                    new CodeInstruction(OpCodes.Ldarg, 7),
                     new CodeInstruction(OpCodes.Ldarg_0),
                     CodeInstruction.LoadField(typeof(GameManager), nameof(GameManager.tempExplPositions)),
                     new CodeInstruction(OpCodes.Ldloc_1),
                     CodeInstruction.Call(typeof(ExplosionEffectPatch), nameof(SendCustomExplosionPackage))
                 });
-                codes.RemoveRange(i - 27, 28);
+                codes.RemoveRange(i - 26, 27);
                 break;
             }
         }
@@ -112,7 +111,7 @@ internal class ExplosionEffectPatch
     {
         if (__state.playerLayer >= 0)
         {
-            __instance.World.GetPrimaryPlayer().SetModelLayer(__state.playerLayer, false);
+            __instance.World.GetPrimaryPlayer().SetModelLayer(__state.playerLayer);
         }
         if (!__state.useCustom)
             return;
@@ -133,7 +132,7 @@ internal class ExplosionEffectPatch
         //then the param must be invalid, skip particle creation.
         if (components != null && components.CurrentExplosionParams._explosionData.ParticleIndex == _index)
         {
-            ApplyExplosionForce.Explode(_center, (float)_blastPower, _blastRadius);
+            ApplyExplosionForce.Explode(_center, _blastPower, _blastRadius);
             __result = CustomExplosionManager.InitializeParticle(components.Component, _center - Origin.position, _rotation);
         }
 #if DEBUG
@@ -222,7 +221,7 @@ internal class EntityExplosionPatch
 
         ref ExplosionData explosion = ref EntityClass.list[__instance.entityClass].explosionData;
         if (explosion.ParticleIndex > 0)
-            GameManager.Instance.ExplosionServer(0, __instance.GetPosition(), World.worldToBlockPos(__instance.GetPosition()), Quaternion.identity, explosion, __instance.entityId, 0f, false, null);
+            GameManager.Instance.ExplosionServer(__instance.GetPosition(), World.worldToBlockPos(__instance.GetPosition()), Quaternion.identity, explosion, __instance.entityId, 0f, false, null);
     }
 }
 
@@ -238,22 +237,18 @@ internal class ExplosionAttackPatch
 
         LocalBuilder lbd_entity_dict = generator.DeclareLocal(entityDict);
 
-        codes.InsertRange(0, new CodeInstruction[]
+        codes.InsertRange(0, new[]
         {
             new CodeInstruction(OpCodes.Newobj, entityDict.GetConstructor(new Type[]{ })),
             new CodeInstruction(OpCodes.Stloc_S, lbd_entity_dict)
         });
 
-        for (int i = 0; i < codes.Count; ++i)
-        {
-            if (codes[i].opcode == OpCodes.Ldsfld && codes[i].LoadsField(fld_hit_entities))
-            {
-                codes[i].opcode = OpCodes.Ldloc_S;
-                codes[i].operand = lbd_entity_dict;
-            }
-        }
-
-        return codes;
+        return codes.Manipulator(ins => ins.LoadsField(fld_hit_entities), 
+                                 ins =>
+                                 {
+                                     ins.opcode = OpCodes.Ldloc_S;
+                                     ins.operand = lbd_entity_dict;
+                                 });
     }
 }
 
@@ -364,7 +359,7 @@ internal class ItemActionRangedFireShotPatch
             {
                 if (!codes[i + 3].LoadsField(fld_params))
                 {
-                    codes.InsertRange(i + 2, new CodeInstruction[]
+                    codes.InsertRange(i + 2, new[]
                     {
                             new CodeInstruction(OpCodes.Ldloc_1),
                             CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.MinEventContext)),

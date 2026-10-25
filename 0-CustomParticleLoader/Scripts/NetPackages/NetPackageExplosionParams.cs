@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class NetPackageExplosionParams : NetPackage
 {
-	public NetPackageExplosionParams Setup(int _clrIdx, Vector3 _worldPos, Vector3i _blockPos, Quaternion _rotation, ExplosionData _explosionData, int _entityId, uint _explId, ItemValue _itemValueExplosive, List<BlockChangeInfo> explosionChanges, GameObject particle)
+	public NetPackageExplosionParams Setup(Vector3 _worldPos, Vector3i _blockPos, Quaternion _rotation, ExplosionData _explosionData, int _entityId, uint _explId, ItemValue _itemValueExplosive, List<BlockChangeInfo> explosionChanges, GameObject particle)
 	{
-		clrIdx = _clrIdx;
 		worldPos = _worldPos;
 		blockPos = _blockPos;
 		rotation = _rotation;
@@ -36,7 +35,6 @@ public class NetPackageExplosionParams : NetPackage
 
 	public override void read(PooledBinaryReader _br)
 	{
-		clrIdx = (int)_br.ReadUInt16();
 		worldPos = StreamUtils.ReadVector3(_br);
 		blockPos = StreamUtils.ReadVector3i(_br);
 		rotation = StreamUtils.ReadQuaterion(_br);
@@ -65,7 +63,6 @@ public class NetPackageExplosionParams : NetPackage
 	public override void write(PooledBinaryWriter _bw)
 	{
 		base.write(_bw);
-		_bw.Write((ushort)clrIdx);
 		StreamUtils.Write(_bw, worldPos);
 		StreamUtils.Write(_bw, blockPos);
 		StreamUtils.Write(_bw, rotation);
@@ -108,14 +105,14 @@ public class NetPackageExplosionParams : NetPackage
 				ExplosionValue value = new ExplosionValue()
 				{
 					Component = component,
-					CurrentExplosionParams = new ExplosionParams(clrIdx, worldPos, blockPos, rotation, explosionData, entityId, explosionId),
+					CurrentExplosionParams = new ExplosionParams(worldPos, blockPos, rotation, explosionData, entityId, explosionId),
 					CurrentItemValue = itemValueExplosive?.Clone()
 				};
 				CustomExplosionManager.PushLastInitComponent(value);
 			}
         }
 
-		GameObject result = _callbacks.ExplosionClient(clrIdx, worldPos, rotation, explosionData.ParticleIndex, explosionData.BlastPower, (float)explosionData.EntityRadius, (float)explosionData.BlockDamage, entityId, explosionChanges);
+		GameObject result = _callbacks.ExplosionClient(worldPos, rotation, explosionData.ParticleIndex, explosionData.BlastPower, explosionData.EntityRadius, explosionData.BlockDamage, entityId, explosionChanges);
 		if (isCustom)
 		{
 			NetSyncHelper helper = result?.GetComponent<NetSyncHelper>();
@@ -131,20 +128,13 @@ public class NetPackageExplosionParams : NetPackage
 		}
 	}
 
-	public override NetPackageDirection PackageDirection
-	{
-		get
-		{
-			return NetPackageDirection.ToClient;
-		}
-	}
+	public override NetPackageDirection PackageDirection => NetPackageDirection.ToClient;
 
 	public override int GetLength()
 	{
 		return 80 + explosionChanges.Count * 30;
 	}
 
-	private int clrIdx;
 	private Vector3 worldPos;
 	private Vector3i blockPos;
 	private Quaternion rotation;

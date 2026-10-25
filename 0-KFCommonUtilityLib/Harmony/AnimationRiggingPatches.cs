@@ -222,7 +222,7 @@ static class AnimationRiggingPatches
                     new CodeInstruction(OpCodes.Brfalse_S, lbl),
                     new CodeInstruction(OpCodes.Ldarg_1),
                     CodeInstruction.LoadField(typeof(MinEventParams), nameof(MinEventParams.Transform)),
-                    CodeInstruction.Call(typeof(Transform), nameof(Transform.GetComponent), new Type[0], new Type[]{ typeof(AnimationTargetsAbs)}),
+                    CodeInstruction.Call(typeof(Transform), nameof(Transform.GetComponent), Type.EmptyTypes, new[]{ typeof(AnimationTargetsAbs)}),
                     new CodeInstruction(OpCodes.Stloc_S, lbd_targets)
                 });
                 i += 9;
@@ -441,7 +441,12 @@ static class AnimationRiggingPatches
                 {
                     if (codes[j].opcode == OpCodes.Ldloc_2)
                     {
-                        int fpvLocalIndex = Application.platform == RuntimePlatform.LinuxPlayer || Application.platform == RuntimePlatform.LinuxServer || Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.OSXServer ? 5 : 7;
+                        int fpvLocalIndex = Application.platform == RuntimePlatform.LinuxPlayer ||
+                                            Application.platform == RuntimePlatform.LinuxServer ||
+                                            Application.platform == RuntimePlatform.OSXPlayer ||
+                                            Application.platform == RuntimePlatform.OSXServer
+                            ? 5
+                            : 7;
                         for (int k = j + 1; k < codes.Count; k++)
                         {
                             if (codes[k].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[k].operand).LocalIndex == fpvLocalIndex)
@@ -566,7 +571,7 @@ static class AnimationRiggingPatches
     private static IEnumerable<CodeInstruction> Transpiler_Update_EntityPlayerLocal(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
     {
         var codes = instructions.ToList();
-        var mtd_update = AccessTools.Method(typeof(AvatarController), nameof(AvatarController.UpdateBool), new[] {typeof(string), typeof(bool), typeof(bool)} );
+        var mtd_update = AccessTools.Method(typeof(AvatarController), nameof(AvatarController.UpdateBool), new[] {typeof(int), typeof(bool), typeof(bool)} );
         for (int i = 0; i < codes.Count; i++)
         {
             if (codes[i].Calls(mtd_update))
@@ -581,7 +586,7 @@ static class AnimationRiggingPatches
                     new CodeInstruction(OpCodes.Ldarg_0),
                     CodeInstruction.LoadField(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.emodel)),
                     CodeInstruction.LoadField(typeof(EModelBase), nameof(EModelBase.avatarController)),
-                    new CodeInstruction(OpCodes.Ldstr, "Holstered"),
+                    CodeInstruction.LoadField(typeof(AvatarController), nameof(AvatarController.holsteredHash)),
                     new CodeInstruction(OpCodes.Ldc_I4_0),
                     new CodeInstruction(OpCodes.Ldc_I4_0),
                     new CodeInstruction(codes[i].opcode, codes[i].operand)
@@ -1171,14 +1176,7 @@ static class AnimationRiggingPatches
 
         var mtd_removeat = AccessTools.Method(typeof(List<RigLayer>), nameof(List<RigLayer>.RemoveAt));
         MethodInfo mtd_destroy;
-        if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
-        {
-            mtd_destroy = AccessTools.Method(typeof(GameUtils), nameof(GameUtils.DestroyAllChildrenBut), new[] { typeof(Transform), typeof(List<string>) });
-        }
-        else
-        {
-            mtd_destroy = AccessTools.Method(typeof(GameUtils), nameof(GameUtils.DestroyAllChildrenImmediatelyBut), new[] { typeof(Transform), typeof(List<string>) });
-        }
+        mtd_destroy = AccessTools.Method(typeof(GameUtils), nameof(GameUtils.DestroyAllChildrenImmediatelyBut), new[] { typeof(Transform), typeof(List<string>) });
 
         for (int i = 0; i < codes.Count; i++)
         {
@@ -1214,10 +1212,26 @@ static class AnimationRiggingPatches
     [HarmonyPostfix]
     private static void Postfix_ExecuteAction_ItemActionRanged(ItemActionRanged __instance, ItemActionData _actionData)
     {
+        UpdateTriggerPulled(__instance, _actionData);
+    }
+
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.TryExecuteAction))]
+    [HarmonyPostfix]
+    private static void Postfix_TryExecuteAction_ItemActionRanged(ItemActionRanged __instance, ItemActionData _actionData)
+    {
+        UpdateTriggerPulled(__instance, _actionData);
+    }
+
+    private static void UpdateTriggerPulled(ItemActionRanged __instance, ItemActionData _actionData)
+    {
         if (_actionData is ItemActionRanged.ItemActionDataRanged rangedData)
         {
+            // 3.x uses 0 for unlimited fire and continues released bursts through TryExecuteAction.
             int burstCount = __instance.GetBurstCount(_actionData);
-            _actionData.invData.holdingEntity.emodel.avatarController._setBool("TriggerPulled", rangedData.bPressed && rangedData.state > ItemActionFiringState.Off && rangedData.curBurstCount < burstCount, true);
+            bool firing = rangedData.state > ItemActionFiringState.Off && !rangedData.burstShotFinished &&
+                (rangedData.bPressed || rangedData.burstShotStarted) &&
+                (burstCount == 0 || rangedData.curBurstCount < burstCount);
+            _actionData.invData.holdingEntity.emodel.avatarController._setBool("TriggerPulled", firing, true);
         }
     }
 
@@ -1662,6 +1676,7 @@ static class AnimationRiggingPatches
         }).MethodReplacer(AccessTools.Method(typeof(Animator), nameof(Animator.GetBool), new[] { typeof(string) }), mtd_getbool)
           .MethodReplacer(AccessTools.Method(typeof(Animator), nameof(Animator.GetInteger), new[] { typeof(string) }), mtd_getint)
           .MethodReplacer(AccessTools.Method(typeof(Animator), nameof(Animator.GetFloat), new[] { typeof(string) }), mtd_getfloat)
+          // right hand animator, don't set wrapped para
           .MethodReplacer(AccessTools.Method(typeof(Animator), nameof(Animator.SetBool), new[] { typeof(string), typeof(bool) }), AccessTools.Method(typeof(Animator), nameof(Animator.SetBool), new[] { typeof(int), typeof(bool) }))
           .MethodReplacer(mtd_getbool, mtd_getvanillabool)
           .MethodReplacer(mtd_getint, mtd_getvanillaint)

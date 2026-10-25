@@ -340,18 +340,7 @@ public static class ItemActionBlockingPatches
         var codes = instructions.ToList();
 
         int local_holdingitem;
-        if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 1))
-        {
-            local_holdingitem = 35;
-        }
-        else if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
-        {
-            local_holdingitem = 37;
-        }
-        else
-        {
-            local_holdingitem = 40;
-        }
+        local_holdingitem = 27;
 
         var fld_jump = AccessTools.Field(typeof(MovementInput), nameof(MovementInput.jump));
 
@@ -369,7 +358,7 @@ public static class ItemActionBlockingPatches
                             return;
 
                         bool isUIOpen = controller.windowManager.IsCursorWindowOpen() || controller.windowManager.IsInputActive() || controller.windowManager.IsModalWindowOpen();
-                        if (isUIOpen || controller.entityPlayerLocal.emodel.IsRagdollActive || controller.entityPlayerLocal.IsDead() || controller.entityPlayerLocal.AttachedToEntity != null)
+                        if (isUIOpen || controller.entityPlayerLocal.emodel.IsRagdollActive || controller.entityPlayerLocal.IsDead() || controller.entityPlayerLocal.AttachedToEntity)
                         {
                             return;
                         }
@@ -456,25 +445,6 @@ public static class ItemActionBlockingPatches
                 });
                 i += 3;
             }
-            //else if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == local_ispressed)
-            //{
-            //    codes.InsertRange(i, new[]
-            //    {
-            //        new CodeInstruction(OpCodes.Ldloc_S, local_vehicleenabled),
-            //        new CodeInstruction(OpCodes.Ldarg_0),
-            //        CodeInstruction.LoadField(typeof(PlayerMoveController), nameof(PlayerMoveController.entityPlayerLocal)),
-            //        CodeInstruction.CallClosure<Func<bool, bool, EntityPlayerLocal, bool>>(static (isPressed, vehicleEnabled, player) =>
-            //        {
-            //            if (vehicleEnabled || !isPressed)
-            //            {
-            //                return isPressed;
-            //            }
-
-            //            return !IsPlayerBlocking(player);
-            //        })
-            //    });
-            //    i += 4;
-            //}
         }
 
         return codes;

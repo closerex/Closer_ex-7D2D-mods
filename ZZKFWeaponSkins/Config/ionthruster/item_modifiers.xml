@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configs>
+  <append xpath="/item_modifiers">
+    <item_modifier name="modKFSkin_ionthruster_SkinId_7499" installable_tags="kfSkin_meleeWpnBatonT3KF2IonThruster" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_ionthruster_SkinId_7499" />
+      <property name="DescriptionKey" value="modKFSkin_ionthruster_SkinId_7499Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBatonT3KF2IonThruster">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/ionthruster/kf_skin_ionthruster.unity3d?SkinId_7499__IonThruster_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_ionthruster_SkinId_7715" installable_tags="kfSkin_meleeWpnBatonT3KF2IonThruster" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_ionthruster_SkinId_7715" />
+      <property name="DescriptionKey" value="modKFSkin_ionthruster_SkinId_7715Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBatonT3KF2IonThruster">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/ionthruster/kf_skin_ionthruster.unity3d?SkinId_7715__IonThruster_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_ionthruster_SkinId_7716" installable_tags="kfSkin_meleeWpnBatonT3KF2IonThruster" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_ionthruster_SkinId_7716" />
+      <property name="DescriptionKey" value="modKFSkin_ionthruster_SkinId_7716Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBatonT3KF2IonThruster">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/ionthruster/kf_skin_ionthruster.unity3d?SkinId_7716__IonThruster_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_ionthruster_SkinId_7717" installable_tags="kfSkin_meleeWpnBatonT3KF2IonThruster" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_ionthruster_SkinId_7717" />
+      <property name="DescriptionKey" value="modKFSkin_ionthruster_SkinId_7717Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBatonT3KF2IonThruster">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/ionthruster/kf_skin_ionthruster.unity3d?SkinId_7717__IonThruster_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_ionthruster_SkinId_7718" installable_tags="kfSkin_meleeWpnBatonT3KF2IonThruster" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_ionthruster_SkinId_7718" />
+      <property name="DescriptionKey" value="modKFSkin_ionthruster_SkinId_7718Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBatonT3KF2IonThruster">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/ionthruster/kf_skin_ionthruster.unity3d?SkinId_7718__IonThruster_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_ionthruster_SkinId_7719" installable_tags="kfSkin_meleeWpnBatonT3KF2IonThruster" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_ionthruster_SkinId_7719" />
+      <property name="DescriptionKey" value="modKFSkin_ionthruster_SkinId_7719Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBatonT3KF2IonThruster">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/ionthruster/kf_skin_ionthruster.unity3d?SkinId_7719__IonThruster_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_ionthruster_SkinId_7720" installable_tags="kfSkin_meleeWpnBatonT3KF2IonThruster" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_ionthruster_SkinId_7720" />
+      <property name="DescriptionKey" value="modKFSkin_ionthruster_SkinId_7720Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBatonT3KF2IonThruster">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/ionthruster/kf_skin_ionthruster.unity3d?SkinId_7720__IonThruster_m" />
+      </item_property_overrides>
+    </item_modifier>
+  </append>
+</configs>

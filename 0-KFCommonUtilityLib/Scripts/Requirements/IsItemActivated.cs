@@ -7,6 +7,6 @@
             return false;
         }
 
-        return invert ^ _params.ItemValue.Activated > 0;
+        return invert ^ _params.ItemValue.Activated;
     }
 }

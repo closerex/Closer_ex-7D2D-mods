@@ -36,7 +36,6 @@ namespace FullautoLauncher.Scripts.ProjectileManager
         {
             var trans = item.CloneModel(GameManager.Instance.World, new ItemValue(item.Id), Vector3.zero, CustomProjectileManager.CustomProjectileParent);
             Utils.SetLayerRecursively(trans.gameObject, 13);
-            trans.gameObject.AddComponent<ProjectileMoveScript>().SetState(ProjectileMoveScript.State.Sticky);
             return trans;
         }
 
@@ -115,7 +114,7 @@ namespace FullautoLauncher.Scripts.ProjectileManager
 
         public abstract void Update();
 
-        private List<T> list_remove = new List<T>();
+        private readonly List<T> list_remove = new List<T>();
         public void FixedUpdate()
         {
             if (GameManager.Instance == null || GameManager.Instance.IsPaused() || GameManager.Instance.World == null)

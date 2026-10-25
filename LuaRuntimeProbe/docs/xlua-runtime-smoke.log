@@ -1,0 +1,36 @@
+  source revision : v2.1.16_ndkr21b_with_win (xLua-2.1.16_ndkr21b_with_win)
+
+==============================================================================
+Native payload
+==============================================================================
+  xlua.dll (win-x64) = 570368 bytes, sha256=F027A8505DE79BC3890BDA7A381F5B72FD81F6B3C1DFAA75B8ED8185BF623245
+
+==============================================================================
+Building managed XLua.dll
+==============================================================================
+  build exit code = 0
+  XLuaManaged.dll = 137216 bytes
+
+==============================================================================
+Building smoke test
+==============================================================================
+  build exit code = 0
+
+==============================================================================
+Running smoke test (bounded to 60s)
+==============================================================================
+  process exit code = 1
+
+--- smoke stdout ---
+[smoke] native exists   : True
+[smoke] LoadLibraryW    : handle=0x7FFD88900000 lastError=0
+[smoke] GetProcAddress luaL_newstate            -> 0x7FFD88904440 (lastError=0)
+[smoke] GetProcAddress lua_gettop               -> 0x7FFD88901C20 (lastError=0)
+[smoke] GetProcAddress xlua_get_lib_version     -> 0x7FFD88937630 (lastError=0)
+[smoke] GetProcAddress xlua_setglobal           -> 0x7FFD88938140 (lastError=0)
+[smoke] EXCEPTION System.ArgumentException: Can not find System.MonoType
+   在 XLua.ObjectTranslator.Alias(Type type, String alias) 位置 C:\Users\close\AppData\Local\Temp\xlua-probe\src-v2.1.16_ndkr21b_with_win\xLua-2.1.16_ndkr21b_with_win\Assets\XLua\Src\ObjectTranslator.cs:行号 200
+   在 XLua.LuaEnv..ctor() 位置 C:\Users\close\AppData\Local\Temp\xlua-probe\src-v2.1.16_ndkr21b_with_win\xLua-2.1.16_ndkr21b_with_win\Assets\XLua\Src\LuaEnv.cs:行号 168
+   在 Smoke.Main() 位置 C:\Users\close\AppData\Local\Temp\xlua-probe\smoke-v2.1.16_ndkr21b_with_win\Program.cs:行号 31
+[smoke] RESULT: xLua failed at runtime
+--- smoke stderr ---

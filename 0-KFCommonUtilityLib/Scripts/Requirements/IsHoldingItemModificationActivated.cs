@@ -29,7 +29,7 @@ public class IsHoldingItemModificationActivated : RequirementBase
             {
                 foreach (var mod in itemValue.Modifications)
                 {
-                    if (mod != null && mod.type == modId && mod.Activated > 0)
+                    if (mod != null && mod.type == modId && mod.Activated)
                     {
                         return !invert;
                     }
@@ -40,7 +40,7 @@ public class IsHoldingItemModificationActivated : RequirementBase
             {
                 foreach (var cos in itemValue.CosmeticMods)
                 {
-                    if (cos != null && cos.type == modId && cos.Activated > 0)
+                    if (cos != null && cos.type == modId && cos.Activated)
                     {
                         return !invert;
                     }

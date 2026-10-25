@@ -878,7 +878,7 @@ public static class ProceduralRecoilUpdater
 
     public static void FixedUpdate(float dt)
     {
-        if (!player)
+        if (player.isUnloaded)
         {
             return;
         }

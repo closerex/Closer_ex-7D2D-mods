@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Offline verification harness for LuaRuntimeProbe.
+
+    It links the SAME backend, suite and benchmark sources that the mod ships,
+    but replaces the game host with a console host.  This makes the runtime
+    comparison verifiable WITHOUT the game:
+
+        dotnet build LuaRuntimeProbe.OfflineProbe\LuaRuntimeProbe.OfflineProbe.csproj -c Release
+        .\LuaRuntimeProbe.OfflineProbe\bin\Release\LuaRuntimeProbe.OfflineProbe.exe
+
+    What it does NOT cover (only an in-game run can):
+        * the console command surface (SdtdConsole registration/output)
+        * the real read-only player/world context
+        * Unity Mono as the CLR (this harness runs on .NET Framework 4.8)
+  -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <AssemblyName>LuaRuntimeProbe.OfflineProbe</AssemblyName>
+    <RootNamespace>LuaRuntimeProbe.OfflineProbe</RootNamespace>
+    <Platforms>x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <Deterministic>true</Deterministic>
+    <NoWarn>$(NoWarn);NU1701;CS1591</NoWarn>
+    <!-- KeraLua's targets would copy lua54.dll next to the exe; we stage it in
+         native\ to mirror the mod layout exactly. -->
+    <!-- See the mod project: build the xLua runtime first, then pass -p:WithXLua=true. -->
+    <XLuaStagingDir Condition="'$(XLuaStagingDir)' == ''">$(MSBuildProjectDirectory)\..\LuaRuntimeProbe\staging\xlua</XLuaStagingDir>
+    <XLuaManagedPath Condition="'$(XLuaManagedPath)' == ''">$(XLuaStagingDir)\XLua.Mini.dll</XLuaManagedPath>
+    <XLuaNativePath Condition="'$(XLuaNativePath)' == ''">$(XLuaStagingDir)\native\xlua.dll</XLuaNativePath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(WithXLua)' == 'true'">
+    <DefineConstants>$(DefineConstants);LUA_PROBE_XLUA</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(WithXLua)' == 'true'">
+    <Reference Include="XLua.Mini">
+      <HintPath>$(XLuaManagedPath)</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MoonSharp" Version="2.0.0" />
+    <PackageReference Include="NLua" Version="1.7.9" />
+    <PackageReference Include="KeraLua" Version="1.4.10" GeneratePathProperty="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="OfflineProbeHost.cs" />
+
+    <!-- Game-independent mod sources, linked so there is exactly one copy. -->
+    <Compile Include="..\LuaRuntimeProbe\Scripts\Contracts\LuaValue.cs" Link="linked\Contracts\LuaValue.cs" />
+    <Compile Include="..\LuaRuntimeProbe\Scripts\Contracts\ProbeDtos.cs" Link="linked\Contracts\ProbeDtos.cs" />
+    <Compile Include="..\LuaRuntimeProbe\Scripts\Contracts\ProbeBridge.cs" Link="linked\Contracts\ProbeBridge.cs" />
+    <Compile Include="..\LuaRuntimeProbe\Scripts\Backends\ILuaProbeBackend.cs" Link="linked\Backends\ILuaProbeBackend.cs" />
+    <Compile Include="..\LuaRuntimeProbe\Scripts\Backends\LuaBackendRegistry.cs" Link="linked\Backends\LuaBackendRegistry.cs" />
+    <Compile Include="..\LuaRuntimeProbe\Scripts\Backends\MoonSharpBackend.cs" Link="linked\Backends\MoonSharpBackend.cs" />
+    <Compile Include="..\LuaRuntimeProbe\Scripts\Backends\NLuaBackend.cs" Link="linked\Backends\NLuaBackend.cs" />
+    <Compile Include="..\LuaRuntimeProbe\Scripts\Backends\XLuaAssessment.cs" Link="linked\Backends\XLuaAssessment.cs" />
+    <Compile Include="..\LuaRuntimeProbe\Scripts\Backends\XLuaBackend.cs" Link="linked\Backends\XLuaBackend.cs" />
+    <Compile Include="..\LuaRuntimeProbe\Scripts\Backends\NativeLibraryLoader.cs" Link="linked\Backends\NativeLibraryLoader.cs" />
+    <Compile Include="..\LuaRuntimeProbe\Scripts\Harness\ProbeHost.cs" Link="linked\Harness\ProbeHost.cs" />
+    <Compile Include="..\LuaRuntimeProbe\Scripts\Harness\ProbeSuite.cs" Link="linked\Harness\ProbeSuite.cs" />
+    <Compile Include="..\LuaRuntimeProbe\Scripts\Harness\BenchJob.cs" Link="linked\Harness\BenchJob.cs" />
+    <Compile Include="..\LuaRuntimeProbe\Scripts\Harness\ProbeBench.cs" Link="linked\Harness\ProbeBench.cs" />
+    <Compile Include="..\LuaRuntimeProbe\Scripts\Harness\GcProbe.cs" Link="linked\Harness\GcProbe.cs" />
+  </ItemGroup>
+
+  <Target Name="CopyNativeLua" AfterTargets="Build">
+    <ItemGroup>
+      <NativeLua Include="$(PkgKeraLua)\runtimes\win-x64\native\lua54.dll" Condition="Exists('$(PkgKeraLua)\runtimes\win-x64\native\lua54.dll')" />
+      <NativeLua Include="$(XLuaNativePath)" Condition="'$(WithXLua)' == 'true' and Exists('$(XLuaNativePath)')" />
+    </ItemGroup>
+    <Copy SourceFiles="@(NativeLua)" DestinationFolder="$(TargetDir)native" SkipUnchangedFiles="true" />
+    <Error Condition="!Exists('$(TargetDir)native\lua54.dll')"
+           Text="OfflineProbe: native lua54.dll was not staged into $(TargetDir)native" />
+    <Error Condition="'$(WithXLua)' == 'true' and !Exists('$(TargetDir)native\xlua.dll')"
+           Text="OfflineProbe: WithXLua=true but native xlua.dll was not staged into $(TargetDir)native" />
+  </Target>
+
+</Project>

@@ -1,0 +1,549 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configs>
+  <append xpath="/item_modifiers">
+    <item_modifier name="modKFSkin_winchester1894_SkinId_4000" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_4000" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_4000Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4000__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4000__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_4001" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_4001" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_4001Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4001__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4001__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_4002" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_4002" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_4002Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4002__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4002__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_4317" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_4317" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_4317Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4317__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4317__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_4318" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_4318" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_4318Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4318__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4318__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_4319" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_4319" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_4319Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4319__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4319__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_4366" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_4366" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_4366Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4366__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4366__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_4367" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_4367" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_4367Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4367__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4367__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_4368" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_4368" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_4368Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4368__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4368__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_4597" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_4597" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_4597Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4597__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4597__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_4633" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_4633" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_4633Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4633__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4633__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_4634" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_4634" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_4634Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4634__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4634__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_4635" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_4635" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_4635Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4635__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4635__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_4953" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_4953" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_4953Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4953__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4953__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_4954" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_4954" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_4954Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4954__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4954__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_4955" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_4955" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_4955Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4955__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_4955__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_5023" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_5023" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_5023Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_5023__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_5023__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_5528" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_5528" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_5528Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_5528__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_5528__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_5529" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_5529" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_5529Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_5529__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_5529__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_5530" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_5530" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_5530Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_5530__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_5530__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_5662" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_5662" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_5662Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_5662__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_5662__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_5948" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_5948" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_5948Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_5948__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_5948__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_5949" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_5949" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_5949Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_5949__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_5949__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_5950" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_5950" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_5950Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_5950__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_5950__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_6290" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_6290" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_6290Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_6290__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_6290__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_7180" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_7180" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_7180Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_7180__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_7180__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_7203" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_7203" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_7203Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_7203__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_7203__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_7204" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_7204" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_7204Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_7204__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_7204__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_7205" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_7205" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_7205Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_7205__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_7205__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_7230" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_7230" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_7230Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_7230__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_7230__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_8193" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_8193" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_8193Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_8193__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_8193__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_winchester1894_SkinId_8203" installable_tags="kfSkin_gunKF1894" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_winchester1894_SkinId_8203" />
+      <property name="DescriptionKey" value="modKFSkin_winchester1894_SkinId_8203Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF1894">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_8203__win1894_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunTCTD2Virginian">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/winchester1894/kf_skin_winchester1894.unity3d?SkinId_8203__win1894_m" />
+      </item_property_overrides>
+    </item_modifier>
+  </append>
+</configs>

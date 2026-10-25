@@ -79,3 +79,5 @@ ModelManifest.xml
 
 #zzzili
 v15/
+# Unity imported script metadata must be tracked: allow .cs.meta while other *.meta stays ignored
+!*.cs.meta

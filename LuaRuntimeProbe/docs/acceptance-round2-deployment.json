@@ -1,0 +1,48 @@
+{
+  "Source": "E:\\SteamLibrary\\steamapps\\common\\7 Days To Die\\ModsRepo\\LuaRuntimeProbe\\staging\\mod-with-xlua",
+  "Destination": "E:\\SteamLibrary\\steamapps\\common\\7 Days To Die\\ModsRepo\\LuaRuntimeProbe",
+  "Backup": "E:\\SteamLibrary\\steamapps\\common\\7 Days To Die\\artifacts\\luaprobe-round2-backup-20261002-024841",
+  "GameWasStopped": true,
+  "Files": [
+    {
+      "RelativePath": "LuaRuntimeProbe.dll",
+      "PreviouslyExisted": true,
+      "Bytes": 127488
+    },
+    {
+      "RelativePath": "LuaRuntimeProbe.pdb",
+      "PreviouslyExisted": true,
+      "Bytes": 38900
+    },
+    {
+      "RelativePath": "MoonSharp.Interpreter.dll",
+      "PreviouslyExisted": true,
+      "Bytes": 366592
+    },
+    {
+      "RelativePath": "NLua.dll",
+      "PreviouslyExisted": true,
+      "Bytes": 92160
+    },
+    {
+      "RelativePath": "KeraLua.dll",
+      "PreviouslyExisted": true,
+      "Bytes": 32256
+    },
+    {
+      "RelativePath": "XLua.Mini.dll",
+      "PreviouslyExisted": false,
+      "Bytes": 164864
+    },
+    {
+      "RelativePath": "native\\lua54.dll",
+      "PreviouslyExisted": true,
+      "Bytes": 523264
+    },
+    {
+      "RelativePath": "native\\xlua.dll",
+      "PreviouslyExisted": false,
+      "Bytes": 570368
+    }
+  ]
+}

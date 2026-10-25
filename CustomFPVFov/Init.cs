@@ -188,7 +188,7 @@ namespace CustomFPVFov
             (entity as EntityPlayerLocal)?.vp_FPWeapon?.CacheRenderers();
         }
 
-        internal static List<ScreenSpaceParticleAspectScaler> tempScalers = new();
+        internal static readonly List<ScreenSpaceParticleAspectScaler> tempScalers = new();
         [HarmonyPatch(typeof(CameraMatrixOverride), nameof(CameraMatrixOverride.UpdateRendererList))]
         [HarmonyPostfix]
         private static void Postfix_CameraMatrixOverride_UpdateRendererList(CameraMatrixOverride __instance)
@@ -335,6 +335,11 @@ namespace CustomFPVFov
                 {
                     return;
                 }
+            }
+            // Inventory.Cleanup can run before held-object OnDisable callbacks finish.
+            if (player.inventory?.slots == null)
+            {
+                return;
             }
             if (dict_id_fov.TryGetValue(player.inventory.holdingItem.Id, out var pair))
             {

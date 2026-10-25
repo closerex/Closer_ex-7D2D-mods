@@ -235,6 +235,10 @@
       <HintPath>..\..\7DaysToDie_Data\Managed\UnityEngine.UIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Windows.Forms">
+      <HintPath>..\..\7DaysToDie_Data\Managed\System.Windows.Forms.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="KFAttached\LeanTween\License.txt" />
@@ -437,7 +441,17 @@
     <Compile Include="Harmony\AudioPoolingPatches.cs" />
     <Compile Include="Harmony\BackgroundInventoryUpdatePatch.cs" />
     <Compile Include="Harmony\CameraPatches.cs" />
+    <Compile Include="Harmony\DotNetRuntimeLocator.cs" />
+    <Compile Include="Harmony\GameAssemblyCompatibilityGate.cs" />
+    <Compile Include="Harmony\LoadedAssemblyCatalog.cs" />
+    <Compile Include="..\AssemblyPatcher\AssemblyVirtualizer.cs">
+      <Link>Harmony\AssemblyVirtualizer.cs</Link>
+    </Compile>
+    <Compile Include="..\AssemblyPatcher\AssemblyCollectionScanner.cs">
+      <Link>Harmony\AssemblyCollectionScanner.cs</Link>
+    </Compile>
     <Compile Include="Harmony\EventHookPatches.cs" />
+    <Compile Include="Harmony\ProjectilePatches.cs" />
     <Compile Include="Harmony\VersionPatcher\VersionPatchManager.cs" />
     <Compile Include="Harmony\XmlConditionPatches.cs" />
     <Compile Include="KFAttached\Misc\AimingMaterialBlender.cs" />
@@ -471,6 +485,7 @@
     <Compile Include="KFAttached\Animation\MonoBehaviours\IPlayableGraphRelated.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationAmmoUpdateState.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationCustomMeleeAttackState.cs" />
+    <Compile Include="KFAttached\Animation\StateMachineBehaviours\MeleeWindowDamage.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationHolsterState.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationInspectFix.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationLockAction.cs" />
@@ -873,20 +888,104 @@
     <AttachedScriptFolder>KFAttached</AttachedScriptFolder>
     <UnityProjectPath>J:\Unity Projects\AnimationPlayground\Assets\</UnityProjectPath>
   </PropertyGroup>
+  <!--
+    KFAttached 脚本与 Unity 工程的双向同步，已从内联 PreBuildEvent/PostBuildEvent
+    整合到 Sync-UnityScripts.ps1（-Direction Backward / Forward）。
+    Backward = robocopy /E /XO 的语义（只补更新的，不删除）；
+    Forward  = robocopy /MIR 的语义（镜像，含删除多余文件）。
+    已改为脚本内自遍历实现：robocopy 的逐文件清单会被 MSBuild 的 Exec 丢弃
+    （进度片段只带 \r 不带 \n），本机构建窗口因此看不到"复制了哪些文件"。
+    Unity 路径可用环境变量 KF_UNITY_PROJECT_PATH 覆盖（CI 或换机器时用）。
+  -->
+  <!--
+    注意：这两个 Target 原先都带 Condition="'$(BuildingProject)' == 'true'"，导致
+    SyncUnityScriptsBeforeBuild 从来没有执行过：$(BuildingProject) 是在 Build 目标内部
+    才被赋值为 true 的，而 BeforeTargets="BeforeBuild" 的钩子在该赋值之前运行，取值恒为
+    false（实测 BuildingProject=false）。AfterTargets="Build" 因为在该赋值之后运行，
+    所以一直是正常的 —— 这也是"只见前送、不见回拷"的原因。
+    正确的过滤条件是设计时构建：IDE 的 design-time build 不应触发同步。
+
+    另外，即使目标正常执行，`-v q`（quiet）也会把这里的输出全部压掉：
+    两个 Exec 的 StandardOutputImportance/StandardErrorImportance 都是 High，
+    quiet 详细度不显示 High 级别消息。想看"复制了哪些文件"要用 -v n 或更高。
+  -->
+  <Target Name="SyncUnityScriptsBeforeBuild"
+          BeforeTargets="BeforeBuild"
+          Condition="'$(DesignTimeBuild)' != 'true'">
+    <Error Condition="!Exists('$(ProjectDir)Sync-UnityScripts.ps1')"
+           Text="Sync-UnityScripts.ps1 not found: $(ProjectDir)Sync-UnityScripts.ps1" />
+    <!--
+      路径一律通过环境变量传给脚本，不要放进命令行：
+      MSBuild 用 &quot; 包裹时会把引号原样交给 pwsh 导致路径截断
+      （`Projects\AnimationPlayground\Assets"\` → 脚本"路径不存在→静默跳过"）；
+      用 ' 包裹时 pwsh 又把它当字面字符（参数名变成 `'E:\...\7'`，exit 64）。
+    -->
+    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)Sync-UnityScripts.ps1&quot; -Direction Backward"
+          WorkingDirectory="$(ProjectDir)"
+          EnvironmentVariables="KF_PROJECT_DIR=$(ProjectDir);KF_ATTACHED_FOLDER=$(AttachedScriptFolder);KF_UNITY_PROJECT_PATH=$(UnityProjectPath)"
+          StandardOutputImportance="High"
+          StandardErrorImportance="High"
+          LogStandardErrorAsError="false" />
+  </Target>
+  <Target Name="SyncUnityScriptsAfterBuild"
+          AfterTargets="Build"
+          Condition="'$(DesignTimeBuild)' != 'true'">
+    <Error Condition="!Exists('$(ProjectDir)Sync-UnityScripts.ps1')"
+           Text="Sync-UnityScripts.ps1 not found: $(ProjectDir)Sync-UnityScripts.ps1" />
+    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)Sync-UnityScripts.ps1&quot; -Direction Forward"
+          WorkingDirectory="$(ProjectDir)"
+          EnvironmentVariables="KF_PROJECT_DIR=$(ProjectDir);KF_ATTACHED_FOLDER=$(AttachedScriptFolder);KF_UNITY_PROJECT_PATH=$(UnityProjectPath)"
+          StandardOutputImportance="High"
+          StandardErrorImportance="High"
+          LogStandardErrorAsError="false" />
+  </Target>
+  <!--
+    编译成功后自动更新 ModInfo.xml 的 <Version>。
+    版本格式：<游戏版本代号>.<yyMMdd>.<HHmmss>，例如 24.260911.153045。
+    游戏版本代号由下方 Prefix 决定，换版本时改这里。
+
+    为什么用 Target 而不是 PostBuildEvent：
+      - AfterTargets="Build" 只在 Build 目标成功后运行，编译失败时不会执行，
+        符合"成功编译才更新版本号"的要求。
+      - 现有 <PostBuildEvent> 的 RunPostBuildEvent=OnOutputUpdated，只在输出有变化时运行；
+        且它内部 `|| set errorlevel=0` 实际吞不掉 robocopy 的失败码（set 自身返回 0），
+        该 PropertyGroup 保持原样不动。
+    实现见同目录 Update-ModInfoVersion.ps1（只改 <Version> 的 value，其余字节原样保留）。
+  -->
   <PropertyGroup>
-    <PreBuildEvent>
-      if exist "$(UnityProjectPath)$(AttachedScriptFolder)" (
-      echo Syncing changes from Unity project back to mod project...
-      robocopy "$(UnityProjectPath)$(AttachedScriptFolder)" "$(ProjectDir)$(AttachedScriptFolder)" /E /XO /NP /R:0 /W:1 || set errorlevel=0
-      )
-    </PreBuildEvent>
+    <!-- 版本号前缀：换游戏版本时改这里 -->
+    <ModInfoVersionPrefix>24</ModInfoVersionPrefix>
+    <ModInfoUpdateScript>$(ProjectDir)Update-ModInfoVersion.ps1</ModInfoUpdateScript>
+    <!-- 必须在目标之前定义：目标里的 EnvironmentVariables 求值时要取到 ModInfoFile -->
+    <ModInfoFile>$(ProjectDir)ModInfo.xml</ModInfoFile>
+    <!-- 上次构建时的源码内容哈希；源码没变则版本号不动。
+         为什么需要它：Rider 的「重新构建」会强制全量重编译（「构建」才是增量、会跳过），
+         所以"有没有执行编译"不能作为判据，只有源码内容变了才该推进版本号。 -->
+    <KfSourceHashFile Condition="'$(KfSourceHashFile)' == ''">$(TEMP)\kf-source-hash.txt</KfSourceHashFile>
   </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>
-      if exist "$(UnityProjectPath)" (
-      echo Unity project found, copying attached scripts...
-      robocopy "$(ProjectDir)$(AttachedScriptFolder)" "$(UnityProjectPath)$(AttachedScriptFolder)"  /MIR || set errorlevel=0
-      )
-    </PostBuildEvent>
-  </PropertyGroup>
+  <Target Name="UpdateModInfoVersionAfterBuild"
+          AfterTargets="Build">
+    <!--
+      判断"这次构建是否真的重新编译过"的逻辑全部放在 Update-ModInfoVersion.ps1 里，
+      由它比较 $(TargetPath) 与 ModInfo.xml 的时间戳后决定是否推进版本号。
+      本目标只负责在构建成功后调用一次脚本。
+
+      为什么不在 MSBuild 里判断（两次实测踩坑，勿再尝试）：
+        * Inputs/Outputs 增量目标：Rider 对项目走 Rebuild（Clean+Build），Clean 删掉 obj 后
+          增量基准失效，目标每次都会执行。
+        * AfterTargets="CoreCompile"：CoreCompile 被判"最新"而跳过时，AfterTargets 钩子照样执行。
+        * 属性函数比时间戳：MSBuild 属性函数有白名单，[System.IO.File]::GetLastWriteTimeUtc
+          会报 MSB4185；条件三元嵌套会报 MSB4184。两者都让整个构建失败。
+    -->
+    <Error Condition="!Exists('$(ModInfoUpdateScript)')"
+           Text="Update-ModInfoVersion.ps1 not found: $(ModInfoUpdateScript)" />
+    <Error Condition="!Exists('$(ModInfoFile)')"
+           Text="ModInfo.xml not found: $(ModInfoFile)" />
+    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(ModInfoUpdateScript)&quot; -VersionPrefix $(ModInfoVersionPrefix)"
+          WorkingDirectory="$(ProjectDir)"
+          EnvironmentVariables="KF_MODINFO_FILE=$(ModInfoFile);KF_ASSEMBLY_PATH=$(TargetPath);KF_SOURCE_HASH_FILE=$(KfSourceHashFile)"
+          StandardOutputImportance="High"
+          StandardErrorImportance="High"
+          LogStandardErrorAsError="false" />
+  </Target>
 </Project>

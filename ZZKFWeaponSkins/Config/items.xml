@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configs>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/9mm')">
+      <include filename="9mm/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/af2011')">
+      <include filename="af2011/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/c4')">
+      <include filename="c4/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/centerfiremb464')">
+      <include filename="centerfiremb464/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/eviscerator')">
+      <include filename="eviscerator/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/fnfal')">
+      <include filename="fnfal/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/g18')">
+      <include filename="g18/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/hrg_blastbrawlers')">
+      <include filename="hrg_blastbrawlers/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/hrg_kaboomstick')">
+      <include filename="hrg_kaboomstick/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/hz12')">
+      <include filename="hz12/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/ionthruster')">
+      <include filename="ionthruster/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/m14ebr')">
+      <include filename="m14ebr/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/m99')">
+      <include filename="m99/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/maceandshield')">
+      <include filename="maceandshield/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/medicpistol')">
+      <include filename="medicpistol/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/medicrifle')">
+      <include filename="medicrifle/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/medicshotgun')">
+      <include filename="medicshotgun/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/medicsmg')">
+      <include filename="medicsmg/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/mosinnagant')">
+      <include filename="mosinnagant/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/pistol_g18c')">
+      <include filename="pistol_g18c/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/pulverizer')">
+      <include filename="pulverizer/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/sw500')">
+      <include filename="sw500/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/sw500_hrg')">
+      <include filename="sw500_hrg/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/winchester1894')">
+      <include filename="winchester1894/items.xml" />
+    </if>
+  </conditional>
+  <conditional>
+    <if cond="path_exists('@modfolder(KFWeaponSkins):Resources/zweihander')">
+      <include filename="zweihander/items.xml" />
+    </if>
+  </conditional>
+</configs>

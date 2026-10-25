@@ -1,0 +1,257 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configs>
+  <append xpath="/item_modifiers">
+    <item_modifier name="modKFSkin_hz12_SkinId_5125" installable_tags="kfSkin_gunT3HZ12" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_hz12_SkinId_5125" />
+      <property name="DescriptionKey" value="modKFSkin_hz12_SkinId_5125Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunT3HZ12">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/hz12/kf_skin_hz12.unity3d?SkinId_5125__hz12_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_hz12_SkinId_5126" installable_tags="kfSkin_gunT3HZ12" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_hz12_SkinId_5126" />
+      <property name="DescriptionKey" value="modKFSkin_hz12_SkinId_5126Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunT3HZ12">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/hz12/kf_skin_hz12.unity3d?SkinId_5126__hz12_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_hz12_SkinId_5127" installable_tags="kfSkin_gunT3HZ12" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_hz12_SkinId_5127" />
+      <property name="DescriptionKey" value="modKFSkin_hz12_SkinId_5127Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunT3HZ12">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/hz12/kf_skin_hz12.unity3d?SkinId_5127__hz12_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_hz12_SkinId_5140" installable_tags="kfSkin_gunT3HZ12" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_hz12_SkinId_5140" />
+      <property name="DescriptionKey" value="modKFSkin_hz12_SkinId_5140Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunT3HZ12">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/hz12/kf_skin_hz12.unity3d?SkinId_5140__hz12_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_hz12_SkinId_6138" installable_tags="kfSkin_gunT3HZ12" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_hz12_SkinId_6138" />
+      <property name="DescriptionKey" value="modKFSkin_hz12_SkinId_6138Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunT3HZ12">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/hz12/kf_skin_hz12.unity3d?SkinId_6138__hz12_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_hz12_SkinId_6139" installable_tags="kfSkin_gunT3HZ12" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_hz12_SkinId_6139" />
+      <property name="DescriptionKey" value="modKFSkin_hz12_SkinId_6139Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunT3HZ12">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/hz12/kf_skin_hz12.unity3d?SkinId_6139__hz12_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_hz12_SkinId_6140" installable_tags="kfSkin_gunT3HZ12" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_hz12_SkinId_6140" />
+      <property name="DescriptionKey" value="modKFSkin_hz12_SkinId_6140Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunT3HZ12">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/hz12/kf_skin_hz12.unity3d?SkinId_6140__hz12_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_hz12_SkinId_6884" installable_tags="kfSkin_gunT3HZ12" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_hz12_SkinId_6884" />
+      <property name="DescriptionKey" value="modKFSkin_hz12_SkinId_6884Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunT3HZ12">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/hz12/kf_skin_hz12.unity3d?SkinId_6884__hz12_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_hz12_SkinId_8092" installable_tags="kfSkin_gunT3HZ12" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_hz12_SkinId_8092" />
+      <property name="DescriptionKey" value="modKFSkin_hz12_SkinId_8092Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunT3HZ12">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/hz12/kf_skin_hz12.unity3d?SkinId_8092__hz12_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_hz12_SkinId_8103" installable_tags="kfSkin_gunT3HZ12" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_hz12_SkinId_8103" />
+      <property name="DescriptionKey" value="modKFSkin_hz12_SkinId_8103Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunT3HZ12">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/hz12/kf_skin_hz12.unity3d?SkinId_8103__hz12_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_hz12_SkinId_9336" installable_tags="kfSkin_gunT3HZ12" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_hz12_SkinId_9336" />
+      <property name="DescriptionKey" value="modKFSkin_hz12_SkinId_9336Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunT3HZ12">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/hz12/kf_skin_hz12.unity3d?SkinId_9336__hz12_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_hz12_SkinId_9340" installable_tags="kfSkin_gunT3HZ12" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_hz12_SkinId_9340" />
+      <property name="DescriptionKey" value="modKFSkin_hz12_SkinId_9340Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunT3HZ12">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/hz12/kf_skin_hz12.unity3d?SkinId_9340__hz12_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_hz12_SkinId_9516" installable_tags="kfSkin_gunT3HZ12" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_hz12_SkinId_9516" />
+      <property name="DescriptionKey" value="modKFSkin_hz12_SkinId_9516Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunT3HZ12">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/hz12/kf_skin_hz12.unity3d?SkinId_9516__hz12_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_hz12_SkinId_9517" installable_tags="kfSkin_gunT3HZ12" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_hz12_SkinId_9517" />
+      <property name="DescriptionKey" value="modKFSkin_hz12_SkinId_9517Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunT3HZ12">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/hz12/kf_skin_hz12.unity3d?SkinId_9517__hz12_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_hz12_SkinId_9518" installable_tags="kfSkin_gunT3HZ12" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_hz12_SkinId_9518" />
+      <property name="DescriptionKey" value="modKFSkin_hz12_SkinId_9518Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunT3HZ12">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/hz12/kf_skin_hz12.unity3d?SkinId_9518__hz12_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_hz12_SkinId_9519" installable_tags="kfSkin_gunT3HZ12" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_hz12_SkinId_9519" />
+      <property name="DescriptionKey" value="modKFSkin_hz12_SkinId_9519Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunT3HZ12">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/hz12/kf_skin_hz12.unity3d?SkinId_9519__hz12_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_hz12_SkinId_9520" installable_tags="kfSkin_gunT3HZ12" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_hz12_SkinId_9520" />
+      <property name="DescriptionKey" value="modKFSkin_hz12_SkinId_9520Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunT3HZ12">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/hz12/kf_skin_hz12.unity3d?SkinId_9520__hz12_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_hz12_SkinId_9521" installable_tags="kfSkin_gunT3HZ12" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_hz12_SkinId_9521" />
+      <property name="DescriptionKey" value="modKFSkin_hz12_SkinId_9521Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunT3HZ12">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/hz12/kf_skin_hz12.unity3d?SkinId_9521__hz12_m" />
+      </item_property_overrides>
+    </item_modifier>
+  </append>
+</configs>

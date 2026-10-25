@@ -1,0 +1,369 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configs>
+  <append xpath="/item_modifiers">
+    <item_modifier name="modKFSkin_maceandshield_SkinId_4542" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_4542" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_4542Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_4542__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_4543" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_4543" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_4543Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_4543__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_4544" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_4544" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_4544Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_4544__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_4545" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_4545" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_4545Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_4545__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_4546" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_4546" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_4546Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_4546__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_4547" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_4547" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_4547Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_4547__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_4548" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_4548" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_4548Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_4548__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_4549" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_4549" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_4549Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_4549__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_4550" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_4550" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_4550Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_4550__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_4551" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_4551" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_4551Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_4551__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_4552" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_4552" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_4552Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_4552__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_4553" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_4553" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_4553Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_4553__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_4554" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_4554" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_4554Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_4554__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_4555" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_4555" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_4555Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_4555__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_4556" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_4556" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_4556Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_4556__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_4557" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_4557" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_4557Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_4557__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_4558" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_4558" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_4558Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_4558__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_4559" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_4559" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_4559Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_4559__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_4560" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_4560" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_4560Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_4560__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_6482" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_6482" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_6482Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_6482__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_6513" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_6513" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_6513Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_6513__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_6514" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_6514" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_6514Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_6514__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_6515" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_6515" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_6515Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_6515__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_6889" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_6889" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_6889Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_6889__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_8994" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_8994" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_8994Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_8994__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_maceandshield_SkinId_9004" installable_tags="kfSkin_meleeWpnClubT3KF2BoneCrusher" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_maceandshield_SkinId_9004" />
+      <property name="DescriptionKey" value="modKFSkin_maceandshield_SkinId_9004Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnClubT3KF2BoneCrusher">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/maceandshield/kf_skin_maceandshield.unity3d?SkinId_9004__meleeWpnClubT3KF2BoneCrusher" />
+      </item_property_overrides>
+    </item_modifier>
+  </append>
+</configs>

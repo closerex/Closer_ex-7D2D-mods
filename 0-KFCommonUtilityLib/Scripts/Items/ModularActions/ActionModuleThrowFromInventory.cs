@@ -49,8 +49,10 @@ public class ActionModuleThrowFromInventory : IDisplayAsHUDStat
         EntityPlayerLocal player = holdingEntity as EntityPlayerLocal;
         if (player != null)
         {
-            player.InventoryChangedEvent -= __customData.OnInventoryUpdate;
-            player.InventoryChangedEvent += __customData.OnInventoryUpdate;
+            player.bag.OnBackpackItemsChangedInternal -= __customData.OnInventoryUpdate;
+            player.bag.OnBackpackItemsChangedInternal += __customData.OnInventoryUpdate;
+            player.inventory.OnToolbeltItemsChangedInternal -= __customData.OnInventoryUpdate;
+            player.inventory.OnToolbeltItemsChangedInternal += __customData.OnInventoryUpdate;
         }
 
         var itemValue = __customData.invData.itemValue;
@@ -78,7 +80,8 @@ public class ActionModuleThrowFromInventory : IDisplayAsHUDStat
         EntityPlayerLocal player = _data.invData.holdingEntity as EntityPlayerLocal;
         if (player != null)
         {
-            player.InventoryChangedEvent -= __customData.OnInventoryUpdate;
+            player.bag.OnBackpackItemsChangedInternal -= __customData.OnInventoryUpdate;
+            player.inventory.OnToolbeltItemsChangedInternal -= __customData.OnInventoryUpdate;
         }
         __customData.CurrentAmmoValue.FireEvent(CustomEnums.onThrowItemSwapped, _data.invData.holdingEntity.MinEventContext);
         __customData.swapAmmoStartTime = -1;
@@ -109,7 +112,7 @@ public class ActionModuleThrowFromInventory : IDisplayAsHUDStat
         {
             if (codes[i].Calls(prop_attack))
             {
-                codes.InsertRange(i + 1, new[]
+                codes.InsertRange(i + 2, new[]
                 {
                     CodeInstruction.LoadArgument(1),
                     CodeInstruction.Call(typeof(ItemActionModuleProcessor), nameof(ItemActionModuleProcessor.LoadDataModule), null, new []{typeof(ThrowFromInventoryData)}),

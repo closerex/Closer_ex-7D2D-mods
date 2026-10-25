@@ -6,21 +6,22 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml.Linq;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 [HarmonyPatch]
 class ItemActionLauncherProjectilePatch
 {
-    public static FieldInfo fldinfo_meta = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Meta));
-    public static MethodInfo mtdinfo_gbc = AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.GetBurstCount), new Type[] { typeof(ItemActionData) });
-    public static MethodInfo mtdinfo_gac = AccessTools.Method(typeof(AnimatorRangedReloadState), "GetAmmoCount", new Type[] { typeof(EntityAlive), typeof(ItemValue), typeof(Int32) });
-    public static MethodInfo mtdinfo_sta = AccessTools.Method(typeof(GameObject), nameof(GameObject.SetActive), new Type[] { typeof(bool) });
+    public static readonly FieldInfo fldinfo_meta = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Meta));
+    public static readonly MethodInfo mtdinfo_gbc = AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.GetBurstCount), new[] { typeof(ItemActionData) });
+    public static readonly MethodInfo mtdinfo_gac = AccessTools.Method(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.GetAmmoCount), new[] { typeof(EntityAlive), typeof(ItemValue), typeof(int) });
+    public static readonly MethodInfo mtdinfo_sta = AccessTools.Method(typeof(GameObject), nameof(GameObject.SetActive), new[] { typeof(bool) });
     public static int getProjectileCount(ItemActionData _data)
     {
         int rps = 1;
-        ItemInventoryData invD = _data != null ? _data.invData : null;
+        ItemInventoryData invD = _data?.invData;
         if (invD != null)
         {
-            ItemClass item = invD.itemValue != null ? invD.itemValue.ItemClass : null;
+            ItemClass item = invD.itemValue?.ItemClass;
             rps = (int)EffectManager.GetValue(PassiveEffects.RoundRayCount, invD.itemValue, rps, invD.holdingEntity, null, item != null ? item.ItemTags | _data.ActionTags : default);
         }
         return rps > 0 ? rps : 1;
@@ -49,10 +50,10 @@ class ItemActionLauncherProjectilePatch
             }
         }
 
-        codes.InsertRange(0, new CodeInstruction[]
+        codes.InsertRange(0, new[]
         {
             new CodeInstruction(OpCodes.Ldarg_1),
-            CodeInstruction.Call(typeof(ItemActionLauncherProjectilePatch), nameof(getProjectileCount), new Type[] { typeof(ItemActionData) }),
+            CodeInstruction.Call(typeof(ItemActionLauncherProjectilePatch), nameof(getProjectileCount), new[] { typeof(ItemActionData) }),
             new CodeInstruction(OpCodes.Stloc_S, lbd_rps)
         });
 
@@ -69,10 +70,10 @@ class ItemActionLauncherProjectilePatch
         {
             if (codes[i].Calls(mtdinfo_gbc))
             {
-                codes.InsertRange(i + 1, new CodeInstruction[]
+                codes.InsertRange(i + 1, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_2),
-                    CodeInstruction.Call(typeof(ItemActionLauncherProjectilePatch), nameof(getProjectileCount), new Type[] { typeof(ItemActionData) })
+                    CodeInstruction.Call(typeof(ItemActionLauncherProjectilePatch), nameof(getProjectileCount), new[] { typeof(ItemActionData) })
                 });
                 codes.RemoveRange(i - 2, 3);
                 break;
@@ -90,7 +91,7 @@ class ItemActionLauncherProjectilePatch
         {
             new CodeInstruction(OpCodes.Ldarg_0),
             new CodeInstruction(OpCodes.Ldarg_1),
-            CodeInstruction.Call(typeof(ItemActionRanged), nameof(ItemActionRanged.ConsumeAmmo), new Type[]{ typeof(ItemActionData) }),
+            CodeInstruction.Call(typeof(ItemActionRanged), nameof(ItemActionRanged.ConsumeAmmo), new[]{ typeof(ItemActionData) }),
             new CodeInstruction(OpCodes.Ret)
         };
 
@@ -127,10 +128,10 @@ class ItemActionLauncherProjectilePatch
         {
             if (codes[i].Calls(mtdinfo_gac))
             {
-                codes.InsertRange(i + 1, new CodeInstruction[]
+                codes.InsertRange(i + 1, new[]
                 {
                     new CodeInstruction(OpCodes.Ldloc_S, 6),
-                    CodeInstruction.Call(typeof(ItemActionLauncherProjectilePatch), nameof(getProjectileCount), new Type[] { typeof(ItemActionData) }),
+                    CodeInstruction.Call(typeof(ItemActionLauncherProjectilePatch), nameof(getProjectileCount), new[] { typeof(ItemActionData) }),
                     new CodeInstruction(OpCodes.Stloc_S, lbd_rps),
                     new CodeInstruction(OpCodes.Ldloc_S, lbd_rps),
                     new CodeInstruction(OpCodes.Mul)
@@ -200,30 +201,23 @@ class ItemActionLauncherProjectilePatch
         }
     }
 
-    [HarmonyPatch(typeof(PlayerMoveController), nameof(PlayerMoveController.Update))]
+    [HarmonyPatch(typeof(ProjectileMoveScript), nameof(ProjectileMoveScript.TryCollect))]
     [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_Update_PlayerMoveController(IEnumerable<CodeInstruction> instructions)
+    private static IEnumerable<CodeInstruction> Transpiler_TryCollect_ProjectileMoveScript(IEnumerable<CodeInstruction> instructions)
     {
         var codes = new List<CodeInstruction>(instructions);
-        var fld_pid = AccessTools.Field(typeof(ProjectileMoveScript), nameof(ProjectileMoveScript.ProjectileID));
-        var mtd_add = AccessTools.Method(typeof(XUiM_PlayerInventory), nameof(XUiM_PlayerInventory.AddItem), new[] {typeof(ItemStack)} );
+        var mtd_destroy = AccessTools.Method(typeof(Object), nameof(Object.Destroy), new[] { typeof(Object) });
         for (int i = 0; i < codes.Count; i++)
         {
-            if (codes[i].StoresField(fld_pid))
+            if (codes[i].Calls(mtd_destroy))
             {
-                for (int j = i - 1; j >= 0; j--)
+                codes.RemoveRange(i - 2, 3);
+                codes.InsertRange(i - 2, new[]
                 {
-                    if (codes[j].Calls(mtd_add))
-                    {
-                        codes.RemoveRange(i + 2, 2);
-                        codes.InsertRange(i + 2, new CodeInstruction[]
-                        {
-                            new CodeInstruction(OpCodes.Ldloc_S, codes[j - 1].operand),
-                            CodeInstruction.Call(typeof(ItemActionLauncherProjectilePatch), nameof(DestroyOrPool)),
-                        });
-                        break;
-                    }
-                }
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Ldloc_0),
+                    CodeInstruction.Call(typeof(ItemActionLauncherProjectilePatch), nameof(DestroyOrPool))
+                });
                 break;
             }
         }
@@ -239,7 +233,7 @@ class ItemActionLauncherProjectilePatch
         }
         else
         {
-            GameObject.Destroy(script.gameObject);
+            Object.Destroy(script.gameObject);
         }
     }
 

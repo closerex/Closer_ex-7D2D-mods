@@ -1,0 +1,33 @@
+LuaRuntimeProbe - STAGING payload (xLua compiled in; post round-2 AND round-3 fixes)
+Generated: 2026-10-02 03:02:42
+
+DO NOT DEPLOY WITHOUT COORDINATION.  The game is running; the running session keeps
+executing the assemblies it loaded at start-up whatever is on disk now.
+
+Managed files (mod root):
+  KeraLua.dll                        32256 bytes  sha256=2681F797597E50C55D60C2179982F63998308551B6DFE6981244DE2CE9E5495A
+  LuaRuntimeProbe.dll               128000 bytes  sha256=739EA02E55386B420E750EC7C203A27568C61BC9446784C3FBA2D4B5DE82B17C
+  LuaRuntimeProbe.pdb                39000 bytes  sha256=2E2F6E24E6E85764E0F91F0807CDB549B18F371067EAA2D186227E8DED98BBF8
+  MoonSharp.Interpreter.dll         366592 bytes  sha256=1DB76110F21698639F55D28E21BDDB536C0C497CEB741DEE49FEDCCA9BCD1588
+  NLua.dll                           92160 bytes  sha256=476FFF1274AA8A85D18DF8CA1CFC1F420ED4654DCF9ABA0957B93B978A3592F6
+  XLua.Mini.dll                     164864 bytes  sha256=05193745B84EE893D1058990F78F87FC5B9158B00EA293724047BD99F996927E
+
+Native files (must stay OUT of the mod root):
+  native\lua54.dll                  523264 bytes  sha256=6FC318FC57BCEC525DAC1D4A8B20D962AA072CEBC38E14185DA83C1ED39C20B4
+  native\xlua.dll                   570368 bytes  sha256=F027A8505DE79BC3890BDA7A381F5B72FD81F6B3C1DFAA75B8ED8185BF623245
+
+MEASURED LIVE STATE (verified after the last staged build; unchanged since):
+  LuaRuntimeProbe.dll     127488 bytes  2026-10-02 02:42:30  sha256=4D73134A8EA91F19F454DAB35DFD67F9EE86423CEE5BF3F6A9356870DAE20DA5
+  plus XLua.Mini.dll and native\xlua.dll: the live folder holds the PREVIOUS generation
+  of the same xLua payload, i.e. it predates the round-3 kernel fixes.  It is not the
+  staged payload above, and it is not the build the running session loaded.
+  How it got there (disclosed, not authorised): PowerShell mangled a -p:ModDeployDir
+  value that ended with a backslash, so two "staged" builds silently deployed to the
+  project default - the live folder.  Fixed: paths are now passed without a trailing
+  separator and every build asserts its own "deployed to ..." destination line.
+
+DEPLOY (operator): exit the game; copy the managed files over the symlink target; keep
+  both native DLLs in native\; keep Lua\acceptance_start_cue.lua and docs\acceptance-20261002-*;
+  start the game; then follow docs\DEPLOY-PLAN.md section 3.
+ROLLBACK: rebuild without -p:WithXLua=true (staging\mod-default).  That downgrades the
+  xLua row to a stub; it does NOT remove XLua.Mini.dll or native\xlua.dll from disk.

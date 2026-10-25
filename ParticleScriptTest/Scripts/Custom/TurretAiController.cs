@@ -22,7 +22,6 @@ public class TurretAiController : ReverseTrackedBehaviour<TurretAiController>
     private Rigidbody rg;
     private bool useGravity = false;
     private long cKey;
-    private int clrIdx;
     private Vector3 lastPos;
     private Quaternion lastRot;
     protected override void Awake()
@@ -30,10 +29,9 @@ public class TurretAiController : ReverseTrackedBehaviour<TurretAiController>
         turret = GetComponent<TurretFiring>();
         ExplosionValue value = CustomExplosionManager.LastInitializedComponent;
         entityid = value.CurrentExplosionParams._playerId;
-        clrIdx = value.CurrentExplosionParams._clrIdx;
         Vector3i blockPos = value.CurrentExplosionParams._blockPos;
-        cKey = WorldChunkCache.MakeChunkKey(World.toChunkXZ(blockPos.x), World.toChunkXZ(blockPos.z), clrIdx);
-        GameManager.Instance.World.ChunkClusters[clrIdx].OnChunkVisibleDelegates += OnChunkVisibleChanged;
+        cKey = WorldChunkCache.MakeChunkKey(World.toChunkXZ(blockPos.x), World.toChunkXZ(blockPos.z));
+        GameManager.Instance.World.ChunkCache.OnChunkVisibleDelegates += OnChunkVisibleChanged;
         chunkPos = new Vector3i(World.toChunkXZ(blockPos.x), 0, World.toChunkXZ(blockPos.z));
         //Log.Out("chunkPos: " + chunkPos + " clrIdx: " + clrIdx);
         initiator = GameManager.Instance.World.GetEntity(entityid) as EntityAlive;
@@ -69,7 +67,7 @@ public class TurretAiController : ReverseTrackedBehaviour<TurretAiController>
         }
         if(useGravity)
         {
-            Chunk chunk = GameManager.Instance.World.ChunkClusters[clrIdx].GetChunkSync(cKey);
+            Chunk chunk = GameManager.Instance.World.ChunkCache.GetChunkSync(cKey);
             rg.useGravity = chunk.GetAvailable();
         }
         lastPos = transform.position;
@@ -83,7 +81,7 @@ public class TurretAiController : ReverseTrackedBehaviour<TurretAiController>
     {
         base.OnDestroy();
         if(GameManager.Instance.World != null)
-            GameManager.Instance.World.ChunkClusters[clrIdx].OnChunkVisibleDelegates -= OnChunkVisibleChanged;
+            GameManager.Instance.World.ChunkCache.OnChunkVisibleDelegates -= OnChunkVisibleChanged;
     }
 
     void OnChunkVisibleChanged(long key, bool flag)

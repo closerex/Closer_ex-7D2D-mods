@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configs>
+  <csv xpath="/items/item[@name='gunKFDualSW500']/property[@name='Tags']/@value" delim="," op="add">kfSkin_gunKFDualSW500</csv>
+  <csv xpath="/items/item[@name='gunKFSW500']/property[@name='Tags']/@value" delim="," op="add">kfSkin_gunKFSW500</csv>
+</configs>

@@ -35,6 +35,25 @@ public class ActionModuleLimitedCombo
         }
     }
 
+    // Was a standalone [HarmonyPatch] class member, which applied to every melee weapon in the
+    // game; as a module member it only runs for the weapons that carry this module. It used to
+    // skip the original method outright, and that is preserved: a module prefix returning false
+    // still suppresses the base call, and __result carries the false the caller would have seen.
+    [HarmonyPatch(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.canStartAttack)), MethodTargetPrefix]
+    private bool Prefix_canStartAttack_ItemActionDynamicMelee(ItemActionData _actionData, ref bool __result)
+    {
+        if (_actionData.IsModuleContainerFor(out LimitedComboData customData))
+        {
+            if (!customData.CanContinue())
+            {
+                //_actionData.lastUseTime = Time.time;
+                __result = false;
+                return false;
+            }
+        }
+        return true;
+    }
+
     [HarmonyPatch(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.ExecuteAction)), MethodTargetTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_ItemActionDynamicMelee_ExecuteAction(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
     {
@@ -84,22 +103,6 @@ public class ActionModuleLimitedCombo
 [HarmonyPatch]
 public static class ActionModuleLimitedComboPatches
 {
-    [HarmonyPatch(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.canStartAttack))]
-    [HarmonyPrefix]
-    private static bool Prefix_canStartAttack_ItemActionDynamicMelee(ItemActionData _actionData, ref bool __result)
-    {
-        if (_actionData.IsModuleContainerFor(out ActionModuleLimitedCombo.LimitedComboData customData))
-        {
-            if (!customData.CanContinue())
-            {
-                //_actionData.lastUseTime = Time.time;
-                __result = false;
-                return false;
-            }
-        }
-        return true;
-    }
-
     [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.ExecuteAction))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_ExecuteAction_ItemClass(IEnumerable<CodeInstruction> instructions)

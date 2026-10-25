@@ -5,7 +5,6 @@ public class SubExplosionInitializer : MonoBehaviour
 {
     public ExplosionData data;
     public ItemValue value = null;
-    public int clrIdx = 0;
     public EntityAlive entityAlive = null;
     private bool explodeOnDeath = false;
     private bool explodeOnCollision = true;
@@ -134,7 +133,7 @@ public class SubExplosionInitializer : MonoBehaviour
             MinEventParams.CachedEventParam.ItemValue = value;
             value.ItemClass.FireEvent(MinEventTypes.onProjectileImpact, MinEventParams.CachedEventParam);
         }
-        GameManager.Instance.ExplosionServer(clrIdx, worldPos, blockPos, Quaternion.identity, data, entityAlive != null ? entityAlive.entityId : -1, 0, false, value);
+        GameManager.Instance.ExplosionServer(worldPos, blockPos, Quaternion.identity, data, entityAlive != null ? entityAlive.entityId : -1, 0, false, value);
     }
 
     /*

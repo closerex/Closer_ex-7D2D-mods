@@ -1,0 +1,26 @@
+{
+  "scope": "Main-thread synchronous acceptance; cross-frame driver/cancel/conflict excluded per user instruction",
+  "testedBuild": {
+    "bytes": 127488,
+    "moduleVersionId": "43d67d8b-268a-4658-98e4-5105e42e1c9b"
+  },
+  "finalCandidateAwaitingReload": {
+    "bytes": 128000,
+    "moduleVersionId": "61146efc-5903-48df-945d-a595bce19b02",
+    "path": "E:\\SteamLibrary\\steamapps\\common\\7 Days To Die\\artifacts\\luaprobe-final-candidate-20261002"
+  },
+  "functional": {
+    "mainMenu": "All 3 backends pass=43 fail=0 info=9",
+    "inWorld": "All 3 backends pass=43 fail=0 info=1",
+    "playerSnapshot": "Names and health/max=100/100 match native sdtd_players observations",
+    "reset": "xLua user_demo succeeded after reset in world"
+  },
+  "performance": {
+    "originalConsoleCommand": "luaprobe bench sync all 100000 8000",
+    "originalRun": "All 30 rows present; partial rows labelled T; no aborted/unverified measured rows. Forced GC overhead is large; exact log retained.",
+    "smallerProfile": "PROFILE:sync;forcedGC=false;hot=20000;dto=2000;callback=5000;compile=10;cold=2\nmoonsharp|status=Completed|wall=654.1356|setup=4.7065|rows=10/10 measured=10 truncated=0 cancelled=0 skipped=0 aborted=0 unverified=0\r\ncsharp_baseline.add|n=20000|us=0.002115|ok=True|flag=-\r\ncsharp_baseline.build_dto|n=2000|us=0.65425|ok=True|flag=-\r\ncsharp_baseline.bridge_direct|n=20000|us=0.003185|ok=True|flag=-\r\nlua_cold_init|n=2|us=5643.65|ok=True|flag=-\r\nlua_compile_core|n=10|us=1353.13|ok=True|flag=-\r\nlua_hot_call.add|n=20000|us=4.705525|ok=True|flag=-\r\nlua_dto_push_touch|n=2000|us=39.7719|ok=True|flag=-\r\nlua_dto_sum_ids|n=2000|us=92.859|ok=True|flag=-\r\nlua_dto_evaluate|n=2000|us=86.6798|ok=True|flag=-\r\nlua_to_csharp.boundary|n=5000|us=11.13878|ok=True|flag=-\r\nnlua|status=Completed|wall=675.889|setup=13.8246|rows=10/10 measured=10 truncated=0 cancelled=0 skipped=0 aborted=0 unverified=0\r\ncsharp_baseline.add|n=20000|us=0.00179|ok=True|flag=-\r\ncsharp_baseline.build_dto|n=2000|us=1.2254|ok=True|flag=-\r\ncsharp_baseline.bridge_direct|n=20000|us=0.00341|ok=True|flag=-\r\nlua_cold_init|n=2|us=15647.95|ok=True|flag=-\r\nlua_compile_core|n=10|us=177.97|ok=True|flag=-\r\nlua_hot_call.add|n=20000|us=1.65188|ok=True|flag=-\r\nlua_dto_push_touch|n=2000|us=89.0188|ok=True|flag=-\r\nlua_dto_sum_ids|n=2000|us=73.25295|ok=True|flag=-\r\nlua_dto_evaluate|n=2000|us=124.62445|ok=True|flag=-\r\nlua_to_csharp.boundary|n=5000|us=1.44336|ok=True|flag=-\r\nxlua|status=Completed|wall=1244.5175|setup=1.8887|rows=10/10 measured=10 truncated=0 cancelled=0 skipped=0 aborted=0 unverified=0\r\ncsharp_baseline.add|n=20000|us=0.00178|ok=True|flag=-\r\ncsharp_baseline.build_dto|n=2000|us=0.5904|ok=True|flag=-\r\ncsharp_baseline.bridge_direct|n=20000|us=0.002795|ok=True|flag=-\r\nlua_cold_init|n=2|us=532674.55|ok=True|flag=-\r\nlua_compile_core|n=10|us=160.08|ok=True|flag=-\r\nlua_hot_call.add|n=20000|us=0.966|ok=True|flag=-\r\nlua_dto_push_touch|n=2000|us=23.8216|ok=True|flag=-\r\nlua_dto_sum_ids|n=2000|us=24.2411|ok=True|flag=-\r\nlua_dto_evaluate|n=2000|us=25.0495|ok=True|flag=-\r\nlua_to_csharp.boundary|n=5000|us=0.19326|ok=True|flag=-\r\n",
+    "lowBudgetCommand": "luaprobe bench sync nlua 1000000 80",
+    "lowBudgetResult": "10 rows: 2 full, 2 truncated, 6 skipped, 0 aborted; skipped rows clearly unverified"
+  },
+  "boundary": "These measurements are adapter end-to-end costs on this Unity Mono session, not a universal VM ranking. Cold-start sample count is 2; no statistical confidence interval. Final candidate identity/affected timing path still require short reload verification."
+}

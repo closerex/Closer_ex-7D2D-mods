@@ -1,0 +1,45 @@
+{
+  "context": "Real 7 Days to Die V3.2.0 b10 / Unity 2022.3.62f2 / Mono 6.13.0, main menu, 2026-10-02 Asia/Shanghai",
+  "scope": "Bounded CUE MCP evaluation. Loads the existing staged xLua managed/native pair; constructs and disposes one LuaEnv. No gameplay or save mutations.",
+  "source": "public static class CodexLuaXluaAcceptance {\n [System.Runtime.InteropServices.DllImport(\"kernel32.dll\", SetLastError=true, CharSet=System.Runtime.InteropServices.CharSet.Unicode)]\n public static extern System.IntPtr LoadLibraryExW(string file, System.IntPtr reserved, uint flags);\n public static string Run() {\n  var h=LoadLibraryExW(@\"C:\\Users\\close\\AppData\\Local\\Temp\\xlua-probe\\native\\Plugins\\x86_64\\xlua.dll\",System.IntPtr.Zero,8);\n  if(h==System.IntPtr.Zero) return \"XLUA_NATIVE_FAIL:\"+System.Runtime.InteropServices.Marshal.GetLastWin32Error();\n  object env=null;\n  try {\n   var a=System.Reflection.Assembly.LoadFrom(@\"C:\\Users\\close\\AppData\\Local\\Temp\\xlua-probe\\managed-v2.1.16_ndkr21b_with_win\\bin\\Release\\net48\\XLuaManaged.dll\");\n   var t=a.GetType(\"XLua.LuaEnv\",true);\n   env=System.Activator.CreateInstance(t);\n   var method=t.GetMethod(\"DoString\", new System.Type[]{typeof(string),typeof(string),a.GetType(\"XLua.LuaTable\",true)});\n   var result=(object[])method.Invoke(env,new object[]{\"return _VERSION, 1+1, CS.System.Math.Abs(-7), (function() local e={outcome='Miss'}; if e.outcome=='Miss' then return 'missed' end end)()\",\"codex_xlua_acceptance\",null});\n   return \"XLUA_GAME_SMOKE:\"+string.Join(\"|\",System.Array.ConvertAll<object,string>(result,x=>x==null?\"nil\":x.ToString()));\n  } catch(System.Exception ex) { return \"XLUA_GAME_FAIL:\"+ex.ToString(); }\n  finally { if(env!=null)((System.IDisposable)env).Dispose(); }\n }\n}",
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"summary\":\"Console execution result\",\"data\":{\"mutationCommitted\":true,\"cancellationObserved\":false,\"highRisk\":true,\"action\":\"evaluate\",\"compiled\":true,\"invocationAttempted\":true,\"invocationCompleted\":true,\"valueTruncated\":false,\"diagnosticTotalCount\":0,\"diagnosticsTruncated\":false,\"outputOriginalLength\":0,\"outputTruncated\":false,\"registeredImportTotalCount\":0,\"registeredImportsTruncated\":false,\"importsMode\":\"Namespace imports are global to CUE\\u0027s evaluator: imports calls ConsoleController.AddUsing for each requested namespace and returns Evaluator.GetUsing text; request-scoped assembly references are unsupported.\",\"responseTruncated\":false,\"value\":{\"kind\":\"string\",\"typeName\":\"System.String\",\"text\":\"XLUA_GAME_SMOKE:Lua 5.4|2|7|missed\",\"json\":\"{}\",\"truncated\":false,\"items\":[],\"entries\":[]},\"dataRef\":\"d_674b8db4b56f6388624737992d5be288\",\"resultKind\":\"console.execute:evaluate\"}}"
+      }
+    ],
+    "structuredContent": {
+      "summary": "Console execution result",
+      "data": {
+        "mutationCommitted": true,
+        "cancellationObserved": false,
+        "highRisk": true,
+        "action": "evaluate",
+        "compiled": true,
+        "invocationAttempted": true,
+        "invocationCompleted": true,
+        "valueTruncated": false,
+        "diagnosticTotalCount": 0,
+        "diagnosticsTruncated": false,
+        "outputOriginalLength": 0,
+        "outputTruncated": false,
+        "registeredImportTotalCount": 0,
+        "registeredImportsTruncated": false,
+        "importsMode": "Namespace imports are global to CUE's evaluator: imports calls ConsoleController.AddUsing for each requested namespace and returns Evaluator.GetUsing text; request-scoped assembly references are unsupported.",
+        "responseTruncated": false,
+        "value": {
+          "kind": "string",
+          "typeName": "System.String",
+          "text": "XLUA_GAME_SMOKE:Lua 5.4|2|7|missed",
+          "json": "{}",
+          "truncated": false,
+          "items": [],
+          "entries": []
+        },
+        "dataRef": "d_674b8db4b56f6388624737992d5be288",
+        "resultKind": "console.execute:evaluate"
+      }
+    }
+  }
+}

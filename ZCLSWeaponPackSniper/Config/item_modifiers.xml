@@ -9,8 +9,10 @@
 			<property name="Sound_start" value="kf_sniperrifle_silenced_fire"/>
 			<property name="Sound_loop" value="kf_sniperrifle_silenced_fire"/>
 			<property name="Sound_end" value=""/>
-			<property name="FireMode1.SoundStart" value="kf_sniperrifle_silenced_fire"/>
-			<property name="FireMode1.SoundLoop" value="kf_sniperrifle_silenced_fire"/>
+			<property class="FireMode1">
+				<property name="SoundStart" value="kf_sniperrifle_silenced_fire"/>
+				<property name="SoundLoop" value="kf_sniperrifle_silenced_fire"/>
+			</property>
 		</item_property_overrides>
 	</append>
 	

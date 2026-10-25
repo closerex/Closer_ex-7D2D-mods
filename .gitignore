@@ -2,6 +2,8 @@
 *
 !AllowComboKeys/
 !AllowComboKeys/**
+!AllowComboKeys.Tests/
+!AllowComboKeys.Tests/**
 !CustomMuzzleFlash/
 !CustomMuzzleFlash/**
 !0-CustomParticleLoader/
@@ -50,6 +52,8 @@
 !KF_SFX_Lib/**
 !0-KFCommonUtilityLib/
 !0-KFCommonUtilityLib/**
+!AssemblyPatcher/
+!AssemblyPatcher/**
 !MedicPerk/
 !MedicPerk/**
 !NoHentai/
@@ -88,7 +92,34 @@
 !TrueNoRotation
 !TrueNoRotation/**
 !.gitignore
+!/CONTRIBUTING.md
+!/.gitattributes
+!/.github/
+!/.github/mod-releases.json
 !*/.gitignore
+# LuaRuntimeProbe: standalone Lua runtime evaluation mod + its offline harness.
+# Added by the LuaRuntimeProbe task; no other project's entries were touched.
+!LuaRuntimeProbe/
+!LuaRuntimeProbe/**
+!LuaRuntimeProbe.OfflineProbe/
+!LuaRuntimeProbe.OfflineProbe/**
+# 本地构建工具脚本：只存在于开发者机器（含 Unity 路径与本机构建逻辑），不进入版本库
+/0-KFCommonUtilityLib/Sync-UnityScripts.ps1
+/0-KFCommonUtilityLib/Update-ModInfoVersion.ps1
+# ---------------------------------------------------------------------------
+# 编译产物与资源文件不进入版本库（发布走 GitHub Release 资产）
+#   排除：dll/pdb/exe/mdb 等编译产物，png/unity3d/unitypackage 等资源与图片
+#   保留：.cs 源码、.csproj/.sln、.xml/.json/.csv 配置、.cs.meta、文档
+# 注意：git 不会因忽略规则自动停止跟踪；已跟踪文件需另行 git rm --cached
+#       才会真正离开版本库，本区块目前只影响尚未跟踪的文件。
+# ---------------------------------------------------------------------------
+*.dll
+*.pdb
+*.exe
+*.mdb
+*.png
+*.unity3d
+*.unitypackage
 */.vs/**
 .editorconfig
 *.unitypackage
@@ -96,3 +127,21 @@
 readme.txt
 /0-KFCommonUtilityLib/DynamicFileNesting
 workspace.code-workspace
+/Pack-Mods.ps1
+/Pack-Mods.Tests.ps1
+/docs/superpowers/
+/AssemblyPatcher/bin/
+/AssemblyPatcher/obj/
+# KF skin XML integration: configuration only; external bundle link stays local.
+!ZZKFWeaponSkins/
+!ZZKFWeaponSkins/ModInfo.xml
+!ZZKFWeaponSkins/.gitignore
+!ZZKFWeaponSkins/README.md
+!ZZKFWeaponSkins/Config/
+!ZZKFWeaponSkins/Config/**/
+!ZZKFWeaponSkins/Config/**/*.xml
+!ZZKFWeaponSkins/Config/Localization.csv
+!ZZKFWeaponSkins/Reports/
+!ZZKFWeaponSkins/Reports/*.md
+/ZZKFWeaponSkins/Resources
+/ZZKFWeaponSkins/Resources/

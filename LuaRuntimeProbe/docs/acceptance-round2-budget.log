@@ -1,0 +1,478 @@
+2026-10-02T02:58:58 427.008 INF Executing command 'luaprobe bench sync nlua 1000000 80'
+2026-10-02T02:59:06 434.915 INF bench config: hotIterations=1000000 dtoIterations=200000 callbackIterations=200000 callbackChunk=2000 compileIterations=50 coldInitIterations=10 totalWorkBudgetMs=80 perMetricWorkBudgetMs=50 cleanBaseline=True
+2026-10-02T02:59:06 434.916 INF SYNC bench: this call blocks the main thread for the whole run (use `luaprobe bench` without `sync` for the cross-frame job)
+2026-10-02T02:59:06 434.917 INF 
+2026-10-02T02:59:06 434.918 INF == benchmark: nlua (NLua 1.7.9 + KeraLua 1.4.10, declared lua 5.4) ==
+2026-10-02T02:59:06 434.918 INF   status=Completed measured lua version=Lua 5.4
+2026-10-02T02:59:06 434.919 INF   active_work=88.420ms  wall=7890ms  idle(waiting between advances)=0.007ms  overhead(setup/verify/GC inside advances)=7801ms  advances=2  setup=15.574ms
+2026-10-02T02:59:06 434.919 INF   setup is the backend initialise + module load + bridge install; it runs on the frame that starts this backend and is NOT bounded by the per-frame work budget
+2026-10-02T02:59:06 434.920 INF   metric                          iters(req/performed/warm)  active_ms  wall_ms   us/op    gen0/1/2   allocated  managed_delta  checksum  ok  flag
+2026-10-02T02:59:06 434.920 INF   csharp_baseline.add            1000000/1000000/1000       1.841     418.200   0.002    0/0/0      n/a        0              5000000   Y   -
+2026-10-02T02:59:06 434.920 INF       note: minimal-work reference: a constant return in C#; NOT an upper bound for a Lua call
+2026-10-02T02:59:06 434.921 INF   csharp_baseline.build_dto      200000/75776/200           50.267    460.885   0.659    0/0/0      n/a        14278656       227328    Y   T
+2026-10-02T02:59:06 434.921 INF       note: CLR object-graph construction only; the Lua DTO rows additionally build a Lua table; per-metric work budget (50 ms of measured work) reached; stopped by the work budget
+2026-10-02T02:59:06 434.922 INF   csharp_baseline.bridge_direct  1000000/1000000/200        3.883     438.589   0.004    0/0/0      n/a        0              1000000   Y   -
+2026-10-02T02:59:06 434.922 INF       note: direct CLR call to the same method Lua reaches through the binding layer
+2026-10-02T02:59:06 434.923 INF   lua_cold_init                  10/2/0                     32.429    487.747   16215    0/0/0      n/a        708608         4         Y   T
+2026-10-02T02:59:06 434.923 INF       note: fresh interpreter + probe_helpers.lua + probe_core.lua + add(1,1) + shutdown; total work budget (80 ms of measured work) reached
+2026-10-02T02:59:06 434.924 INF   lua_compile_core               50/0/2                     0.000     781.781   n/a      0/0/0      n/a        0              0         N   S
+2026-10-02T02:59:06 434.924 INF       note: compile + execute probe_core.lua as a fresh chunk each time
+2026-10-02T02:59:06 434.925 INF       NOT VERIFIED: total work budget (80 ms of measured work) was already spent before this metric started; expected checksum 13731 * iterations
+2026-10-02T02:59:06 434.925 INF   lua_hot_call.add               1000000/0/2000             0.000     2015      n/a      0/0/0      n/a        0              0         N   S
+2026-10-02T02:59:06 434.926 INF       note: resolved function handle + primitive args + return conversion (no table marshalling); every backend caches the resolved handle, so no per-iteration global lookup is included
+2026-10-02T02:59:06 434.926 INF       NOT VERIFIED: total work budget (80 ms of measured work) was already spent before this metric started; expected checksum 5 * iterations
+2026-10-02T02:59:06 434.927 INF   lua_dto_push_touch             200000/0/100               0.000     1133      n/a      0/0/0      n/a        0              0         N   S
+2026-10-02T02:59:06 434.927 INF       note: end-to-end adapter cost of building the nested context table from a C# DTO and reading one field. The per-table construction strategy differs per adapter (see the backend notes), so this row compares adapter implementations, not the Lua engines.
+2026-10-02T02:59:06 434.928 INF       NOT VERIFIED: total work budget (80 ms of measured work) was already spent before this metric started; expected checksum 2 * iterations
+2026-10-02T02:59:06 434.928 INF   lua_dto_sum_ids                200000/0/100               0.000     604.142   n/a      0/0/0      n/a        0              0         N   S
+2026-10-02T02:59:06 434.929 INF       note: push + full nested traversal; checksum cross-checked against the C# re-implementation
+2026-10-02T02:59:06 434.930 INF       NOT VERIFIED: total work budget (80 ms of measured work) was already spent before this metric started; expected checksum 2149 * iterations
+2026-10-02T02:59:06 434.930 INF   lua_dto_evaluate               200000/0/100               0.000     755.501   n/a      0/0/0      n/a        0              0         N   S
+2026-10-02T02:59:06 434.931 INF       note: push + traversal + rules; the checksum counts only iterations that actually returned "Engage"
+2026-10-02T02:59:06 434.931 INF       NOT VERIFIED: total work budget (80 ms of measured work) was already spent before this metric started; expected checksum iterations
+2026-10-02T02:59:06 434.932 INF   lua_to_csharp.boundary         200000/0/0                 0.000     794.996   n/a      0/0/0      n/a        0              0         N   S
+2026-10-02T02:59:06 434.933 INF       note: Lua -> C# crossings in chunks of 2000; chunking is what bounds how long a single Lua call can block the main thread, and each chunk restarts the emitted id sequence, so the expected sum is the sum of per-chunk triangles
+2026-10-02T02:59:06 434.934 INF       NOT VERIFIED: total work budget (80 ms of measured work) was already spent before this metric started; expected checksum <chunked triangles>
+2026-10-02T02:59:06 434.934 INF   flag census: rows=10/10 measured=2 truncated=2 cancelled=0 skipped=6 aborted=0 unverified=6
+2026-10-02T02:59:06 434.936 INF   expected checksums: csharp_baseline.add => 5 * iterations | csharp_baseline.build_dto => 3 * iterations | csharp_baseline.bridge_direct => iterations | lua_cold_init => 2 * iterations | lua_compile_core => 13731 * iterations | lua_hot_call.add => 5 * iterations | lua_dto_push_touch => 2 * iterations | lua_dto_sum_ids => 2149 * iterations | lua_dto_evaluate => iterations | lua_to_csharp.boundary => <chunked triangles>
+2026-10-02T02:59:06 434.937 INF   flags: - measured, T truncated at the work budget, C cancelled (partial row, still verified against the iterations it did), S skipped (budget already spent), A aborted
+2026-10-02T02:59:06 434.938 INF   managed_delta is a live heap delta, not an allocation count, and may be negative; allocated=n/a means GC.GetTotalAllocatedBytes is unavailable on this runtime (never reported as 0).
+2026-10-02T02:59:06 435.270 INF [SevenDaysToDieMcp] save_progress operationId=0a8e3fb3c7074c9297d115ae30df55ee action=load mode=direct_official phase=prepared errorCode=none
+2026-10-02T02:59:29 457.422 INF [EOS] Created RFS Request: PlatformOverrides
+2026-10-02T02:59:29 457.423 INF Window is open, using current override for menuBackground: menuBackgroundTest2
+2026-10-02T02:59:29 457.429 INF NET: Starting offline server.
+2026-10-02T02:59:29 457.444 INF StartGame
+2026-10-02T02:59:29 457.478 INF NetPackageManager Init
+2026-10-02T02:59:29 457.539 INF [SevenDaysToDieMcp] save_progress operationId=0a8e3fb3c7074c9297d115ae30df55ee action=load mode=direct_official phase=start_requested errorCode=none
+2026-10-02T02:59:29 457.545 INF [SevenDaysToDieMcp] save_progress operationId=0a8e3fb3c7074c9297d115ae30df55ee action=load mode=direct_official phase=world_loading errorCode=none
+2026-10-02T02:59:29 457.600 INF Window is open, using current override for menuBackground: menuBackgroundTest2
+2026-10-02T02:59:29 457.610 INF [XUi] Instantiating XUi from default prefab.
+No name in PlayerMetaInfo at path "C:\Users\close\AppData\Roaming\7DaysToDie\Saves\Navezgane\A231\Player\EOS_0002cbe3531f46a6b2c5592b3fdc816e.ttp.meta". Could not find name attribute.
+No native id in PlayerMetaInfo at path "C:\Users\close\AppData\Roaming\7DaysToDie\Saves\Navezgane\A231\Player\EOS_0002cbe3531f46a6b2c5592b3fdc816e.ttp.meta". Could not find nativeid attribute.
+2026-10-02T02:59:29 457.727 WRN Could not find main ttw file for save in directory: C:\Users\close\AppData\Roaming\7DaysToDie\Saves\Navezgane\A23BUGTEST
+No name in PlayerMetaInfo at path "C:\Users\close\AppData\Roaming\7DaysToDie\Saves\Navezgane\audiotest\Player\EOS_0002c2d43c914f7c856700251bb13838.ttp.meta". Could not find name attribute.
+No native id in PlayerMetaInfo at path "C:\Users\close\AppData\Roaming\7DaysToDie\Saves\Navezgane\audiotest\Player\EOS_0002c2d43c914f7c856700251bb13838.ttp.meta". Could not find nativeid attribute.
+No name in PlayerMetaInfo at path "C:\Users\close\AppData\Roaming\7DaysToDie\Saves\Navezgane\MedicBugTest\Player\EOS_000265ba09a24f05bf5ea83daf1db978.ttp.meta". Could not find name attribute.
+No native id in PlayerMetaInfo at path "C:\Users\close\AppData\Roaming\7DaysToDie\Saves\Navezgane\MedicBugTest\Player\EOS_000265ba09a24f05bf5ea83daf1db978.ttp.meta". Could not find nativeid attribute.
+No name in PlayerMetaInfo at path "C:\Users\close\AppData\Roaming\7DaysToDie\Saves\Navezgane\MedicBugTest\Player\EOS_0002c2d43c914f7c856700251bb13838.ttp.meta". Could not find name attribute.
+No native id in PlayerMetaInfo at path "C:\Users\close\AppData\Roaming\7DaysToDie\Saves\Navezgane\MedicBugTest\Player\EOS_0002c2d43c914f7c856700251bb13838.ttp.meta". Could not find nativeid attribute.
+No name in PlayerMetaInfo at path "C:\Users\close\AppData\Roaming\7DaysToDie\Saves\Navezgane\MedicBugTest\Player\EOS_0002cbe3531f46a6b2c5592b3fdc816e.ttp.meta". Could not find name attribute.
+No native id in PlayerMetaInfo at path "C:\Users\close\AppData\Roaming\7DaysToDie\Saves\Navezgane\MedicBugTest\Player\EOS_0002cbe3531f46a6b2c5592b3fdc816e.ttp.meta". Could not find nativeid attribute.
+No name in PlayerMetaInfo at path "C:\Users\close\AppData\Roaming\7DaysToDie\Saves\Navezgane\MedicBugTest1\Player\EOS_000265ba09a24f05bf5ea83daf1db978.ttp.meta". Could not find name attribute.
+No native id in PlayerMetaInfo at path "C:\Users\close\AppData\Roaming\7DaysToDie\Saves\Navezgane\MedicBugTest1\Player\EOS_000265ba09a24f05bf5ea83daf1db978.ttp.meta". Could not find nativeid attribute.
+No name in PlayerMetaInfo at path "C:\Users\close\AppData\Roaming\7DaysToDie\Saves\Navezgane\MedicBugTest1\Player\EOS_0002cbe3531f46a6b2c5592b3fdc816e.ttp.meta". Could not find name attribute.
+No native id in PlayerMetaInfo at path "C:\Users\close\AppData\Roaming\7DaysToDie\Saves\Navezgane\MedicBugTest1\Player\EOS_0002cbe3531f46a6b2c5592b3fdc816e.ttp.meta". Could not find nativeid attribute.
+No name in PlayerMetaInfo at path "C:\Users\close\AppData\Roaming\7DaysToDie\Saves\Navezgane\MyGame\Player\EOS_0002cbe3531f46a6b2c5592b3fdc816e.ttp.meta". Could not find name attribute.
+No native id in PlayerMetaInfo at path "C:\Users\close\AppData\Roaming\7DaysToDie\Saves\Navezgane\MyGame\Player\EOS_0002cbe3531f46a6b2c5592b3fdc816e.ttp.meta". Could not find nativeid attribute.
+No name in PlayerMetaInfo at path "C:\Users\close\AppData\Roaming\7DaysToDie\Saves\Navezgane\test\Player\EOS_000265ba09a24f05bf5ea83daf1db978.ttp.meta". Could not find name attribute.
+No native id in PlayerMetaInfo at path "C:\Users\close\AppData\Roaming\7DaysToDie\Saves\Navezgane\test\Player\EOS_000265ba09a24f05bf5ea83daf1db978.ttp.meta". Could not find nativeid attribute.
+No name in PlayerMetaInfo at path "C:\Users\close\AppData\Roaming\7DaysToDie\Saves\Navezgane\testvanilla\Player\EOS_000265ba09a24f05bf5ea83daf1db978.ttp.meta". Could not find name attribute.
+No native id in PlayerMetaInfo at path "C:\Users\close\AppData\Roaming\7DaysToDie\Saves\Navezgane\testvanilla\Player\EOS_000265ba09a24f05bf5ea83daf1db978.ttp.meta". Could not find nativeid attribute.
+2026-10-02T02:59:29 457.875 INF Persistent GamePrefs saved
+GamePref.AdminFileName = serveradmin.xml
+GamePref.AirDropFrequency = 3
+GamePref.AirDropMarker = True
+GamePref.AISmellMode = 3
+GamePref.AllowSpawnNearBackpack = True
+GamePref.AllowSpawnNearFriend = 2
+GamePref.AutopilotMode = 0
+GamePref.BedrollDeadZoneSize = 15
+GamePref.BedrollExpiryTime = 45
+GamePref.BiomeProgression = True
+GamePref.BlockDamageAI = 100
+GamePref.BlockDamageAIBM = 100
+GamePref.BlockDamagePlayer = 100
+GamePref.BloodMoonEnemyCount = 8
+GamePref.BloodMoonFrequency = 0
+GamePref.BloodMoonRange = 0
+GamePref.BloodMoonWarning = 1
+GamePref.BuildCreate = False
+GamePref.CameraRestrictionMode = 0
+GamePref.ConnectToServerIP = 127.0.0.1
+GamePref.ConnectToServerPort = 26900
+GamePref.CreateLevelDim = 8
+GamePref.CreateLevelName = My Level
+GamePref.CreativeMenuEnabled = False
+GamePref.DayCount = 3
+GamePref.DayLightLength = 18
+GamePref.DayNightLength = 60
+GamePref.DeathPenalty = 1
+GamePref.DebugMenuEnabled = False
+GamePref.DebugMenuShowTasks = False
+GamePref.DebugPanelsEnabled = ,Plx,
+GamePref.DebugStopEnemiesMoving = False
+GamePref.DiscordAutoJoinVoiceMode = 0
+GamePref.DiscordDisabled = True
+GamePref.DiscordDmPrivacyMode = False
+GamePref.DiscordFirstTimeInfoShown = True
+GamePref.DiscordInputVolume = 1
+GamePref.DiscordLastAccountType = 1
+GamePref.DiscordMuteDmNotifications = True
+GamePref.DiscordOutputVolume = 1
+GamePref.DiscordSelectedInputDevice = default
+GamePref.DiscordSelectedOutputDevice = default
+GamePref.DiscordVoiceModePtt = False
+GamePref.DiscordVoiceVadModeAuto = True
+GamePref.DiscordVoiceVadThreshold = -60
+GamePref.DropOnDeath = 1
+GamePref.DropOnQuit = 0
+GamePref.DynamicMeshDistance = 1000
+GamePref.DynamicMeshEnabled = True
+GamePref.DynamicMeshLandClaimBuffer = 3
+GamePref.DynamicMeshLandClaimOnly = True
+GamePref.DynamicMeshMaxItemCache = 3
+GamePref.DynamicMeshMaxRegionCache = 1
+GamePref.DynamicMeshUseImposters = True
+GamePref.DynamicSpawner = 
+GamePref.EACEnabled = False
+GamePref.EnableMapRendering = False
+GamePref.EnemyDifficulty = 0
+GamePref.EnemySpawnMode = False
+GamePref.EulaLatestVersion = 2
+GamePref.EulaVersionAccepted = 2
+GamePref.FavoriteServersList = 
+GamePref.FragLimit = 20
+GamePref.GameDifficulty = 2
+GamePref.GameGuidClient = 
+GamePref.GameMode = GameModeSurvival
+GamePref.GameName = __mcp_work_luaprobe_20261002
+GamePref.GameNameClient = My Game
+GamePref.GameSaveStorageType = 0
+GamePref.GameVersion = V 3.2.0
+GamePref.GameWorld = Navezgane
+GamePref.GameWorldLocationType = 4
+GamePref.HideCommandExecutionLog = 0
+GamePref.IgnoreEOSSanctions = False
+GamePref.JarRefund = 60
+GamePref.JoiningOptions = True
+GamePref.LandClaimCount = 5
+GamePref.LandClaimDeadZone = 30
+GamePref.LandClaimDecayMode = 0
+GamePref.LandClaimExpiryTime = 7
+GamePref.LandClaimOfflineDelay = 0
+GamePref.LandClaimOfflineDurabilityModifier = 4
+GamePref.LandClaimOnlineDurabilityModifier = 4
+GamePref.LandClaimSize = 41
+GamePref.Language = schinese
+GamePref.LanguageBrowser = 
+GamePref.LastGameResetRevision = 13
+GamePref.LastLoadedPrefab = 1
+GamePref.LastLoadingTipRead = 14
+GamePref.LootAbundance = 100
+GamePref.LootRespawnDays = 7
+GamePref.LootTimer = 
+GamePref.MatchLength = 10
+GamePref.MaxChunkAge = -1
+GamePref.MaxQueuedMeshLayers = 40
+GamePref.MaxSpawnedAnimals = 50
+GamePref.MaxSpawnedZombies = 64
+GamePref.MaxUncoveredMapChunksPerPlayer = 524288
+GamePref.NoGraphicsMode = False
+GamePref.OptionsAllowController = True
+GamePref.OptionsAmbientVolumeLevel = 1
+GamePref.OptionsAudioOcclusion = False
+GamePref.OptionsAutoPartyWithFriends = True
+GamePref.OptionsBackgroundGlobalOpacity = 0.7536638
+GamePref.OptionsBindingsResetRevision = 1
+GamePref.OptionsChatCommunication = True
+GamePref.OptionsControllerAimAssists = False
+GamePref.OptionsControllerCursorHoverSensitivity = 0.5
+GamePref.OptionsControllerCursorSnap = True
+GamePref.OptionsControllerIconStyle = 0
+GamePref.OptionsControllerJoystickLayout = 0
+GamePref.OptionsControllerLookAcceleration = 4
+GamePref.OptionsControllerLookAxisDeadzone = 0.1
+GamePref.OptionsControllerLookInvert = False
+GamePref.OptionsControllerMoveAxisDeadzone = 0.1
+GamePref.OptionsControllerSensitivityX = 0.3
+GamePref.OptionsControllerSensitivityY = 0.3
+GamePref.OptionsControllerTriggerEffects = False
+GamePref.OptionsControllerVehicleSensitivity = 1
+GamePref.OptionsControllerVibration = True
+GamePref.OptionsControllerVibrationStrength = 2
+GamePref.OptionsControllerWeaponAiming = False
+GamePref.OptionsControllerZoomSensitivity = 0.5
+GamePref.OptionsControlsDefaultQuickAction = 0
+GamePref.OptionsControlsResetRevision = 7
+GamePref.OptionsControlsSprintLock = 0
+GamePref.OptionsCrosshairADS = True
+GamePref.OptionsCrosshairColor = 0
+GamePref.OptionsCrosshairDot3P = True
+GamePref.OptionsCrosshairEnabled = True
+GamePref.OptionsCrosshairOpacity = 1
+GamePref.OptionsCrosshairRangedEnabled = True
+GamePref.OptionsCrosshairScale = 1
+GamePref.OptionsCrosshairThickness = 0.2
+GamePref.OptionsCrossplay = True
+GamePref.OptionsDisableChunkLODs = False
+GamePref.OptionsDisableXmlEvents = False
+GamePref.OptionsDynamicMusicDailyTime = 0.45
+GamePref.OptionsDynamicMusicEnabled = True
+GamePref.OptionsFilterProfanity = False
+GamePref.OptionsForegroundGlobalOpacity = 1
+GamePref.OptionsGfx3PCameraMode = 0
+GamePref.OptionsGfxAA = 4
+GamePref.OptionsGfxAASharpness = 0.6
+GamePref.OptionsGfxBloom = True
+GamePref.OptionsGfxBrightness = 0.4970675
+GamePref.OptionsGfxCameraDistance3P = 0.04999984
+GamePref.OptionsGfxDefaultFirstPersonCamera = True
+GamePref.OptionsGfxDOF = False
+GamePref.OptionsGfxDynamicMinFPS = 60
+GamePref.OptionsGfxDynamicMode = 0
+GamePref.OptionsGfxDynamicScale = 1
+GamePref.OptionsGfxFOV = 85
+GamePref.OptionsGfxFOV3P = 65
+GamePref.OptionsGfxFSRPreset = 3
+GamePref.OptionsGfxGrassDistance = 1
+GamePref.OptionsGfxLimitFpsInGame = -1
+GamePref.OptionsGfxLODDistance = 0.4482759
+GamePref.OptionsGfxMotionBlur = 0
+GamePref.OptionsGfxMotionBlurEnabled = False
+GamePref.OptionsGfxObjQuality = 4
+GamePref.OptionsGfxOcclusion = False
+GamePref.OptionsGfxQualityPreset = 5
+GamePref.OptionsGfxReflectQuality = 2
+GamePref.OptionsGfxReflectShadows = False
+GamePref.OptionsGfxResetRevision = 4
+GamePref.OptionsGfxResolution = 0
+GamePref.OptionsGfxShadowDistance = 1
+GamePref.OptionsGfxShadowQuality = 1
+GamePref.OptionsGfxSignQuality = 2
+GamePref.OptionsGfxSSAO = True
+GamePref.OptionsGfxSSReflections = 0
+GamePref.OptionsGfxStreamMipmaps = True
+GamePref.OptionsGfxSunShafts = True
+GamePref.OptionsGfxTerrainQuality = 2
+GamePref.OptionsGfxTexFilter = 4
+GamePref.OptionsGfxTexQuality = 1
+GamePref.OptionsGfxTreeDistance = 4
+GamePref.OptionsGfxUpscalerMode = 5
+GamePref.OptionsGfxViewDistance = 6
+GamePref.OptionsGfxVsync = 0
+GamePref.OptionsGfxWaterPtlLimiter = 0.4956897
+GamePref.OptionsGfxWaterQuality = 0
+GamePref.OptionsHudOpacity = 1
+GamePref.OptionsHudSize = 1
+GamePref.OptionsInterfaceSensitivity = 0.75
+GamePref.OptionsIntroMovieEnabled = False
+GamePref.OptionsInvertMouse = False
+GamePref.OptionsJournalPopup = False
+GamePref.OptionsLookSensitivity = 0.5
+GamePref.OptionsMenuMusicVolumeLevel = 0
+GamePref.OptionsMicVolumeLevel = 0.75
+GamePref.OptionsMumblePositionalAudioSupport = False
+GamePref.OptionsMusicVolumeLevel = 0.6
+GamePref.OptionsOverallAudioVolumeLevel = 1
+GamePref.OptionsPlayChanceFrequency = 3
+GamePref.OptionsPlayChanceProbability = 0.983
+GamePref.OptionsPlayerModelTexture = Player/Male/Player_male
+GamePref.OptionsPOICulling = 1
+GamePref.OptionsPoiVolumesSkipDeleteConfirmation = False
+GamePref.OptionsQuestsAutoAccept = True
+GamePref.OptionsQuestsAutoShare = True
+GamePref.OptionsScreenBoundsValue = 1
+GamePref.OptionsSelectionBoxAlphaMultiplier = 0.4
+GamePref.OptionsShowCompass = True
+GamePref.OptionsShowConsoleButton = True
+GamePref.OptionsShowCrosshair = True
+GamePref.OptionsStabSpawnBlocksOnGround = True
+GamePref.OptionsSubtitlesEnabled = True
+GamePref.OptionsTempCelsius = True
+GamePref.OptionsUiCompassUseEnglishCardinalDirections = False
+GamePref.OptionsUiFpsScaling = 2
+GamePref.OptionsVehicleLookSensitivity = 0.5
+GamePref.OptionsVoiceChatEnabled = False
+GamePref.OptionsVoiceInputDevice = {91383551-26e0-4403-beb9-e0709d61c286}
+GamePref.OptionsVoiceOutputDevice = {0.0.0.00000000}.{359b2d8a-423b-4b03-8c84-0f48a442617d}
+GamePref.OptionsVoiceVolumeLevel = 0.75
+GamePref.OptionsWeaponAiming = True
+GamePref.OptionsZoomAccel = 0.5043103
+GamePref.OptionsZoomSensitivity = 0.3038793
+GamePref.PartySharedKillRange = 100
+GamePref.PersistentPlayerProfiles = False
+GamePref.PlayerAutologin = False
+GamePref.PlayerKillingMode = 2
+GamePref.PlayerName = closer_ex
+GamePref.PlayerSafeZoneHours = 7
+GamePref.PlayerSafeZoneLevel = 5
+GamePref.PlaytestBiome = 3
+GamePref.QuestProgressionDailyLimit = 4
+GamePref.RebuildMap = False
+GamePref.Region = NorthAmericaEast
+GamePref.ResetUnprotectedChunks = 0
+GamePref.SandboxCode = ABEABTBGBBBWADFN
+GamePref.SandboxPreset = Almost Creative
+GamePref.SaveDataLimit = 64
+GamePref.SaveDataLimitType = Unlimited
+GamePref.SelectionContextMode = 0
+GamePref.SelectionOperationMode = 0
+GamePref.ServerAdminSlots = 0
+GamePref.ServerAdminSlotsPermission = 0
+GamePref.ServerAllowCrossplay = True
+GamePref.ServerDescription = 
+GamePref.ServerDisabledNetworkProtocols = 
+GamePref.ServerEACPeerToPeer = False
+GamePref.ServerEnabled = False
+GamePref.ServerIP = 
+GamePref.ServerIsPublic = True
+GamePref.ServerLoginConfirmationText = 
+GamePref.ServerMatchmakingGroup = 
+GamePref.ServerMaxAllowedViewDistance = 12
+GamePref.ServerMaxPlayerCount = 8
+GamePref.ServerMaxWorldTransferSpeedKiBs = 512
+GamePref.ServerName = Default Server
+GamePref.ServerPort = 26900
+GamePref.ServerReservedSlots = 0
+GamePref.ServerReservedSlotsPermission = 100
+GamePref.ServerVisibility = 2
+GamePref.ServerWebsiteURL = 
+GamePref.ShowFriendPlayerOnMap = True
+GamePref.SkipSpawnButton = False
+GamePref.StormFreq = 100
+GamePref.TelnetEnabled = False
+GamePref.TelnetFailedLoginLimit = 10
+GamePref.TelnetFailedLoginsBlocktime = 10
+GamePref.TelnetPort = 25003
+GamePref.TerminalWindowEnabled = True
+GamePref.TwitchBloodMoonAllowed = True
+GamePref.TwitchServerPermission = 90
+GamePref.UNUSED_ControlPanelEnabled = False
+GamePref.UNUSED_ControlPanelPort = 8080
+GamePref.UNUSED_LastLoadedPrefabSize = 
+GamePref.UNUSED_NewGameSetDefaults = 
+GamePref.UNUSED_OptionsBloom = 
+GamePref.UNUSED_OptionsDOF = 
+GamePref.UNUSED_OptionsFieldOfViewNew = 
+GamePref.UNUSED_OptionsGamma = 
+GamePref.UNUSED_OptionsGfxGameplayResolutionHeight = 
+GamePref.UNUSED_OptionsGfxGameplayResolutionWidth = 
+GamePref.UNUSED_OptionsGfxUMATexQuality = 
+GamePref.UNUSED_OptionsMotionBlur = 
+GamePref.UNUSED_OptionsObjectBlur = 
+GamePref.UNUSED_OptionsPlayerModel = playerMale
+GamePref.UNUSED_OptionsReflectionBounces = 
+GamePref.UNUSED_OptionsReflectionCullList = 
+GamePref.UNUSED_OptionsReflectionFarClip = 
+GamePref.UNUSED_OptionsReflectionRefreshMode = 
+GamePref.UNUSED_OptionsReflectionShadowDistance = 
+GamePref.UNUSED_OptionsReflectionTimeSlicingMode = 
+GamePref.UNUSED_OptionsSSAO = 
+GamePref.UNUSED_OptionsStreamingMipmapsBudget = 
+GamePref.UNUSED_OptionsSunShafts = 
+GamePref.UNUSED_PlayerId = 
+GamePref.UNUSED_SaveGameFolder = 
+GamePref.UNUSED_UserDataFolder = 
+GamePref.UserWorldStorageType = 0
+GamePref.WebDashboardEnabled = False
+GamePref.WebDashboardPort = 8080
+GamePref.WebDashboardUrl = 
+GamePref.WorldGenSeed = 
+GamePref.WorldGenSize = 8192
+GamePref.XPMultiplier = 100
+GamePref.ZombieBMMove = 3
+GamePref.ZombieFeralMove = 3
+GamePref.ZombieFeralSense = 0
+GamePref.ZombieMove = 0
+GamePref.ZombieMoveNight = 3
+GamePref.ZombiePlayers = True
+GameStat.AirDropFrequency = 0
+GameStat.AirDropMarker = True
+GameStat.AllowedViewDistance = 12
+GameStat.AnimalCount = 0
+GameStat.AutoParty = False
+GameStat.BedrollExpiryTime = 45
+GameStat.BiomeGSModifier = 100
+GameStat.BiomeLSModifier = 100
+GameStat.BiomeProgression = True
+GameStat.BlockDamageAI = 100
+GameStat.BlockDamageAIBM = 100
+GameStat.BlockDamagePlayer = 100
+GameStat.BloodMoonDay = 0
+GameStat.BloodMoonEnemyCount = 8
+GameStat.BloodMoonWarning = 8
+GameStat.CameraRestrictionMode = 0
+GameStat.ChunkStabilityEnabled = True
+GameStat.CurrentRoundIx = 0
+GameStat.DayLightLength = 18
+GameStat.DayLimitActive = False
+GameStat.DayLimitThisRound = 0
+GameStat.DayNightLength = 60
+GameStat.DeathPenalty = XPOnly
+GameStat.DropOnDeath = 1
+GameStat.DropOnQuit = 0
+GameStat.EnemyCount = 0
+GameStat.EnemyDifficulty = Normal
+GameStat.EnemySpawnMode = True
+GameStat.FragLimitActive = False
+GameStat.FragLimitThisRound = 0
+GameStat.GameDifficulty = 2
+GameStat.GameModeId = 0
+GameStat.GameState = 0
+GameStat.GlobalGSModifier = 100
+GameStat.GlobalLSModifier = 100
+GameStat.GlobalMessageToShow = 
+GameStat.IsCreativeMenuEnabled = False
+GameStat.IsFlyingEnabled = False
+GameStat.IsPlayerCollisionEnabled = True
+GameStat.IsPlayerDamageEnabled = True
+GameStat.IsResetMapOnRestart = False
+GameStat.IsSaveSupplyCrates = True
+GameStat.IsSpawnEnemies = True
+GameStat.IsSpawnNearOtherPlayer = False
+GameStat.IsTeleportEnabled = False
+GameStat.IsVersionCheckDone = False
+GameStat.JarRefund = 60
+GameStat.LandClaimCount = 5
+GameStat.LandClaimDeadZone = 30
+GameStat.LandClaimDecayMode = 0
+GameStat.LandClaimExpiryTime = 3
+GameStat.LandClaimOfflineDelay = 0
+GameStat.LandClaimOfflineDurabilityModifier = 32
+GameStat.LandClaimOnlineDurabilityModifier = 32
+GameStat.LandClaimSize = 41
+GameStat.LoadScene = 
+GameStat.LootAbundance = 100
+GameStat.LootRespawnDays = 7
+GameStat.LootTimer = 
+GameStat.OptionsPOICulling = 0
+GameStat.PartySharedKillRange = 100
+GameStat.PlayerKillingMode = KillStrangersOnly
+GameStat.QuestProgressionDailyLimit = 4
+GameStat.SandboxCode = 
+GameStat.SandboxPreset = 
+GameStat.ScoreDiedMultiplier = -5
+GameStat.ScorePlayerKillMultiplier = 1
+GameStat.ScoreZombieKillMultiplier = 1
+GameStat.ShowAllPlayersOnMap = False
+GameStat.ShowFriendPlayerOnMap = True
+GameStat.ShowSpawnWindow = False
+GameStat.ShowWindow = 
+GameStat.StormFreq = 0
+GameStat.TimeLimitActive = False
+GameStat.TimeLimitThisRound = 0
+GameStat.TimeOfDayIncPerSec = 20
+GameStat.TwitchBloodMoonAllowed = True
+GameStat.UNUSED_GameDifficultyBonus = 
+GameStat.UNUSED_ShowZombieCounter = 
+GameStat.XPMultiplier = 100
+GameStat.ZombieHordeMeter = False
+Sandbox Code: ABEABTBGBBBWADFN
+Sandbox Options:
+*** ENTITIES ***
+Option EnemySpawnMode: 0/否 (default: 1/是)
+Option BiomeDayAnimalRespawn: 1/非常慢 (default: 0/默认)
+Option BiomeNightAnimalRespawn: 1/非常慢 (default: 0/默认)
+*** WORLD ***
+Option BloodMoonFrequency: 0/关闭 (default: 7/7 日)
+*** RESOURCES ***
+Option ResourceLootCount: 13/500% (default: 7/100%)
+2026-10-02T02:59:29 458.069 INF [PlatformApplication] restart required = False
+2026-10-02T02:59:29 458.072 INF [Gears] Loading World Settings
+2026-10-02T02:59:29 458.075 INF [Gears] [WorldSettingsFromXml] No elements found in WorldModSettings.xml
+2026-10-02T02:59:29 458.093 INF [Gears] World Settings Saved
+2026-10-02T02:59:29 458.096 INF StartAsServer
+2026-10-02T02:59:29 458.232 INF ======Init New======
+2026-10-02T02:59:29 458.235 INF [EOS] Read (PlatformOverrides) completed: Success, received 532 bytes
+2026-10-02T02:59:29 458.236 INF [TitleStorageOverridesManager] Successfully retrieved overrides.
+2026-10-02T02:59:30 458.421 INF Loaded (local): events in 0.03

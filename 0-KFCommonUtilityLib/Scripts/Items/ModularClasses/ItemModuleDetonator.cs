@@ -83,7 +83,7 @@ public class ItemModuleDetonator
                     if (entityItem.IsAlive())
                     {
                         entityItem.SetDead();
-                        GameManager.Instance.ExplosionServer(0, entityItem.GetPosition(), World.worldToBlockPos(entityItem.GetPosition()), Quaternion.identity, ((ItemClassTimeBomb)entityItem.itemClass).explosion, _data.holdingEntity.entityId, .1f * detonatedCount, false, entityItem.itemStack.itemValue.Clone());
+                        GameManager.Instance.ExplosionServer(entityItem.GetPosition(), World.worldToBlockPos(entityItem.GetPosition()), Quaternion.identity, ((ItemClassTimeBomb)entityItem.itemClass).explosion, _data.holdingEntity.entityId, .1f * detonatedCount, false, entityItem.itemStack.itemValue.Clone());
                     }
                     detonatedCount++;
                     if (detonateCount > 0 && detonatedCount >= detonateCount)
@@ -218,7 +218,7 @@ public class ItemModuleDetonator
             }
             itemCache.Sort(comparer);
             // set cur cached item nav obj state
-            UpdateNavObjectState(forceNavObjState.HasValue ? forceNavObjState.Value : invData.itemValue.Activated > 0);
+            UpdateNavObjectState(forceNavObjState.HasValue ? forceNavObjState.Value : invData.itemValue.Activated);
             if (activeCountHandler as MonoBehaviour)
             {
                 activeCountHandler.SetActiveCount(itemCache.Count);

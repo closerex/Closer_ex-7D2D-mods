@@ -74,6 +74,7 @@ namespace KFCommonUtilityLib
 
             ModuleManagers.Init();
 
+            ModEvents.GameAwake.RegisterHandler(GameAssemblyCompatibilityGate.OnGameAwake);
             //ModEvents.GameAwake.RegisterHandler(CommonUtilityPatch.InitShotStates);
             ModEvents.GameAwake.RegisterHandler(CustomEffectEnumManager.InitDefault);
             ModEvents.GameAwake.RegisterHandler(DelayLoadModuleManager.DelayLoad);

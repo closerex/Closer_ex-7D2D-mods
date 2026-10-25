@@ -8,6 +8,7 @@ using System.Linq;
 using UnityEngine;
 
 [AddComponentMenu("KFAttachments/Binding Helpers/Transform Activation Binding")]
+[DisallowMultipleComponent]
 public class TransformActivationBinding : MonoBehaviour
 {
     [SerializeField]
@@ -58,7 +59,7 @@ public class TransformActivationBinding : MonoBehaviour
             }
             if (disableOnEnable != null)
             {
-                foreach (var binding in disableOnDisable)
+                foreach (var binding in disableOnEnable)
                 {
                     if (binding)
                         yield return binding;
@@ -113,6 +114,46 @@ public class TransformActivationBinding : MonoBehaviour
                     t.SetActive(false);
             }
         }
+        ApplyDisableOnEnable();
+        if (enableOnEnable != null)
+        {
+            foreach (GameObject t in enableOnEnable)
+            {
+                if (!t)
+                    continue;
+
+                bool wasActive = t.activeInHierarchy;
+                t.SetActive(true);
+                // Active disable-only markers need their effect reapplied in array order.
+                if (wasActive && t && t.activeInHierarchy
+                    && t.TryGetComponent<TransformActivationBinding>(out var binding)
+                    && binding.isActiveAndEnabled && binding.IsDisableOnlyBinding())
+                {
+                    binding.ApplyDisableOnEnable();
+                }
+            }
+        }
+#if NotEditor
+        ThreadManager.StartCoroutine(UpdateBool(true));
+#else
+        UpdateBoolEditor(true);
+#endif
+    }
+
+    private bool IsDisableOnlyBinding()
+    {
+        return disableOnEnable != null && disableOnEnable.Length > 0
+            && (bindings == null || bindings.Length == 0)
+            && (inverseBindings == null || inverseBindings.Length == 0)
+            && (enableOnDisable == null || enableOnDisable.Length == 0)
+            && (enableOnEnable == null || enableOnEnable.Length == 0)
+            && (disableOnDisable == null || disableOnDisable.Length == 0)
+            && (disableSelfIfEnabled == null || disableSelfIfEnabled.Length == 0)
+            && (animatorParamBindings == null || animatorParamBindings.Length == 0);
+    }
+
+    private void ApplyDisableOnEnable()
+    {
         if (disableOnEnable != null)
         {
             foreach (GameObject t in disableOnEnable)
@@ -121,19 +162,6 @@ public class TransformActivationBinding : MonoBehaviour
                     t.SetActive(false);
             }
         }
-        if (enableOnEnable != null)
-        {
-            foreach (GameObject t in enableOnEnable)
-            {
-                if (t)
-                    t.SetActive(true);
-            }
-        }
-#if NotEditor
-        ThreadManager.StartCoroutine(UpdateBool(true));
-#else
-        UpdateBoolEditor(true);
-#endif
     }
 
     private void OnDisable()
@@ -166,7 +194,7 @@ public class TransformActivationBinding : MonoBehaviour
             foreach (GameObject t in disableOnDisable)
             {
                 if (t)
-                    t.SetActive(true);
+                    t.SetActive(false);
             }
         }
 #if NotEditor

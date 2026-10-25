@@ -5,9 +5,8 @@ using UnityEngine;
 
 public struct ExplosionParams
 {
-    public ExplosionParams(int _clrIdx, Vector3 _worldPos, Vector3i _blockPos, Quaternion _rotation, ExplosionData _explosionData, int _playerId, uint _explId)
+    public ExplosionParams(Vector3 _worldPos, Vector3i _blockPos, Quaternion _rotation, ExplosionData _explosionData, int _playerId, uint _explId)
     {
-        this._clrIdx = _clrIdx;
         this._worldPos = _worldPos;
         this._blockPos = _blockPos;
         this._rotation = _rotation;
@@ -18,11 +17,10 @@ public struct ExplosionParams
 
     public ExplosionParams(byte[] _explosionParamsAsArr)
     {
-        _clrIdx = 0;
         _worldPos = Vector3.zero;
         _blockPos = Vector3i.zero;
         _rotation = Quaternion.identity;
-        _explosionData = default(ExplosionData);
+        _explosionData = default;
         _playerId = -1;
         _explId = uint.MaxValue;
         using (PooledBinaryReader pooledBinaryReader = MemoryPools.poolBinaryReader.AllocSync(false))
@@ -34,7 +32,6 @@ public struct ExplosionParams
 
     public void read(PooledBinaryReader _br)
     {
-        _clrIdx = (int)_br.ReadUInt16();
         _worldPos = StreamUtils.ReadVector3(_br);
         _blockPos = StreamUtils.ReadVector3i(_br);
         _rotation = StreamUtils.ReadQuaterion(_br);
@@ -45,7 +42,6 @@ public struct ExplosionParams
 
     public void write(PooledBinaryWriter _bw)
     {
-        _bw.Write((ushort)_clrIdx);
         StreamUtils.Write(_bw, _worldPos);
         StreamUtils.Write(_bw, _blockPos);
         StreamUtils.Write(_bw, _rotation);
@@ -65,7 +61,6 @@ public struct ExplosionParams
         return memoryStream.ToArray();
     }
 
-    public int _clrIdx;
     public Vector3 _worldPos;
     public Vector3i _blockPos;
     public Quaternion _rotation;

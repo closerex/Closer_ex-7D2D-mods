@@ -3,14 +3,14 @@ using UnityEngine.Animations.Rigging;
 
 public class SyncSimLocalRotationConstraintAdaptor : RigAdaptorAbs
 {
-    private Transform _sourceParent;
-    private Transform _sourceTransform;
-    private string _targetParent;
-    private string _targetTransform;
-    private FingerFABRIKData.Axis _sourceForwardAxis;
-    private FingerFABRIKData.Axis _sourceUpAxis;
-    private FingerFABRIKData.Axis _targetForwardAxis;
-    private FingerFABRIKData.Axis _targetUpAxis;
+    [SerializeField] private Transform _sourceParent;
+    [SerializeField] private Transform _sourceTransform;
+    [SerializeField] private string _targetParent;
+    [SerializeField] private string _targetTransform;
+    [SerializeField] private FingerFABRIKData.Axis _sourceForwardAxis;
+    [SerializeField] private FingerFABRIKData.Axis _sourceUpAxis;
+    [SerializeField] private FingerFABRIKData.Axis _targetForwardAxis;
+    [SerializeField] private FingerFABRIKData.Axis _targetUpAxis;
     
     public override void ReadRigData()
     {
@@ -20,8 +20,8 @@ public class SyncSimLocalRotationConstraintAdaptor : RigAdaptorAbs
         _sourceTransform = constraint.data.sourceTransform;
         _sourceForwardAxis = constraint.data.sourceForwardAxis;
         _sourceUpAxis = constraint.data.sourceUpAxis;
-        _targetParent = constraint.data.targetParent.name;
-        _targetTransform = constraint.data.targetParent.name;
+        _targetParent = constraint.data.targetParent?.name;
+        _targetTransform = constraint.data.targetTransform?.name;
         _targetForwardAxis = constraint.data.targetForwardAxis;
         _targetUpAxis = constraint.data.targetUpAxis;
     }

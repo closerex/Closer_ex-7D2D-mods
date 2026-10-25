@@ -1,0 +1,46 @@
+xLua general (XLua.Mini) staging manifest
+source_ref        = v2.1.16_ndkr21b_with_win
+source_url        = https://github.com/Tencent/xLua
+configuration     = official General: DefineConstants=XLUA_GENERAL; references System+System.Core only
+target_framework  = net48 (upstream file targets v3.5; the define set is unchanged)
+managed_assembly  = XLua.Mini.dll
+managed_sha256    = 05193745B84EE893D1058990F78F87FC5B9158B00EA293724047BD99F996927E
+managed_bytes     = 164864
+native_library    = native\xlua.dll
+native_sha256     = F027A8505DE79BC3890BDA7A381F5B72FD81F6B3C1DFAA75B8ED8185BF623245
+native_bytes      = 570368
+sources           = 23 files (Assets/XLua/Src/*.cs + TemplateEngine/TemplateEngine.cs)
+upstream_sources_modified = no
+
+Unity-only code excluded by the upstream #if !XLUA_GENERAL guards:
+  LuaEnv.cs:95   print() registered through xlua_setglobal (Unity console redirect)
+  LuaEnv.cs:108  LoadFromResource / LoadFromStreamingAssetsPath searchers
+  LuaEnv.cs:164  ObjectTranslator.Alias(typeof(Type), "System.MonoType")
+  LuaEnv.cs:325  Unity-specific loader handling
+  LuaEnv.cs:353  Unity-specific loader handling
+  ObjectTranslator.cs:170, :357, StaticLuaCallbacks.cs:601, :683, GenAttributes.cs:130
+
+Full source file list:
+  Src/CodeEmit.cs
+  Src/CopyByValue.cs
+  Src/DelegateBridge.cs
+  Src/GenAttributes.cs
+  Src/GenericDelegateBridge.cs
+  Src/InternalGlobals.cs
+  Src/LuaBase.cs
+  Src/LuaDLL.cs
+  Src/LuaEnv.cs
+  Src/LuaException.cs
+  Src/LuaFunction.cs
+  Src/LuaTable.cs
+  Src/MethodWarpsCache.cs
+  Src/ObjectCasters.cs
+  Src/ObjectPool.cs
+  Src/ObjectTranslator.cs
+  Src/ObjectTranslatorPool.cs
+  Src/RawObject.cs
+  Src/SignatureLoader.cs
+  Src/StaticLuaCallbacks.cs
+  Src/TypeExtensions.cs
+  Src/Utils.cs
+  Src/TemplateEngine/TemplateEngine.cs

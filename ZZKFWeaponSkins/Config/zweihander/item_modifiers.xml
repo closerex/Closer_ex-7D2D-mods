@@ -1,0 +1,159 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configs>
+  <append xpath="/item_modifiers">
+    <item_modifier name="modKFSkin_zweihander_SkinId_5918" installable_tags="kfSkin_meleeWpnBladeT3KF2Zweihander" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_zweihander_SkinId_5918" />
+      <property name="DescriptionKey" value="modKFSkin_zweihander_SkinId_5918Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Zweihander">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/zweihander/kf_skin_zweihander.unity3d?SkinId_5918__zweihander_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_zweihander_SkinId_5919" installable_tags="kfSkin_meleeWpnBladeT3KF2Zweihander" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_zweihander_SkinId_5919" />
+      <property name="DescriptionKey" value="modKFSkin_zweihander_SkinId_5919Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Zweihander">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/zweihander/kf_skin_zweihander.unity3d?SkinId_5919__zweihander_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_zweihander_SkinId_5920" installable_tags="kfSkin_meleeWpnBladeT3KF2Zweihander" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_zweihander_SkinId_5920" />
+      <property name="DescriptionKey" value="modKFSkin_zweihander_SkinId_5920Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Zweihander">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/zweihander/kf_skin_zweihander.unity3d?SkinId_5920__zweihander_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_zweihander_SkinId_7209" installable_tags="kfSkin_meleeWpnBladeT3KF2Zweihander" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_zweihander_SkinId_7209" />
+      <property name="DescriptionKey" value="modKFSkin_zweihander_SkinId_7209Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Zweihander">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/zweihander/kf_skin_zweihander.unity3d?SkinId_7209__zweihander_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_zweihander_SkinId_7210" installable_tags="kfSkin_meleeWpnBladeT3KF2Zweihander" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_zweihander_SkinId_7210" />
+      <property name="DescriptionKey" value="modKFSkin_zweihander_SkinId_7210Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Zweihander">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/zweihander/kf_skin_zweihander.unity3d?SkinId_7210__zweihander_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_zweihander_SkinId_7211" installable_tags="kfSkin_meleeWpnBladeT3KF2Zweihander" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_zweihander_SkinId_7211" />
+      <property name="DescriptionKey" value="modKFSkin_zweihander_SkinId_7211Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Zweihander">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/zweihander/kf_skin_zweihander.unity3d?SkinId_7211__zweihander_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_zweihander_SkinId_7232" installable_tags="kfSkin_meleeWpnBladeT3KF2Zweihander" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_zweihander_SkinId_7232" />
+      <property name="DescriptionKey" value="modKFSkin_zweihander_SkinId_7232Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Zweihander">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/zweihander/kf_skin_zweihander.unity3d?SkinId_7232__zweihander_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_zweihander_SkinId_8041" installable_tags="kfSkin_meleeWpnBladeT3KF2Zweihander" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_zweihander_SkinId_8041" />
+      <property name="DescriptionKey" value="modKFSkin_zweihander_SkinId_8041Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Zweihander">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/zweihander/kf_skin_zweihander.unity3d?SkinId_8041__zweihander_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_zweihander_SkinId_8791" installable_tags="kfSkin_meleeWpnBladeT3KF2Zweihander" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_zweihander_SkinId_8791" />
+      <property name="DescriptionKey" value="modKFSkin_zweihander_SkinId_8791Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Zweihander">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/zweihander/kf_skin_zweihander.unity3d?SkinId_8791__zweihander_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_zweihander_SkinId_9338" installable_tags="kfSkin_meleeWpnBladeT3KF2Zweihander" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_zweihander_SkinId_9338" />
+      <property name="DescriptionKey" value="modKFSkin_zweihander_SkinId_9338Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Zweihander">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/zweihander/kf_skin_zweihander.unity3d?SkinId_9338__zweihander_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_zweihander_SkinId_9342" installable_tags="kfSkin_meleeWpnBladeT3KF2Zweihander" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_zweihander_SkinId_9342" />
+      <property name="DescriptionKey" value="modKFSkin_zweihander_SkinId_9342Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Zweihander">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/zweihander/kf_skin_zweihander.unity3d?SkinId_9342__zweihander_m" />
+      </item_property_overrides>
+    </item_modifier>
+  </append>
+</configs>

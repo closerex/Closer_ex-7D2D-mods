@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configs>
+  <append xpath="/item_modifiers">
+    <item_modifier name="modKFSkin_hrg_blastbrawlers_SkinId_9686" installable_tags="kfSkin_gunT3HRGBlastBrawler" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_hrg_blastbrawlers_SkinId_9686" />
+      <property name="DescriptionKey" value="modKFSkin_hrg_blastbrawlers_SkinId_9686Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunT3HRGBlastBrawler">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/hrg_blastbrawlers/kf_skin_hrg_blastbrawlers.unity3d?SkinId_9686__gunT3HRGBlastBrawler" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_hrg_blastbrawlers_SkinId_9699" installable_tags="kfSkin_gunT3HRGBlastBrawler" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_hrg_blastbrawlers_SkinId_9699" />
+      <property name="DescriptionKey" value="modKFSkin_hrg_blastbrawlers_SkinId_9699Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunT3HRGBlastBrawler">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/hrg_blastbrawlers/kf_skin_hrg_blastbrawlers.unity3d?SkinId_9699__gunT3HRGBlastBrawler" />
+      </item_property_overrides>
+    </item_modifier>
+  </append>
+</configs>

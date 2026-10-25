@@ -25,12 +25,14 @@
 		
 			<property class="Action0">
 				<property name="Class" value="DynamicMelee"/>
-				<property name="Sound_start" value="kf_Movement_Bash"/>
+				<property name="Sound_start" value="Play_PC_Weapon_Bash"/>
 				<property name="DynamicSoundStart" value="bashSwingLight"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib;AnimationInterruptable,KFCommonUtilityLib"/>
 				<property name="InterruptStateFullName" value="Base Layer.FiringCancel"/>
 				<property name="Sphere" value=".1"/>
-				<property name="ToolCategory.harvestingTools" value=".5" param1="1"/>
+				<property class="ToolCategory">
+					<property name="harvestingTools" value=".5" param1="1"/>
+				</property>
 				<property name="UseGrazingHits" value="true"/>
 				<property name="GrazeStart" value=".25"/>
 				<property name="GrazeEnd" value=".32"/>
@@ -39,11 +41,13 @@
 			</property>
 			<property class="Action1">
 				<property name="Class" value="DynamicMelee"/>
-				<property name="Sound_start" value="kf_Movement_Bash"/>
+				<property name="Sound_start" value="Play_PC_Weapon_Bash"/>
 				<property name="DynamicSoundStart" value="bashSwingHeavy"/>
 				<property name="ItemActionModules" value="DynamicGraze,KFCommonUtilityLib"/>
 				<property name="Sphere" value=".15"/>
-				<property name="ToolCategory.harvestingTools" value=".5" param1="1"/>
+				<property class="ToolCategory">
+					<property name="harvestingTools" value=".5" param1="1"/>
+				</property>
 				<property name="UsePowerAttackAnimation" value="true"/>
 				<property name="UseGrazingHits" value="true"/>
 				<property name="IsHorizontalSwing" value="true"/>
@@ -113,6 +117,40 @@
             <property name="SoundPlace" value="rifle_polymer_place"/>
 			<property name="TakeOverReloadTime" value="true"/>
 
+<stats>
+		<!-- Base_Random_Roll -->
+		<stat name="EntityDamage"			value="0,0,1,0,.1"/>
+
+		<stat name="DegradationMax" 		value="0,0,1,0,.1"/>
+		<!-- Q1_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="1,0,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="1,0,.3,.1,.5"/>
+		<!-- Q2_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="2,10,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="2,10,.3,.1,.5"/>
+		<!-- Q3_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="3,11,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="3,11,.3,.1,.5"/>
+		<!-- Q4_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="4,12,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="4,12,.3,.1,.5"/>
+		<!-- Q5_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="5,14,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="5,14,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,16,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="6,16,.3,.1,.5"/>
+		<!-- Q6_Boosted_Rolls -->
+		<stat name="EntityDamage" 			value="6,20,.3,.1,.5"/>
+
+		<stat name="DegradationMax" 		value="6,20,.3,.1,.5"/>
+	</stats>
 			<property class="Action0">
 				<property name="Class" value="BetterLauncher,FullautoLauncher"/>
 				<!-- <property name="Class" value="Launcher"/> -->
@@ -126,16 +164,20 @@
 				<property name="OneRoundMultiShot" value="false"/>
 				<property name="RoundsPerShot" value="1"/>
 				<property name="BarrelCount" value="2"/>
-				<property name="FireMode0.BurstCount" value="1"/>
-				<property name="FireMode0.ModeName" value="ttFiringModeSemiAuto"/>
-				<property name="FireMode1.BurstCount" value="2"/>
-				<property name="FireMode1.ModeName" value="ttFiringModeInstant2"/>
+				<property class="FireMode0">
+					<property name="BurstCount" value="1"/>
+					<property name="ModeName" value="ttFiringModeSemiAuto"/>
+				</property>
+				<property class="FireMode1">
+					<property name="BurstCount" value="2"/>
+					<property name="ModeName" value="ttFiringModeInstant2"/>
+				</property>
 				<property name="Reload_time" value="2.6"/>
-				<property name="Sound_start" value="kf_boomstick_Fire_1P_Indoor_Large"/>
-				<property name="Sound_loop" value="kf_boomstick_Fire_1P_Indoor_Large"/>
+				<property name="Sound_start" value="Play_SA_WEP_DoubleBarrel_Fire_1P__Indoor_Large"/>
+				<property name="Sound_loop" value="Play_SA_WEP_DoubleBarrel_Fire_1P__Indoor_Large"/>
 				<property name="Sound_repeat" value=""/>
 				<property name="Sound_end" value=""/>
-				<property name="Sound_empty" value="kf_doublebarrel_DryFire"/>
+				<property name="Sound_empty" value="Play_SA_WEP_DoubleBarrel_Handling_DryFire"/>
 				<property name="RapidTrigger" value="true"/>
 				<property name="AutoReload" value="false"/>
 				<property name="Particles_muzzle_fire" value="#@modfolder(KF_SFX_Lib):Resources/MuzzleFlashes.unity3d?kaboomstick_muzzle_flash.prefab"/>
@@ -228,13 +270,17 @@
 			<property class="Action1">
 				<property name="Class" value="Projectile"/>
 				<property name="CustomProjectileType" value="SimpleMesh,FullautoLauncher"/>
-				<property name="Explosion.ParticleIndex" value="#@modfolder:Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$HE"/>
-				<property name="Explosion.Duration" value="1"/>
-				<property name="Explosion.AudioName" value="kf_hrg_kaboomstick_Explosion"/>
-				<property name="Explosion.RadiusBlocks" value="1"/> <!-- damage radius for blocks -->
-				<property name="Explosion.RadiusEntities" value="1"/> <!-- damage radius for entities -->
-				<property name="Explosion.BlastPower" value="35"/>
-				<property name="Explosion.DamageBonus.water" value="0"/>
+				<property class="Explosion">
+					<property name="ParticleIndex" value="#@modfolder:Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$HE"/>
+					<property name="Duration" value="1"/>
+					<property name="AudioName" value="WEP_HRG_Kaboomstick_Projectile_Explo"/>
+					<property name="RadiusBlocks" value="1"/> <!-- damage radius for blocks -->
+					<property name="RadiusEntities" value="1"/> <!-- damage radius for entities -->
+					<property name="BlastPower" value="35"/>
+					<property class="DamageBonus">
+						<property name="water" value="0"/>
+					</property>
+				</property>
 				<property name="Gravity" value="-7"/>
 				<property name="FlyTime" value=".2"/>
 				<property name="LifeTime" value="5"/>
@@ -270,17 +316,21 @@
 			<property class="Action1">
 				<property name="Class" value="Projectile"/>
 				<property name="CustomProjectileType" value="SimpleMesh,FullautoLauncher"/>
-				<property name="Explosion.ParticleIndex" value="#@modfolder:Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$Frag"/>
-				<property name="Explosion.Duration" value="1"/>
-				<property name="Explosion.AudioName" value="kf_hrg_kaboomstick_Explosion"/>
-				<property name="Explosion.RadiusBlocks" value="1"/> <!-- damage radius for blocks -->
-				<property name="Explosion.RadiusEntities" value="1"/> <!-- damage radius for entities -->
-				<property name="Explosion.BlastPower" value="20"/>
-				<property name="Explosion.DamageBonus.water" value="0"/>
-				<property name="Explosion.DamageBonus.stone" value=".01"/>
-				<property name="Explosion.DamageBonus.metal" value=".05"/>
-				<property name="Explosion.DamageBonus.earth" value="0"/>
-				<property name="Explosion.DamageBonus.wood" value=".05"/>
+				<property class="Explosion">
+					<property name="ParticleIndex" value="#@modfolder:Resources/Kaboomstick_explosion.unity3d?kaboomstick_explosion$Frag"/>
+					<property name="Duration" value="1"/>
+					<property name="AudioName" value="WEP_HRG_Kaboomstick_Projectile_Explo"/>
+					<property name="RadiusBlocks" value="1"/> <!-- damage radius for blocks -->
+					<property name="RadiusEntities" value="1"/> <!-- damage radius for entities -->
+					<property name="BlastPower" value="20"/>
+					<property class="DamageBonus">
+						<property name="water" value="0"/>
+						<property name="stone" value=".01"/>
+						<property name="metal" value=".05"/>
+						<property name="earth" value="0"/>
+						<property name="wood" value=".05"/>
+					</property>
+				</property>
 				<property name="Gravity" value="-7"/>
 				<property name="FlyTime" value=".2"/>
 				<property name="LifeTime" value="6"/>

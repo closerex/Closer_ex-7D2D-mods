@@ -46,13 +46,13 @@ namespace KFCommonUtilityLib
         private static IEnumerable<CodeInstruction> Transpiler_EntityBuffs_GetCustomVar(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
-            
+
             var mtd_get_cvar_buff = AccessTools.Method(typeof(EntityBuffs), nameof(EntityBuffs.GetCustomVar));
             var mtd_get_cvar_entity = AccessTools.Method(typeof(EntityAlive), nameof(EntityAlive.GetCVar));
             var prop_get_item = AccessTools.IndexerGetter(typeof(List<EntityAlive>), new[] { typeof(int) });
             var fld_targets =
                 AccessTools.Field(typeof(MinEventActionTargetedBase), nameof(MinEventActionTargetedBase.targets));
-            
+
             for (int i = 0; i < codes.Count; i++)
             {
                 if (codes[i].Calls(mtd_get_cvar_buff) || codes[i].Calls(mtd_get_cvar_entity))
@@ -77,7 +77,7 @@ namespace KFCommonUtilityLib
                         ins_load_target_index ?? new(OpCodes.Ldc_I4_M1),
                         CodeInstruction.Call(typeof(CVarReplacer), nameof(GetCVarOverrideWrapper))
                     });
-                    
+
                     // if cvar name comes from field. should always be loading from MEA itself
                     if (codes[i - 1].opcode == OpCodes.Ldfld)
                     {

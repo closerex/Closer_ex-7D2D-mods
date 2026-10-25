@@ -1,4 +1,4 @@
-﻿using KFCommonUtilityLib;
+using KFCommonUtilityLib;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -453,7 +453,7 @@ public class AreaSweep : MonoBehaviour
         {
             BlockValue block = BlockValue.Air;
             Vector3i blockPos = hitInfo.hit.blockPos;
-            ChunkCluster chunkCluster = _world.ChunkClusters[hitInfo.hit.clrIdx];
+            ChunkCluster chunkCluster = _world.ChunkCache;
             if (chunkCluster == null)
             {
                 return BlockValue.Air;

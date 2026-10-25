@@ -62,17 +62,17 @@ public class ActionModuleMultiBarrel
     }
 
     [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemAction.StartHolding)), MethodTargetPrefix]
-    public void Prefix_StartHolding_ItemActionLauncher(ItemActionData _data, ItemActionLauncher __instance, MultiBarrelData __customData)
+    public void Prefix_ItemActionLauncher_StartHolding(ItemActionData _data, ItemActionLauncher __instance, MultiBarrelData __customData)
     {
-        ItemActionLauncher.ItemActionDataLauncher launcherData = _data as ItemActionLauncher.ItemActionDataLauncher;
+        ItemActionLauncher.ItemActionDataLauncher launcherData = (ItemActionLauncher.ItemActionDataLauncher)_data;
         launcherData.projectileJointT = __customData.projectileJoints[0] ?? launcherData.projectileJointT;
     }
 
     [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemAction.StartHolding)), MethodTargetPostfix]
-    public void Postfix_StartHolding_ItemActionLauncher(ItemActionData _data, ItemActionLauncher __instance, MultiBarrelData __customData)
+    public void Postfix_ItemActionLauncher_StartHolding(ItemActionData _data, ItemActionLauncher __instance, MultiBarrelData __customData)
     {
-        ItemActionLauncher.ItemActionDataLauncher launcherData = _data as ItemActionLauncher.ItemActionDataLauncher;
-        if (launcherData?.projectileTs != null && __customData.oneRoundMultishot && __customData.roundsPerShot > 1)
+        ItemActionLauncher.ItemActionDataLauncher launcherData = (ItemActionLauncher.ItemActionDataLauncher)_data;
+        if (launcherData.projectileTs != null && __customData.oneRoundMultishot && __customData.roundsPerShot > 1)
         {
             int count = launcherData.projectileTs.Count;
             for (int i = 1; i < __customData.roundsPerShot; i++)
@@ -94,10 +94,9 @@ public class ActionModuleMultiBarrel
     }
 
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemAction.ItemActionEffects)), MethodTargetPrefix]
-    public void Prefix_ItemActionEffects_ItemActionRanged(ItemActionData _actionData, int _userData, int _firingState, MultiBarrelData __customData)
+    public void Prefix_ItemActionRanged_ItemActionEffects(ItemActionData _actionData, int _userData, int _firingState, MultiBarrelData __customData)
     {
-        ItemActionRanged.ItemActionDataRanged rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
-        if (rangedData != null && _firingState != 0)
+        if (_actionData is ItemActionRanged.ItemActionDataRanged rangedData && _firingState != 0)
         {
             byte index = (byte)RequireUserDataBits.ExtractUserDataBits(ref _userData, mask, shift);
             rangedData.muzzle = __customData.muzzles[index] ?? rangedData.muzzle;
@@ -111,18 +110,94 @@ public class ActionModuleMultiBarrel
     }
 
     [HarmonyPatch(typeof(ItemActionLauncher), nameof(ItemAction.ItemActionEffects)), MethodTargetPrefix]
-    public void Prefix_ItemActionEffects_ItemActionLauncher(ItemActionData _actionData, int _userData, int _firingState, MultiBarrelData __customData)
+    public void Prefix_ItemActionLauncher_ItemActionEffects(ItemActionData _actionData, int _userData, int _firingState, MultiBarrelData __customData)
     {
-        ItemActionLauncher.ItemActionDataLauncher launcherData = _actionData as ItemActionLauncher.ItemActionDataLauncher;
-        if (launcherData != null)
+        if (_actionData is ItemActionLauncher.ItemActionDataLauncher launcherData)
         {
             launcherData.projectileJointT = __customData.projectileJoints[(byte)RequireUserDataBits.ExtractUserDataBits(ref _userData, mask, shift)] ?? launcherData.projectileJointT;
         }
-        Prefix_ItemActionEffects_ItemActionRanged(_actionData, _userData, _firingState, __customData);
+        Prefix_ItemActionRanged_ItemActionEffects(_actionData, _userData, _firingState, __customData);
     }
 
-    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemAction.ExecuteAction)), MethodTargetTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_ExecuteAction_ItemActionRanged(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+    private static void LogInfo(int cur, int max) => Log.Out($"max rounds {max}, cur {cur}");
+
+    public class MultiBarrelData
+    {
+        public ItemInventoryData invData;
+        public int actionIndex;
+        public ActionModuleMultiBarrel module;
+        public bool muzzleIsPerRound;
+        public bool oneRoundMultishot;
+        public int roundsPerShot;
+        public int roundsCorrection;
+        public int barrelCount;
+        public int curBarrelIndex;
+        public Transform[] muzzles;
+        public Transform[] projectileJoints;
+        public Transform[] shellJoints;
+        public Transform[] shellEffectJoints;
+
+        public MultiBarrelData(ItemInventoryData _inventoryData, int _indexInEntityOfAction, ActionModuleMultiBarrel __customModule)
+        {
+            invData = _inventoryData;
+            actionIndex = _indexInEntityOfAction;
+            module = __customModule;
+        }
+
+        public void CycleBarrels()
+        {
+            curBarrelIndex = ++curBarrelIndex >= barrelCount ? 0 : curBarrelIndex;
+            //Log.Out($"cycle barrel index {curBarrelIndex}");
+        }
+
+        public void SetCurrentBarrel(int roundLeft)
+        {
+            if (muzzleIsPerRound)
+            {
+                int totalSwitches;
+                if (oneRoundMultishot)
+                {
+                    totalSwitches = roundLeft * roundsPerShot;
+                }
+                else
+                {
+                    totalSwitches = roundLeft;
+                }
+                if (roundsCorrection > 0)
+                {
+                    totalSwitches *= roundsCorrection;
+                }
+                int groupsPerCycle = barrelCount / roundsPerShot;
+                int totalGroupCount = (totalSwitches + roundsPerShot - 1) / roundsPerShot;
+                curBarrelIndex = (totalGroupCount % groupsPerCycle) * roundsPerShot;
+            }
+            else
+            {
+                if (oneRoundMultishot)
+                {
+                    curBarrelIndex = barrelCount - (roundLeft % barrelCount);
+                }
+                else
+                {
+                    curBarrelIndex = barrelCount - ((roundLeft + 1) / roundsPerShot) % barrelCount;
+                }
+            }
+            if (curBarrelIndex >= barrelCount)
+            {
+                curBarrelIndex = 0;
+            }
+            SetAnimatorParam(curBarrelIndex);
+            //Log.Out($"set barrel index {curBarrelIndex}");
+        }
+
+        public void SetAnimatorParam(int barrelIndex)
+        {
+            invData.holdingEntity.emodel.avatarController.UpdateInt("barrelIndex", barrelIndex);
+            //Log.Out($"set param index {barrelIndex}");
+        }
+    }
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.TryExecuteAction)), MethodTargetTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_ItemActionRanged_TryExecuteAction(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
     {
         var codes = instructions.ToList();
 
@@ -137,14 +212,7 @@ public class ActionModuleMultiBarrel
         LocalBuilder lbd_burstcount = generator.DeclareLocal(typeof(byte));
 
         int localIndexEntity;
-        if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
-        {
-            localIndexEntity = 6;
-        }
-        else
-        {
-            localIndexEntity = 7;
-        }
+        localIndexEntity = 8;
 
         for (int i = 0; i < codes.Count; i++)
         {
@@ -227,84 +295,6 @@ public class ActionModuleMultiBarrel
 
         return codes;
     }
-
-    private static void LogInfo(int cur, int max) => Log.Out($"max rounds {max}, cur {cur}");
-
-    public class MultiBarrelData
-    {
-        public ItemInventoryData invData;
-        public int actionIndex;
-        public ActionModuleMultiBarrel module;
-        public bool muzzleIsPerRound;
-        public bool oneRoundMultishot;
-        public int roundsPerShot;
-        public int roundsCorrection;
-        public int barrelCount;
-        public int curBarrelIndex;
-        public Transform[] muzzles;
-        public Transform[] projectileJoints;
-        public Transform[] shellJoints;
-        public Transform[] shellEffectJoints;
-
-        public MultiBarrelData(ItemInventoryData _inventoryData, int _indexInEntityOfAction, ActionModuleMultiBarrel __customModule)
-        {
-            invData = _inventoryData;
-            actionIndex = _indexInEntityOfAction;
-            module = __customModule;
-        }
-
-        public void CycleBarrels()
-        {
-            curBarrelIndex = ++curBarrelIndex >= barrelCount ? 0 : curBarrelIndex;
-            //Log.Out($"cycle barrel index {curBarrelIndex}");
-        }
-
-        public void SetCurrentBarrel(int roundLeft)
-        {
-            if (muzzleIsPerRound)
-            {
-                int totalSwitches;
-                if (oneRoundMultishot)
-                {
-                    totalSwitches = roundLeft * roundsPerShot;
-                }
-                else
-                {
-                    totalSwitches = roundLeft;
-                }
-                if (roundsCorrection > 0)
-                {
-                    totalSwitches *= roundsCorrection;
-                }
-                int groupsPerCycle = barrelCount / roundsPerShot;
-                int totalGroupCount = (totalSwitches + roundsPerShot - 1) / roundsPerShot;
-                curBarrelIndex = (totalGroupCount % groupsPerCycle) * roundsPerShot;
-            }
-            else
-            {
-                if (oneRoundMultishot)
-                {
-                    curBarrelIndex = barrelCount - (roundLeft % barrelCount);
-                }
-                else
-                {
-                    curBarrelIndex = barrelCount - ((roundLeft + 1) / roundsPerShot) % barrelCount;
-                }
-            }
-            if (curBarrelIndex >= barrelCount)
-            {
-                curBarrelIndex = 0;
-            }
-            SetAnimatorParam(curBarrelIndex);
-            //Log.Out($"set barrel index {curBarrelIndex}");
-        }
-
-        public void SetAnimatorParam(int barrelIndex)
-        {
-            invData.holdingEntity.emodel.avatarController.UpdateInt("barrelIndex", barrelIndex);
-            //Log.Out($"set param index {barrelIndex}");
-        }
-    }
 }
 
 [HarmonyPatch]
@@ -332,12 +322,30 @@ public class MultiBarrelPatches
     }
 
     [HarmonyPatch(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.OnStateExit))]
-    [HarmonyPostfix]
-    private static void Postfix_OnStateExit_AnimatorRangedReloadState(AnimatorRangedReloadState __instance)
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_OnStateExit_AnimatorRangedReloadState(IEnumerable<CodeInstruction> instructions)
     {
-        if (__instance.actionData.IsModuleContainerFor(out ActionModuleMultiBarrel.MultiBarrelData dataModule))
+        var field = AccessTools.Field(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.actionData));
+        var synchronize = AccessTools.Method(typeof(MultiBarrelPatches), nameof(SynchronizeReloadBarrel));
+        CodeInstruction previous = null;
+        foreach (var instruction in instructions)
         {
-            dataModule.SetCurrentBarrel(__instance.actionData.invData.itemValue.Meta);
+            if (previous?.opcode == OpCodes.Ldnull && instruction.StoresField(field))
+            {
+                // Keep the original [this, null] operands on the stack while
+                // synchronizing with the data that is about to be cleared.
+                yield return new CodeInstruction(OpCodes.Ldarg_0).WithLabels(instruction.ExtractLabels());
+                yield return CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.actionData));
+                yield return new CodeInstruction(OpCodes.Call, synchronize);
+            }
+            yield return instruction;
+            previous = instruction;
         }
+    }
+
+    private static void SynchronizeReloadBarrel(ItemActionRanged.ItemActionDataRanged actionData)
+    {
+        if (actionData.IsModuleContainerFor(out ActionModuleMultiBarrel.MultiBarrelData module))
+            module.SetCurrentBarrel(actionData.invData.itemValue.Meta);
     }
 }

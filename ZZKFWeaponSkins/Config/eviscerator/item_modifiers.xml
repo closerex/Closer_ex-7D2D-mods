@@ -1,0 +1,201 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configs>
+  <append xpath="/item_modifiers">
+    <item_modifier name="modKFSkin_eviscerator_SkinId_3431" installable_tags="kfSkin_meleeWpnBladeT3KF2Eviscerator" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_eviscerator_SkinId_3431" />
+      <property name="DescriptionKey" value="modKFSkin_eviscerator_SkinId_3431Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Eviscerator">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/eviscerator/kf_skin_eviscerator.unity3d?SkinId_3431__eviscerator_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_eviscerator_SkinId_3464" installable_tags="kfSkin_meleeWpnBladeT3KF2Eviscerator" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_eviscerator_SkinId_3464" />
+      <property name="DescriptionKey" value="modKFSkin_eviscerator_SkinId_3464Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Eviscerator">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/eviscerator/kf_skin_eviscerator.unity3d?SkinId_3464__eviscerator_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_eviscerator_SkinId_3465" installable_tags="kfSkin_meleeWpnBladeT3KF2Eviscerator" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_eviscerator_SkinId_3465" />
+      <property name="DescriptionKey" value="modKFSkin_eviscerator_SkinId_3465Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Eviscerator">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/eviscerator/kf_skin_eviscerator.unity3d?SkinId_3465__eviscerator_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_eviscerator_SkinId_3466" installable_tags="kfSkin_meleeWpnBladeT3KF2Eviscerator" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_eviscerator_SkinId_3466" />
+      <property name="DescriptionKey" value="modKFSkin_eviscerator_SkinId_3466Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Eviscerator">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/eviscerator/kf_skin_eviscerator.unity3d?SkinId_3466__eviscerator_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_eviscerator_SkinId_5915" installable_tags="kfSkin_meleeWpnBladeT3KF2Eviscerator" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_eviscerator_SkinId_5915" />
+      <property name="DescriptionKey" value="modKFSkin_eviscerator_SkinId_5915Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Eviscerator">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/eviscerator/kf_skin_eviscerator.unity3d?SkinId_5915__eviscerator_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_eviscerator_SkinId_5916" installable_tags="kfSkin_meleeWpnBladeT3KF2Eviscerator" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_eviscerator_SkinId_5916" />
+      <property name="DescriptionKey" value="modKFSkin_eviscerator_SkinId_5916Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Eviscerator">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/eviscerator/kf_skin_eviscerator.unity3d?SkinId_5916__eviscerator_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_eviscerator_SkinId_5917" installable_tags="kfSkin_meleeWpnBladeT3KF2Eviscerator" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_eviscerator_SkinId_5917" />
+      <property name="DescriptionKey" value="modKFSkin_eviscerator_SkinId_5917Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Eviscerator">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/eviscerator/kf_skin_eviscerator.unity3d?SkinId_5917__eviscerator_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_eviscerator_SkinId_6607" installable_tags="kfSkin_meleeWpnBladeT3KF2Eviscerator" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_eviscerator_SkinId_6607" />
+      <property name="DescriptionKey" value="modKFSkin_eviscerator_SkinId_6607Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Eviscerator">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/eviscerator/kf_skin_eviscerator.unity3d?SkinId_6607__eviscerator_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_eviscerator_SkinId_7158" installable_tags="kfSkin_meleeWpnBladeT3KF2Eviscerator" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_eviscerator_SkinId_7158" />
+      <property name="DescriptionKey" value="modKFSkin_eviscerator_SkinId_7158Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Eviscerator">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/eviscerator/kf_skin_eviscerator.unity3d?SkinId_7158__eviscerator_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_eviscerator_SkinId_7509" installable_tags="kfSkin_meleeWpnBladeT3KF2Eviscerator" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_eviscerator_SkinId_7509" />
+      <property name="DescriptionKey" value="modKFSkin_eviscerator_SkinId_7509Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Eviscerator">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/eviscerator/kf_skin_eviscerator.unity3d?SkinId_7509__eviscerator_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_eviscerator_SkinId_8347" installable_tags="kfSkin_meleeWpnBladeT3KF2Eviscerator" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_eviscerator_SkinId_8347" />
+      <property name="DescriptionKey" value="modKFSkin_eviscerator_SkinId_8347Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Eviscerator">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/eviscerator/kf_skin_eviscerator.unity3d?SkinId_8347__eviscerator_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_eviscerator_SkinId_8357" installable_tags="kfSkin_meleeWpnBladeT3KF2Eviscerator" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_eviscerator_SkinId_8357" />
+      <property name="DescriptionKey" value="modKFSkin_eviscerator_SkinId_8357Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Eviscerator">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/eviscerator/kf_skin_eviscerator.unity3d?SkinId_8357__eviscerator_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_eviscerator_SkinId_8659" installable_tags="kfSkin_meleeWpnBladeT3KF2Eviscerator" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_eviscerator_SkinId_8659" />
+      <property name="DescriptionKey" value="modKFSkin_eviscerator_SkinId_8659Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Eviscerator">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/eviscerator/kf_skin_eviscerator.unity3d?SkinId_8659__eviscerator_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_eviscerator_SkinId_8675" installable_tags="kfSkin_meleeWpnBladeT3KF2Eviscerator" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_eviscerator_SkinId_8675" />
+      <property name="DescriptionKey" value="modKFSkin_eviscerator_SkinId_8675Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="meleeWpnBladeT3KF2Eviscerator">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/eviscerator/kf_skin_eviscerator.unity3d?SkinId_8675__eviscerator_m" />
+      </item_property_overrides>
+    </item_modifier>
+  </append>
+</configs>

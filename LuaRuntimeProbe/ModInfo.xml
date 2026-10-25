@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xml>
+	<Name value="LuaRuntimeProbe" />
+	<DisplayName value="Lua Runtime Probe" />
+	<Description value="Standalone experimental mod that evaluates candidate Lua runtimes (MoonSharp, NLua/KeraLua, xLua) inside 7 Days to Die via the game console. Read-only: it never modifies the player, inventory, world or save." />
+	<Author value="closer_ex" />
+	<Version value="1.0.0" />
+</xml>

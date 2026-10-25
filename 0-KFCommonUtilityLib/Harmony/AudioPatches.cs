@@ -10,6 +10,7 @@ using UnityEngine;
 
 namespace KFCommonUtilityLib.Harmony
 {
+    //todo: check harmony dump
     [HarmonyPatch]
     public static class AudioPatches
     {
@@ -144,10 +145,7 @@ namespace KFCommonUtilityLib.Harmony
         {
             private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 0))
-                    yield return AccessTools.Method(typeof(Manager), nameof(Manager.Play), new[] { typeof(Vector3), typeof(string), typeof(int) });
-                else
-                    yield return AccessTools.Method(typeof(Manager), nameof(Manager.Play), new[] { typeof(Vector3), typeof(string), typeof(int), typeof(bool) });
+                yield return AccessTools.Method(typeof(Manager), nameof(Manager.Play), new[] { typeof(Vector3), typeof(string), typeof(int), typeof(bool), typeof(float) });
             }
 
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -371,7 +369,7 @@ namespace KFCommonUtilityLib.Harmony
             {
                 return new[]
                 {
-                    AccessTools.Method(typeof(Audio.Handle), nameof(Audio.Handle.IsPlaying)),
+                    AccessTools.Method(typeof(Handle), nameof(Handle.IsPlaying)),
                     AccessTools.Method(typeof(TriggerEffectManager), nameof(TriggerEffectManager.Update)),
                     AccessTools.Method(typeof(TriggerEffectManager), nameof(TriggerEffectManager.SetAudioRumbleSource)),
                     AccessTools.EnumeratorMoveNext(AccessTools.Method(typeof(PlayAndCleanup), nameof(PlayAndCleanup.StopBeginWhenDone)))
@@ -427,9 +425,9 @@ namespace KFCommonUtilityLib.Harmony
         //    return codes;
         //}
 
-        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ExecuteAction))]
+        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.TryExecuteAction))]
         [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_ExecuteAction_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
+        private static IEnumerable<CodeInstruction> Transpiler_ExecuteAction_TryItemActionRanged(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
 
@@ -495,7 +493,7 @@ namespace KFCommonUtilityLib.Harmony
         }
         #endregion
 
-        #region
+        #region custom audio snapshot manager
         [HarmonyPatch(typeof(AudioMixerManager), nameof(AudioMixerManager.Update))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_Update_AudioMixerManager(IEnumerable<CodeInstruction> instructions)

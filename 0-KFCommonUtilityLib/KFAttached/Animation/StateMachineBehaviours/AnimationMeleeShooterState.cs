@@ -129,11 +129,11 @@ public class AnimationMeleeShooterState : StateMachineBehaviour
         currentPerc = 0;
     }
 
-    private void UpdateShots(float lastPerc, float currentPerc)
+    private void UpdateShots(float lastPerc, float perc)
     {
         for (int i = 0; i < stateData.Length; i++)
         {
-            if (stateData[i] > lastPerc && stateData[i] <= currentPerc)
+            if (stateData[i] > lastPerc && stateData[i] <= perc)
             {
                 data.executionRequested = true;
                 ItemActionRanged rangedAction = data.invData.item.Actions[actionIndex] as ItemActionRanged;

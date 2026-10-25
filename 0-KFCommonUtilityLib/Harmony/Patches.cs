@@ -16,24 +16,6 @@ using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 [HarmonyPatch]
 public static class CommonUtilityPatch
 {
-    //fix reloading issue and onSelfRangedBurstShot timing
-    public static void FakeReload(EntityAlive holdingEntity, ItemActionRanged.ItemActionDataRanged _actionData)
-    {
-        if (!holdingEntity)
-            return;
-        //_actionData.isReloading = true;
-        //_actionData.isWeaponReloading = true;
-        //holdingEntity.MinEventContext.ItemActionData = _actionData;
-        //holdingEntity.FireEvent(MinEventTypes.onReloadStart, true);
-        //_actionData.isReloading = false;
-        //_actionData.isWeaponReloading = false;
-        //_actionData.isReloadCancelled = false;
-        //_actionData.isWeaponReloadCancelled = false;
-        //holdingEntity.FireEvent(MinEventTypes.onReloadStop);
-
-        AnimationAmmoUpdateState.SetAmmoCountForEntity(holdingEntity, holdingEntity.inventory.holdingItemIdx);
-    }
-
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SwapAmmoType))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_SwapAmmoType_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
@@ -44,11 +26,15 @@ public static class CommonUtilityPatch
         {
             if (codes[i].opcode == OpCodes.Ret)
             {
-                codes.InsertRange(i, new CodeInstruction[]
+                codes.InsertRange(i, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_1),
-                    new CodeInstruction(OpCodes.Ldloc_0),
-                    CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(FakeReload))
+                    CodeInstruction.CallClosure<Action<EntityAlive>>(static (holdingEntity) =>
+                    {
+                        if (!holdingEntity)
+                            return;
+                        AnimationAmmoUpdateState.SetAmmoCountForEntity(holdingEntity, holdingEntity.inventory.holdingItemIdx);
+                    })
                 });
                 break;
             }
@@ -57,9 +43,9 @@ public static class CommonUtilityPatch
         return codes;
     }
 
-    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ExecuteAction))]
+    [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.TryExecuteAction))]
     [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_ExecuteAction_ItemActionRanged(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+    private static IEnumerable<CodeInstruction> Transpiler_TryExecuteAction_ItemActionRanged(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
     {
         var codes = new List<CodeInstruction>(instructions);
         var mtd_fire_event = AccessTools.Method(typeof(EntityAlive), nameof(EntityAlive.FireEvent));
@@ -86,17 +72,9 @@ public static class CommonUtilityPatch
             var list = codes.GetRange(take, 6);
             codes.InsertRange(insert, list);
             codes.RemoveRange(take, 6);
+            codes[take].WithLabels(list[0].ExtractLabels());
         }
 
-        int localIndexBurstCount;
-        if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
-        {
-            localIndexBurstCount = 3;
-        }
-        else
-        {
-            localIndexBurstCount = 4;
-        }
         for (int i = 1; i < codes.Count - 1; i++)
         {
             if (codes[i].Calls(mtd_check_ammo))
@@ -131,6 +109,7 @@ public static class CommonUtilityPatch
                 });
                 i += 23;
             }
+            /* removed due to vanilla burst shot implementation; might be useful for kflib firemode module
             else if (codes[i].Calls(mtd_getkick))
             {
                 var lbl = generator.DefineLabel();
@@ -167,34 +146,7 @@ public static class CommonUtilityPatch
                 });
                 i += 27;
             }
-            // else if (codes[i].opcode == OpCodes.Stloc_0)
-            // {
-            //     codes.InsertRange(i + 1, new CodeInstruction[]
-            //     {
-            //         new(OpCodes.Ldloc_0),
-            //         CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.m_LastShotTime)),
-            //         new CodeInstruction(OpCodes.Stloc_S, lbd_last_shot_time)
-            //     });
-            //     i += 3;
-            // }
-            // else if (codes[i].StoresField(fld_started) && codes[i - 1].LoadsConstant(1))
-            // {
-            //     static void Closure(ItemActionRanged.ItemActionDataRanged rangedData, float lastShotTime)
-            //     {
-            //         if (rangedData.curBurstCount > 1 && rangedData.m_LastShotTime - lastShotTime > rangedData.Delay)
-            //         {
-            //             Log.Out($"Fixing shot delay: last {lastShotTime} delay {rangedData.Delay} interval {rangedData.m_LastShotTime - lastShotTime} vanilla {rangedData.m_LastShotTime} corrected {lastShotTime + rangedData.Delay}");
-            //             rangedData.m_LastShotTime = lastShotTime + rangedData.Delay;
-            //         }
-            //     }
-            //     codes.InsertRange(i + 1, new CodeInstruction[]
-            //     {
-            //         new(OpCodes.Ldloc_0),
-            //         new(OpCodes.Ldloc_S,  lbd_last_shot_time),
-            //         CodeInstruction.CallClosure<Action<ItemActionRanged.ItemActionDataRanged, float>>(Closure)
-            //     });
-            //     i += 3;
-            // }
+            */
         }
 
         return codes;
@@ -339,6 +291,7 @@ public static class CommonUtilityPatch
     //}
     #endregion
 
+    // for some nre I guess? don't remember no more
     [HarmonyPatch(typeof(DynamicProperties), nameof(DynamicProperties.Parse))]
     [HarmonyPrefix]
     private static bool Prefix_Parse_DynamicProperties(XElement elementProperty)
@@ -364,16 +317,16 @@ public static class CommonUtilityPatch
             {
                 if (!codes[i + 3].LoadsField(fld_params))
                 {
-                    codes.InsertRange(i + 2, new CodeInstruction[]
+                    codes.InsertRange(i + 2, new[]
                     {
-                        new CodeInstruction(OpCodes.Ldloc_1),
+                        new(OpCodes.Ldloc_1),
                         CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.MinEventContext)),
-                        new CodeInstruction(OpCodes.Dup),
-                        new CodeInstruction(OpCodes.Ldloc, 10),
+                        new(OpCodes.Dup),
+                        new(OpCodes.Ldloc, 10),
                         CodeInstruction.LoadField(typeof(WorldRayHitInfo), nameof(WorldRayHitInfo.hit)),
                         CodeInstruction.LoadField(typeof(HitInfoDetails), nameof(HitInfoDetails.pos)),
                         CodeInstruction.StoreField(typeof(MinEventParams), nameof(MinEventParams.Position)),
-                        new CodeInstruction(OpCodes.Ldloc_1),
+                        new(OpCodes.Ldloc_1),
                         CodeInstruction.Call(typeof(EntityAlive), nameof(EntityAlive.GetPosition)),
                         CodeInstruction.StoreField(typeof(MinEventParams), nameof(MinEventParams.StartPosition))
                     });
@@ -396,6 +349,9 @@ public static class CommonUtilityPatch
         {
             if (codes[i].Calls(mtd_release))
             {
+                //instead of calling triggerReleased which resets action input states, we'll call ItemActionEffectsServer directly to keep them
+                //so that holding lmb for too long no longer fires automatically for single shot weapons
+                //actually this might already be fixed along with the vanilla burst shot system, but keeping it just in case
                 codes.InsertRange(i + 1, new[]
                 {
                     CodeInstruction.LoadLocal(0).WithLabels(codes[i - 4].ExtractLabels()),
@@ -427,32 +383,6 @@ public static class CommonUtilityPatch
         return codes;
     }
 
-    //[HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.triggerReleased))]
-    //[HarmonyTranspiler]
-    //private static IEnumerable<CodeInstruction> Transpiler_triggerReleased_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
-    //{
-    //    var mtd_effect = AccessTools.Method(typeof(IGameManager), nameof(IGameManager.ItemActionEffectsServer));
-    //    var mtd_data = AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.getUserData));
-    //    var codes = instructions.ToList();
-
-    //    for (int i = 0; i < codes.Count; i++)
-    //    {
-    //        if (codes[i].Calls(mtd_effect))
-    //        {
-    //            codes.InsertRange(i, new CodeInstruction[]
-    //            {
-    //                new CodeInstruction(OpCodes.Ldarg_0),
-    //                new CodeInstruction(OpCodes.Ldarg_1),
-    //                new CodeInstruction(OpCodes.Callvirt, mtd_data)
-    //            });
-    //            codes.RemoveAt(i - 1);
-    //            break;
-    //        }
-    //    }
-
-    //    return codes;
-    //}
-
     [HarmonyPatch(typeof(GameManager), nameof(GameManager.StartGame))]
     [HarmonyPrefix]
     private static bool Prefix_StartGame_GameManager()
@@ -479,7 +409,6 @@ public static class CommonUtilityPatch
                                            AccessTools.Method(typeof(CustomEffectEnumManager), nameof(CustomEffectEnumManager.RegisterOrGetEnum), new[] { typeof(string), typeof(bool) }, new[] { typeof(MinEventTypes) }));
     }
 
-    //todo: patch Quartz
     [HarmonyPatch(typeof(UIDisplayInfoFromXml), nameof(UIDisplayInfoFromXml.ParseDisplayInfoEntry))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_ParseDisplayInfoEntry_UIDisplayInfoFromXml(IEnumerable<CodeInstruction> instructions)
@@ -569,9 +498,29 @@ public static class CommonUtilityPatch
     /// <returns></returns>
     [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.guiDrawCrosshair))]
     [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_guiDrawCrosshair_EntityPlayerLocal(IEnumerable<CodeInstruction> instructions)
+    private static IEnumerable<CodeInstruction> Transpiler_guiDrawCrosshair_EntityPlayerLocal(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
     {
         var codes = instructions.ToList();
+
+        // Both ranged crosshair types must consult the option before being replaced with Plus.
+        var rangedCrosshair = new CodeMatcher(codes, generator)
+            .MatchStartForward(
+                new CodeMatch(OpCodes.Ldloc_0),
+                new CodeMatch(code => code.LoadsConstant((int)ItemClass.EnumCrosshairType.Crosshair)),
+                new CodeMatch(code => code.opcode == OpCodes.Beq_S || code.opcode == OpCodes.Beq),
+                new CodeMatch(OpCodes.Ldloc_0),
+                new CodeMatch(code => code.LoadsConstant((int)ItemClass.EnumCrosshairType.CrosshairOnAiming)),
+                new CodeMatch(code => code.opcode == OpCodes.Bne_Un_S || code.opcode == OpCodes.Bne_Un),
+                new CodeMatch(code => code.LoadsConstant((int)EnumGamePrefs.OptionsCrosshairRangedEnabled)),
+                new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(GamePrefs), nameof(GamePrefs.GetBool), new[] { typeof(EnumGamePrefs) })),
+                new CodeMatch(code => code.opcode == OpCodes.Brtrue_S || code.opcode == OpCodes.Brtrue),
+                new CodeMatch(code => code.LoadsConstant((int)ItemClass.EnumCrosshairType.Plus)),
+                new CodeMatch(OpCodes.Stloc_0))
+            .ThrowIfInvalid("guiDrawCrosshair ranged crosshair option branch not found");
+        var optionLabel = generator.DefineLabel();
+        rangedCrosshair.InstructionAt(6).labels.Add(optionLabel);
+        rangedCrosshair.InstructionAt(2).operand = optionLabel;
+        codes = rangedCrosshair.InstructionEnumeration().ToList();
 
         FieldInfo fld_debug = AccessTools.Field(typeof(ItemAction), nameof(ItemAction.ShowDistanceDebugInfo));
 
@@ -648,7 +597,7 @@ public static class CommonUtilityPatch
                 {
                     new CodeInstruction(OpCodes.Ldloc_1),
                     new CodeInstruction(OpCodes.Ldarg_0),
-                    CodeInstruction.LoadField(typeof(XUiC_ItemPartStack), "itemValue"),
+                    CodeInstruction.LoadField(typeof(XUiC_ItemPartStack), nameof(XUiC_ItemPartStack.itemValue)),
                     CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.GetTagsAsIfNotInstalled)),
                     new CodeInstruction(OpCodes.Stloc_S, lbd_tags_if_remove_prev),
                     new CodeInstruction(OpCodes.Ldloc_1),
@@ -671,7 +620,7 @@ public static class CommonUtilityPatch
                     {
                         new CodeInstruction(OpCodes.Ldloc_1).WithLabels(lbl_prev),
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(XUiC_ItemPartStack), "itemValue"),
+                        CodeInstruction.LoadField(typeof(XUiC_ItemPartStack), nameof(XUiC_ItemPartStack.itemValue)),
                         new CodeInstruction(OpCodes.Ldloc_0),
                         CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.CanSwapMod)),
                         new CodeInstruction(OpCodes.Brtrue, lbl_jump),
@@ -702,7 +651,7 @@ public static class CommonUtilityPatch
         MethodInfo mtd_get_item_class = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.ItemClass));
         MethodInfo mtd_has_any_tags = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.HasAnyTags));
         MethodInfo mtd_test_any_set = AccessTools.Method(typeof(FastTags<TagGroup.Global>), nameof(FastTags<TagGroup.Global>.Test_AnySet));
-        MethodInfo mtd_get_xui = AccessTools.PropertyGetter(typeof(XUiController), nameof(XUiController.xui));
+        FieldInfo fld_get_xui = AccessTools.Field(typeof(XUiController), nameof(XUiController.xui));
         MethodInfo mtd_get_cur_item = AccessTools.PropertyGetter(typeof(XUiM_AssembleItem), nameof(XUiM_AssembleItem.CurrentItem));
         FieldInfo fld_cos = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.CosmeticMods));
         FieldInfo fld_installable_tags = AccessTools.Field(typeof(ItemClassModifier), nameof(ItemClassModifier.InstallableTags));
@@ -715,14 +664,14 @@ public static class CommonUtilityPatch
                 codes.InsertRange(i + 3, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(codes[i + 3]),
-                    new CodeInstruction(OpCodes.Call, mtd_get_xui),
+                    new CodeInstruction(OpCodes.Ldfld, fld_get_xui),
                     CodeInstruction.LoadField(typeof(XUi), nameof(XUi.AssembleItem)),
                     new CodeInstruction(OpCodes.Callvirt, mtd_get_cur_item),
                     CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)),
                     new CodeInstruction(OpCodes.Stloc_S, lbd_item_being_assembled),
                     new CodeInstruction(OpCodes.Ldloc_S, lbd_item_being_assembled),
                     new CodeInstruction(OpCodes.Ldarg_0),
-                    CodeInstruction.LoadField(typeof(XUiC_ItemCosmeticStack), "itemValue"),
+                    CodeInstruction.LoadField(typeof(XUiC_ItemCosmeticStack), nameof(XUiC_ItemCosmeticStack.itemValue)),
                     CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.GetTagsAsIfNotInstalled)),
                     new CodeInstruction(OpCodes.Stloc_S, lbd_tags_if_remove_prev),
                     new CodeInstruction(OpCodes.Ldloc_S, lbd_item_being_assembled),
@@ -745,7 +694,7 @@ public static class CommonUtilityPatch
                     {
                         new CodeInstruction(OpCodes.Ldloc_S, lbd_item_being_assembled).WithLabels(lbl_prev),
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(XUiC_ItemPartStack), "itemValue"),
+                        CodeInstruction.LoadField(typeof(XUiC_ItemCosmeticStack), nameof(XUiC_ItemCosmeticStack.itemValue)),
                         new CodeInstruction(OpCodes.Ldloc_0),
                         CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.CanSwapMod)),
                         new CodeInstruction(OpCodes.Brtrue, lbl_jump),
@@ -773,7 +722,7 @@ public static class CommonUtilityPatch
     /// <param name="__result"></param>
     /// <param name="__instance"></param>
     /// <param name="___itemValue"></param>
-    [HarmonyPatch(typeof(XUiC_ItemPartStack), "CanRemove")]
+    [HarmonyPatch(typeof(XUiC_ItemPartStack), nameof(XUiC_ItemPartStack.CanRemove))]
     [HarmonyPostfix]
     private static void Postfix_CanRemove_XUiC_ItemPartStack(ref bool __result, XUiC_ItemPartStack __instance)
     {
@@ -801,11 +750,11 @@ public static class CommonUtilityPatch
         }
     }
 
-    [HarmonyPatch(typeof(XUiC_ItemCosmeticStack), "CanRemove")]
+    [HarmonyPatch(typeof(XUiC_ItemCosmeticStack), nameof(XUiC_ItemCosmeticStack.CanRemove))]
     [HarmonyPostfix]
     private static void Postfix_CanRemove_XUiC_ItemCosmeticStack(ref bool __result, XUiC_ItemCosmeticStack __instance)
     {
-        if (__result && __instance.xui?.AssembleItem?.CurrentItem?.itemValue is ItemValue itemValue)
+        if (__result && __instance.xui?.AssembleItem?.CurrentItem?.itemValue is { } itemValue)
         {
             ItemClass itemClass = itemValue.ItemClass;
             FastTags<TagGroup.Global> tagsAfterRemove = LocalItemTagsManager.GetTagsAsIfNotInstalled(itemValue, __instance.itemValue);
@@ -819,8 +768,7 @@ public static class CommonUtilityPatch
             {
                 if (mod.IsEmpty())
                     continue;
-                ItemClassModifier modClass = mod.ItemClass as ItemClassModifier;
-                if (modClass == null || !tagsAfterRemove.Test_AnySet(modClass.InstallableTags) || tagsAfterRemove.Test_AnySet(modClass.DisallowedTags))
+                if (mod.ItemClass is not ItemClassModifier modClass || !tagsAfterRemove.Test_AnySet(modClass.InstallableTags) || tagsAfterRemove.Test_AnySet(modClass.DisallowedTags))
                 {
                     __result = false;
                     return;
@@ -846,7 +794,7 @@ public static class CommonUtilityPatch
         MethodInfo mtd_test_any_set = AccessTools.Method(typeof(FastTags<TagGroup.Global>), nameof(FastTags<TagGroup.Global>.Test_AnySet));
         MethodInfo mtd_get_item_class = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.ItemClass));
         MethodInfo mtd_get_cur_item = AccessTools.PropertyGetter(typeof(XUiM_AssembleItem), nameof(XUiM_AssembleItem.CurrentItem));
-        MethodInfo mtd_get_xui = AccessTools.PropertyGetter(typeof(XUiController), nameof(XUiController.xui));
+        FieldInfo fld_get_xui = AccessTools.Field(typeof(XUiController), nameof(XUiController.xui));
         FieldInfo fld_tags = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.ItemTags));
 
         for (int i = 3; i < codes.Count; i++)
@@ -857,17 +805,17 @@ public static class CommonUtilityPatch
                 codes.InsertRange(i + 1, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_0),
-                    new CodeInstruction(OpCodes.Call, mtd_get_xui),
+                    new CodeInstruction(OpCodes.Ldfld, fld_get_xui),
                     CodeInstruction.LoadField(typeof(XUi), nameof(XUi.AssembleItem)),
                     new CodeInstruction(OpCodes.Callvirt, mtd_get_cur_item),
                     CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)),
                     CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.GetTags)),
                     new CodeInstruction(OpCodes.Stloc_S, lbd_tags)
                 });
-                i += 7;
+                i += 8;
             }
             //do not touch check on the modification item
-            else if (codes[i].Calls(mtd_has_any_tags) && codes[i - 3].Calls(mtd_get_item_class) && !codes[i - 1].LoadsField(fld_tags))
+            else if (codes[i].Calls(mtd_has_any_tags) && codes[i - 3].Calls(mtd_get_item_class))
             {
                 codes[i].opcode = OpCodes.Call;
                 codes[i].operand = mtd_test_any_set;
@@ -922,11 +870,12 @@ public static class CommonUtilityPatch
                     CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.GetTagsAsIfInstalled)),
                     new CodeInstruction(OpCodes.Stloc_S, lbd_tags_after_install)
                 });
-                i += 9;
+                i += 10;
             }
             //do not touch check on the modification item, check if current mod can be installed
             else if (codes[i].Calls(mtd_has_any_tags) && codes[i - 3].Calls(mtd_get_item_class))
             {
+                int offset = 0;
                 if (codes[i - 1].LoadsField(fld_installable_tags))
                 {
                     codes.InsertRange(i + 2, new[]
@@ -938,6 +887,7 @@ public static class CommonUtilityPatch
                         CodeInstruction.Call(typeof(LocalItemTagsManager), nameof(LocalItemTagsManager.CanInstallMod)),
                         new CodeInstruction(OpCodes.Brfalse, codes[i + 1].operand)
                     });
+                    offset = 8;
                 }
                 codes[i].opcode = OpCodes.Call;
                 codes[i].operand = mtd_test_any_set;
@@ -946,6 +896,7 @@ public static class CommonUtilityPatch
                 codes.RemoveRange(i - 6, 4);
                 codes.Insert(i - 6, insert);
                 i -= 3;
+                i += offset;
             }
         }
 
@@ -1027,7 +978,7 @@ public static class CommonUtilityPatch
                     new CodeInstruction(OpCodes.Ldloc_0),
                     new CodeInstruction(OpCodes.Ldarg_2),
                     new CodeInstruction(OpCodes.Ldc_I4_M1),
-                    CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(CommonUtilityPatch.GetUnusableItemEntries)),
+                    CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(GetUnusableItemEntries)),
                     new CodeInstruction(OpCodes.Stloc_S, lbd_states)
                 });
                 i += 4;
@@ -1038,7 +989,7 @@ public static class CommonUtilityPatch
                 {
                     new CodeInstruction(OpCodes.Ldloc_S, lbd_states).WithLabels(codes[i + 2].ExtractLabels()),
                     new CodeInstruction(OpCodes.Ldloc_2),
-                    CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(CommonUtilityPatch.IsAmmoDisabled)),
+                    CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(IsAmmoDisabled)),
                     new CodeInstruction(OpCodes.Brtrue_S, codes[i + 1].operand)
                 });
                 break;
@@ -1201,26 +1152,6 @@ public static class CommonUtilityPatch
         return codes;
     }
 
-    [HarmonyPatch(typeof(GameManager), nameof(GameManager.DropContentOfLootContainerServer))]
-    [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_DropContentOfLootContainerServer_GameManager(IEnumerable<CodeInstruction> instructions)
-    {
-        var codes = instructions.ToList();
-
-        var setter_localscale = AccessTools.PropertySetter(typeof(Transform), nameof(Transform.localScale));
-
-        for (var i = 0; i < codes.Count; i++)
-        {
-            if (codes[i].Calls(setter_localscale))
-            {
-                codes.RemoveRange(i - 6, 7);
-                break;
-            }
-        }
-
-        return codes;
-    }
-
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.onHoldingEntityFired))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_onHoldingEntityFired_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
@@ -1264,7 +1195,7 @@ public static class CommonUtilityPatch
     [HarmonyPostfix]
     private static void Postfix_SpawnEntityInWorld_World(Entity _entity)
     {
-        if (_entity is EntityAlive ea && !ea.isEntityRemote)
+        if (_entity is EntityAlive { isEntityRemote: false } ea)
         {
             ea.FireEvent(CustomEnums.onSelfFirstCVarSync);
         }
@@ -1392,7 +1323,7 @@ public static class CommonUtilityPatch
                 {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     CodeInstruction.LoadField(typeof(XUiC_WorkstationOutputWindow), nameof(XUiC_WorkstationOutputWindow.controls)),
-                    new CodeInstruction(OpCodes.Brfalse_S, codes[codes.Count - 1].labels[0]),
+                    new CodeInstruction(OpCodes.Brfalse_S, codes[^1].labels[0]),
                 });
                 break;
             }
@@ -1417,7 +1348,7 @@ public static class CommonUtilityPatch
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new CodeInstruction(OpCodes.Ldloc_0),
                     CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.MinEventContext)),
-                    CodeInstruction.CallClosure<Action<XUiC_SkillPerkLevel, MinEventParams>>((xui, par) =>
+                    CodeInstruction.CallClosure<Action<XUiC_SkillPerkLevel, MinEventParams>>(static (xui, par) =>
                     {
                         xui.CurrentSkill.ProgressionClass.FireEvent(MinEventTypes.onPerkLevelChanged, par);
                     }),
@@ -1703,7 +1634,7 @@ public static class CommonUtilityPatch
                     new CodeInstruction(OpCodes.Ldc_I4_0),
                     CodeInstruction.StoreField(typeof(ItemActionDynamicMelee.ItemActionDynamicMeleeData), nameof(ItemActionDynamicMelee.ItemActionDynamicMeleeData.HasReleased))
                 });
-                i += 5;
+                i += 9;
             }
             else if (codes[i].StoresField(fld_released))
             {
@@ -1719,29 +1650,7 @@ public static class CommonUtilityPatch
                             break;
                         }
                     }
-                    //codes.InsertRange(i + 1, new[]
-                    //{
-                    //    new CodeInstruction(OpCodes.Ldarg_1),
-                    //    CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
-                    //    CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity)),
-                    //    CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.emodel)),
-                    //    CodeInstruction.LoadField(typeof(EModelBase), nameof(EModelBase.avatarController)),
-                    //    CodeInstruction.LoadField(typeof(CommonUtilityPatch), nameof(MeleeRunningHash)),
-                    //    new CodeInstruction(OpCodes.Ldc_I4_0),
-                    //    new CodeInstruction(OpCodes.Ldc_I4_1),
-                    //    new CodeInstruction(OpCodes.Callvirt, mtd_updatebool),
-                    //});
-                    //i += 8;
                 }
-                //else if (codes[i - 1].opcode == OpCodes.Ldc_I4_0)
-                //{
-                //    codes.InsertRange(i + 1, new[]
-                //    {
-                //        new CodeInstruction(OpCodes.Ldloc_0),
-                //        CodeInstruction.Call(typeof(CommonUtilityPatch), nameof(CheckMeleeRunning)),
-                //    });
-                //    i += 2;
-                //}
             }
         }
         return codes;
@@ -1778,6 +1687,7 @@ public static class CommonUtilityPatch
 
         for (int i = 1; i < codes.Count - 1; i++)
         {
+            // if is released, skip action running check and directly goto melee ExecuteAction
             if (codes[i].opcode == OpCodes.Stloc_1 && codes[i - 1].opcode == OpCodes.Ldarg_3)
             {
                 for (int j = i + 1; j < codes.Count; j++)
@@ -1794,6 +1704,7 @@ public static class CommonUtilityPatch
                     }
                 }
             }
+            // if is released, do not update itemActionIndex param on animator
             else if (codes[i].LoadsField(fld_avatar) && codes[i + 1].opcode == OpCodes.Ldnull)
             {
                 for (int j = i + 1; j < codes.Count; j++)
@@ -1803,7 +1714,8 @@ public static class CommonUtilityPatch
                         codes.InsertRange(j + 1, new[]
                         {
                             new CodeInstruction(OpCodes.Ldarg_3).WithLabels(codes[j + 1].ExtractLabels()),
-                            new CodeInstruction(OpCodes.Brtrue_S, lbl)
+                            // ReSharper disable once PossibleInvalidOperationException
+                            new CodeInstruction(OpCodes.Brtrue_S, lbl.Value)
                         });
                         i += 2;
                         break;
@@ -1847,7 +1759,7 @@ public static class CommonUtilityPatch
                     CodeInstruction.LoadField(typeof(ItemClass), nameof(ItemClass.Properties)),
                     CodeInstruction.LoadField(typeof(ItemClass), nameof(ItemClass.PropCrosshairOnAim)),
                     CodeInstruction.LoadLocal(lbd.LocalIndex, true),
-                    CodeInstruction.Call(typeof(DynamicProperties), nameof(DynamicProperties.ParseString)),
+                    CodeInstruction.Call(typeof(DynamicProperties), nameof(DynamicProperties.ParseString), new[] { typeof(string), typeof(string).MakeByRefType() }),
                     CodeInstruction.LoadLocal(lbd.LocalIndex)
                 });
                 codes.RemoveAt(i - 1);
@@ -1900,12 +1812,12 @@ public static class CommonUtilityPatch
 
         for (var i = 0; i < codes.Count; i++)
         {
-            if (codes[i].opcode == OpCodes.Stloc_0)
+            if (codes[i].opcode == OpCodes.Stloc_S && (codes[i].operand is 4 or LocalBuilder {LocalIndex: 4}))
             {
                 codes.InsertRange(i + 1, new[]
                 {
-                    new CodeInstruction(OpCodes.Ldloc_0),
-                    CodeInstruction.CallClosure<Action<Mesh>>((mesh) =>
+                    new CodeInstruction(OpCodes.Ldloc_S, 4),
+                    CodeInstruction.CallClosure<Action<Mesh>>(static (mesh) =>
                     {
                         mesh.name = stitchPrefix + mesh.name;
                     })
@@ -2007,8 +1919,8 @@ public static class CommonUtilityPatch
     //}
     #endregion
 
-    private readonly static List<ContactPoint> list_contact_cache = new();
-    private readonly static HashSet<int> hashset_checked_id = new();
+    private static readonly List<ContactPoint> list_contact_cache = new();
+    private static readonly HashSet<int> hashset_checked_id = new();
     [HarmonyPatch(typeof(EntityItem), nameof(EntityItem.CheckStick))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_CheckStick_EntityItem(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -2408,15 +2320,14 @@ public static class CommonUtilityPatch
                 codes.InsertRange(i - 1, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_0).WithLabels(codes[i - 1].ExtractLabels()),
-                    CodeInstruction.LoadField(typeof(MinEventActionTargetedBase), nameof(MinEventActionTargetedBase.targets)),
+                    CodeInstruction.LoadField(typeof(MinEventActionTargetedBase),
+                        nameof(MinEventActionTargetedBase.targets)),
                     new CodeInstruction(OpCodes.Ldloc_2),
                     new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(List<EntityAlive>), "get_Item")),
                     new CodeInstruction(OpCodes.Ldarg_1),
                     CodeInstruction.LoadField(typeof(MinEventParams), nameof(MinEventParams.Self)),
                     CodeInstruction.CallClosure<Func<EntityAlive, EntityAlive, bool>>(static (target, self) =>
-                    {
-                        return !target.isEntityRemote && !self.isEntityRemote && target != self;
-                    }),
+                        !target.isEntityRemote && !self.isEntityRemote && target != self),
                     new CodeInstruction(OpCodes.Brtrue_S, codes[i - 2].operand)
                 });
                 break;
@@ -2478,7 +2389,7 @@ public static class CommonUtilityPatch
     [HarmonyPostfix]
     private static void Postfix_CloneModel_ItemClass(ItemClass __instance, Transform __result, ItemValue _itemValue, BlockShape.MeshPurpose _purpose)
     {
-        bool useDropMesh = false;
+        bool useDropMesh;
         switch (_purpose)
         {
             case BlockShape.MeshPurpose.Hold:
@@ -2954,7 +2865,7 @@ public static class CommonUtilityPatch
         uilabel.depth = 300;
         uilabel.width = 200;
         uilabel.transform.localPosition = new Vector2(20, -2.4f);
-        parentTrans.localPosition = new Vector2(-1280 * XUi.UIRoot.pixelSizeAdjustment, 0);
+        parentTrans.localPosition = new Vector2(-1280 * XUi.uiRoot.pixelSizeAdjustment, 0);
     }
 
     //[HarmonyPatch(typeof(NetPackageDamageEntity), nameof(NetPackageDamageEntity.ProcessPackage)), HarmonyPostfix]

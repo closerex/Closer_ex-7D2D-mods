@@ -27,8 +27,8 @@ namespace KFCommonUtilityLib.Harmony
                         {
                             codes.InsertRange(j, new[]
                             {
-                            CodeInstruction.Call(typeof(KFLibEvents), nameof(KFLibEvents.XmlLoadingStart)).WithLabels(codes[j].ExtractLabels()),
-                        });
+                                CodeInstruction.Call(typeof(KFLibEvents), nameof(KFLibEvents.XmlLoadingStart)).WithLabels(codes[j].ExtractLabels()),
+                            });
                             break;
                         }
                     }
@@ -42,8 +42,8 @@ namespace KFCommonUtilityLib.Harmony
                 {
                     codes.InsertRange(i + 1, new[]
                     {
-                    CodeInstruction.Call(typeof(KFLibEvents), nameof(KFLibEvents.XmlLoadingFinish)).WithLabels(codes[i + 1].ExtractLabels()),
-                });
+                        CodeInstruction.Call(typeof(KFLibEvents), nameof(KFLibEvents.XmlLoadingFinish)).WithLabels(codes[i + 1].ExtractLabels()),
+                    });
                     break;
                 }
             }
@@ -67,16 +67,16 @@ namespace KFCommonUtilityLib.Harmony
                     {
                         codes.InsertRange(i + 1, new[]
                         {
-                        CodeInstruction.Call(typeof(KFLibEvents), nameof(KFLibEvents.XmlLoadingStart)).WithLabels(codes[i + 1].ExtractLabels()),
-                    });
+                            CodeInstruction.Call(typeof(KFLibEvents), nameof(KFLibEvents.XmlLoadingStart)).WithLabels(codes[i + 1].ExtractLabels()),
+                        });
                         i++;
                     }
                     else if (codes[i - 1].LoadsConstant(1))
                     {
                         codes.InsertRange(i + 1, new[]
                         {
-                        CodeInstruction.Call(typeof(KFLibEvents), nameof(KFLibEvents.XmlLoadingFinish)).WithLabels(codes[i + 1].ExtractLabels()),
-                    });
+                            CodeInstruction.Call(typeof(KFLibEvents), nameof(KFLibEvents.XmlLoadingFinish)).WithLabels(codes[i + 1].ExtractLabels()),
+                        });
                         i++;
                     }
                 }

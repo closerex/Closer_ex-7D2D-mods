@@ -1,0 +1,548 @@
+{
+  "schemaVersion": 2,
+  "publicationRepository": "ModsRepo",
+  "publicationEnabled": false,
+  "tagPrefix": "mods",
+  "repositories": {
+    "ModsRepo": "closerex/Closer_ex-7D2D-mods",
+    "ModsRequested": "closerex/ModsRequested"
+  },
+  "nexusUploadAction": {
+    "repository": "Nexus-Mods/upload-action",
+    "release": "v1.0.0-beta.10",
+    "sha": "c96019556046053aa26044b44396cd38929daf23",
+    "apiVersion": "v3",
+    "distIndexSha256": "9144BB1ED9877CCDAE3BE52B4D57EC6813C2C300351E109AA68D023AC34E69AF"
+  },
+  "mods": [
+    {
+      "folder": "0-CustomParticleLoader",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "2036",
+        "modId": "4548370368500",
+        "fileId": "2405884",
+        "displayName": "CustomParticleLoader",
+        "gameVersionRange": "v2.0",
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    },
+    {
+      "folder": "0-CustomPlayerActionManager",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "2252",
+        "modId": "4548370368716",
+        "fileId": "2432326",
+        "displayName": "CustomPlayerActionManager",
+        "gameVersionRange": "v2.0-v2.6",
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    },
+    {
+      "folder": "0-KFCommonUtilityLib",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "4880",
+        "modId": "4548370371344",
+        "fileId": "2535238",
+        "displayName": "KFCommonUtilityLib",
+        "gameVersionRange": "v2.0 - v2.6",
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    },
+    {
+      "folder": "AllowComboKeys",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "8555",
+        "modId": "4548370375019",
+        "fileId": "4153216",
+        "displayName": "AllowComboKeys",
+        "gameVersionRange": "v2.0",
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    },
+    {
+      "folder": "BetterModCompatibility",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "6097",
+        "modId": "4548370372561",
+        "fileId": "7346054",
+        "displayName": "BetterModCompatibility",
+        "gameVersionRange": "v2.4 - v2.6",
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    },
+    {
+      "folder": "CustomFPVFov",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "7127",
+        "modId": "4548370373591",
+        "fileId": "2604565",
+        "displayName": "CustomFPVFov",
+        "gameVersionRange": "v2.0 - v2.6",
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    },
+    {
+      "folder": "CustomMuzzleFlash",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "2063",
+        "modId": "4548370368527",
+        "fileId": "2413360",
+        "displayName": "CustomMuzzleFlash",
+        "gameVersionRange": "v1.0 - v2.6",
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    },
+    {
+      "folder": "CustomParticleLoaderBuffArea",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "3900",
+        "modId": "4548370370364",
+        "fileId": "2507518",
+        "displayName": "CustomParticleLoaderBuffArea",
+        "gameVersionRange": "v2.0",
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    },
+    {
+      "folder": "CustomParticleLoaderMultiExplosion",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "2250",
+        "modId": "4548370368714",
+        "fileId": "2432275",
+        "displayName": "CustomParticleLoaderMultiExplosion",
+        "gameVersionRange": "v2.0",
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    },
+    {
+      "folder": "CustomParticleLoaderSpawnEntity",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "2251",
+        "modId": "4548370368715",
+        "fileId": "2432293",
+        "displayName": "CustomParticleLoaderSpawnEntity",
+        "gameVersionRange": "v2.0",
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    },
+    {
+      "folder": "FPVLegs",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "7524",
+        "modId": "4548370373988",
+        "fileId": "2613844",
+        "displayName": "FPV Legs",
+        "gameVersionRange": "v2.0-v2.6",
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    },
+    {
+      "folder": "FullautoLauncher",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "2062",
+        "modId": "4548370368526",
+        "fileId": "2413228",
+        "displayName": "FullautoLauncher",
+        "gameVersionRange": "v2.0",
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    },
+    {
+      "folder": "KeepReloading",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "7727",
+        "modId": "4548370374191",
+        "fileId": "2619880",
+        "displayName": "KeepReloading",
+        "gameVersionRange": "v2.0",
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    },
+    {
+      "folder": "KF_SFX_Lib",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "8879",
+        "modId": "4548370375343",
+        "fileId": "2647261",
+        "displayName": "KF_SFX_Lib",
+        "gameVersionRange": null,
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    },
+    {
+      "folder": "MedicPerk",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "4325",
+        "modId": "4548370370789",
+        "fileId": "2522692",
+        "displayName": "Medic Perk",
+        "gameVersionRange": "v2.0 - v2.6",
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    },
+    {
+      "folder": "MultiBlockLayerFix",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "8179",
+        "modId": "4548370374643",
+        "fileId": "2632225",
+        "displayName": "MultiBlockLayerFix",
+        "gameVersionRange": "v2.0 - v2.5",
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    },
+    {
+      "folder": "NoHentai",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "8005",
+        "modId": "4548370374469",
+        "fileId": "4112872",
+        "displayName": "NoHentai",
+        "gameVersionRange": null,
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    },
+    {
+      "folder": "RandomMainmenuBackground",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "2120",
+        "modId": "4548370368584",
+        "fileId": "2425837",
+        "displayName": "RandomMainmenuBackground",
+        "gameVersionRange": "v2.0 - v2.5",
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    },
+    {
+      "folder": "TrueNoRotation",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "8181",
+        "modId": "4548370374645",
+        "fileId": "4127494",
+        "displayName": "TrueNoRotation",
+        "gameVersionRange": "v2.0",
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    },
+    {
+      "folder": "ZCLSWeaponBoneCrusher",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "8880",
+        "modId": "4548370375344",
+        "fileId": "2647285",
+        "displayName": "CLSWeaponBoneCrusher",
+        "gameVersionRange": "v2.0 - v2.6",
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    },
+    {
+      "folder": "ZCLSWeaponPackEXP",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "5798",
+        "modId": "4548370372262",
+        "fileId": "2569345",
+        "displayName": "CLSWeaponPackEXP",
+        "gameVersionRange": "v2.0 - v2.6",
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    },
+    {
+      "folder": "ZCLSWeaponPulverizer",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "8910",
+        "modId": "4548370375374",
+        "fileId": "2648131",
+        "displayName": "CLSWeaponPulverizer",
+        "gameVersionRange": "v2.0 - v2.6",
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    },
+    {
+      "folder": "ZCLSWeaponZweihander",
+      "sourceRepository": "ModsRepo",
+      "github": {
+        "enabled": true,
+        "publishedTag": null
+      },
+      "release": {
+        "channel": "pre-release"
+      },
+      "nexus": {
+        "enabled": true,
+        "gameDomain": "7daystodie",
+        "pageModId": "9458",
+        "modId": "4548370375922",
+        "fileId": "2659903",
+        "displayName": "ZCLSWeaponZweihander",
+        "gameVersionRange": "v2.0 - v2.6",
+        "category": "main",
+        "supersededVersion": "archive",
+        "publishedVersionId": null
+      }
+    }
+  ]
+}

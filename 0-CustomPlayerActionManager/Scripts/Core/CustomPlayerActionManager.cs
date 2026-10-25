@@ -24,8 +24,9 @@ public class CustomPlayerActionManager
             int rowCount = 0;
             foreach (var list in dict.Values)
             {
-                rowCount += (list.Count + 1) / 2 + 1;
+                rowCount += list.Count;
             }
+            rowCount += Math.Max(0, dict.Count - 1);
             arr_row_counts_control[i++] = rowCount;
             Log.Out($"Size of tab {i} rows is set to {rowCount}");
         }
@@ -38,7 +39,7 @@ public class CustomPlayerActionManager
         int i = 0;
         foreach (var pair in dictionary)
         {
-            arr_row_counts_controller[i] = (pair.Value.Count + 1) / 2;
+            arr_row_counts_controller[i] = pair.Value.Count;
             Log.Out($"Size of tab {pair.Key} rows is set to {arr_row_counts_controller[i]}");
             i++;
         }

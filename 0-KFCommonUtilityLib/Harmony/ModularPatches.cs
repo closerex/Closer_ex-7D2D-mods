@@ -20,6 +20,7 @@ namespace KFCommonUtilityLib.Harmony
     [HarmonyPatch]
     public static class ModularPatches
     {
+        //todo: check harmony dump
         [HarmonyPatch(typeof(ItemClassesFromXml), nameof(ItemClassesFromXml.parseItem))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_parseItem_ItemClassesFromXml(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -94,8 +95,9 @@ namespace KFCommonUtilityLib.Harmony
                             new(OpCodes.Ldloc_S, ((LocalBuilder)codes[i - 2].operand).LocalIndex - 2),
                             CodeInstruction.CallClosure<Func<Type, DynamicProperties, string, Type>>(static (originalType, props, actionName) =>
                             {
-                                actionName += ".ItemActionModules";
-                                if (props.Values.TryGetValue(actionName, out string modules) && ModuleManagers.PatchType<ItemActionModuleProcessor>(originalType, typeof(ItemAction), null, modules, out Type result))
+                                if (props.Classes.TryGetValue(actionName, out var actionProps) &&
+                                    actionProps.Values.TryGetValue("ItemActionModules", out string modules) &&
+                                    ModuleManagers.PatchType<ItemActionModuleProcessor>(originalType, typeof(ItemAction), null, modules, out Type result))
                                 {
                                     return result;
                                 }

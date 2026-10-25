@@ -417,6 +417,7 @@ public class ItemModuleMultiItem
             ItemValue boundItemValue = boundInvData.itemStack.itemValue;
             ItemValue originalItemValue = originalData.itemStack.itemValue;
             boundItemValue.Quality = originalItemValue.Quality;
+            boundItemValue.Stats = originalItemValue.Stats;
             boundItemValue.Metadata = originalItemValue.Metadata;
             boundItemValue.Modifications = originalItemValue.Modifications;
             boundItemValue.CosmeticMods = originalItemValue.CosmeticMods;
@@ -452,6 +453,7 @@ public class ItemModuleMultiItem
             var param = originalData.holdingEntity.MinEventContext;
             param.ItemInventoryData = boundInvData;
             param.ItemValue = boundInvData.itemStack.itemValue;
+            boundInvData.itemStack.itemValue.Stats = originalData.itemStack.itemValue.Stats;
             boundInvData.itemStack.itemValue.Meta = originalData.itemStack.itemValue.Meta;
             boundInvData.itemStack.itemValue.Metadata = originalData.itemStack.itemValue.Metadata;
             boundInvData.itemStack.itemValue.Activated = originalData.itemStack.itemValue.Activated;
@@ -618,18 +620,7 @@ public static class MultiItemPatches
         var codes = instructions.ToList();
 
         int localIndex;
-        if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 1))
-        {
-            localIndex = 35;
-        }
-        else if (Constants.cVersionInformation.LTE(VersionInformation.EGameReleaseType.V, 2, 4))
-        {
-            localIndex = 37;
-        }
-        else
-        {
-            localIndex = 40;
-        }
+        localIndex = 27;
 
         for (int i = 0; i < codes.Count; i++)
         {

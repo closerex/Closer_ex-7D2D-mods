@@ -1,4 +1,4 @@
-﻿using KFCommonUtilityLib;
+using KFCommonUtilityLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -85,7 +85,6 @@ public class AnimationRandomSound : MonoBehaviour, ISerializationCallbackReceive
         if (moveToCollection == null || audioSourcesEditor == null || audioSourcesEditor.Count == 0)
             return;
         var audioPlayer = Undo.AddComponent<AnimationAudioPlayer>(gameObject);
-        audioPlayer.attachableNodes = audioSourcesEditor.Select(static g => g.source.transform.parent).Distinct().ToArray();
         audioPlayer.audioCollectionHolder = FindFirstObjectByType<AudioCollectionHolder>(FindObjectsInactive.Include);
         List<bool> useLRCorrection = audioSourcesEditor.ConvertAll(g =>
         {
@@ -111,11 +110,11 @@ public class AnimationRandomSound : MonoBehaviour, ISerializationCallbackReceive
                     {
                         eventFound = true;
                         ev.functionName = nameof(AnimationAudioPlayer.PlayRandomClip);
+                        ev.intParameter = 0;
                         var index = audioSourcesEditor.FindIndex(g => g.groupName == ev.stringParameter || MatchPrefix(ev.stringParameter, g.groupName));
                         if (index >= 0)
                         {
                             var group = audioSourcesEditor[index];
-                            ev.intParameter = Array.IndexOf(audioPlayer.attachableNodes, group.source.transform.parent);
                             ev.stringParameter = !string.IsNullOrEmpty(commonPrefix) ? commonPrefix + group.groupName : group.groupName;
                             if (useLRCorrection[index])
                             {

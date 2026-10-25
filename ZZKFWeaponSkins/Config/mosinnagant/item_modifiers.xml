@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configs>
+  <append xpath="/item_modifiers">
+    <item_modifier name="modKFSkin_mosinnagant_SkinId_7856" installable_tags="kfSkin_gunKFMosin" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_mosinnagant_SkinId_7856" />
+      <property name="DescriptionKey" value="modKFSkin_mosinnagant_SkinId_7856Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFMosin">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/mosinnagant/kf_skin_mosinnagant.unity3d?SkinId_7856__mosin_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_mosinnagant_SkinId_7857" installable_tags="kfSkin_gunKFMosin" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_mosinnagant_SkinId_7857" />
+      <property name="DescriptionKey" value="modKFSkin_mosinnagant_SkinId_7857Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFMosin">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/mosinnagant/kf_skin_mosinnagant.unity3d?SkinId_7857__mosin_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_mosinnagant_SkinId_7858" installable_tags="kfSkin_gunKFMosin" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_mosinnagant_SkinId_7858" />
+      <property name="DescriptionKey" value="modKFSkin_mosinnagant_SkinId_7858Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFMosin">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/mosinnagant/kf_skin_mosinnagant.unity3d?SkinId_7858__mosin_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_mosinnagant_SkinId_7859" installable_tags="kfSkin_gunKFMosin" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_mosinnagant_SkinId_7859" />
+      <property name="DescriptionKey" value="modKFSkin_mosinnagant_SkinId_7859Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFMosin">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/mosinnagant/kf_skin_mosinnagant.unity3d?SkinId_7859__mosin_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_mosinnagant_SkinId_7860" installable_tags="kfSkin_gunKFMosin" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_mosinnagant_SkinId_7860" />
+      <property name="DescriptionKey" value="modKFSkin_mosinnagant_SkinId_7860Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFMosin">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/mosinnagant/kf_skin_mosinnagant.unity3d?SkinId_7860__mosin_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_mosinnagant_SkinId_7861" installable_tags="kfSkin_gunKFMosin" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_mosinnagant_SkinId_7861" />
+      <property name="DescriptionKey" value="modKFSkin_mosinnagant_SkinId_7861Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFMosin">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/mosinnagant/kf_skin_mosinnagant.unity3d?SkinId_7861__mosin_m" />
+      </item_property_overrides>
+    </item_modifier>
+  </append>
+</configs>

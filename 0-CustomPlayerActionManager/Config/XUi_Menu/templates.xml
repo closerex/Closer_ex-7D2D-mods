@@ -1,0 +1,4 @@
+<configs name="XUi_Menu/templates.xml">
+	<setattribute xpath="/templates/options_bindings_tab" name="rows">22</setattribute>
+	<setattribute xpath="/templates/options_bindings_tab/rect/rect[@name='scrollarea']/scrollview/grid" name="rows">${rows}</setattribute>
+</configs>

@@ -43,7 +43,7 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
             if (actionData.reloadAmount > 0)
             {
                 actionData.invData.itemValue.Meta = Utils.FastMin(actionData.invData.itemValue.Meta + actionData.reloadAmount, magSize);
-                if (actionData.invData.item.Properties.Values[ItemClass.PropSoundIdle] != null)
+                if (actionData.invData.item.Properties.GetValue(ItemClass.PropSoundIdle) != null)
                 {
                     actionData.invData.holdingEntitySoundID = -1;
                 }
@@ -72,7 +72,7 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
         player.MinEventContext.ItemActionData = actionData;
         player.MinEventContext.ItemInventoryData = actionData.invData;
         player.MinEventContext.ItemValue = actionData.invData.itemValue;
-        actionRanged.OnReloadSuccess(actionData);
+        OnReloadSuccess(actionRanged, actionData);
         player.FireEvent(MinEventTypes.onReloadStop);
         player.OnReloadEnd();
         player.inventory.CallOnToolbeltChangedInternal();
@@ -106,12 +106,12 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
         int magSize = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, actionData.invData.itemValue, (float)actionRanged.BulletsPerMagazine, player);
         int partialReloadCount = (int)EffectManager.GetValue(CustomEnums.PartialReloadCount, actionData.invData.itemValue, 1, player);
         actionData.reloadAmount = GetPartialReloadCount(player, ammo, magSize, partialReloadCount);
-        actionRanged.OnReloadSuccess(actionData);
+        OnReloadSuccess(actionRanged, actionData);
         if (actionData.reloadAmount > 0)
         {
             actionData.invData.itemValue.Meta = Utils.FastMin(actionData.invData.itemValue.Meta + actionData.reloadAmount, magSize);
             player.FireEvent(CustomEnums.onPartialReloadAmmoSuccess);
-            if (actionData.invData.item.Properties.Values[ItemClass.PropSoundIdle] != null)
+            if (actionData.invData.item.Properties.GetValue(ItemClass.PropSoundIdle) != null)
             {
                 actionData.invData.holdingEntitySoundID = -1;
             }
@@ -270,9 +270,10 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
             return;
         }
 
-        if (actionData.invData.item.Properties.Values[ItemClass.PropSoundIdle] != null && actionData.invData.holdingEntitySoundID >= 0)
+        string soundIdle = actionData.invData.item.Properties.GetValue(ItemClass.PropSoundIdle);
+        if (soundIdle != null && actionData.invData.holdingEntitySoundID >= 0)
         {
-            Audio.Manager.Stop(actionData.invData.holdingEntity.entityId, actionData.invData.item.Properties.Values[ItemClass.PropSoundIdle]);
+            Audio.Manager.Stop(actionData.invData.holdingEntity.entityId, soundIdle);
         }
         actionData.wasAiming = actionData.invData.holdingEntity.AimingGun;
         if (actionData.invData.holdingEntity.AimingGun && actionData.invData.item.Actions[1] is ItemActionZoom)
@@ -467,4 +468,12 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
     {
         enabled = false;
     }
+
+#if NotEditor
+    // 3.0 adds a CompleteReload method that does not fit our need
+    public static void OnReloadSuccess(ItemActionRanged self, ItemActionRanged.ItemActionDataRanged data)
+    {
+        data.invData.holdingEntity.inventory.holdingItemItemValue.RemoveMetaData(ItemActionRanged.scGunIsJammed);
+    }
+#endif
 }

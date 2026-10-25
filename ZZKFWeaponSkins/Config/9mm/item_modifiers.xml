@@ -1,0 +1,923 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configs>
+  <append xpath="/item_modifiers">
+    <item_modifier name="modKFSkin_9mm_SkinId_3004" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_3004" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_3004Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3004__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3004__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_3005" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_3005" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_3005Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3005__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3005__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_3006" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_3006" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_3006Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3006__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3006__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_3025" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_3025" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_3025Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3025__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3025__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_3026" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_3026" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_3026Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3026__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3026__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_3027" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_3027" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_3027Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3027__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3027__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_3362" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_3362" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_3362Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3362__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3362__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_3363" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_3363" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_3363Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3363__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3363__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_3364" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_3364" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_3364Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3364__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3364__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_3380" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_3380" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_3380Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3380__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3380__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_3381" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_3381" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_3381Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3381__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3381__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_3382" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_3382" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_3382Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3382__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3382__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_3389" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_3389" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_3389Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3389__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3389__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_3390" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_3390" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_3390Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3390__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3390__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_3391" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_3391" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_3391Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3391__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3391__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_3422" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_3422" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_3422Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3422__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3422__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_3982" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_3982" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_3982Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3982__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3982__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_3983" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_3983" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_3983Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3983__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3983__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_3984" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_3984" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_3984Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3984__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_3984__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_4003" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_4003" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_4003Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4003__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4003__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_4004" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_4004" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_4004Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4004__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4004__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_4005" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_4005" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_4005Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4005__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4005__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_4006" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_4006" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_4006Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4006__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4006__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_4007" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_4007" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_4007Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4007__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4007__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_4008" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_4008" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_4008Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4008__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4008__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_4308" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_4308" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_4308Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4308__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4308__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_4309" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_4309" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_4309Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4309__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4309__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_4310" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_4310" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_4310Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4310__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4310__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_4331" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_4331" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_4331Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4331__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4331__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_4334" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_4334" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_4334Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4334__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4334__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_4337" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_4337" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_4337Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4337__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4337__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_4340" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_4340" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_4340Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4340__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4340__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_4357" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_4357" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_4357Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4357__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4357__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_4358" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_4358" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_4358Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4358__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4358__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_4359" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_4359" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_4359Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4359__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_4359__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_5113" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_5113" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_5113Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_5113__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_5113__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_5114" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_5114" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_5114Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_5114__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_5114__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_5115" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_5115" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_5115Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_5115__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_5115__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_5379" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_5379" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_5379Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_5379__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_5379__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_5927" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_5927" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_5927Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_5927__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_5927__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_5928" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_5928" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_5928Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_5928__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_5928__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_5929" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_5929" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_5929Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_5929__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_5929__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_6294" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_6294" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_6294Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_6294__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_6294__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_6295" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_6295" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_6295Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_6295__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_6295__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_6296" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_6296" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_6296Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_6296__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_6296__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_6324" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_6324" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_6324Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_6324__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_6324__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_6932" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_6932" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_6932Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_6932__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_6932__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_6933" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_6933" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_6933Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_6933__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_6933__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_6934" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_6934" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_6934Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_6934__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_6934__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_7183" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_7183" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_7183Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_7183__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_7183__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_9343" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_9343" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_9343Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_9343__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_9343__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_9347" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_9347" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_9347Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_9347__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_9347__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_9640" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_9640" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_9640Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_9640__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_9640__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_9mm_SkinId_9644" installable_tags="kfSkin_gunKF9mm,kfSkin_gunKFDual9mm" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_9mm_SkinId_9644" />
+      <property name="DescriptionKey" value="modKFSkin_9mm_SkinId_9644Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKF9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_9644__9mmnew_m" />
+      </item_property_overrides>
+      <item_property_overrides name="gunKFDual9mm">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/9mm/kf_skin_9mm.unity3d?SkinId_9644__9mm_dual_m" />
+      </item_property_overrides>
+    </item_modifier>
+  </append>
+</configs>

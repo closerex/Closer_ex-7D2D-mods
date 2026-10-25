@@ -1,0 +1,243 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configs>
+  <append xpath="/item_modifiers">
+    <item_modifier name="modKFSkin_fnfal_SkinId_6898" installable_tags="kfSkin_gunKFFNFAL" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_fnfal_SkinId_6898" />
+      <property name="DescriptionKey" value="modKFSkin_fnfal_SkinId_6898Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFFNFAL">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/fnfal/kf_skin_fnfal.unity3d?SkinId_6898__fnfal_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_fnfal_SkinId_6920" installable_tags="kfSkin_gunKFFNFAL" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_fnfal_SkinId_6920" />
+      <property name="DescriptionKey" value="modKFSkin_fnfal_SkinId_6920Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFFNFAL">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/fnfal/kf_skin_fnfal.unity3d?SkinId_6920__fnfal_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_fnfal_SkinId_6921" installable_tags="kfSkin_gunKFFNFAL" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_fnfal_SkinId_6921" />
+      <property name="DescriptionKey" value="modKFSkin_fnfal_SkinId_6921Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFFNFAL">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/fnfal/kf_skin_fnfal.unity3d?SkinId_6921__fnfal_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_fnfal_SkinId_6922" installable_tags="kfSkin_gunKFFNFAL" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_fnfal_SkinId_6922" />
+      <property name="DescriptionKey" value="modKFSkin_fnfal_SkinId_6922Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFFNFAL">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/fnfal/kf_skin_fnfal.unity3d?SkinId_6922__fnfal_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_fnfal_SkinId_7169" installable_tags="kfSkin_gunKFFNFAL" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_fnfal_SkinId_7169" />
+      <property name="DescriptionKey" value="modKFSkin_fnfal_SkinId_7169Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFFNFAL">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/fnfal/kf_skin_fnfal.unity3d?SkinId_7169__fnfal_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_fnfal_SkinId_7801" installable_tags="kfSkin_gunKFFNFAL" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_fnfal_SkinId_7801" />
+      <property name="DescriptionKey" value="modKFSkin_fnfal_SkinId_7801Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFFNFAL">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/fnfal/kf_skin_fnfal.unity3d?SkinId_7801__fnfal_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_fnfal_SkinId_7802" installable_tags="kfSkin_gunKFFNFAL" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_fnfal_SkinId_7802" />
+      <property name="DescriptionKey" value="modKFSkin_fnfal_SkinId_7802Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFFNFAL">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/fnfal/kf_skin_fnfal.unity3d?SkinId_7802__fnfal_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_fnfal_SkinId_7803" installable_tags="kfSkin_gunKFFNFAL" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_fnfal_SkinId_7803" />
+      <property name="DescriptionKey" value="modKFSkin_fnfal_SkinId_7803Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFFNFAL">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/fnfal/kf_skin_fnfal.unity3d?SkinId_7803__fnfal_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_fnfal_SkinId_7831" installable_tags="kfSkin_gunKFFNFAL" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_fnfal_SkinId_7831" />
+      <property name="DescriptionKey" value="modKFSkin_fnfal_SkinId_7831Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFFNFAL">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/fnfal/kf_skin_fnfal.unity3d?SkinId_7831__fnfal_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_fnfal_SkinId_9304" installable_tags="kfSkin_gunKFFNFAL" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_fnfal_SkinId_9304" />
+      <property name="DescriptionKey" value="modKFSkin_fnfal_SkinId_9304Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFFNFAL">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/fnfal/kf_skin_fnfal.unity3d?SkinId_9304__fnfal_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_fnfal_SkinId_9305" installable_tags="kfSkin_gunKFFNFAL" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_fnfal_SkinId_9305" />
+      <property name="DescriptionKey" value="modKFSkin_fnfal_SkinId_9305Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFFNFAL">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/fnfal/kf_skin_fnfal.unity3d?SkinId_9305__fnfal_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_fnfal_SkinId_9306" installable_tags="kfSkin_gunKFFNFAL" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_fnfal_SkinId_9306" />
+      <property name="DescriptionKey" value="modKFSkin_fnfal_SkinId_9306Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFFNFAL">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/fnfal/kf_skin_fnfal.unity3d?SkinId_9306__fnfal_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_fnfal_SkinId_9307" installable_tags="kfSkin_gunKFFNFAL" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_fnfal_SkinId_9307" />
+      <property name="DescriptionKey" value="modKFSkin_fnfal_SkinId_9307Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFFNFAL">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/fnfal/kf_skin_fnfal.unity3d?SkinId_9307__fnfal_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_fnfal_SkinId_9308" installable_tags="kfSkin_gunKFFNFAL" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_fnfal_SkinId_9308" />
+      <property name="DescriptionKey" value="modKFSkin_fnfal_SkinId_9308Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFFNFAL">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/fnfal/kf_skin_fnfal.unity3d?SkinId_9308__fnfal_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_fnfal_SkinId_9309" installable_tags="kfSkin_gunKFFNFAL" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_fnfal_SkinId_9309" />
+      <property name="DescriptionKey" value="modKFSkin_fnfal_SkinId_9309Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFFNFAL">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/fnfal/kf_skin_fnfal.unity3d?SkinId_9309__fnfal_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_fnfal_SkinId_9593" installable_tags="kfSkin_gunKFFNFAL" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_fnfal_SkinId_9593" />
+      <property name="DescriptionKey" value="modKFSkin_fnfal_SkinId_9593Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFFNFAL">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/fnfal/kf_skin_fnfal.unity3d?SkinId_9593__fnfal_m" />
+      </item_property_overrides>
+    </item_modifier>
+    <item_modifier name="modKFSkin_fnfal_SkinId_9597" installable_tags="kfSkin_gunKFFNFAL" modifier_tags="dye,kfWeaponSkin" blocked_tags="noMods" type="attachment" cosmetic_install_chance="0">
+      <property name="Extends" value="modGeneralMaster" param1="CustomIcon" />
+      <property name="CreativeMode" value="Player" />
+      <property name="CustomIcon" value="modKFSkin_fnfal_SkinId_9597" />
+      <property name="DescriptionKey" value="modKFSkin_fnfal_SkinId_9597Desc" />
+      <property name="Material" value="Mpaint" />
+      <property name="Weight" value="20" />
+      <property name="EconomicValue" value="50" />
+      <property name="SoundPickup" value="dye_grab" />
+      <property name="SoundPlace" value="dye_place" />
+      <item_property_overrides name="gunKFFNFAL">
+        <property name="KFMaterialReplacer" value="#@modfolder(KFWeaponSkins):Resources/fnfal/kf_skin_fnfal.unity3d?SkinId_9597__fnfal_m" />
+      </item_property_overrides>
+    </item_modifier>
+  </append>
+</configs>
