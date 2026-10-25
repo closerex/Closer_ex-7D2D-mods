@@ -5,5 +5,5 @@
 	<DisplayName value="Allow Combo Keys" />
 	<Description value="Allow users to bind combo keys to actions." />
 	<Author value="closer_ex" />
-	<Version value="1.0.0" />
+	<Version value="1.1.0" />
 </xml>
