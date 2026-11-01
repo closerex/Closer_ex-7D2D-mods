@@ -76,16 +76,5 @@
     <Compile Include="..\LuaRuntimeProbe\Scripts\Harness\GcProbe.cs" Link="linked\Harness\GcProbe.cs" />
   </ItemGroup>
 
-  <Target Name="CopyNativeLua" AfterTargets="Build">
-    <ItemGroup>
-      <NativeLua Include="$(PkgKeraLua)\runtimes\win-x64\native\lua54.dll" Condition="Exists('$(PkgKeraLua)\runtimes\win-x64\native\lua54.dll')" />
-      <NativeLua Include="$(XLuaNativePath)" Condition="'$(WithXLua)' == 'true' and Exists('$(XLuaNativePath)')" />
-    </ItemGroup>
-    <Copy SourceFiles="@(NativeLua)" DestinationFolder="$(TargetDir)native" SkipUnchangedFiles="true" />
-    <Error Condition="!Exists('$(TargetDir)native\lua54.dll')"
-           Text="OfflineProbe: native lua54.dll was not staged into $(TargetDir)native" />
-    <Error Condition="'$(WithXLua)' == 'true' and !Exists('$(TargetDir)native\xlua.dll')"
-           Text="OfflineProbe: WithXLua=true but native xlua.dll was not staged into $(TargetDir)native" />
-  </Target>
 
 </Project>
