@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using KFCommonUtilityLib;
 using System;
 using System.Collections.Generic;
@@ -69,7 +69,7 @@ namespace KFCommonUtilityLib
                             //statcurrent
                             for (int j = i - 1; j >= 0; j--)
                             {
-                                if (codes[j].opcode == OpCodes.Ldarg_1)
+                                if (codes[j].opcode == OpCodes.Ldarg_0 && codes[j + 1].LoadsField(fld_attackaction))
                                 {
                                     Label lbl = generator.DefineLabel();
                                     var lbls_original = codes[j].ExtractLabels();
@@ -78,17 +78,15 @@ namespace KFCommonUtilityLib
                                     {
                                         CodeInstruction.LoadLocal(lbd_interface.LocalIndex).WithLabels(lbls_original),
                                         new CodeInstruction(OpCodes.Brfalse, lbl),
-                                        CodeInstruction.LoadArgument(1),
                                         CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
                                         CodeInstruction.LoadArgument(0),
                                         new CodeInstruction(OpCodes.Call, mtd_localplayer),
                                         new CodeInstruction(OpCodes.Ldfld, fld_inventory),
                                         new CodeInstruction(OpCodes.Callvirt, mtd_holdingitemdata),
                                         new CodeInstruction(OpCodes.Callvirt, mtd_getstat),
-                                        new CodeInstruction(OpCodes.Stind_Ref),
-                                        new CodeInstruction(OpCodes.Br, codes[j - 1].operand)
+                                        new CodeInstruction(OpCodes.Br, codes[i + 2].operand)
                                     });
-                                    i += 11;
+                                    i += 9;
                                     Log.Out("statcurrent display patched!");
                                     break;
                                 }
