@@ -435,6 +435,44 @@
     <None Include="KFAttached\Animation\DebugScripts\AnimatorActionIndexDebug.cs.meta">
       <DependentUpon>AnimatorActionIndexDebug.cs</DependentUpon>
     </None>
+    <None Include="KFAttached\Animation\Trails.meta" />
+    <None Include="KFAttached\Animation\MonoBehaviours\KFIonTransientFlameShutdown.cs.meta">
+      <DependentUpon>KFIonTransientFlameShutdown.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\MonoBehaviours\KFMedicVfxPreviewPlayer.cs" />
+    <None Include="KFAttached\Animation\MonoBehaviours\KFMedicVfxPreviewPlayer.cs.meta">
+      <DependentUpon>KFMedicVfxPreviewPlayer.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\MonoBehaviours\KFParticleCollisionSpawn.cs.meta">
+      <DependentUpon>KFParticleCollisionSpawn.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\MonoBehaviours\KFParticleCylinderBirth.cs.meta">
+      <DependentUpon>KFParticleCylinderBirth.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\MonoBehaviours\KFParticleUniformRangeBirthSize.cs.meta">
+      <DependentUpon>KFParticleUniformRangeBirthSize.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\MonoBehaviours\KFParticleWorldBurstVelocity.cs.meta">
+      <DependentUpon>KFParticleWorldBurstVelocity.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\MonoBehaviours\KFUniformRangeSampler.cs.meta">
+      <DependentUpon>KFUniformRangeSampler.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\Trails\KFAnimTrailData.cs.meta">
+      <DependentUpon>KFAnimTrailData.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\Trails\KFAnimTrailMesh.cs.meta">
+      <DependentUpon>KFAnimTrailMesh.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\Trails\KFAnimTrailPlayer.cs.meta">
+      <DependentUpon>KFAnimTrailPlayer.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\Trails\KFAnimTrailStyleSet.cs.meta">
+      <DependentUpon>KFAnimTrailStyleSet.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\Trails\KFWeaponTrailColorController.cs.meta">
+      <DependentUpon>KFWeaponTrailColorController.cs</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Harmony\AudioPatches.cs" />
@@ -483,6 +521,17 @@
     <Compile Include="KFAttached\Misc\AudioClipCollection.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\IAnimatorWrapper.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\IPlayableGraphRelated.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\KFIonTransientFlameShutdown.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\KFParticleCollisionSpawn.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\KFParticleCylinderBirth.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\KFParticleUniformRangeBirthSize.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\KFParticleWorldBurstVelocity.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\KFUniformRangeSampler.cs" />
+    <Compile Include="KFAttached\Animation\Trails\KFAnimTrailData.cs" />
+    <Compile Include="KFAttached\Animation\Trails\KFAnimTrailMesh.cs" />
+    <Compile Include="KFAttached\Animation\Trails\KFAnimTrailPlayer.cs" />
+    <Compile Include="KFAttached\Animation\Trails\KFAnimTrailStyleSet.cs" />
+    <Compile Include="KFAttached\Animation\Trails\KFWeaponTrailColorController.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationAmmoUpdateState.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationCustomMeleeAttackState.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\MeleeWindowDamage.cs" />
