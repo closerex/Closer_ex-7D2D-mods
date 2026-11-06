@@ -1,4 +1,4 @@
-﻿#if NotEditor
+#if NotEditor
 using GearsAPI.Settings.Global;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Gears;
@@ -189,14 +189,14 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
     private string[] tags;
 
     private Animator animator;
-    private List<CameraCurveData> list_curves = new List<CameraCurveData>();
+    private List<CameraCurveData> list_curves = new();
     private static float defaultWeight = 1f;
 #if NotEditor
     private class WeightHolder
     {
         public bool enabled = false;
         public float weight = 1f;
-        public Dictionary<int, float> dict = new Dictionary<int, float>();
+        public Dictionary<int, float> dict = new();
 
         public float GetWeightRaw(int weightTagHash)
         {
@@ -225,7 +225,7 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
     private EntityPlayerLocal player;
     private WeightHolder weightHolder;
     private bool weightHolderChecked;
-    private static readonly Dictionary<string, WeightHolder> dict_user_weights = new Dictionary<string, WeightHolder>();
+    private static readonly Dictionary<string, WeightHolder> dict_user_weights = new();
     private static readonly string SavePath = Path.Combine(GameIO.GetUserGameDataDir(), "KFLibSettings", "CameraAnimationIntensitySettings.json");
     private static readonly string SavePathDir = Path.GetDirectoryName(SavePath);
 #else
@@ -285,21 +285,11 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
     public static void InitModSettings(IModGlobalSettings modSettings)
     {
         var tab = modSettings.GetTab("CameraAnimationSettings");
-        var defaultWeightSetting = tab.GetCategory("Default").GetSetting("CameraAnimationIntensityMultiplier") as ISliderGlobalSetting;
-        if (float.TryParse(defaultWeightSetting?.CurrentValue, out var weight))
+        var defaultWeightSetting = tab.GetCategory("Default").GetSetting("CameraAnimationIntensityMultiplier") as ISliderGlobalSetting<float>;
+        defaultWeight = defaultWeightSetting?.SettingValue ?? 1f;
+        defaultWeightSetting.OnValueChanged += static (settings, value) =>
         {
-            defaultWeight = weight;
-        }
-        else
-        {
-            defaultWeight = 1f;
-        }
-        defaultWeightSetting.OnSettingChanged += static (settings, value) =>
-        {
-            if (float.TryParse(value, out var newWeight))
-            {
-                defaultWeight = newWeight;
-            }
+            defaultWeight = value;
         };
         GearsImpl.OnGlobalSettingsSaved += SaveUserWeights;
         GearsImpl.OnGlobalSettingsOpened += CreateSettingEntries;
@@ -400,7 +390,7 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
             {
                 return;
             }
-            item = player.inventory?.slots?[targets.SlotIndex]?.item;
+            item = player.inventory?.Hand?.slotDatas?[targets.SlotIndex]?.item;
         }
         
         if (string.IsNullOrEmpty(item?.Name))
@@ -418,50 +408,44 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
         }
 
         string itemLocalizedName = item.GetLocalizedItemName();
-        var currentWeaponIndicator = category.CreateSetting<ISelectorGlobalSetting>("CurrentWeapon", "kflibSettingCurrentWeaponName");
-        currentWeaponIndicator.SetAllowedValues(itemLocalizedName);
-        currentWeaponIndicator.CurrentValue = itemLocalizedName;
+        var currentWeaponIndicator = category.CreateSetting<ISelectorGlobalSetting<string>>("CurrentWeapon", "kflibSettingCurrentWeaponName");
+        currentWeaponIndicator.SetAllowedValues(new[] { itemLocalizedName });
+        currentWeaponIndicator.SettingValue = currentWeaponIndicator.SelectedValue = itemLocalizedName;
 
-        var enableOverride = category.CreateSetting<ISwitchGlobalSetting>("EnableOverride", "kflibSettingEnableOverrideName");
-        enableOverride.TooltipKey = "kflibSettingEnableOverrideDesc";
+        var enableOverride = category.CreateSetting<ISwitchGlobalSetting<string>>("EnableOverride", "kflibSettingEnableOverrideName");
+        enableOverride.DescriptionKey = "kflibSettingEnableOverrideDesc";
         enableOverride.SetSwitchValues("Disabled", "Enabled");
-        enableOverride.CurrentValue = holder.enabled ? "Enabled" : "Disabled";
-        enableOverride.OnSettingChanged += (_, value) =>
+        enableOverride.SettingValue = enableOverride.SelectedValue = holder.enabled ? "Enabled" : "Disabled";
+        enableOverride.OnValueChanged += (_, value) =>
         {
             holder.enabled = value == "Enabled";
         };
 
-        var defaultWeight = category.CreateSetting<ISliderGlobalSetting>("DefaultWeight", "kflibSettingCAIMultiplierName");
-        defaultWeight.TooltipKey = "kflibSettingDefaultWeightDesc";
+        var defaultWeight = category.CreateSetting<ISliderGlobalSetting<float>>("DefaultWeight", "kflibSettingCAIMultiplierName");
+        defaultWeight.DescriptionKey = "kflibSettingDefaultWeightDesc";
         defaultWeight.SetAllowedValues(0.01f, 0f, 1f);
-        defaultWeight.CurrentValue = holder.weight.ToString();
-        defaultWeight.FormatterString = "0.00";
-        defaultWeight.OnSettingChanged += (_, value) =>
+        defaultWeight.SettingValue = defaultWeight.SelectedValue = holder.weight;
+        defaultWeight.UiFormatter = "0.00";
+        defaultWeight.OnValueChanged += (_, value) =>
         {
-            if (float.TryParse(value, out var weight))
-            {
-                holder.weight = weight;
-            }
+            holder.weight = value;
         };
 
         foreach (var tag in script.tags)
         {
             int tagHash = Animator.StringToHash(tag);
             string descKey = $"kflibSettingCAI{tag}Name", tooltipKey = $"kflibSettingCAI{tag}Desc";
-            var tagOverride = category.CreateSetting<ISliderGlobalSetting>(tag, Localization.Exists(descKey) ? descKey : tag);
+            var tagOverride = category.CreateSetting<ISliderGlobalSetting<float>>(tag, Localization.Exists(descKey) ? descKey : tag);
             if (Localization.Exists(tooltipKey))
             {
-                tagOverride.TooltipKey = tooltipKey;
+                tagOverride.DescriptionKey = tooltipKey;
             }
             tagOverride.SetAllowedValues(0.01f, 0f, 1f);
-            tagOverride.CurrentValue = holder.GetWeightRaw(tagHash).ToString();
-            tagOverride.FormatterString = "0.00";
-            tagOverride.OnSettingChanged += (_, value) =>
+            tagOverride.SettingValue = tagOverride.SelectedValue = holder.GetWeightRaw(tagHash);
+            tagOverride.UiFormatter = "0.00";
+            tagOverride.OnValueChanged += (_, value) =>
             {
-                if (float.TryParse(value, out var weight))
-                {
-                    holder.SetWeight(tagHash, weight);
-                }
+                holder.SetWeight(tagHash, value);
             };
         }
     }
@@ -521,7 +505,7 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
             }
             else
             {
-                var itemName = player.inventory?.slots?[targets.SlotIndex]?.item?.Name;
+                var itemName = player.inventory?.Hand?.slotDatas?[targets.SlotIndex]?.item?.Name;
                 if (!string.IsNullOrEmpty(itemName))
                 {
                     dict_user_weights.TryGetValue(itemName, out weightHolder);

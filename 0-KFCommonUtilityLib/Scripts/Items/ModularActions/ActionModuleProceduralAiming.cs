@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using GearsAPI.Settings.Global;
 using HarmonyLib;
 using KFCommonUtilityLib;
@@ -86,17 +86,17 @@ public static class AimingSettings
     {
         var category = modSettings.GetTab("MiscSettings").GetCategory("AimCorrection");
 
-        var enableSetting = category.GetSetting("AimCorrectionType") as ISelectorGlobalSetting;
-        if (!Enum.TryParse(enableSetting.CurrentValue, out currentMode))
+        var enableSetting = category.GetSetting("AimCorrectionType") as ISelectorGlobalSetting<string>;
+        if (!Enum.TryParse(enableSetting.SettingValue, out currentMode))
         {
-            Log.Warning($"Failed to parse aim correction mode: {enableSetting.CurrentValue}");
+            Log.Warning($"Failed to parse aim correction mode: {enableSetting.SettingValue}");
         }
 
-        enableSetting.OnSettingChanged += (setting, newValue) =>
+        enableSetting.OnValueChanged += (setting, newValue) =>
         {
-            if (!Enum.TryParse(enableSetting.CurrentValue, out currentMode))
+            if (!Enum.TryParse(enableSetting.SettingValue, out currentMode))
             {
-                Log.Warning($"Failed to parse aim correction mode: {enableSetting.CurrentValue}");
+                Log.Warning($"Failed to parse aim correction mode: {enableSetting.SettingValue}");
             }
 
             var player = GameManager.Instance?.World?.GetPrimaryPlayer();

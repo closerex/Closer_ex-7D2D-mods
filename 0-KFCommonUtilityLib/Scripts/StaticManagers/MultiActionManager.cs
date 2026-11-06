@@ -1,7 +1,7 @@
-﻿using KFCommonUtilityLib.Scripts.ConsoleCmd;
-using KFCommonUtilityLib.Scripts.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using KFCommonUtilityLib.Scripts.ConsoleCmd;
+using KFCommonUtilityLib.Scripts.Utilities;
 using UniLinq;
 using UnityEngine;
 
@@ -65,15 +65,15 @@ namespace KFCommonUtilityLib
             return metaIndice[mode];
         }
 
-        public unsafe int GetMetaIndexForActionIndex(int actionIndex)
+        public readonly unsafe int GetMetaIndexForActionIndex(int actionIndex)
         {
             return metaIndice[GetModeForAction(actionIndex)];
         }
 
-        public int GetModeForAction(int actionIndex)
+        public readonly int GetModeForAction(int actionIndex)
         {
             int mode = -1;
-            for (int i = 0; i < MultiActionIndice.MAX_ACTION_COUNT; i++)
+            for (int i = 0; i < MAX_ACTION_COUNT; i++)
             {
                 unsafe
                 {
@@ -199,7 +199,7 @@ namespace KFCommonUtilityLib
 #if DEBUG
                     else
                     {
-                        Log.Out($"{MultiActionUtils.ActionMetaNames[metaIndex]}: {itemValueTemp.GetMetadata(MultiActionUtils.ActionMetaNames[metaIndex]).ToString()}");
+                        Log.Out($"{MultiActionUtils.ActionMetaNames[metaIndex]}: {itemValueTemp.GetMetadata(MultiActionUtils.ActionMetaNames[metaIndex])}");
                     }
 #endif
                     if (!itemValueTemp.HasMetadata(MultiActionUtils.ActionSelectedAmmoNames[metaIndex]))
@@ -209,7 +209,7 @@ namespace KFCommonUtilityLib
 #if DEBUG
                     else
                     {
-                        Log.Out($"{MultiActionUtils.ActionSelectedAmmoNames[metaIndex]}: {itemValueTemp.GetMetadata(MultiActionUtils.ActionSelectedAmmoNames[metaIndex]).ToString()}");
+                        Log.Out($"{MultiActionUtils.ActionSelectedAmmoNames[metaIndex]}: {itemValueTemp.GetMetadata(MultiActionUtils.ActionSelectedAmmoNames[metaIndex])}");
                     }
 #endif
                 }
@@ -293,7 +293,7 @@ namespace KFCommonUtilityLib
             bool[] disableStates = CommonUtilityPatch.GetUnusableItemEntries(magazineItemNames, _epl, CurActionIndex);
             for (int i = 0; i < magazineItemNames.Length; i++)
             {
-                ItemClass ammoClass = ItemClass.GetItemClass(magazineItemNames[i], false);
+                ItemClass ammoClass = ItemClass.GetItemClass(magazineItemNames[i]);
                 if (ammoClass != null && (!_epl.isHeadUnderwater || ammoClass.UsableUnderwater) && !disableStates[i])
                 {
                     int ammoCount = _xuiRadialWindow.xui.PlayerInventory.GetItemCount(ammoClass.Id);
@@ -315,11 +315,9 @@ namespace KFCommonUtilityLib
             {
                 return false;
             }
-            else
-            {
-                lastDisplayMode = CurMode;
-                return true;
-            }
+
+            lastDisplayMode = CurMode;
+            return true;
         }
 
         public bool IsActionUnlocked(int actionIndex)
@@ -333,12 +331,12 @@ namespace KFCommonUtilityLib
     public static class MultiActionManager
     {
         //clear on game load
-        private static readonly Dictionary<int, MultiActionMapping> dict_mappings = new Dictionary<int, MultiActionMapping>();
-        private static readonly Dictionary<int, MultiActionIndice> dict_indice = new Dictionary<int, MultiActionIndice>();
-        private static readonly Dictionary<int, FastTags<TagGroup.Global>[]> dict_item_action_exclude_tags = new Dictionary<int, FastTags<TagGroup.Global>[]>();
-        private static readonly Dictionary<int, int[][]> dict_item_action_exclude_mod_property = new Dictionary<int, int[][]>();
-        private static readonly Dictionary<int, int[][]> dict_item_action_exclude_mod_passive = new Dictionary<int, int[][]>();
-        private static readonly Dictionary<int, int[][]> dict_item_action_exclude_mod_trigger = new Dictionary<int, int[][]>();
+        private static readonly Dictionary<int, MultiActionMapping> dict_mappings = new();
+        private static readonly Dictionary<int, MultiActionIndice> dict_indice = new();
+        private static readonly Dictionary<int, FastTags<TagGroup.Global>[]> dict_item_action_exclude_tags = new();
+        private static readonly Dictionary<int, int[][]> dict_item_action_exclude_mod_property = new();
+        private static readonly Dictionary<int, int[][]> dict_item_action_exclude_mod_passive = new();
+        private static readonly Dictionary<int, int[][]> dict_item_action_exclude_mod_trigger = new();
 
         //should set to true when:
         //mode switch input received;
@@ -388,7 +386,7 @@ namespace KFCommonUtilityLib
                         }
                         properties[i] = str.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                                            .Where(static s => !string.IsNullOrEmpty(s))
-                                           .Select(static s => ItemClass.GetItemClass(s, false))
+                                           .Select(static s => ItemClass.GetItemClass(s))
                                            .Where(static _item => _item != null)
                                            .Select(static _item => _item.Id)
                                            .ToArray();
@@ -403,7 +401,7 @@ namespace KFCommonUtilityLib
                         }
                         passives[i] = str.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                                          .Where(static s => !string.IsNullOrEmpty(s))
-                                         .Select(static s => ItemClass.GetItemClass(s, false))
+                                         .Select(static s => ItemClass.GetItemClass(s))
                                          .Where(static _item => _item != null)
                                          .Select(static _item => _item.Id)
                                          .ToArray();
@@ -418,7 +416,7 @@ namespace KFCommonUtilityLib
                         }
                         triggers[i] = str.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                                          .Where(static s => !string.IsNullOrEmpty(s))
-                                         .Select(static s => ItemClass.GetItemClass(s, false))
+                                         .Select(static s => ItemClass.GetItemClass(s))
                                          .Where(static _item => _item != null)
                                          .Select(static _item => _item.Id)
                                          .ToArray();
@@ -559,7 +557,7 @@ namespace KFCommonUtilityLib
             return mapping;
         }
 
-        internal static float inputCD = 0;
+        internal static float inputCD;
         internal static void UpdateLocalInput(EntityPlayerLocal player, PlayerActionsLocal localActions, bool isUIOpen, float _dt)
         {
             if (inputCD > 0)

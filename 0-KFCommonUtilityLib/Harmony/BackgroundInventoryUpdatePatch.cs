@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 
 namespace KFCommonUtilityLib.Harmony
 {
@@ -19,9 +19,9 @@ namespace KFCommonUtilityLib.Harmony
             BackgroundInventoryUpdateManager.UnregisterUpdater(__instance);
         }
 
-        [HarmonyPatch(typeof(Inventory), nameof(Inventory.OnUpdate))]
+        [HarmonyPatch(typeof(Hand), nameof(Hand.OnUpdate))]
         [HarmonyPostfix]
-        private static void Postfix_OnUpdate_Inventory(Inventory __instance)
+        private static void Postfix_OnUpdate_Hand(Hand __instance)
         {
             BackgroundInventoryUpdateManager.Update(__instance.entity);
         }
@@ -35,10 +35,10 @@ namespace KFCommonUtilityLib.Harmony
 
         [HarmonyPatch(typeof(EntityAlive), nameof(EntityAlive.AttachToEntity))]
         [HarmonyPostfix]
-        private static void Postfix_AttachToEntity_EntityAlive(EntityAlive __instance)
+        private static void Postfix_AttachToEntity_EntityAlive(EntityAlive __instance, int __result)
         {
-            //BackgroundInventoryUpdateManager.DisableUpdater(__instance);
-            BackgroundInventoryUpdateManager.UnregisterUpdater(__instance);
+            if (__result >= 0)
+                BackgroundInventoryUpdateManager.UnregisterUpdater(__instance);
         }
 
         [HarmonyPatch(typeof(EntityAlive), nameof(EntityAlive.Detach))]
@@ -49,12 +49,13 @@ namespace KFCommonUtilityLib.Harmony
             {
                 return;
             }
-            if (__instance.inventory != null && __instance.inventory.slots != null)
+            if (__instance.inventory != null && __instance.inventory.Hand.slotDatas != null)
             {
-                for (int i = 0; i < __instance.inventory.PUBLIC_SLOTS; i++)
+                var slotDatas = __instance.inventory.Hand.slotDatas;
+                for (int i = 0; i < slotDatas.Length; i++)
                 {
-                    ItemInventoryData invData = __instance.inventory.slots[i];
-                    if (invData != null && invData.actionData != null)
+                    ItemInventoryData invData = slotDatas[i];
+                    if (invData is { actionData: not null })
                     {
                         for (int j = 0; j < invData.actionData.Count; j++)
                         {

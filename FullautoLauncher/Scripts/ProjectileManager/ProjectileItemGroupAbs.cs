@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace FullautoLauncher.Scripts.ProjectileManager
@@ -16,9 +16,10 @@ namespace FullautoLauncher.Scripts.ProjectileManager
 
     public abstract class ProjectileItemGroupAbs<T> : IProjectileItemGroup where T : ParameterHolderAbs
     {
-        protected readonly Queue<T> queue_pool_projectile = new Queue<T>();
-        protected readonly Queue<Transform> queue_pool_sticky = new Queue<Transform>();
-        protected readonly Dictionary<int, HashSet<T>> dict_fired_projectiles = new Dictionary<int, HashSet<T>>();
+        protected readonly Queue<T> queue_pool_projectile = new();
+        protected readonly Queue<Transform> queue_pool_sticky = new();
+        private readonly Dictionary<Transform, AssetManagement.InstanceHandle<GameObject>> stickyHandles = new();
+        protected readonly Dictionary<int, HashSet<T>> dict_fired_projectiles = new();
         protected readonly ItemClass item;
         protected readonly int maxPoolCount = 1000;
         protected readonly int maxStickyCount = 500;
@@ -34,9 +35,23 @@ namespace FullautoLauncher.Scripts.ProjectileManager
 
         private Transform CreateStickyTransform()
         {
-            var trans = item.CloneModel(GameManager.Instance.World, new ItemValue(item.Id), Vector3.zero, CustomProjectileManager.CustomProjectileParent);
-            Utils.SetLayerRecursively(trans.gameObject, 13);
-            return trans;
+            var handle = item.CloneModel(new ItemValue(item.Id), CustomProjectileManager.CustomProjectileParent, BlockShape.MeshPurpose.World);
+            if (!handle.Instance)
+            {
+                throw new System.InvalidOperationException($"Cannot create sticky projectile model for {item.Name}.");
+            }
+            try
+            {
+                var trans = handle.Instance.transform;
+                Utils.SetLayerRecursively(handle.Instance, 13);
+                stickyHandles.Add(trans, handle);
+                return trans;
+            }
+            catch
+            {
+                handle.Destroy();
+                throw;
+            }
         }
 
         public Transform GetStickyTransform()
@@ -54,6 +69,18 @@ namespace FullautoLauncher.Scripts.ProjectileManager
             {
                 return;
             }
+            if (!stickyHandles.ContainsKey(sticky))
+            {
+                // A native projectile of this item can also be collected into our pool.
+                // Transfer its lease: ProjectileMoveScript.OnDestroy releases assetHandle.
+                var script = sticky.GetComponent<ProjectileMoveScript>();
+                var handle = script != null ? script.assetHandle : default;
+                if (script != null)
+                {
+                    script.assetHandle = default;
+                }
+                stickyHandles.Add(sticky, handle.Instance ? handle : new AssetManagement.InstanceHandle<GameObject>(sticky.gameObject));
+            }
             sticky.gameObject.SetActive(false);
             sticky.parent = CustomProjectileManager.CustomProjectileParent;
             queue_pool_sticky.Enqueue(sticky);
@@ -61,14 +88,15 @@ namespace FullautoLauncher.Scripts.ProjectileManager
 
         public virtual void Cleanup()
         {
-            foreach (var sticky in queue_pool_sticky)
-            {
-                if (sticky != null)
-                {
-                    Object.Destroy(sticky.gameObject);
-                }
-            }
             queue_pool_sticky.Clear();
+            // Include active/stuck instances, not only those currently in the pool.
+            // A handle must release even when its Unity instance was destroyed elsewhere.
+            var handles = new List<AssetManagement.InstanceHandle<GameObject>>(stickyHandles.Values);
+            stickyHandles.Clear();
+            foreach (var handle in handles)
+            {
+                handle.Destroy();
+            }
         }
 
         public void Pool(int count)
@@ -114,7 +142,7 @@ namespace FullautoLauncher.Scripts.ProjectileManager
 
         public abstract void Update();
 
-        private readonly List<T> list_remove = new List<T>();
+        private readonly List<T> list_remove = new();
         public void FixedUpdate()
         {
             if (GameManager.Instance == null || GameManager.Instance.IsPaused() || GameManager.Instance.World == null)

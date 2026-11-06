@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,10 +30,6 @@ namespace KFCommonUtilityLib
             return this;
         }
 
-        public override int GetLength()
-        {
-            return 20;
-        }
 
         public override void ProcessPackage(World _world, GameManager _callbacks)
         {

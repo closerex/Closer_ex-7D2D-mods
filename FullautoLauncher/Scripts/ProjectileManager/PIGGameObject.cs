@@ -1,4 +1,4 @@
-﻿using FullautoLauncher.Scripts.ProjectileManager;
+using FullautoLauncher.Scripts.ProjectileManager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +33,11 @@ public class PIGGameObject : ProjectileItemGroupAbs<PHGameObject>
 
     public override void Pool(PHGameObject par)
     {
+        if (queue_pool_projectile.Count >= maxPoolCount)
+        {
+            par.Dispose();
+            return;
+        }
         base.Pool(par);
         par.Transform.gameObject.SetActive(false);
         par.Transform.parent = CustomProjectileManager.CustomProjectileParent;
@@ -45,8 +50,12 @@ public class PIGGameObject : ProjectileItemGroupAbs<PHGameObject>
 
     protected override PHGameObject Create(ProjectileParams par)
     {
-        var trans = item.CloneModel(GameManager.Instance.World, new ItemValue(item.Id), Vector3.zero, CustomProjectileManager.CustomProjectileParent);
-        return new PHGameObject(trans, par);
+        var handle = item.CloneModel(new ItemValue(item.Id), CustomProjectileManager.CustomProjectileParent, BlockShape.MeshPurpose.World);
+        if (!handle.Instance)
+        {
+            throw new InvalidOperationException($"Cannot create projectile model for {item.Name}.");
+        }
+        return new PHGameObject(handle, par);
     }
 }
 

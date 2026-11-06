@@ -73,7 +73,7 @@ public class ActionModuleInterruptReload
             {
                 if (ConsoleCmdReloadLog.LogInfo)
                     Log.Out("instant firing cancel prefix!");
-                ItemActionRanged.ItemActionDataRanged rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
+                ItemActionRanged.ItemActionDataRanged rangedData = (ItemActionRanged.ItemActionDataRanged)_actionData;
                 __state.executed = true;
                 __state.isReloading = rangedData.isReloading;
                 __state.isWeaponReloading = rangedData.isWeaponReloading;
@@ -100,7 +100,7 @@ public class ActionModuleInterruptReload
         {
             if (ConsoleCmdReloadLog.LogInfo)
                 Log.Out("instant firing cancel postfix!");
-            ItemActionRanged.ItemActionDataRanged rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
+            ItemActionRanged.ItemActionDataRanged rangedData = (ItemActionRanged.ItemActionDataRanged)_actionData;
             rangedData.isReloading = __state.isReloading;
             rangedData.isWeaponReloading = __state.isWeaponReloading;
             if (__customData.itemAnimator.IsValid && __customData.eventBridge)
@@ -128,7 +128,7 @@ public class ActionModuleInterruptReload
     [HarmonyPatch(nameof(ItemAction.ItemActionEffects)), MethodTargetPrefix]
     public void Prefix_ItemActionEffects(ItemActionData _actionData, int _firingState, InterruptData __customData)
     {
-        var rangedData = _actionData as ItemActionRanged.ItemActionDataRanged;
+        var rangedData = (ItemActionRanged.ItemActionDataRanged)_actionData;
         if (_firingState != 0 && (rangedData.isReloading || rangedData.isWeaponReloading) && rangedData.invData.holdingEntity is not EntityPlayerLocal && __customData.eventBridge)
         {
             __customData.eventBridge.OnReloadEnd();
@@ -167,7 +167,7 @@ internal static class ReloadInterruptionPatches
     private static bool Prefix_ExecuteAction_ItemClass(ItemClass __instance, int _actionIdx, ItemInventoryData _data, bool _bReleased, PlayerActionsLocal _playerActions)
     {
         ItemAction curAction = __instance.Actions[_actionIdx];
-        if (curAction is ItemActionRanged || curAction is ItemActionZoom)
+        if (curAction is ItemActionRanged or ItemActionZoom)
         {
             int curActionIndex = MultiActionManager.GetActionIndexForEntity(_data.holdingEntity);
             var rangedAction = (ItemActionRanged)__instance.Actions[curActionIndex];
@@ -236,7 +236,7 @@ internal static class ReloadInterruptionPatches
 
         var mtd_isrunning = AccessTools.Method(typeof(ItemAction), nameof(ItemAction.IsActionRunning));
         int localIndex;
-        localIndex = 30;
+        localIndex = 31;
         for (int i = 0; i < codes.Count; i++)
         {
             if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == localIndex)

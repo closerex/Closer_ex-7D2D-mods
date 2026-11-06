@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -13,6 +13,7 @@ public class NetPackageExplosionParams : NetPackage
 		entityId = _entityId;
 		explosionId = _explId;
 		itemValueExplosive = null;
+		dataToSync = null;
 		if(_itemValueExplosive != null)
 			itemValueExplosive = _itemValueExplosive.Clone();
 		this.explosionChanges.Clear();
@@ -35,6 +36,8 @@ public class NetPackageExplosionParams : NetPackage
 
 	public override void read(PooledBinaryReader _br)
 	{
+		itemValueExplosive = null;
+		dataToSync = null;
 		worldPos = StreamUtils.ReadVector3(_br);
 		blockPos = StreamUtils.ReadVector3i(_br);
 		rotation = StreamUtils.ReadQuaterion(_br);
@@ -130,10 +133,6 @@ public class NetPackageExplosionParams : NetPackage
 
 	public override NetPackageDirection PackageDirection => NetPackageDirection.ToClient;
 
-	public override int GetLength()
-	{
-		return 80 + explosionChanges.Count * 30;
-	}
 
 	private Vector3 worldPos;
 	private Vector3i blockPos;
@@ -142,7 +141,7 @@ public class NetPackageExplosionParams : NetPackage
 	private int entityId;
 	private uint explosionId;
 	private ItemValue itemValueExplosive;
-	private List<BlockChangeInfo> explosionChanges = new List<BlockChangeInfo>();
+	private List<BlockChangeInfo> explosionChanges = new();
 	private byte[] dataToSync = null;
 }
 

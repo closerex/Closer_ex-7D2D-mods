@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -451,7 +451,7 @@ namespace KFCommonUtilityLib.Harmony
 
         private static void FuckTFP(ItemActionRanged.ItemActionDataRanged rangedData)
         {
-            rangedData.invData.gameManager.ItemActionEffectsServer(rangedData.invData.holdingEntity.entityId, rangedData.invData.slotIdx, rangedData.indexInEntityOfAction, 0, Vector3.zero, Vector3.zero, 0);
+            GameManager.Instance.ItemActionEffectsServer(rangedData.invData.holdingEntity.entityId, rangedData.invData.slotIdx, rangedData.indexInEntityOfAction, 0, Vector3.zero, Vector3.zero, 0);
         }
 
         [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ItemActionEffects))]

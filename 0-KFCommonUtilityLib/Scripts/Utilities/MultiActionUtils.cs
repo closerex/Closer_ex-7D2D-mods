@@ -104,10 +104,10 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             projectileValue.SelectedAmmoTypeIndex = (byte)index;
             projectileValue.UseTimes = launcherValue.UseTimes;
             projectileValue.Quality = launcherValue.Quality;
-            projectileValue.Modifications = new ItemValue[launcherValue.Modifications.Length];
-            Array.Copy(launcherValue.Modifications, projectileValue.Modifications, launcherValue.Modifications.Length);
-            projectileValue.CosmeticMods = new ItemValue[launcherValue.CosmeticMods.Length];
-            Array.Copy(launcherValue.CosmeticMods, projectileValue.CosmeticMods, launcherValue.CosmeticMods.Length);
+            projectileValue.modifications = new ItemValue[launcherValue.modifications.Length];
+            Array.Copy(launcherValue.modifications, projectileValue.modifications, launcherValue.modifications.Length);
+            projectileValue.cosmeticMods = new ItemValue[launcherValue.cosmeticMods.Length];
+            Array.Copy(launcherValue.cosmeticMods, projectileValue.cosmeticMods, launcherValue.cosmeticMods.Length);
             //shallow copy because original stats is reconstructed everytime it's touched
             projectileValue.Stats = launcherValue.Stats;
         }
@@ -120,15 +120,15 @@ namespace KFCommonUtilityLib.Scripts.Utilities
 
         public static string GetPropertyOverrideForAction(this ItemValue self, string _propertyName, string _originalValue, int actionIndex)
         {
-            if (self.Modifications.Length == 0 && self.CosmeticMods.Length == 0)
+            if (self.ModificationCount == 0 && self.CosmeticModCount == 0)
             {
                 return _originalValue;
             }
             string text = "";
             ItemClass item = self.ItemClass;
-            for (int i = 0; i < self.Modifications.Length; i++)
+            for (int i = 0; i < self.ModificationCount; i++)
             {
-                ItemValue itemValue = self.Modifications[i];
+                ItemValue itemValue = self.GetModification(i);
                 if (itemValue != null)
                 {
                     if (itemValue.ItemClass is ItemClassModifier mod && GetPropertyOverrideForMod(mod, _propertyName, item, ref text, actionIndex))
@@ -138,9 +138,9 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 }
             }
             text = "";
-            for (int j = 0; j < self.CosmeticMods.Length; j++)
+            for (int j = 0; j < self.CosmeticModCount; j++)
             {
-                ItemValue itemValue2 = self.CosmeticMods[j];
+                ItemValue itemValue2 = self.GetCosmeticMod(j);
                 if (itemValue2 != null)
                 {
                     if (itemValue2.ItemClass is ItemClassModifier cos && GetPropertyOverrideForMod(cos, _propertyName, item, ref text, actionIndex))
@@ -154,16 +154,16 @@ namespace KFCommonUtilityLib.Scripts.Utilities
 
         public static IEnumerable<string> GetAllPropertyOverridesForAction(this ItemValue self, string _propertyName, int actionIndex)
         {
-            if (self.Modifications.Length == 0 && self.CosmeticMods.Length == 0)
+            if (self.ModificationCount == 0 && self.CosmeticModCount == 0)
             {
                 yield break;
             }
 
             string text = "";
             ItemClass item = self.ItemClass;
-            for (int i = 0; i < self.Modifications.Length; i++)
+            for (int i = 0; i < self.ModificationCount; i++)
             {
-                ItemValue itemValue = self.Modifications[i];
+                ItemValue itemValue = self.GetModification(i);
                 if (itemValue != null)
                 {
                     if (itemValue.ItemClass is ItemClassModifier mod && GetPropertyOverrideForMod(mod, _propertyName, item, ref text, actionIndex))
@@ -173,9 +173,9 @@ namespace KFCommonUtilityLib.Scripts.Utilities
                 }
             }
             text = "";
-            for (int j = 0; j < self.CosmeticMods.Length; j++)
+            for (int j = 0; j < self.CosmeticModCount; j++)
             {
-                ItemValue itemValue2 = self.CosmeticMods[j];
+                ItemValue itemValue2 = self.GetCosmeticMod(j);
                 if (itemValue2 != null)
                 {
                     if (itemValue2.ItemClass is ItemClassModifier cos && GetPropertyOverrideForMod(cos, _propertyName, item, ref text, actionIndex))
@@ -377,9 +377,9 @@ namespace KFCommonUtilityLib.Scripts.Utilities
 
         public static readonly ItemActionData[] DummyActionDatas = new ItemActionData[]
         {
-            new ItemActionData(null, 0),
-            new ItemActionData(null, 3),
-            new ItemActionData(null, 4)
+            new(null, 0),
+            new(null, 3),
+            new(null, 4)
         };
 
         public static int GetMultiActionInitialMetaData(this ItemClass itemClass, ItemValue itemValue)

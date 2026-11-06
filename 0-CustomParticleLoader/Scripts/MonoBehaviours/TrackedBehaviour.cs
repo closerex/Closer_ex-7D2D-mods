@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class TrackedBehaviour<T> : TrackedBehaviourBase where T : TrackedBehaviour<T>
 {
-    protected static Dictionary<uint, Dictionary<object, T>> hash_instances = new Dictionary<uint, Dictionary<object, T>>();
+    protected static Dictionary<uint, Dictionary<object, T>> hash_instances = new();
 
     static TrackedBehaviour()
     {

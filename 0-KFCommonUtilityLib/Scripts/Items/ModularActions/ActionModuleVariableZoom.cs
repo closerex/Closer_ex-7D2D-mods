@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Attributes;
 using System;
@@ -59,7 +59,16 @@ public class ActionModuleVariableZoom
             __customData.forceFov = true;
         }
 
-        __customData.scopeValueIndex = _data.invData.itemValue.Modifications == null ? -1 : Array.FindIndex(_data.invData.itemValue.Modifications, static v => v?.ItemClass.IsModuleContainerFor(out ItemModuleVariableZoom _) ?? false);
+        __customData.scopeValueIndex = -1;
+        for (int i = 0; i < _data.invData.itemValue.ModificationCount; i++)
+        {
+            var modification = _data.invData.itemValue.GetModification(i);
+            if (modification?.ItemClass.IsModuleContainerFor(out ItemModuleVariableZoom _) ?? false)
+            {
+                __customData.scopeValueIndex = i;
+                break;
+            }
+        }
         if (__customData.scopeValueIndex == -1 && !_data.invData.itemValue.ItemClass.IsModuleContainerFor(out ItemModuleVariableZoom _))
         {
             __customData.scopeValueIndex = int.MinValue;
@@ -111,9 +120,9 @@ public class ActionModuleVariableZoom
                     return invData.itemValue;
                 }
 
-                if (scopeValueIndex >= 0 && scopeValueIndex < invData.itemValue.Modifications.Length)
+                if (scopeValueIndex >= 0 && scopeValueIndex < invData.itemValue.modifications.Length)
                 {
-                    return invData.itemValue.Modifications[scopeValueIndex];
+                    return invData.itemValue.modifications[scopeValueIndex];
                 }
                 return null;
             }

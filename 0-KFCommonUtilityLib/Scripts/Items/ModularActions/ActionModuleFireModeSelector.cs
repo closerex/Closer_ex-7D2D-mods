@@ -48,7 +48,7 @@ public class ActionModuleFireModeSelector
     }
     public int userDataMask;
     public byte shiftBits;
-    private List<FireMode> modeCache = new List<FireMode>();
+    private List<FireMode> modeCache = new();
     public static string[] FireModeNames = new[]
     {
         "FireMode",

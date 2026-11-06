@@ -37,7 +37,7 @@ namespace LuaRuntimeProbe.Harness
     public sealed class ProbeSuiteResult
     {
         public string BackendId;
-        public readonly List<ProbeCheck> Checks = new List<ProbeCheck>();
+        public readonly List<ProbeCheck> Checks = new();
         public string InitError;
         public bool Ran;
         public int PassedCount;

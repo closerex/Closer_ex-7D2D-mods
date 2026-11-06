@@ -24,14 +24,14 @@ public class NetSyncHelper : MonoBehaviour
         add { list_init_client_handlers.Add(value); }
         remove { list_init_client_handlers.Remove(value); }
     }
-    private List<Action<PooledBinaryWriter>> list_connect_server_handlers = new List<Action<PooledBinaryWriter>>();
-    private List<Action<PooledBinaryReader>> list_connect_client_handlers = new List<Action<PooledBinaryReader>>();
-    private List<Action<PooledBinaryWriter>> list_init_server_handlers = new List<Action<PooledBinaryWriter>>();
-    private List<Action<PooledBinaryReader>> list_init_client_handlers = new List<Action<PooledBinaryReader>>();
+    private List<Action<PooledBinaryWriter>> list_connect_server_handlers = new();
+    private List<Action<PooledBinaryReader>> list_connect_client_handlers = new();
+    private List<Action<PooledBinaryWriter>> list_init_server_handlers = new();
+    private List<Action<PooledBinaryReader>> list_init_client_handlers = new();
     public ExplosionParams explParams;
     public ItemValue explValue;
     public uint explId;
-    private static Dictionary<uint, NetSyncHelper> hash_helpers = new Dictionary<uint, NetSyncHelper>();
+    private static Dictionary<uint, NetSyncHelper> hash_helpers = new();
 
     static NetSyncHelper()
     {

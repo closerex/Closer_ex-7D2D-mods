@@ -444,14 +444,14 @@ public class ActionModuleProceduralRecoil
         public float HandRotValueAimIntensity = 1f;
         public Vector2 HandRotValueCur, HandRotValuePrev, HandRotValueApply, HandRotVelocity, HandRotForce;
         public float HandRotValueXAfterRecoil = 0.01f;
-        public AnimationCurve HandRotReturnSpeedCurve = new AnimationCurve(new Keyframe(0, 0.008f, 0.0002f, 0.0002f) { inWeight = 0, outWeight = 0.0775f },
+        public AnimationCurve HandRotReturnSpeedCurve = new(new Keyframe(0, 0.008f, 0.0002f, 0.0002f) { inWeight = 0, outWeight = 0.0775f },
                                                                            new Keyframe(2.5f, 0.008f, 0.0001f, 0.0001f) { inWeight = 0.0717f, outWeight = 0 })
         {
             preWrapMode = WrapMode.ClampForever,
             postWrapMode = WrapMode.ClampForever
         };
         public float HandRotCurveTime;
-        public Vector2 HandRotStableOffsetRange = new Vector2(0.1f, 8f);
+        public Vector2 HandRotStableOffsetRange = new(0.1f, 8f);
         public Vector2 TargetStableRotationOffset;
         public float AutoFireReturnSpeed;
         public int LastReturnOffsetSign;
@@ -834,7 +834,7 @@ public static class ProceduralRecoilUpdater
     //====== cam rotation apply
     public static Vector3 PreUpdateCamFwd;
     public static float CamRecoilLerpSpeed, CamRecoilLerpSpeedStep = 0.1f;
-    public static Vector2 CamRecoilLerpSpeedRange = new Vector2(0.1f, 0.2f);
+    public static Vector2 CamRecoilLerpSpeedRange = new(0.1f, 0.2f);
     public static Vector2 CamRecoilOffsetStable, CamRecoilOffsetCur;
     public static Quaternion LocalCamRotOffsetCur, InverseWorldCamShakeOffsetCur, InverseWorldCamKickOffsetCur, InverseWorldCamTotalOffsetCur;
     public static float CamAimRecoilPosSmoothIn = 8f, CamAimRecoilPosSmoothOut = 6f;
@@ -843,8 +843,8 @@ public static class ProceduralRecoilUpdater
     public static Vector2 CamAimRecoilRotOffsetCur;
     public static float CamAimRecoilRotOffsetLerpSpeed = 15f;
 
-    private static PRCameraUpdate PRCameraUpdater = new PRCameraUpdate();
-    private static PRApply PRApplyUpdater = new PRApply();
+    private static PRCameraUpdate PRCameraUpdater = new();
+    private static PRApply PRApplyUpdater = new();
     public static void InitPlayer(EntityPlayerLocal player)
     {
         ProceduralRecoilUpdater.player = player;

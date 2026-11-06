@@ -9,7 +9,7 @@ using Unity.Mathematics;
 [TypeTarget(typeof(ItemActionAttack)), TypeDataTarget(typeof(AlternativeData))]
 public class ActionModuleAlternative
 {
-    internal static ItemValue InventorySetItemTemp;
+    // internal static ItemValue InventorySetItemTemp;
 
     [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPrefix]
     private void Prefix_StartHolding(ItemActionData _data, AlternativeData __customData)
@@ -170,8 +170,8 @@ public class ActionModuleAlternative
 
             //inited = true;
             MultiActionIndice indices = MultiActionManager.GetActionIndiceForItemID(invData.item.Id);
-            mapping = new MultiActionMapping(this, indices, invData.holdingEntity, InventorySetItemTemp, toggleSound, invData.slotIdx, unlocked);
-            UpdateUnlockState(InventorySetItemTemp);
+            mapping = new MultiActionMapping(this, indices, invData.holdingEntity, invData.itemValue, toggleSound, invData.slotIdx, unlocked);
+            UpdateUnlockState(invData.itemValue);
         }
 
         public void UpdateUnlockState(ItemValue itemValue)

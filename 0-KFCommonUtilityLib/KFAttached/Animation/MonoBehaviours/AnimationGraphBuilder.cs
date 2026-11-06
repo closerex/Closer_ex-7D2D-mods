@@ -33,10 +33,10 @@ public class AnimationGraphBuilder : MonoBehaviour
     private AvatarMask weaponMask;
     private bool isFpv;
     private bool isLocalPlayer = true;
-    private readonly List<MonoBehaviour> graphRelatedBehaviours = new List<MonoBehaviour>();
+    private readonly List<MonoBehaviour> graphRelatedBehaviours = new();
     private AnimatorControllerParameter[] parameters;
-    private readonly Dictionary<int, ParamInWrapper> paramMapping = new Dictionary<int, ParamInWrapper>();
-    private readonly Dictionary<string, ParamInWrapper> paramMappingDebug = new Dictionary<string, ParamInWrapper>();
+    private readonly Dictionary<int, ParamInWrapper> paramMapping = new();
+    private readonly Dictionary<string, ParamInWrapper> paramMappingDebug = new();
 
     //only set in Unity Explorer
     private static bool debugLog = false;

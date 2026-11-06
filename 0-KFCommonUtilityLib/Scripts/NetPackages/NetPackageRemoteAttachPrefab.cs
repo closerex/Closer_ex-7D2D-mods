@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace KFCommonUtilityLib
 {
@@ -22,10 +22,6 @@ namespace KFCommonUtilityLib
             return this;
         }
 
-        public override int GetLength()
-        {
-            return 200;
-        }
 
         public override void ProcessPackage(World _world, GameManager _callbacks)
         {

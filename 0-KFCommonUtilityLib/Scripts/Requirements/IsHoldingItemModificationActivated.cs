@@ -1,4 +1,4 @@
-﻿using UniLinq;
+using UniLinq;
 using System.Xml.Linq;
 using UnityEngine;
 
@@ -25,10 +25,11 @@ public class IsHoldingItemModificationActivated : RequirementBase
         //Log.Out($"modName {modName} modId {modId} item {_params?.ItemValue?.ItemClass?.Name ?? "null"} mods{(_params?.ItemValue?.Modifications == null ? ": null" : itemValue.Modifications.Select(v => $"\n{(v == null || v.IsEmpty() ? "null" : $"item {v.ItemClass.Name} type {v.type} activated {v.Activated}")}").Join())} \ncos{(_params?.ItemValue?.CosmeticMods == null ? ": null" : itemValue.CosmeticMods.Select(v => $"\n{(v == null || v.IsEmpty() ? "null" : $"item {v.ItemClass.Name} type {v.type} activated {v.Activated}")}").Join())} \n{StackTraceUtility.ExtractStackTrace()}");
         if (itemValue != null)
         {
-            if (itemValue.Modifications != null)
+            if (itemValue.ModificationCount > 0)
             {
-                foreach (var mod in itemValue.Modifications)
+                for (int i = 0; i < itemValue.ModificationCount; i++)
                 {
+                    var mod = itemValue.GetModification(i);
                     if (mod != null && mod.type == modId && mod.Activated)
                     {
                         return !invert;
@@ -36,10 +37,11 @@ public class IsHoldingItemModificationActivated : RequirementBase
                 }
             }
 
-            if (itemValue.CosmeticMods != null)
+            if (itemValue.CosmeticModCount > 0)
             {
-                foreach (var cos in itemValue.CosmeticMods)
+                for (int i = 0; i < itemValue.CosmeticModCount; i++)
                 {
+                    var cos = itemValue.GetCosmeticMod(i);
                     if (cos != null && cos.type == modId && cos.Activated)
                     {
                         return !invert;

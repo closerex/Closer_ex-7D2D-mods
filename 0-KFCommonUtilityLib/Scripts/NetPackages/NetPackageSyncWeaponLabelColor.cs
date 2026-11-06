@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace KFCommonUtilityLib
 {
@@ -18,10 +18,6 @@ namespace KFCommonUtilityLib
             return this;
         }
 
-        public override int GetLength()
-        {
-            return isText ? 20 : 28;
-        }
 
         public override void ProcessPackage(World _world, GameManager _callbacks)
         {

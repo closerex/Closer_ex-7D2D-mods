@@ -112,8 +112,8 @@ public static class FLARPatch
     {
         var codes = instructions.ToList();
 
-        var fld_ammoindex = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
-        var fld_meta = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Meta));
+        var mtd_ammoindex = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
+        var mtd_meta = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.Meta));
 
         var lbd_meta = generator.DeclareLocal(typeof(int));
 
@@ -131,7 +131,7 @@ public static class FLARPatch
                 });
                 i += 5;
             }
-            else if (codes[i].LoadsField(fld_ammoindex))
+            else if (codes[i].Calls(mtd_ammoindex))
             {
                 codes[i].opcode = OpCodes.Call;
                 codes[i].operand = AccessTools.Method(typeof(MultiActionUtils), nameof(MultiActionUtils.GetSelectedAmmoIndexByActionIndex));
@@ -142,7 +142,7 @@ public static class FLARPatch
                 });
                 i += 2;
             }
-            else if (codes[i].LoadsField(fld_meta))
+            else if (codes[i].Calls(mtd_meta))
             {
                 codes.Insert(i + 1, new CodeInstruction(OpCodes.Ldloc_S, lbd_meta));
                 codes.RemoveRange(i - 1, 2);

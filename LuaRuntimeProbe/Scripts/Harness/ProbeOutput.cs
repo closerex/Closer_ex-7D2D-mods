@@ -12,7 +12,7 @@ namespace LuaRuntimeProbe.Harness
     {
         public const int MaxLines = 500;
 
-        private readonly List<string> _lines = new List<string>();
+        private readonly List<string> _lines = new();
         private int _suppressed;
 
         public IList<string> Lines

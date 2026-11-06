@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Attributes;
 using System.Collections.Generic;
@@ -251,11 +251,11 @@ public class ItemModuleMultiItem
     }
 
 
-    private static List<ItemAction> tempActionList = new List<ItemAction>();
-    private static List<ItemActionData> tempDataList = new List<ItemActionData>();
+    private static List<ItemAction> tempActionList = new();
+    private static List<ItemActionData> tempDataList = new();
     public static bool CheckAltMelee(EntityPlayerLocal player, MultiItemInvData multiInvData, bool bReleased, int meleeActionIndex = 0, bool useAltParam = true)
     {
-        if (!player.inventory.GetIsFinishedSwitchingHeldItem())
+        if (player.Hand.IsSwitching)
         {
             return false;
         }
@@ -270,7 +270,7 @@ public class ItemModuleMultiItem
             return false;
         }
 
-        if (player.inventory.holdingItemData.itemValue.PercentUsesLeft <= 0)
+        if (multiInvData.originalData.itemValue.PercentUsesLeft <= 0)
         {
             return false;
         }
@@ -297,7 +297,7 @@ public class ItemModuleMultiItem
 
         bool isReloading = player.IsReloading();
         int actionIndex = MultiActionManager.GetActionIndexForEntity(player);
-        var reloadModule = player.inventory.holdingItem.Actions[actionIndex].LoadModule<ActionModuleInterruptReload>();
+        var reloadModule = multiInvData.originalData.item.Actions[actionIndex].LoadModule<ActionModuleInterruptReload>();
 
         bool isActionOrReloadingInterruptable = false;
         if (isActionRunning)
@@ -329,12 +329,12 @@ public class ItemModuleMultiItem
                 multiInvData.RestoreParams(false);
                 if (!canRun)
                 {
-                    Log.Out($"Fail to run alt melee on slot {player.inventory.holdingItemIdx} action{actionIndex} released {bReleased} is switching item {player.inventory.isSwitchingHeldItem} is attacking {meleeData.Attacking} execute time elapsed {Time.time - meleeData.lastUseTime}");
+                    Log.Out($"Fail to run alt melee on slot {multiInvData.originalData.slotIdx} action{actionIndex} released {bReleased} is switching item {player.Hand.IsSwitching} is attacking {meleeData.Attacking} execute time elapsed {Time.time - meleeData.lastUseTime}");
                     return false;
                 }
                 if (isReloading)
                 {
-                    var itemActionData = player.inventory.holdingItemData.actionData[actionIndex] as ItemActionRanged.ItemActionDataRanged;
+                    var itemActionData = multiInvData.originalData.actionData[actionIndex] as ItemActionRanged.ItemActionDataRanged;
                     itemActionData.m_LastShotTime = 0;
                     reloadModule.Postfix_ExecuteAction(itemActionData, itemActionData.LoadModule<ActionModuleInterruptReload.InterruptData>(), new ActionModuleInterruptReload.State
                     {
@@ -346,7 +346,7 @@ public class ItemModuleMultiItem
                 }
                 if (isActionRunning && isAllRunningActionInterruptable)
                 {
-                    (player.inventory.holdingItem as ItemClassExtendedFunction)?.CancelAllActions(player.inventory.holdingItemData);
+                    (multiInvData.originalData.item as ItemClassExtendedFunction)?.CancelAllActions(multiInvData.originalData);
                     if (interruptData != null)
                     {
                         interruptData.interrupted = true;
@@ -365,7 +365,7 @@ public class ItemModuleMultiItem
             multiInvData.boundItemClass.ExecuteAction(meleeActionIndex, multiInvData.boundInvData, bReleased, null);
             multiInvData.RestoreParams(false);
             return true;
-            //Log.Out($"Execute alt melee on slot {player.inventory.holdingItemIdx} released {wasReleased}");
+            //Log.Out($"Execute alt melee on slot {multiInvData.originalData.slotIdx} released {wasReleased}");
         }
 
         if (bReleased && interruptData != null)
@@ -378,7 +378,7 @@ public class ItemModuleMultiItem
     public class MultiItemInvData
     {
         public bool useBound;
-        public ItemInventoryData originalData;
+        public readonly ItemInventoryData originalData;
         public ItemInventoryData boundInvData;
         public ItemModuleMultiItem itemModule;
         public string boundItemName;
@@ -402,7 +402,7 @@ public class ItemModuleMultiItem
                 boundItemClass = ItemClass.GetItemClass(boundItemName, true);
                 if (boundItemClass != null)
                 {
-                    boundInvData = boundItemClass.CreateInventoryData(new ItemStack(new ItemValue(boundItemClass.Id, originalData.itemStack.itemValue.Quality, originalData.itemStack.itemValue.Quality), 1), originalData.gameManager, originalData.holdingEntity, originalData.slotIdx);
+                    boundInvData = ItemInventoryData.Create(originalData.holdingEntity, new ItemStack(new ItemValue(boundItemClass.Id, originalData.itemValue.Quality, originalData.itemValue.Quality), 1), originalData.slotIdx);
                     SyncBoundItemValue();
                 }
                 else
@@ -419,8 +419,8 @@ public class ItemModuleMultiItem
             boundItemValue.Quality = originalItemValue.Quality;
             boundItemValue.Stats = originalItemValue.Stats;
             boundItemValue.Metadata = originalItemValue.Metadata;
-            boundItemValue.Modifications = originalItemValue.Modifications;
-            boundItemValue.CosmeticMods = originalItemValue.CosmeticMods;
+            boundItemValue.modifications = originalItemValue.modifications;
+            boundItemValue.cosmeticMods = originalItemValue.cosmeticMods;
             boundItemValue.Meta = originalItemValue.Meta;
             if (originalItemValue.Metadata == null)
             {
@@ -486,73 +486,141 @@ public class ItemModuleMultiItem
 [HarmonyPatch]
 public static class MultiItemPatches
 {
-    [HarmonyPatch(typeof(Inventory), nameof(Inventory.holdingCount), MethodType.Getter)]
-    [HarmonyPrefix]
-    public static bool Prefix_holdingCount_Inventory(ItemInventoryData[] ___slots, int ___m_HoldingItemIdx, ref int __result)
+    private static bool TryGetBoundData(ItemInventoryData originalData, out ItemInventoryData boundData)
     {
-        if (___slots[___m_HoldingItemIdx].IsModuleContainerFor(out MultiItemInvData multiInvData) && multiInvData.useBound && multiInvData.boundInvData != null)
+        if (originalData.IsModuleContainerFor(out MultiItemInvData multiInvData) && multiInvData.useBound && multiInvData.boundInvData != null)
         {
-            __result = multiInvData.boundInvData.itemStack.count;
-            return false;
+            boundData = multiInvData.boundInvData;
+            return true;
         }
-        return true;
+        boundData = null;
+        return false;
     }
 
-    [HarmonyPatch(typeof(Inventory), nameof(Inventory.holdingItem), MethodType.Getter)]
-    [HarmonyPrefix]
-    public static bool Prefix_holdingItem_Inventory(ItemInventoryData[] ___slots, int ___m_HoldingItemIdx, ref ItemClass __result)
+    // Match native Held selection without passing through the bound-data getter patches.
+    public static ItemInventoryData GetOriginalHeldData(Hand hand)
     {
-        if (___slots[___m_HoldingItemIdx].IsModuleContainerFor(out MultiItemInvData multiInvData) && multiInvData.useBound && multiInvData.boundInvData != null)
+        if (hand == null)
+            return null;
+        var data = hand.bareHandData;
+        if (hand.mode == Hand.HoldingMode.Transient && hand.transientData.HasItem)
+            data = hand.transientData;
+        else if (hand.mode == Hand.HoldingMode.Current && hand.toolbelt != null)
         {
-            __result = multiInvData.boundInvData.item;
-            return false;
+            var slotData = hand.slotDatas[hand.toolbelt.SelectedSlot];
+            if (slotData.item != null)
+                data = slotData;
         }
-        return true;
+        data.EnsureActionData();
+        return data;
     }
 
-    [HarmonyPatch(typeof(Inventory), nameof(Inventory.holdingItemData), MethodType.Getter)]
-    [HarmonyPrefix]
-    public static bool Prefix_holdingItemData_Inventory(ItemInventoryData[] ___slots, int ___m_HoldingItemIdx, ref ItemInventoryData __result)
+    // Equip/rebuild identity stays physical even inside a bound action.
+    private static IEnumerable<CodeInstruction> UseOriginalHeldData(IEnumerable<CodeInstruction> instructions)
     {
-        if (___slots[___m_HoldingItemIdx].IsModuleContainerFor(out MultiItemInvData multiInvData) && multiInvData.useBound && multiInvData.boundInvData != null)
+        var heldGetter = AccessTools.PropertyGetter(typeof(Hand), nameof(Hand.Held));
+        var itemGetter = AccessTools.PropertyGetter(typeof(Hand), nameof(Hand.Item));
+        var valueGetter = AccessTools.PropertyGetter(typeof(Hand), nameof(Hand.ItemValue));
+        var originalGetter = AccessTools.Method(typeof(MultiItemPatches), nameof(GetOriginalHeldData));
+        foreach (var code in instructions)
         {
-            __result = multiInvData.boundInvData;
-            return false;
+            bool isItemGetter = code.Calls(itemGetter);
+            bool isValueGetter = code.Calls(valueGetter);
+            if (isItemGetter || isValueGetter || code.Calls(heldGetter))
+            {
+                code.opcode = OpCodes.Call;
+                code.operand = originalGetter;
+            }
+            yield return code;
+            if (isItemGetter || isValueGetter)
+                yield return new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(ItemInventoryData), isItemGetter ? nameof(ItemInventoryData.item) : nameof(ItemInventoryData.itemValue)));
         }
-        return true;
     }
 
-    [HarmonyPatch(typeof(Inventory), nameof(Inventory.holdingItemItemValue), MethodType.Getter)]
-    [HarmonyPrefix]
-    public static bool Prefix_holdingItemItemValue_Inventory(ItemInventoryData[] ___slots, int ___m_HoldingItemIdx, ref ItemValue __result)
+    [HarmonyPatch(typeof(Hand), nameof(Hand.Reconcile))]
+    [HarmonyTranspiler]
+    public static IEnumerable<CodeInstruction> Transpiler_Reconcile_Hand(IEnumerable<CodeInstruction> instructions)
     {
-        if (___slots[___m_HoldingItemIdx].IsModuleContainerFor(out MultiItemInvData multiInvData) && multiInvData.useBound && multiInvData.boundInvData != null)
-        {
-            __result = multiInvData.boundInvData.itemStack.itemValue;
-            return false;
-        }
-        return true;
+        return UseOriginalHeldData(instructions);
     }
 
-    [HarmonyPatch(typeof(Inventory), nameof(Inventory.holdingItemStack), MethodType.Getter)]
-    [HarmonyPrefix]
-    public static bool Prefix_holdingItemStack_Inventory(ItemInventoryData[] ___slots, int ___m_HoldingItemIdx, ref ItemStack __result)
+    [HarmonyPatch(typeof(Hand), nameof(Hand.SelectHoldingMode))]
+    [HarmonyTranspiler]
+    public static IEnumerable<CodeInstruction> Transpiler_SelectHoldingMode_Hand(IEnumerable<CodeInstruction> instructions)
     {
-        if (___slots[___m_HoldingItemIdx].IsModuleContainerFor(out MultiItemInvData multiInvData) && multiInvData.useBound && multiInvData.boundInvData != null)
-        {
-            __result = multiInvData.boundInvData.itemStack;
-            return false;
-        }
-        return true;
+        return UseOriginalHeldData(instructions);
+    }
+
+    [HarmonyPatch(typeof(Hand), nameof(Hand.SelectSlot))]
+    [HarmonyTranspiler]
+    public static IEnumerable<CodeInstruction> Transpiler_SelectSlot_Hand(IEnumerable<CodeInstruction> instructions)
+    {
+        return UseOriginalHeldData(instructions);
+    }
+
+    [HarmonyPatch(typeof(Hand), nameof(Hand.UsingBareHand))]
+    [HarmonyTranspiler]
+    public static IEnumerable<CodeInstruction> Transpiler_UsingBareHand_Hand(IEnumerable<CodeInstruction> instructions)
+    {
+        return UseOriginalHeldData(instructions);
+    }
+
+    [HarmonyPatch(typeof(Hand), nameof(Hand.TransitionRoutine), MethodType.Enumerator)]
+    [HarmonyTranspiler]
+    public static IEnumerable<CodeInstruction> Transpiler_TransitionRoutine_Hand(IEnumerable<CodeInstruction> instructions)
+    {
+        return UseOriginalHeldData(instructions);
+    }
+
+    [HarmonyPatch(typeof(Hand), nameof(Hand.Held), MethodType.Getter)]
+    [HarmonyPostfix]
+    public static void Postfix_Held_Hand(ref ItemInventoryData __result)
+    {
+        if (TryGetBoundData(__result, out var boundData))
+            __result = boundData;
+    }
+
+    [HarmonyPatch(typeof(Hand), nameof(Hand.GetSlotData))]
+    [HarmonyPostfix]
+    public static void Postfix_GetSlotData_Hand(ref ItemInventoryData __result)
+    {
+        if (TryGetBoundData(__result, out var boundData))
+            __result = boundData;
     }
 
     [HarmonyPatch(typeof(Inventory), "Item", MethodType.Getter)]
     [HarmonyPrefix]
-    public static bool Prefix_Item_Inventory(ItemInventoryData[] ___slots, int _idx, ref ItemValue __result)
+    public static bool Prefix_Item_Inventory(Inventory __instance, int _idx, ref ItemStack __result)
     {
-        if (___slots[_idx].IsModuleContainerFor(out MultiItemInvData multiInvData) && multiInvData.useBound && multiInvData.boundInvData != null)
+        if (TryGetBoundData(__instance.Hand.slotDatas[_idx], out var boundData))
         {
-            __result = multiInvData.boundInvData.itemStack.itemValue;
+            __result = boundData.itemStack;
+            return false;
+        }
+        return true;
+    }
+
+    [HarmonyPatch(typeof(Inventory), nameof(Inventory.GetItemStack))]
+    [HarmonyPrefix]
+    public static bool Prefix_GetItemStack_Inventory(Inventory __instance, int _idx, ref ItemStack __result)
+    {
+        return Prefix_Item_Inventory(__instance, _idx, ref __result);
+    }
+
+    [HarmonyPatch(typeof(Inventory), nameof(Inventory.GetItem))]
+    [HarmonyPrefix]
+    public static bool Prefix_GetItem_Inventory(Inventory __instance, int _idx, ref ItemStack __result)
+    {
+        return Prefix_Item_Inventory(__instance, _idx, ref __result);
+    }
+
+    [HarmonyPatch(typeof(Inventory), nameof(Inventory.GetItemInSlot))]
+    [HarmonyPrefix]
+    public static bool Prefix_GetItemInSlot_Inventory(Inventory __instance, int _idx, ref ItemClass __result)
+    {
+        if (TryGetBoundData(__instance.Hand.slotDatas[_idx], out var boundData))
+        {
+            __result = boundData.item;
             return false;
         }
         return true;
@@ -562,7 +630,7 @@ public static class MultiItemPatches
     [HarmonyPrefix]
     private static bool Prefix_SwapSelectedAmmo_ItemActionRanged(EntityAlive _entity, int _ammoIndex)
     {
-        if ((_entity.inventory?.holdingItemData.IsModuleContainerFor(out MultiItemInvData multiInvData) ?? false) && multiInvData.IsBoundActionRunning())
+        if (GetOriginalHeldData(_entity.Hand).IsModuleContainerFor(out MultiItemInvData multiInvData) && multiInvData.IsBoundActionRunning())
         {
             return false;
         }
@@ -573,7 +641,7 @@ public static class MultiItemPatches
     [HarmonyPostfix]
     private static void Postfix_IsAimingGunPossible_EntityPlayerLocal(EntityPlayerLocal __instance, ref bool __result)
     {
-        if (__result && (__instance.inventory?.holdingItemData.IsModuleContainerFor(out MultiItemInvData multiInvData) ?? false))
+        if (__result && GetOriginalHeldData(__instance.Hand).IsModuleContainerFor(out MultiItemInvData multiInvData))
         {
             if (multiInvData.boundInvData != null)
             {
@@ -603,7 +671,7 @@ public static class MultiItemPatches
         if (__result)
         {
             EntityAlive holdingEntity = _actionData.invData.holdingEntity;
-            if (holdingEntity.inventory.holdingItemData.IsModuleContainerFor(out MultiItemInvData multiInvData))
+            if (GetOriginalHeldData(holdingEntity.Hand).IsModuleContainerFor(out MultiItemInvData multiInvData))
             {
                 if (multiInvData.boundInvData != null)
                 {
@@ -619,15 +687,14 @@ public static class MultiItemPatches
     {
         var codes = instructions.ToList();
 
-        int localIndex;
-        localIndex = 27;
+        var itemGetter = AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItem));
 
         for (int i = 0; i < codes.Count; i++)
         {
             //ItemAction
-            if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == localIndex)
+            if (codes[i].Calls(itemGetter) && i + 1 < codes.Count && codes[i + 1].IsStloc())
             {
-                codes.InsertRange(i + 1, new[]
+                codes.InsertRange(i + 2, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     CodeInstruction.Call(typeof(MultiItemPatches), nameof(CheckAltMelee))
@@ -659,7 +726,7 @@ public static class MultiItemPatches
             return;
         }
 
-        if (PlayerActionKFLib.Instance.Enabled && (player.inventory.GetIsFinishedSwitchingHeldItem() || wasReleased) && (wasPressed || wasReleased) && player.inventory.holdingItemData.IsModuleContainerFor(out MultiItemInvData multiInvData))
+        if (PlayerActionKFLib.Instance.Enabled && (!player.Hand.IsSwitching || wasReleased) && (wasPressed || wasReleased) && GetOriginalHeldData(player.Hand).IsModuleContainerFor(out MultiItemInvData multiInvData))
         {
             ItemModuleMultiItem.CheckAltMelee(player, multiInvData, wasReleased);
         }

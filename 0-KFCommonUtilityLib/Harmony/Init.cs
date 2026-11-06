@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using GearsAPI.Settings;
@@ -174,9 +174,9 @@ namespace KFCommonUtilityLib.Gears
         private static void InitVerboseLog(IModGlobalSettings modSettings)
         {
             var cat = modSettings.GetTab("MiscSettings").GetCategory("VerboseLog");
-            var moduleManagerSettings = (ISwitchGlobalSetting)cat.GetSetting("KFModuleManagerLog");
-            ModuleManagers.debugLog = moduleManagerSettings.CurrentValue == "Enabled";
-            moduleManagerSettings.OnSettingChanged += static (_, value) =>
+            var moduleManagerSettings = (ISwitchGlobalSetting<string>)cat.GetSetting("KFModuleManagerLog");
+            ModuleManagers.debugLog = moduleManagerSettings.SettingValue == "Enabled";
+            moduleManagerSettings.OnValueChanged += static (_, value) =>
             {
                 ModuleManagers.debugLog = value == "Enabled";
             };
@@ -197,11 +197,11 @@ namespace KFCommonUtilityLib.Gears
         {
             var tab = modSettings.GetTab("MiscSettings");
             var category = tab.GetCategory("PiPCamera");
-            var syncAASetting = category.GetSetting<ISelectorGlobalSetting>("SyncAAQuality");
-            SyncAAQuality = EnumUtils.Parse<SyncAAQualityMode>(syncAASetting.CurrentValue);
-            syncAASetting.OnSettingChanged += (s, e) =>
+            var syncAASetting = category.GetSetting<ISelectorGlobalSetting<string>>("SyncAAQuality");
+            SyncAAQuality = EnumUtils.Parse<SyncAAQualityMode>(syncAASetting.SettingValue);
+            syncAASetting.OnValueChanged += (s, e) =>
             {
-                SyncAAQuality = EnumUtils.Parse<SyncAAQualityMode>(syncAASetting.CurrentValue);
+                SyncAAQuality = EnumUtils.Parse<SyncAAQualityMode>(syncAASetting.SettingValue);
             }; 
         }
     }

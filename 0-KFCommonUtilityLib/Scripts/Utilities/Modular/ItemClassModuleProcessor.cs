@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using KFCommonUtilityLib.Attributes;
 using KFCommonUtilityLib.Harmony;
 using MonoMod.Utils;
@@ -57,6 +57,8 @@ namespace KFCommonUtilityLib
         
         public static T LoadDataModule<T>(ItemInventoryData invData) where T : class
         {
+            // ReSharper disable once SuspiciousTypeConversion.Global
+            // ReSharper disable once ExpressionIsAlwaysNull
             return (invData as IModuleContainerFor<T>)?.Instance;
         }
         
@@ -68,58 +70,25 @@ namespace KFCommonUtilityLib
         public void InitModules(ModuleManipulator manipulator)
         {
             TranspilerHelper.curProcessor = this;
-            //Find ItemInventoryData subtype
-            MethodInfo mtdinf_create_invdata = null;
-            {
-                Type type_itemClassBase = manipulator.targetType;
-                while (manipulator.baseType.IsAssignableFrom(type_itemClassBase))
-                {
-                    mtdinf_create_invdata = type_itemClassBase.GetMethod(nameof(ItemClass.createItemInventoryData), BindingFlags.Public | BindingFlags.Instance);
-                    if (mtdinf_create_invdata != null)
-                        break;
-                    type_itemClassBase= type_itemClassBase.BaseType;
-                }
-            }
-
-            //CLASS MODULE DATA TYPES
             var arr_type_data = manipulator.moduleTypes.Select(static m => m.GetCustomAttribute<TypeDataTargetAttribute>()?.DataType).ToArray();
-            using (var dmd = new DynamicMethodDefinition(mtdinf_create_invdata))
+            if (ModuleManagers.PatchType(typeof(ItemInventoryData), typeof(ItemInventoryData), manipulator.typebd_newTarget, arr_type_data.Where(static t => t != null).ToArray(), new ItemInventoryDataModuleProcessor(manipulator.typebd_newTarget, manipulator.moduleTypes, manipulator.arr_fldbd_modules.Where((f, i) => arr_type_data[i] != null).ToArray(), arr_type_data.Select(static t => t != null).ToArray(), out arr_fldbd_data), out type_newInvData))
             {
-                //Find createItemInventoryData
-                //ItemInventoryData subtype is the return type of createItemInventoryData
-                var typeref_invdata = ((Mono.Cecil.MethodReference)dmd.Definition.Body.Instructions.Last(static i => i.OpCode == Mono.Cecil.Cil.OpCodes.Newobj).Operand).DeclaringType;
-                //Get type by assembly qualified name since it might be from mod assembly
-                Type type_itemInvData = typeref_invdata.ResolveReflection();
-                ModuleManagers.LogOut($"createItemInventoryData return type {type_itemInvData.AssemblyQualifiedName}");
-                if (ModuleManagers.PatchType(type_itemInvData, typeof(ItemInventoryData), manipulator.typebd_newTarget, arr_type_data.Where(static t => t != null).ToArray(), new ItemInventoryDataModuleProcessor(manipulator.typebd_newTarget, manipulator.moduleTypes, manipulator.arr_fldbd_modules.Where((f, i) => arr_type_data[i] != null).ToArray(), arr_type_data.Select(static t => t != null).ToArray(), out arr_fldbd_data), out type_newInvData))
-                {
-                    //Create ItemClass.createItemInventoryData override
-                    var mtdref_data_ctor = type_newInvData.GetDeclaredConstructors().FirstOrDefault();
-                    var mtdbd_createdata = manipulator.typebd_newTarget.DefineMethod(nameof(ItemClass.createItemInventoryData),
-                                                                                     MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.ReuseSlot | MethodAttributes.Final,
-                                                                                     mtdinf_create_invdata.CallingConvention,
-                                                                                     mtdinf_create_invdata.ReturnType,
-                                                                                     mtdinf_create_invdata.ReturnParameter.GetRequiredCustomModifiers().Length > 0 ? mtdinf_create_invdata.ReturnParameter.GetRequiredCustomModifiers() : null,
-                                                                                     mtdinf_create_invdata.ReturnParameter.GetOptionalCustomModifiers().Length > 0 ? mtdinf_create_invdata.ReturnParameter.GetOptionalCustomModifiers() : null,
-                                                                                     mtdinf_create_invdata.GetParameters().Select(static p => p.ParameterType).ToArray(),
-                                                                                     mtdinf_create_invdata.GetParameters().Select(static p => { var mod = p.GetRequiredCustomModifiers(); return mod != null && mod.Length > 0 ? mod : null; }).ToArray(),
-                                                                                     mtdinf_create_invdata.GetParameters().Select(static p => { var mod = p.GetOptionalCustomModifiers(); return mod != null && mod.Length > 0 ? mod : null; }).ToArray());
-                    manipulator.typebd_newTarget.DefineMethodOverride(mtdbd_createdata, mtdinf_create_invdata);
+                var mtdinf_createdata = typeof(ICustomInvData).GetMethod(nameof(ICustomInvData.createItemInventoryData));
+                manipulator.typebd_newTarget.AddInterfaceImplementation(typeof(ICustomInvData));
+                var mtdbd_createdata = manipulator.typebd_newTarget.DefineMethod($"{typeof(ICustomInvData).FullName}.{mtdinf_createdata.Name}",
+                    MethodAttributes.Private | MethodAttributes.Virtual | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Final,
+                    mtdinf_createdata.CallingConvention,
+                    mtdinf_createdata.ReturnType,
+                    mtdinf_createdata.GetParameters().Select(static p => p.ParameterType).ToArray());
+                manipulator.typebd_newTarget.DefineMethodOverride(mtdbd_createdata, mtdinf_createdata);
+                mtdinf_createdata.CopyParamInfoTo(mtdbd_createdata);
 
-                    ParameterInfo[] paramInfo = mtdinf_create_invdata.GetParameters();
-                    for (int i = 0; i < paramInfo.Length; i++)
-                    {
-                        mtdbd_createdata.DefineParameter(i + 1, paramInfo[i].Attributes, paramInfo[i].Name);
-                    }
-                    var il = mtdbd_createdata.GetILGenerator();
-                    il.Emit(OpCodes.Ldarg_0);
-                    il.Emit(OpCodes.Ldarg_1);
-                    il.Emit(OpCodes.Ldarg_2);
-                    il.Emit(OpCodes.Ldarg_3);
-                    il.Emit(OpCodes.Ldarg_S, 4);
-                    il.Emit(OpCodes.Newobj, mtdref_data_ctor);
-                    il.Emit(OpCodes.Ret);
-                }
+                var il = mtdbd_createdata.GetILGenerator();
+                il.Emit(OpCodes.Ldarg_1);
+                il.Emit(OpCodes.Ldarg_2);
+                il.Emit(OpCodes.Ldarg_3);
+                il.Emit(OpCodes.Newobj, type_newInvData.GetDeclaredConstructors().First());
+                il.Emit(OpCodes.Ret);
             }
         }
 

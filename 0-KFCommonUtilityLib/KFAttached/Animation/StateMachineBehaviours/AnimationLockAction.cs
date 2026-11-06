@@ -1,4 +1,4 @@
-﻿#if NotEditor
+#if NotEditor
 using KFCommonUtilityLib;
 #endif
 using UnityEngine;
@@ -16,7 +16,7 @@ public class AnimationLockAction : StateMachineBehaviour
         targets = AnimationRiggingManager.GetActiveRigTargetsFromPlayer(player);
         if (!targets)
             return;
-        foreach (var actionData in player.inventory.slots[targets.SlotIndex].actionData)
+        foreach (var actionData in player.inventory.Hand.slotDatas[targets.SlotIndex].actionData)
         {
             if (!actionData.IsModuleContainerFor(out ActionModuleAnimationLocked.AnimationLockedData lockData))
                 continue;
@@ -40,7 +40,7 @@ public class AnimationLockAction : StateMachineBehaviour
         if (!targets)
             return;
         
-        foreach (var actionData in player.inventory.slots[targets.SlotIndex].actionData)
+        foreach (var actionData in player.inventory.Hand.slotDatas[targets.SlotIndex].actionData)
         {
             if (!actionData.IsModuleContainerFor(out ActionModuleAnimationLocked.AnimationLockedData lockData))
                 continue;
@@ -54,7 +54,7 @@ public class AnimationLockAction : StateMachineBehaviour
         if (!targets)
             return;
         
-        foreach (var actionData in player.inventory.slots[targets.SlotIndex].actionData)
+        foreach (var actionData in player.inventory.Hand.slotDatas[targets.SlotIndex].actionData)
         {
             if (!actionData.IsModuleContainerFor(out ActionModuleAnimationLocked.AnimationLockedData lockData))
                 continue;

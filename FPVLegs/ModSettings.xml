@@ -1,10 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ModSettings>
+<ModSettings version="2">
   <Global>
     <Tab name="ModeSetting" displayKey="FPV Leg Mode" tooltipKey="">
       <Category name="Main" displayKey="" tooltipKey="">
-        <Switch name="Mode" displayKey="Set Mode" tooltipKey="" defaultValue="New" leftValue="Old" rightValue="New" />
-        <Switch name="Shadow" displayKey="Turn Off Shadow" tooltipKey="" defaultValue="Yes" leftValue="No" rightValue="Yes" />
+        <Switch name="Mode" displayKey="Set Mode" defaultValue="New" type="string">
+          <Buttons left="Old" right="New" />
+        </Switch>
+        <Switch name="Shadow" displayKey="Turn Off Shadow" defaultValue="Yes" type="string">
+          <Buttons left="No" right="Yes" />
+        </Switch>
       </Category>
     </Tab>
   </Global>

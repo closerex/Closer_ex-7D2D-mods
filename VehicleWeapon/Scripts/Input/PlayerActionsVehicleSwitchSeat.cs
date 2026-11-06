@@ -18,7 +18,7 @@ public class PlayerActionsVehicleExtra : CustomPlayerActionVersionBase
     PlayerAction ActivateSlot8;
     PlayerAction ActivateSlot9;
     PlayerAction ActivateSlot10;
-    public readonly List<PlayerAction> ActivateActions = new List<PlayerAction>();
+    public readonly List<PlayerAction> ActivateActions = new();
 
     public int ActivateSlotIsPressed
     {

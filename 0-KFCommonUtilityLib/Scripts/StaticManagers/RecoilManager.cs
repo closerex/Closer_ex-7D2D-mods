@@ -1,4 +1,4 @@
-﻿using CameraShake;
+using CameraShake;
 using GearsAPI.Settings.Global;
 using UnityEngine;
 
@@ -57,45 +57,45 @@ namespace KFCommonUtilityLib
         {
             var capSetting = settings.GetTab("RecoilSettings").GetCategory("Capping");
 
-            var recoilCompensationSetting = capSetting.GetSetting("RecoilCompensationSensitivityMultiplier") as ISliderGlobalSetting;
-            recoilCompensationSensitivityMultiplier = float.Parse(recoilCompensationSetting.CurrentValue);
-            recoilCompensationSetting.OnSettingChanged += static (setting, newValue) => recoilCompensationSensitivityMultiplier = float.Parse(newValue);
+            var recoilCompensationSetting = capSetting.GetSetting("RecoilCompensationSensitivityMultiplier") as ISliderGlobalSetting<float>;
+            recoilCompensationSensitivityMultiplier = recoilCompensationSetting.SettingValue;
+            recoilCompensationSetting.OnValueChanged += static (setting, newValue) => recoilCompensationSensitivityMultiplier = newValue;
 
-            var preRecoilCompensationSetting = capSetting.GetSetting("EnablePreRecoilCompensation") as ISwitchGlobalSetting;
-            enablePreRecoilCompensation = preRecoilCompensationSetting.CurrentValue == "Enable";
-            preRecoilCompensationSetting.OnSettingChanged += static (setting, newValue) => enablePreRecoilCompensation = newValue == "Enable";
+            var preRecoilCompensationSetting = capSetting.GetSetting("EnablePreRecoilCompensation") as ISwitchGlobalSetting<string>;
+            enablePreRecoilCompensation = preRecoilCompensationSetting.SettingValue == "Enable";
+            preRecoilCompensationSetting.OnValueChanged += static (setting, newValue) => enablePreRecoilCompensation = newValue == "Enable";
 
-            var enableCapSetting = capSetting.GetSetting("EnableCap") as ISwitchGlobalSetting;
-            enableCap = enableCapSetting.CurrentValue == "Enable";
-            enableCapSetting.OnSettingChanged += static (setting, newValue) =>
+            var enableCapSetting = capSetting.GetSetting("EnableCap") as ISwitchGlobalSetting<string>;
+            enableCap = enableCapSetting.SettingValue == "Enable";
+            enableCapSetting.OnValueChanged += (setting, newValue) =>
             {
                 enableCap = newValue == "Enable";
-                UpdateSettingState(setting.Category);
+                UpdateSettingState(capSetting);
             };
 
-            var recoilRemainSetting = capSetting.GetSetting("RecoilRemain") as ISliderGlobalSetting;
-            recoilCapRemain = float.Parse(recoilRemainSetting.CurrentValue);
-            recoilRemainSetting.OnSettingChanged += static (setting, newValue) => recoilCapRemain = float.Parse(newValue);
+            var recoilRemainSetting = capSetting.GetSetting("RecoilRemain") as ISliderGlobalSetting<float>;
+            recoilCapRemain = recoilRemainSetting.SettingValue;
+            recoilRemainSetting.OnValueChanged += static (setting, newValue) => recoilCapRemain = newValue;
 
-            var enableSoftCapSetting = capSetting.GetSetting("EnableSoftCap") as ISwitchGlobalSetting;
-            enableSoftCap = enableSoftCapSetting.CurrentValue == "Enable";
-            enableSoftCapSetting.OnSettingChanged += static (setting, newValue) => enableSoftCap = newValue == "Enable";
+            var enableSoftCapSetting = capSetting.GetSetting("EnableSoftCap") as ISwitchGlobalSetting<string>;
+            enableSoftCap = enableSoftCapSetting.SettingValue == "Enable";
+            enableSoftCapSetting.OnValueChanged += static (setting, newValue) => enableSoftCap = newValue == "Enable";
 
-            var maxRecoilAngleSetting = capSetting.GetSetting("MaxRecoilAngle") as ISliderGlobalSetting;
-            maxRecoilAngle = float.Parse(maxRecoilAngleSetting.CurrentValue);
-            maxRecoilAngleSetting.OnSettingChanged += static (setting, newValue) => maxRecoilAngle = float.Parse(newValue);
+            var maxRecoilAngleSetting = capSetting.GetSetting("MaxRecoilAngle") as ISliderGlobalSetting<int>;
+            maxRecoilAngle = maxRecoilAngleSetting.SettingValue;
+            maxRecoilAngleSetting.OnValueChanged += static (setting, newValue) => maxRecoilAngle = newValue;
 
-            var enableDynamicCapSetting = capSetting.GetSetting("EnableDynamicCap") as ISwitchGlobalSetting;
-            enableDynamicCap = enableDynamicCapSetting.CurrentValue == "Enable";
-            enableDynamicCapSetting.OnSettingChanged += static (setting, newValue) =>
+            var enableDynamicCapSetting = capSetting.GetSetting("EnableDynamicCap") as ISwitchGlobalSetting<string>;
+            enableDynamicCap = enableDynamicCapSetting.SettingValue == "Enable";
+            enableDynamicCapSetting.OnValueChanged += (setting, newValue) =>
             {
                 enableDynamicCap = newValue == "Enable";
-                UpdateSettingState(setting.Category);
+                UpdateSettingState(capSetting);
             };
 
-            var maxDynamicRecoilCapShotsSetting = capSetting.GetSetting("MaxDynamicRecoilCapShots") as ISliderGlobalSetting;
-            maxDynamicRecoilCapShots = int.Parse(maxDynamicRecoilCapShotsSetting.CurrentValue);
-            maxDynamicRecoilCapShotsSetting.OnSettingChanged += static (setting, newValue) => maxDynamicRecoilCapShots = int.Parse(newValue);
+            var maxDynamicRecoilCapShotsSetting = capSetting.GetSetting("MaxDynamicRecoilCapShots") as ISliderGlobalSetting<int>;
+            maxDynamicRecoilCapShots = maxDynamicRecoilCapShotsSetting.SettingValue;
+            maxDynamicRecoilCapShotsSetting.OnValueChanged += static (setting, newValue) => maxDynamicRecoilCapShots = newValue;
             UpdateSettingState(capSetting);
         }
 

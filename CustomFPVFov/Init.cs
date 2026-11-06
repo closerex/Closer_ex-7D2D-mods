@@ -1,4 +1,4 @@
-﻿using GearsAPI.Settings;
+using GearsAPI.Settings;
 using GearsAPI.Settings.Global;
 using GearsAPI.Settings.World;
 using HarmonyLib;
@@ -50,7 +50,6 @@ namespace CustomFPVFov
             var fld_cur = AccessTools.Field(typeof(vp_FPWeapon), nameof(vp_FPWeapon.RenderingFieldOfView));
             var prop_value = AccessTools.PropertyGetter(typeof(FovOverrides), nameof(FovOverrides.CurrentFov));
             var prop_aimValue = AccessTools.PropertyGetter(typeof(FovOverrides), nameof(FovOverrides.CurrentAimFov));
-            var mtd_parseint = AccessTools.Method(typeof(StringParsers), nameof(StringParsers.ParseSInt32));
 
             for (int i = 1; i < codes.Count; i++)
             {
@@ -79,6 +78,7 @@ namespace CustomFPVFov
 
         [HarmonyPatch(typeof(vp_FPWeapon), nameof(vp_FPWeapon.UpdateZoom))]
         [HarmonyTranspiler]
+        [HarmonyPriority(Priority.First)]
         private static IEnumerable<CodeInstruction> Transpiler_vp_FPWeapon_UpdateZoom(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
@@ -100,7 +100,7 @@ namespace CustomFPVFov
         private static IEnumerable<CodeInstruction> Transpiler_vp_FPWeapon_Refresh(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
-            var mtd_smooth = AccessTools.Method(typeof(Mathf), nameof(Mathf.SmoothStep));
+            var mtd_smooth = AccessTools.Method(typeof(vp_FPWeapon), nameof(vp_FPWeapon.SmoothStep));
 
             for (int i = 2; i < codes.Count; i++)
             {
@@ -224,30 +224,18 @@ namespace CustomFPVFov
 
         public void OnGlobalSettingsLoaded(IModGlobalSettings modSettings)
         {
-            ISliderGlobalSetting fovSettings = modSettings.GetTab("FovSettings").GetCategory("Main").GetSetting("FovValue") as ISliderGlobalSetting;
-            ISliderGlobalSetting aimFovSettings = modSettings.GetTab("FovSettings").GetCategory("Main").GetSetting("AimFovValue") as ISliderGlobalSetting;
-            if (float.TryParse(fovSettings.CurrentValue, out float cur))
+            ISliderGlobalSetting<float> fovSettings = modSettings.GetTab("FovSettings").GetCategory("Main").GetSetting("FovValue") as ISliderGlobalSetting<float>;
+            ISliderGlobalSetting<int> aimFovSettings = modSettings.GetTab("FovSettings").GetCategory("Main").GetSetting("AimFovValue") as ISliderGlobalSetting<int>;
+            FovOverrides.defaultFov = fovSettings.SettingValue;
+            FovOverrides.defaultAimFov = aimFovSettings.SettingValue;
+            fovSettings.OnValueChanged += static (settings, value) =>
             {
-                FovOverrides.defaultFov = cur;
-            }
-            if (float.TryParse(aimFovSettings.CurrentValue, out float aimCur))
-            {
-                FovOverrides.defaultAimFov = aimCur;
-            }
-            fovSettings.OnSettingChanged += static (settings, value) =>
-            {
-                if (float.TryParse(value, out float curFov))
-                {
-                    FovOverrides.defaultFov = curFov;
-                }
+                FovOverrides.defaultFov = value;
                 FovOverrides.UpdatePlayerFov();
             };
-            aimFovSettings.OnSettingChanged += static (settings, value) =>
+            aimFovSettings.OnValueChanged += static (settings, value) =>
             {
-                if (float.TryParse(value, out float curAimFov))
-                {
-                    FovOverrides.defaultAimFov = curAimFov;
-                }
+                FovOverrides.defaultAimFov = value;
                 FovOverrides.UpdatePlayerFov();
             };
         }
@@ -265,7 +253,7 @@ namespace CustomFPVFov
         public static float defaultFov = 45f;
         public static float defaultAimFov = 45f;
         public static string modPath = "";
-        public static Dictionary<int, (float fov, float aimFov)> dict_id_fov = new Dictionary<int, (float, float)>();
+        public static Dictionary<int, (float fov, float aimFov)> dict_id_fov = new();
 
         public static void LoadWeaponFovOverrides()
         {
@@ -337,7 +325,7 @@ namespace CustomFPVFov
                 }
             }
             // Inventory.Cleanup can run before held-object OnDisable callbacks finish.
-            if (player.inventory?.slots == null)
+            if (player.inventory?.Hand?.slotDatas == null)
             {
                 return;
             }

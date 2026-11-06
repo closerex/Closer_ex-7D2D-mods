@@ -1,12 +1,14 @@
-﻿using GameEvent.SequenceActions;
+using GameEvent.SequenceActions;
 using HarmonyLib;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using UniLinq;
 using UnityEngine;
+// ReSharper disable UnusedMember.Local
 
 namespace KFCommonUtilityLib.Harmony
 {
@@ -49,8 +51,6 @@ namespace KFCommonUtilityLib.Harmony
 
             FieldInfo fld_action = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
             FieldInfo fld_actionData = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.actionData));
-            FieldInfo fld_meta = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Meta));
-            FieldInfo fld_ammoindex = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
             MethodInfo mtd_getvalue = AccessTools.Method(typeof(EffectManager), nameof(EffectManager.GetValue));
             bool firstRet = true;
 
@@ -70,7 +70,7 @@ namespace KFCommonUtilityLib.Harmony
                         new CodeInstruction(OpCodes.Ldarg_0),
                         CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.actionData)),
                         CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
-                        CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity)),
+                        new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity))),
                         CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.MinEventContext)),
                         new CodeInstruction(OpCodes.Ldarg_0),
                         CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.actionData)),
@@ -95,9 +95,9 @@ namespace KFCommonUtilityLib.Harmony
             return codes;
         }
 
-        [HarmonyPatch(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.OnStateExit))]
+        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.CompleteReload))]
         [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_OnStateExit_AnimatorRangedReloadState(IEnumerable<CodeInstruction> instructions)
+        private static IEnumerable<CodeInstruction> Transpiler_CompleteReload_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
 
@@ -110,13 +110,11 @@ namespace KFCommonUtilityLib.Harmony
                 {
                     codes.InsertRange(i, new[]
                     {
-                        new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.actionData)),
+                        new CodeInstruction(OpCodes.Ldarg_1),
                         CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
-                        CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity)),
+                        new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity))),
                         CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.MinEventContext)),
-                        new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.actionData)),
+                        new CodeInstruction(OpCodes.Ldarg_1),
                         CodeInstruction.StoreField(typeof(MinEventParams), nameof(MinEventParams.ItemActionData))
                     });
                     break;
@@ -134,10 +132,10 @@ namespace KFCommonUtilityLib.Harmony
         private static bool Prefix_IsAimingGunPossible_EntityPlayerLocal(ref bool __result, EntityPlayerLocal __instance)
         {
             __result = true;
-            for (int i = 0; i < __instance.inventory.holdingItem.Actions.Length; i++)
+            for (int i = 0; i < __instance.Hand.Item.Actions.Length; i++)
             {
-                ItemAction action = __instance.inventory.holdingItem.Actions[i];
-                ItemActionData actionData = __instance.inventory.holdingItemData.actionData[i];
+                ItemAction action = __instance.Hand.Item.Actions[i];
+                ItemActionData actionData = __instance.Hand.Held.actionData[i];
                 __result &= (action == null || action.IsAimingGunPossible(actionData));
             }
             return false;
@@ -167,19 +165,24 @@ namespace KFCommonUtilityLib.Harmony
 
         //KEEP
         #region Create modifier data for more actions
-        [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.CreateInventoryData))]
+        [HarmonyPatch(typeof(ItemInventoryData), nameof(ItemInventoryData.Create))]
         [HarmonyPostfix]
-        private static void Postfix_CreateInventoryData_ItemClass(ItemInventoryData __result, ItemClass __instance)
+        private static void Postfix_CreateInventoryData_ItemClass(ItemInventoryData __result)
         {
             int prevCount = __result.actionData.Count;
-            while (__result.actionData.Count < __instance.Actions.Length)
+            ItemClass itemClass = __result.itemStack.itemValue.ItemClass;
+            if (itemClass == null)
+            {
+                return;
+            }
+            while (__result.actionData.Count < itemClass.Actions.Length)
             {
                 __result.actionData.Add(null);
             }
-            for (; prevCount < __instance.Actions.Length; prevCount++)
+            for (; prevCount < itemClass.Actions.Length; prevCount++)
             {
-                if (__instance.Actions[prevCount] != null)
-                    __result.actionData[prevCount] = __instance.Actions[prevCount].CreateModifierData(__result, prevCount);
+                if (itemClass.Actions[prevCount] != null)
+                    __result.actionData[prevCount] = itemClass.Actions[prevCount].CreateModifierData(__result, prevCount);
             }
         }
         #endregion
@@ -234,10 +237,11 @@ namespace KFCommonUtilityLib.Harmony
             LocalBuilder lbd_index = generator.DeclareLocal(typeof(int));
 
             FieldInfo fld_action = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
+            FieldInfo fld_actionData = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.actionData));
             for (int i = 0; i < codes.Count; i++)
             {
                 var code = codes[i];
-                if (code.LoadsField(fld_action) && codes[i + 1].opcode == OpCodes.Ldc_I4_0)
+                if ((code.LoadsField(fld_action) || code.LoadsField(fld_actionData)) && codes[i + 1].opcode == OpCodes.Ldc_I4_0)
                 {
                     codes[i + 1].opcode = OpCodes.Ldloc_S;
                     codes[i + 1].operand = lbd_index;
@@ -247,7 +251,7 @@ namespace KFCommonUtilityLib.Harmony
             codes.InsertRange(0, new[]
             {
                 new CodeInstruction(OpCodes.Ldarg_1),
-                CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity)),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity))),
                 CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.GetActionIndexForEntity)),
                 new CodeInstruction(OpCodes.Stloc_S, lbd_index)
             });
@@ -385,7 +389,7 @@ namespace KFCommonUtilityLib.Harmony
         [HarmonyPrefix]
         private static void Prefix_SwapSelectedAmmo_ItemActionRanged(EntityAlive _entity, ItemActionRanged __instance)
         {
-            _entity.MinEventContext.ItemActionData = _entity.inventory.holdingItemData.actionData[__instance.ActionIndex];
+            _entity.MinEventContext.ItemActionData = _entity.Hand.Held.actionData[__instance.ActionIndex];
         }
 
         [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SwapSelectedAmmo))]
@@ -455,7 +459,7 @@ namespace KFCommonUtilityLib.Harmony
         {
             var codes = instructions.ToList();
 
-            var fld_meta = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Meta));
+            MethodInfo fld_meta = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.Meta));
             var mtd_delete = AccessTools.Method(typeof(ItemActionLauncher), nameof(ItemActionLauncher.DeleteProjectiles));
             var prop_itemvalue = AccessTools.PropertyGetter(typeof(ItemInventoryData), nameof(ItemInventoryData.itemValue));
             var lbd_meta = generator.DeclareLocal(typeof(int));
@@ -476,7 +480,7 @@ namespace KFCommonUtilityLib.Harmony
                     });
                     i += 7;
                 }
-                else if (codes[i].LoadsField(fld_meta))
+                else if (codes[i].Calls(fld_meta))
                 {
                     codes.Insert(i + 1, new CodeInstruction(OpCodes.Ldloc_S, lbd_meta));
                     codes.RemoveRange(i - 3, 4);
@@ -493,11 +497,11 @@ namespace KFCommonUtilityLib.Harmony
         {
             var codes = instructions.ToList();
 
-            var fld_ammoindex = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
+            MethodInfo fld_ammoindex = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
 
             for (int i = 0; i < codes.Count; i++)
             {
-                if (codes[i].LoadsField(fld_ammoindex))
+                if (codes[i].Calls(fld_ammoindex))
                 {
                     codes[i].opcode = OpCodes.Call;
                     codes[i].operand = AccessTools.Method(typeof(MultiActionUtils), nameof(MultiActionUtils.GetSelectedAmmoIndexByActionIndex));
@@ -591,10 +595,6 @@ namespace KFCommonUtilityLib.Harmony
             var codes = instructions.ToList();
 
             FieldInfo fld_itemactiondata = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.ItemActionData));
-            MethodInfo mtd_reloadserver = AccessTools.Method(typeof(IGameManager), nameof(IGameManager.ItemReloadServer));
-            FieldInfo fld_gamemanager = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.gameManager));
-            MethodInfo mtd_getkickback = AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.GetKickbackForce));
-            MethodInfo mtd_getmaxammo = AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.GetMaxAmmoCount));
             for (int i = 0; i < codes.Count; i++)
             {
                 var code = codes[i];
@@ -604,43 +604,6 @@ namespace KFCommonUtilityLib.Harmony
                     codes.RemoveRange(i - 5, 5);
                     i -= 4;
                 }
-                else if (code.Calls(mtd_reloadserver))
-                {
-                    int j = i;
-                    while (!codes[j].LoadsField(fld_gamemanager))
-                    {
-                        j--;
-                    }
-                    codes.RemoveAt(i);
-                    codes.InsertRange(i, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldloc_0),
-                        CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.indexInEntityOfAction)),
-                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.FixedItemReloadServer))
-                    });
-                    codes.RemoveRange(j - 2, 3);
-                    i--;
-                }
-                //else if (code.Calls(mtd_getmaxammo))
-                //{
-                //    int j = i + 1;
-                //    for (; j < codes.Count; j++)
-                //    {
-                //        if (codes[j].Calls(mtd_getkickback))
-                //        {
-                //            break;
-                //        }
-                //    }
-                //    if (j < codes.Count)
-                //    {
-                //        var jumpto = codes[j - 2];
-                //        var label = generator.DefineLabel();
-                //        jumpto.labels.Add(label);
-                //        codes.Insert(i - 2, new CodeInstruction(OpCodes.Br_S, label));
-                //        codes[i - 2].MoveLabelsFrom(codes[i - 1]);
-                //        i++;
-                //    }
-                //}
             }
 
             return codes;
@@ -679,9 +642,9 @@ namespace KFCommonUtilityLib.Harmony
         #endregion
 
         #region Inventory.syncHeldItem, set current action
-        [HarmonyPatch(typeof(Inventory), nameof(Inventory.syncHeldItem))]
+        [HarmonyPatch(typeof(Hand), nameof(Hand.FireActivationEvents))]
         [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_syncHeldItem_Inventory(IEnumerable<CodeInstruction> instructions)
+        private static IEnumerable<CodeInstruction> Transpiler_FireActivationEvents_Hand(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
 
@@ -695,7 +658,7 @@ namespace KFCommonUtilityLib.Harmony
                     codes.InsertRange(i + 1, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(Inventory), nameof(Inventory.entity)),
+                        CodeInstruction.LoadField(typeof(Hand), nameof(Hand.entity)),
                         CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.SetMinEventParamsByEntityInventory))
                     });
                     break;
@@ -716,8 +679,14 @@ namespace KFCommonUtilityLib.Harmony
             LocalBuilder lbd_index = generator.DeclareLocal(typeof(int));
 
             FieldInfo fld_action = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
-            FieldInfo fld_ammoindex = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
-            MethodInfo mtd_fireevent = AccessTools.Method(typeof(ItemValue), nameof(ItemValue.FireEvent));
+            MethodInfo fld_ammoindex = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
+            
+            codes.InsertRange(0, new[]
+            {
+                new CodeInstruction(OpCodes.Ldarg_2).MoveLabelsFrom(codes[0]),
+                CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetActionIndexByEventParams)),
+                new CodeInstruction(OpCodes.Stloc, lbd_index)
+            });
             for (int i = 0; i < codes.Count; i++)
             {
                 var code = codes[i];
@@ -725,18 +694,9 @@ namespace KFCommonUtilityLib.Harmony
                 {
                     codes[i + 1].opcode = OpCodes.Ldloc_S;
                     codes[i + 1].operand = lbd_index;
-                    if (codes[i - 9].opcode == OpCodes.Ret)
-                    {
-                        codes.InsertRange(i - 1, new[]
-                        {
-                            new CodeInstruction(OpCodes.Ldarg_2),
-                            CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetActionIndexByEventParams)),
-                            new CodeInstruction(OpCodes.Stloc_S, lbd_index)
-                        });
-                        i += 3;
-                    }
+
                 }
-                else if (code.LoadsField(fld_ammoindex))
+                else if (code.Calls(fld_ammoindex))
                 {
                     code.opcode = OpCodes.Call;
                     code.operand = AccessTools.Method(typeof(MultiActionUtils), nameof(MultiActionUtils.GetSelectedAmmoIndexByActionIndex));
@@ -744,33 +704,10 @@ namespace KFCommonUtilityLib.Harmony
                     i++;
                 }
                 //action exclude mods
-                else if (code.Calls(mtd_fireevent) && codes[i + 1].opcode != OpCodes.Ldloc_0)
-                {
-                    for (int j = i; j >= 0; j--)
-                    {
-                        if (codes[j].opcode == OpCodes.Brfalse_S || codes[j].opcode == OpCodes.Brfalse)
-                        {
-                            var label = codes[j].operand;
-                            codes.InsertRange(j + 1, new[]
-                            {
-                                new CodeInstruction(OpCodes.Ldarg_0),
-                                CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.type)),
-                                new CodeInstruction(OpCodes.Ldarg_0),
-                                new CodeInstruction(OpCodes.Ldfld, codes[j + 2].operand),
-                                new CodeInstruction(codes[j + 3].opcode, codes[j + 3].operand),
-                                new CodeInstruction(OpCodes.Ldelem_Ref),
-                                CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.type)),
-                                new CodeInstruction(OpCodes.Ldloc_S, lbd_index),
-                                CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.ShouldExcludeTrigger)),
-                                new CodeInstruction(OpCodes.Brtrue_S, label)
-                            });
-                            i += 10;
-                            break;
-                        }
-                    }
-                }
+
             }
 
+            AddAttachmentExclusions(codes, lbd_index, true);
             return codes;
         }
         #endregion
@@ -792,10 +729,7 @@ namespace KFCommonUtilityLib.Harmony
             LocalBuilder lbd_index = generator.DeclareLocal(typeof(int));
 
             FieldInfo fld_action = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
-            FieldInfo fld_ammoindex = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
-            FieldInfo fld_mods = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Modifications));
-            FieldInfo fld_cos = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.CosmeticMods));
-            MethodInfo mtd_modify = AccessTools.Method(typeof(ItemValue), nameof(ItemValue.ModifyValue));
+            MethodInfo fld_ammoindex = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
             for (int i = 0; i < codes.Count; i++)
             {
                 var code = codes[i];
@@ -813,41 +747,43 @@ namespace KFCommonUtilityLib.Harmony
                     codes[i + 1].opcode = OpCodes.Ldloc_S;
                     codes[i + 1].operand = lbd_index;
                 }
-                else if (code.LoadsField(fld_ammoindex))
+                else if (code.Calls(fld_ammoindex))
                 {
                     code.opcode = OpCodes.Call;
                     code.operand = AccessTools.Method(typeof(MultiActionUtils), nameof(MultiActionUtils.GetSelectedAmmoIndexByActionIndex));
                     codes.Insert(i, new CodeInstruction(OpCodes.Ldloc_S, lbd_index));
                     i++;
                 }
-                else if (code.Calls(mtd_modify))
-                {
-                    for (int j = i; j >= 0; j--)
-                    {
-                        if (codes[j].opcode == OpCodes.Brfalse_S || codes[j].opcode == OpCodes.Brfalse)
-                        {
-                            var label = codes[j].operand;
-                            codes.InsertRange(j + 1, new[]
-                            {
-                                new CodeInstruction(OpCodes.Ldarg_0),
-                                CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.type)),
-                                new CodeInstruction(OpCodes.Ldarg_0),
-                                new CodeInstruction(OpCodes.Ldfld, codes[j + 2].operand),
-                                new CodeInstruction(codes[j + 3].opcode, codes[j + 3].operand),
-                                new CodeInstruction(OpCodes.Ldelem_Ref),
-                                CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.type)),
-                                new CodeInstruction(OpCodes.Ldloc_S, lbd_index),
-                                CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.ShouldExcludePassive)),
-                                new CodeInstruction(OpCodes.Brtrue_S, label)
-                            });
-                            i += 10;
-                            break;
-                        }
-                    }
-                }
+
             }
 
+            AddAttachmentExclusions(codes, lbd_index, false);
             return codes;
+        }
+
+        // Current native loops expose the attachment as a local, not an array element.
+        private static void AddAttachmentExclusions(List<CodeInstruction> codes, LocalBuilder actionIndex, bool trigger)
+        {
+            var modification = AccessTools.Method(typeof(ItemValue), nameof(ItemValue.GetModification));
+            var cosmetic = AccessTools.Method(typeof(ItemValue), nameof(ItemValue.GetCosmeticMod));
+            for (int i = 0; i + 3 < codes.Count; i++)
+            {
+                if (!(codes[i].Calls(modification) || codes[i].Calls(cosmetic)) || !codes[i + 1].IsStloc()
+                    || !codes[i + 2].IsLdloc() || (codes[i + 3].opcode != OpCodes.Brfalse && codes[i + 3].opcode != OpCodes.Brfalse_S))
+                    continue;
+                var skip = codes[i + 3].operand;
+                codes.InsertRange(i + 4, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.type))),
+                    new CodeInstruction(codes[i + 2].opcode, codes[i + 2].operand),
+                    new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.type))),
+                    new CodeInstruction(OpCodes.Ldloc, actionIndex),
+                    CodeInstruction.Call(typeof(MultiActionManager), trigger ? nameof(MultiActionManager.ShouldExcludeTrigger) : nameof(MultiActionManager.ShouldExcludePassive)),
+                    new CodeInstruction(OpCodes.Brtrue, skip)
+                });
+                i += 10;
+            }
         }
 
         //only current mode should execute OnHUD
@@ -1018,10 +954,9 @@ namespace KFCommonUtilityLib.Harmony
 
                 var lbd_index = generator.DeclareLocal(typeof(int));
                 FieldInfo fld_action = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
-                FieldInfo fld_ammoindex = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
+                MethodInfo fld_ammoindex = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
 
-                int localIndex;
-                localIndex = 1;
+                var localIndex = 1;
 
                 for (int i = 0; i < codes.Count; i++)
                 {
@@ -1037,7 +972,7 @@ namespace KFCommonUtilityLib.Harmony
                         });
                         i += 3;
                     }
-                    else if (codes[i].LoadsField(fld_ammoindex))
+                    else if (codes[i].Calls(fld_ammoindex))
                     {
                         codes[i].opcode = OpCodes.Call;
                         codes[i].operand = AccessTools.Method(typeof(MultiActionUtils), nameof(MultiActionUtils.GetSelectedAmmoIndexByActionIndex));
@@ -1070,10 +1005,7 @@ namespace KFCommonUtilityLib.Harmony
             LocalBuilder lbd_index = generator.DeclareLocal(typeof(int));
 
             FieldInfo fld_action = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
-            FieldInfo fld_ammoindex = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
-            FieldInfo fld_mods = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Modifications));
-            FieldInfo fld_cos = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.CosmeticMods));
-            MethodInfo mtd_getvalue = AccessTools.Method(typeof(ItemValue), nameof(ItemValue.GetModifiedValueData));
+            MethodInfo fld_ammoindex = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
             for (int i = 0; i < codes.Count; i++)
             {
                 var code = codes[i];
@@ -1091,40 +1023,17 @@ namespace KFCommonUtilityLib.Harmony
                     codes[i + 1].opcode = OpCodes.Ldloc_S;
                     codes[i + 1].operand = lbd_index;
                 }
-                else if (code.LoadsField(fld_ammoindex))
+                else if (code.Calls(fld_ammoindex))
                 {
                     code.opcode = OpCodes.Call;
                     code.operand = AccessTools.Method(typeof(MultiActionUtils), nameof(MultiActionUtils.GetSelectedAmmoIndexByActionIndex));
                     codes.Insert(i, new CodeInstruction(OpCodes.Ldloc_S, lbd_index));
                     i++;
                 }
-                else if (code.Calls(mtd_getvalue) && codes[i + 1].opcode != OpCodes.Ldloc_0)
-                {
-                    for (int j = i; j >= 0; j--)
-                    {
-                        if (codes[j].opcode == OpCodes.Brfalse_S || codes[j].opcode == OpCodes.Brfalse)
-                        {
-                            var label = codes[j].operand;
-                            codes.InsertRange(j + 1, new[]
-                            {
-                                new CodeInstruction(OpCodes.Ldarg_0),
-                                CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.type)),
-                                new CodeInstruction(OpCodes.Ldarg_0),
-                                new CodeInstruction(OpCodes.Ldfld, codes[j + 2].operand),
-                                new CodeInstruction(codes[j + 3].opcode, codes[j + 3].operand),
-                                new CodeInstruction(OpCodes.Ldelem_Ref),
-                                CodeInstruction.LoadField(typeof(ItemValue), nameof(ItemValue.type)),
-                                new CodeInstruction(OpCodes.Ldloc_S, lbd_index),
-                                CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.ShouldExcludePassive)),
-                                new CodeInstruction(OpCodes.Brtrue_S, label)
-                            });
-                            i += 10;
-                            break;
-                        }
-                    }
-                }
+
             }
 
+            AddAttachmentExclusions(codes, lbd_index, false);
             return codes;
         }
         #endregion
@@ -1176,7 +1085,7 @@ namespace KFCommonUtilityLib.Harmony
                         CodeInstruction.LoadField(typeof(AnimatorMeleeAttackState), nameof(AnimatorMeleeAttackState.actionIndex)),
                         CodeInstruction.CallClosure<Action<EntityAlive, int>>(static (entity, actionIndex) =>
                         {
-                            entity.MinEventContext.ItemActionData = entity.inventory.holdingItemData.actionData[actionIndex];
+                            entity.MinEventContext.ItemActionData = entity.Hand.Held.actionData[actionIndex];
                         })
                     });
                     i += 5;
@@ -1204,7 +1113,7 @@ namespace KFCommonUtilityLib.Harmony
                         CodeInstruction.LoadField(typeof(AnimatorMeleeAttackState), nameof(AnimatorMeleeAttackState.actionIndex)),
                         CodeInstruction.CallClosure<Action<EntityAlive, int>>(static (entity, actionIndex) =>
                         {
-                            entity.MinEventContext.ItemActionData = entity.inventory.holdingItemData.actionData[actionIndex];
+                            entity.MinEventContext.ItemActionData = entity.Hand.Held.actionData[actionIndex];
                         })
                     });
                     break;
@@ -1341,9 +1250,9 @@ namespace KFCommonUtilityLib.Harmony
             return codes;
         }
         
-        [HarmonyPatch(typeof(Inventory), nameof(Inventory.onInventoryChanged))]
+        [HarmonyPatch(typeof(Inventory), nameof(Inventory.CallOnToolbeltChangedInternal))]
         [HarmonyPrefix]
-        private static bool Prefix_onInventoryChanged_Inventory(Inventory __instance)
+        private static bool Prefix_CallOnToolbeltChangedInternal_Inventory(Inventory __instance)
         {
             if (__instance.entity != null)
                 MultiActionManager.UpdateLocalMetaSave(__instance.entity.entityId);
@@ -1441,11 +1350,7 @@ namespace KFCommonUtilityLib.Harmony
         #endregion
 
         #region HUD display
-        /// <summary>
-        /// redirect check to alternative action module
-        /// </summary>
-        /// <param name="instructions"></param>
-        /// <returns></returns>
+        // redirect check to alternative action module
         [HarmonyPatch]
         private static class V2_5NamePatch2
         {
@@ -1505,7 +1410,7 @@ namespace KFCommonUtilityLib.Harmony
                         {
                             new CodeInstruction(OpCodes.Ldarg_0),
                             CodeInstruction.LoadField(typeof(XUiC_ItemInfoWindow), nameof(XUiC_ItemInfoWindow.itemStack)),
-                            CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)),
+                            new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(ItemStack), nameof(ItemStack.itemValue))),
                             CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetActionIndexByMetaData))
                         });
                         i += 4;
@@ -1526,30 +1431,26 @@ namespace KFCommonUtilityLib.Harmony
         {
             var codes = instructions.ToList();
 
-            MethodInfo mtd_getgun = AccessTools.Method(typeof(Inventory), nameof(Inventory.GetHoldingGun));
-            MethodInfo mtd_getprimary = AccessTools.Method(typeof(Inventory), nameof(Inventory.GetHoldingPrimary));
             MethodInfo mtd_cancel = AccessTools.Method(typeof(ItemAction), nameof(ItemAction.CancelAction));
-            FieldInfo fld_reload = AccessTools.Field(typeof(PlayerActionsPermanent), nameof(PlayerActionsPermanent.Reload));
             FieldInfo fld_action = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
             FieldInfo fld_data = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.actionData));
 
-            int localIndex;
-            localIndex = 27;
+            var itemGetter = AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItem));
 
             for (int i = 0; i < codes.Count; i++)
             {
                 // holding item
-                if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == localIndex)
+                if (codes[i].Calls(itemGetter) && codes[i + 1].IsStloc())
                 {
                     var lbd_index = generator.DeclareLocal(typeof(int));
-                    codes.InsertRange(i + 1, new[]
+                    codes.InsertRange(i + 2, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_0),
                         CodeInstruction.LoadField(typeof(PlayerMoveController), nameof(PlayerMoveController.entityPlayerLocal)),
                         CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.GetActionIndexForEntity)),
                         new CodeInstruction(OpCodes.Stloc_S, lbd_index)
                     });
-                    i += 4;
+                    i += 5;
 
                     for (int j = i + 1; j < codes.Count - 3; j++)
                     {
@@ -1560,21 +1461,6 @@ namespace KFCommonUtilityLib.Harmony
                                 codes[j + 1].opcode = OpCodes.Ldloc_S;
                                 codes[j + 1].operand = lbd_index;
                             }
-                            //else
-                            //{
-                            //    codes.InsertRange(j + 3, new[]
-                            //    {
-                            //        new CodeInstruction(OpCodes.Dup),
-                            //        new CodeInstruction(OpCodes.Ldarg_0),
-                            //        CodeInstruction.LoadField(typeof(PlayerMoveController), nameof(PlayerMoveController.entityPlayerLocal)),
-                            //        new CodeInstruction(OpCodes.Ldloc_S, lbd_index),
-                            //        CodeInstruction.CallClosure<Action<ItemActionData, EntityPlayerLocal, int>>(static(actionData, player, actionIndex) =>
-                            //        {
-                            //            Log.Out($"player action index: {actionIndex} holding item slot {player.inventory.holdingItemIdx} action item slot {actionData.invData.slotIdx}");
-                            //        })
-                            //    });
-                            //    j += 5;
-                            //}
                         }
                     }
                 }
@@ -1605,7 +1491,7 @@ namespace KFCommonUtilityLib.Harmony
                         CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.indexInEntityOfAction)),
                         new CodeInstruction(OpCodes.Ldarg_1),
                         CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
-                        CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity)),
+                        new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity))),
                         CodeInstruction.Call(typeof(MultiActionManager), nameof(MultiActionManager.GetActionIndexForEntity)),
                         new CodeInstruction(OpCodes.Bne_Un_S, jumpto)
                     });
@@ -1652,50 +1538,6 @@ namespace KFCommonUtilityLib.Harmony
         #endregion
 
         #region fast toolbelt item switching issue fix
-        private static Coroutine switchHoldingItemCo;
-
-        [HarmonyPatch(typeof(Inventory), nameof(Inventory.ShowHeldItem))]
-        [HarmonyPrefix]
-        private static bool Prefix_ShowHeldItem_Inventory(bool hideFirst, Inventory __instance)
-        {
-            if (__instance.entity is EntityPlayerLocal && switchHoldingItemCo != null)
-            {
-                //Log.Out($"ShowHeldItem {hideFirst}\n{StackTraceUtility.ExtractStackTrace()}");
-                GameManager.Instance.StopCoroutine(switchHoldingItemCo);
-                switchHoldingItemCo = null;
-            }
-            return true;
-        }
-
-        [HarmonyPatch(typeof(Inventory), nameof(Inventory.ShowHeldItem))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_ShowHeldItem_Inventory(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
-        {
-            var codes = instructions.ToList();
-
-            for (int i = 0; i < codes.Count; i++)
-            {
-                if (codes[i].opcode == OpCodes.Pop)
-                {
-                    var label = generator.DefineLabel();
-                    codes[i].WithLabels(label);
-                    codes.InsertRange(i, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldarg_2),
-                        new CodeInstruction(OpCodes.Brfalse_S, label),
-                        new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(Inventory), nameof(Inventory.entity)),
-                        new CodeInstruction(OpCodes.Isinst, typeof(EntityPlayerLocal)),
-                        new CodeInstruction(OpCodes.Brfalse_S, label),
-                        CodeInstruction.StoreField(typeof(MultiActionPatches), nameof(switchHoldingItemCo)),
-                        new CodeInstruction(OpCodes.Ret)
-                    });
-                    break;
-                }
-            }
-            return codes;
-        }
-
         private static Coroutine swapItemCo;
 
         [HarmonyPatch(typeof(PlayerMoveController), nameof(PlayerMoveController.swapItem))]
@@ -1714,9 +1556,7 @@ namespace KFCommonUtilityLib.Harmony
         private static IEnumerable<CodeInstruction> Transpiler_swapItem_PlayerMoveController(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             var codes = instructions.ToList();
-
-            var mtd_begin = AccessTools.Method(typeof(Inventory), nameof(Inventory.BeginSwapHoldingItem));
-
+            
             for (int i = 0; i < codes.Count; i++)
             {
                 if (codes[i].opcode == OpCodes.Pop)
@@ -1728,27 +1568,9 @@ namespace KFCommonUtilityLib.Harmony
             return codes;
         }
 
-        //[HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.HolsterWeapon))]
-        //[HarmonyPostfix]
-        //private static void Postfix_HolsterWeapon_EntityPlayerLocal(EntityPlayerLocal __instance, bool holster)
-        //{
-        //    if(holster && __instance.inventory.lastdrawnHoldingItemData is IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData> data)
-        //    {
-        //        Log.Out($"HolsterWeapon {holster} on entity {__instance.entityName}\n{StackTraceUtility.ExtractStackTrace()}");
-        //        data.Instance.IsHolstering = true;
-        //    }
-        //}
-
-        //[HarmonyPatch(typeof(Inventory), nameof(Inventory.SetIsFinishedSwitchingHeldItem))]
-        //[HarmonyPostfix]
-        //private static void Postfix_SetIsFinishedSwitchingHeldItem_Inventory(Inventory __instance)
-        //{
-        //    Log.Out($"SetIsFinishedSwitchingHeldItem holding index {__instance.holdingItemIdx} last index {__instance.m_LastDrawnHoldingItemIndex} cur item is unholstering {__instance.holdingItemData is IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData> module && module.Instance.IsUnholstering} last item is holstering {__instance.lastdrawnHoldingItemData is IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData> module1 && module1.Instance.IsHolstering}\n{StackTraceUtility.ExtractStackTrace()}");
-        //}
-
-        [HarmonyPatch(typeof(Inventory), nameof(Inventory.OnUpdate))]
+        [HarmonyPatch(typeof(Hand), nameof(Hand.OnUpdate))]
         [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_OnUpdate_Inventory(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler_OnUpdate_Hand(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             var codes = instructions.ToList();
 
@@ -1765,12 +1587,8 @@ namespace KFCommonUtilityLib.Harmony
                             codes.InsertRange(j + 1, new[]
                             {
                                 new CodeInstruction(OpCodes.Ldarg_0),
-                                CodeInstruction.CallClosure<Func<Inventory, bool>>(static (inv) =>
-                                {
-                                    return !inv.GetIsFinishedSwitchingHeldItem() &&
-                                    ((inv.holdingItemData.IsModuleContainerFor(out ItemModuleTrueHolster.TrueHolsterData data) && data.IsUnholstering) ||
-                                     (inv.lastdrawnHoldingItemData.IsModuleContainerFor(out ItemModuleTrueHolster.TrueHolsterData lastData) && lastData.IsHolstering));
-                                }),
+                                CodeInstruction.CallClosure<Func<Hand, bool>>(
+                                    static (hand) => hand.isSwitching && hand.Held.IsModuleContainerFor(out ItemModuleTrueHolster.TrueHolsterData data) && data.IsSwapping),
                                 new CodeInstruction(OpCodes.Brtrue_S, lbl),
                             });
                             break;
@@ -1782,84 +1600,32 @@ namespace KFCommonUtilityLib.Harmony
             return codes;
         }
 
-        [HarmonyPatch(typeof(Inventory), nameof(Inventory.updateHoldingItem))]
+        [HarmonyPatch(typeof(Hand), nameof(Hand.Unequip))]
         [HarmonyPrefix]
-        private static void Prefix_updateHoldingItem_Inventory(Inventory __instance)
+        private static void Prefix_Unequip_Hand(Hand __instance, out (Hand.HoldingMode mode, int slotIdx) __state)
         {
-            __instance.m_HoldingItemIdx = __instance.m_FocusedItemIdx;
-        }
-
-        [HarmonyPatch(typeof(Inventory), nameof(Inventory.updateHoldingItem))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_updateHoldingItem_Inventory(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
-        {
-            var codes = instructions.ToList();
-
-            var mtd_stopholding = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.StopHolding));
-            var fld_transform = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.Transform));
-
-            var lbd_prev = generator.DeclareLocal(typeof(int));
-
-            for (int i = 0; i < codes.Count; i++)
+            var equipped = __instance.equipped;
+            __state = (__instance.mode, -1);
+            GetInvDataIdxAndMode(equipped, __instance, out var idx, out __instance.mode);
+            if (idx >= 0)
             {
-                if (codes[i].Calls(mtd_stopholding))
-                {
-                    codes.InsertRange(i + 1, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldarg_0),
-                        new CodeInstruction(OpCodes.Ldloc_S, lbd_prev),
-                        CodeInstruction.StoreField(typeof(Inventory), nameof(Inventory.m_HoldingItemIdx))
-                    });
-                    var lbl = generator.DefineLabel();
-                    codes[i].WithLabels(lbl);
-                    codes.InsertRange(i, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(Inventory), nameof(Inventory.m_HoldingItemIdx)),
-                        new CodeInstruction(OpCodes.Stloc_S, lbd_prev),
-                        new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.CallClosure<Func<Inventory, bool>>((inventory) =>
-                        {
-                            return inventory.m_LastDrawnHoldingItemIndex >=0 && inventory.m_LastDrawnHoldingItemIndex < inventory.GetSlotCount();
-                        }),
-                        new CodeInstruction(OpCodes.Brfalse_S, lbl),
-                        new CodeInstruction(OpCodes.Ldarg_0),
-                        new CodeInstruction(OpCodes.Dup),
-                        CodeInstruction.LoadField(typeof(Inventory), nameof(Inventory.m_LastDrawnHoldingItemIndex)),
-                        CodeInstruction.StoreField(typeof(Inventory), nameof(Inventory.m_HoldingItemIdx))
-                    });
-
-                    break;
-                }
+                __state.slotIdx = __instance.toolbelt.SelectedSlot;
+                __instance.toolbelt.SelectedSlot = idx;
             }
-
-            return codes;
         }
 
-        [HarmonyPatch(typeof(Inventory), nameof(Inventory.setHeldItemByIndex))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_setHeldItemByIndex_Inventory(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        [HarmonyPatch(typeof(Hand), nameof(Hand.Unequip))]
+        [HarmonyPostfix]
+        private static void Postfix_Unequip_Hand(Hand __instance, (Hand.HoldingMode mode, int slotIdx) __state)
         {
-            var codes = instructions.ToList();
-
-            var fld_holdingidx = AccessTools.Field(typeof(Inventory), nameof(Inventory.m_HoldingItemIdx));
-
-            for (int i = 0; i < codes.Count; i++)
-            {
-                if (codes[i].StoresField(fld_holdingidx))
-                {
-                    codes[i + 1].WithLabels(codes[i - 2].ExtractLabels());
-                    codes.RemoveRange(i - 2, 3);
-                    break;
-                }
-            }
-
-            return codes;
+            if (__state.slotIdx >= 0)
+                __instance.toolbelt.SelectedSlot = __state.slotIdx;
+            __instance.mode = __state.mode;
         }
 
-        [HarmonyPatch(typeof(Inventory), nameof(Inventory.delayedShowHideHeldItem), MethodType.Enumerator)]
+        [HarmonyPatch(typeof(Hand), nameof(Hand.TransitionRoutine), MethodType.Enumerator)]
         [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_delayedShowHideHeldItem_Inventory(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler_TransitionRoutine_Hand(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             var codes = instructions.ToList();
 
@@ -1872,13 +1638,13 @@ namespace KFCommonUtilityLib.Harmony
                     codes.InsertRange(i + 1, new[]
                     {
                         new CodeInstruction(OpCodes.Ldloc_1),
-                        CodeInstruction.CallClosure<Action<Inventory>>(static (inv) =>
+                        CodeInstruction.CallClosure<Action<Hand>>(static (inv) =>
                         {
-                            if(inv.lastdrawnHoldingItemData.IsModuleContainerFor(out ItemModuleTrueHolster.TrueHolsterData data))
+                            if(inv.holstering.IsModuleContainerFor(out ItemModuleTrueHolster.TrueHolsterData data))
                             {
                                 if (data.module.holsterDelayActive)
                                 {
-                                    var targets = AnimationRiggingManager.GetLastRigTargetsFromInventory(inv);
+                                    var targets = AnimationRiggingManager.GetLastRigTargetsFromInventory(inv.toolbelt);
                                     if (targets && targets.IsAnimationSet)
                                     {
                                         //Log.Out($"HolsterWeapon\n{StackTraceUtility.ExtractStackTrace()}");
@@ -1900,11 +1666,6 @@ namespace KFCommonUtilityLib.Harmony
                             // the current enumerator field to store
                             var fld_current = codes[i + 6].operand;
 
-                            // jump to the next iteration if wait time is 0
-                            codes[i - 3].operand = 0f;
-                            codes[i - 2].opcode = OpCodes.Ble_Un_S;
-                            codes[i - 2].operand = codes[j + 1].labels[0];
-
                             // mark the end of current iteration
                             var lbl_end = generator.DefineLabel();
                             codes[i + 7].WithLabels(lbl_end);
@@ -1918,12 +1679,18 @@ namespace KFCommonUtilityLib.Harmony
                             codes.InsertRange(j + 4, new[]
                             {
                                 new CodeInstruction(OpCodes.Ldloc_1),
-                                CodeInstruction.CallClosure<Action<Inventory>>(static (Inventory inv) =>
+                                CodeInstruction.CallClosure<Action<Hand>>(static (inv) =>
                                 {
-                                    var player = inv.entity as EntityPlayerLocal;
-                                    inv.m_HoldingItemIdx = inv.m_FocusedItemIdx;
+                                    var player = (EntityPlayerLocal)inv.entity;
                                     player.MoveController.nextHeldItem?.Clear();
                                 })
+                            });
+                            
+                            codes.RemoveAt(i + 5);
+                            codes.InsertRange(i + 5, new[]
+                            {
+                                CodeInstruction.LoadLocal(1),
+                                CodeInstruction.Call(typeof(MultiActionPatches), nameof(WaitAndRestore))
                             });
 
                             // remove unwanted wait time change
@@ -1937,7 +1704,6 @@ namespace KFCommonUtilityLib.Harmony
                                 new CodeInstruction(OpCodes.Stloc_S, lbd_prev),
                                 // check if use true holster
                                 new CodeInstruction(OpCodes.Ldloc_1),
-                                new CodeInstruction(OpCodes.Ldc_I4_1),
                                 new CodeInstruction(OpCodes.Ldloca_S, lbd_prev),
                                 CodeInstruction.Call(typeof(MultiActionPatches), nameof(IsTrueHolster)),
                                 // if not, continue with vanilla wait time
@@ -1945,7 +1711,8 @@ namespace KFCommonUtilityLib.Harmony
                                 // wait for holster
                                 new CodeInstruction(OpCodes.Ldarg_0),
                                 new CodeInstruction(OpCodes.Ldloc_S, lbd_prev),
-                                CodeInstruction.Call(typeof(ItemModuleTrueHolster.TrueHolsterData), nameof(ItemModuleTrueHolster.TrueHolsterData.WaitForHolster)),
+                                new CodeInstruction(OpCodes.Ldloc_1),
+                                CodeInstruction.Call(typeof(MultiActionPatches), nameof(WaitForHolsterAndRestore)),
                                 new CodeInstruction(OpCodes.Stfld, fld_current),
                                 // jump to the end of the current iteration
                                 new CodeInstruction(OpCodes.Br_S, lbl_end)
@@ -1973,18 +1740,21 @@ namespace KFCommonUtilityLib.Harmony
                             codes.InsertRange(j + 12, new[]
                             {
                                 new CodeInstruction(OpCodes.Ldloc_1),
-                                CodeInstruction.Call(typeof(Inventory), nameof(Inventory.SetIsFinishedSwitchingHeldItem)),
+                                new CodeInstruction(OpCodes.Ldc_I4_0),
+                                new CodeInstruction(OpCodes.Stfld, AccessTools.Field(typeof(Hand), nameof(Hand.isSwitching)))
                             });
 
                             // insert before the yield wait
                             var lbd_new = generator.DeclareLocal(typeof(ItemModuleTrueHolster.TrueHolsterData));
                             codes.InsertRange(j - 3, new[]
                             {
-                                new CodeInstruction(OpCodes.Ldnull),
+                                new CodeInstruction(OpCodes.Ldnull).WithLabels(codes[j - 3].ExtractLabels()),
                                 new CodeInstruction(OpCodes.Stloc_S, lbd_new),
+                                new CodeInstruction(OpCodes.Ldloc_1),
+                                new CodeInstruction(OpCodes.Ldc_I4_1),
+                                new CodeInstruction(OpCodes.Stfld, AccessTools.Field(typeof(Hand), nameof(Hand.isSwitching))),
                                 // check if use true holster
                                 new CodeInstruction(OpCodes.Ldloc_1),
-                                new CodeInstruction(OpCodes.Ldc_I4_0),
                                 new CodeInstruction(OpCodes.Ldloca_S, lbd_new),
                                 CodeInstruction.Call(typeof(MultiActionPatches), nameof(IsTrueHolster)),
                                 // if not, continue with vanilla wait time
@@ -2001,10 +1771,6 @@ namespace KFCommonUtilityLib.Harmony
                                 new CodeInstruction(OpCodes.Ldc_R4, 0f),
                                 new CodeInstruction(OpCodes.Ble_Un_S, lbl_next)
                             });
-                            int offset;
-                            offset = 3;
-                            codes[j - offset].WithLabels(codes[j - offset - 2].ExtractLabels());
-                            codes.RemoveRange(j - offset - 2, 2);
                             break;
                         }
                     }
@@ -2015,10 +1781,65 @@ namespace KFCommonUtilityLib.Harmony
             return codes;
         }
 
-        private static bool IsTrueHolster(Inventory inv, bool lastHolding, out ItemModuleTrueHolster.TrueHolsterData data)
+        private static IEnumerator WaitAndRestore(float waitTime, Hand hand)
         {
-            data = (lastHolding ? inv.lastdrawnHoldingItemData : inv.holdingItemData).LoadModule<ItemModuleTrueHolster.TrueHolsterData>();
-            var targets = lastHolding ? AnimationRiggingManager.GetLastRigTargetsFromInventory(inv) : AnimationRiggingManager.GetCurRigTargetsFromInventory(inv);
+            int prevIdx = hand.toolbelt.SelectedSlot;
+            var prevMode = hand.mode;
+            GetInvDataIdxAndMode(hand.holstering, hand, out var idx, out hand.mode);
+            if (idx >= 0)
+            {
+                hand.toolbelt.SelectedSlot = idx;
+            }
+            yield return new WaitForSeconds(waitTime);
+            hand.toolbelt.SelectedSlot = prevIdx;
+            hand.mode = prevMode;
+        }
+
+        private static IEnumerator WaitForHolsterAndRestore(ItemModuleTrueHolster.TrueHolsterData data, Hand hand)
+        {
+            int prevIdx = hand.toolbelt.SelectedSlot;
+            var prevMode = hand.mode;
+            GetInvDataIdxAndMode(hand.holstering, hand, out var idx, out hand.mode);
+            if (idx >= 0)
+            {
+                hand.toolbelt.SelectedSlot = idx;
+            }
+
+            yield return data.WaitForHolster();
+            hand.toolbelt.SelectedSlot = prevIdx;
+            hand.mode = prevMode;
+            
+        }
+
+        private static bool GetInvDataIdxAndMode(ItemInventoryData invData, Hand hand, out int idx, out Hand.HoldingMode mode)
+        {
+            idx = -1;
+            mode = Hand.HoldingMode.Bare;
+            if (invData == null || hand == null)
+                return false;
+            idx = invData.slotIdx;
+            if (invData.item == hand.BareHandItem)
+            {
+                mode = Hand.HoldingMode.Bare;
+            }
+            else if (invData.slotIdx == -1)
+            {
+                mode = Hand.HoldingMode.Transient;
+            }
+            else
+            {
+                mode = Hand.HoldingMode.Current;
+            }
+
+            return true;
+        }
+        
+        private static bool IsTrueHolster(Hand inv, out ItemModuleTrueHolster.TrueHolsterData data)
+        {
+            bool useHeld = inv.holstering == null;
+            var invData = useHeld ? inv.Held : inv.holstering;
+            data = invData.LoadModule<ItemModuleTrueHolster.TrueHolsterData>();
+            var targets = invData?.model?.GetComponent<AnimationTargetsAbs>();
             return data != null && targets && targets.IsAnimationSet;
         }
         #endregion
@@ -2106,7 +1927,7 @@ namespace KFCommonUtilityLib.Harmony
         {
             private static IEnumerable<MethodBase> TargetMethods()
             {
-                yield return AccessTools.Method(typeof(XUiC_ItemStack), nameof(XUiC_ItemStack.GetBindingValueInternal));
+                yield return AccessTools.Method(typeof(XUiC_ItemStack), nameof(XUiC_ItemStack.bindingDurabilityFill));
                 yield return AccessTools.Method(typeof(XUiC_ItemInfoWindow), nameof(XUiC_ItemInfoWindow.GetBindingValueInternal));
             }
 
@@ -2124,7 +1945,7 @@ namespace KFCommonUtilityLib.Harmony
                     {
                         for (int j =  i - 1; j >= 1; j--)
                         {
-                            if (codes[j].opcode == OpCodes.Dup && codes[j - 1].LoadsField(fld_itemstack))
+                            if ((codes[j].opcode == OpCodes.Dup && codes[j - 1].LoadsField(fld_itemstack)) || (codes[j].opcode == OpCodes.Ret && codes[j - 1].LoadsConstant(0f)))
                             {
                                 for (int k = j + 1; k < i; k++)
                                 {
@@ -2132,9 +1953,9 @@ namespace KFCommonUtilityLib.Harmony
                                     {
                                         codes.InsertRange(k - 3, new[]
                                         {
-                                            new CodeInstruction(OpCodes.Ldarg_0),
+                                            new CodeInstruction(OpCodes.Ldarg_0).WithLabels(codes[k - 3].ExtractLabels()),
                                             new CodeInstruction(OpCodes.Ldfld, fld_itemstack),
-                                            CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)),
+                                            new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(ItemStack), nameof(ItemStack.itemValue))),
                                             CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.SetCachedEventParamsDummyAction))
                                         });
                                         break;
@@ -2163,10 +1984,10 @@ namespace KFCommonUtilityLib.Harmony
             {
                 if (codes[i].Calls(prop_max) && codes[i + 1].Branches(out _))
                 {
-                    codes.InsertRange(i + 2, new[]
+                    codes.InsertRange(i - 2, new[]
                     {
                         new CodeInstruction(OpCodes.Ldarg_1),
-                        CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)),
+                        new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(ItemStack), nameof(ItemStack.itemValue))),
                         CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.SetCachedEventParamsDummyAction))
                     });
                     break;
@@ -2366,7 +2187,6 @@ namespace KFCommonUtilityLib.Harmony
             var codes = instructions.ToList();
 
             var lbd_tags = generator.DeclareLocal(typeof(FastTags<TagGroup.Global>));
-            FieldInfo fld_itemvalue = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.ItemValue));
             FieldInfo fld_hasalltags = AccessTools.Field(typeof(HoldingItemHasTags), nameof(HoldingItemHasTags.hasAllTags));
             MethodInfo prop_itemclass = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.ItemClass));
             MethodInfo prop_itemvalue = AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItemItemValue));
@@ -2417,76 +2237,6 @@ namespace KFCommonUtilityLib.Harmony
                     i -= 3;
                 }
             }
-            return codes;
-        }
-        #endregion
-
-        #region Inventory make ItemValue valid on creating inventory data
-        [HarmonyPatch(typeof(Inventory), nameof(Inventory.SetItem), new[] { typeof(int), typeof(ItemValue), typeof(int), typeof(bool) })]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_SetItem_Inventory(IEnumerable<CodeInstruction> instructions)
-        {
-            var codes = instructions.ToList();
-
-            var mtd_clone = AccessTools.Method(typeof(ItemValue), nameof(ItemValue.Clone));
-            var mtd_create = AccessTools.Method(typeof(Inventory), nameof(Inventory.createHeldItem));
-            var mtd_invdata = AccessTools.Method(typeof(Inventory), nameof(Inventory.createInventoryData));
-            for (int i = 0; i < codes.Count; i++)
-            {
-                if (codes[i].Calls(mtd_create))
-                {
-                    codes.InsertRange(i - 12, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldarg_2),
-                        CodeInstruction.StoreField(typeof(ActionModuleAlternative), nameof(ActionModuleAlternative.InventorySetItemTemp))
-                    });
-                    i += 4;
-                    for (int j = i; j < codes.Count; j++)
-                    {
-                        if (codes[j].Calls(mtd_invdata))
-                        {
-                            codes.InsertRange(j + 2, new[]
-                            {
-                                new CodeInstruction(OpCodes.Ldnull),
-                                CodeInstruction.StoreField(typeof(ActionModuleAlternative), nameof(ActionModuleAlternative.InventorySetItemTemp))
-                            });
-                            i = j + 4;
-                            break;
-                        }
-                    }
-                    break;
-                }
-            }
-
-            return codes;
-        }
-
-        [HarmonyPatch(typeof(Inventory), nameof(Inventory.ForceHoldingItemUpdate))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_ForceHoldingItemUpdate_Inventory(IEnumerable<CodeInstruction> instructions)
-        {
-            var codes = instructions.ToList();
-
-            var mtd_invdata = AccessTools.Method(typeof(Inventory), nameof(Inventory.createInventoryData));
-
-            for (int i = 0; i < codes.Count; i++)
-            {
-                if (codes[i].Calls(mtd_invdata))
-                {
-                    codes.InsertRange(i + 2, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldnull),
-                        CodeInstruction.StoreField(typeof(ActionModuleAlternative), nameof(ActionModuleAlternative.InventorySetItemTemp))
-                    });
-                    codes.InsertRange(i - 8, new[]
-                    {
-                        new CodeInstruction(OpCodes.Ldloc_0).WithLabels(codes[i - 8].ExtractLabels()),
-                        CodeInstruction.StoreField(typeof(ActionModuleAlternative), nameof(ActionModuleAlternative.InventorySetItemTemp))
-                    });
-                    break;
-                }
-            }
-
             return codes;
         }
         #endregion
@@ -2542,7 +2292,7 @@ namespace KFCommonUtilityLib.Harmony
     {
         private static IEnumerable<MethodBase> TargetMethods()
         {
-            return new MethodInfo[]
+            return new[]
             {
                 AccessTools.Method(typeof(AnimatorMeleeAttackState), nameof(AnimatorMeleeAttackState.OnStateEnter), new[] {typeof(Animator), typeof(AnimatorStateInfo), typeof(int)}),
                 AccessTools.Method(typeof(ItemActionAttack), nameof(ItemActionAttack.GetDamageBlock)),
@@ -2585,7 +2335,7 @@ namespace KFCommonUtilityLib.Harmony
     {
         private static IEnumerable<MethodBase> TargetMethods()
         {
-            return new MethodInfo[]
+            return new[]
             {
                 AccessTools.Method(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.Raycast)),
                 AccessTools.Method(typeof(ItemActionDynamic), nameof(ItemActionDynamic.GetExecuteActionGrazeTarget)),
@@ -2594,7 +2344,7 @@ namespace KFCommonUtilityLib.Harmony
                 AccessTools.Method(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.OnHoldingUpdate)),
                 AccessTools.Method(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.SetAttackFinished)),
                 AccessTools.Method(typeof(ItemActionMelee), nameof(ItemActionMelee.OnHoldingUpdate)),
-                AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.ExecuteAction)),
+                AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.TryExecuteAction)),
                 AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.fireShot)),
                 AccessTools.Method(typeof(ItemActionThrownWeapon), nameof(ItemActionThrownWeapon.throwAway)),
                 AccessTools.Method(typeof(ItemActionUseOther), nameof(ItemActionUseOther.ExecuteAction)),
@@ -2603,6 +2353,7 @@ namespace KFCommonUtilityLib.Harmony
         }
 
         [HarmonyTranspiler]
+        [HarmonyPriority(Priority.First)]
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
@@ -2634,7 +2385,7 @@ namespace KFCommonUtilityLib.Harmony
     {
         private static IEnumerable<MethodBase> TargetMethods()
         {
-            return new MethodInfo[]
+            return new[]
             {
                 AccessTools.Method(typeof(ItemClass), nameof(ItemClass.OnHoldingUpdate)),
                 AccessTools.Method(typeof(ItemClass), nameof(ItemClass.CleanupHoldingActions)),
@@ -2647,11 +2398,21 @@ namespace KFCommonUtilityLib.Harmony
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_Three(IEnumerable<CodeInstruction> instructions)
         {
-            foreach (var instruction in instructions)
+            var codes = instructions.ToList();
+            for (int i = 0; i < codes.Count; i++)
             {
-                if (instruction.opcode == OpCodes.Ldc_I4_3)
-                    instruction.opcode = OpCodes.Ldc_I4_5;
-                yield return instruction;
+                var instruction = codes[i];
+                if (instruction.LoadsConstant(3) && i + 1 < codes.Count
+                    && (codes[i + 1].opcode == OpCodes.Blt || codes[i + 1].opcode == OpCodes.Blt_S))
+                {
+                    // Extend only the native action-loop bound, including cleanup, to the actual owner array.
+                    yield return new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(instruction);
+                    yield return CodeInstruction.LoadField(typeof(ItemClass), nameof(ItemClass.Actions));
+                    yield return new CodeInstruction(OpCodes.Ldlen);
+                    yield return new CodeInstruction(OpCodes.Conv_I4);
+                }
+                else
+                    yield return instruction;
             }
         }
     }
@@ -2672,7 +2433,7 @@ namespace KFCommonUtilityLib.Harmony
                                               }
                                               catch
                                               {
-                                                  return new Type[0];
+                                                  return Type.EmptyTypes;
                                               }
                                           })
                                           .Where(t => t.IsSubclassOf(typeof(ItemAction)))
@@ -2683,7 +2444,7 @@ namespace KFCommonUtilityLib.Harmony
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase __originalMethod)
         {
-            Log.Out($"Patching property override method {__originalMethod.DeclaringType.Name}.{__originalMethod.Name}");
+            Log.Out($"Patching property override method {__originalMethod.DeclaringType?.Name}.{__originalMethod.Name}");
             var codes = instructions.ToList();
             var mtd_override = AccessTools.Method(typeof(ItemValue), nameof(ItemValue.GetPropertyOverride));
             var mtd_newoverride = AccessTools.Method(typeof(MultiActionUtils), nameof(MultiActionUtils.GetPropertyOverrideForAction));
@@ -2792,7 +2553,7 @@ namespace KFCommonUtilityLib.Harmony
     {
         private static IEnumerable<MethodBase> TargetMethods()
         {
-            return new MethodInfo[]
+            return new[]
             {
                 AccessTools.Method(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.SetupStartingItems)),
                 AccessTools.Method(typeof(ItemClass), nameof(ItemClass.CreateItemStacks))
@@ -2908,7 +2669,7 @@ namespace KFCommonUtilityLib.Harmony
                 {
                     codes[i] = CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.CanCompare));
                     codes[i - 1] = CodeInstruction.LoadField(typeof(XUiC_ItemInfoWindow), nameof(XUiC_ItemInfoWindow.itemStack));
-                    codes.Insert(i, CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)));
+                    codes.Insert(i, new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(ItemStack), nameof(ItemStack.itemValue))));
                     codes.RemoveAt(i - 3);
                     break;
                 }

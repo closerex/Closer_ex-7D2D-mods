@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using KFCommonUtilityLib.Attributes;
 using System.Collections;
 using UnityEngine;
@@ -19,18 +19,10 @@ public class ItemModuleTrueHolster
     }
 
     [HarmonyPatch(nameof(ItemClass.StartHolding)), MethodTargetPrefix]
-    public bool Prefix_StartHolding(ItemClass __instance, TrueHolsterData __customData, Transform _modelTransform)
+    public void Prefix_StartHolding(TrueHolsterData __customData)
     {
-        if (unholsterDelayActive && _modelTransform.TryGetComponent<AnimationTargetsAbs>(out var targets) && targets.IsAnimationSet)
-        {
-            __customData.IsUnholstering = true;
-        }
-        else
-        {
-            __customData.IsUnholstering = false;
-        }
+        __customData.IsUnholstering = false;
         __customData.IsHolstering = false;
-        return true;
     }
 
     [HarmonyPatch(nameof(ItemClass.StopHolding))]

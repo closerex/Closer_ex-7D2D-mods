@@ -82,7 +82,8 @@ namespace KFCommonUtilityLib
             try
             {
                 var gameAssembly = typeof(ItemActionRanged).Assembly;
-                if (typeof(MinEventActionModifyStats).Assembly != gameAssembly)
+                if (typeof(MinEventActionModifyStats).Assembly != gameAssembly ||
+                    typeof(ItemInventoryData).Assembly != gameAssembly)
                 {
                     return CompatibilityResult.Fatal(
                         "The fixed target types were loaded from different assemblies. No repair was attempted.");
@@ -126,8 +127,9 @@ namespace KFCommonUtilityLib
                         assemblyPath);
                 }
 
-                bool invalidFlags = methods.Any(method => !method.IsVirtual || method.IsFinal ||
-                    (method.Attributes & MethodAttributes.NewSlot) == 0);
+                bool invalidFlags = typeof(ItemInventoryData).IsSealed ||
+                    methods.Any(method => !method.IsVirtual || method.IsFinal ||
+                        (method.Attributes & MethodAttributes.NewSlot) == 0);
                 var scan = LoadedAssemblyCatalog.Scan(assemblyPath, gameAssembly, invalidFlags);
                 if (scan.Report.Errors.Count != 0)
                     return CompatibilityResult.Fatal(string.Join("\n", scan.Report.Errors), assemblyPath);
@@ -149,7 +151,7 @@ namespace KFCommonUtilityLib
                     assemblyPath,
                     runtime.HostPath,
                     scan.Report.NeedsRepair ? string.Join("\n", scan.Report.Details) :
-                        "The files are compatible, but this process still has non-overridable game methods loaded. A restart is required.",
+                        "The files are compatible, but this process still has sealed game types or non-overridable methods loaded. A restart is required.",
                     scan.Inputs);
             }
             catch (Exception exception)

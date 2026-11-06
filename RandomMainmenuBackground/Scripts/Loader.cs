@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
@@ -46,12 +46,11 @@ public class RandomBackgroundLoader
 
     private static void insert(List<string> list, string prefix, string name)
     {
-        if (string.IsNullOrEmpty(name))
+        if (string.IsNullOrEmpty(name) || list.Contains(name))
             return;
-        Log.Out($"reading override for {prefix}: {name}");
 
-        if (!list.Contains(name))
-            list.Add(name);
+        list.Add(name);
+        Log.Out($"reading override for {prefix}: {name}");
     }
 
     private static readonly List<string> list_bg = new();

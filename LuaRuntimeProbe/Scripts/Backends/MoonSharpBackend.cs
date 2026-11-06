@@ -17,7 +17,7 @@ namespace LuaRuntimeProbe.Backends
         private const string PackageId = "MoonSharp";
         private const string PackageVersion = "2.0.0";
 
-        private readonly LuaBackendInfo _info = new LuaBackendInfo
+        private readonly LuaBackendInfo _info = new()
         {
             Id = "moonsharp",
             DisplayName = "MoonSharp (pure managed)",
@@ -39,7 +39,7 @@ namespace LuaRuntimeProbe.Backends
         /// the "hot call" benchmark would silently include a global-table lookup
         /// per iteration, which is not what the row claims to measure.
         /// </summary>
-        private readonly Dictionary<string, DynValue> _functionCache = new Dictionary<string, DynValue>();
+        private readonly Dictionary<string, DynValue> _functionCache = new();
 
         public LuaBackendInfo Info
         {

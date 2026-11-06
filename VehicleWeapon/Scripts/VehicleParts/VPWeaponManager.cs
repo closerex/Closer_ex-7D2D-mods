@@ -15,7 +15,7 @@ public class VPWeaponManager : VehiclePart
     public static Vector3 CameraOffset { get; private set; } = Vector3.zero;
     public static bool ShouldNetSync { get; private set; } = false;
 
-    public static Dictionary<int, List<(string vmodName, MinEffectGroup group)>> VehicleWeaponModMapping { get; } = new Dictionary<int, List<(string, MinEffectGroup)>>();
+    public static Dictionary<int, List<(string vmodName, MinEffectGroup group)>> VehicleWeaponModMapping { get; } = new();
 
     public override void SetProperties(DynamicProperties _properties)
     {
@@ -264,8 +264,8 @@ public class VPWeaponManager : VehiclePart
 
     protected class NetSyncHelper
     {
-        private List<VehicleWeaponBase> list_update = new List<VehicleWeaponBase>();
-        private List<KeyValuePair<VehicleWeaponBase, VehicleWeaponBase.FiringState>> list_fire = new List<KeyValuePair<VehicleWeaponBase, VehicleWeaponBase.FiringState>>();
+        private List<VehicleWeaponBase> list_update = new();
+        private List<KeyValuePair<VehicleWeaponBase, VehicleWeaponBase.FiringState>> list_fire = new();
         private VPWeaponManager manager;
         private byte updateCounter = 0;
 

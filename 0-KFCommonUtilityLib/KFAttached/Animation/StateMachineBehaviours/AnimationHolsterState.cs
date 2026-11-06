@@ -1,4 +1,4 @@
-﻿using KFCommonUtilityLib;
+using KFCommonUtilityLib;
 using UnityEngine;
 #if NotEditor
 #endif
@@ -28,7 +28,7 @@ public class AnimationHolsterState : StateMachineBehaviour
         }
         //holsterData = ((isHolstering ? player.inventory?.lastdrawnHoldingItemData : player.inventory?.holdingItemData) as IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData>)?.Instance;
         var activeRig = AnimationRiggingManager.GetActiveRigTargetsFromPlayer(player);
-        ItemInventoryData invData = player.inventory?.GetItemDataInSlot(activeRig.SlotIndex);
+        ItemInventoryData invData = player.inventory?.Hand?.GetSlotData(activeRig.SlotIndex);
         if (activeRig)
         {
             holsterData = invData.LoadModule<ItemModuleTrueHolster.TrueHolsterData>();

@@ -34,7 +34,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
         [SerializeField]
         internal bool scaleReticle = false;
         [SerializeField]
-        internal Vector2 reticleSizeRange = new Vector2(1, 1);
+        internal Vector2 reticleSizeRange = new(1, 1);
         //[SerializeField]
         //internal bool scaleDownReticle = false;
         //[SerializeField]
@@ -149,8 +149,8 @@ namespace KFCommonUtilityLib.KFAttached.Render
                 Log.Out($"Scope shader script: Expecting holding item idx {itemSlot} but getting {player.inventory.holdingItemIdx}!");
                 return;
             }
-            var zoomAction = ((ActionModuleAlternative.InventorySetItemTemp?.ItemClass ?? player.inventory.holdingItem).Actions[1]) as ItemActionZoom;
-            if (zoomAction == null)
+
+            if (player.inventory.holdingItem.Actions[1] is not ItemActionZoom zoomAction)
             {
                 Destroy(gameObject);
                 return;

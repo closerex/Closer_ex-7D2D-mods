@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace FullautoLauncher.Scripts.ProjectileManager
 {
@@ -19,7 +19,7 @@ namespace FullautoLauncher.Scripts.ProjectileManager
         public float collisionStartBack;
         public float? stickyRoll;
         public bool bOnIdealPosition = false;
-        public CollisionParticleController waterCollisionParticles = new CollisionParticleController();
+        public CollisionParticleController waterCollisionParticles = new();
 
         public ProjectileParams(int projectileID)
         {
@@ -38,7 +38,7 @@ namespace FullautoLauncher.Scripts.ProjectileManager
                 actionData = _info.actionData,
                 group = _info.group
             };
-            info.itemValuePickup.Metadata?.Remove("RawStrain");
+            info.itemValuePickup.RemoveMetaData("RawStrain");
             float rawStrain = _info.actionData is ItemActionLauncher.ItemActionDataLauncher launcher
                 ? launcher.strainPercent : 1f;
             info.itemValueProjectile.SetMetadata("RawStrain", rawStrain);

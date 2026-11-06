@@ -15,13 +15,13 @@ public class AnimationRandomRecoil : AnimationProceduralRecoildAbs, IPlayableGra
     [Header("Rotation")]
     //[SerializeField] private Vector3 minRotation = new Vector3(-5, -2, -2);
     //[SerializeField] private Vector3 maxRotation = new Vector3(0, 2, 2);
-    [SerializeField] private Vector3 randomRotationMin = new Vector3(-3, -1, -1);
-    [SerializeField] private Vector3 randomRotationMax = new Vector3(-1, 1, 1);
+    [SerializeField] private Vector3 randomRotationMin = new(-3, -1, -1);
+    [SerializeField] private Vector3 randomRotationMax = new(-1, 1, 1);
     [Header("Kickback")]
     //[SerializeField] private Vector3 minKickback = new Vector3(0, 0, -0.05f);
     //[SerializeField] private Vector3 maxKickback = new Vector3(0, 0, 0);
-    [SerializeField] private Vector3 randomKickbackMin = new Vector3(0, 0, -0.025f);
-    [SerializeField] private Vector3 randomKickbackMax = new Vector3(0, 0, -0.01f);
+    [SerializeField] private Vector3 randomKickbackMin = new(0, 0, -0.025f);
+    [SerializeField] private Vector3 randomKickbackMax = new(0, 0, -0.01f);
     [Header("Recoil")]
     [SerializeField, Range(0, 0.1f)] private float tweenInDuration = 0.04f;
     [SerializeField, Range(0, 5)] private float tweenOutDuration = 1.5f;

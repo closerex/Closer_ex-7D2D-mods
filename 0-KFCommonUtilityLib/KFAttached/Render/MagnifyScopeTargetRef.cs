@@ -6,7 +6,7 @@ namespace KFCommonUtilityLib.KFAttached.Render
     [AddComponentMenu("")]
     internal class MagnifyScopeTargetRef : MonoBehaviour
     {
-        private HashSet<MagnifyScope> targets = new HashSet<MagnifyScope>();
+        private HashSet<MagnifyScope> targets = new();
 
         private void OnRenderImage(RenderTexture source, RenderTexture destination)
         {

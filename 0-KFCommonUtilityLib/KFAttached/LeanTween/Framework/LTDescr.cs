@@ -97,7 +97,7 @@ public class LTDescr
         }
     }
 
-    public LTDescrOptional _optional = new LTDescrOptional();
+    public LTDescrOptional _optional = new();
 
     public override string ToString()
     {

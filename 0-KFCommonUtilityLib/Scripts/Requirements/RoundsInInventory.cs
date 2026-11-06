@@ -2,7 +2,7 @@
 
 public class RoundsInInventory : RequirementBase
 {
-    private static Dictionary<string, ItemValue> cached = new Dictionary<string, ItemValue>();
+    private static Dictionary<string, ItemValue> cached = new();
 
     public static bool TryGetValue(string ammoName, out ItemValue ammoValue)
     {

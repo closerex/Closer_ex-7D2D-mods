@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -435,6 +435,44 @@
     <None Include="KFAttached\Animation\DebugScripts\AnimatorActionIndexDebug.cs.meta">
       <DependentUpon>AnimatorActionIndexDebug.cs</DependentUpon>
     </None>
+    <None Include="KFAttached\Animation\MonoBehaviours\KFMedicVfxPreviewPlayer.cs" />
+    <None Include="KFAttached\Animation\MonoBehaviours\KFIonTransientFlameShutdown.cs.meta">
+      <DependentUpon>KFIonTransientFlameShutdown.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\MonoBehaviours\KFMedicVfxPreviewPlayer.cs.meta">
+      <DependentUpon>KFMedicVfxPreviewPlayer.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\MonoBehaviours\KFParticleCollisionSpawn.cs.meta">
+      <DependentUpon>KFParticleCollisionSpawn.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\MonoBehaviours\KFParticleCylinderBirth.cs.meta">
+      <DependentUpon>KFParticleCylinderBirth.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\MonoBehaviours\KFParticleUniformRangeBirthSize.cs.meta">
+      <DependentUpon>KFParticleUniformRangeBirthSize.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\MonoBehaviours\KFParticleWorldBurstVelocity.cs.meta">
+      <DependentUpon>KFParticleWorldBurstVelocity.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\MonoBehaviours\KFUniformRangeSampler.cs.meta">
+      <DependentUpon>KFUniformRangeSampler.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\Trails.meta" />
+    <None Include="KFAttached\Animation\Trails\KFAnimTrailData.cs.meta">
+      <DependentUpon>KFAnimTrailData.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\Trails\KFAnimTrailMesh.cs.meta">
+      <DependentUpon>KFAnimTrailMesh.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\Trails\KFAnimTrailPlayer.cs.meta">
+      <DependentUpon>KFAnimTrailPlayer.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\Trails\KFAnimTrailStyleSet.cs.meta">
+      <DependentUpon>KFAnimTrailStyleSet.cs</DependentUpon>
+    </None>
+    <None Include="KFAttached\Animation\Trails\KFWeaponTrailColorController.cs.meta">
+      <DependentUpon>KFWeaponTrailColorController.cs</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Harmony\AudioPatches.cs" />
@@ -483,6 +521,17 @@
     <Compile Include="KFAttached\Misc\AudioClipCollection.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\IAnimatorWrapper.cs" />
     <Compile Include="KFAttached\Animation\MonoBehaviours\IPlayableGraphRelated.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\KFIonTransientFlameShutdown.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\KFParticleCollisionSpawn.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\KFParticleCylinderBirth.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\KFParticleUniformRangeBirthSize.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\KFParticleWorldBurstVelocity.cs" />
+    <Compile Include="KFAttached\Animation\MonoBehaviours\KFUniformRangeSampler.cs" />
+    <Compile Include="KFAttached\Animation\Trails\KFAnimTrailData.cs" />
+    <Compile Include="KFAttached\Animation\Trails\KFAnimTrailMesh.cs" />
+    <Compile Include="KFAttached\Animation\Trails\KFAnimTrailPlayer.cs" />
+    <Compile Include="KFAttached\Animation\Trails\KFAnimTrailStyleSet.cs" />
+    <Compile Include="KFAttached\Animation\Trails\KFWeaponTrailColorController.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationAmmoUpdateState.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\AnimationCustomMeleeAttackState.cs" />
     <Compile Include="KFAttached\Animation\StateMachineBehaviours\MeleeWindowDamage.cs" />
@@ -762,7 +811,7 @@
     <Compile Include="Scripts\Utilities\IValueDamper.cs" />
     <Compile Include="Scripts\Utilities\LocalPlayerCameraUpdater.cs" />
     <Compile Include="Scripts\Utilities\MiscExtensions.cs" />
-    <Compile Include="Scripts\Utilities\Modular\ItemInventoryDataModuleProcessor.cs" />
+    <Compile Include="Scripts\Utilities\Modular\ICustomInvData.cs" />
     <Compile Include="Scripts\Utilities\Modular\ItemActionDataModuleProcessor.cs" />
     <Compile Include="Scripts\StaticManagers\LocalItemTagsManager.cs" />
     <Compile Include="Scripts\StaticManagers\MultiActionManager.cs" />
@@ -794,6 +843,7 @@
     <Compile Include="Scripts\Utilities\Modular\IModuleProcessor.cs" />
     <Compile Include="Scripts\Utilities\Modular\ItemActionModuleProcessor.cs" />
     <Compile Include="Scripts\Utilities\Modular\ItemClassModuleProcessor.cs" />
+    <Compile Include="Scripts\Utilities\Modular\ItemInventoryDataModuleProcessor.cs" />
     <Compile Include="Scripts\Utilities\Modular\MinEventActionModuleProcessor.cs" />
     <Compile Include="Scripts\Utilities\Modular\ModuleManagers.cs" />
     <Compile Include="Scripts\Utilities\Modular\ModuleManipulator.cs" />
@@ -954,7 +1004,7 @@
   -->
   <PropertyGroup>
     <!-- 版本号前缀：换游戏版本时改这里 -->
-    <ModInfoVersionPrefix>24</ModInfoVersionPrefix>
+    <ModInfoVersionPrefix>25</ModInfoVersionPrefix>
     <ModInfoUpdateScript>$(ProjectDir)Update-ModInfoVersion.ps1</ModInfoUpdateScript>
     <!-- 必须在目标之前定义：目标里的 EnvironmentVariables 求值时要取到 ModInfoFile -->
     <ModInfoFile>$(ProjectDir)ModInfo.xml</ModInfoFile>

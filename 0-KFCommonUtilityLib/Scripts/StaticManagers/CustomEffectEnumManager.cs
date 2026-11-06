@@ -82,12 +82,12 @@ namespace KFCommonUtilityLib
         {
             private static int max, min;
             private static readonly TypeCode typecode;
-            private static readonly Dictionary<string, T> dict_default_enums = new Dictionary<string, T>();
-            private static readonly Dictionary<string, T> dict_default_enums_lower = new Dictionary<string, T>();
-            private static readonly LinkedList<(int start, int end)> link_default_holes = new LinkedList<(int start, int end)>();
-            private static Dictionary<string, T> dict_final_enums = new Dictionary<string, T>();
-            private static Dictionary<string, T> dict_final_enums_lower = new Dictionary<string, T>();
-            private static LinkedList<(int start, int end)> link_final_holes = new LinkedList<(int start, int end)>();
+            private static readonly Dictionary<string, T> dict_default_enums = new();
+            private static readonly Dictionary<string, T> dict_default_enums_lower = new();
+            private static readonly LinkedList<(int start, int end)> link_default_holes = new();
+            private static Dictionary<string, T> dict_final_enums = new();
+            private static Dictionary<string, T> dict_final_enums_lower = new();
+            private static LinkedList<(int start, int end)> link_final_holes = new();
             public static bool Registered { get; set; } = false;
             private static bool DefaultInited { get; set; } = false;
             static EnumHolder()

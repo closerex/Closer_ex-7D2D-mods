@@ -13,7 +13,7 @@ namespace LuaRuntimeProbe.Game
     [UnityEngine.Scripting.Preserve]
     public sealed class GameProbeHost : IProbeHost
     {
-        public static readonly GameProbeHost Instance = new GameProbeHost();
+        public static readonly GameProbeHost Instance = new();
 
         private static bool _installed;
 

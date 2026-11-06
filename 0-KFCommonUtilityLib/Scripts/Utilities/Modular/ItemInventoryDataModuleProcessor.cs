@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -35,11 +35,9 @@ namespace KFCommonUtilityLib
         {
             pbs = new ParameterBuilder[]
             {
-                ctorbd.DefineParameter(1, ParameterAttributes.None, "_item"),
-                ctorbd.DefineParameter(2, ParameterAttributes.None, "_itemStack"),
-                ctorbd.DefineParameter(3, ParameterAttributes.None, "_gameManager"),
-                ctorbd.DefineParameter(4, ParameterAttributes.None, "_holdingEntity"),
-                ctorbd.DefineParameter(5, ParameterAttributes.None, "_slotIdx")
+                ctorbd.DefineParameter(1, ParameterAttributes.None, "_entity"),
+                ctorbd.DefineParameter(2, ParameterAttributes.None, "_stack"),
+                ctorbd.DefineParameter(3, ParameterAttributes.None, "_toolbeltSlotIdx")
             };
             return true;
         }
@@ -66,7 +64,9 @@ namespace KFCommonUtilityLib
             switch (par.Name)
             {
                 case "__customModule":
-                    generator.Emit(OpCodes.Ldarg_1);
+                    generator.Emit(OpCodes.Ldarg_2);
+                    generator.Emit(OpCodes.Call, AccessTools.PropertyGetter(typeof(ItemStack), nameof(ItemStack.itemValue)));
+                    generator.Emit(OpCodes.Call, AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.ItemClass)));
                     generator.Emit(OpCodes.Castclass, typebd_newClass);
                     generator.Emit(OpCodes.Ldfld, arr_fldbd_classes[moduleIndex]);
                     return true;

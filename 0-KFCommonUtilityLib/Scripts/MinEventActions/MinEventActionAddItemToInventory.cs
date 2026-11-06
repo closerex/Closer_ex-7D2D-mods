@@ -1,6 +1,6 @@
 ﻿public class MinEventActionAddItemToInventory : MinEventActionItemAccessBase
 {
-    private ItemStack itemStackCache = new ItemStack();
+    private ItemStack itemStackCache = new();
 
     public override bool CanExecute(MinEventTypes _eventType, MinEventParams _params)
     {

@@ -427,7 +427,7 @@ public class RootMovementUpdaterComparer : IComparer<IRootMovementUpdater>
 
 public static class CameraLateUpdater
 {
-    private static SortedSet<IRootMovementUpdater> sset_updaters = new SortedSet<IRootMovementUpdater>(new RootMovementUpdaterComparer());
+    private static SortedSet<IRootMovementUpdater> sset_updaters = new(new RootMovementUpdaterComparer());
     private static EntityPlayerLocal player;
     private static Transform playerOriginTransform;
     private static Transform vanillaOriginTransform;

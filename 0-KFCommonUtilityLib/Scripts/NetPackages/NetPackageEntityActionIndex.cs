@@ -1,4 +1,4 @@
-﻿namespace KFCommonUtilityLib
+namespace KFCommonUtilityLib
 {
     public class NetPackageEntityActionIndex : NetPackage
     {
@@ -11,10 +11,6 @@
             return this;
         }
 
-        public override int GetLength()
-        {
-            return 5;
-        }
 
         public override void ProcessPackage(World _world, GameManager _callbacks)
         {

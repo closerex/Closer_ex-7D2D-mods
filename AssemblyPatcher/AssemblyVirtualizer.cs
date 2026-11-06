@@ -15,14 +15,16 @@ namespace KFAssemblyPatcher
 
     public sealed class VirtualizationResult
     {
-        internal VirtualizationResult(int methodsChanged, int callSitesChanged)
+        internal VirtualizationResult(int methodsChanged, int callSitesChanged, int typesChanged)
         {
             MethodsChanged = methodsChanged;
             CallSitesChanged = callSitesChanged;
+            TypesChanged = typesChanged;
         }
         public int MethodsChanged { get; }
         public int CallSitesChanged { get; }
-        public bool Changed => MethodsChanged != 0 || CallSitesChanged != 0;
+        public int TypesChanged { get; }
+        public bool Changed => MethodsChanged != 0 || CallSitesChanged != 0 || TypesChanged != 0;
     }
 
     public static class AssemblyVirtualizer
@@ -37,15 +39,15 @@ namespace KFAssemblyPatcher
             // Original repair, present since the first release. Both of these carry module-scoped
             // patches (several modules override TryExecuteAction, and CVarReplacer overrides
             // MinEventActionModifyStats.execute), which is what a vtable slot is for.
-            new Rule("ItemActionRanged", "TryExecuteAction", "System.Void", "ItemActionData"),
-            new Rule("MinEventActionModifyStats", "execute", "System.Void", "MinEventParams"),
+            new("ItemActionRanged", "TryExecuteAction", "System.Void", "ItemActionData"),
+            new("MinEventActionModifyStats", "execute", "System.Void", "MinEventParams"),
             // Carried by module-scoped patches as well, so they need the same treatment:
             //   ActionModuleLimitedCombo.Prefix_canStartAttack
             //   ActionModuleInspectable.Prefix_SwapSelectedAmmo
             // These were removed with the infrastructure-only entries and are restored here
             // because module patches exist for them, unlike LateInit / SetAttackFinished / etc.
-            new Rule("ItemActionDynamicMelee", "canStartAttack", "System.Boolean", "ItemActionDynamicMelee/ItemActionDynamicMeleeData"),
-            new Rule("ItemActionRanged", "SwapSelectedAmmo", "System.Void", "EntityAlive", "System.Int32"),
+            new("ItemActionDynamicMelee", "canStartAttack", "System.Boolean", "ItemActionDynamicMelee/ItemActionDynamicMeleeData"),
+            new("ItemActionRanged", "SwapSelectedAmmo", "System.Void", "EntityAlive", "System.Int32"),
         };
 
         // These four remain Harmony-only. They are static, and a static method can never own
@@ -144,6 +146,16 @@ namespace KFAssemblyPatcher
             Action<Dictionary<string, MethodDefinition>, List<Instruction>> apply,
             bool requireCoverage, IEnumerable<AssemblyDefinition> modules)
         {
+            TypeDefinition inventoryData = null;
+            int typesChanged = 0;
+            if (requireCoverage)
+            {
+                inventoryData = game.MainModule.GetType("ItemInventoryData") ??
+                    throw new AssemblyPatchException("ItemInventoryData no longer exists; update the repair rules.");
+                if (!inventoryData.IsClass || inventoryData.IsValueType || inventoryData.IsAbstract)
+                    throw new AssemblyPatchException("ItemInventoryData is not a concrete class; update the repair rules.");
+                typesChanged = inventoryData.IsSealed ? 1 : 0;
+            }
             var targets = ResolveTargets(game);
             var calls = FindDispatchCalls(assembly, targets, FindOverrides(targets, game, modules));
             // Coverage is an invariant of the rule table, not of each candidate: a mod that
@@ -153,7 +165,8 @@ namespace KFAssemblyPatcher
             int changed = calls.Count(i => i.OpCode == OpCodes.Call);
             int methods = countMethods?.Invoke(targets) ?? ReportModCalls(assembly, changed);
             apply?.Invoke(targets, calls);
-            return new VirtualizationResult(methods, changed);
+            if (requireCoverage && apply != null) inventoryData.IsSealed = false;
+            return new VirtualizationResult(methods, changed, typesChanged);
         }
 
         private static int ReportModCalls(AssemblyDefinition mod, int changed)
@@ -192,7 +205,7 @@ namespace KFAssemblyPatcher
         public static void Verify(AssemblyDefinition game, IEnumerable<AssemblyDefinition> modules)
         {
             if (Analyze(game, modules).Changed)
-                throw new AssemblyPatchException("Game methods or dispatch calls are not compatible.");
+                throw new AssemblyPatchException("Game type flags, methods or dispatch calls are not compatible.");
         }
 
         public static void VerifyMod(AssemblyDefinition mod, AssemblyDefinition game) =>

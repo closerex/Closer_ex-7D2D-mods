@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
-using KFCommonUtilityLib;
-using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Reflection.Emit;
 using UniLinq;
@@ -20,6 +19,7 @@ namespace KFCommonUtilityLib
     }
 
     [HarmonyPatch]
+    [SuppressMessage("ReSharper", "UnusedMember.Local")]
     public static class DisplayAsHUDPatches
     {
         [HarmonyPatch]
@@ -34,7 +34,7 @@ namespace KFCommonUtilityLib
             {
                 var codes = instructions.ToList();
 
-                var fld_meta = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Meta));
+                var mtd_meta = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.Meta));
                 var fld_inventory = AccessTools.Field(typeof(EntityAlive), nameof(EntityAlive.inventory));
                 var fld_attackaction = AccessTools.Field(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.attackAction));
                 var fld_currentammo = AccessTools.Field(typeof(XUiC_HUDStatBar), nameof(XUiC_HUDStatBar.currentAmmoCount));
@@ -47,7 +47,6 @@ namespace KFCommonUtilityLib
                 var mtd_getstatfill = AccessTools.Method(typeof(IDisplayAsHUDStat), nameof(IDisplayAsHUDStat.GetHUDStatFillFraction));
                 var mtd_geticonoverride = AccessTools.Method(typeof(IDisplayAsHUDStat), nameof(IDisplayAsHUDStat.GetIconOverride));
                 var mtd_gettintoverride = AccessTools.Method(typeof(IDisplayAsHUDStat), nameof(IDisplayAsHUDStat.GetIconTintOverride));
-                var mtd_iseditingtool = AccessTools.Method(typeof(ItemAction), nameof(ItemAction.IsEditingTool));
                 var mtd_geticon = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.GetIconName));
                 var mtd_geticontint = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.GetIconTint));
 
@@ -55,14 +54,14 @@ namespace KFCommonUtilityLib
 
                 for (int i = 0; i < codes.Count - 1; i++)
                 {
-                    if (codes[i].LoadsField(fld_meta))
+                    if (codes[i].Calls(mtd_meta))
                     {
                         if (codes[i + 1].Calls(mtd_format))
                         {
                             //statcurrent
                             for (int j = i - 1; j >= 0; j--)
                             {
-                                if (codes[j].opcode == OpCodes.Ldarg_1)
+                                if (codes[j].opcode == OpCodes.Ldarg_0 && codes[j + 1].LoadsField(fld_attackaction))
                                 {
                                     Label lbl = generator.DefineLabel();
                                     var lbls_original = codes[j].ExtractLabels();
@@ -71,17 +70,15 @@ namespace KFCommonUtilityLib
                                     {
                                         CodeInstruction.LoadLocal(lbd_interface.LocalIndex).WithLabels(lbls_original),
                                         new CodeInstruction(OpCodes.Brfalse, lbl),
-                                        CodeInstruction.LoadArgument(1),
                                         CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
                                         CodeInstruction.LoadArgument(0),
                                         new CodeInstruction(OpCodes.Ldfld, fld_localplayer),
                                         new CodeInstruction(OpCodes.Ldfld, fld_inventory),
                                         new CodeInstruction(OpCodes.Callvirt, mtd_holdingitemdata),
                                         new CodeInstruction(OpCodes.Callvirt, mtd_getstat),
-                                        new CodeInstruction(OpCodes.Stind_Ref),
-                                        new CodeInstruction(OpCodes.Br, codes[j - 1].operand)
+                                        new CodeInstruction(OpCodes.Br, codes[i + 2].operand)
                                     });
-                                    i += 11;
+                                    i += 9;
                                     Log.Out("statcurrent display patched!");
                                     break;
                                 }
@@ -201,8 +198,7 @@ namespace KFCommonUtilityLib
                     {
                         Label lbl = generator.DefineLabel();
                         codes[i + 2].WithLabels(lbl);
-                        CodeInstruction ins;
-                        ins = CodeInstruction.LoadLocal(3, true);
+                        var ins = CodeInstruction.LoadLocal(3, true);
                         codes.InsertRange(i + 2, new[]
                         {
                             CodeInstruction.LoadLocal(lbd_interface.LocalIndex),
@@ -220,8 +216,7 @@ namespace KFCommonUtilityLib
                     }
                     else if (codes[i].Calls(mtd_geticontint))
                     {
-                        int localIndex;
-                        localIndex = 1;
+                        var localIndex = 1;
                         codes.InsertRange(i + 3, new[]
                         {
                             CodeInstruction.LoadLocal(lbd_interface.LocalIndex),

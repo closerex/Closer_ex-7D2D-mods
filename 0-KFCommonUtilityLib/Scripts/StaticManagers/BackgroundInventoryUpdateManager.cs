@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace KFCommonUtilityLib
 {
@@ -10,13 +10,11 @@ namespace KFCommonUtilityLib
 
     public static class BackgroundInventoryUpdateManager
     {
-        private static readonly Dictionary<int, List<IBackgroundInventoryUpdater>[]> dict_updaters = new Dictionary<int, List<IBackgroundInventoryUpdater>[]>();
-        //private static readonly Dictionary<int, List<IBackgroundInventoryUpdater>[]> dict_disabled = new Dictionary<int, List<IBackgroundInventoryUpdater>[]>();
+        private static readonly Dictionary<int, List<IBackgroundInventoryUpdater>[]> dict_updaters = new();
 
         public static void Cleanup()
         {
             dict_updaters.Clear();
-            //dict_disabled.Clear();
         }
 
         public static void RegisterUpdater(EntityAlive entity, int slot, IBackgroundInventoryUpdater updater)
@@ -26,12 +24,12 @@ namespace KFCommonUtilityLib
                 return;
 
             Inventory inv = entity.inventory;
-            if (inv == null || slot < 0 || slot >= inv.GetSlotCount())
+            if (inv == null || slot < 0 || slot >= inv.Length)
                 return;
 
             if (!dict_updaters.TryGetValue(entity.entityId, out var arr_updaters))
             {
-                arr_updaters = new List<IBackgroundInventoryUpdater>[inv.GetSlotCount()];
+                arr_updaters = new List<IBackgroundInventoryUpdater>[inv.Length];
                 dict_updaters[entity.entityId] = arr_updaters;
             }
             if (arr_updaters[slot] == null)
@@ -43,24 +41,6 @@ namespace KFCommonUtilityLib
             else
                 arr_updaters[slot].Add(updater);
         }
-
-        //public static void DisableUpdater(EntityAlive entity)
-        //{
-        //    if (dict_updaters.TryGetValue(entity.entityId, out var updater))
-        //    {
-        //        dict_updaters.Remove(entity.entityId);
-        //        dict_disabled.Add(entity.entityId, updater);
-        //    }
-        //}
-
-        //public static void EnableUpdater(EntityAlive entity)
-        //{
-        //    if (dict_disabled.TryGetValue(entity.entityId, out var updaters))
-        //    {
-        //        dict_disabled.Remove(entity.entityId);
-        //        dict_updaters.Add(entity.entityId, updaters);
-        //    }
-        //}
 
         public static void UnregisterUpdater(EntityAlive entity)
         {
@@ -78,19 +58,26 @@ namespace KFCommonUtilityLib
             if (!entity.isEntityRemote && dict_updaters.TryGetValue(entity.entityId, out var arr_updaters) && arr_updaters != null)
             {
                 Inventory inv = entity.inventory;
-                int slotCount = inv.GetSlotCount();
+                int slotCount = inv.Length;
                 var prevInvData = entity.MinEventContext.ItemInventoryData;
                 var prevItemValue = entity.MinEventContext.ItemValue;
                 var prevActionData = entity.MinEventContext.ItemActionData;
+                var prevTags = entity.MinEventContext.Tags;
                 bool invChanged = false;
                 for (int i = 0; i < slotCount; i++)
+                {
                     if (arr_updaters[i] != null)
+                    {
+                        var invData = inv.Hand.GetSlotData(i);
                         foreach (var updater in arr_updaters[i])
                             if (updater != null)
-                                invChanged |= updater.OnUpdate(inv.GetItemDataInSlot(i));
+                                invChanged |= updater.OnUpdate(invData);
+                    }
+                }
                 entity.MinEventContext.ItemInventoryData = prevInvData;
                 entity.MinEventContext.ItemActionData = prevActionData;
                 entity.MinEventContext.ItemValue = prevItemValue;
+                entity.MinEventContext.Tags = prevTags;
                 if (invChanged)
                     entity.inventory.CallOnToolbeltChangedInternal();
             }

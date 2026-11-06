@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MinEventActionAttachPrefabToEntitySync : MinEventActionAttachPrefabToEntity
 {
-    private static Dictionary<string, GameObject> dict_loaded = new Dictionary<string, GameObject>();
+    private static Dictionary<string, GameObject> dict_loaded = new();
     //public override bool CanExecute(MinEventTypes _eventType, MinEventParams _params)
     //{
     //    return base.CanExecute(_eventType, _params) && (_params.IsLocal || (_params.Self && !_params.Self.isEntityRemote));

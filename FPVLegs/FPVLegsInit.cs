@@ -1,4 +1,4 @@
-﻿using GearsAPI.Settings;
+using GearsAPI.Settings;
 using GearsAPI.Settings.Global;
 using GearsAPI.Settings.World;
 using System.Collections.Generic;
@@ -29,9 +29,9 @@ namespace FPVLegs
 
         public void OnGlobalSettingsLoaded(IModGlobalSettings modSettings)
         {
-            ISwitchGlobalSetting modeSettings = modSettings.GetTab("ModeSetting").GetCategory("Main").GetSetting("Mode") as ISwitchGlobalSetting;
-            ISwitchGlobalSetting shadowSettings = modSettings.GetTab("ModeSetting").GetCategory("Main").GetSetting("Shadow") as ISwitchGlobalSetting;
-            if (modeSettings.CurrentValue == "Old")
+            ISwitchGlobalSetting<string> modeSettings = modSettings.GetTab("ModeSetting").GetCategory("Main").GetSetting("Mode") as ISwitchGlobalSetting<string>;
+            ISwitchGlobalSetting<string> shadowSettings = modSettings.GetTab("ModeSetting").GetCategory("Main").GetSetting("Shadow") as ISwitchGlobalSetting<string>;
+            if (modeSettings.SettingValue == "Old")
             {
                 FPVLegMode.newMode = false;
             }
@@ -39,7 +39,7 @@ namespace FPVLegs
             {
                 FPVLegMode.newMode = true;
             }
-            if (shadowSettings.CurrentValue == "Yes")
+            if (shadowSettings.SettingValue == "Yes")
             {
                 FPVLegMode.disableShadow = true;
             }
@@ -47,9 +47,9 @@ namespace FPVLegs
             {
                 FPVLegMode.disableShadow = false;
             }
-            modeSettings.OnSettingChanged += (settings, value) =>
+            modeSettings.OnValueChanged += (settings, value) =>
             {
-                if (modeSettings.CurrentValue == "Old")
+                if (modeSettings.SettingValue == "Old")
                 {
                     FPVLegMode.newMode = false;
                 }
@@ -58,9 +58,9 @@ namespace FPVLegs
                     FPVLegMode.newMode = true;
                 }
             };
-            shadowSettings.OnSettingChanged += (settings, value) =>
+            shadowSettings.OnValueChanged += (settings, value) =>
             {
-                if (shadowSettings.CurrentValue == "Yes")
+                if (shadowSettings.SettingValue == "Yes")
                 {
                     FPVLegMode.disableShadow = true;
                 }

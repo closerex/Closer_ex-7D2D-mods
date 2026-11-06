@@ -39,10 +39,9 @@ namespace LuaRuntimeProbe.Backends
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         private static extern uint GetModuleFileNameW(IntPtr hModule, [Out] char[] lpFilename, uint nSize);
 
-        private static readonly Dictionary<string, IntPtr> Loaded =
-            new Dictionary<string, IntPtr>(StringComparer.OrdinalIgnoreCase);
+        private static readonly Dictionary<string, IntPtr> Loaded = new(StringComparer.OrdinalIgnoreCase);
 
-        private static readonly object SyncRoot = new object();
+        private static readonly object SyncRoot = new();
 
         /// <summary>True when the named library has already been loaded by this process.</summary>
         public static bool IsLoaded(string libraryFileName)

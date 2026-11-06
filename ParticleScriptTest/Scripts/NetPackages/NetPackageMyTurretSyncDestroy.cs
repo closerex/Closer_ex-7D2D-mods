@@ -6,10 +6,6 @@ using System.Threading.Tasks;
 
 public class NetPackageMyTurretSyncDestroy : NetPackage
 {
-    public override int GetLength()
-    {
-        return 9;
-    }
 
     public override void ProcessPackage(World _world, GameManager _callbacks)
     {

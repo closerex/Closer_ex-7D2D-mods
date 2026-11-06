@@ -2,10 +2,6 @@
 
 public class NetPackageMyTurretSyncUpdate : NetPackageMyTurretSyncDestroy
 {
-    public override int GetLength()
-    {
-        return 26;
-    }
 
     public override void ProcessPackage(World _world, GameManager _callbacks)
     {

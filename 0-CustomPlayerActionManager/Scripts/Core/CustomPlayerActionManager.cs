@@ -6,8 +6,8 @@ using InControl;
 
 public class CustomPlayerActionManager
 {
-    private static Dictionary<string, CustomPlayerActionVersionBase> dict_action_sets = new Dictionary<string, CustomPlayerActionVersionBase>();
-    private static Dictionary<string, string> dict_save_data = new Dictionary<string, string>();
+    private static Dictionary<string, CustomPlayerActionVersionBase> dict_action_sets = new();
+    private static Dictionary<string, string> dict_save_data = new();
     private static readonly string saveName = "ActionSetSaves.pref";
     private static string saveFile;
     private static bool inited;

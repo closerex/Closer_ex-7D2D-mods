@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using KFCommonUtilityLib.Attributes;
 using System;
 using System.Collections.Generic;
@@ -79,9 +79,9 @@ public static class ModSortingPatches
 
     private static void SortMods(ItemStack itemStack)
     {
-        if (itemStack?.itemValue?.Modifications != null)
+        if (itemStack?.itemValue?.modifications != null)
         {
-            Array.Sort(itemStack.itemValue.Modifications, new ItemModuleSortableComparer(itemStack.itemValue));
+            Array.Sort(itemStack.itemValue.modifications, new ItemModuleSortableComparer(itemStack.itemValue));
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -11,18 +11,18 @@ class Patches
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_parseWindowGroup_XUiFromXml(IEnumerable<CodeInstruction> instructions)
     {
-        var mtdinfo_fwgbn = AccessTools.Method(typeof(XUi), nameof(XUi.FindWindowGroupByName), new[] { typeof(string) });
-        
         var codes = new List<CodeInstruction>(instructions);
 
-        for (int i = 0; i < codes.Count; i++)
+        for (int i = 0; i < codes.Count - 1; i++)
         {
-            CodeInstruction code = codes[i];
-            if (code.Calls(mtdinfo_fwgbn))
+            if (codes[i].opcode == OpCodes.Newobj
+                && codes[i].operand is ConstructorInfo constructor
+                && constructor.DeclaringType == typeof(XUiWindowGroup)
+                && codes[i + 1].opcode == OpCodes.Stind_Ref)
             {
-                codes.InsertRange(i + 6, new[]
+                codes.InsertRange(i + 2, new[]
                 {
-                    CodeInstruction.LoadLocal(0).WithLabels(codes[i + 6].ExtractLabels()),
+                    CodeInstruction.LoadLocal(0),
                     CodeInstruction.Call(typeof(RandomBackgroundLoader), nameof(RandomBackgroundLoader.insert), new[] { typeof(string) })
                 });
                 break;

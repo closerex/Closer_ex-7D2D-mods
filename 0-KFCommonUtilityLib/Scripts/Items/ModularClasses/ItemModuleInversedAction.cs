@@ -4,11 +4,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Emit;
 using HarmonyLib;
 using InControl;
+using JetBrains.Annotations;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Attributes;
 using UniLinq;
 
 [TypeTarget(typeof(ItemClass))]
+[UsedImplicitly]
 public class ItemModuleInversedAction
 {
 }
@@ -19,6 +21,7 @@ public static class InversedActionPatches
 {
     [HarmonyPatch(typeof(PlayerMoveController), nameof(PlayerMoveController.Update))]
     [HarmonyTranspiler]
+    [SuppressMessage("ReSharper", "JoinDeclarationAndInitializer")]
     private static IEnumerable<CodeInstruction> Transpiler_Update_PlayerMoveController(IEnumerable<CodeInstruction> instructions)
     {
         var codes = instructions.ToList();
@@ -28,7 +31,7 @@ public static class InversedActionPatches
         var fld_secondary = AccessTools.Field(typeof(PlayerActionsLocal), nameof(PlayerActionsLocal.Secondary));
 
         int li_holding_item, li_is_primary_pressed, li_is_secondary_pressed, li_can_run_primary, li_can_run_secondary;
-        li_holding_item = 27;
+        li_holding_item = 28;
         li_is_primary_pressed = 23;
         li_is_secondary_pressed = 24;
         li_can_run_primary = 22;
@@ -105,7 +108,6 @@ public static class InversedActionPatches
     {
         var codes = instructions.ToList();
 
-        var fld_index = AccessTools.Field(typeof(ItemActionData), nameof(ItemActionData.indexInEntityOfAction));
         var mtd_fireevent = AccessTools.Method(typeof(EntityAlive), nameof(EntityAlive.FireEvent));
 
         for (int i = 0; i < codes.Count; i++)

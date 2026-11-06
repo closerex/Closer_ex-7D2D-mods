@@ -10,7 +10,7 @@ namespace CodeWriter.ExpressionParser
 
     public abstract class ExpressionParser<T>
     {
-        private readonly Dictionary<string, ExprBuilder> _builderCached = new Dictionary<string, ExprBuilder>();
+        private readonly Dictionary<string, ExprBuilder> _builderCached = new();
         private Parser<ExprBuilder> _parserCached;
 
         public Expression<bool> CompilePredicate(string input, ExpressionContext<T> context, bool cache)
@@ -343,7 +343,7 @@ namespace CodeWriter.ExpressionParser
         private readonly ExpressionContext<T> _parent;
         private readonly Func<string, Expression<T>> _unregisteredVariableResolver;
 
-        private readonly Dictionary<string, Expression<T>> _variables = new Dictionary<string, Expression<T>>();
+        private readonly Dictionary<string, Expression<T>> _variables = new();
 
         public ExpressionContext(ExpressionContext<T> parent = null,
             Func<string, Expression<T>> unregisteredVariableResolver = null)

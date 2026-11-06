@@ -10,7 +10,7 @@ public class FPSDemoGUI : MonoBehaviour
 
     private int currentNomber;
     private GameObject currentInstance;
-    private GUIStyle guiStyleHeader = new GUIStyle();
+    private GUIStyle guiStyleHeader = new();
     private float sunIntensity;
     float dpiScale;
 

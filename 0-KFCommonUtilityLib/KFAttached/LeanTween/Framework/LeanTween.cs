@@ -271,8 +271,8 @@ public class LeanTween : MonoBehaviour
     private static int i;
     private static int j;
     private static int finishedCnt;
-    public static AnimationCurve punch = new AnimationCurve(new Keyframe(0.0f, 0.0f), new Keyframe(0.112586f, 0.9976035f), new Keyframe(0.3120486f, -0.1720615f), new Keyframe(0.4316337f, 0.07030682f), new Keyframe(0.5524869f, -0.03141804f), new Keyframe(0.6549395f, 0.003909959f), new Keyframe(0.770987f, -0.009817753f), new Keyframe(0.8838775f, 0.001939224f), new Keyframe(1.0f, 0.0f));
-    public static AnimationCurve shake = new AnimationCurve(new Keyframe(0f, 0f), new Keyframe(0.25f, 1f), new Keyframe(0.75f, -1f), new Keyframe(1f, 0f));
+    public static AnimationCurve punch = new(new Keyframe(0.0f, 0.0f), new Keyframe(0.112586f, 0.9976035f), new Keyframe(0.3120486f, -0.1720615f), new Keyframe(0.4316337f, 0.07030682f), new Keyframe(0.5524869f, -0.03141804f), new Keyframe(0.6549395f, 0.003909959f), new Keyframe(0.770987f, -0.009817753f), new Keyframe(0.8838775f, 0.001939224f), new Keyframe(1.0f, 0.0f));
+    public static AnimationCurve shake = new(new Keyframe(0f, 0f), new Keyframe(0.25f, 1f), new Keyframe(0.75f, -1f), new Keyframe(1f, 0f));
 
     public static void init()
     {
@@ -4020,7 +4020,7 @@ public class LTRect : System.Object
     public float rotation;
     public Vector2 pivot;
     public Vector2 margin;
-    public Rect relativeRect = new Rect(0f, 0f, float.PositiveInfinity, float.PositiveInfinity);
+    public Rect relativeRect = new(0f, 0f, float.PositiveInfinity, float.PositiveInfinity);
 
     public bool rotateEnabled;
     [HideInInspector]

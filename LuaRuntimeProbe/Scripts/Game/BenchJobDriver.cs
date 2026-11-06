@@ -37,10 +37,10 @@ namespace LuaRuntimeProbe.Game
         private static BenchConfig _config;
         private static BenchJob _job;
         private static BenchJob _recordedJob;
-        private static readonly Queue<ILuaProbeBackend> Pending = new Queue<ILuaProbeBackend>();
-        private static readonly List<BenchResult> Results = new List<BenchResult>();
-        private static readonly List<string> Planned = new List<string>();
-        private static readonly List<string> Notes = new List<string>();
+        private static readonly Queue<ILuaProbeBackend> Pending = new();
+        private static readonly List<BenchResult> Results = new();
+        private static readonly List<string> Planned = new();
+        private static readonly List<string> Notes = new();
 
         /// <summary>True while a queue is being driven.</summary>
         public static bool IsDriving

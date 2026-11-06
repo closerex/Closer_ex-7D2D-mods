@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System;
@@ -10,6 +10,7 @@ using UniLinq;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Animations.Rigging;
+using Object = UnityEngine.Object;
 
 [HarmonyPatch]
 static class AnimationRiggingPatches
@@ -87,8 +88,7 @@ static class AnimationRiggingPatches
         }
         rangedData.Laser = AnimationRiggingManager.GetTransformOverrideByName(rangedData.invData.model, "laser", false);
 
-        ItemActionLauncher.ItemActionDataLauncher launcherData = _data as ItemActionLauncher.ItemActionDataLauncher;
-        if (launcherData != null)
+        if (_data is ItemActionLauncher.ItemActionDataLauncher launcherData)
         {
             launcherData.projectileJointT = AnimationRiggingManager.GetTransformOverrideByName(launcherData.invData.model, "ProjectileJoint");
         }
@@ -153,12 +153,12 @@ static class AnimationRiggingPatches
     private static IEnumerable<CodeInstruction> Transpiler_Execute_MinEventActionAddPart(IEnumerable<CodeInstruction> instructions)
     {
         var codes = instructions.ToList();
-        var mtd_idx = AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItemIdx));
+        var mtd_idx = AccessTools.PropertyGetter(typeof(ItemInventoryData), nameof(ItemInventoryData.model));
         for (int i = 0; i < codes.Count; i++)
         {
             if (codes[i].Calls(mtd_idx))
             {
-                codes.InsertRange(i + 2, new[]
+                codes.InsertRange(i + 1, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     CodeInstruction.LoadField(typeof(MinEventActionAddPart),nameof(MinEventActionAddPart.partName)),
@@ -218,7 +218,7 @@ static class AnimationRiggingPatches
                     new CodeInstruction(OpCodes.Ldarg_1).WithLabels(lbls),
                     CodeInstruction.LoadField(typeof(MinEventParams), nameof(MinEventParams.Transform)),
                     new CodeInstruction(OpCodes.Ldnull),
-                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(UnityEngine.Object), "op_Inequality")),
+                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Object), "op_Inequality")),
                     new CodeInstruction(OpCodes.Brfalse_S, lbl),
                     new CodeInstruction(OpCodes.Ldarg_1),
                     CodeInstruction.LoadField(typeof(MinEventParams), nameof(MinEventParams.Transform)),
@@ -256,9 +256,9 @@ static class AnimationRiggingPatches
                 codes.InsertRange(i + 1, new[]
                 {
                     new CodeInstruction(OpCodes.Ldloc_3).WithLabels(lbls),
-                    CodeInstruction.Call(typeof(Transform), nameof(Transform.GetComponent), new Type[0], new Type[]{ typeof(IgnoreTint)}),
+                    CodeInstruction.Call(typeof(Transform), nameof(Transform.GetComponent), Type.EmptyTypes, new[]{ typeof(IgnoreTint)}),
                     new CodeInstruction(OpCodes.Ldnull),
-                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(UnityEngine.Object), "op_Inequality")),
+                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Object), "op_Inequality")),
                     new CodeInstruction(OpCodes.Brfalse_S, lbl),
                     new CodeInstruction(OpCodes.Ret)
                 });
@@ -293,7 +293,7 @@ static class AnimationRiggingPatches
         }
         if (!res)
         {
-            res = GameObject.Instantiate(go);
+            res = Object.Instantiate(go);
         }
         return res;
     }
@@ -316,7 +316,7 @@ static class AnimationRiggingPatches
     {
         if (ConsoleCmdReloadLog.LogInfo)
         {
-            Log.Out(string.Format("ANIMATION LENGTH: length {0} speed {1} speedMultiplier {2} original length {3}", stateInfo.length, stateInfo.speed, stateInfo.speedMultiplier, stateInfo.length * stateInfo.speedMultiplier));
+            Log.Out($"ANIMATION LENGTH: length {stateInfo.length} speed {stateInfo.speed} speedMultiplier {stateInfo.speedMultiplier} original length {stateInfo.length * stateInfo.speedMultiplier}");
         }
     }
 
@@ -373,18 +373,20 @@ static class AnimationRiggingPatches
     //    }
     //}
 
-    [HarmonyPatch(typeof(Inventory), nameof(Inventory.createHeldItem))]
+    [HarmonyPatch(typeof(ItemInventoryData), nameof(ItemInventoryData.BuildModel))]
     [HarmonyPostfix]
-    private static void Postfix_createHeldItem_Inventory(Inventory __instance, Transform __result, int _idx)
+    private static void Postfix_BuildModel_ItemInventoryData(ItemInventoryData __instance)
     {
-        if (__result && __result.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+        var ___heldModel = __instance.heldModel.Instance;
+        if (___heldModel && ___heldModel.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
         {
-            if (GameManager.IsDedicatedServer || !(__instance.entity is EntityPlayer player))
+            if (GameManager.IsDedicatedServer || __instance.holdingEntity is not EntityPlayer player)
             {
                 targets.Destroy();
             }
             else
             {
+                int _idx = __instance.slotIdx;
                 if (player is EntityPlayerLocal localPlayer)
                 {
                     targets.Init(localPlayer.emodel.avatarController.GetActiveModelRoot(), localPlayer.bFirstPersonView, _idx);
@@ -398,14 +400,14 @@ static class AnimationRiggingPatches
         }
     }
 
-    [HarmonyPatch(typeof(Inventory), nameof(Inventory.ForceHoldingItemUpdate))]
-    [HarmonyPrefix]
-    private static bool Prefix_ForceHoldingItemUpdate_Inventory(Inventory __instance)
-    {
-        if (__instance.entity is EntityPlayer)
-            AnimationRiggingManager.OnClearInventorySlot(__instance, __instance.holdingItemIdx);
-        return true;
-    }
+    // [HarmonyPatch(typeof(Inventory), nameof(Inventory.ForceHoldingItemUpdate))]
+    // [HarmonyPrefix]
+    // private static bool Prefix_ForceHoldingItemUpdate_Inventory(Inventory __instance)
+    // {
+    //     if (__instance.entity is EntityPlayer)
+    //         AnimationRiggingManager.OnClearInventorySlot(__instance, __instance.holdingItemIdx);
+    //     return true;
+    // }
 
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.ItemActionEffects))]
     [HarmonyTranspiler]
@@ -413,7 +415,6 @@ static class AnimationRiggingPatches
     {
         var codes = instructions.ToList();
 
-        var fld_fpv = AccessTools.Field(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.bFirstPersonView));
         var fld_suppressed = AccessTools.Field(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.IsFlashSuppressed));
         var fld_smoke = AccessTools.Field(typeof(ItemActionAttack), nameof(ItemActionAttack.particlesMuzzleSmoke));
 
@@ -473,7 +474,7 @@ static class AnimationRiggingPatches
                                 });
                                 // move fpv check before suppressed check
                                 codes.InsertRange(i - 1, take);
-                                i += take.Count + 12;
+                                // i += take.Count + 12;
                                 break;
                             }
                         }
@@ -483,29 +484,6 @@ static class AnimationRiggingPatches
                 break;
             }
         }
-        //FieldInfo fld_muzzle = AccessTools.Field(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.muzzle));
-        //FieldInfo fld_muzzle2 = AccessTools.Field(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.muzzle2));
-        //MethodInfo mtd_getmuzzle = AccessTools.Method(typeof(AnimationRiggingManager), nameof(AnimationRiggingManager.GetMuzzleOverrideFPV));
-        //MethodInfo mtd_getmuzzle2 = AccessTools.Method(typeof(AnimationRiggingManager), nameof(AnimationRiggingManager.GetMuzzle2OverrideFPV));
-        //for (int i = 0; i < codes.Count; i++)
-        //{
-        //    if (codes[i].LoadsField(fld_muzzle))
-        //    {
-        //        codes.InsertRange(i + 1, new[]
-        //        {
-        //            new CodeInstruction(OpCodes.Ldloc_S, 4),
-        //            new CodeInstruction(OpCodes.Call, mtd_getmuzzle)
-        //        });
-        //    }
-        //    else if (codes[i].LoadsField(fld_muzzle2))
-        //    {
-        //        codes.InsertRange(i + 1, new[]
-        //        {
-        //            new CodeInstruction(OpCodes.Ldloc_S, 4),
-        //            new CodeInstruction(OpCodes.Call, mtd_getmuzzle2)
-        //        });
-        //    }
-        //}
 
         return codes;
     }
@@ -526,25 +504,19 @@ static class AnimationRiggingPatches
         AnimationRiggingManager.UpdatePlayerAvatar(__instance);
         if (__instance is AvatarLocalPlayerController avatarLocalPlayer)
         {
-            //if ((avatarLocalPlayer.entity as EntityPlayerLocal).bFirstPersonView && !avatarLocalPlayer.entity.inventory.GetIsFinishedSwitchingHeldItem())
-            //{
-            //    avatarLocalPlayer.UpdateInt(AvatarController.weaponHoldTypeHash, -1, false);
-            //    avatarLocalPlayer.UpdateBool("Holstered", false, false);
-            //    avatarLocalPlayer.FPSArms.Animator.Play("idle", 0, 0f);
-            //}
             var mapping = MultiActionManager.GetMappingForEntity(__instance.entity.entityId);
             if (mapping != null)
             {
-                avatarLocalPlayer.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, mapping.CurActionIndex, true);
+                avatarLocalPlayer.UpdateInt(MultiActionUtils.ExecutingActionIndexHash, mapping.CurActionIndex);
             }
 
-            if (__instance.entity.inventory?.holdingItemData?.actionData != null)
+            if (__instance.entity.Hand?.Held?.actionData != null)
             {
-                foreach (var actionData in __instance.entity.inventory.holdingItemData.actionData)
+                foreach (var actionData in __instance.entity.Hand.Held.actionData)
                 {
                     if (actionData.IsModuleContainerFor(out ActionModuleFireModeSelector.FireModeData data))
                     {
-                        avatarLocalPlayer.UpdateInt(ActionModuleFireModeSelector.FireModeParamHashes[actionData.indexInEntityOfAction], data.currentFireMode, true);
+                        avatarLocalPlayer.UpdateInt(ActionModuleFireModeSelector.FireModeParamHashes[actionData.indexInEntityOfAction], data.currentFireMode);
                     }
                 }
             }
@@ -634,14 +606,14 @@ static class AnimationRiggingPatches
         if (__instance.HeldItemTransform != null && __instance.HeldItemTransform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
         {
             EntityAlive entity = __instance.Entity;
-            ItemValue holdingItemItemValue = entity.inventory.holdingItemItemValue;
+            ItemValue holdingItemItemValue = entity.Hand.ItemValue;
 //#if DEBUG
 //            float x = 1, y = 1;
-//            var tags = entity.inventory.holdingItem.ItemTags;
+//            var tags = entity.Hand.Item.ItemTags;
 //            var tags_prev = tags;
-//            MultiActionManager.ModifyItemTags(entity.inventory.holdingItemItemValue, entity.MinEventContext.ItemActionData, ref tags);
+//            MultiActionManager.ModifyItemTags(entity.Hand.ItemValue, entity.MinEventContext.ItemActionData, ref tags);
 //            entity.Progression.ModifyValue(PassiveEffects.ReloadSpeedMultiplier, ref x, ref y, tags);
-//            Log.Out($"item {entity.inventory.holdingItem.Name} action index {entity.MinEventContext.ItemActionData.indexInEntityOfAction} progression base {x} perc {y} has tag {tags.Test_AnySet(FastTags.Parse("perkMachineGunner"))} \ntags prev {tags_prev} \ntags after {tags}");
+//            Log.Out($"item {entity.Hand.Item.Name} action index {entity.MinEventContext.ItemActionData.indexInEntityOfAction} progression base {x} perc {y} has tag {tags.Test_AnySet(FastTags.Parse("perkMachineGunner"))} \ntags prev {tags_prev} \ntags after {tags}");
 //#endif
             float reloadSpeed = EffectManager.GetValue(PassiveEffects.ReloadSpeedMultiplier, holdingItemItemValue, 1f, entity);
             float reloadSpeedRatio = EffectManager.GetValue(CustomEnums.ReloadSpeedRatioFPV2TPV, holdingItemItemValue, 1f, entity);
@@ -654,7 +626,7 @@ static class AnimationRiggingPatches
             }
             else
             {
-                int magSize = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, holdingItemItemValue, ((ItemActionRanged)entity.inventory.holdingItem.Actions[MultiActionManager.GetActionIndexForEntity(entity)]).BulletsPerMagazine, entity);
+                int magSize = (int)EffectManager.GetValue(PassiveEffects.MagazineSize, holdingItemItemValue, ((ItemActionRanged)entity.Hand.Item.Actions[MultiActionManager.GetActionIndexForEntity(entity)]).BulletsPerMagazine, entity);
                 //how many partial reload is required to fill an empty mag
                 partialReloadRatio = Mathf.Ceil(magSize / partialReloadMultiplier);
                 //how many partial reload is required to finish this reload
@@ -675,7 +647,7 @@ static class AnimationRiggingPatches
             {
                 localMultiplier = reloadSpeed * reloadSpeedRatio / partialReloadMultiplier;
             }
-            else if(isFPV && takeOverReloadTime)
+            else if(isFPV)
             {
                 localMultiplier = reloadSpeed;
             }
@@ -697,7 +669,7 @@ static class AnimationRiggingPatches
                 Log.Out($"Set reload multiplier: isFPV {isFPV}, reloadSpeed {reloadSpeed}, reloadSpeedRatio {reloadSpeedRatio}, finalMultiplier {localMultiplier}, remoteMultiplier {remoteMultiplier}, partialMultiplier {partialReloadMultiplier}, partialRatio {partialReloadRatio}");
             
             __instance.UpdateFloat(AvatarController.reloadSpeedHash, localMultiplier, false);
-            SetDataFloat(__instance, (AvatarController.DataTypes)AvatarController.reloadSpeedHash, remoteMultiplier, true);
+            SetDataFloat(__instance, (AvatarController.DataTypes)AvatarController.reloadSpeedHash, remoteMultiplier);
         }
     }
 
@@ -709,7 +681,7 @@ static class AnimationRiggingPatches
     /// <param name="_value"></param>
     /// <param name="_netsync"></param>
     [HarmonyPatch(typeof(AvatarController), nameof(AvatarController.SetDataFloat))]
-    [HarmonyReversePatch(HarmonyReversePatchType.Original)]
+    [HarmonyReversePatch()]
     private static void SetDataFloat(AvatarController __instance, AvatarController.DataTypes _type, float _value, bool _netsync = true)
     {
         IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -720,6 +692,7 @@ static class AnimationRiggingPatches
             var codes = instructions.ToList();
             codes.RemoveRange(0, 5);
             codes[0].labels.Clear();
+            // ReSharper disable once ForCanBeConvertedToForeach
             for (int i = 0; i < codes.Count; i++)
             {
                 if (codes[i].LoadsConstant(AnimParamData.ValueTypes.DataFloat))
@@ -797,237 +770,119 @@ static class AnimationRiggingPatches
         }
     }
 
-    //[HarmonyPatch(typeof(Inventory), nameof(Inventory.setHoldingItemTransform))]
-    //[HarmonyPrefix]
-    //private static bool Prefix_setHoldingItemTransform_Inventory(Inventory __instance)
-    //{
-    //    if (__instance.lastdrawnHoldingItemTransform && __instance.lastdrawnHoldingItemTransform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
-    //    {
-    //        targets.SetEnabled(false);
-    //    }
-    //    return true;
-    //}
-
-    [HarmonyPatch(typeof(vp_FPWeapon), nameof(vp_FPWeapon.Start))]
-    [HarmonyPostfix]
-    private static void Postfix_Start_vp_FPWeapon(vp_FPWeapon __instance)
-    {
-        var player = __instance.GetComponentInParent<EntityPlayerLocal>();
-        if (player && player.inventory != null)
-        {
-            for (int i = 0; i < player.inventory.models.Length; i++)
-            {
-                Transform model = player.inventory.models[i];
-                if (model != null && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
-                {
-                    if (i == player.inventory.holdingItemIdx)
-                    {
-                        player.inventory.ForceHoldingItemUpdate();
-                    }
-                    else
-                    {
-                        targets.Init(__instance.transform, true, i);
-                    }
-                }
-            }
-        }
-    }
+    // [HarmonyPatch(typeof(vp_FPWeapon), nameof(vp_FPWeapon.Start))]
+    // [HarmonyPostfix]
+    // private static void Postfix_Start_vp_FPWeapon(vp_FPWeapon __instance)
+    // {
+    //     var player = __instance.GetComponentInParent<EntityPlayerLocal>();
+    //     if (player && player.inventory != null)
+    //     {
+    //         for (int i = 0; i < player.inventory.models.Length; i++)
+    //         {
+    //             Transform model = player.inventory.models[i];
+    //             if (model != null && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+    //             {
+    //                 if (i == player.inventory.holdingItemIdx)
+    //                 {
+    //                     player.inventory.ForceHoldingItemUpdate();
+    //                 }
+    //                 else
+    //                 {
+    //                     targets.Init(__instance.transform, true, i);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
     #region temporary fix for arm glitch on switching weapon
-    [HarmonyPatch(typeof(Inventory), nameof(Inventory.updateHoldingItem))]
+    [HarmonyPatch(typeof(Hand), nameof(Hand.Equip))]
     [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_updateHoldingItem_Inventory(IEnumerable<CodeInstruction> instructions)
+    private static IEnumerable<CodeInstruction> Transpiler_Equip_Hand(IEnumerable<CodeInstruction> instructions)
     {
         var codes = instructions.ToList();
-
-        var mtd_setparent = AccessTools.Method(typeof(Transform), nameof(Transform.SetParent), new[] { typeof(Transform), typeof(bool) });
         var mtd_startholding = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.StartHolding));
-        var mtd_showrighthand = AccessTools.Method(typeof(Inventory), nameof(Inventory.ShowRightHand));
+        var mtd_seatmodel = AccessTools.Method(typeof(ItemInventoryData), nameof(ItemInventoryData.SeatModel));
+        var mtd_activation = AccessTools.Method(typeof(Hand), nameof(Hand.FireActivationEvents));
         var mtd_holdingchanged = AccessTools.Method(typeof(EntityAlive), nameof(EntityAlive.OnHoldingItemChanged));
-        var prop_holdingitem = AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItem));
         var fld_transform = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.Transform));
 
+        int index = codes.FindIndex(c => c.Calls(mtd_startholding));
+        var startHolding = codes.GetRange(index - 4, 5);
+        codes[index + 1].WithLabels(startHolding[0].ExtractLabels());
+        codes.RemoveRange(index - 4, 5);
+
+        index = codes.FindIndex(c => c.Calls(mtd_activation));
+        var activation = codes.GetRange(index - 1, 2);
+        codes[index + 1].WithLabels(activation[0].ExtractLabels());
+        codes.RemoveRange(index - 1, 2);
+
+        // 装配先于挂接；挂接和显示完成后再 StartHolding。
+        for (int i = 0; i < codes.Count; i++)
+        {
+            if (codes[i].StoresField(fld_transform))
+            {
+                codes.InsertRange(i + 1, new[]
+                {
+                    new CodeInstruction(OpCodes.Ldloc_0).WithLabels(codes[i + 1].ExtractLabels()),
+                    CodeInstruction.LoadField(typeof(CustomEnums), nameof(CustomEnums.onSelfHoldingItemAssemble)),
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    CodeInstruction.LoadField(typeof(Hand), nameof(Hand.entity)),
+                    CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.MinEventContext)),
+                    CodeInstruction.Call(typeof(ItemValue), nameof(ItemValue.FireEvent)),
+                });
+                i += 6;
+            }
+            else if (codes[i].Calls(mtd_seatmodel))
+            {
+                codes.InsertRange(i + 1, startHolding);
+                i += startHolding.Count;
+            }
+            else if (codes[i].Calls(mtd_holdingchanged))
+            {
+                activation[0].WithLabels(codes[i + 1].ExtractLabels());
+                codes.InsertRange(i + 1, activation);
+                break;
+            }
+        }
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(Hand), nameof(Hand.Unequip))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_Unequip_Hand(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+        var mtd_stopholding = AccessTools.Method(typeof(ItemClass), nameof(ItemClass.StopHolding));
+        var fld_transform = AccessTools.Field(typeof(MinEventParams), nameof(MinEventParams.Transform));
+
+        int index = codes.FindIndex(c => c.Calls(mtd_stopholding));
+        var stopHolding = codes.GetRange(index - 2, 3);
+        codes[index + 1].WithLabels(stopHolding[0].ExtractLabels());
+        codes.RemoveRange(index - 2, 3);
+
+        // 原有 dup 留出 ItemClass，先 StopHolding，再判断 EquipStop。
+        index = codes.FindIndex(c => c.StoresField(fld_transform));
+        codes.InsertRange(index + 2, stopHolding);
+        return codes;
+    }
+
+    [HarmonyPatch(typeof(ItemInventoryData), nameof(ItemInventoryData.UnseatModel))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_UnseatModel_ItemInventoryData(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+        var mtd_setparent = AccessTools.Method(typeof(Transform), nameof(Transform.SetParent), new[] { typeof(Transform), typeof(bool) });
         for (int i = 0; i < codes.Count; i++)
         {
             if (codes[i].Calls(mtd_setparent))
             {
                 codes[i - 1].opcode = OpCodes.Ldc_I4_1;
-            }
-            else if (codes[i].Calls(mtd_startholding))
-            {
-                for (int j = i - 1; j >= 0; j--)
-                {
-                    if (codes[j].Calls(prop_holdingitem))
-                    {
-                        for (int k = i + 1; k < codes.Count; k++)
-                        {
-                            if (codes[k].StoresField(fld_transform))
-                            {
-                                codes.InsertRange(k + 1, new[]
-                                {
-                                    new CodeInstruction(OpCodes.Ldloc_0).WithLabels(codes[k + 1].ExtractLabels()),
-                                    CodeInstruction.LoadField(typeof(CustomEnums), nameof(CustomEnums.onSelfHoldingItemAssemble)),
-                                    new CodeInstruction(OpCodes.Ldarg_0),
-                                    CodeInstruction.LoadField(typeof(Inventory), nameof(Inventory.entity)),
-                                    CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.MinEventContext)),
-                                    CodeInstruction.Call(typeof(ItemValue), nameof(ItemValue.FireEvent)),
-                                });
-                                k += 6;
-                            }
-                            else if (codes[k].Calls(mtd_showrighthand))
-                            {
-                                codes.InsertRange(k + 1, codes.GetRange(j - 1, i - j + 2));
-                                codes[i + 1].WithLabels(codes[j - 1].ExtractLabels());
-                                codes.RemoveRange(j - 1, i - j + 2);
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }
-                i += 6;
-            }
-            else if (codes[i].Calls(mtd_holdingchanged))
-            {
-                codes.InsertRange(i + 1, new[]
-                {
-                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(codes[i + 1].ExtractLabels()),
-                    CodeInstruction.Call(typeof(Inventory), nameof(Inventory.syncHeldItem))
-                });
                 break;
             }
         }
         return codes;
     }
-
-    [HarmonyPatch(typeof(Inventory), nameof(Inventory.setHoldingItemTransform))]
-    [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_setHoldingItemTransform_Inventory(IEnumerable<CodeInstruction> instructions)
-    {
-        var codes = instructions.ToList();
-        var mtd_sync = AccessTools.Method(typeof(Inventory), nameof(Inventory.syncHeldItem));
-
-        for (int i = 0; i < codes.Count; i++)
-        {
-            if (codes[i].Calls(mtd_sync))
-            {
-                codes[i + 1].WithLabels(codes[i - 1].ExtractLabels());
-                codes.RemoveRange(i - 1, 2);
-                break;
-            }
-        }
-        return codes;
-    }
-
-
-    //private static Coroutine delayShowWeaponCo;
-    //private static IEnumerator DelayShowWeapon(Camera camera)
-    //{
-    //    Log.Out($"Delay show weapon!");
-    //    camera.cullingMask &= ~(1 << 10);
-    //    yield return new WaitForSeconds(0.5f);
-    //    if (camera)
-    //    {
-    //        camera.cullingMask |= 1 << 10;
-    //    }
-    //    delayShowWeaponCo = null;
-    //    Log.Out($"Show weapon!");
-    //    yield break;
-    //}
-
-    //[HarmonyPatch(typeof(Inventory), nameof(Inventory.setHeldItemByIndex))]
-    //[HarmonyPrefix]
-    //private static bool Prefix_setHeldItemByIndex_Inventory(Inventory __instance, out bool __state)
-    //{
-    //    __state = __instance.holdingItemData?.model && __instance.holdingItemData.model.GetComponent<RigTargets>();
-
-    //    return true;
-    //}
-
-    //[HarmonyPatch(typeof(Inventory), nameof(Inventory.setHeldItemByIndex))]
-    //[HarmonyPostfix]
-    //private static void Postfix_setHeldItemByIndex_Inventory(Inventory __instance, bool __state)
-    //{
-    //    if (__state && __instance.entity is EntityPlayerLocal player && player.bFirstPersonView && (!__instance.holdingItemData?.model || !__instance.holdingItemData.model.GetComponent<RigTargets>()))
-    //    {
-    //        if (delayShowWeaponCo != null)
-    //        {
-    //            ThreadManager.StopCoroutine(delayShowWeaponCo);
-    //        }
-
-    //        if (__instance.holdingItemIdx == __instance.DUMMY_SLOT_IDX)
-    //        {
-    //            player.ShowHoldingItem(true);
-    //        }
-    //        else
-    //        {
-    //            delayShowWeaponCo = ThreadManager.StartCoroutine(DelayShowWeapon(player.playerCamera));
-    //        }
-    //    }
-    //}
-
-    //[HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.ShowHoldingItem))]
-    //[HarmonyPrefix]
-    //private static bool Prefix_ShowHoldingItem_EntityPlayerLocal(bool show)
-    //{
-    //    if (delayShowWeaponCo != null)
-    //    {
-    //        if (show)
-    //        {
-    //            return false;
-    //        }
-    //        ThreadManager.StopCoroutine(delayShowWeaponCo);
-    //    }
-    //    return true;
-    //}
-    /*
-    [HarmonyPatch(typeof(Inventory), nameof(Inventory.setHoldingItemTransform))]
-    [HarmonyPostfix]
-    private static void Postfix_setHoldingItemTransform_Inventory(Transform _t, Inventory __instance)
-    {
-        if (_t != null && _t.TryGetComponent<RigTargets>(out var targets) && !targets.Destroyed)
-        {
-            targets.SetEnabled(__instance.entity.emodel.IsFPV);
-        }
-    }
-
-    [HarmonyPatch(typeof(Inventory), nameof(Inventory.SetItem), new[] {typeof(int), typeof(ItemValue), typeof(int), typeof(bool)})]
-    [HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> Transpiler_SetItem_Inventory(IEnumerable<CodeInstruction> instructions)
-    {
-        MethodInfo mtd_update = AccessTools.Method(typeof(Inventory), nameof(Inventory.updateHoldingItem));
-        foreach (var code in instructions)
-        {
-            yield return code;
-            if (code.Calls(mtd_update))
-            {
-                yield return new CodeInstruction(OpCodes.Ldarg_0);
-                yield return new CodeInstruction(OpCodes.Ldc_I4_1);
-                yield return new CodeInstruction(OpCodes.Ldc_R4, 0f);
-                yield return CodeInstruction.Call(typeof(Inventory), nameof(Inventory.ShowHeldItem));
-            }
-        }
-    }
-
-    [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.ShowWeaponCamera))]
-    [HarmonyPostfix]
-    private static void Postfix_ShowWeaponCamera_EntityPlayerLocal(EntityPlayerLocal __instance, bool show)
-    {
-        if (__instance.bFirstPersonView)
-        {
-            __instance.weaponCamera.cullingMask &= ~(1 << 10);
-            if (delayShowWeaponCo != null)
-            {
-                ThreadManager.StopCoroutine(delayShowWeaponCo);
-            }
-            if (show)
-            {
-                delayShowWeaponCo = ThreadManager.StartCoroutine(DelayShowWeapon(__instance.weaponCamera));
-            }
-        }
-    }
-
-    */
     #endregion
 
     [HarmonyPatch(typeof(World), nameof(World.SpawnEntityInWorld))]
@@ -1049,15 +904,15 @@ static class AnimationRiggingPatches
     [HarmonyPostfix]
     private static void Postfix_SpawnEntityInWorld_World(Entity _entity)
     {
-        if (_entity is EntityPlayer player && !(_entity is EntityPlayerLocal) && player.inventory != null)
+        if (_entity is EntityPlayer { inventory: not null } player and not EntityPlayerLocal)
         {
-            for (int i = 0; i < player.inventory.models.Length; i++)
+            for (int i = 0; i < player.Hand.slotDatas.Length; i++)
             {
-                Transform model = player.inventory.models[i];
+                Transform model = player.Hand.GetSlotData(i)?.model;
                 if (model && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
                 {
                     targets.DestroyFpv();
-                    targets.Init(player.emodel.avatarController.GetActiveModelRoot(), false, i);
+                    // Owner/view initialization is deferred until this exact model is seated.
                 }
             }
         }
@@ -1079,14 +934,14 @@ static class AnimationRiggingPatches
                     new CodeInstruction(OpCodes.Ldarg_0).WithLabels(codes[i + 1].ExtractLabels()),
                     CodeInstruction.CallClosure<Action<EntityItem>>((entityItem) =>
                     {
-                        if (entityItem.itemTransform)
+                        if (entityItem.modelAsset.Instance)
                         {
-                            entityItem.itemTransform.tag = "Item";
-                            foreach (var collider in entityItem.itemTransform.GetComponentsInChildren<Collider>(true))
+                            entityItem.modelAsset.Instance.tag = "Item";
+                            foreach (var collider in entityItem.modelAsset.Instance.GetComponentsInChildren<Collider>(true))
                             {
                                 collider.transform.tag = "Item";
 	                        }
-                            if (entityItem.itemTransform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+                            if (entityItem.modelAsset.Instance.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
                             {
                                 targets.Destroy();
                             }
@@ -1099,15 +954,15 @@ static class AnimationRiggingPatches
         return codes;
     }
 
-    [HarmonyPatch(typeof(EModelBase), nameof(EModelBase.SwitchModelAndView))]
-    [HarmonyPostfix]
-    private static void Postfix_SwitchModelAndView_EModelBase(EModelBase __instance)
+    [HarmonyPatch(typeof(Inventory), nameof(Inventory.ReconcileHeldItem))]
+    [HarmonyPrefix]
+    private static void Prefix_ReconcileHeldItem_Inventory(Inventory __instance)
     {
-        if (__instance.entity is EntityPlayerLocal player && player.inventory != null)
+        if (__instance.entity is EntityPlayerLocal player)
         {
-            for (int i = 0; i < player.inventory.models.Length; i++)
+            for (int i = 0; i < player.inventory.SlotCount; i++)
             {
-                Transform model = player.inventory.models[i];
+                Transform model = player.inventory.GetItemDataInSlot(i)?.model;
                 if (model && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
                 {
                     targets.Init(player.emodel.avatarController.GetActiveModelRoot(), player.bFirstPersonView, i);
@@ -1122,29 +977,28 @@ static class AnimationRiggingPatches
     {
         var codes = instructions.ToList();
 
-        var fld_inv = AccessTools.Field(typeof(EntityAlive), nameof(EntityAlive.inventory));
-        var mtd_setindex = AccessTools.Method(typeof(Inventory), nameof(Inventory.SetHoldingItemIdxNoHolsterTime));
+        var mtd_select = AccessTools.Method(typeof(Hand), nameof(Hand.SelectHoldingMode));
         for (int i = 0; i < codes.Count; i++)
         {
-            if (codes[i].StoresField(fld_inv))
+            if (codes[i].Calls(mtd_select))
             {
-                codes.InsertRange(i + 1, new[]
+                codes.InsertRange(i - 4, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_0),
-                    CodeInstruction.Call(typeof(AnimationRiggingPatches), nameof(AnimationRiggingPatches.DetachInitInventory))
+                    CodeInstruction.Call(typeof(AnimationRiggingPatches), nameof(DetachInitInventory))
                 });
                 i += 2;
             }
-            else if (codes[i].Calls(mtd_setindex))
-            {
-                codes.InsertRange(i + 1, new[]
-                {
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    new CodeInstruction(OpCodes.Ldfld, fld_inv),
-                    CodeInstruction.Call(typeof(Inventory), nameof(Inventory.ForceHoldingItemUpdate))
-                });
-                i += 3;
-            }
+            // else if (codes[i].Calls(mtd_setindex))
+            // {
+            //     codes.InsertRange(i + 1, new[]
+            //     {
+            //         new CodeInstruction(OpCodes.Ldarg_0),
+            //         new CodeInstruction(OpCodes.Ldfld, fld_inv),
+            //         CodeInstruction.Call(typeof(Inventory), nameof(Inventory.ForceHoldingItemUpdate))
+            //     });
+            //     i += 3;
+            // }
         }
         return codes;
     }
@@ -1157,12 +1011,17 @@ static class AnimationRiggingPatches
         }
         if (__instance.inventory != null)
         {
-            for (int i = 0; i < __instance.inventory.models.Length; i++)
+            for (int i = 0; i < __instance.inventory.SlotCount; i++)
             {
-                Transform model = __instance.inventory.models[i];
+                Transform model = __instance.inventory.GetItemDataInSlot(i)?.model;
                 if (model && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
                 {
-                    targets.Init(__instance.emodel.avatarController.GetActiveModelRoot(), player is EntityPlayerLocal localPlayer ? localPlayer.bFirstPersonView : false, i);
+                    targets.Init(__instance.emodel.avatarController.GetActiveModelRoot(),
+                        player is EntityPlayerLocal
+                        {
+                            bFirstPersonView: true
+                        }, 
+                        i);
                 }
             }
         }
@@ -1175,8 +1034,7 @@ static class AnimationRiggingPatches
         var codes = instructions.ToList();
 
         var mtd_removeat = AccessTools.Method(typeof(List<RigLayer>), nameof(List<RigLayer>.RemoveAt));
-        MethodInfo mtd_destroy;
-        mtd_destroy = AccessTools.Method(typeof(GameUtils), nameof(GameUtils.DestroyAllChildrenImmediatelyBut), new[] { typeof(Transform), typeof(List<string>) });
+        var mtd_destroy = AccessTools.Method(typeof(GameUtils), nameof(GameUtils.DestroyAllChildrenImmediatelyBut), new[] { typeof(Transform), typeof(List<string>) });
 
         for (int i = 0; i < codes.Count; i++)
         {
@@ -1231,7 +1089,7 @@ static class AnimationRiggingPatches
             bool firing = rangedData.state > ItemActionFiringState.Off && !rangedData.burstShotFinished &&
                 (rangedData.bPressed || rangedData.burstShotStarted) &&
                 (burstCount == 0 || rangedData.curBurstCount < burstCount);
-            _actionData.invData.holdingEntity.emodel.avatarController._setBool("TriggerPulled", firing, true);
+            _actionData.invData.holdingEntity.emodel.avatarController._setBool("TriggerPulled", firing);
         }
     }
 
@@ -1243,7 +1101,7 @@ static class AnimationRiggingPatches
     }
 
     [HarmonyPatch(typeof(Animator), nameof(Animator.Rebind), new Type[0])]
-    [HarmonyReversePatch(HarmonyReversePatchType.Original)]
+    [HarmonyReversePatch()]
     public static void RebindNoDefault(this Animator __instance)
     {
         IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -1352,7 +1210,7 @@ static class AnimationRiggingPatches
     //}
 
     [HarmonyPatch(typeof(AvatarLocalPlayerController), nameof(AvatarLocalPlayerController._resetTrigger), typeof(int), typeof(bool))]
-    [HarmonyReversePatch(HarmonyReversePatchType.Original)]
+    [HarmonyReversePatch()]
     public static void VanillaResetTrigger(AvatarLocalPlayerController __instance, int _pid, bool _netsync = true)
     {
 
@@ -1658,7 +1516,6 @@ static class AnimationRiggingPatches
         var mtd_getint = AccessTools.Method(typeof(Animator), nameof(Animator.GetInteger), new[] { typeof(int) });
         var mtd_getfloat = AccessTools.Method(typeof(Animator), nameof(Animator.GetFloat), new[] { typeof(int) });
         var mtd_istransition = AccessTools.Method(typeof(Animator),nameof(Animator.IsInTransition), new[] { typeof(int) });
-        var mtd_updatespine = AccessTools.Method(typeof(LegacyAvatarController), nameof(LegacyAvatarController.updateSpineRotation));
         var fld_reload = AccessTools.Field(typeof(AvatarController), nameof(AvatarController.reloadHash));
         var mtd_getvanillabool = AccessTools.Method(typeof(KFExtensions), nameof(KFExtensions.GetWrappedBool));
         var mtd_getvanillaint = AccessTools.Method(typeof(KFExtensions), nameof(KFExtensions.GetWrappedInt));
@@ -1683,33 +1540,6 @@ static class AnimationRiggingPatches
           .MethodReplacer(mtd_getfloat, mtd_getvanillafloat)
           .MethodReplacer(mtd_istransition, mtd_isvanillatransition)
           .ToList();
-
-        //var lbd_wrapper = generator.DeclareLocal(typeof(IAnimatorWrapper));
-
-        //for (var i = 0; i < codes.Count; i++)
-        //{
-        //    if (codes[i].Calls(mtd_updatespine))
-        //    {
-        //        codes.InsertRange(i + 1, new[]
-        //        {
-        //            new CodeInstruction(OpCodes.Ldarg_0),
-        //            CodeInstruction.LoadField(typeof(AvatarController), nameof(AvatarController.anim)),
-        //            CodeInstruction.Call(typeof(KFExtensions), nameof(KFExtensions.GetItemAnimatorWrapper)),
-        //            new CodeInstruction(OpCodes.Stloc_S, lbd_wrapper)
-        //        });
-        //        i += 4;
-        //    }
-        //    else if (codes[i].Calls(mtd_getvanillabool) || codes[i].Calls(mtd_getvanillafloat) || codes[i].Calls(mtd_getvanillaint) || codes[i].Calls(mtd_isvanillatransition))
-        //    {
-        //        codes.Insert(i - 3, new CodeInstruction(OpCodes.Ldloc_S, lbd_wrapper).WithLabels(codes[i - 3].ExtractLabels()));
-        //        codes.RemoveRange(i - 2, 2);
-        //        i--;
-        //    }
-        //}
-        //foreach (var code in codes)
-        //{
-        //    Log.Out(code.ToString());
-        //}
         return codes;
     }
 
@@ -1835,7 +1665,7 @@ static class AnimationRiggingPatches
     private static IEnumerable<CodeInstruction> Transpiler_SetVehicleAnimation_AvatarMultiBodyController(IEnumerable<CodeInstruction> instructions)
     {
         return instructions.MethodReplacer(
-                AccessTools.Method(typeof(Animator), nameof(Animator.SetInteger), new[] { typeof(string), typeof(int) }),
+                AccessTools.Method(typeof(Animator), nameof(Animator.SetInteger), new[] { typeof(int), typeof(int) }),
                 AccessTools.Method(typeof(KFExtensions), nameof(KFExtensions.SetWrappedInt)));
     }
     //BodyAnimator.LateUpdate

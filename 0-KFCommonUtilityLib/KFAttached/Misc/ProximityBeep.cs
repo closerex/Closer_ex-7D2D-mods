@@ -22,7 +22,7 @@ namespace KFCommonUtilityLib
 
 #if NotEditor
         private float nextCheckTime = 0f;
-        private readonly List<Entity> entityCache = new List<Entity>();
+        private readonly List<Entity> entityCache = new();
         private float curBeepInterval;
         private float beepProgress = 0f;
 

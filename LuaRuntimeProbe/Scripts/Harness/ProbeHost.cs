@@ -53,7 +53,7 @@ namespace LuaRuntimeProbe.Harness
     /// </summary>
     public sealed class NullProbeHost : IProbeHost
     {
-        public static readonly NullProbeHost Instance = new NullProbeHost();
+        public static readonly NullProbeHost Instance = new();
 
         public string LuaDirectory
         {

@@ -4,7 +4,7 @@ public class FPSShaderColorGradient : MonoBehaviour
 {
     public string ShaderProperty = "_TintColor";
     public int MaterialID = 0;
-    public Gradient Color = new Gradient();
+    public Gradient Color = new();
     public float TimeMultiplier = 1;
 
     private bool canUpdate;

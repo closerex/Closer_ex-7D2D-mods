@@ -63,6 +63,6 @@ public class MultiExplosionParser : IExplosionPropertyParser
 public class MultiExplosionProperty
 {
     public string[] arr_transforms { get; internal set; } = null;
-    public List<int> list_sub_explosion_indice { get; internal set; } = new List<int>();
+    public List<int> list_sub_explosion_indice { get; internal set; } = new();
 }
 

@@ -10,7 +10,7 @@ public class VPParticleWeapon : VehicleWeaponBase
     protected ExplosionComponent component = null;
     protected ParticleSystem weaponSystem = null;
     protected SubExplosionInitializer initializer = null;
-    ParticleSystem.EmitParams param = new ParticleSystem.EmitParams();
+    ParticleSystem.EmitParams param = new();
 
     private bool coFireQueuedThisFrame = false;
     private Coroutine coInstance = null;

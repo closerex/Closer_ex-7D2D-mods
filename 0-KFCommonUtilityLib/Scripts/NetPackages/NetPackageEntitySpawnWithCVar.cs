@@ -1,4 +1,4 @@
-﻿namespace KFCommonUtilityLib
+namespace KFCommonUtilityLib
 {
     public class NetPackageEntitySpawnWithCVar : NetPackageEntitySpawn
     {
@@ -29,10 +29,6 @@
             }
         }
 
-        public override int GetLength()
-        {
-            return base.GetLength() + 200;
-        }
 
         public override void ProcessPackage(World _world, GameManager _callbacks)
         {

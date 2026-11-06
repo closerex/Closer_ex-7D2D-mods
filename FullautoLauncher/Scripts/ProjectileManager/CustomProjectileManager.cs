@@ -9,7 +9,7 @@ namespace FullautoLauncher.Scripts.ProjectileManager
 {
     public static class CustomProjectileManager
     {
-        private static readonly Dictionary<string, IProjectileItemGroup> dict_item_groups = new Dictionary<string, IProjectileItemGroup>();
+        private static readonly Dictionary<string, IProjectileItemGroup> dict_item_groups = new();
 
         public static IProjectileItemGroup Get(string name) => dict_item_groups.TryGetValue(name, out var group) ? group : null;
         public static Transform CustomProjectileParent

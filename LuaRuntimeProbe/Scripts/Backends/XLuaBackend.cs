@@ -735,7 +735,7 @@ namespace LuaRuntimeProbe.Backends
     /// </summary>
     public sealed class XLuaBackend : ILuaProbeBackend
     {
-        private readonly LuaBackendInfo _info = new LuaBackendInfo
+        private readonly LuaBackendInfo _info = new()
         {
             Id = "xlua",
             DisplayName = "xLua - NOT COMPILED IN (build with -p:WithXLua=true)",

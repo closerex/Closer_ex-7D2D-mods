@@ -1,6 +1,6 @@
 ﻿public class MinEventActionAddRoundsToInventory : MinEventActionAmmoAccessBase
 {
-    private ItemStack itemStackCache = new ItemStack();
+    private ItemStack itemStackCache = new();
 
     public override void Execute(MinEventParams _params)
     {

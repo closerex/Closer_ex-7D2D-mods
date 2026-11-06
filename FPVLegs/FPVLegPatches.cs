@@ -350,11 +350,11 @@ namespace FPVLegs
 
     public class FPVLegCameraCallback : MonoBehaviour
     {
-        private static Vector3 legOffset = new Vector3(0f, 0.25f, -0.4f);
-        private static Vector3 headOffset = new Vector3(0f, 0.05f, -0.3f);
+        private static Vector3 legOffset = new(0f, 0.25f, -0.4f);
+        private static Vector3 headOffset = new(0f, 0.05f, -0.3f);
         private vp_FPCamera vp_camera;
         private EntityPlayerLocal player;
-        private FPVLegHelper helper = new FPVLegHelper();
+        private FPVLegHelper helper = new();
 
         public void Init(vp_FPCamera vp_FPCamera, EntityPlayerLocal player, Animator animator)
         {

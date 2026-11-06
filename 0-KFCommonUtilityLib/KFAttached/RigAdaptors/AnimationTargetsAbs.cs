@@ -1,4 +1,4 @@
-﻿#if NotEditor
+#if NotEditor
 using UniLinq;
 #else
 using System.Linq;
@@ -44,9 +44,9 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     protected bool fpvSet = false;
     protected bool tpvSet = false;
 
-    private Dictionary<string, GameObject> dict_attachments = new Dictionary<string, GameObject>();
-    private List<GameObject> list_attached_attachments = new List<GameObject>();
-    private List<GameObject> list_activate_attachments = new List<GameObject>();
+    private Dictionary<string, GameObject> dict_attachments = new();
+    private List<GameObject> list_attached_attachments = new();
+    private List<GameObject> list_activate_attachments = new();
 
     public abstract Transform ItemFpv { get; protected set; }
     public abstract Transform AttachmentRef { get; protected set; }

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UniLinq;
 using UnityEngine;
 using static ItemActionRanged;
@@ -16,10 +16,10 @@ namespace KFCommonUtilityLib
         //private static bool RigItemChangedThisFrame = false;
 
         //private static readonly HashSet<int> hash_rig_items = new HashSet<int>();
-        private static readonly HashSet<int> hash_items_take_over_reload_time = new HashSet<int>();
-        private static readonly HashSet<string> hash_items_parse_later = new HashSet<string>();
-        private static readonly HashSet<string> hash_rig_names = new HashSet<string>();
-        private static readonly HashSet<int> hash_rig_changed_players = new HashSet<int>();
+        private static readonly HashSet<int> hash_items_take_over_reload_time = new();
+        private static readonly HashSet<string> hash_items_parse_later = new();
+        private static readonly HashSet<string> hash_rig_names = new();
+        private static readonly HashSet<int> hash_rig_changed_players = new();
 
         //patched to item xml parsing
         //public static void AddRigItem(int itemId) => hash_rig_items.Add(itemId);
@@ -94,7 +94,7 @@ namespace KFCommonUtilityLib
 
         public static AnimationTargetsAbs GetCurRigTargetsFromInventory(Inventory inventory)
         {
-            Transform holdingItemTransform = inventory?.GetHoldingItemTransform();
+            Transform holdingItemTransform = inventory?.Hand.ModelTransform;
             if (holdingItemTransform)
                 return holdingItemTransform.GetComponent<AnimationTargetsAbs>();
             return null;
@@ -102,7 +102,7 @@ namespace KFCommonUtilityLib
 
         public static AnimationTargetsAbs GetLastRigTargetsFromInventory(Inventory inventory)
         {
-            Transform lastHoldingItemTransform = inventory?.lastdrawnHoldingItemTransform;
+            Transform lastHoldingItemTransform = inventory?.Hand.holstering?.model;
             if (lastHoldingItemTransform)
                 return lastHoldingItemTransform.GetComponent<AnimationTargetsAbs>();
             return null;
@@ -127,12 +127,12 @@ namespace KFCommonUtilityLib
         {
             if (inv == null)
                 return;
-            Transform transform = inv.models[slot];
+            Transform transform = inv.Hand.GetSlotData(slot)?.model;
             if (transform && transform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
             {
                 //RigItemChangedThisFrame = true;
                 targets.Destroy();
-                if (slot == inv.holdingItemIdx && inv.entity is EntityPlayer)
+                if (slot == inv.Hand.Held.slotIdx && inv.entity is EntityPlayer)
                     hash_rig_changed_players.Add(inv.entity.entityId);
             }
         }
@@ -140,30 +140,9 @@ namespace KFCommonUtilityLib
         //patched to EntityPlayerLocal.OnHoldingItemChanged and EntityAlive.OnHoldingItemIndexChanged
         public static void OnHoldingItemIndexChanged(EntityPlayer player)
         {
-            if (!player || player.inventory == null || player.inventory.m_LastDrawnHoldingItemIndex < 0 || player.inventory.m_LastDrawnHoldingItemIndex >= player.inventory.GetSlotCount())
+            if (!player || player.inventory == null)
                 return;
-            if (player.inventory.m_LastDrawnHoldingItemIndex == player.inventory.holdingItemIdx)
-            {
-                hash_rig_changed_players.Add(player.entityId);
-                return;
-            }
-            Transform lastHoldingTransform = player.inventory.models[player.inventory.m_LastDrawnHoldingItemIndex];
-            if (!lastHoldingTransform)
-            {
-                hash_rig_changed_players.Add(player.entityId);
-                return;
-            }
-            AnimationTargetsAbs targets = lastHoldingTransform.GetComponent<AnimationTargetsAbs>();
-            //if (targets && !targets.Destroyed && targets.IsAnimationSet)
-            //{
-            //    //RigItemChangedThisFrame = true;
-            //    hash_rig_changed_players.Add(player.entityId);
-            //    return;
-            //}
-            targets = GetHoldingRigTargetsFromPlayer(player);
-            if (targets && targets.IsAnimationSet)
-                //RigItemChangedThisFrame = true;
-                hash_rig_changed_players.Add(player.entityId);
+            hash_rig_changed_players.Add(player.entityId);
         }
 
         public static Transform GetAttachmentReferenceOverrideTransform(Transform transform, string transformPath, Entity entity)
@@ -172,7 +151,7 @@ namespace KFCommonUtilityLib
                 return null;
 
             //Log.Out("TRYING TO REDIRECT TRANSFORM REFERENCE: " + transform.name + " CHILD: " + transformPath);
-            var targets = entityAlive.inventory.GetHoldingItemTransform()?.GetComponent<AttachmentReference>();
+            var targets = entityAlive.Hand.ModelTransform?.GetComponent<AttachmentReference>();
             if (targets != null && targets.attachmentReference != null)
             {
                 var redirected = GameUtils.FindDeepChild(targets.attachmentReference, transform.name) ?? targets.attachmentReference;
@@ -192,7 +171,7 @@ namespace KFCommonUtilityLib
                 return null;
 
             //Log.Out("TRYING TO REDIRECT TRANSFORM REFERENCE: " + transform.name + " CHILD: " + transformPath);
-            var targets = entityAlive.inventory.GetHoldingItemTransform()?.GetComponent<AttachmentReference>();
+            var targets = entityAlive.Hand.ModelTransform?.GetComponent<AttachmentReference>();
             if (targets != null && targets.attachmentReference != null)
             {
                 var redirected = GameUtils.FindDeepChildActive(targets.attachmentReference, transform.name) ?? targets.attachmentReference;

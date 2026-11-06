@@ -96,13 +96,13 @@ namespace CameraShake
             /// Strength of the shake for each axis.
             /// </summary>
             [Tooltip("Strength of the shake for each axis.")]
-            public Displacement strength = new Displacement(Vector3.zero, new Vector3(2, 2, 0.8f));
+            public Displacement strength = new(Vector3.zero, new Vector3(2, 2, 0.8f));
 
             /// <summary>
             /// Layers of perlin noise with different frequencies.
             /// </summary>
             [Tooltip("Layers of perlin noise with different frequencies.")]
-            public NoiseMode[] noiseModes = { new NoiseMode(12, 1) };
+            public NoiseMode[] noiseModes = { new(12, 1) };
 
             /// <summary>
             /// Strength over time.

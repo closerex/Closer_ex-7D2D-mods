@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System.Collections.Generic;
@@ -71,28 +71,28 @@ namespace QuartzUIPatch
 
             var lbd_index = generator.DeclareLocal(typeof(int));
             FieldInfo fld_action = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
-            FieldInfo fld_ammoindex = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
+            MethodInfo mtd_ammoindex = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
             for (int i = 0; i < codes.Count; i++)
             {
-                if (codes[i].LoadsField(fld_action))
+                if (codes[i].LoadsField(fld_action) && codes[i + 1].LoadsConstant(0))
                 {
-                    codes.RemoveAt(i + 1);
-                    codes.InsertRange(i + 1, new[]
+                    codes[i + 1].opcode = OpCodes.Ldarg_0;
+                    codes[i + 1].operand = null;
+                    codes.InsertRange(i + 2, new[]
                     {
-                        new CodeInstruction(OpCodes.Ldarg_0),
                         CodeInstruction.LoadField(typeof(Quartz.XUiC_HUDActiveItem), "itemValue"),
                         CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetActionIndexByMetaData)),
                         new CodeInstruction(OpCodes.Dup),
                         new CodeInstruction(OpCodes.Stloc_S, lbd_index)
                     });
-                    i += 4;
+                    i += 5;
                 }
-                else if (codes[i].LoadsField(fld_ammoindex))
+                else if (codes[i].Calls(mtd_ammoindex))
                 {
                     codes[i].opcode = OpCodes.Call;
                     codes[i].operand = AccessTools.Method(typeof(MultiActionUtils), nameof(MultiActionUtils.GetSelectedAmmoIndexByActionIndex));
-                    codes.Insert(i, new CodeInstruction(OpCodes.Ldloc_S, lbd_index));
-                    break;
+                    codes.Insert(i, new CodeInstruction(OpCodes.Ldloc_S, lbd_index).MoveLabelsFrom(codes[i]));
+                    i++;
                 }
             }
 
@@ -126,25 +126,36 @@ namespace QuartzUIPatch
 
         [HarmonyPatch(typeof(Quartz.XUiC_ItemInfoWindow), "GetAmmoName")]
         [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_XUiC_ItemInfoWindow_GetAmmoName(IEnumerable<CodeInstruction> instructions)
+        private static IEnumerable<CodeInstruction> Transpiler_XUiC_ItemInfoWindow_GetAmmoName(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             var codes = instructions.ToList();
 
+            var lbd_index = generator.DeclareLocal(typeof(int));
             var fld_actions = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
+            var mtd_ammoindex = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.SelectedAmmoTypeIndex));
 
             for (int i = 0; i < codes.Count; i++)
             {
-                if (codes[i].LoadsField(fld_actions) && codes[i + 1].opcode == OpCodes.Ldc_I4_0)
+                if (codes[i].LoadsField(fld_actions) && codes[i + 1].LoadsConstant(0))
                 {
-                    codes.RemoveAt(i + 1);
-                    codes.InsertRange(i + 1, new[]
+                    codes[i + 1].opcode = OpCodes.Ldarg_0;
+                    codes[i + 1].operand = null;
+                    codes.InsertRange(i + 2, new[]
                     {
-                        new CodeInstruction(OpCodes.Ldarg_0),
                         CodeInstruction.LoadField(typeof(XUiC_ItemInfoWindow), nameof(XUiC_ItemInfoWindow.itemStack)),
-                        CodeInstruction.LoadField(typeof(ItemStack), nameof(ItemStack.itemValue)),
-                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetActionIndexByMetaData))
+                        new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(ItemStack), nameof(ItemStack.itemValue))),
+                        CodeInstruction.Call(typeof(MultiActionUtils), nameof(MultiActionUtils.GetActionIndexByMetaData)),
+                        new CodeInstruction(OpCodes.Dup),
+                        new CodeInstruction(OpCodes.Stloc_S, lbd_index)
                     });
-                    i += 3;
+                    i += 6;
+                }
+                else if (codes[i].Calls(mtd_ammoindex))
+                {
+                    codes[i].opcode = OpCodes.Call;
+                    codes[i].operand = AccessTools.Method(typeof(MultiActionUtils), nameof(MultiActionUtils.GetSelectedAmmoIndexByActionIndex));
+                    codes.Insert(i, new CodeInstruction(OpCodes.Ldloc_S, lbd_index).MoveLabelsFrom(codes[i]));
+                    i++;
                 }
             }
 

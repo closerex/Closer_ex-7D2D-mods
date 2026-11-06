@@ -102,7 +102,7 @@ namespace CameraShake
             /// Preferred direction of shaking.
             /// </summary>
             [Tooltip("Preferred direction of shaking.")]
-            public Displacement axesMultiplier = new Displacement(Vector2.one, Vector3.forward);
+            public Displacement axesMultiplier = new(Vector2.one, Vector3.forward);
 
             /// <summary>
             /// Frequency of shaking.

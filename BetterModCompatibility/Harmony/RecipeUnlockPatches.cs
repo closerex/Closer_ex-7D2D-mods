@@ -10,7 +10,7 @@ namespace BetterModCompatibility.Harmony
     [HarmonyPatch]
     static class RecipeUnlockPatches
     {
-        private static HashSet<int> forceUnlockedRecipes = new HashSet<int>();
+        private static HashSet<int> forceUnlockedRecipes = new();
 
         [HarmonyPatch(typeof(ItemClass), nameof(ItemClass.UnlockedBy), MethodType.Getter)]
         [HarmonyTranspiler]

@@ -10,8 +10,8 @@ public class ActionModuleLocalPassiveCache
     public class LocalPassiveCacheData : IEnumerable<int>
     {
         public ItemInventoryData invData;
-        private Dictionary<int, float> dict_hash_value = new Dictionary<int, float>();
-        private Dictionary<int, string> dict_hash_name = new Dictionary<int, string>();
+        private Dictionary<int, float> dict_hash_value = new();
+        private Dictionary<int, string> dict_hash_name = new();
 
         public LocalPassiveCacheData(ItemInventoryData _inventoryData)
         {

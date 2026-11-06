@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using KFCommonUtilityLib;
 using System;
 using System.Collections.Generic;
@@ -339,17 +339,16 @@ public static class ItemActionBlockingPatches
     {
         var codes = instructions.ToList();
 
-        int local_holdingitem;
-        local_holdingitem = 27;
+        var itemGetter = AccessTools.PropertyGetter(typeof(Inventory), nameof(Inventory.holdingItem));
 
         var fld_jump = AccessTools.Field(typeof(MovementInput), nameof(MovementInput.jump));
 
         for (int i = 0; i < codes.Count; i++)
         {
             //holding item
-            if (codes[i].opcode == OpCodes.Stloc_S && ((LocalBuilder)codes[i].operand).LocalIndex == local_holdingitem)
+            if (codes[i].Calls(itemGetter) && codes[i + 1].IsStloc())
             {
-                codes.InsertRange(i + 1, new[]
+                codes.InsertRange(i + 2, new[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     CodeInstruction.CallClosure<Action<PlayerMoveController>>(static controller =>
@@ -382,7 +381,7 @@ public static class ItemActionBlockingPatches
                             return;
                         }
 
-                        if (IsPressed && (player.AimingGun || player.IsReloading() || !player.inventory.GetIsFinishedSwitchingHeldItem()))
+                        if (IsPressed && (player.AimingGun || player.IsReloading() || player.Hand.IsSwitching))
                         {
                             return;
                         }
@@ -427,7 +426,7 @@ public static class ItemActionBlockingPatches
                         }
                     })
                 });
-                i += 2;
+                i += 3;
             }
             else if (codes[i].StoresField(fld_jump))
             {

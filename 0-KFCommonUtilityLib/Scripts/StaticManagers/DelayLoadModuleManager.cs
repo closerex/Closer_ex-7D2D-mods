@@ -8,9 +8,9 @@ namespace KFCommonUtilityLib
 {
     public static class DelayLoadModuleManager
     {
-        private static readonly List<(string mod, List<string> dlls)> list_delay_load = new List<(string mod, List<string> dlls)>();
+        private static readonly List<(string mod, List<string> dlls)> list_delay_load = new();
 
-        private static readonly List<Assembly> loaded = new List<Assembly>();
+        private static readonly List<Assembly> loaded = new();
 
         public static void RegisterDelayloadDll(string modName, string dllNameWithoutExtension)
         {

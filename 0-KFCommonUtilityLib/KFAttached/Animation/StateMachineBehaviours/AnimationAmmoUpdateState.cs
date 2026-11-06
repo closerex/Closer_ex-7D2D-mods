@@ -1,4 +1,4 @@
-﻿#if NotEditor
+#if NotEditor
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Scripts.Utilities;
 #endif
@@ -39,7 +39,7 @@ public class AnimationAmmoUpdateState : StateMachineBehaviour
     {
         if (entity)
         {
-            var invData = entity.inventory?.slots?[slot];
+            var invData = entity.inventory?.Hand?.slotDatas?[slot];
             if (invData?.actionData != null)
             {
                 //var mapping = MultiActionManager.GetMappingForEntity(entity.entityId);

@@ -1,4 +1,4 @@
-﻿using KFCommonUtilityLib.Scripts.Utilities;
+using KFCommonUtilityLib.Scripts.Utilities;
 
 namespace KFCommonUtilityLib
 {
@@ -14,10 +14,6 @@ namespace KFCommonUtilityLib
             return this;
         }
 
-        public override int GetLength()
-        {
-            return 5;
-        }
 
         public override void ProcessPackage(World _world, GameManager _callbacks)
         {

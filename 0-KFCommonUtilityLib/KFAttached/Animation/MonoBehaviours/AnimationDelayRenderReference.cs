@@ -9,7 +9,7 @@ using UnityEngine;
 internal class AnimationDelayRenderReference : MonoBehaviour
 {
 #if NotEditor
-    internal HashSet<AnimationDelayRender> targets = new HashSet<AnimationDelayRender>();
+    internal HashSet<AnimationDelayRender> targets = new();
     private void OnPreCull()
     {
         if (targets.Count > 0)

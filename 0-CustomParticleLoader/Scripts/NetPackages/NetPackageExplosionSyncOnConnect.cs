@@ -1,4 +1,5 @@
-﻿using System.IO;
+using System;
+using System.IO;
 using UnityEngine;
 using XMLData.Item;
 
@@ -6,7 +7,7 @@ public class NetPackageExplosionSyncOnConnect : NetPackage
 {
 	public NetPackageExplosionSyncOnConnect Setup(byte[] data)
 	{
-		this.data = data != null ? data : new byte[0];
+		this.data = data ?? Array.Empty<byte>();
 		return this;
 	}
 
@@ -55,8 +56,8 @@ public class NetPackageExplosionSyncOnConnect : NetPackage
                 CustomExplosionManager.PushLastInitComponent(value);
 				GameObject obj = CustomExplosionManager.InitializeParticle(component, explParams._worldPos - Origin.position, explParams._rotation);
 				obj.GetComponent<NetSyncHelper>().OnConnectedToServer(_br);
+				CustomExplosionManager.PopLastInitComponent();
 			}
-			CustomExplosionManager.PopLastInitComponent();
 		}
 	}
 
@@ -68,10 +69,6 @@ public class NetPackageExplosionSyncOnConnect : NetPackage
 		}
 	}
 
-	public override int GetLength()
-	{
-		return 8 + data.Length;
-	}
 
 	private byte[] data;
 }

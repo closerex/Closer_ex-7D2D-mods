@@ -8,7 +8,7 @@ using UniLinq;
 [TypeTarget(typeof(ItemActionRanged))]
 public class ActionModuleInvariableRPM
 {
-    //added as a transpiler so that it's applied before all post processing
+    //added as a transpiler so that it's applied before all post-processing
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemAction.OnHoldingUpdate)), MethodTargetTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_OnHoldingUpdate_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
     {

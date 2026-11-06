@@ -1,4 +1,4 @@
-﻿public static class EntityInventoryExtension
+public static class EntityInventoryExtension
 {
     public static void TryStackItem(this EntityAlive self, ItemStack stack)
     {
@@ -22,7 +22,7 @@
 
     public static bool TryStackItem(this Bag self, ItemStack stack)
     {
-        ItemStack[] slots = self.GetSlots();
+        ItemStack[] slots = self.ItemGrid.items;
         TryStackItem(slots, stack);
         self.SetSlots(slots);
         return stack.count == 0;
@@ -30,7 +30,7 @@
 
     public static bool TryStackItem(this Inventory self, ItemStack stack)
     {
-        ItemStack[] slots = self.GetSlots();
+        ItemStack[] slots = self.ItemGrid.items;
         TryStackItem(slots, stack);
         self.CallOnToolbeltChangedInternal();
         return stack.count == 0;
@@ -77,7 +77,7 @@
             return true;
         }
 
-        return ShouldUpdateItem(other.CosmeticMods, self.CosmeticMods) || ShouldUpdateItem(other.Modifications, self.Modifications);
+        return ShouldUpdateItem(other.cosmeticMods, self.cosmeticMods) || ShouldUpdateItem(other.modifications, self.modifications);
     }
 
     public static bool ShouldUpdateItem(ItemValue[] self, ItemValue[] other)

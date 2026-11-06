@@ -20,7 +20,7 @@ namespace LuaRuntimeProbe.Backends
         private const string NativeFileName = "lua54.dll";
         private const string ScratchPrefix = "__lrp_scratch_";
 
-        private readonly LuaBackendInfo _info = new LuaBackendInfo
+        private readonly LuaBackendInfo _info = new()
         {
             Id = "nlua",
             DisplayName = "NLua + KeraLua (native Lua)",
@@ -47,7 +47,7 @@ namespace LuaRuntimeProbe.Backends
         /// without this cache the "hot call" benchmark would include that lookup
         /// while claiming to measure a cached function.
         /// </summary>
-        private readonly Dictionary<string, LuaFunction> _functionCache = new Dictionary<string, LuaFunction>();
+        private readonly Dictionary<string, LuaFunction> _functionCache = new();
 
         public LuaBackendInfo Info
         {

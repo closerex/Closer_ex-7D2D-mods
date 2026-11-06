@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -20,7 +20,21 @@ namespace KFCommonUtilityLib.Harmony
     [HarmonyPatch]
     public static class ModularPatches
     {
-        //todo: check harmony dump
+        [HarmonyPatch(typeof(ItemInventoryData), nameof(ItemInventoryData.Create))]
+        [HarmonyPrefix]
+        private static bool Prefix_Create_ItemInventoryData(EntityAlive _entity, ItemStack _stack, int _toolbeltSlotIdx, ref ItemInventoryData __result)
+        {
+            var item = _stack?.itemValue?.ItemClass;
+            // ReSharper disable once SuspiciousTypeConversion.Global
+            if (item is ICustomInvData custom)
+            {
+                __result = custom.createItemInventoryData(_entity, _stack, _toolbeltSlotIdx);
+                return false;
+            }
+
+            return true;
+        }
+        
         [HarmonyPatch(typeof(ItemClassesFromXml), nameof(ItemClassesFromXml.parseItem))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_parseItem_ItemClassesFromXml(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -131,7 +145,7 @@ namespace KFCommonUtilityLib.Harmony
             return codes;
         }
 
-        private static List<XElement> xElementCache = new List<XElement>();
+        private static List<XElement> xElementCache = new();
         [HarmonyPatch(typeof(MinEventActionBase), nameof(MinEventActionBase.ParseAction))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_ParseAction_MinEventActionBase(
@@ -1349,18 +1363,6 @@ namespace KFCommonUtilityLib.Harmony
     [HarmonyPatch]
     public static class CallClosureFixPatches
     {
-        private static Func<MethodBuilder, Type[]> GetDefinedParameterTypes;
-        static CallClosureFixPatches()
-        {
-            var dynamicMethod = new DynamicMethod("GetDefinedParameterTypes", MethodAttributes.Public | MethodAttributes.Static, CallingConventions.Standard, typeof(Type[]), new[] { typeof(MethodBuilder) }, typeof(MethodBuilder), true);
-            var generator = dynamicMethod.GetILGenerator();
-            generator.Emit(OpCodes.Ldarg_0);
-            generator.Emit(OpCodes.Ldfld, AccessTools.Field(typeof(MethodBuilder), "parameters"));
-            generator.Emit(OpCodes.Ret);
-
-            GetDefinedParameterTypes = (Func<MethodBuilder, Type[]>)dynamicMethod.CreateDelegate(typeof(Func<MethodBuilder, Type[]>));
-        }
-
 #nullable enable
         private static TypeBuilder? WorkingTypeBuilder;
 #nullable disable

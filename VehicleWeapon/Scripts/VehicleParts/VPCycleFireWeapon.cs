@@ -7,7 +7,7 @@ public class VPCycleFireWeapon : VehicleWeaponBase
     protected float cycleInterval;
     protected float cycleCooldown = 0f;
     protected int curCycleIndex = 0;
-    protected List<int> canFireList = new List<int>();
+    protected List<int> canFireList = new();
     protected int LastCycleIndex
     {
         get

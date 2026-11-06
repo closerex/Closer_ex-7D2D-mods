@@ -1,4 +1,4 @@
-﻿namespace KFCommonUtilityLib
+namespace KFCommonUtilityLib
 {
     class NetPackageSyncWeaponLabelText : NetPackage
     {
@@ -8,10 +8,6 @@
             this.slot = slot;
             this.data = data;
             return this;
-        }
-        public override int GetLength()
-        {
-            return 6 + data.Length;
         }
 
         public override void ProcessPackage(World _world, GameManager _callbacks)

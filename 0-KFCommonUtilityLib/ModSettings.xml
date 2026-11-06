@@ -1,56 +1,82 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ModSettings>
+<ModSettings version="2">
   <Global>
     <Tab name="RecoilSettings" displayKey="kflibTabRecoilSettingsName" tooltipKey="">
       <Category name="Capping" displayKey="kflibCategoryRecoilCappingName" tooltipKey="">
-        <Slider name="RecoilCompensationSensitivityMultiplier" displayKey="kflibSettingRecoilCSMName" tooltipKey="kflibSettingRecoilCSMDesc" defaultValue="0.00">
-          <Property increment="0.01" minValue="0" maxValue="1" type="incrementalValuesFloat" />
-          <Property type="formatter" formatString="0.00" />
+        <Slider name="RecoilCompensationSensitivityMultiplier" displayKey="kflibSettingRecoilCSMName" defaultValue="0.00" type="float">
+          <Description key="kflibSettingRecoilCSMDesc" />
+          <Incremental increment="0.01" minValue="0" maxValue="1" />
+          <Formatter ui="0.00" />
         </Slider>
-        <Switch name="EnablePreRecoilCompensation" displayKey="kflibSettingEnablePreRecoilCompensationName" tooltipKey="kflibSettingEnablePreRecoilCompensationDesc" defaultValue="Disable" leftValue="Disable" rightValue="Enable" />
-        <Switch name="EnableCap" displayKey="kflibSettingEnableCapName" tooltipKey="kflibSettingEnableCapDesc" defaultValue="Disable" leftValue="Disable" rightValue="Enable" />
-        <Slider name="RecoilRemain" displayKey="kflibSettingRecoilRemainName" tooltipKey="kflibSettingRecoilRemainDesc" defaultValue="0.2">
-          <Property increment="0.01" minValue="0" maxValue="1" type="incrementalValuesFloat" />
-          <Property type="formatter" formatString="0.00" />
+        <Switch name="EnablePreRecoilCompensation" displayKey="kflibSettingEnablePreRecoilCompensationName" defaultValue="Disable" type="string">
+          <Description key="kflibSettingEnablePreRecoilCompensationDesc" />
+          <Buttons left="Disable" right="Enable" />
+        </Switch>
+        <Switch name="EnableCap" displayKey="kflibSettingEnableCapName" defaultValue="Disable" type="string">
+          <Description key="kflibSettingEnableCapDesc" />
+          <Buttons left="Disable" right="Enable" />
+        </Switch>
+        <Slider name="RecoilRemain" displayKey="kflibSettingRecoilRemainName" defaultValue="0.2" type="float">
+          <Description key="kflibSettingRecoilRemainDesc" />
+          <Incremental increment="0.01" minValue="0" maxValue="1" />
+          <Formatter ui="0.00" />
         </Slider>
-        <Switch name="EnableSoftCap" displayKey="kflibSettingEnableSoftCapName" tooltipKey="kflibSettingEnableSoftCapDesc" defaultValue="Disable" leftValue="Disable" rightValue="Enable" />
-        <Slider name="MaxRecoilAngle" displayKey="kflibSettingMaxRecoilAngleName" tooltipKey="kflibSettingMaxRecoilAngleDesc" defaultValue="15">
-          <Property increment="1" minValue="0" maxValue="45" type="incrementalValuesInt" />
+        <Switch name="EnableSoftCap" displayKey="kflibSettingEnableSoftCapName" defaultValue="Disable" type="string">
+          <Description key="kflibSettingEnableSoftCapDesc" />
+          <Buttons left="Disable" right="Enable" />
+        </Switch>
+        <Slider name="MaxRecoilAngle" displayKey="kflibSettingMaxRecoilAngleName" defaultValue="15" type="int">
+          <Description key="kflibSettingMaxRecoilAngleDesc" />
+          <Incremental increment="1" minValue="0" maxValue="45" />
         </Slider>
-        <Switch name="EnableDynamicCap" displayKey="kflibSettingEnableDynamicCapName" tooltipKey="kflibSettingEnableDynamicCapDesc" defaultValue="Disable" leftValue="Disable" rightValue="Enable" />
-        <Slider name="MaxDynamicRecoilCapShots" displayKey="kflibSettingMaxDynamicRecoilCapShotsName" tooltipKey="kflibSettingMaxDynamicRecoilCapShotsDesc" defaultValue="6">
-          <Property increment="1" minValue="0" maxValue="30" type="incrementalValuesInt" />
+        <Switch name="EnableDynamicCap" displayKey="kflibSettingEnableDynamicCapName" defaultValue="Disable" type="string">
+          <Description key="kflibSettingEnableDynamicCapDesc" />
+          <Buttons left="Disable" right="Enable" />
+        </Switch>
+        <Slider name="MaxDynamicRecoilCapShots" displayKey="kflibSettingMaxDynamicRecoilCapShotsName" defaultValue="6" type="int">
+          <Description key="kflibSettingMaxDynamicRecoilCapShotsDesc" />
+          <Incremental increment="1" minValue="0" maxValue="30" />
         </Slider>
       </Category>
     </Tab>
     <Tab name="CameraAnimationSettings" displayKey="kflibTabCameraAnimationSettingsName" tooltipKey="">
       <Category name="Default" displayKey="kflibCategoryCAIDefaultSettingsName" tooltipKey="">
-        <Slider name="CameraAnimationIntensityMultiplier" displayKey="kflibSettingCAIMultiplierName" tooltipKey="kflibSettingCAIMultiplierDesc" defaultValue="1.00">
-          <Property increment="0.01" minValue="0" maxValue="1" type="incrementalValuesFloat" />
-          <Property type="formatter" formatString="0.00" />
+        <Slider name="CameraAnimationIntensityMultiplier" displayKey="kflibSettingCAIMultiplierName" defaultValue="1.00" type="float">
+          <Description key="kflibSettingCAIMultiplierDesc" />
+          <Incremental increment="0.01" minValue="0" maxValue="1" />
+          <Formatter ui="0.00" />
         </Slider>
       </Category>
     </Tab>
     <Tab name="MiscSettings" displayKey="kflibTabMiscSettingsName" tooltipKey="">
       <Category name="AutoInspect" displayKey="kflibCategoryAutoInspect" tooltipKey="">
-        <Switch name="EnableAutoInspect" displayKey="kflibSettingEnableAutoInspectName" tooltipKey="kflibSettingEnableAutoInspectDesc" defaultValue="Enabled" leftValue="Disabled" rightValue="Enabled" />
-        <Slider name="AutoInspectInterval" displayKey="kflibSettingAutoInspectIntervalName" tooltipKey="kflibSettingAutoInspectIntervalDesc" defaultValue="60">
-          <Property increment="1" minValue="30" maxValue="60" type="incrementalValuesFloat" />
-          <Property type="formatter" formatString="0" />
+        <Switch name="EnableAutoInspect" displayKey="kflibSettingEnableAutoInspectName" defaultValue="Enabled" type="string">
+          <Description key="kflibSettingEnableAutoInspectDesc" />
+          <Buttons left="Disabled" right="Enabled" />
+        </Switch>
+        <Slider name="AutoInspectInterval" displayKey="kflibSettingAutoInspectIntervalName" defaultValue="60" type="float">
+          <Description key="kflibSettingAutoInspectIntervalDesc" />
+          <Incremental increment="1" minValue="30" maxValue="60" />
+          <Formatter ui="0" />
         </Slider>
       </Category>
       <Category name="AimCorrection" displayKey="kflibCategoryAimCorrection" tooltipKey="">
-        <Selector name="AimCorrectionType" displayKey="kflibSettingsAimCorrectionTypeName" tooltipKey="kflibSettingsAimCorrectionTypeDesc" defaultValue="Both">
-          <Property type="arrayValues" allowedValues="None,FovByDistance,MixedOrtho,Both" />
+        <Selector name="AimCorrectionType" displayKey="kflibSettingsAimCorrectionTypeName" defaultValue="Both" type="string">
+          <Description key="kflibSettingsAimCorrectionTypeDesc" />
+          <List allowedValues="None,FovByDistance,MixedOrtho,Both" />
         </Selector>
       </Category>
       <Category name="PiPCamera" displayKey="kflibCategoryPiPCamera" tooltipKey="">
-        <Selector name="SyncAAQuality" displayKey="kflibSettingSyncAAQualityName" tooltipKey="kflibSettingSyncAAQualityDesc" defaultValue="Disabled">
-          <Property type="arrayValues" allowedValues="Disabled,Antialiasing" />
+        <Selector name="SyncAAQuality" displayKey="kflibSettingSyncAAQualityName" defaultValue="Disabled" type="string">
+          <Description key="kflibSettingSyncAAQualityDesc" />
+          <List allowedValues="Disabled,Antialiasing" />
         </Selector>
       </Category>
       <Category name="VerboseLog" displayKey="kflibCategoryVerboseLog" tooltipKey="kflibCategoryVerboseLogDesc">
-        <Switch name="KFModuleManagerLog" displayKey="kflibSettingModuleManagerLogName" tooltipKey="kflibSettingModuleManagerLogDesc" defaultValue="Disabled" leftValue="Disabled" rightValue="Enabled" />
+        <Switch name="KFModuleManagerLog" displayKey="kflibSettingModuleManagerLogName" defaultValue="Disabled" type="string">
+          <Description key="kflibSettingModuleManagerLogDesc" />
+          <Buttons left="Disabled" right="Enabled" />
+        </Switch>
       </Category>
     </Tab>
   </Global>

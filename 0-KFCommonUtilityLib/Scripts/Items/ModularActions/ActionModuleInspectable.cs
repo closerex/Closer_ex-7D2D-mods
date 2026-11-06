@@ -1,4 +1,4 @@
-﻿using GearsAPI.Settings.Global;
+using GearsAPI.Settings.Global;
 using HarmonyLib;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Attributes;
@@ -15,18 +15,15 @@ public static class InspectSettings
     {
         var category = modSettings.GetTab("MiscSettings").GetCategory("AutoInspect");
 
-        var enableSetting = category.GetSetting("EnableAutoInspect") as ISwitchGlobalSetting;
-        defaultAutoInspect = enableSetting.CurrentValue == "Enabled";
-        enableSetting.OnSettingChanged += static (s, v) => defaultAutoInspect = v == "Enabled";
+        var enableSetting = category.GetSetting("EnableAutoInspect") as ISwitchGlobalSetting<string>;
+        defaultAutoInspect = enableSetting.SettingValue == "Enabled";
+        enableSetting.OnValueChanged += static (s, v) => defaultAutoInspect = v == "Enabled";
 
-        var intervalSetting = category.GetSetting("AutoInspectInterval") as ISliderGlobalSetting;
-        autoInspectInterval = Mathf.Clamp(float.Parse(intervalSetting.CurrentValue), MinInspectInterval, MaxInspectInterval);
-        intervalSetting.OnSettingChanged += static (s, v) =>
+        var intervalSetting = category.GetSetting("AutoInspectInterval") as ISliderGlobalSetting<float>;
+        autoInspectInterval = Mathf.Clamp(intervalSetting.SettingValue, MinInspectInterval, MaxInspectInterval);
+        intervalSetting.OnValueChanged += static (s, v) =>
         {
-            if (float.TryParse(v, out var val))
-            {
-                autoInspectInterval = Mathf.Clamp(val, MinInspectInterval, MaxInspectInterval);
-            }
+            autoInspectInterval = Mathf.Clamp(v, MinInspectInterval, MaxInspectInterval);
         };
     }
 }

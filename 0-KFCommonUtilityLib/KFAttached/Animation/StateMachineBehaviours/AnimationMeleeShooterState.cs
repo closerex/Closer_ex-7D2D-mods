@@ -1,4 +1,4 @@
-﻿using KFCommonUtilityLib;
+using KFCommonUtilityLib;
 using UnityEngine;
 #if UNITY_EDITOR
 using System;
@@ -77,11 +77,11 @@ public class AnimationMeleeShooterState : StateMachineBehaviour
         var activeRig = AnimationRiggingManager.GetActiveRigTargetsFromPlayer(player);
         if (activeRig)
         {
-            var invData = player.inventory?.slots?[activeRig.SlotIndex];
+            var invData = player.inventory?.Hand?.slotDatas?[activeRig.SlotIndex];
             if (invData != null)
             {
                 actionIndex = MultiActionManager.GetActionIndexForEntity(player);
-                data = player.inventory?.GetItemDataInSlot(activeRig.SlotIndex)?.actionData?[actionIndex].LoadModule<ActionModuleMeleeShooter.MeleeShooterData>();
+                data = player.inventory?.Hand?.GetSlotData(activeRig.SlotIndex)?.actionData?[actionIndex].LoadModule<ActionModuleMeleeShooter.MeleeShooterData>();
                 if (data != null)
                 {
                     data.animationRequested = true;

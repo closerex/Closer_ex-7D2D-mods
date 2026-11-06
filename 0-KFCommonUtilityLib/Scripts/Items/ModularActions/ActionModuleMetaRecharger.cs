@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Attributes;
 using System;
@@ -39,8 +39,7 @@ public class ActionModuleMetaRecharger
     {
         rechargeDatas = null;
         rechargeTags = null;
-        string rechargeData = string.Empty;
-        _props.Values.TryGetValue("RechargeData", out rechargeData);
+        _props.Values.TryGetValue("RechargeData", out var rechargeData);
         if (string.IsNullOrEmpty(rechargeData))
         {
             Log.Error($"No recharge data found on item {__instance.item.Name} action {__instance.ActionIndex}");
@@ -52,7 +51,7 @@ public class ActionModuleMetaRecharger
         {
             commonTags |= __instance.ActionIndex != 1 ? FastTags<TagGroup.Global>.Parse("primary") : FastTags<TagGroup.Global>.Parse("secondary");
         }
-        rechargeDatas = rechargeData.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToArray();
+        rechargeDatas = rechargeData.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToArray();
         rechargeTags = rechargeDatas.Select(s =>
         {
             var _tags = FastTags<TagGroup.Global>.Parse(s) | commonTags;
@@ -81,7 +80,7 @@ public class ActionModuleMetaRecharger
         for (int i = 0; i < rechargeDatas.Length; i++)
         {
             holdingEntity.MinEventContext.Tags = rechargeTags[i].tagsOriginal;
-            holdingEntity.FireEvent(CustomEnums.onRechargeValueUpdate, true);
+            holdingEntity.FireEvent(CustomEnums.onRechargeValueUpdate);
         }
         UpdateBasicInterval(_data, __customData);
     }
@@ -104,11 +103,11 @@ public class ActionModuleMetaRecharger
 
     public class MetaRechargerData : IBackgroundInventoryUpdater
     {
-        private ActionModuleMetaRecharger module;
-        public bool basicIntervalSet = false;
-        public float[] basicRechargeInterval, basicDecreaseInterval, lastUpdateTime, lastDecreaseTime;
-        private int indexOfAction;
-        private int slotIdx;
+        private readonly ActionModuleMetaRecharger module;
+        public readonly float[] basicRechargeInterval, basicDecreaseInterval, lastUpdateTime, lastDecreaseTime;
+        private readonly int indexOfAction;
+        private readonly int slotIdx;
+        public bool basicIntervalSet;
 
         public int Index => indexOfAction;
 
@@ -117,6 +116,8 @@ public class ActionModuleMetaRecharger
             module = __customModule;
             indexOfAction = _indexInEntityOfAction;
             slotIdx = _inventoryData.slotIdx;
+            if (__customModule.rechargeDatas == null)
+                return;
             basicRechargeInterval = new float[__customModule.rechargeDatas.Length];
             basicDecreaseInterval = new float[__customModule.rechargeDatas.Length];
             float curTime = Time.time;
@@ -124,9 +125,6 @@ public class ActionModuleMetaRecharger
             lastUpdateTime.Fill(curTime);
             lastDecreaseTime = new float[__customModule.rechargeDatas.Length];
             lastDecreaseTime.Fill(curTime);
-            if (__customModule.rechargeDatas == null)
-                return;
-
             BackgroundInventoryUpdateManager.RegisterUpdater(_inventoryData.holdingEntity, _inventoryData.slotIdx, this);
         }
 

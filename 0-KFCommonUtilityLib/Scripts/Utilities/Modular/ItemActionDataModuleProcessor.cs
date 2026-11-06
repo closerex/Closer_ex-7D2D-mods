@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -65,7 +65,7 @@ namespace KFCommonUtilityLib
             {
                 case "__customModule":
                     generator.Emit(OpCodes.Ldarg_1);
-                    generator.Emit(OpCodes.Ldfld, AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.item)));
+                    generator.Emit(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(ItemInventoryData), nameof(ItemInventoryData.item)));
                     generator.Emit(OpCodes.Ldfld, AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions)));
                     generator.Emit(OpCodes.Ldarg_2);
                     generator.Emit(OpCodes.Ldelem_Ref);

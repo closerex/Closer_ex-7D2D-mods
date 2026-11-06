@@ -30,7 +30,7 @@ namespace LuaRuntimeProbe.Contracts
         public long EmitSum { get; private set; }
 
         /// <summary>Lines echoed by the script.  Bounded so a runaway script cannot grow unbounded.</summary>
-        public List<string> LoggedLines { get; } = new List<string>();
+        public List<string> LoggedLines { get; } = new();
 
         public const int MaxLoggedLines = 64;
 

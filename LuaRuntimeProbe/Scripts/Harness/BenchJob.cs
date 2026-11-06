@@ -202,7 +202,7 @@ namespace LuaRuntimeProbe.Harness
         public double SetupMs;
 
         public int AdvanceCount;
-        public readonly List<BenchRow> Rows = new List<BenchRow>();
+        public readonly List<BenchRow> Rows = new();
         public string Error;
 
         /// <summary>
@@ -305,7 +305,7 @@ namespace LuaRuntimeProbe.Harness
 
         public Func<BenchRow, BenchStep> Step;
         public Action<BenchRow> Finish;
-        public readonly BenchRow Row = new BenchRow();
+        public readonly BenchRow Row = new();
     }
 
     /// <summary>
@@ -325,8 +325,8 @@ namespace LuaRuntimeProbe.Harness
     {
         private readonly ILuaProbeBackend _backend;
         private readonly BenchConfig _config;
-        private readonly List<BenchTask> _tasks = new List<BenchTask>();
-        private readonly List<BenchRow> _completed = new List<BenchRow>();
+        private readonly List<BenchTask> _tasks = new();
+        private readonly List<BenchRow> _completed = new();
 
         private int _index = -1;
         private BenchTask _current;
@@ -336,7 +336,7 @@ namespace LuaRuntimeProbe.Harness
         private int _advanceCount;
         private bool _cancelRequested;
 
-        private readonly Stopwatch _wall = new Stopwatch();
+        private readonly Stopwatch _wall = new();
 
         private BenchJob(ILuaProbeBackend backend, BenchConfig config)
         {

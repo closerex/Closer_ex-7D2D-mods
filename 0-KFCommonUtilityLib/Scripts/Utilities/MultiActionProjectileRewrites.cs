@@ -1,4 +1,5 @@
-﻿using KFCommonUtilityLib;
+using System;
+using KFCommonUtilityLib;
 using HarmonyLib;
 using System.Collections.Generic;
 using System.Reflection.Emit;
@@ -317,8 +318,8 @@ namespace KFCommonUtilityLib.Scripts.Utilities
     {
         public static void RestoreProjectileValue(ItemValue itemValueProjectile)
         {
-            itemValueProjectile.Modifications = ItemValue.emptyItemValueArray;
-            itemValueProjectile.CosmeticMods = ItemValue.emptyItemValueArray;
+            itemValueProjectile.modifications = Array.Empty<ItemValue>();
+            itemValueProjectile.cosmeticMods = Array.Empty<ItemValue>();
             itemValueProjectile.Quality = 0;
             itemValueProjectile.UseTimes = 0;
             itemValueProjectile.Meta = 0;
@@ -918,19 +919,19 @@ namespace KFCommonUtilityLib.Scripts.Utilities
 
             if (_useMods)
             {
-                for (int i = 0; i < _projectileItemValue.CosmeticMods.Length; i++)
+                for (int i = 0; i < _projectileItemValue.CosmeticModCount; i++)
                 {
-                    if (_projectileItemValue.CosmeticMods[i] != null && _projectileItemValue.CosmeticMods[i].ItemClass is ItemClassModifier && !MultiActionManager.ShouldExcludePassive(_projectileItemValue.type, _projectileItemValue.CosmeticMods[i].type, actionIndex))
+                    if (_projectileItemValue.GetCosmeticMod(i) != null && _projectileItemValue.GetCosmeticMod(i).ItemClass is ItemClassModifier && !MultiActionManager.ShouldExcludePassive(_projectileItemValue.type, _projectileItemValue.GetCosmeticMod(i).type, actionIndex))
                     {
-                        _projectileItemValue.CosmeticMods[i].ModifyValue(_entity, _projectileItemValue, _passiveEffect, ref _originalValue, ref _perc_value, _tags);
+                        _projectileItemValue.GetCosmeticMod(i).ModifyValue(_entity, _projectileItemValue, _passiveEffect, ref _originalValue, ref _perc_value, _tags);
                     }
                 }
 
-                for (int i = 0; i < _projectileItemValue.Modifications.Length; i++)
+                for (int i = 0; i < _projectileItemValue.ModificationCount; i++)
                 {
-                    if (_projectileItemValue.Modifications[i] != null && _projectileItemValue.Modifications[i].ItemClass is ItemClassModifier && !MultiActionManager.ShouldExcludePassive(_projectileItemValue.type, _projectileItemValue.Modifications[i].type, actionIndex))
+                    if (_projectileItemValue.GetModification(i) != null && _projectileItemValue.GetModification(i).ItemClass is ItemClassModifier && !MultiActionManager.ShouldExcludePassive(_projectileItemValue.type, _projectileItemValue.GetModification(i).type, actionIndex))
                     {
-                        _projectileItemValue.Modifications[i].ModifyValue(_entity, _projectileItemValue, _passiveEffect, ref _originalValue, ref _perc_value, _tags);
+                        _projectileItemValue.GetModification(i).ModifyValue(_entity, _projectileItemValue, _passiveEffect, ref _originalValue, ref _perc_value, _tags);
                     }
                 }
             }

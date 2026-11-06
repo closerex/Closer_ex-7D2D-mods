@@ -3,7 +3,7 @@ using UnityEngine;
 
 internal class ExplosionAreaBuffTick : ExplosionDamageArea
 {
-    private HashSet<EntityAlive> hash_entities = new HashSet<EntityAlive>();
+    private HashSet<EntityAlive> hash_entities = new();
     private EntityPlayer player = null;
     private ItemValue item_value = null;
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -256,75 +256,42 @@ internal class ExplosionAttackPatch
 internal class ExplosionDataPatch
 {
     [HarmonyPatch(nameof(ExplosionData.Write))]
-    [HarmonyPrefix]
-    private static bool Prefix_ExplosionData_Write(BinaryWriter _bw, ref ExplosionData __instance)
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_ExplosionData_Write(IEnumerable<CodeInstruction> instructions)
     {
-        _bw.Write((ushort)__instance.ParticleIndex);
-        _bw.Write((short)(__instance.Duration * 10f));
-        _bw.Write((short)(__instance.BlockRadius * 20f));
-        _bw.Write((short)__instance.EntityRadius);
-        _bw.Write((short)__instance.BlastPower);
-        _bw.Write(__instance.BlockDamage);
-        _bw.Write(__instance.EntityDamage);
-        _bw.Write(__instance.BlockTags);
-        _bw.Write(__instance.IgnoreHeatMap);
-        if (__instance.damageMultiplier != null)
+        var codes = new List<CodeInstruction>(instructions);
+        var fld_particle_index = AccessTools.Field(typeof(ExplosionData), nameof(ExplosionData.ParticleIndex));
+
+        for (int i = 0; i < codes.Count; i++)
         {
-            _bw.Write(true);
-            __instance.damageMultiplier.Write(_bw);
-        }
-        else
-        {
-            _bw.Write(false);
-        }
-        if (__instance.BuffActions != null)
-        {
-            _bw.Write((byte)__instance.BuffActions.Count);
-            for (int i = 0; i < __instance.BuffActions.Count; i++)
+            if (codes[i].LoadsField(fld_particle_index))
             {
-                _bw.Write(__instance.BuffActions[i]);
+                codes[i + 1].opcode = OpCodes.Conv_U2;
+                codes[i + 2].operand = AccessTools.Method(typeof(BinaryWriter), nameof(BinaryWriter.Write), new[] { typeof(ushort) });
+                break;
             }
         }
-        else
-        {
-            _bw.Write(0);
-        }
-        return false;
+
+        return codes;
     }
 
     [HarmonyPatch(nameof(ExplosionData.Read))]
-    [HarmonyPrefix]
-    private static bool Prefix_ExplosionData_Read(BinaryReader _br, ref ExplosionData __instance)
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> Transpiler_ExplosionData_Read(IEnumerable<CodeInstruction> instructions)
     {
-        __instance.ParticleIndex = _br.ReadUInt16();
-        __instance.Duration = _br.ReadInt16() * 0.1f;
-        __instance.BlockRadius = _br.ReadInt16() * 0.05f;
-        __instance.EntityRadius = _br.ReadInt16();
-        __instance.BlastPower = _br.ReadInt16();
-        __instance.BlockDamage = _br.ReadSingle();
-        __instance.EntityDamage = _br.ReadSingle();
-        __instance.BlockTags = _br.ReadString();
-        __instance.IgnoreHeatMap = _br.ReadBoolean();
-        if (_br.ReadBoolean())
-        {
-            __instance.damageMultiplier = new DamageMultiplier();
-            __instance.damageMultiplier.Read(_br);
-        }
+        var codes = new List<CodeInstruction>(instructions);
+        var fld_particle_index = AccessTools.Field(typeof(ExplosionData), nameof(ExplosionData.ParticleIndex));
 
-        int num = _br.ReadByte();
-        if (num > 0)
+        for (int i = 0; i < codes.Count; i++)
         {
-            __instance.BuffActions = new List<string>();
-            for (int i = 0; i < num; i++)
+            if (codes[i].StoresField(fld_particle_index))
             {
-                __instance.BuffActions.Add(_br.ReadString());
+                codes[i - 1].operand = AccessTools.Method(typeof(BinaryReader), nameof(BinaryReader.ReadUInt16));
+                break;
             }
         }
-        else
-        {
-            __instance.BuffActions = null;
-        }
-        return false;
+
+        return codes;
     }
 }
 

@@ -123,29 +123,29 @@ public class VPRaycastWeapon : VehicleWeaponBase
     protected Transform muzzleTrans;
     protected Collider[] ignoreTrans;
     protected int originLayer;
-    protected VehicleWeaponCrosshair crosshair = new VehicleWeaponCrosshair();
+    protected VehicleWeaponCrosshair crosshair = new();
     protected string muzzleFlash;
     protected string muzzleSmoke;
     protected int hitmaskOverride;
     protected EnumDamageTypes damageType;
-    protected List<string> buffs = new List<string>();
+    protected List<string> buffs = new();
     protected string material;
     protected float aaSize;
     protected bool aaDebug;
 
     protected float spreadMultiplier = 1f;
-    protected PerlinNoise MeanderNoise = new PerlinNoise(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
+    protected PerlinNoise MeanderNoise = new(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
     protected DamageMultiplier damageMultiplier;
-    protected ItemActionAttack.AttackHitInfo attackDetails = new ItemActionAttack.AttackHitInfo()
+    protected ItemActionAttack.AttackHitInfo attackDetails = new()
     {
         isCriticalHit = false,
         WeaponTypeTag = ItemActionAttack.RangedTag
     };
-    protected Dictionary<string, ItemActionAttack.Bonuses> ToolBonuses = new Dictionary<string, ItemActionAttack.Bonuses>();
+    protected Dictionary<string, ItemActionAttack.Bonuses> ToolBonuses = new();
     protected AimAssistHelper aimAssist;
     //protected ParticleSystemUpdater muzzleFlashManager = new ParticleSystemUpdater();
     //protected ParticleSystemUpdater muzzleSmokeManager = new ParticleSystemUpdater();
-    protected List<float> queue_pending_shots = new List<float>();
+    protected List<float> queue_pending_shots = new();
 
     public override bool IsBurstPending => queue_pending_shots.Count > 0;
 

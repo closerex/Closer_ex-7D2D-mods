@@ -1,4 +1,4 @@
-﻿using Audio;
+using Audio;
 using HarmonyLib;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Attributes;
@@ -53,7 +53,7 @@ public class ActionModuleMagicSlash
                 Ray ray = localPlayer.GetMeleeRay();
                 Quaternion slashRot = Quaternion.AngleAxis(action.SwingAngle - 90, ray.direction) * localPlayer.cameraTransform.rotation;
                 Vector3 slashPos = ray.origin + action.SphereRadius * ray.direction;
-                data.invData.gameManager.ItemActionEffectsServer(localPlayer.entityId, data.invData.slotIdx, data.indexInEntityOfAction, 0, slashPos, slashRot.eulerAngles, RequireUserDataBits.InjectUserDataBits(0, 1, shiftBits));
+                GameManager.Instance.ItemActionEffectsServer(localPlayer.entityId, data.invData.slotIdx, data.indexInEntityOfAction, 0, slashPos, slashRot.eulerAngles, RequireUserDataBits.InjectUserDataBits(0, 1, shiftBits));
             }
         }
     }

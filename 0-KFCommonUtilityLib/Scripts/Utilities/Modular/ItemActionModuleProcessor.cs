@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using KFCommonUtilityLib.Attributes;
 using KFCommonUtilityLib.Harmony;
 using MonoMod.Utils;

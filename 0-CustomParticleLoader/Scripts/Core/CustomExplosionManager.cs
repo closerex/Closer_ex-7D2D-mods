@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -6,12 +6,12 @@ using static ModEvents;
 
 public static class CustomExplosionManager
 {
-    private static Dictionary<int, string> hash_paths = new Dictionary<int, string>();
-    private static Dictionary<string, ExplosionComponent> hash_components = new Dictionary<string, ExplosionComponent>();
-    private static Dictionary<string, GameObject> hash_assets = new Dictionary<string, GameObject>();
-    private static HashSet<GameObject> hash_initialized = new HashSet<GameObject>();
-    private static List<IExplosionPropertyParser> list_parsers = new List<IExplosionPropertyParser>();
-    private static Stack<ExplosionValue> last_init_components = new Stack<ExplosionValue>();
+    private static Dictionary<int, string> hash_paths = new();
+    private static Dictionary<string, ExplosionComponent> hash_components = new();
+    private static Dictionary<string, GameObject> hash_assets = new();
+    private static HashSet<GameObject> hash_initialized = new();
+    private static List<IExplosionPropertyParser> list_parsers = new();
+    private static Stack<ExplosionValue> last_init_components = new();
 
     public static event Action<PooledBinaryWriter> ClientConnected;
 

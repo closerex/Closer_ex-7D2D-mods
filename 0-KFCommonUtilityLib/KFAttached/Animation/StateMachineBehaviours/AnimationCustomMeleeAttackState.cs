@@ -56,7 +56,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
     private EntityAlive entity;
     private float attacksPerMinute;
     private float speedMultiplierToKeep = 1f;
-    private InventorySlotGurad slotGurad = new InventorySlotGurad();
+    private InventorySlotGurad slotGurad = new();
     private ItemModuleMultiItem.MultiItemInvData multiInvData;
     private bool impactSpeedRestored;
     private bool forceStopCalled;
@@ -407,7 +407,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             prevData = SetParams(isValidAlternative);
             if (entity.inventory.holdingItem.Actions[actionIndex] is ItemActionDynamicMelee action
                 && data.invData.itemValue.PercentUsesLeft > 0f
-                && entity.inventory.GetIsFinishedSwitchingHeldItem())
+                && !entity.Hand.IsSwitching)
             {
                 float originalSwingAngle = action.SwingAngle;
                 float originalSwingDegrees = action.SwingDegrees;
@@ -702,7 +702,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
 
     private bool CheckMeleeRunning(ItemActionDynamicMelee.ItemActionDynamicMeleeData data)
     {
-        if (data.invData.itemValue.PercentUsesLeft <= 0f || data.invData.holdingEntity.Stamina < data.StaminaUsage || !data.invData.holdingEntity.inventory.GetIsFinishedSwitchingHeldItem() || (attackDurationNormalized <= 0 && data.HasReleased))
+        if (data.invData.itemValue.PercentUsesLeft <= 0f || data.invData.holdingEntity.Stamina < data.StaminaUsage || data.invData.holdingEntity.Hand.IsSwitching || (attackDurationNormalized <= 0 && data.HasReleased))
         {
             if (ConsoleCmdReloadLog.LogInfo)
                 Log.Out($"Stopping melee running: {attackDurationNormalized} {data.HasReleased}");

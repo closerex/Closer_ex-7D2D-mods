@@ -71,8 +71,8 @@ namespace CameraShake
         {
             PerlinShake.NoiseMode[] modes =
             {
-                new PerlinShake.NoiseMode(8, 1),
-                new PerlinShake.NoiseMode(20, 0.3f)
+                new(8, 1),
+                new(20, 0.3f)
             };
             Envelope.EnvelopeParams envelopePars = new Envelope.EnvelopeParams();
             envelopePars.decay = duration <= 0 ? 1 : 1 / duration;
@@ -96,8 +96,8 @@ namespace CameraShake
         {
             PerlinShake.NoiseMode[] modes =
             {
-                new PerlinShake.NoiseMode(6, 1),
-                new PerlinShake.NoiseMode(20, 0.2f)
+                new(6, 1),
+                new(20, 0.2f)
             };
             Envelope.EnvelopeParams envelopePars = new Envelope.EnvelopeParams();
             envelopePars.decay = duration <= 0 ? 1 : 1 / duration;

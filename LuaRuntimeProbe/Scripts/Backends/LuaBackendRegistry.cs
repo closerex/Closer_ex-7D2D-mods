@@ -12,9 +12,9 @@ namespace LuaRuntimeProbe.Backends
     /// </summary>
     public static class LuaBackendRegistry
     {
-        private static readonly object SyncRoot = new object();
+        private static readonly object SyncRoot = new();
 
-        private static readonly List<ILuaProbeBackend> Backends = new List<ILuaProbeBackend>();
+        private static readonly List<ILuaProbeBackend> Backends = new();
         private static bool _created;
 
         public static IList<ILuaProbeBackend> All

@@ -18,7 +18,7 @@ public class ActionModuleTargetSeeker
     public FastTags<TagGroup.Global> tagsTargetSeekAngleOffsetVer;
     public BodyPartSortingOrder sortingOrder;
     public bool hitAllTargets;
-    public readonly MinEventActionTargetedBase targetCheckEvent = new MinEventActionTargetedBase();
+    public readonly MinEventActionTargetedBase targetCheckEvent = new();
 
     [HarmonyPatch(nameof(ItemAction.ReadFrom)), MethodTargetPostfix]
     public void Postfix_ReadFrom(DynamicProperties _props, ItemAction __instance)
@@ -259,8 +259,8 @@ public class ActionModuleTargetSeeker
         private ActionModuleTargetSeeker module;
         public float seekRange;
         public Vector2 angleRangeHor, angleRangeVer;
-        public readonly List<Entity> list_entities_around = new List<Entity>();
-        public readonly List<EntityRayHitInfo> list_hitinfo = new List<EntityRayHitInfo>();
+        public readonly List<Entity> list_entities_around = new();
+        public readonly List<EntityRayHitInfo> list_hitinfo = new();
 
         public TargetSeekerData(ItemInventoryData _inventoryData, ItemActionData __instance, ActionModuleTargetSeeker __customModule)
         {

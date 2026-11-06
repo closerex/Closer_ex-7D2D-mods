@@ -45,15 +45,15 @@ namespace KFAssemblyPatcher
         public int RulesVersion { get; set; } = AssemblyCollectionScanner.RulesVersion;
         public string RulesBuild { get; set; } = AssemblyCollectionScanner.RulesBuild;
         public AssemblyScanInput Game { get; set; }
-        public List<AssemblyScanInput> Entries { get; set; } = new List<AssemblyScanInput>();
+        public List<AssemblyScanInput> Entries { get; set; } = new();
     }
 
     public sealed class AssemblyScanReport
     {
-        public List<string> RepairPaths { get; } = new List<string>();
-        public List<string> Errors { get; } = new List<string>();
-        public List<string> Details { get; } = new List<string>();
-        public AssemblyScanCache Cache { get; } = new AssemblyScanCache();
+        public List<string> RepairPaths { get; } = new();
+        public List<string> Errors { get; } = new();
+        public List<string> Details { get; } = new();
+        public AssemblyScanCache Cache { get; } = new();
         public int ScannedAssemblies { get; internal set; }
         public int CacheHits { get; internal set; }
         public bool NeedsRepair => RepairPaths.Count != 0;
@@ -143,8 +143,9 @@ namespace KFAssemblyPatcher
                             if (result.Changed)
                             {
                                 report.RepairPaths.Add(stamp.Path);
-                                report.Details.Add(stamp.Path + ": " + result.MethodsChanged +
-                                    " method flags, " + result.CallSitesChanged + " dispatch calls require repair.");
+                                report.Details.Add(stamp.Path + ": " + result.TypesChanged +
+                                    " sealed types, " + result.MethodsChanged + " method flags, " +
+                                    result.CallSitesChanged + " dispatch calls require repair.");
                             }
                             else report.Cache.Entries.Add(stamp);
                         }
@@ -167,7 +168,7 @@ namespace KFAssemblyPatcher
         private sealed class CatalogResolver : DefaultAssemblyResolver
         {
             private readonly Dictionary<string, AssemblyScanInput[]> manifest;
-            private readonly Dictionary<string, AssemblyDefinition> loaded = new Dictionary<string, AssemblyDefinition>(StringComparer.Ordinal);
+            private readonly Dictionary<string, AssemblyDefinition> loaded = new(StringComparer.Ordinal);
 
             internal CatalogResolver(AssemblyScanInput[] inputs)
             {

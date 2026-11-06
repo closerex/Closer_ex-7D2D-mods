@@ -1,4 +1,4 @@
-﻿using GUI_2;
+using GUI_2;
 using HarmonyLib;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Attributes;
@@ -449,7 +449,7 @@ public class ActionModuleThrowFromInventory : IDisplayAsHUDStat
                 CurrentAmmoValue.FireEvent(CustomEnums.onThrowItemSwapped, invData.holdingEntity.MinEventContext);
                 CurrentAmmoIndex = index;
                 CurrentAmmoValue.FireEvent(CustomEnums.onThrowItemSelected, invData.holdingEntity.MinEventContext);
-                invData.Changed();
+                invData.itemValue.NotifyChanged();
             }
             else
             {

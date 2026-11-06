@@ -95,7 +95,7 @@ namespace CameraShake
             /// Strength of the shake for each axis.
             /// </summary>
             [Tooltip("Strength of the shake for each axis.")]
-            public Displacement strength = new Displacement(Vector3.zero, Vector3.one);
+            public Displacement strength = new(Vector3.zero, Vector3.one);
 
             /// <summary>
             /// How long it takes to move forward.

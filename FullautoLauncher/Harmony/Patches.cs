@@ -1,4 +1,4 @@
-﻿using FullautoLauncher.Scripts.ProjectileManager;
+using FullautoLauncher.Scripts.ProjectileManager;
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
@@ -11,10 +11,9 @@ using Object = UnityEngine.Object;
 [HarmonyPatch]
 class ItemActionLauncherProjectilePatch
 {
-    public static readonly FieldInfo fldinfo_meta = AccessTools.Field(typeof(ItemValue), nameof(ItemValue.Meta));
+    public static readonly MethodInfo mtdinfo_meta = AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.Meta));
     public static readonly MethodInfo mtdinfo_gbc = AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.GetBurstCount), new[] { typeof(ItemActionData) });
     public static readonly MethodInfo mtdinfo_gac = AccessTools.Method(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.GetAmmoCount), new[] { typeof(EntityAlive), typeof(ItemValue), typeof(int) });
-    public static readonly MethodInfo mtdinfo_sta = AccessTools.Method(typeof(GameObject), nameof(GameObject.SetActive), new[] { typeof(bool) });
     public static int getProjectileCount(ItemActionData _data)
     {
         int rps = 1;
@@ -35,18 +34,16 @@ class ItemActionLauncherProjectilePatch
 
         LocalBuilder lbd_rps = generator.DeclareLocal(typeof(int));
 
-        var list_insert = new List<CodeInstruction>
-        {
-            new CodeInstruction(OpCodes.Ldloc_S, lbd_rps),
-            new CodeInstruction(OpCodes.Mul)
-        };
-
         for (int i = 0; i < codes.Count; i++)
         {
-            if ( codes[i].LoadsField(fldinfo_meta))
+            if ( codes[i].Calls(mtdinfo_meta))
             {
-                codes.InsertRange(i + 1, list_insert);
-                i += list_insert.Count;
+                codes.InsertRange(i + 1, new CodeInstruction[]
+                {
+                    new(OpCodes.Ldloc_S, lbd_rps),
+                    new(OpCodes.Mul)
+                });
+                i += 2;
             }
         }
 
@@ -89,10 +86,10 @@ class ItemActionLauncherProjectilePatch
     {
         var codes = new List<CodeInstruction>()
         {
-            new CodeInstruction(OpCodes.Ldarg_0),
-            new CodeInstruction(OpCodes.Ldarg_1),
+            new(OpCodes.Ldarg_0),
+            new(OpCodes.Ldarg_1),
             CodeInstruction.Call(typeof(ItemActionRanged), nameof(ItemActionRanged.ConsumeAmmo), new[]{ typeof(ItemActionData) }),
-            new CodeInstruction(OpCodes.Ret)
+            new(OpCodes.Ret)
         };
 
         return codes;

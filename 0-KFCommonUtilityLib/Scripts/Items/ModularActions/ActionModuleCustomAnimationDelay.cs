@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Reflection.Emit;
 using HarmonyLib;
 using JetBrains.Annotations;
@@ -19,7 +19,6 @@ public class ActionModuleCustomAnimationDelay
     [UsedImplicitly]
     private static IEnumerable<HarmonyPatch> TargetMethods_DelayOverride()
     {
-        yield return new(typeof(ItemActionEat), nameof(ItemAction.OnHoldingUpdate));
         yield return new(typeof(ItemActionGainSkill), nameof(ItemAction.OnHoldingUpdate));
         yield return new(typeof(ItemActionLearnRecipe), nameof(ItemAction.OnHoldingUpdate));
         yield return new(typeof(ItemActionQuest), nameof(ItemAction.OnHoldingUpdate));
@@ -116,15 +115,12 @@ public class ActionModuleCustomAnimationDelay
         _data.lastUseTime = 0f;
     }
 
-    //following are fix for item use time from menu entry
-    //when IsActionRunning is called from coroutine which is started by menu entry,
-    //as OnHoldingUpdate is not called every frame, the check might yield false before item actually gets consumed, thus returning the item
-    //so we call OnHoldingUpdate to properly consume the item
-    //vanilla method on the other hand, is forcing double delay in IsActionRunning
+    // Menu simulation updates once before polling; finish pending effects from the poll.
+    // Eat stays running until consumed; the other actions can time out first.
     [HarmonyPatch(typeof(ItemActionEat), nameof(ItemAction.IsActionRunning)), MethodTargetPostfix]
-    private void Postfix_IsActionRunning_ItemActionEat(ItemActionEat __instance, ItemActionData _actionData, bool __result)
+    private void Postfix_IsActionRunning_ItemActionEat(ItemActionEat __instance, ItemActionData _actionData)
     {
-        if (!__result && ((ItemActionEat.MyInventoryData)_actionData).bEatingStarted)
+        if (((ItemActionEat.MyInventoryData)_actionData).bEatingStarted)
         {
             __instance.OnHoldingUpdate(_actionData);
         }
@@ -162,13 +158,4 @@ public class ActionModuleCustomAnimationDelay
     {
         __result |= Time.time - _actionData.lastUseTime < __instance.Delay;
     }
-
-    //public class CustomAnimationDelayData : AnimationDelayData
-    //{
-    //    ActionModuleCustomAnimationDelay module;
-    //    public CustomAnimationDelayData(ActionModuleCustomAnimationDelay __customModule)
-    //    {
-    //        this.module = __customModule;
-    //    }
-    //}
 }

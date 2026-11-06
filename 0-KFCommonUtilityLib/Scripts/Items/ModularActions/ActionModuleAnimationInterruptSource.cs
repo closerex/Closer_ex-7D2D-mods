@@ -158,8 +158,8 @@ public static class ZAnimationInterruptSourcePatches
 
         var mtd_isrunning = AccessTools.Method(typeof(ItemAction), nameof(ItemAction.IsActionRunning));
         int localIndexAction0, localIndexAction1;
-        localIndexAction0 = 30;
-        localIndexAction1 = 29;
+        localIndexAction0 = 31;
+        localIndexAction1 = 30;
 
         for (int i = 0; i < codes.Count; i++)
         {

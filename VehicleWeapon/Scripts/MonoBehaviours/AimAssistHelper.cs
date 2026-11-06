@@ -5,7 +5,7 @@ public class AimAssistHelper : MonoBehaviour
 {
     public EntityAlive aimTarget { get; private set; } = null;
     public EntityPlayerLocal localPlayer;
-    private HashSet<Transform> hash_intrans = new HashSet<Transform>();
+    private HashSet<Transform> hash_intrans = new();
 
     private void Update()
     {

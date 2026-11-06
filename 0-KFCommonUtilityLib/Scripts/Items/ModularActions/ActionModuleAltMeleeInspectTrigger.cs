@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Attributes;
 using static ActionModuleInspectable;
@@ -10,7 +10,7 @@ public class ActionModuleAltMeleeInspectTrigger
     public void Postfix_ItemActionDynamic_CancelAction(ItemActionDynamic.ItemActionDynamicData _actionData)
     {
         var entity = _actionData.invData.holdingEntity;
-        if (entity is EntityPlayerLocal player && player.inventory.GetIsFinishedSwitchingHeldItem() && player.inventory.holdingItemData.IsModuleContainerFor(out ItemModuleMultiItem.MultiItemInvData multiInvData))
+        if (entity is EntityPlayerLocal player && !player.Hand.IsSwitching && player.inventory.holdingItemData.IsModuleContainerFor(out ItemModuleMultiItem.MultiItemInvData multiInvData))
         {
             ItemModuleMultiItem.CheckAltMelee(player, multiInvData, false, 1, true);
             ItemModuleMultiItem.CheckAltMelee(player, multiInvData, true, 1, true);

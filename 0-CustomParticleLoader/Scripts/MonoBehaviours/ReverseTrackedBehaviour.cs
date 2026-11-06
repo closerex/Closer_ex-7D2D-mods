@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ReverseTrackedBehaviour<T> : TrackedBehaviourBase where T : ReverseTrackedBehaviour<T>
 {
-    protected static Dictionary<object, Dictionary<uint, T>> hash_instances = new Dictionary<object, Dictionary<uint, T>>();
+    protected static Dictionary<object, Dictionary<uint, T>> hash_instances = new();
 
     static ReverseTrackedBehaviour()
     {

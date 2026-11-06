@@ -32,7 +32,7 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
     protected bool activated = true;
     protected bool enabled;
     protected Transform enableTrans = null;
-    protected MinEffectController effects = new MinEffectController()
+    protected MinEffectController effects = new()
     {
         ParentType = MinEffectController.SourceParentType.None,
         EffectGroups = new List<MinEffectGroup>(),
@@ -57,8 +57,8 @@ public class VehicleWeaponBase : VehicleWeaponPartBase
         remove => list_fire_data_callbacks.Remove(value);
     }
 
-    protected internal List<Action<PooledBinaryWriter, VehicleWeaponBase>> list_update_data_callbacks = new List<Action<PooledBinaryWriter, VehicleWeaponBase>>();
-    protected internal List<Action<PooledBinaryWriter, VehicleWeaponBase>> list_fire_data_callbacks = new List<Action<PooledBinaryWriter, VehicleWeaponBase>>();
+    protected internal List<Action<PooledBinaryWriter, VehicleWeaponBase>> list_update_data_callbacks = new();
+    protected internal List<Action<PooledBinaryWriter, VehicleWeaponBase>> list_fire_data_callbacks = new();
 
     protected static FastTags<TagGroup.Global> VehicleWeaponTag = FastTags<TagGroup.Global>.Parse("vehicleWeapon");
 
