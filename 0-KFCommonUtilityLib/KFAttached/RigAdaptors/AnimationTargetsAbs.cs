@@ -576,8 +576,6 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     protected void BuildRig(Animator animator, RigBuilder rb)
     {
         animator.UnbindAllStreamHandles();
-        animator.UnbindAllSceneHandles();
-        animator.Rebind();
         rb.Build();
     }
 

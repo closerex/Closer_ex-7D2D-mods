@@ -3,7 +3,6 @@ using KFCommonUtilityLib;
 using KFCommonUtilityLib.Scripts.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Reflection.Emit;
 using System.Xml.Linq;
 using UniLinq;
@@ -17,25 +16,11 @@ static class AnimationRiggingPatches
 {
     [HarmonyPatch(typeof(SDCSUtils), nameof(SDCSUtils.setupEquipmentCommon))]
     [HarmonyPrefix]
-    private static bool Prefix_setupEquipmentCommon_SDCSUtils(GameObject _rigObj, out bool __state)
+    private static void Prefix_setupEquipmentCommon_SDCSUtils(GameObject _rigObj)
     {
-        __state = false;
         if (_rigObj.TryGetComponent<Animator>(out var animator))
         {
-            __state = true;
             animator.UnbindAllStreamHandles();
-            animator.UnbindAllSceneHandles();
-        }
-        return true;
-    }
-
-    [HarmonyPatch(typeof(SDCSUtils), nameof(SDCSUtils.setupEquipmentCommon))]
-    [HarmonyPostfix]
-    private static void Postfix_setupEquipmentCommon_SDCSUtils(GameObject _rigObj, bool __state)
-    {
-        if (__state && _rigObj.TryGetComponent<Animator>(out var animator))
-        {
-            animator.Rebind();
         }
     }
 
@@ -332,6 +317,20 @@ static class AnimationRiggingPatches
     private static void Postfix_OnHoldingItemChanged_EntityPlayerLocal(EntityPlayerLocal __instance)
     {
         AnimationRiggingManager.OnHoldingItemIndexChanged(__instance);
+    }
+
+    [HarmonyPatch(typeof(GameManager), nameof(GameManager.SaveAndCleanupWorld))]
+    [HarmonyPrefix]
+    private static void Prefix_SaveAndCleanupWorld_GameManager()
+    {
+        // Detach weapon children before native world teardown deactivates their skeletons.
+        foreach (var builder in Object.FindObjectsOfType<AnimationGraphBuilder>(true))
+        {
+            if (builder && builder.CurrentTarget)
+            {
+                builder.SetCurrentTarget(null);
+            }
+        }
     }
 
     [HarmonyPatch(typeof(GameManager), nameof(GameManager.SaveAndCleanupWorld))]
@@ -1685,7 +1684,7 @@ static class AnimationRiggingPatches
                             ins => 
                             {
                                 ins.opcode = OpCodes.Ldsfld;
-                                ins.operand = AccessTools.Field(typeof(AnimationRiggingPatches), nameof(AnimationRiggingPatches.drunkHash));
+                                ins.operand = AccessTools.Field(typeof(AnimationRiggingPatches), nameof(drunkHash));
                             });
     }
 

@@ -16,6 +16,16 @@ using Object = UnityEngine.Object;
 [HarmonyPatch]
 public static class CommonUtilityPatch
 {
+    [HarmonyPatch(typeof(Hand), nameof(Hand.OnSlotChanged))]
+    [HarmonyPostfix]
+    private static void Postfix_Hand_OnSlotChanged(Hand __instance, int _idx)
+    {
+        var data = __instance.slotDatas[_idx];
+        // Reconcile has already stopped and unseated the outgoing item on this path.
+        if (!__instance.isSwitching && !data.IsEquipped && data.item == null)
+            data.Rebuild();
+    }
+
     [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.SwapAmmoType))]
     [HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> Transpiler_SwapAmmoType_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
@@ -678,14 +688,6 @@ public static class CommonUtilityPatch
         {
             __result = itemValue.CanRemoveMod(__instance.itemValue);
         }
-    }
-
-    [HarmonyPatch(typeof(Inventory), nameof(Inventory.SetStackAt))]
-    [HarmonyPostfix, HarmonyPriority(Priority.Low)]
-    private static void Postfix_Inventory_SetStackAt(Inventory __instance, int _idx, ItemStack _stack)
-    {
-        if (__instance.entity != null && (_stack == null || _stack.IsEmpty()))
-            __instance.Hand.slotDatas[_idx].Rebuild();
     }
 
     /// <summary>

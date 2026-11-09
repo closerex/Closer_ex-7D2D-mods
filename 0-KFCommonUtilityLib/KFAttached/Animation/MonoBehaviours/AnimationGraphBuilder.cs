@@ -1,4 +1,4 @@
-﻿#if NotEditor
+#if NotEditor
 #endif
 using System;
 using System.Collections.Generic;
@@ -231,6 +231,7 @@ public class AnimationGraphBuilder : MonoBehaviour
         weaponMask = null;
         if (graph.IsValid())
         {
+            ((AnimationPlayableOutput)graph.GetOutput(0)).SetTarget(null);
             graph.Destroy();
         }
         if (animator)

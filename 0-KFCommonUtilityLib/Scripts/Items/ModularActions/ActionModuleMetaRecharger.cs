@@ -106,7 +106,6 @@ public class ActionModuleMetaRecharger
         private readonly ActionModuleMetaRecharger module;
         public readonly float[] basicRechargeInterval, basicDecreaseInterval, lastUpdateTime, lastDecreaseTime;
         private readonly int indexOfAction;
-        private readonly int slotIdx;
         public bool basicIntervalSet;
 
         public int Index => indexOfAction;
@@ -115,7 +114,6 @@ public class ActionModuleMetaRecharger
         {
             module = __customModule;
             indexOfAction = _indexInEntityOfAction;
-            slotIdx = _inventoryData.slotIdx;
             if (__customModule.rechargeDatas == null)
                 return;
             basicRechargeInterval = new float[__customModule.rechargeDatas.Length];
@@ -135,7 +133,7 @@ public class ActionModuleMetaRecharger
             holdingEntity.MinEventContext.ItemInventoryData = invData;
             holdingEntity.MinEventContext.ItemValue = itemValue;
             holdingEntity.MinEventContext.ItemActionData = invData.actionData[indexOfAction];
-            bool isHolding = holdingEntity.inventory.holdingItemIdx == slotIdx;
+            bool isHolding = ReferenceEquals(holdingEntity.Hand.equipped, invData);
             if (!basicIntervalSet)
             {
                 module.UpdateBasicInterval(invData.actionData[indexOfAction], this);
@@ -210,7 +208,7 @@ public class ActionModuleMetaRecharger
                     {
                         itemValue.SetMetadata(rechargeData, cur, TypedMetadataValue.TypeTag.Float);
                     }
-                    if (invData.slotIdx == holdingEntity.inventory.holdingItemIdx && invData.slotIdx >= 0)
+                    if (isHolding)
                     {
                         holdingEntity.MinEventContext.Tags = rechargeTag.tagsOriginal;
                         itemValue.FireEvent(CustomEnums.onRechargeValueUpdate, holdingEntity.MinEventContext);
