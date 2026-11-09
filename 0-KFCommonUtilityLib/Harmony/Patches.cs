@@ -680,6 +680,14 @@ public static class CommonUtilityPatch
         }
     }
 
+    [HarmonyPatch(typeof(Inventory), nameof(Inventory.SetStackAt))]
+    [HarmonyPostfix, HarmonyPriority(Priority.Low)]
+    private static void Postfix_Inventory_SetStackAt(Inventory __instance, int _idx, ItemStack _stack)
+    {
+        if (__instance.entity != null && (_stack == null || _stack.IsEmpty()))
+            __instance.Hand.slotDatas[_idx].Rebuild();
+    }
+
     /// <summary>
     /// should update the gear icon?
     /// </summary>
@@ -1402,7 +1410,7 @@ public static class CommonUtilityPatch
                             new CodeInstruction(codes[i - 1].opcode, codes[i - 1].operand).WithLabels(codes[j].ExtractLabels()),
                             CodeInstruction.CallClosure<Action<EntityPlayerLocal>>(static player =>
                             {
-                                if (player.Hand.Held.IsModuleContainerFor(out ItemModuleMultiItem.MultiItemInvData dataModule))
+                                if (ItemClassModuleProcessor.IsDataModuleContainerFor(player.Hand.Held, out ItemModuleMultiItem.MultiItemInvData dataModule))
                                 {
                                     var multiInvData = dataModule;
                                     if (multiInvData.boundInvData != null && multiInvData.boundItemClass is

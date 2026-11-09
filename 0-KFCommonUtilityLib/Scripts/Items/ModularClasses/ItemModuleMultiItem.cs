@@ -208,6 +208,7 @@ public class ItemModuleMultiItem
         {
             bool useBound = __customData.useBound;
             __customData.SetBoundParams();
+            __customData.boundInvData.EnsureActionData();
             __customData.boundItemClass.StartHolding(__customData.boundInvData, _modelTransform);
             __customData.RestoreParams(useBound);
         }
@@ -384,10 +385,10 @@ public class ItemModuleMultiItem
         public string boundItemName;
         public ItemClass boundItemClass;
 
-        public MultiItemInvData(ItemInventoryData __instance, ItemModuleMultiItem __customModule)
+        public MultiItemInvData(ItemInventoryData _inventoryData, ItemModuleMultiItem __customModule)
         {
             itemModule = __customModule;
-            originalData = __instance;
+            originalData = _inventoryData;
             boundInvData = null;
             //if (module.boundItemClass != null)
             //{
@@ -418,7 +419,6 @@ public class ItemModuleMultiItem
             ItemValue originalItemValue = originalData.itemStack.itemValue;
             boundItemValue.Quality = originalItemValue.Quality;
             boundItemValue.Stats = originalItemValue.Stats;
-            boundItemValue.Metadata = originalItemValue.Metadata;
             boundItemValue.modifications = originalItemValue.modifications;
             boundItemValue.cosmeticMods = originalItemValue.cosmeticMods;
             boundItemValue.Meta = originalItemValue.Meta;
@@ -488,7 +488,7 @@ public static class MultiItemPatches
 {
     private static bool TryGetBoundData(ItemInventoryData originalData, out ItemInventoryData boundData)
     {
-        if (originalData.IsModuleContainerFor(out MultiItemInvData multiInvData) && multiInvData.useBound && multiInvData.boundInvData != null)
+        if (ItemClassModuleProcessor.IsDataModuleContainerFor(originalData, out MultiItemInvData multiInvData) && multiInvData.useBound && multiInvData.boundInvData != null)
         {
             boundData = multiInvData.boundInvData;
             return true;
@@ -630,7 +630,7 @@ public static class MultiItemPatches
     [HarmonyPrefix]
     private static bool Prefix_SwapSelectedAmmo_ItemActionRanged(EntityAlive _entity, int _ammoIndex)
     {
-        if (GetOriginalHeldData(_entity.Hand).IsModuleContainerFor(out MultiItemInvData multiInvData) && multiInvData.IsBoundActionRunning())
+        if (ItemClassModuleProcessor.IsDataModuleContainerFor(GetOriginalHeldData(_entity.Hand), out MultiItemInvData multiInvData) && multiInvData.IsBoundActionRunning())
         {
             return false;
         }
@@ -641,7 +641,7 @@ public static class MultiItemPatches
     [HarmonyPostfix]
     private static void Postfix_IsAimingGunPossible_EntityPlayerLocal(EntityPlayerLocal __instance, ref bool __result)
     {
-        if (__result && GetOriginalHeldData(__instance.Hand).IsModuleContainerFor(out MultiItemInvData multiInvData))
+        if (__result && ItemClassModuleProcessor.IsDataModuleContainerFor(GetOriginalHeldData(__instance.Hand), out MultiItemInvData multiInvData))
         {
             if (multiInvData.boundInvData != null)
             {
@@ -671,7 +671,7 @@ public static class MultiItemPatches
         if (__result)
         {
             EntityAlive holdingEntity = _actionData.invData.holdingEntity;
-            if (GetOriginalHeldData(holdingEntity.Hand).IsModuleContainerFor(out MultiItemInvData multiInvData))
+            if (ItemClassModuleProcessor.IsDataModuleContainerFor(GetOriginalHeldData(holdingEntity.Hand), out MultiItemInvData multiInvData))
             {
                 if (multiInvData.boundInvData != null)
                 {
@@ -726,7 +726,7 @@ public static class MultiItemPatches
             return;
         }
 
-        if (PlayerActionKFLib.Instance.Enabled && (!player.Hand.IsSwitching || wasReleased) && (wasPressed || wasReleased) && GetOriginalHeldData(player.Hand).IsModuleContainerFor(out MultiItemInvData multiInvData))
+        if (PlayerActionKFLib.Instance.Enabled && (!player.Hand.IsSwitching || wasReleased) && (wasPressed || wasReleased) && ItemClassModuleProcessor.IsDataModuleContainerFor(GetOriginalHeldData(player.Hand), out MultiItemInvData multiInvData))
         {
             ItemModuleMultiItem.CheckAltMelee(player, multiInvData, wasReleased);
         }

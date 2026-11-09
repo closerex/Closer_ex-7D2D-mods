@@ -277,6 +277,8 @@ namespace KFCommonUtilityLib
                     particle.Clear();
                     particle.Play();
                 }
+                foreach (var controller in particlePrefab.GetComponentsInChildren<LightController>(true))
+                    controller.PlayMuzzleFlash(isFpv);
                 var temp = particlePrefab.gameObject.GetOrAddComponent<TemporaryMuzzleFlash>();
                 temp.life = 5;
                 if (isFpv && particlePrefab.TryGetComponent<LODGroup>(out var lod))

@@ -812,6 +812,7 @@
     <Compile Include="Scripts\Utilities\LocalPlayerCameraUpdater.cs" />
     <Compile Include="Scripts\Utilities\MiscExtensions.cs" />
     <Compile Include="Scripts\Utilities\Modular\ICustomInvData.cs" />
+    <Compile Include="Scripts\Utilities\Modular\InventoryModuleStorage.cs" />
     <Compile Include="Scripts\Utilities\Modular\ItemActionDataModuleProcessor.cs" />
     <Compile Include="Scripts\StaticManagers\LocalItemTagsManager.cs" />
     <Compile Include="Scripts\StaticManagers\MultiActionManager.cs" />

@@ -115,7 +115,7 @@ public class ActionModuleMeleeShooter
             return false;
         }
 
-        if (rangedData.invData.holdingEntity is EntityPlayerLocal player && player.inventory.holdingItemData.IsModuleContainerFor(out ItemModuleMultiItem.MultiItemInvData dataModule))
+        if (rangedData.invData.holdingEntity is EntityPlayerLocal player && ItemClassModuleProcessor.IsDataModuleContainerFor(player.inventory.holdingItemData, out ItemModuleMultiItem.MultiItemInvData dataModule))
         {
             rangedData.m_LastShotTime = 0f;
             customData.animationRequested = ItemModuleMultiItem.CheckAltMelee(player, dataModule, false, 1, false);

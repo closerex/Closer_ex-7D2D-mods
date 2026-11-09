@@ -263,7 +263,7 @@ public static class ItemActionBlockingPatches
         {
             Log.Out($"[KFLib] Incoming attack from {attacker.GetDebugName()} (id={attacker.entityId}), damage: {_strength}, critical hit: {_criticalHit}");
         }
-        if (__instance.AttachedToEntity == null && __instance.inventory.holdingItemData.IsModuleContainerFor(out ItemModuleMultiItem.MultiItemInvData multiInvData) && __instance.inventory.holdingItemData.itemValue.PercentUsesLeft >= 0f)
+        if (__instance.AttachedToEntity == null && ItemClassModuleProcessor.IsDataModuleContainerFor(__instance.inventory.holdingItemData, out ItemModuleMultiItem.MultiItemInvData multiInvData) && __instance.inventory.holdingItemData.itemValue.PercentUsesLeft >= 0f)
         {
             if (multiInvData.boundItemClass?.Actions[2] is ItemActionBlocking blockingAction && multiInvData.boundInvData?.actionData[2] is ItemActionBlocking.ItemActionBlockingData blockingData)
             {
@@ -376,7 +376,7 @@ public static class ItemActionBlockingPatches
                             return;
                         }
 
-                        if (!player.inventory.holdingItemData.IsModuleContainerFor(out ItemModuleMultiItem.MultiItemInvData multiInvData))
+                        if (!ItemClassModuleProcessor.IsDataModuleContainerFor(player.inventory.holdingItemData, out ItemModuleMultiItem.MultiItemInvData multiInvData))
                         {
                             return;
                         }
@@ -475,7 +475,7 @@ public static class ItemActionBlockingPatches
 
     private static bool IsPlayerBlocking(EntityPlayerLocal player)
     {
-        if (player.inventory.holdingItemData.IsModuleContainerFor(out ItemModuleMultiItem.MultiItemInvData multiInvData))
+        if (ItemClassModuleProcessor.IsDataModuleContainerFor(player.inventory.holdingItemData, out ItemModuleMultiItem.MultiItemInvData multiInvData))
         {
             if (multiInvData.boundItemClass?.Actions[2] is ItemActionBlocking blockingAction && multiInvData.boundInvData?.actionData[2] is ItemActionBlocking.ItemActionBlockingData blockingData)
             {

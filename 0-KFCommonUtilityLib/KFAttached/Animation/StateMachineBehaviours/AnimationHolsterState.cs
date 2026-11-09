@@ -31,7 +31,7 @@ public class AnimationHolsterState : StateMachineBehaviour
         ItemInventoryData invData = player.inventory?.Hand?.GetSlotData(activeRig.SlotIndex);
         if (activeRig)
         {
-            holsterData = invData.LoadModule<ItemModuleTrueHolster.TrueHolsterData>();
+            holsterData = ItemClassModuleProcessor.LoadDataModule<ItemModuleTrueHolster.TrueHolsterData>(invData);
         }
         if (holsterData != null)
         {

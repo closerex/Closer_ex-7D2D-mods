@@ -36,6 +36,15 @@ namespace KFCommonUtilityLib.Harmony
     [HarmonyPatch]
     public static class MultiActionPatches
     {
+        [HarmonyPatch(typeof(ItemInventoryData), nameof(ItemInventoryData.NeedsRebuild), MethodType.Getter)]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_ItemInventoryData_get_NeedsRebuild(IEnumerable<CodeInstruction> instructions)
+        {
+            return instructions.MethodReplacer(
+                AccessTools.Method(typeof(ItemValue), nameof(ItemValue.EqualsExceptUseTimesAndMeta)),
+                AccessTools.Method(typeof(MultiActionUtils), nameof(MultiActionUtils.EqualsForRebuild)));
+        }
+
         #region Run Correct ItemAction
 
         #region Ranged Reload
@@ -165,25 +174,32 @@ namespace KFCommonUtilityLib.Harmony
 
         //KEEP
         #region Create modifier data for more actions
-        [HarmonyPatch(typeof(ItemInventoryData), nameof(ItemInventoryData.Create))]
+        [HarmonyPatch(typeof(ItemInventoryData), nameof(ItemInventoryData.EnsureActionData))]
         [HarmonyPostfix]
-        private static void Postfix_CreateInventoryData_ItemClass(ItemInventoryData __result)
+        private static void Postfix_EnsureActionData_ItemInventoryData(ItemInventoryData __instance)
         {
-            int prevCount = __result.actionData.Count;
-            ItemClass itemClass = __result.itemStack.itemValue.ItemClass;
+            int prevCount = __instance.actionData.Count;
+            ItemClass itemClass = __instance.itemStack.itemValue.ItemClass;
             if (itemClass == null)
             {
                 return;
             }
-            while (__result.actionData.Count < itemClass.Actions.Length)
+            while (__instance.actionData.Count < itemClass.Actions.Length)
             {
-                __result.actionData.Add(null);
+                __instance.actionData.Add(null);
             }
             for (; prevCount < itemClass.Actions.Length; prevCount++)
             {
                 if (itemClass.Actions[prevCount] != null)
-                    __result.actionData[prevCount] = itemClass.Actions[prevCount].CreateModifierData(__result, prevCount);
+                    __instance.actionData[prevCount] = itemClass.Actions[prevCount].CreateModifierData(__instance, prevCount);
             }
+        }
+
+        [HarmonyPatch(typeof(ItemInventoryData), nameof(ItemInventoryData.Build))]
+        [HarmonyPostfix]
+        private static void Postfix_Build_ItemInventoryData(ItemInventoryData __instance)
+        {
+            Postfix_EnsureActionData_ItemInventoryData(__instance);
         }
         #endregion
 
@@ -1588,7 +1604,9 @@ namespace KFCommonUtilityLib.Harmony
                             {
                                 new CodeInstruction(OpCodes.Ldarg_0),
                                 CodeInstruction.CallClosure<Func<Hand, bool>>(
-                                    static (hand) => hand.isSwitching && hand.Held.IsModuleContainerFor(out ItemModuleTrueHolster.TrueHolsterData data) && data.IsSwapping),
+                                    static (hand) => hand.isSwitching &&
+                                        ((ItemClassModuleProcessor.IsDataModuleContainerFor(hand.holstering, out ItemModuleTrueHolster.TrueHolsterData holsteringData) && holsteringData.IsHolstering) ||
+                                         (ItemClassModuleProcessor.IsDataModuleContainerFor(hand.Held, out ItemModuleTrueHolster.TrueHolsterData heldData) && heldData.IsUnholstering))),
                                 new CodeInstruction(OpCodes.Brtrue_S, lbl),
                             });
                             break;
@@ -1640,7 +1658,7 @@ namespace KFCommonUtilityLib.Harmony
                         new CodeInstruction(OpCodes.Ldloc_1),
                         CodeInstruction.CallClosure<Action<Hand>>(static (inv) =>
                         {
-                            if(inv.holstering.IsModuleContainerFor(out ItemModuleTrueHolster.TrueHolsterData data))
+                            if(ItemClassModuleProcessor.IsDataModuleContainerFor(inv.holstering, out ItemModuleTrueHolster.TrueHolsterData data))
                             {
                                 if (data.module.holsterDelayActive)
                                 {
@@ -1675,7 +1693,7 @@ namespace KFCommonUtilityLib.Harmony
                             var lbl_prev = codes[i - 5].ExtractLabels();
                             codes[i - 5].WithLabels(lbl_new);
 
-                            // update the target item index
+                            // Discard buffered intermediate requests after the holster wait.
                             codes.InsertRange(j + 4, new[]
                             {
                                 new CodeInstruction(OpCodes.Ldloc_1),
@@ -1685,7 +1703,7 @@ namespace KFCommonUtilityLib.Harmony
                                     player.MoveController.nextHeldItem?.Clear();
                                 })
                             });
-                            
+
                             codes.RemoveAt(i + 5);
                             codes.InsertRange(i + 5, new[]
                             {
@@ -1778,6 +1796,16 @@ namespace KFCommonUtilityLib.Harmony
                 }
 
             }
+
+            // Move the local handoff after itemHasChanged, preserving both incoming branch joins.
+            var mtd_complete = AccessTools.Method(typeof(Hand), nameof(Hand.CompleteTransition));
+            int completeIndex = codes.FindIndex(code => code.Calls(mtd_complete));
+            var complete = codes.GetRange(completeIndex - 1, 2);
+            codes[completeIndex + 1].WithLabels(complete[0].ExtractLabels());
+            codes.RemoveRange(completeIndex - 1, 2);
+            int holsterIndex = codes.FindIndex(completeIndex - 1, code => code.Calls(mtd_holster)) - 3;
+            complete[0].WithLabels(codes[holsterIndex].ExtractLabels());
+            codes.InsertRange(holsterIndex, complete);
             return codes;
         }
 
@@ -1838,7 +1866,7 @@ namespace KFCommonUtilityLib.Harmony
         {
             bool useHeld = inv.holstering == null;
             var invData = useHeld ? inv.Held : inv.holstering;
-            data = invData.LoadModule<ItemModuleTrueHolster.TrueHolsterData>();
+            data = ItemClassModuleProcessor.LoadDataModule<ItemModuleTrueHolster.TrueHolsterData>(invData);
             var targets = invData?.model?.GetComponent<AnimationTargetsAbs>();
             return data != null && targets && targets.IsAnimationSet;
         }

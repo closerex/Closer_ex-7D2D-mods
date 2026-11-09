@@ -38,8 +38,12 @@ namespace KFCommonUtilityLib
                         {
                             code.operand = AccessTools.Method(curProcessor.type_newInvData,
                                 $"{ModuleUtils.CreateFieldName(curProcessor.arr_fldbd_data[dataIndex].FieldType)}.get_Instance");
-                            codes.Insert(i, new(OpCodes.Castclass, curProcessor.type_newInvData));
-                            i++;
+                            codes.InsertRange(i, new[]
+                            {
+                                new CodeInstruction(OpCodes.Ldfld, InventoryModuleStorage.DataField).WithLabels(code.ExtractLabels()).WithBlocks(code.ExtractBlocks()),
+                                new CodeInstruction(OpCodes.Castclass, curProcessor.type_newInvData)
+                            });
+                            i += 2;
                         }
                         else
                         {
@@ -57,9 +61,13 @@ namespace KFCommonUtilityLib
         
         public static T LoadDataModule<T>(ItemInventoryData invData) where T : class
         {
-            // ReSharper disable once SuspiciousTypeConversion.Global
-            // ReSharper disable once ExpressionIsAlwaysNull
-            return (invData as IModuleContainerFor<T>)?.Instance;
+            return invData == null ? null : InventoryModuleStorage.Get(invData).LoadModule<T>();
+        }
+
+        public static bool IsDataModuleContainerFor<T>(ItemInventoryData invData, out T instance) where T : class
+        {
+            instance = LoadDataModule<T>(invData);
+            return instance != null;
         }
         
         public Type GetModuleTypeByName(string name)
@@ -71,7 +79,7 @@ namespace KFCommonUtilityLib
         {
             TranspilerHelper.curProcessor = this;
             var arr_type_data = manipulator.moduleTypes.Select(static m => m.GetCustomAttribute<TypeDataTargetAttribute>()?.DataType).ToArray();
-            if (ModuleManagers.PatchType(typeof(ItemInventoryData), typeof(ItemInventoryData), manipulator.typebd_newTarget, arr_type_data.Where(static t => t != null).ToArray(), new ItemInventoryDataModuleProcessor(manipulator.typebd_newTarget, manipulator.moduleTypes, manipulator.arr_fldbd_modules.Where((f, i) => arr_type_data[i] != null).ToArray(), arr_type_data.Select(static t => t != null).ToArray(), out arr_fldbd_data), out type_newInvData))
+            if (ModuleManagers.PatchType(InventoryModuleStorage.BaseType, InventoryModuleStorage.BaseType, manipulator.typebd_newTarget, arr_type_data.Where(static t => t != null).ToArray(), new ItemInventoryDataModuleProcessor(manipulator.typebd_newTarget, manipulator.moduleTypes, manipulator.arr_fldbd_modules.Where((f, i) => arr_type_data[i] != null).ToArray(), arr_type_data.Select(static t => t != null).ToArray(), out arr_fldbd_data), out type_newInvData))
             {
                 var mtdinf_createdata = typeof(ICustomInvData).GetMethod(nameof(ICustomInvData.createItemInventoryData));
                 manipulator.typebd_newTarget.AddInterfaceImplementation(typeof(ICustomInvData));
@@ -85,8 +93,6 @@ namespace KFCommonUtilityLib
 
                 var il = mtdbd_createdata.GetILGenerator();
                 il.Emit(OpCodes.Ldarg_1);
-                il.Emit(OpCodes.Ldarg_2);
-                il.Emit(OpCodes.Ldarg_3);
                 il.Emit(OpCodes.Newobj, type_newInvData.GetDeclaredConstructors().First());
                 il.Emit(OpCodes.Ret);
             }
@@ -119,6 +125,7 @@ namespace KFCommonUtilityLib
                     if (index < 0)
                         throw new ArgumentException($"ItemInventoryData is not present in target method! Patch method: {mtdoinf_target.mtdinf_target.DeclaringType.FullName}.{mtdoinf_target.mtdinf_target.Name}");
                     generator.LoadArg(index);
+                    generator.Emit(OpCodes.Ldfld, InventoryModuleStorage.DataField);
                     generator.Emit(OpCodes.Castclass, type_newInvData);
                     generator.Emit(par.ParameterType.IsByRef ? OpCodes.Ldflda : OpCodes.Ldfld, fldbd_data);
                     return true;

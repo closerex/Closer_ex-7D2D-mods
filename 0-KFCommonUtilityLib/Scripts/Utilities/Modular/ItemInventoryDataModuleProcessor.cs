@@ -8,14 +8,13 @@ using UniLinq;
 
 namespace KFCommonUtilityLib
 {
-    [TypeTarget(typeof(ItemInventoryData))]
     public class ItemInventoryDataModuleProcessor : IModuleProcessor
     {
-        TypeBuilder typebd_newClass;
-        Type[] arr_type_classes;
-        FieldBuilder[] arr_fldbd_classes;
-        bool[] arr_hasdata;
-        FieldBuilder[] arr_fldbd_invdatas;
+        private readonly TypeBuilder typebd_newClass;
+        private Type[] arr_type_classes;
+        private readonly FieldBuilder[] arr_fldbd_classes;
+        private readonly bool[] arr_hasdata;
+        private readonly FieldBuilder[] arr_fldbd_invdatas;
         public ItemInventoryDataModuleProcessor(TypeBuilder typebd_newClass, Type[] arr_type_classes, FieldBuilder[] arr_fldbd_classes, bool[] arr_hasdata, out FieldBuilder[] arr_fldbd_invdatas)
         {
             this.typebd_newClass = typebd_newClass;
@@ -35,9 +34,7 @@ namespace KFCommonUtilityLib
         {
             pbs = new ParameterBuilder[]
             {
-                ctorbd.DefineParameter(1, ParameterAttributes.None, "_entity"),
-                ctorbd.DefineParameter(2, ParameterAttributes.None, "_stack"),
-                ctorbd.DefineParameter(3, ParameterAttributes.None, "_toolbeltSlotIdx")
+                ctorbd.DefineParameter(1, ParameterAttributes.None, "_inventoryData")
             };
             return true;
         }
@@ -64,9 +61,8 @@ namespace KFCommonUtilityLib
             switch (par.Name)
             {
                 case "__customModule":
-                    generator.Emit(OpCodes.Ldarg_2);
-                    generator.Emit(OpCodes.Call, AccessTools.PropertyGetter(typeof(ItemStack), nameof(ItemStack.itemValue)));
-                    generator.Emit(OpCodes.Call, AccessTools.PropertyGetter(typeof(ItemValue), nameof(ItemValue.ItemClass)));
+                    generator.Emit(OpCodes.Ldarg_1);
+                    generator.Emit(OpCodes.Call, AccessTools.PropertyGetter(typeof(ItemInventoryData), nameof(ItemInventoryData.item)));
                     generator.Emit(OpCodes.Castclass, typebd_newClass);
                     generator.Emit(OpCodes.Ldfld, arr_fldbd_classes[moduleIndex]);
                     return true;

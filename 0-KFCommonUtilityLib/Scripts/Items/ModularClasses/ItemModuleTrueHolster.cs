@@ -19,9 +19,9 @@ public class ItemModuleTrueHolster
     }
 
     [HarmonyPatch(nameof(ItemClass.StartHolding)), MethodTargetPrefix]
-    public void Prefix_StartHolding(TrueHolsterData __customData)
+    public void Prefix_StartHolding(TrueHolsterData __customData, Transform _modelTransform)
     {
-        __customData.IsUnholstering = false;
+        __customData.IsUnholstering = unholsterDelayActive && _modelTransform.TryGetComponent<AnimationTargetsAbs>(out var targets) && targets.IsAnimationSet;
         __customData.IsHolstering = false;
     }
 

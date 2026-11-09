@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using KFCommonUtilityLib.Scripts.ConsoleCmd;
 using KFCommonUtilityLib.Scripts.Utilities;
@@ -55,12 +55,12 @@ namespace KFCommonUtilityLib
             }
         }
 
-        public unsafe int GetActionIndexForMode(int mode)
+        public readonly unsafe int GetActionIndexForMode(int mode)
         {
             return indices[mode];
         }
 
-        public unsafe int GetMetaIndexForMode(int mode)
+        public readonly unsafe int GetMetaIndexForMode(int mode)
         {
             return metaIndice[mode];
         }
@@ -93,12 +93,12 @@ namespace KFCommonUtilityLib
     {
         public const string STR_MULTI_ACTION_INDEX = "MultiActionIndex";
         public readonly MultiActionIndice indices;
-        private int slotIndex;
+        private readonly int slotIndex;
         private int curIndex;
         private int lastDisplayMode = -1;
         private readonly bool[] unlocked;
-        private ActionModuleAlternative.AlternativeData altData;
-        public EntityAlive entity;
+        private readonly ActionModuleAlternative.AlternativeData altData;
+        public readonly EntityAlive entity;
         public string toggleSound;
 
         public ItemValue ItemValue
@@ -182,7 +182,6 @@ namespace KFCommonUtilityLib
             else
             {
                 curIndex = (int)res;
-                ReadMeta();
             }
 
             unsafe
@@ -259,25 +258,43 @@ namespace KFCommonUtilityLib
                 return;
             itemValue.SetMetadata(STR_MULTI_ACTION_INDEX, curIndex, TypedMetadataValue.TypeTag.Integer);
             object res = itemValue.GetMetadata(MultiActionUtils.ActionMetaNames[curMetaIndex]);
+            int meta;
             if (res is false || res is null)
             {
                 itemValue.SetMetadata(MultiActionUtils.ActionMetaNames[curMetaIndex], 0, TypedMetadataValue.TypeTag.Integer);
-                itemValue.Meta = 0;
+                meta = 0;
             }
             else
             {
-                itemValue.Meta = (int)res;
+                meta = (int)res;
             }
             res = itemValue.GetMetadata(MultiActionUtils.ActionSelectedAmmoNames[curMetaIndex]);
+            byte ammoIndex;
             if (res is false || res is null)
             {
                 itemValue.SetMetadata(MultiActionUtils.ActionSelectedAmmoNames[curMetaIndex], 0, TypedMetadataValue.TypeTag.Integer);
-                itemValue.SelectedAmmoTypeIndex = 0;
+                ammoIndex = 0;
             }
             else
             {
-                itemValue.SelectedAmmoTypeIndex = (byte)(int)res;
+                ammoIndex = (byte)(int)res;
             }
+
+            // Restore both values before owner callbacks can save the new action's state.
+            bool changed = itemValue.Meta != meta || itemValue.SelectedAmmoTypeIndex != ammoIndex;
+            var owner = itemValue.owner;
+            itemValue.owner = null;
+            try
+            {
+                itemValue.Meta = meta;
+                itemValue.SelectedAmmoTypeIndex = ammoIndex;
+            }
+            finally
+            {
+                itemValue.owner = owner;
+            }
+            if (changed)
+                itemValue.NotifyChanged();
             if (ConsoleCmdReloadLog.LogInfo)
             {
                 ConsoleCmdMultiActionItemValueDebug.LogMeta(itemValue);

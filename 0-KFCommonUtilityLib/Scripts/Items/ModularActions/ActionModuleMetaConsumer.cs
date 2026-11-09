@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using HarmonyLib;
@@ -187,6 +187,8 @@ public class ActionModuleMetaConsumer
                     {
                         var lbl = generator.DefineLabel();
                         var original = codes[j + 1];
+                        var lbl_sound = generator.DefineLabel();
+                        var lbl_check = generator.DefineLabel();
                         codes.InsertRange(j + 1, new[]
                         {
                             new CodeInstruction(OpCodes.Ldloc_S, lbd_module).WithLabels(original.ExtractLabels()),
@@ -197,9 +199,15 @@ public class ActionModuleMetaConsumer
                             CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
                             new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity))),
                             new CodeInstruction(OpCodes.Ldloc_S, lbd_data_module),
-                            new CodeInstruction(OpCodes.Ldarg_0),
+                            // Reuse the native press edge; held retries still check the resource without replaying feedback.
+                            new CodeInstruction(OpCodes.Ldloc_0),
+                            CodeInstruction.LoadField(typeof(ItemActionRanged.ItemActionDataRanged), nameof(ItemActionRanged.ItemActionDataRanged.bInitialPress)),
+                            new CodeInstruction(OpCodes.Brtrue_S, lbl_sound),
+                            new CodeInstruction(OpCodes.Ldnull),
+                            new CodeInstruction(OpCodes.Br_S, lbl_check),
+                            new CodeInstruction(OpCodes.Ldarg_0).WithLabels(lbl_sound),
                             CodeInstruction.LoadField(typeof(ItemActionAttack), nameof(ItemActionAttack.soundEmpty)),
-                            CodeInstruction.Call(typeof(ActionModuleMetaConsumer), nameof(CheckAndCacheMetaData)),
+                            CodeInstruction.Call(typeof(ActionModuleMetaConsumer), nameof(CheckAndCacheMetaData)).WithLabels(lbl_check),
                             new CodeInstruction(OpCodes.Brtrue_S, lbl),
                             new CodeInstruction(OpCodes.Ldarg_0),
                             new CodeInstruction(OpCodes.Ldloc_0),
@@ -207,7 +215,7 @@ public class ActionModuleMetaConsumer
                             new CodeInstruction(OpCodes.Ret)
                         });
                         original.WithLabels(lbl);
-                        i += 16;
+                        i += 21;
                         break;
                     }
                 }

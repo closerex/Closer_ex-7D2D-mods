@@ -755,6 +755,28 @@ static class AnimationRiggingPatches
         }
     }
 
+    [HarmonyPatch(typeof(AvatarMultiBodyController), nameof(AvatarMultiBodyController.SetInRightHand))]
+    [HarmonyPostfix]
+    private static void Postfix_SetInRightHand_AvatarMultiBodyController(Transform _transform, AvatarMultiBodyController __instance)
+    {
+        if (__instance is AvatarLocalPlayerController || __instance.Entity is not EntityPlayer player || player is EntityPlayerLocal)
+        {
+            return;
+        }
+        if (_transform != null && _transform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+        {
+            targets.GraphBuilder.SetCurrentTarget(targets);
+        }
+        else
+        {
+            var animator = __instance.GetActiveModelRoot()?.GetComponentInChildren<Animator>(true);
+            if (animator && animator.TryGetComponent<AnimationGraphBuilder>(out var builder))
+            {
+                builder.SetCurrentTarget(null);
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(LegacyAvatarController), nameof(LegacyAvatarController.SetInRightHand))]
     [HarmonyPostfix]
     private static void Postfix_SetInRightHand_LegacyAvatarController(Transform _transform, LegacyAvatarController __instance)
@@ -912,7 +934,7 @@ static class AnimationRiggingPatches
                 if (model && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
                 {
                     targets.DestroyFpv();
-                    // Owner/view initialization is deferred until this exact model is seated.
+                    // Owner/view initialization is handled by the ItemInventoryData.BuildModel postfix.
                 }
             }
         }

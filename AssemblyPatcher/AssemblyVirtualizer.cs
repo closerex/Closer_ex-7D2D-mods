@@ -15,16 +15,18 @@ namespace KFAssemblyPatcher
 
     public sealed class VirtualizationResult
     {
-        internal VirtualizationResult(int methodsChanged, int callSitesChanged, int typesChanged)
+        internal VirtualizationResult(int methodsChanged, int callSitesChanged, int typesChanged, int fieldsChanged)
         {
             MethodsChanged = methodsChanged;
             CallSitesChanged = callSitesChanged;
             TypesChanged = typesChanged;
+            FieldsChanged = fieldsChanged;
         }
         public int MethodsChanged { get; }
         public int CallSitesChanged { get; }
         public int TypesChanged { get; }
-        public bool Changed => MethodsChanged != 0 || CallSitesChanged != 0 || TypesChanged != 0;
+        public int FieldsChanged { get; }
+        public bool Changed => MethodsChanged != 0 || CallSitesChanged != 0 || TypesChanged != 0 || FieldsChanged != 0;
     }
 
     public static class AssemblyVirtualizer
@@ -146,16 +148,9 @@ namespace KFAssemblyPatcher
             Action<Dictionary<string, MethodDefinition>, List<Instruction>> apply,
             bool requireCoverage, IEnumerable<AssemblyDefinition> modules)
         {
-            TypeDefinition inventoryData = null;
-            int typesChanged = 0;
+            int typesChanged = 0, fieldsChanged = 0;
             if (requireCoverage)
-            {
-                inventoryData = game.MainModule.GetType("ItemInventoryData") ??
-                    throw new AssemblyPatchException("ItemInventoryData no longer exists; update the repair rules.");
-                if (!inventoryData.IsClass || inventoryData.IsValueType || inventoryData.IsAbstract)
-                    throw new AssemblyPatchException("ItemInventoryData is not a concrete class; update the repair rules.");
-                typesChanged = inventoryData.IsSealed ? 1 : 0;
-            }
+                InventoryLayout(game.MainModule, false, out typesChanged, out fieldsChanged);
             var targets = ResolveTargets(game);
             var calls = FindDispatchCalls(assembly, targets, FindOverrides(targets, game, modules));
             // Coverage is an invariant of the rule table, not of each candidate: a mod that
@@ -165,8 +160,110 @@ namespace KFAssemblyPatcher
             int changed = calls.Count(i => i.OpCode == OpCodes.Call);
             int methods = countMethods?.Invoke(targets) ?? ReportModCalls(assembly, changed);
             apply?.Invoke(targets, calls);
-            if (requireCoverage && apply != null) inventoryData.IsSealed = false;
-            return new VirtualizationResult(methods, changed, typesChanged);
+            if (requireCoverage && apply != null)
+                InventoryLayout(game.MainModule, true, out _, out _);
+            return new VirtualizationResult(methods, changed, typesChanged, fieldsChanged);
+        }
+
+        public const string InventoryModuleTypeName = "KFCommonUtilityLib.InventoryModuleData";
+        public const string InventoryModuleFieldName = "kfModuleData";
+
+        public static bool HasInventoryModuleLayout(Type inventoryData)
+        {
+            var type = inventoryData.Assembly.GetType(InventoryModuleTypeName, false);
+            if (!inventoryData.IsSealed || type == null || !type.IsPublic || type.IsSealed || type.IsAbstract ||
+                type.BaseType != typeof(object) || type.ContainsGenericParameters)
+                return false;
+            const System.Reflection.BindingFlags flags = System.Reflection.BindingFlags.Public |
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly;
+            var data = inventoryData.GetField(InventoryModuleFieldName, flags);
+            var owner = type.GetField("Owner", flags);
+            var original = type.GetField("InventoryData", flags);
+            var ctor = type.GetConstructor(new[] { inventoryData });
+            return data != null && !data.IsInitOnly && data.FieldType == type &&
+                owner != null && owner.IsInitOnly && owner.FieldType == inventoryData.Assembly.GetType("ItemClass") &&
+                original != null && original.IsInitOnly && original.FieldType == inventoryData &&
+                ctor != null && ctor.GetParameters()[0].Name == "_inventoryData" &&
+                type.GetConstructors().Length == 1;
+        }
+
+        private static void InventoryLayout(ModuleDefinition module, bool apply, out int types, out int fields)
+        {
+            var native = module.GetType("ItemInventoryData") ??
+                throw new AssemblyPatchException("ItemInventoryData no longer exists; update the repair rules.");
+            if (!native.IsClass || native.IsValueType || native.IsAbstract || native.HasGenericParameters)
+                throw new AssemblyPatchException("ItemInventoryData is not a concrete non-generic class.");
+            var itemClass = module.GetType("ItemClass") ?? throw new AssemblyPatchException("ItemClass no longer exists.");
+            var itemGetter = native.Methods.Single(m => m.Name == "get_item" && !m.IsStatic &&
+                m.Parameters.Count == 0 && m.ReturnType.FullName == "ItemClass");
+            var type = module.GetType(InventoryModuleTypeName);
+            types = native.IsSealed ? 0 : 1;
+            fields = 0;
+            if (type == null)
+            {
+                types++;
+                fields += 2;
+                if (apply)
+                {
+                    type = new TypeDefinition("KFCommonUtilityLib", "InventoryModuleData",
+                        TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.BeforeFieldInit, module.TypeSystem.Object);
+                    module.Types.Add(type);
+                    var owner = new FieldDefinition("Owner", FieldAttributes.Public | FieldAttributes.InitOnly, itemClass);
+                    var original = new FieldDefinition("InventoryData", FieldAttributes.Public | FieldAttributes.InitOnly, native);
+                    type.Fields.Add(owner);
+                    type.Fields.Add(original);
+                    var ctor = new MethodDefinition(".ctor", MethodAttributes.Public | MethodAttributes.HideBySig |
+                        MethodAttributes.SpecialName | MethodAttributes.RTSpecialName, module.TypeSystem.Void);
+                    ctor.Parameters.Add(new ParameterDefinition("_inventoryData", ParameterAttributes.None, native));
+                    type.Methods.Add(ctor);
+                    var il = ctor.Body.GetILProcessor();
+                    il.Emit(OpCodes.Ldarg_0);
+                    il.Emit(OpCodes.Call, new MethodReference(".ctor", module.TypeSystem.Void, module.TypeSystem.Object) { HasThis = true });
+                    il.Emit(OpCodes.Ldarg_0);
+                    il.Emit(OpCodes.Ldarg_1);
+                    il.Emit(OpCodes.Stfld, original);
+                    il.Emit(OpCodes.Ldarg_0);
+                    il.Emit(OpCodes.Ldarg_1);
+                    il.Emit(OpCodes.Call, itemGetter);
+                    il.Emit(OpCodes.Stfld, owner);
+                    il.Emit(OpCodes.Ret);
+                }
+            }
+            else
+            {
+                var owner = type.Fields.SingleOrDefault(f => f.Name == "Owner");
+                var original = type.Fields.SingleOrDefault(f => f.Name == "InventoryData");
+                var ctor = type.Methods.SingleOrDefault(m => m.IsConstructor);
+                if (!type.IsPublic || !type.IsClass || type.IsValueType || type.IsSealed || type.IsAbstract || type.HasGenericParameters ||
+                    type.BaseType?.FullName != "System.Object" || type.BaseType.Scope != module.TypeSystem.Object.Scope ||
+                    type.Fields.Count != 2 || type.Methods.Count != 1 ||
+                    owner == null || !owner.IsPublic || owner.IsStatic || !owner.IsInitOnly || owner.FieldType.FullName != "ItemClass" || owner.FieldType.Scope != module ||
+                    original == null || !original.IsPublic || original.IsStatic || !original.IsInitOnly || original.FieldType.FullName != native.FullName || original.FieldType.Scope != module ||
+                    ctor == null || !ctor.IsPublic || ctor.IsStatic || ctor.Parameters.Count != 1 ||
+                    ctor.Parameters[0].Name != "_inventoryData" || ctor.Parameters[0].ParameterType.FullName != native.FullName ||
+                    !ctor.HasBody || ctor.Body.Instructions.Count != 10)
+                    throw new AssemblyPatchException("Injected inventory module base has an incompatible layout.");
+                var body = ctor.Body.Instructions;
+                var opcodes = new[] { OpCodes.Ldarg_0, OpCodes.Call, OpCodes.Ldarg_0, OpCodes.Ldarg_1, OpCodes.Stfld,
+                    OpCodes.Ldarg_0, OpCodes.Ldarg_1, OpCodes.Call, OpCodes.Stfld, OpCodes.Ret };
+                if (!body.Select(i => i.OpCode).SequenceEqual(opcodes) ||
+                    body[1].Operand is not MethodReference objectCtor || objectCtor.Name != ".ctor" ||
+                    objectCtor.DeclaringType.FullName != "System.Object" || objectCtor.Parameters.Count != 0 ||
+                    body[4].Operand != original || body[7].Operand != itemGetter || body[8].Operand != owner)
+                    throw new AssemblyPatchException("Injected inventory module constructor has an incompatible body.");
+            }
+            var matches = native.Fields.Where(f => f.Name == InventoryModuleFieldName).ToArray();
+            if (matches.Length > 1)
+                throw new AssemblyPatchException("Duplicate inventory module storage fields.");
+            if (matches.Length == 0)
+            {
+                fields++;
+                if (apply) native.Fields.Add(new FieldDefinition(InventoryModuleFieldName, FieldAttributes.Public, type));
+            }
+            else if (!matches[0].IsPublic || matches[0].IsStatic || matches[0].IsInitOnly ||
+                matches[0].FieldType.FullName != InventoryModuleTypeName || matches[0].FieldType.Scope != module)
+                throw new AssemblyPatchException("Inventory module storage field has an incompatible layout.");
+            if (apply) native.IsSealed = true;
         }
 
         private static int ReportModCalls(AssemblyDefinition mod, int changed)

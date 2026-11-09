@@ -29,7 +29,8 @@ namespace KFAssemblyPatcher
                     foreach (var change in result)
                     {
                         logger.Write(
-                            "Patch verified: " + change.Path + ". Types unsealed: " + change.Transformation.TypesChanged +
+                            "Patch verified: " + change.Path + ". Type layouts changed: " + change.Transformation.TypesChanged +
+                            ", fields changed: " + change.Transformation.FieldsChanged +
                             ", methods changed: " + change.Transformation.MethodsChanged +
                             ", call sites changed: " + change.Transformation.CallSitesChanged + ".");
                     }

@@ -144,7 +144,7 @@ namespace KFAssemblyPatcher
                             {
                                 report.RepairPaths.Add(stamp.Path);
                                 report.Details.Add(stamp.Path + ": " + result.TypesChanged +
-                                    " sealed types, " + result.MethodsChanged + " method flags, " +
+                                    " type layouts, " + result.FieldsChanged + " fields, " + result.MethodsChanged + " method flags, " +
                                     result.CallSitesChanged + " dispatch calls require repair.");
                             }
                             else report.Cache.Entries.Add(stamp);

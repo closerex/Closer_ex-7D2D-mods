@@ -1,9 +1,8 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Attributes;
 using KFCommonUtilityLib.Scripts.Utilities;
 using Newtonsoft.Json.Linq;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -48,7 +47,7 @@ public class ActionModuleFireModeSelector
     }
     public int userDataMask;
     public byte shiftBits;
-    private List<FireMode> modeCache = new();
+    private readonly List<FireMode> modeCache = new();
     public static string[] FireModeNames = new[]
     {
         "FireMode",
@@ -140,7 +139,7 @@ public class ActionModuleFireModeSelector
         {
             __customData.currentFireMode = (byte)mode;
         }
-        if (__customData.currentFireMode < 0 || __customData.currentFireMode >= __customData.fireModes.Length)
+        if (__customData.currentFireMode >= __customData.fireModes.Length)
         {
             __customData.currentFireMode = 0;
         }

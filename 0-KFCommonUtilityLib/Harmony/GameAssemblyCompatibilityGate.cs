@@ -127,7 +127,7 @@ namespace KFCommonUtilityLib
                         assemblyPath);
                 }
 
-                bool invalidFlags = typeof(ItemInventoryData).IsSealed ||
+                bool invalidFlags = !AssemblyVirtualizer.HasInventoryModuleLayout(typeof(ItemInventoryData)) ||
                     methods.Any(method => !method.IsVirtual || method.IsFinal ||
                         (method.Attributes & MethodAttributes.NewSlot) == 0);
                 var scan = LoadedAssemblyCatalog.Scan(assemblyPath, gameAssembly, invalidFlags);
@@ -151,7 +151,7 @@ namespace KFCommonUtilityLib
                     assemblyPath,
                     runtime.HostPath,
                     scan.Report.NeedsRepair ? string.Join("\n", scan.Report.Details) :
-                        "The files are compatible, but this process still has sealed game types or non-overridable methods loaded. A restart is required.",
+                        "The files are compatible, but this process still has an old inventory module layout or non-overridable methods loaded. A restart is required.",
                     scan.Inputs);
             }
             catch (Exception exception)

@@ -63,6 +63,7 @@ public sealed class KFAnimTrailPlayer : MonoBehaviour
     public void BeginKFAnimTrail(AnimationEvent message)
     {
         if (!isActiveAndEnabled || message == null || !message.isFiredByAnimator || data == null || animator == null || skeletonRoot == null) return;
+        data.EnsureRuntimeData();
         int entry = message.intParameter;
         if (entry < 0 || entry >= data.trails.Length) return;
         KFAnimTrailClip definition = data.trails[entry];

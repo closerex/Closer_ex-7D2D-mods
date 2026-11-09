@@ -1,9 +1,8 @@
-﻿using GUI_2;
+using GUI_2;
 using HarmonyLib;
 using KFCommonUtilityLib.Attributes;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Scripts.Utilities;
-using System.Collections;
 using Unity.Mathematics;
 
 [TypeTarget(typeof(ItemActionAttack)), TypeDataTarget(typeof(AlternativeData))]
@@ -14,13 +13,11 @@ public class ActionModuleAlternative
     [HarmonyPatch(nameof(ItemAction.StartHolding)), MethodTargetPrefix]
     private void Prefix_StartHolding(ItemActionData _data, AlternativeData __customData)
     {
-        int prevMode = __customData.mapping.CurMode;
-        __customData.UpdateUnlockState(_data.invData.itemValue);
+        int prevMode = __customData.Init(true);
         if (prevMode != __customData.mapping.CurMode && _data.invData.holdingEntity is EntityPlayerLocal player)
         {
             MultiActionManager.FireToggleModeEvent(player, __customData.mapping);
         }
-        MultiActionManager.SetMappingForEntity(_data.invData.holdingEntity.entityId, __customData.mapping);
         if (_data.invData.holdingEntity is EntityPlayerLocal)
         {
             MultiActionManager.inputCD = math.max(0.5f, MultiActionManager.inputCD);
@@ -126,7 +123,7 @@ public class ActionModuleAlternative
     {
         public MultiActionMapping mapping;
         public string toggleSound;
-        public ItemInventoryData invData;
+        public readonly ItemInventoryData invData;
         //private bool inited = false;
         private readonly bool[] unlocked = new bool[MultiActionIndice.MAX_ACTION_COUNT];
         //public Transform[] altMuzzleTrans = new Transform[MultiActionIndice.MAX_ACTION_COUNT];
@@ -163,15 +160,18 @@ public class ActionModuleAlternative
         //    }
         //}
 
-        public void Init()
-        {
-            //if (inited)
-            //    return;
+        public void Init() => Init(false);
 
-            //inited = true;
+        public int Init(bool holding)
+        {
             MultiActionIndice indices = MultiActionManager.GetActionIndiceForItemID(invData.item.Id);
             mapping = new MultiActionMapping(this, indices, invData.holdingEntity, invData.itemValue, toggleSound, invData.slotIdx, unlocked);
+            int prevMode = mapping.CurMode;
+            // Non-held constructors must not publish; holding callbacks must see the incoming mapping.
+            if (holding)
+                MultiActionManager.SetMappingForEntity(invData.holdingEntity.entityId, mapping);
             UpdateUnlockState(invData.itemValue);
+            return prevMode;
         }
 
         public void UpdateUnlockState(ItemValue itemValue)
@@ -227,7 +227,7 @@ public class ActionModuleAlternative
     //todo: don't setup for every mode, and use reload animation from shared action
     public class AlternativeRadialContextItem : XUiC_Radial.RadialContextAbs
     {
-        public MultiActionMapping mapping;
+        public readonly MultiActionMapping mapping;
 
         public int ActionIndex { get; private set; }
         public int PreSelectedIndex { get; private set; }

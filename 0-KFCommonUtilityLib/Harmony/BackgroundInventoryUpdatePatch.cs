@@ -5,11 +5,22 @@ namespace KFCommonUtilityLib.Harmony
     [HarmonyPatch]
     public class BackgroundInventoryUpdatePatch
     {
-        [HarmonyPatch(typeof(Inventory), nameof(Inventory.clearSlotByIndex))]
-        [HarmonyPostfix]
-        private static void Postfix_clearSlotByIndex_Inventory(Inventory __instance, int _idx)
+        [HarmonyPatch(typeof(Inventory), nameof(Inventory.SetStackAt))]
+        [HarmonyPostfix, HarmonyPriority(Priority.High)]
+        private static void Postfix_Inventory_SetStackAt(Inventory __instance, int _idx, ItemStack _stack)
         {
-            BackgroundInventoryUpdateManager.UnregisterUpdater(__instance.entity, _idx);
+            if (__instance.entity != null && (_stack == null || _stack.IsEmpty()))
+                BackgroundInventoryUpdateManager.UnregisterUpdater(__instance.entity, _idx);
+        }
+
+        [HarmonyPatch(typeof(ItemInventoryData), nameof(ItemInventoryData.Teardown))]
+        [HarmonyPrefix]
+        private static void Prefix_Teardown_ItemInventoryData(ItemInventoryData __instance)
+        {
+            int slot = __instance.slotIdx;
+            var hand = __instance.holdingEntity.Hand;
+            if (slot >= 0 && ReferenceEquals(hand.slotDatas[slot], __instance))
+                BackgroundInventoryUpdateManager.UnregisterUpdater(__instance.holdingEntity, slot);
         }
 
         [HarmonyPatch(typeof(EntityAlive), nameof(EntityAlive.OnEntityDeath))]

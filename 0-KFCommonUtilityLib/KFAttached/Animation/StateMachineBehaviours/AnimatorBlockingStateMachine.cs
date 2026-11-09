@@ -25,7 +25,7 @@ public class AnimatorBlockingStateMachine : StateMachineBehaviour
         if (!targets)
             return;
         
-        if (player.inventory.Hand.slotDatas[targets.SlotIndex].IsModuleContainerFor(out multiInvData))
+        if (ItemClassModuleProcessor.IsDataModuleContainerFor(player.inventory.Hand.slotDatas[targets.SlotIndex], out multiInvData))
         {
             blockingData = multiInvData.boundInvData?.actionData?[2] as ItemActionBlocking.ItemActionBlockingData;
         }

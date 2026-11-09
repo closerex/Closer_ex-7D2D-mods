@@ -119,7 +119,7 @@
 			<property name="Tags" value="weapon,attachmentsIncluded,canHaveCosmetic,attAgility,machete,melee,heavy,meleeWeapon,perkDeepCuts,perkTheHuntsman,bladeSkill,corpseRemoval,ranged,reloadPenalty,perkArchery,crossbow,bowSkill"/>
 			<property name="DisplayType" value="rangedBow"/>
 			<property name="ItemClassModules" value="MultiItem,KFCommonUtilityLib;TrueHolster,KFCommonUtilityLib"/>
-			<property name="UnholsterDelayActive" value="false"/>
+			<property name="UnholsterDelayActive" value="true"/>
 			<property name="BoundItemName" value="meleeWpnBladeBashEviscerator"/>
 			<property name="HoldType" value="69"/>
 			<property name="Meshfile" value="#@modfolder:Resources/Eviscerator.unity3d?eviscerator_m.prefab"/>

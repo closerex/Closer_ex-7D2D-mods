@@ -21,20 +21,26 @@ namespace KFCommonUtilityLib.Harmony
     public static class ModularPatches
     {
         [HarmonyPatch(typeof(ItemInventoryData), nameof(ItemInventoryData.Create))]
-        [HarmonyPrefix]
-        private static bool Prefix_Create_ItemInventoryData(EntityAlive _entity, ItemStack _stack, int _toolbeltSlotIdx, ref ItemInventoryData __result)
+        [HarmonyPostfix]
+        private static void Postfix_Create_ItemInventoryData(ItemInventoryData __result)
         {
-            var item = _stack?.itemValue?.ItemClass;
-            // ReSharper disable once SuspiciousTypeConversion.Global
-            if (item is ICustomInvData custom)
-            {
-                __result = custom.createItemInventoryData(_entity, _stack, _toolbeltSlotIdx);
-                return false;
-            }
-
-            return true;
+            InventoryModuleStorage.Ensure(__result, true);
         }
-        
+
+        [HarmonyPatch(typeof(ItemInventoryData), nameof(ItemInventoryData.Build))]
+        [HarmonyPrefix]
+        private static void Prefix_Build_ItemInventoryData(ItemInventoryData __instance)
+        {
+            InventoryModuleStorage.Ensure(__instance, true);
+        }
+
+        [HarmonyPatch(typeof(ItemInventoryData), nameof(ItemInventoryData.EnsureActionData))]
+        [HarmonyPrefix]
+        private static void Prefix_EnsureActionData_ItemInventoryData(ItemInventoryData __instance)
+        {
+            InventoryModuleStorage.Ensure(__instance);
+        }
+
         [HarmonyPatch(typeof(ItemClassesFromXml), nameof(ItemClassesFromXml.parseItem))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_parseItem_ItemClassesFromXml(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -145,7 +151,7 @@ namespace KFCommonUtilityLib.Harmony
             return codes;
         }
 
-        private static List<XElement> xElementCache = new();
+        private static readonly List<XElement> xElementCache = new();
         [HarmonyPatch(typeof(MinEventActionBase), nameof(MinEventActionBase.ParseAction))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler_ParseAction_MinEventActionBase(
@@ -253,7 +259,7 @@ namespace KFCommonUtilityLib.Harmony
                     CodeInstruction.LoadField(typeof(PatchManager), "ReplacementToOriginals"),
                     CodeInstruction.LoadField(typeof(PatchManager), "ReplacementToOriginalsMono"),
                     new CodeInstruction(OpCodes.Ldarg_0),
-                    CodeInstruction.Call(typeof(ModularPatches), nameof(ModularPatches.GetPatched)),
+                    CodeInstruction.Call(typeof(ModularPatches), nameof(GetPatched)),
                     new CodeInstruction(OpCodes.Ret)
                 };
             }
@@ -332,12 +338,14 @@ namespace KFCommonUtilityLib.Harmony
 
         public static PatchInfo Copy(this PatchInfo self)
         {
-            var res = new PatchInfo();
-            res.prefixes = new Patch[self.prefixes.Length];
-            res.postfixes = new Patch[self.postfixes.Length];
-            res.transpilers = new Patch[self.transpilers.Length];
-            res.finalizers = new Patch[self.finalizers.Length];
-            res.ilmanipulators = new Patch[self.ilmanipulators.Length];
+            var res = new PatchInfo
+            {
+                prefixes = new Patch[self.prefixes.Length],
+                postfixes = new Patch[self.postfixes.Length],
+                transpilers = new Patch[self.transpilers.Length],
+                finalizers = new Patch[self.finalizers.Length],
+                ilmanipulators = new Patch[self.ilmanipulators.Length]
+            };
             Array.Copy(self.prefixes, res.prefixes, res.prefixes.Length);
             Array.Copy(self.postfixes, res.postfixes, res.postfixes.Length);
             Array.Copy(self.transpilers, res.transpilers, res.transpilers.Length);
@@ -920,7 +928,7 @@ namespace KFCommonUtilityLib.Harmony
             ctorbd = currentConstructorBuilder;
         }
 
-        public static bool Equals(this Mono.Cecil.MethodReference self, Mono.Cecil.MethodReference other)
+        public static bool Equals(this MethodReference self, MethodReference other)
         {
             try
             {
@@ -947,7 +955,7 @@ namespace KFCommonUtilityLib.Harmony
             private static MethodBase TargetMethod() => AccessTools.Method(AccessTools.TypeByName("Mono.Cecil.MethodReferenceComparer"), "AreEqual");
 
             [HarmonyReversePatch]
-            public static bool MethodReferenceCompare(Mono.Cecil.MethodReference x, Mono.Cecil.MethodReference y)
+            public static bool MethodReferenceCompare(MethodReference x, MethodReference y)
             {
                 return false;
             }
@@ -1035,9 +1043,9 @@ namespace KFCommonUtilityLib.Harmony
                         return null;
                     var codes = instructions.ToList();
 
-                    var prop_pars = AccessTools.PropertyGetter(typeof(Mono.Cecil.MethodReference), nameof(Mono.Cecil.MethodReference.Parameters));
-                    var prop_index = AccessTools.PropertyGetter(typeof(Mono.Cecil.ParameterReference), nameof(Mono.Cecil.ParameterReference.Index));
-                    var prop_hasthis = AccessTools.PropertyGetter(typeof(Mono.Cecil.MethodReference), nameof(Mono.Cecil.MethodReference.HasThis));
+                    var prop_pars = AccessTools.PropertyGetter(typeof(MethodReference), nameof(MethodReference.Parameters));
+                    var prop_index = AccessTools.PropertyGetter(typeof(ParameterReference), nameof(ParameterReference.Index));
+                    var prop_hasthis = AccessTools.PropertyGetter(typeof(MethodReference), nameof(MethodReference.HasThis));
                     var ctor_hashset = AccessTools.Constructor(typeof(HashSet<Assembly>), Type.EmptyTypes);
                     
                     LocalBuilder lbd_par_offset = null;
@@ -1058,7 +1066,7 @@ namespace KFCommonUtilityLib.Harmony
                                         CodeInstruction.LoadField(typeof(MonoModPatches), nameof(isStatic)),
                                         new CodeInstruction(OpCodes.Brtrue_S, lbl),
                                         new CodeInstruction(OpCodes.Ldloc_S, codes[i + 2].operand),
-                                        CodeInstruction.Call(typeof(Collection<Mono.Cecil.ParameterDefinition>.Enumerator), nameof(Collection<Mono.Cecil.ParameterDefinition>.Enumerator.MoveNext)),
+                                        CodeInstruction.Call(typeof(Collection<ParameterDefinition>.Enumerator), nameof(Collection<ParameterDefinition>.Enumerator.MoveNext)),
                                         new CodeInstruction(OpCodes.Pop)
                                     });
                                     i = j + 5;
@@ -1136,7 +1144,7 @@ namespace KFCommonUtilityLib.Harmony
             }
 
             [HarmonyReversePatch]
-            public static void ResolveWithModifiers(Mono.Cecil.TypeReference typeRef, out Type type, out Type[] typeModReq, out Type[] typeModOpt, List<Type> modReq = null, List<Type> modOpt = null)
+            public static void ResolveWithModifiers(TypeReference typeRef, out Type type, out Type[] typeModReq, out Type[] typeModOpt, List<Type> modReq = null, List<Type> modOpt = null)
             {
                 IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
                 {
@@ -1211,12 +1219,12 @@ namespace KFCommonUtilityLib.Harmony
         private static void ProcessMethodAttributes(List<CodeInstruction> codes)
         {
             var prop_static = AccessTools.PropertyGetter(typeof(MethodBase), nameof(MethodBase.IsStatic));
-            var prop_hasthis = AccessTools.PropertyGetter(typeof(Mono.Cecil.MethodDefinition), nameof(Mono.Cecil.MethodDefinition.IsStatic));
-            var prop_count = AccessTools.PropertyGetter(typeof(Collection<Mono.Cecil.ParameterDefinition>), nameof(Collection<Mono.Cecil.ParameterDefinition>.Count));
+            var prop_hasthis = AccessTools.PropertyGetter(typeof(MethodDefinition), nameof(MethodDefinition.IsStatic));
+            var prop_count = AccessTools.PropertyGetter(typeof(Collection<ParameterDefinition>), nameof(Collection<ParameterDefinition>.Count));
             var mtd_getthis = AccessTools.Method(typeof(MonoMod.Utils.Extensions), nameof(MonoMod.Utils.Extensions.GetThisParamType));
             var mtd_resolve = AccessTools.Method(AccessTools.TypeByName("MonoMod.Utils._DMDEmit"), "ResolveWithModifiers");
             var mtd_generate = AccessTools.Method(AccessTools.TypeByName("MonoMod.Utils._DMDEmit"), "Generate");
-            var mtd_resolveref = AccessTools.Method(typeof(ReflectionHelper), nameof(ReflectionHelper.ResolveReflection), new[] { typeof(Mono.Cecil.TypeReference) });
+            var mtd_resolveref = AccessTools.Method(typeof(ReflectionHelper), nameof(ReflectionHelper.ResolveReflection), new[] { typeof(TypeReference) });
             var fld_emptytypes = AccessTools.Field(typeof(Type), nameof(Type.EmptyTypes));
 
             LocalBuilder lbd_par_offset = null;
@@ -1309,7 +1317,7 @@ namespace KFCommonUtilityLib.Harmony
 
         private static void ProcessConstructorBuilder(List<CodeInstruction> codes, ILGenerator generator)
         {
-            var prop_returntype = AccessTools.PropertyGetter(typeof(Mono.Cecil.MethodReference), nameof(Mono.Cecil.MethodReference.ReturnType));
+            var prop_returntype = AccessTools.PropertyGetter(typeof(MethodReference), nameof(MethodReference.ReturnType));
             var mtd_resolve = AccessTools.Method(AccessTools.TypeByName("MonoMod.Utils._DMDEmit"), "ResolveWithModifiers");
             var mtd_definemtd = AccessTools.Method(typeof(TypeBuilder), nameof(TypeBuilder.DefineMethod), new[] { typeof(string), typeof(MethodAttributes), typeof(CallingConventions), typeof(Type), typeof(Type[]), typeof(Type[]), typeof(Type[]), typeof(Type[][]), typeof(Type[][]) });
             var mtd_getilgen = AccessTools.Method(typeof(MethodBuilder), nameof(MethodBuilder.GetILGenerator));
@@ -1339,7 +1347,7 @@ namespace KFCommonUtilityLib.Harmony
                         new CodeInstruction(OpCodes.Ldnull),
                         new CodeInstruction(OpCodes.Stloc_S, codes[i + 1].operand),
                         new CodeInstruction(OpCodes.Ldloc_S, lbd_ctor),
-                        CodeInstruction.StoreField(typeof(MonoModPatches), nameof(MonoModPatches.currentConstructorBuilder))
+                        CodeInstruction.StoreField(typeof(MonoModPatches), nameof(currentConstructorBuilder))
                     });
                     codes[i].operand = AccessTools.Method(typeof(TypeBuilder), nameof(TypeBuilder.DefineConstructor), new[] { typeof(MethodAttributes), typeof(CallingConventions), typeof(Type[]), typeof(Type[][]), typeof(Type[][]) });
                     codes[i + 1].operand = lbd_ctor;
@@ -1366,7 +1374,7 @@ namespace KFCommonUtilityLib.Harmony
 #nullable enable
         private static TypeBuilder? WorkingTypeBuilder;
 #nullable disable
-        private static readonly Dictionary<Mono.Cecil.MethodReference, DynamicMethodReference> DelegateReplacers = new();
+        private static readonly Dictionary<MethodReference, DynamicMethodReference> DelegateReplacers = new();
 
         [HarmonyPatch(typeof(DynamicMethodDefinition), nameof(DynamicMethodDefinition.Generate), new Type[0])]
         [HarmonyTranspiler]
@@ -1418,7 +1426,7 @@ namespace KFCommonUtilityLib.Harmony
         {
             foreach (var ins in il.Body.Instructions)
             {
-                if (ins.OpCode == Mono.Cecil.Cil.OpCodes.Call && ins.Operand is Mono.Cecil.MethodReference mtdref)
+                if (ins.OpCode == Mono.Cecil.Cil.OpCodes.Call && ins.Operand is MethodReference mtdref)
                 {
                     foreach (var pair in DelegateReplacers)
                     {

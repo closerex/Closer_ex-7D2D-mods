@@ -1,4 +1,4 @@
-﻿using Audio;
+using Audio;
 using HarmonyLib;
 using KFCommonUtilityLib;
 using KFCommonUtilityLib.Attributes;
@@ -188,15 +188,15 @@ public class ItemModuleDetonator
     {
         public readonly List<EntityItem> itemCache = new();
         private readonly List<Entity> entityCache = new();
-        public readonly static EntityItemLifeComparer comparer = new();
+        public static readonly EntityItemLifeComparer comparer = new();
         public float lastCacheUpdateTime = 0;
         public ItemInventoryData invData;
         public ItemModuleDetonator module;
         public IActiveCountHandler activeCountHandler;
 
-        public DetonatorData(ItemInventoryData __instance, ItemModuleDetonator __customModule)
+        public DetonatorData(ItemInventoryData _inventoryData, ItemModuleDetonator __customModule)
         {
-            invData = __instance;
+            invData = _inventoryData;
             module = __customModule;
         }
 
