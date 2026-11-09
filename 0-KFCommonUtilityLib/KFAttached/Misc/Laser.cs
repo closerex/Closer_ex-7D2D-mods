@@ -1,4 +1,4 @@
-﻿using KFCommonUtilityLib;
+using KFCommonUtilityLib;
 using UnityEngine;
 
 public class LaserSight : MonoBehaviour
@@ -72,15 +72,17 @@ public class LaserSight : MonoBehaviour
     {
 #if NotEditor
         player = transform.GetLocalPlayerInParent();
+        scopeBase = null;
+        reloadEvents = null;
         if (player)
         {
             var targets = AnimationRiggingManager.GetActiveRigTargetsFromPlayer(player);
-            if (player.bFirstPersonView && targets.ItemFpv)
+            if (targets && player.bFirstPersonView && targets.ItemFpv)
             {
                 scopeBase = targets.ItemFpv.GetComponentInChildren<ScopeBase>();
             }
 
-            if (targets.ItemAnimator)
+            if (targets && targets.ItemAnimator)
             {
                 reloadEvents = targets.ItemAnimator.GetComponent<AnimationReloadEvents>();
             }

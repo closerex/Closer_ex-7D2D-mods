@@ -1693,14 +1693,21 @@ namespace KFCommonUtilityLib.Harmony
                             var lbl_prev = codes[i - 5].ExtractLabels();
                             codes[i - 5].WithLabels(lbl_new);
 
-                            // Discard buffered intermediate requests after the holster wait.
+                            // Commit the latest queued slot before unholstering; skip intermediate requests.
                             codes.InsertRange(j + 4, new[]
                             {
                                 new CodeInstruction(OpCodes.Ldloc_1),
                                 CodeInstruction.CallClosure<Action<Hand>>(static (inv) =>
                                 {
-                                    var player = (EntityPlayerLocal)inv.entity;
-                                    player.MoveController.nextHeldItem?.Clear();
+                                    if (inv.mode != Hand.HoldingMode.Current)
+                                        return;
+
+                                    var queued = ((EntityPlayerLocal)inv.entity).MoveController.nextHeldItem;
+                                    if (queued != null && queued.Count > 0)
+                                    {
+                                        inv.toolbelt.SelectedSlot = queued[queued.Count - 1];
+                                        queued.Clear();
+                                    }
                                 })
                             });
 
