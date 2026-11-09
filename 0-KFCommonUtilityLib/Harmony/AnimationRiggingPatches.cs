@@ -722,10 +722,8 @@ static class AnimationRiggingPatches
         var targets = AnimationRiggingManager.GetHoldingRigTargetsFromPlayer(__instance);
         if (_bFirstPersonView != __instance.bFirstPersonView && targets && !targets.Destroyed)
         {
-            //targets.SetEnabled(false);
-            //targets.GraphBuilder.SetCurrentTarget(null);
-            Log.Out($"Switch view destroy slot {__instance.inventory.holdingItemIdx}");
-            targets.Destroy();
+            // Hand reuses the held model across view changes; only unbind the old view.
+            targets.GraphBuilder.SetCurrentTarget(null);
         }
         return true;
     }
@@ -746,7 +744,16 @@ static class AnimationRiggingPatches
     {
         if (_transform != null && _transform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
         {
-            //targets.SetEnabled(true);
+            if (__instance.Entity is EntityPlayerLocal player)
+            {
+                var root = __instance.GetActiveModelRoot();
+                var animator = root ? root.GetComponentInChildren<Animator>(true) : null;
+                if (animator && (targets.PlayerAnimatorTrans != animator.transform || targets.IsFpv != player.bFirstPersonView))
+                {
+                    targets.GraphBuilder.SetCurrentTarget(null);
+                    targets.Init(root, player.bFirstPersonView, targets.SlotIndex);
+                }
+            }
             targets.GraphBuilder.SetCurrentTarget(targets);
         }
         else if (__instance.PrimaryBody?.Animator && __instance.PrimaryBody.Animator.TryGetComponent<AnimationGraphBuilder>(out var builder))
