@@ -716,15 +716,39 @@ static class AnimationRiggingPatches
 
     [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.SetFirstPersonView))]
     [HarmonyPrefix]
-    private static bool Prefix_SetFirstPersonView_EntityPlayerLocal(EntityPlayerLocal __instance, bool _bFirstPersonView)
+    private static void Prefix_SetFirstPersonView_EntityPlayerLocal(EntityPlayerLocal __instance, bool _bFirstPersonView, out bool __state)
     {
-        var targets = AnimationRiggingManager.GetHoldingRigTargetsFromPlayer(__instance);
-        if (_bFirstPersonView != __instance.bFirstPersonView && targets && !targets.Destroyed)
+        __state = false;
+        if (_bFirstPersonView == __instance.bFirstPersonView)
+            return;
+
+        var hand = __instance.Hand;
+        var data = hand.equipped;
+        var model = data?.model;
+        if (!hand.isSwitching && model && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
         {
-            // Hand reuses the held model across view changes; only unbind the old view.
-            targets.GraphBuilder.SetCurrentTarget(null);
+            // Stop the old actions before destroying the model and its cached action references.
+            hand.Unequip();
+            __instance.SetHoldingItemTransform(null);
+            __instance.MinEventContext.Transform = null;
+            targets.Destroy();
+            data.Teardown();
+            __state = true;
         }
-        return true;
+        else
+        {
+            var holdingTargets = AnimationRiggingManager.GetHoldingRigTargetsFromPlayer(__instance);
+            if (holdingTargets && !holdingTargets.Destroyed)
+                holdingTargets.GraphBuilder.SetCurrentTarget(null);
+        }
+    }
+
+    [HarmonyPatch(typeof(EntityPlayerLocal), nameof(EntityPlayerLocal.SetFirstPersonView))]
+    [HarmonyPostfix]
+    private static void Postfix_SetFirstPersonView_EntityPlayerLocal(EntityPlayerLocal __instance, bool __state)
+    {
+        if (__state)
+            __instance.Hand.Reconcile();
     }
 
     [HarmonyPatch(typeof(AvatarLocalPlayerController), nameof(AvatarLocalPlayerController.SwitchModelAndView))]
