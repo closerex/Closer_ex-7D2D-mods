@@ -1,8 +1,11 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 public static class KFExtensions
 {
+    public static bool IsValid(this AnimationTargetsAbs targets)
+        => targets && !targets.Destroyed;
+
     public static Transform FindInAllChildren(this Transform target, string name, bool onlyActive = false)
     {
         if (name == null)

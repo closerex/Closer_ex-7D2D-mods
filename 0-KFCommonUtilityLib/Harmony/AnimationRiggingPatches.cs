@@ -377,7 +377,7 @@ static class AnimationRiggingPatches
     private static void Postfix_BuildModel_ItemInventoryData(ItemInventoryData __instance)
     {
         var ___heldModel = __instance.heldModel.Instance;
-        if (___heldModel && ___heldModel.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+        if (___heldModel && ___heldModel.TryGetComponent<AnimationTargetsAbs>(out var targets) && targets.IsValid())
         {
             if (GameManager.IsDedicatedServer || __instance.holdingEntity is not EntityPlayer player)
             {
@@ -602,7 +602,7 @@ static class AnimationRiggingPatches
     [HarmonyPostfix]
     private static void Postfix_StartAnimationReloading_AvatarMultibodyController(AvatarMultiBodyController __instance)
     {
-        if (__instance.HeldItemTransform != null && __instance.HeldItemTransform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+        if (__instance.HeldItemTransform != null && __instance.HeldItemTransform.TryGetComponent<AnimationTargetsAbs>(out var targets) && targets.IsValid())
         {
             EntityAlive entity = __instance.Entity;
             ItemValue holdingItemItemValue = entity.Hand.ItemValue;
@@ -725,7 +725,7 @@ static class AnimationRiggingPatches
         var hand = __instance.Hand;
         var data = hand.equipped;
         var model = data?.model;
-        if (!hand.isSwitching && model && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+        if (!hand.isSwitching && model && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && targets.IsValid())
         {
             // Stop the old actions before destroying the model and its cached action references.
             hand.Unequip();
@@ -738,7 +738,7 @@ static class AnimationRiggingPatches
         else
         {
             var holdingTargets = AnimationRiggingManager.GetHoldingRigTargetsFromPlayer(__instance);
-            if (holdingTargets && !holdingTargets.Destroyed)
+            if (holdingTargets.IsValid())
                 holdingTargets.GraphBuilder.SetCurrentTarget(null);
         }
     }
@@ -765,7 +765,7 @@ static class AnimationRiggingPatches
     [HarmonyPostfix]
     private static void Postfix_SetInRightHand_AvatarLocalPlayerController(Transform _transform, AvatarLocalPlayerController __instance)
     {
-        if (_transform != null && _transform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+        if (_transform != null && _transform.TryGetComponent<AnimationTargetsAbs>(out var targets) && targets.IsValid())
         {
             if (__instance.Entity is EntityPlayerLocal player)
             {
@@ -793,7 +793,7 @@ static class AnimationRiggingPatches
         {
             return;
         }
-        if (_transform != null && _transform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+        if (_transform != null && _transform.TryGetComponent<AnimationTargetsAbs>(out var targets) && targets.IsValid())
         {
             targets.GraphBuilder.SetCurrentTarget(targets);
         }
@@ -811,7 +811,7 @@ static class AnimationRiggingPatches
     [HarmonyPostfix]
     private static void Postfix_SetInRightHand_LegacyAvatarController(Transform _transform, LegacyAvatarController __instance)
     {
-        if (_transform != null && _transform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+        if (_transform != null && _transform.TryGetComponent<AnimationTargetsAbs>(out var targets) && targets.IsValid())
         {
             //targets.SetEnabled(true);
             targets.GraphBuilder.SetCurrentTarget(targets);
@@ -944,7 +944,7 @@ static class AnimationRiggingPatches
         if (_entity is EntityItem _entityItem)
         {
             var targets = _entityItem.GetComponentInChildren<AnimationTargetsAbs>(true);
-            if (targets && !targets.Destroyed)
+            if (targets.IsValid())
             {
                 targets.Destroy();
             }
@@ -961,7 +961,7 @@ static class AnimationRiggingPatches
             for (int i = 0; i < player.Hand.slotDatas.Length; i++)
             {
                 Transform model = player.Hand.GetSlotData(i)?.model;
-                if (model && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+                if (model && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && targets.IsValid())
                 {
                     targets.DestroyFpv();
                     // Owner/view initialization is handled by the ItemInventoryData.BuildModel postfix.
@@ -993,7 +993,7 @@ static class AnimationRiggingPatches
                             {
                                 collider.transform.tag = "Item";
 	                        }
-                            if (entityItem.modelAsset.Instance.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+                            if (entityItem.modelAsset.Instance.TryGetComponent<AnimationTargetsAbs>(out var targets) && targets.IsValid())
                             {
                                 targets.Destroy();
                             }
@@ -1015,7 +1015,7 @@ static class AnimationRiggingPatches
             for (int i = 0; i < player.inventory.SlotCount; i++)
             {
                 Transform model = player.inventory.GetItemDataInSlot(i)?.model;
-                if (model && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+                if (model && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && targets.IsValid())
                 {
                     targets.Init(player.emodel.avatarController.GetActiveModelRoot(), player.bFirstPersonView, i);
                 }
@@ -1066,7 +1066,7 @@ static class AnimationRiggingPatches
             for (int i = 0; i < __instance.inventory.SlotCount; i++)
             {
                 Transform model = __instance.inventory.GetItemDataInSlot(i)?.model;
-                if (model && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+                if (model && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && targets.IsValid())
                 {
                     targets.Init(__instance.emodel.avatarController.GetActiveModelRoot(),
                         player is EntityPlayerLocal

@@ -462,7 +462,7 @@ public static class CameraLateUpdater
         }
         AnimationTargetsAbs targets = transform?.GetComponent<AnimationTargetsAbs>();
 
-        if (targets && !targets.Destroyed && targets.ItemFpv && targets is RigTargets)
+        if (targets.IsValid() && targets.ItemFpv && targets is RigTargets)
         {
             playerOriginTransform = targets.ItemAnimator.transform;
             isRigWeapon = true;

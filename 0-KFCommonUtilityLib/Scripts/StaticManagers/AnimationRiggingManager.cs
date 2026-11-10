@@ -10,7 +10,7 @@ namespace KFCommonUtilityLib
         public static bool IsHoldingRiggedWeapon(EntityPlayer player)
         {
             AnimationTargetsAbs targets = GetActiveRigTargetsFromPlayer(player);
-            return targets && !targets.Destroyed;
+            return targets.IsValid();
         }
 
         //private static bool RigItemChangedThisFrame = false;
@@ -128,7 +128,7 @@ namespace KFCommonUtilityLib
             if (inv == null)
                 return;
             Transform transform = inv.Hand.GetSlotData(slot)?.model;
-            if (transform && transform.TryGetComponent<AnimationTargetsAbs>(out var targets) && !targets.Destroyed)
+            if (transform && transform.TryGetComponent<AnimationTargetsAbs>(out var targets) && targets.IsValid())
             {
                 //RigItemChangedThisFrame = true;
                 targets.Destroy();
@@ -211,7 +211,7 @@ namespace KFCommonUtilityLib
         {
             if (itemModel == null)
                 return null;
-            if (!itemModel.TryGetComponent<AnimationTargetsAbs>(out var targets) || targets.Destroyed)
+            if (!itemModel.TryGetComponent<AnimationTargetsAbs>(out var targets) || !targets.IsValid())
             {
                 if (string.IsNullOrEmpty(name))
                     return itemModel;
