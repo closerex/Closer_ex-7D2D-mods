@@ -1605,7 +1605,7 @@ namespace KFCommonUtilityLib.Harmony
                                 new CodeInstruction(OpCodes.Ldarg_0),
                                 CodeInstruction.CallClosure<Func<Hand, bool>>(
                                     static (hand) => hand.isSwitching &&
-                                        ((ItemClassModuleProcessor.IsDataModuleContainerFor(hand.holstering, out ItemModuleTrueHolster.TrueHolsterData holsteringData) && holsteringData.IsHolstering) ||
+                                        ((ItemClassModuleProcessor.IsDataModuleContainerFor(hand.equipped, out ItemModuleTrueHolster.TrueHolsterData holsteringData) && holsteringData.IsHolstering) ||
                                          (ItemClassModuleProcessor.IsDataModuleContainerFor(hand.Held, out ItemModuleTrueHolster.TrueHolsterData heldData) && heldData.IsUnholstering))),
                                 new CodeInstruction(OpCodes.Brtrue_S, lbl),
                             });
@@ -1615,6 +1615,44 @@ namespace KFCommonUtilityLib.Harmony
                     break;
                 }
             }
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(Hand), nameof(Hand.SelectHoldingMode))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_SelectHoldingMode_Hand(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+            var held = AccessTools.PropertyGetter(typeof(Hand), nameof(Hand.Held));
+            var rebuild = AccessTools.Method(typeof(ItemInventoryData), nameof(ItemInventoryData.Rebuild));
+            int start = codes.FindIndex(code => code.Calls(held)) + 2;
+            int end = codes.FindIndex(start, code => code.Calls(rebuild)) + 2;
+            // Defer Unequip and transient cleanup together until Reconcile commits the handoff.
+            codes[end].WithLabels(codes[start].ExtractLabels());
+            codes.RemoveRange(start, end - start);
+            return codes;
+        }
+
+        [HarmonyPatch(typeof(Hand), nameof(Hand.Reconcile))]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Transpiler_Reconcile_Hand(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+            var rebuild = AccessTools.Method(typeof(ItemInventoryData), nameof(ItemInventoryData.Rebuild));
+            int index = codes.FindIndex(code => code.Calls(rebuild)) - 1;
+            // StopHolding must see the outgoing transient stack before it is cleared.
+            codes.InsertRange(index, new[]
+            {
+                new CodeInstruction(OpCodes.Ldarg_0).WithLabels(codes[index].ExtractLabels()),
+                CodeInstruction.CallClosure<Action<Hand>>(static hand =>
+                {
+                    if (hand.mode != Hand.HoldingMode.Transient && (hand.transientData.HasItem || hand.transientData.NeedsRebuild))
+                    {
+                        hand.transientData.SetStack(null);
+                        hand.transientData.Rebuild();
+                    }
+                })
+            });
             return codes;
         }
 
@@ -1658,15 +1696,18 @@ namespace KFCommonUtilityLib.Harmony
                         new CodeInstruction(OpCodes.Ldloc_1),
                         CodeInstruction.CallClosure<Action<Hand>>(static (inv) =>
                         {
-                            if(ItemClassModuleProcessor.IsDataModuleContainerFor(inv.holstering, out ItemModuleTrueHolster.TrueHolsterData data))
+                            if(ItemClassModuleProcessor.IsDataModuleContainerFor(inv.equipped, out ItemModuleTrueHolster.TrueHolsterData data))
                             {
                                 if (data.module.holsterDelayActive)
                                 {
-                                    var targets = AnimationRiggingManager.GetLastRigTargetsFromInventory(inv.toolbelt);
+                                    var targets = AnimationRiggingManager.GetCurRigTargetsFromInventory(inv.toolbelt);
                                     if (targets && targets.IsAnimationSet)
                                     {
                                         //Log.Out($"HolsterWeapon\n{StackTraceUtility.ExtractStackTrace()}");
                                         data.IsHolstering = true;
+                                        // Non-toolbelt transitions bypass SelectSlot's outgoing animation event.
+                                        if (inv.mode != Hand.HoldingMode.Current || inv.equipped == inv.transientData)
+                                            inv.entity.emodel.avatarController.TriggerEvent(AvatarController.itemHasChangedTriggerHash);
                                     }
                                 }
                                 data.IsUnholstering = false;
@@ -1820,7 +1861,7 @@ namespace KFCommonUtilityLib.Harmony
         {
             int prevIdx = hand.toolbelt.SelectedSlot;
             var prevMode = hand.mode;
-            GetInvDataIdxAndMode(hand.holstering, hand, out var idx, out hand.mode);
+            GetInvDataIdxAndMode(hand.equipped, hand, out var idx, out hand.mode);
             if (idx >= 0)
             {
                 hand.toolbelt.SelectedSlot = idx;
@@ -1834,7 +1875,7 @@ namespace KFCommonUtilityLib.Harmony
         {
             int prevIdx = hand.toolbelt.SelectedSlot;
             var prevMode = hand.mode;
-            GetInvDataIdxAndMode(hand.holstering, hand, out var idx, out hand.mode);
+            GetInvDataIdxAndMode(hand.equipped, hand, out var idx, out hand.mode);
             if (idx >= 0)
             {
                 hand.toolbelt.SelectedSlot = idx;
@@ -1871,8 +1912,7 @@ namespace KFCommonUtilityLib.Harmony
         
         private static bool IsTrueHolster(Hand inv, out ItemModuleTrueHolster.TrueHolsterData data)
         {
-            bool useHeld = inv.holstering == null;
-            var invData = useHeld ? inv.Held : inv.holstering;
+            var invData = inv.equipped ?? inv.Held;
             data = ItemClassModuleProcessor.LoadDataModule<ItemModuleTrueHolster.TrueHolsterData>(invData);
             var targets = invData?.model?.GetComponent<AnimationTargetsAbs>();
             return data != null && targets && targets.IsAnimationSet;

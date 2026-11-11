@@ -204,11 +204,12 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             bool hit = CastWithDamageMultiplier(action, data, true);
             action.SwingAngle = originalSwingAngle;
             action.SwingDegrees = originalSwingDegrees;
+            float deltaUseTimes = 0f;
             if (hit)
             {
                 if (isValidAlternative)
                 {
-                    multiInvData.originalData.itemStack.itemValue.UseTimes += multiInvData.boundInvData.itemStack.itemValue.UseTimes - alternativeDeltaUseTimes;
+                    deltaUseTimes = multiInvData.boundInvData.itemStack.itemValue.UseTimes - alternativeDeltaUseTimes;
                 }
                 if (ConsoleCmdReloadLog.LogInfo)
                 {
@@ -224,7 +225,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             {
                 Log.Out("Raycast miss!");
             }
-            RestoreParams(isValidAlternative, prevData);
+            RestoreParams(isValidAlternative, prevData, deltaUseTimes);
         }
         raycastCo = null;
     }
@@ -405,6 +406,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
             if (!slotGurad.IsValid(entity) || entity.IsDead()) break;
 
             prevData = SetParams(isValidAlternative);
+            float deltaUseTimes = 0f;
             if (entity.inventory.holdingItem.Actions[actionIndex] is ItemActionDynamicMelee action
                 && data.invData.itemValue.PercentUsesLeft > 0f
                 && !entity.Hand.IsSwitching)
@@ -434,7 +436,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
                 {
                     if (isValidAlternative)
                     {
-                        multiInvData.originalData.itemStack.itemValue.UseTimes += multiInvData.boundInvData.itemStack.itemValue.UseTimes - alternativeDeltaUseTimes;
+                        deltaUseTimes = multiInvData.boundInvData.itemStack.itemValue.UseTimes - alternativeDeltaUseTimes;
                     }
                     if (impactCo != null)
                     {
@@ -454,7 +456,7 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
                 action.SwingDegrees = originalSwingDegrees;
 
             }
-            RestoreParams(isValidAlternative, prevData);
+            RestoreParams(isValidAlternative, prevData, deltaUseTimes);
 
             if (attackDurationNormalized <= 0)
             {
@@ -691,13 +693,22 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
         return prevData;
     }
 
-    private void RestoreParams(bool isValidAlternative, ItemActionData prevData)
+    private void RestoreParams(bool isValidAlternative, ItemActionData prevData, float deltaUseTimes = 0f)
     {
+        ItemValue originalItemValue = null;
+        bool changed = false;
         if (isValidAlternative)
         {
+            originalItemValue = multiInvData.originalData.itemStack.itemValue;
+            float previousUseTimes = originalItemValue.UseTimes;
+            // Defer the physical slot notification until the complete original context is restored.
+            originalItemValue.useTimes += deltaUseTimes;
+            changed = originalItemValue.UseTimes != previousUseTimes;
             multiInvData.RestoreParams(false);
         }
         entity.MinEventContext.ItemActionData = prevData;
+        if (changed)
+            originalItemValue.NotifyChanged();
     }
 
     private bool CheckMeleeRunning(ItemActionDynamicMelee.ItemActionDynamicMeleeData data)

@@ -497,79 +497,29 @@ public static class MultiItemPatches
         return false;
     }
 
-    // Match native Held selection without passing through the bound-data getter patches.
+    [HarmonyPatch(typeof(Hand), nameof(Hand.Held), MethodType.Getter)]
+    [HarmonyReversePatch(HarmonyReversePatchType.Original)]
     public static ItemInventoryData GetOriginalHeldData(Hand hand)
     {
-        if (hand == null)
-            return null;
-        var data = hand.bareHandData;
-        if (hand.mode == Hand.HoldingMode.Transient && hand.transientData.HasItem)
-            data = hand.transientData;
-        else if (hand.mode == Hand.HoldingMode.Current && hand.toolbelt != null)
-        {
-            var slotData = hand.slotDatas[hand.toolbelt.SelectedSlot];
-            if (slotData.item != null)
-                data = slotData;
-        }
-        data.EnsureActionData();
-        return data;
-    }
-
-    // Equip/rebuild identity stays physical even inside a bound action.
-    private static IEnumerable<CodeInstruction> UseOriginalHeldData(IEnumerable<CodeInstruction> instructions)
-    {
-        var heldGetter = AccessTools.PropertyGetter(typeof(Hand), nameof(Hand.Held));
-        var itemGetter = AccessTools.PropertyGetter(typeof(Hand), nameof(Hand.Item));
-        var valueGetter = AccessTools.PropertyGetter(typeof(Hand), nameof(Hand.ItemValue));
-        var originalGetter = AccessTools.Method(typeof(MultiItemPatches), nameof(GetOriginalHeldData));
-        foreach (var code in instructions)
-        {
-            bool isItemGetter = code.Calls(itemGetter);
-            bool isValueGetter = code.Calls(valueGetter);
-            if (isItemGetter || isValueGetter || code.Calls(heldGetter))
-            {
-                code.opcode = OpCodes.Call;
-                code.operand = originalGetter;
-            }
-            yield return code;
-            if (isItemGetter || isValueGetter)
-                yield return new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(ItemInventoryData), isItemGetter ? nameof(ItemInventoryData.item) : nameof(ItemInventoryData.itemValue)));
-        }
+        return null;
     }
 
     [HarmonyPatch(typeof(Hand), nameof(Hand.Reconcile))]
     [HarmonyTranspiler]
     public static IEnumerable<CodeInstruction> Transpiler_Reconcile_Hand(IEnumerable<CodeInstruction> instructions)
     {
-        return UseOriginalHeldData(instructions);
-    }
-
-    [HarmonyPatch(typeof(Hand), nameof(Hand.SelectHoldingMode))]
-    [HarmonyTranspiler]
-    public static IEnumerable<CodeInstruction> Transpiler_SelectHoldingMode_Hand(IEnumerable<CodeInstruction> instructions)
-    {
-        return UseOriginalHeldData(instructions);
-    }
-
-    [HarmonyPatch(typeof(Hand), nameof(Hand.SelectSlot))]
-    [HarmonyTranspiler]
-    public static IEnumerable<CodeInstruction> Transpiler_SelectSlot_Hand(IEnumerable<CodeInstruction> instructions)
-    {
-        return UseOriginalHeldData(instructions);
-    }
-
-    [HarmonyPatch(typeof(Hand), nameof(Hand.UsingBareHand))]
-    [HarmonyTranspiler]
-    public static IEnumerable<CodeInstruction> Transpiler_UsingBareHand_Hand(IEnumerable<CodeInstruction> instructions)
-    {
-        return UseOriginalHeldData(instructions);
-    }
-
-    [HarmonyPatch(typeof(Hand), nameof(Hand.TransitionRoutine), MethodType.Enumerator)]
-    [HarmonyTranspiler]
-    public static IEnumerable<CodeInstruction> Transpiler_TransitionRoutine_Hand(IEnumerable<CodeInstruction> instructions)
-    {
-        return UseOriginalHeldData(instructions);
+        var heldGetter = AccessTools.PropertyGetter(typeof(Hand), nameof(Hand.Held));
+        var originalGetter = AccessTools.Method(typeof(MultiItemPatches), nameof(GetOriginalHeldData));
+        foreach (var code in instructions)
+        {
+            // Bound melee harvesting can synchronously update toolbelt stacks and reenter Reconcile.
+            if (code.Calls(heldGetter))
+            {
+                code.opcode = OpCodes.Call;
+                code.operand = originalGetter;
+            }
+            yield return code;
+        }
     }
 
     [HarmonyPatch(typeof(Hand), nameof(Hand.Held), MethodType.Getter)]
