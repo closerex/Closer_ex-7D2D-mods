@@ -33,9 +33,8 @@ public class ActionModuleDynamicGraze
         }
     }
 
-    [HarmonyPatch(nameof(ItemAction.CancelAction))]
-    [HarmonyPostfix]
-    public void Postfix_CancelAction(ItemActionData _actionData)
+    [HarmonyPatch(nameof(ItemAction.CancelAction)), MethodTargetPostfix]
+    private void Postfix_CancelAction(ItemActionData _actionData)
     {
         _actionData.invData.holdingEntity.emodel.avatarController.UpdateBool("IsMeleeRunning", false);
     }

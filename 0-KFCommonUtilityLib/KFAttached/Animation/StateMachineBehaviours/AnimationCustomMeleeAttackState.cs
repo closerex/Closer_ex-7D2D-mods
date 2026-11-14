@@ -295,7 +295,13 @@ public class AnimationCustomMeleeAttackState : StateMachineBehaviour
                     float originalSwingDegrees = action.SwingDegrees;
                     action.SwingAngle = SwingAngle;
                     action.SwingDegrees = SwingDegrees;
-                    bool grazeResult = GrazeAsRaycast ? action.Raycast(data) : action.GrazeCast(data, normalizedTime % 1);
+                    // GrazeCast expects an absolute clip time: it maps its argument through
+                    // Clamp((t - GrazeStart) / (GrazeEnd - GrazeStart), 0, 1) internally.
+                    // Passing the normalised 0..1 progress collapsed that mapping onto an
+                    // endpoint whenever the graze window lies outside 0..1, which left a
+                    // blind spot in the sweep. Feed it the mapped progress instead.
+                    bool grazeResult = GrazeAsRaycast ? action.Raycast(data) : action.GrazeCast(data,
+                        Mathf.Lerp(action.GrazeStart, action.GrazeEnd, normalizedTime % 1f));
                     if (GrazeCanHitSameTarget)
                     {
                         data.alreadyHitEnts.Clear();
