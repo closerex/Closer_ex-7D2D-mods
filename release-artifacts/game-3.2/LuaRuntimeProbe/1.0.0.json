@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "game": "3.2",
+  "folder": "LuaRuntimeProbe",
+  "version": "1.0.0",
+  "pinType": "artifact-digest-manifest",
+  "zip": "LuaRuntimeProbe_1.0.0.zip",
+  "zipSha256": "9F92F070073779386772BA5CCDE27E09C661FA684BD8D0AB393E633BE762862A",
+  "bytes": 148780,
+  "fileCount": 31,
+  "packagedFromRevision": "bf1a894d405c5398830063c77461019fc8fa9e15",
+  "repositorySourceDirtyAtPackaging": true,
+  "sourceClaim": "Exact release asset pinned by this committed manifest; clean-source rebuild is not claimed.",
+  "files": [
+    {
+      "path": "docs/acceptance-20261002-summary.json",
+      "size": 4529,
+      "sha256": "7A105271A389847B4BF6F31FFED0AC211DEB2DAF9A97ED9AF3821816AACBC098"
+    },
+    {
+      "path": "docs/acceptance-20261002-xlua-smoke.json",
+      "size": 4136,
+      "sha256": "E322EE1BE74C27F3D3423067B4EB2D97468A28BB73CB8AFDCA26D993E8F72D7E"
+    },
+    {
+      "path": "docs/acceptance-final-deployment.json",
+      "size": 1764,
+      "sha256": "58C9175DAC955D7177C0409A5CDCAECFCE5AAD1811BF5948C1C90825E75D9807"
+    },
+    {
+      "path": "docs/acceptance-final-summary.json",
+      "size": 14624,
+      "sha256": "42F86AB79C04859C2C271DC9C1CF5B07135A3440A64F5313F68ACDC814E5A805"
+    },
+    {
+      "path": "docs/acceptance-round2-deployment.json",
+      "size": 1305,
+      "sha256": "9E4D2CAA3B11864EC3847906D568C9DB206984ACE85B200FF859D1C51A8E2959"
+    },
+    {
+      "path": "docs/acceptance-round2-sync-nogc.json",
+      "size": 7917,
+      "sha256": "9FDEF891A953C174A148BB815BD19EAE64B8901813D5027CB24C9E86372EE2ED"
+    },
+    {
+      "path": "docs/acceptance-sync-summary.json",
+      "size": 3651,
+      "sha256": "9137AE1C97E81F4E461624C4CA85B04DEFB62DBB4A3DD12768B64B1CB8CA0787"
+    },
+    {
+      "path": "docs/DEPLOY-PLAN.md",
+      "size": 8495,
+      "sha256": "45A41C24182C555484545194401FBAE647CBB1A39879A2C48EAFBA291D896D80"
+    },
+    {
+      "path": "docs/offline-assertion-modes.txt",
+      "size": 2369,
+      "sha256": "FF6D284D547E2C28DC44FA1BC84767944B704EEFA4379B4125ED5473766E772B"
+    },
+    {
+      "path": "docs/offline-budget-truncation.txt",
+      "size": 35303,
+      "sha256": "172ADAFEB4F1BBF3E2AB5E21BD930A1A397DDF449FA1ECE7F7B1DD441B9FD05B"
+    },
+    {
+      "path": "docs/offline-selfcheck.txt",
+      "size": 1021,
+      "sha256": "EC08ED7BE864FCEDC00908835DC0286705846BA762B77101311048D057CE3B50"
+    },
+    {
+      "path": "docs/offline-verification.txt",
+      "size": 34859,
+      "sha256": "C16D2197C97EC39316B5F09202ABAA5176EBEABA9217425834BEC3DA7A1D3915"
+    },
+    {
+      "path": "docs/offline-world-available.txt",
+      "size": 6369,
+      "sha256": "D7ACAB26888D09E9FAC2CD5002A63FF36F7D4194187AAF16B6021C99E87F4833"
+    },
+    {
+      "path": "docs/REVIEW.md",
+      "size": 29848,
+      "sha256": "A35E0B0BFE4D93D1BAAE430986DA012ABB267E4FE428F8D833D0FCD5A8366B5C"
+    },
+    {
+      "path": "docs/xlua-assessment.md",
+      "size": 11874,
+      "sha256": "01F6B431E7087FAA7F71680F6130BA138B0978A1A74F12A6B01EB07B51586A3E"
+    },
+    {
+      "path": "Lua/acceptance_start_cue.lua",
+      "size": 627,
+      "sha256": "B9494983212DBF5204470EF762F04FC1CAE9D069D4105700BE2F7957D1299A22"
+    },
+    {
+      "path": "Lua/errors/runtime_error.lua",
+      "size": 459,
+      "sha256": "B87CFBDF0388E206A0572A38029D6E8734B4929CD1BF426D09D3EBC13CEBFD56"
+    },
+    {
+      "path": "Lua/errors/syntax_error.lua",
+      "size": 493,
+      "sha256": "6E890865BCFBC419B59B58E951303D039642681F065A625117A5F1B5A52D88DF"
+    },
+    {
+      "path": "Lua/probe_core.lua",
+      "size": 14146,
+      "sha256": "428419B754EB7DEA90494E209CF035C41248FF4C7661DDFBA2B99FB52CEFB13D"
+    },
+    {
+      "path": "Lua/probe_helpers.lua",
+      "size": 3716,
+      "sha256": "779E42E115108F91A90EA3434F0892D66EF1FC29A8CE0483151EF3960C4A167A"
+    },
+    {
+      "path": "Lua/probe_require_probe.lua",
+      "size": 427,
+      "sha256": "CFD89B45296318A3AC777FF80EAD92103BE19D18CDAB148F509F5F50F72D35DD"
+    },
+    {
+      "path": "Lua/user_demo.lua",
+      "size": 1046,
+      "sha256": "8082808D859DE6B48BC7498DBCE88AE6158F8A52E083215FDFE00A933CFF402D"
+    },
+    {
+      "path": "LuaRuntimeProbe.dll",
+      "size": 124416,
+      "sha256": "6152026A9757A2865EDCCEEF4C6D9F308B2B1079686E64F03877934A5377D4F7"
+    },
+    {
+      "path": "LuaRuntimeProbe.pdb",
+      "size": 30548,
+      "sha256": "E26B13C730F8C6AF7BA77E79E99588A6AFA4C932ED1258FD499E7AE24BC4C5BD"
+    },
+    {
+      "path": "ModInfo.xml",
+      "size": 428,
+      "sha256": "D9127A3D1AF9847D0F8C7DD23CFD78C5718D94717DE1A6E64D8343EF0D4F3512"
+    },
+    {
+      "path": "README.md",
+      "size": 23424,
+      "sha256": "25D5A54E1230330EE80E2145A6EE7C185D82978127EE6FCCFC0CC4E84ED7C566"
+    },
+    {
+      "path": "staging/mod-with-xlua/STAGING-MANIFEST.txt",
+      "size": 2570,
+      "sha256": "3285B3714374797387C4DAE3774C3441B558D37D4B11A022A53CA4D174177F72"
+    },
+    {
+      "path": "staging/xlua/build-manifest.txt",
+      "size": 1817,
+      "sha256": "74DC19E973905384430C24B09A0DD2F8119D8657EE9E884D6014A43AB0DAECB7"
+    },
+    {
+      "path": "tools/Attempt-XLuaRuntimeSmoke.ps1",
+      "size": 14689,
+      "sha256": "35755AF75BED142640AB3A8BAD886DA32373CED2F0601BFBE18E4564C4D14E24"
+    },
+    {
+      "path": "tools/Attempt-XLuaStandaloneBuild.ps1",
+      "size": 8931,
+      "sha256": "54C1F4983BD1B9E6BAF8178495F673F21DBD8DE7425AA20D824192FD31DBCA80"
+    },
+    {
+      "path": "tools/Build-XLuaGeneral.ps1",
+      "size": 17132,
+      "sha256": "ABAC0B73C234DA7DB1FBDDE044AA94FD6C98B35E3C52419D9848F0AFBEC11270"
+    }
+  ]
+}

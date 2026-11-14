@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "game": "3.2",
+  "folder": "ZCLSWeaponPackSniper",
+  "version": "2.2.0",
+  "pinType": "artifact-digest-manifest",
+  "zip": "ZCLSWeaponPackSniper_2.2.0.zip",
+  "zipSha256": "DDAABDF025C4733B2E4531A8A351C40C42FD781A00858D665F01628F2964B3F7",
+  "bytes": 95044946,
+  "fileCount": 17,
+  "packagedFromRevision": "bf1a894d405c5398830063c77461019fc8fa9e15",
+  "repositorySourceDirtyAtPackaging": true,
+  "sourceClaim": "Exact release asset pinned by this committed manifest; clean-source rebuild is not claimed.",
+  "files": [
+    {
+      "path": "Config/buffs.xml",
+      "size": 4555,
+      "sha256": "4EF140E68C9C5FE19ADBF58C429360B3EA8AB5C79D2D821DBEF752378946019C"
+    },
+    {
+      "path": "Config/item_modifiers.xml",
+      "size": 9265,
+      "sha256": "7EC777C92E766C0E8005D6322C1781AD46908D96242CF5E791A4AEFBD1DE2BA7"
+    },
+    {
+      "path": "Config/items.xml",
+      "size": 151826,
+      "sha256": "61D7AED4D88F6F99FECA69999F5791FE55FE4CD0D4C1CB6A90F78861EC8E3C74"
+    },
+    {
+      "path": "Config/Localization.csv",
+      "size": 6788,
+      "sha256": "7959756E32623ACB9074D7580399CC12459729D25FBF278E9498A31393EA4889"
+    },
+    {
+      "path": "Config/loot.xml",
+      "size": 16082,
+      "sha256": "367D5A1AC3CB31FD6764D91CA580A439FDEB43A7F960250C32CA8FDF5BCB69D9"
+    },
+    {
+      "path": "Config/progression.xml",
+      "size": 5476,
+      "sha256": "9DE010F7D72D887531E4F0467E7B72F019ABFFB85ABA9491D9C7EFBE0A4A5F16"
+    },
+    {
+      "path": "Config/recipes.xml",
+      "size": 15876,
+      "sha256": "5E69C09C100DD085B2E9C346DB7440E62DBB897C4D336EE711A8B4977FF3EFA5"
+    },
+    {
+      "path": "Config/sounds.xml",
+      "size": 19,
+      "sha256": "117F0466D4E38D1248C309DCB8EE5BA5E0899632DCBE2FAF741B16890A4A1F20"
+    },
+    {
+      "path": "Config/traders.xml",
+      "size": 2113,
+      "sha256": "1A56AAB1E7D90943F0E3A313A2B84D4CA845CFFAEA71E17C6C5364C631D9EEC8"
+    },
+    {
+      "path": "ModInfo.xml",
+      "size": 254,
+      "sha256": "EA023640C16B3B413739164D95687C19A02A494605C839D58145017F4AB1BA5E"
+    },
+    {
+      "path": "ModSettings.xml",
+      "size": 457,
+      "sha256": "E7E1716BE524209E11690C91741196D68F47A8D7E30B986FD0DA88D7D9AB62F1"
+    },
+    {
+      "path": "Resources/fnfal.unity3d",
+      "size": 13917077,
+      "sha256": "294FC7585A11CD9F10251786EAE41E314C9F75FF0882FAB749EA14ECCB8CFFBB"
+    },
+    {
+      "path": "Resources/m14ebr.unity3d",
+      "size": 23646024,
+      "sha256": "59CA69AADC3A00942E96562DC297EFEF402B59AF16FEB1CC2E14CDCFCDDB88D3"
+    },
+    {
+      "path": "Resources/m99.unity3d",
+      "size": 19007603,
+      "sha256": "A1E1B25CC1837ED712784ECFA505C1F4C169161BAD294773DFBF2A143AD1BE33"
+    },
+    {
+      "path": "Resources/mosin.unity3d",
+      "size": 15177321,
+      "sha256": "E6D9F8828ED77828CA5E44CADF80605D56F0A1E9557976DBDCDEADC288E62FBF"
+    },
+    {
+      "path": "Resources/spx464.unity3d",
+      "size": 19592325,
+      "sha256": "B006FE308B8A78028C9E1F7562B5336BA5B3888B97D54912D12D7AC4FCD27562"
+    },
+    {
+      "path": "Resources/winchester1894.unity3d",
+      "size": 12923869,
+      "sha256": "961B168ADE8CA25736E8D5E74230A9EFD77F60A950BA0E7B7D193281E1EAD5FA"
+    }
+  ]
+}

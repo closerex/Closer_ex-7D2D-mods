@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "game": "3.2",
+  "folder": "ZCLSWeaponPackPistol",
+  "version": "2.2.0",
+  "pinType": "artifact-digest-manifest",
+  "zip": "ZCLSWeaponPackPistol_2.2.0.zip",
+  "zipSha256": "41DFDD353C76A8D5AD11367240330C8B45910DFA9B561C1B9EC173E295C20F0E",
+  "bytes": 90137860,
+  "fileCount": 12,
+  "packagedFromRevision": "bf1a894d405c5398830063c77461019fc8fa9e15",
+  "repositorySourceDirtyAtPackaging": true,
+  "sourceClaim": "Exact release asset pinned by this committed manifest; clean-source rebuild is not claimed.",
+  "files": [
+    {
+      "path": "Config/buffs.xml",
+      "size": 2063,
+      "sha256": "C23111B52E66C37118B2EAEA83EEF8A263AE28B552A0CBD34722F95E85F16C9B"
+    },
+    {
+      "path": "Config/item_modifiers.xml",
+      "size": 9728,
+      "sha256": "DCFF7012C46866CBD17EDEBCF9939CAB7C876F2B534E9E1028E79D863E99C61D"
+    },
+    {
+      "path": "Config/items.xml",
+      "size": 178139,
+      "sha256": "97015BE025F54AF19F13B7517815A67561C7C307709AAF1453CAB641A312C273"
+    },
+    {
+      "path": "Config/Localization.csv",
+      "size": 5569,
+      "sha256": "9AD6C7D0179B5D1C9086C7346BD105EB5F71459811C935A4105079F870EC4CDD"
+    },
+    {
+      "path": "Config/loot.xml",
+      "size": 12869,
+      "sha256": "B24DE1E0E53A7F0750E56164A3D285BBA31FDBD5D54EA637813722C6E426788C"
+    },
+    {
+      "path": "Config/progression.xml",
+      "size": 4853,
+      "sha256": "B0CA47D1DD265405291AAA51D7B5C469C0C0209734B7D32B712A2FBCDF1243DD"
+    },
+    {
+      "path": "Config/recipes.xml",
+      "size": 23128,
+      "sha256": "725C4C0289CABFE7B6B3485FDA81C6370C0973934803D447E6414543A6CCD5F0"
+    },
+    {
+      "path": "Config/sounds.xml",
+      "size": 19,
+      "sha256": "117F0466D4E38D1248C309DCB8EE5BA5E0899632DCBE2FAF741B16890A4A1F20"
+    },
+    {
+      "path": "Config/traders.xml",
+      "size": 1639,
+      "sha256": "B6E3421807184E82F92ED030407D8DC2187A654B0A99C6FFB38AC07335F99CBB"
+    },
+    {
+      "path": "ModInfo.xml",
+      "size": 241,
+      "sha256": "90687E6704B70D035689373D69BF040D40C080B386F12C4C044A52222ADA5E7C"
+    },
+    {
+      "path": "Resources/9mm.unity3d",
+      "size": 70842422,
+      "sha256": "8C63B23AE3D2813BC6C3F7506AD90C2080EAE09DF2F8747CAD9D933317C77C8F"
+    },
+    {
+      "path": "Resources/sw500.unity3d",
+      "size": 29236895,
+      "sha256": "DA59B59D90FC67DBAD589CFBE7B75246CC0C8FAD338AAC5E049C4099491FF82A"
+    }
+  ]
+}
