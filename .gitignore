@@ -96,3 +96,6 @@
 readme.txt
 /0-KFCommonUtilityLib/DynamicFileNesting
 workspace.code-workspace
+# Publication manifests pin exact assets without committing binary payloads.
+!release-artifacts/
+!release-artifacts/**

@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "game": "2.6",
+  "folder": "ZCLSWeaponPackSniper",
+  "version": "2.0.0",
+  "pinType": "artifact-digest-manifest",
+  "zip": "ZCLSWeaponPackSniper_2.0.0.zip",
+  "zipSha256": "40423291F811094E708CDA80EAD402C492F64DA0A98808B780D6AD472207D906",
+  "bytes": 405951,
+  "fileCount": 26,
+  "packagedFromRevision": "1923240df5935990820e9499b42bf450b6503a4d",
+  "repositorySourceDirtyAtPackaging": false,
+  "sourceClaim": "Exact release asset pinned by this committed manifest; clean-source rebuild is not claimed.",
+  "files": [
+    {
+      "path": "Config/buffs.xml",
+      "size": 4555,
+      "sha256": "4EF140E68C9C5FE19ADBF58C429360B3EA8AB5C79D2D821DBEF752378946019C"
+    },
+    {
+      "path": "Config/item_modifiers.xml",
+      "size": 9234,
+      "sha256": "7F5442D74A8252C72CCA464A2E4F322C17A1BF3022B4489F3E2B0A53CA269EF0"
+    },
+    {
+      "path": "Config/items.xml",
+      "size": 143223,
+      "sha256": "9958DC04BC8F972C6EB1FA63D4272DF491D6D9CEA3A42D65D34D34D20E7B903C"
+    },
+    {
+      "path": "Config/Localization.txt",
+      "size": 6788,
+      "sha256": "40B557458282D85C31FCDA5CE3F5FD8FC0F6A250FC0D311B67AF669F7A221E5C"
+    },
+    {
+      "path": "Config/loot.xml",
+      "size": 16082,
+      "sha256": "367D5A1AC3CB31FD6764D91CA580A439FDEB43A7F960250C32CA8FDF5BCB69D9"
+    },
+    {
+      "path": "Config/progression.xml",
+      "size": 5476,
+      "sha256": "9DE010F7D72D887531E4F0467E7B72F019ABFFB85ABA9491D9C7EFBE0A4A5F16"
+    },
+    {
+      "path": "Config/recipes.xml",
+      "size": 15876,
+      "sha256": "5E69C09C100DD085B2E9C346DB7440E62DBB897C4D336EE711A8B4977FF3EFA5"
+    },
+    {
+      "path": "Config/sounds.xml",
+      "size": 19,
+      "sha256": "117F0466D4E38D1248C309DCB8EE5BA5E0899632DCBE2FAF741B16890A4A1F20"
+    },
+    {
+      "path": "Config/traders.xml",
+      "size": 2113,
+      "sha256": "1A56AAB1E7D90943F0E3A313A2B84D4CA845CFFAEA71E17C6C5364C631D9EEC8"
+    },
+    {
+      "path": "ModInfo.xml",
+      "size": 254,
+      "sha256": "A903CF9F9D1B9591CACB5606DEBE736D0631C9F877D31EF62FF6D982590A3F1A"
+    },
+    {
+      "path": "ModSettings.xml",
+      "size": 457,
+      "sha256": "E7E1716BE524209E11690C91741196D68F47A8D7E30B986FD0DA88D7D9AB62F1"
+    },
+    {
+      "path": "Resources/fnfal.unity3d",
+      "size": 136,
+      "sha256": "4A0F708818C348726310771FFE81E5AF9A3CADB4029B93F3C037AB4D9D852308"
+    },
+    {
+      "path": "Resources/M14EBR.unity3d",
+      "size": 133,
+      "sha256": "44A555D647AF468C996695E622B83A990C4F6E585DA333E74E1A51CC27574EC7"
+    },
+    {
+      "path": "Resources/M99.unity3d",
+      "size": 133,
+      "sha256": "6097509F01ED430F6B656FB2AE41F100BE3727C3F3F785BCB8546BFF947ACAAA"
+    },
+    {
+      "path": "Resources/Mosin.unity3d",
+      "size": 133,
+      "sha256": "71AF37B9FDD11C8D67BD9DD81CC862455D45665AFE490ACBB5972B9B78C5C272"
+    },
+    {
+      "path": "Resources/SPX464.unity3d",
+      "size": 133,
+      "sha256": "C6C4DC30A76BD3D353DF38AE641BB309154DDBFDBECF75049EBA9BE7AEBCDB6E"
+    },
+    {
+      "path": "Resources/Winchester1894.unity3d",
+      "size": 133,
+      "sha256": "C53B3D16DAC03CA132E0A1FC814460ADF1ADF84E2BDF228FCA696113F621F3BF"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/ammoKF50BMG.png",
+      "size": 72389,
+      "sha256": "686E2625E59BD0C849D1088CB64817C90166A3FB61B3833EC497CA3E0367EC71"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/gunKF1894.png",
+      "size": 45886,
+      "sha256": "68EA59723ED97BC7EFAB71C00F33111B86DE28A799FADC370E4E4017AE224052"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/gunKFFNFAL.png",
+      "size": 50952,
+      "sha256": "D0850F06D52E566EEF9381B7517FB552F0B6F26853618450DF0BB9DE2ED8E7AE"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/gunKFM14EBR.png",
+      "size": 65406,
+      "sha256": "D6886B56602556C592E9B1025B8FD6FA5061CDEBCC13D68096E5656448849141"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/gunKFM99.png",
+      "size": 36128,
+      "sha256": "144E06D14E06E5530089CF2EB643A38B19EFD26B9CA8B8D4FAD1549607D4B839"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/gunKFMosin.png",
+      "size": 35293,
+      "sha256": "92814DFDB0CAE1238D40D0CCDFCDE1A376079CCFCA3D889964D5F03D820CAB01"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/gunKFSPX464.png",
+      "size": 28513,
+      "sha256": "B0F3CF667CB5C650E1A0ABEF2EF51839BAAE9B3F4FC0D6DDC4C2E11DBF5B099A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/gunTCTD2Virginian.png",
+      "size": 49134,
+      "sha256": "37638217D2BEC076B9A1555BE47DE177753C68468C26149F242DB6CBAD0BA6D3"
+    },
+    {
+      "path": "UIAtlases/UIAtlas/ui_boomerang_symbol.png",
+      "size": 4422,
+      "sha256": "0B46CCD80308D132E40B221CB3859E217F2DA3F4F4D24F4078D62BE645B2FFE2"
+    }
+  ]
+}
