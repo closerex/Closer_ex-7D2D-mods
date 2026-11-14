@@ -3,8 +3,6 @@
         <buff name="buffBoomerang" name_key="buffBoomerangName" description_key="buffBoomerangDesc" icon="ui_boomerang_symbol" icon_color="255,255,255" icon_blink="true">
             <stack_type value="replace"/>
             <effect_group>
-			    <triggered_effect trigger="onSelfBuffStart,onSelfBuffStack" action="AddRoundsToMagazine,KFCommonUtilityLib" count="1"/>
-			    <triggered_effect trigger="onSelfBuffStart,onSelfBuffStack" action="PlaySound" soundGroup="tctd_high_velocity_ammo_pickup" play_at_self="true" play_in_head="true"/>
 
 			    <triggered_effect trigger="onSelfBuffStack" action="ModifyCVar" cvar=".BoomerangStack" operation="add" value="1"/>
 			    <triggered_effect trigger="onSelfBuffRemove" action="RemoveCVar" cvar=".BoomerangStack"/>

@@ -1705,8 +1705,8 @@ namespace KFCommonUtilityLib.Harmony
                                     {
                                         //Log.Out($"HolsterWeapon\n{StackTraceUtility.ExtractStackTrace()}");
                                         data.IsHolstering = true;
-                                        // Non-toolbelt transitions bypass SelectSlot's outgoing animation event.
-                                        if (inv.mode != Hand.HoldingMode.Current || inv.equipped == inv.transientData)
+                                        // Non-toolbelt transitions bypass SelectSlot's event; same-item resets cancel it.
+                                        if (inv.mode != Hand.HoldingMode.Current || inv.equipped == inv.transientData || inv.equipped == inv.Held)
                                             inv.entity.emodel.avatarController.TriggerEvent(AvatarController.itemHasChangedTriggerHash);
                                     }
                                 }

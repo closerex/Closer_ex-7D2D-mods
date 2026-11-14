@@ -1,4 +1,4 @@
-﻿using System.Xml.Linq;
+using System.Xml.Linq;
 
 class MinEventActionModifyCVarWithSelfRef : MinEventActionModifyCVar
 {
@@ -9,17 +9,17 @@ class MinEventActionModifyCVarWithSelfRef : MinEventActionModifyCVar
 
     public override void Execute(MinEventParams _params)
     {
-        if (cvarRef)
+        if (KFCommonUtilityLib.VersionPatchManager.ReadCVarRef(this))
         {
             if (_params.Self.isEntityRemote && !_params.IsLocal)
             {
                 return;
             }
-            value = _params.Self.Buffs.GetCustomVar(refCvarName);
+            KFCommonUtilityLib.VersionPatchManager.WriteValue(this, _params.Self.Buffs.GetCustomVar(KFCommonUtilityLib.VersionPatchManager.ReadRefCVarName(this)));
             for (int i = 0; i < targets.Count; i++)
             {
                 EntityAlive target = targets[i];
-                target.Buffs.SetCustomVar(cvarName, value, (target.isEntityRemote && !_params.Self.isEntityRemote) || (!target.isEntityRemote && !_params.Self.isEntityRemote && target != _params.Self) || _params.IsLocal, operation);
+                target.Buffs.SetCustomVar(cvarName, KFCommonUtilityLib.VersionPatchManager.ReadValue(this), (target.isEntityRemote && !_params.Self.isEntityRemote) || (!target.isEntityRemote && !_params.Self.isEntityRemote && target != _params.Self) || _params.IsLocal, operation);
             }
         }
         else

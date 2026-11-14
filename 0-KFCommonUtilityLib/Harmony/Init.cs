@@ -72,6 +72,7 @@ namespace KFCommonUtilityLib
             CustomEffectEnumManager.RegisterEnumType<MinEventTypes>(true);
             CustomEffectEnumManager.RegisterEnumType<PassiveEffects>();
 
+            VersionPatchManager.Init();
             ModuleManagers.Init();
 
             ModEvents.GameAwake.RegisterHandler(GameAssemblyCompatibilityGate.OnGameAwake);

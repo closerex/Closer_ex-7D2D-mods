@@ -52,6 +52,9 @@ namespace KFCommonUtilityLib
             var prop_get_item = AccessTools.IndexerGetter(typeof(List<EntityAlive>), new[] { typeof(int) });
             var fld_targets =
                 AccessTools.Field(typeof(MinEventActionTargetedBase), nameof(MinEventActionTargetedBase.targets));
+            var fld_ref_cvar_name = AccessTools.DeclaredField(typeof(MinEventActionModifyCVar), "refCvarName");
+            var mtd_get_ref_cvar_name = AccessTools.DeclaredPropertyGetter(typeof(MinEventActionModifyCVar), "refCvarName");
+            var mtd_read_ref_cvar_name = AccessTools.Method(typeof(VersionPatchManager), nameof(VersionPatchManager.ReadRefCVarName));
 
             for (int i = 0; i < codes.Count; i++)
             {
@@ -68,23 +71,32 @@ namespace KFCommonUtilityLib
                         }
                     }
 
-                    codes.InsertRange(i + 1, new[]
+                    var source = codes[i - 1];
+                    var inserted = new List<CodeInstruction>();
+                    // Native field/getter and SelfRef's shared entry all need the action receiver.
+                    if ((fld_ref_cvar_name != null && source.LoadsField(fld_ref_cvar_name)) ||
+                        (mtd_get_ref_cvar_name != null && source.Calls(mtd_get_ref_cvar_name)) ||
+                        source.Calls(mtd_read_ref_cvar_name))
                     {
-                        new(codes[i - 1].opcode, codes[i - 1].operand),
-                        new(OpCodes.Ldarg_1),
+                        inserted.Add(new(OpCodes.Ldarg_0));
+                        inserted.Add(new(OpCodes.Call, mtd_read_ref_cvar_name));
+                    }
+                    else
+                    {
+                        if (source.opcode == OpCodes.Ldfld)
+                            inserted.Add(new(OpCodes.Ldarg_0));
+                        inserted.Add(new(source.opcode, source.operand));
+                    }
+                    inserted.AddRange(new[]
+                    {
+                        new CodeInstruction(OpCodes.Ldarg_1),
                         new(OpCodes.Ldarg_0),
                         CodeInstruction.Call(typeof(ModuleExtensions), nameof(ModuleExtensions.LoadModule), null, new[] { typeof(CVarReplacer) }),
                         ins_load_target_index ?? new(OpCodes.Ldc_I4_M1),
                         CodeInstruction.Call(typeof(CVarReplacer), nameof(GetCVarOverrideWrapper))
                     });
-
-                    // if cvar name comes from field. should always be loading from MEA itself
-                    if (codes[i - 1].opcode == OpCodes.Ldfld)
-                    {
-                        codes.Insert(i + 1, new(OpCodes.Ldarg_0));
-                        i++;
-                    }
-                    i += 6;
+                    codes.InsertRange(i + 1, inserted);
+                    i += inserted.Count;
                 }
             }
 
