@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "game": "3.4",
+  "folder": "DebugMod",
+  "version": "1.0.0",
+  "pinType": "artifact-digest-manifest",
+  "zip": "DebugMod_1.0.0.zip",
+  "zipSha256": "85B679EF5FB5C2A1C51210E7D8C4F47416AEA8CF1CB03B40731A2E6FA43FED53",
+  "bytes": 11219147,
+  "fileCount": 6,
+  "packagedFromRevision": "6f4330efe2d2790bf57f30ee228d3a4183af2012",
+  "repositorySourceDirtyAtPackaging": true,
+  "sourceClaim": "Exact release asset pinned by this committed manifest; clean-source rebuild is not claimed.",
+  "files": [
+    {
+      "path": "DebugMod.dll",
+      "size": 14336,
+      "sha256": "1F36B9D147766342A889578FDA1CC093C1F19BE3741CACE51251CE0CF53C3330"
+    },
+    {
+      "path": "DebugMod.pdb",
+      "size": 3412,
+      "sha256": "8D9C8D20E532F5055DE45A0ECD1145F35CF745C41552B65D8345F00D406848CF"
+    },
+    {
+      "path": "ModInfo.xml",
+      "size": 218,
+      "sha256": "D9F7233C03904CADF90EE9E95F332C37BF12D65747136FB835856B418DE458ED"
+    },
+    {
+      "path": "Resources/9mm",
+      "size": 9526707,
+      "sha256": "142CB2105BA75034350D6E529A8D9140BAD5486E1CFBB0D785D792D3910421DE"
+    },
+    {
+      "path": "Resources/ea01",
+      "size": 852431,
+      "sha256": "63F0C13D8741438F115C6DC0B06DBCE390A7ECA827AE2C083068F6A93E9949E3"
+    },
+    {
+      "path": "Resources/vaultvosh",
+      "size": 827400,
+      "sha256": "B3C6BEB147630E02DB027A61A8097AA7B9117258D5A771081937A8CEEC6833D7"
+    }
+  ]
+}

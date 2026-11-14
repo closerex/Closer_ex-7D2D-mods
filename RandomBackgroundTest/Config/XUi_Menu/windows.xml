@@ -1,0 +1,10 @@
+<test name="XUi_Menu/windows.xml">
+	<append xpath="/windows">
+		<window name="backgroundTest1" anchor="CenterCenter" pos="0,0" width="1050" height="780" depth="-3">
+			<texture depth="1" color="[white]" texture="@modfolder:Textures/test1.png" name="bgTexture" anchor_left="#cam,0,-5" anchor_bottom="#cam,0,-5" anchor_right="#cam,1,5" anchor_top="#cam,1,5" />
+		</window>
+		<window name="backgroundTest2" anchor="CenterCenter" pos="0,0" width="1050" height="780" depth="-3">
+			<texture depth="1" color="[white]" texture="@modfolder:Textures/test2.jpg" name="bgTexture" anchor_left="#cam,0,-5" anchor_bottom="#cam,0,-5" anchor_right="#cam,1,5" anchor_top="#cam,1,5" />
+		</window>
+	</append>
+</test>

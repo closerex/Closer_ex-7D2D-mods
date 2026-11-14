@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "game": "3.4",
+  "folder": "RandomBackgroundTest",
+  "version": "1.0.2",
+  "pinType": "artifact-digest-manifest",
+  "zip": "RandomBackgroundTest_1.0.2.zip",
+  "zipSha256": "7E9A1DDCA6003F340A26F41E46C86C0DCD670E4ECBD1658564FD3FB374A44C17",
+  "bytes": 78391786,
+  "fileCount": 12,
+  "packagedFromRevision": "7ce009a75532e95ba485acd1bc27c18558d6c245",
+  "repositorySourceDirtyAtPackaging": true,
+  "sourceClaim": "Exact release asset pinned by this committed manifest; clean-source rebuild is not claimed.",
+  "files": [
+    {
+      "path": "Config/XUi_Menu/windows.xml",
+      "size": 707,
+      "sha256": "D5C925C2F709F8B084AD06A80D1F91F713CA1BAF74821F0DE9D1C83B7AFED0DE"
+    },
+    {
+      "path": "Config/XUi_Menu/xui.xml",
+      "size": 315,
+      "sha256": "F6CA72A322B6E0407BCC61296B63303CD31CA0D8CDAF789F572017C399A0AAF1"
+    },
+    {
+      "path": "mainmenuMusic.ini",
+      "size": 106,
+      "sha256": "2B10C4920A45DF72014B8CBE546ECD267833BA5511814F448D1021306844942D"
+    },
+    {
+      "path": "ModInfo.xml",
+      "size": 248,
+      "sha256": "C0560D82C6B5C7046F35EFF5E332DEC4158546EE006D8450B5FD733F710B2F9E"
+    },
+    {
+      "path": "music/15-Bottoms Up.wav",
+      "size": 19002496,
+      "sha256": "56F605BA0787289C76DA21E53CB1099F0008ADECCEF504886D96BD6D2777BFBB"
+    },
+    {
+      "path": "music/32-Walking the Ninth.wav",
+      "size": 24685696,
+      "sha256": "E4F651C3100D5C58DF3092A5115C3FE739C631BD8F0732D90242E349338032A9"
+    },
+    {
+      "path": "music/Barboque Loss.ogg",
+      "size": 6834349,
+      "sha256": "26B0D10139930497F2C52C9AF0172340A16D86866C88CA5455F6354D43A8C63D"
+    },
+    {
+      "path": "music/Conditions are Hostile.ogg",
+      "size": 3431945,
+      "sha256": "7332E3AACC02409895AE26944B5927914F77465E47BB2C2F1CB49C5ABBB732DA"
+    },
+    {
+      "path": "music/The Divide.mp3",
+      "size": 5827130,
+      "sha256": "9CB9C6E56D5670A63CBF272F9087F3D8BEE7693A9AAD67E5727DF8444CD26B94"
+    },
+    {
+      "path": "Resources/bgm.unity3d",
+      "size": 11629814,
+      "sha256": "0AA2EF5A83638194A1711C2CF6D8B4D71BD965975F5EA5B1C6A5F457DF5CAEB6"
+    },
+    {
+      "path": "Textures/test1.png",
+      "size": 7494073,
+      "sha256": "541DBFBB79ED67243E86C6C54465B0CDD2CF6DD19D8DE74D103354DCCDB100D7"
+    },
+    {
+      "path": "Textures/test2.jpg",
+      "size": 1101708,
+      "sha256": "DAF2FD3D534D79C610E3DAFBBD7BF8B8676FAECF9D92A6861257AFA613A3F074"
+    }
+  ]
+}

@@ -145,3 +145,22 @@ workspace.code-workspace
 !ZZKFWeaponSkins/Reports/*.md
 /ZZKFWeaponSkins/Resources
 /ZZKFWeaponSkins/Resources/
+# Publication manifests pin exact assets without committing binary payloads.
+!release-artifacts/
+!release-artifacts/**
+!CinematicUnityExplorer/
+!CinematicUnityExplorer/*.cs
+!CinematicUnityExplorer/*.csproj
+!CinematicUnityExplorer/ModInfo.xml
+!CinematicUnityExplorer/Properties/
+!CinematicUnityExplorer/Properties/*.cs
+!DebugMod/
+!DebugMod/*.cs
+!DebugMod/*.csproj
+!DebugMod/ModInfo.xml
+!DebugMod/Properties/
+!DebugMod/Properties/*.cs
+!RandomBackgroundTest/
+!RandomBackgroundTest/ModInfo.xml
+!RandomBackgroundTest/Config/
+!RandomBackgroundTest/Config/**

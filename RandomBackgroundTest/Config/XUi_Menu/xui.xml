@@ -1,0 +1,10 @@
+<test name="XUi_Menu/xui.xml">
+	<append xpath="/xui">
+		<window_group name="menuBackgroundTest1" actionSet="false">
+			<window name="backgroundTest1" />
+		</window_group>
+		<window_group name="menuBackgroundTest2" actionSet="false">
+			<window name="backgroundTest2" />
+		</window_group>
+	</append>
+</test>

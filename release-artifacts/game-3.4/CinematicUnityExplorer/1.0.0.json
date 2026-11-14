@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "game": "3.4",
+  "folder": "CinematicUnityExplorer",
+  "version": "1.0.0",
+  "pinType": "artifact-digest-manifest",
+  "zip": "CinematicUnityExplorer_1.0.0.zip",
+  "zipSha256": "DC6888D908B1C49DB6C2D109CAEDEAA944D4A3C12549279D33CEEC0DC16A526A",
+  "bytes": 3765887,
+  "fileCount": 9,
+  "packagedFromRevision": "6f4330efe2d2790bf57f30ee228d3a4183af2012",
+  "repositorySourceDirtyAtPackaging": true,
+  "sourceClaim": "Exact release asset pinned by this committed manifest; clean-source rebuild is not claimed.",
+  "files": [
+    {
+      "path": "CinematicUnityExplorer.dll",
+      "size": 4608,
+      "sha256": "2905F08AC4E06233E0C34AA2B342398684710ADAA1C25BAE035DF2865C3DC822"
+    },
+    {
+      "path": "CinematicUnityExplorer.pdb",
+      "size": 1544,
+      "sha256": "39EBDF5CA7138651CABEA83220874C66C6790D50E05B5D575A226DFDDD328466"
+    },
+    {
+      "path": "CinematicUnityExplorer.STANDALONE.Mono.dll",
+      "size": 473600,
+      "sha256": "AB31C1D6272BD0BD127EA14DA26174C92123A015E13ED48328C1F1F8D08EF824"
+    },
+    {
+      "path": "CueMcp.Protocol.dll",
+      "size": 104960,
+      "sha256": "D36CD9ACF7C894722DAB894446DA9771243916834D4202B2BF2A7E61BB6060DA"
+    },
+    {
+      "path": "CueMcp.RuntimeAdapter.dll",
+      "size": 496128,
+      "sha256": "8CEACC691C8F074777F140BCC54F691CB7D504AC0748D54E5D28EEBB87DB2E12"
+    },
+    {
+      "path": "mcs.dll",
+      "size": 1544192,
+      "sha256": "EE8506EF528AADF42BD03875FB1A18AAEE90C093F30A5D6690F519DBB435DF61"
+    },
+    {
+      "path": "ModInfo.xml",
+      "size": 302,
+      "sha256": "33F3292D979567AFC2DFBDFE48C6EC45D28B6D871A525B14F88058AB9091B98D"
+    },
+    {
+      "path": "Tomlet.dll",
+      "size": 70144,
+      "sha256": "4EFC39E9E41821CD987644D3C78706B5BFB90B6A014DC6158DF1FE2F82488BB2"
+    },
+    {
+      "path": "UniverseLib.Mono.dll",
+      "size": 2850304,
+      "sha256": "D5079B67160E1E731F3A1612C224761647D66D43CE2CC6A89D39AAC0925B0D27"
+    }
+  ]
+}
