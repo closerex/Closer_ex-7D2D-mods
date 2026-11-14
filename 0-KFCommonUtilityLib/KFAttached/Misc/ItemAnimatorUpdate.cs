@@ -62,7 +62,8 @@ internal class ItemAnimatorUpdate : MonoBehaviour
             {
                 weaponRB.SyncLayers();
             }
-            graph.Evaluate(_dt);
+            // Manual graphs must consume Animator.speed, including reload cancellation fast-forward.
+            graph.Evaluate(_dt * animator.speed);
         }
     }
 }
