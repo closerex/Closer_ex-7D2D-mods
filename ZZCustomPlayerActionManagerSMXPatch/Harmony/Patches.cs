@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 
@@ -26,9 +26,9 @@ public class Patches
 
     [HarmonyPatch(typeof(SMXcore.XUiC_OptionsControls), "storeCurrentBindings")]
     [HarmonyPostfix]
-    private static void Postfix_storeCurrentBindings_XUiC_OptionsControls(List<string> ___actionBindingsOnOpen)
+    private static void Postfix_storeCurrentBindings_XUiC_OptionsControls()
     {
-        CustomPlayerActionManager.StoreCurrentCustomBindings(___actionBindingsOnOpen);
+        CustomPlayerActionManager.CacheCustomControls();
     }
 }
 

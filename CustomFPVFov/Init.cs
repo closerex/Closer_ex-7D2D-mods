@@ -79,6 +79,7 @@ namespace CustomFPVFov
 
         [HarmonyPatch(typeof(vp_FPWeapon), nameof(vp_FPWeapon.UpdateZoom))]
         [HarmonyTranspiler]
+        [HarmonyPriority(Priority.First)]
         private static IEnumerable<CodeInstruction> Transpiler_vp_FPWeapon_UpdateZoom(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
@@ -97,10 +98,11 @@ namespace CustomFPVFov
 
         [HarmonyPatch(typeof(vp_FPWeapon), nameof(vp_FPWeapon.Refresh))]
         [HarmonyTranspiler]
+        [HarmonyPriority(Priority.First)]
         private static IEnumerable<CodeInstruction> Transpiler_vp_FPWeapon_Refresh(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
-            var mtd_smooth = AccessTools.Method(typeof(Mathf), nameof(Mathf.SmoothStep));
+            var mtd_smooth = AccessTools.Method(typeof(vp_FPWeapon), nameof(vp_FPWeapon.SmoothStep));
 
             for (int i = 2; i < codes.Count; i++)
             {

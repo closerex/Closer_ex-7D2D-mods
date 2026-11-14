@@ -30,7 +30,7 @@ namespace KFCommonUtilityLib.Harmony
             
             for (int i = 0; i < codes.Count - 1; i++)
             {
-                if (codes[i].LoadsField(fld_flytime) && codes[i + 1].opcode == OpCodes.Ble_Un_S)
+                if (codes[i].LoadsField(fld_flytime) && (codes[i + 1].opcode == OpCodes.Ble_Un_S || codes[i + 1].opcode == OpCodes.Ble_Un))
                 {
                     Label lbl_new = generator.DefineLabel(), lbl_pop = generator.DefineLabel(), lbl_original = (Label)codes[i + 1].operand;
                     for (int j = i + 2; j < codes.Count; j++)

@@ -95,9 +95,9 @@ namespace KFCommonUtilityLib.Harmony
             return codes;
         }
 
-        [HarmonyPatch(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.OnStateExit))]
+        [HarmonyPatch(typeof(ItemActionRanged), nameof(ItemActionRanged.CompleteReload))]
         [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler_OnStateExit_AnimatorRangedReloadState(IEnumerable<CodeInstruction> instructions)
+        private static IEnumerable<CodeInstruction> Transpiler_CompleteReload_ItemActionRanged(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
 
@@ -110,13 +110,11 @@ namespace KFCommonUtilityLib.Harmony
                 {
                     codes.InsertRange(i, new[]
                     {
-                        new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.actionData)),
+                        new CodeInstruction(OpCodes.Ldarg_1),
                         CodeInstruction.LoadField(typeof(ItemActionData), nameof(ItemActionData.invData)),
                         CodeInstruction.LoadField(typeof(ItemInventoryData), nameof(ItemInventoryData.holdingEntity)),
                         CodeInstruction.LoadField(typeof(EntityAlive), nameof(EntityAlive.MinEventContext)),
-                        new CodeInstruction(OpCodes.Ldarg_0),
-                        CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.actionData)),
+                        new CodeInstruction(OpCodes.Ldarg_1),
                         CodeInstruction.StoreField(typeof(MinEventParams), nameof(MinEventParams.ItemActionData))
                     });
                     break;
@@ -234,10 +232,11 @@ namespace KFCommonUtilityLib.Harmony
             LocalBuilder lbd_index = generator.DeclareLocal(typeof(int));
 
             FieldInfo fld_action = AccessTools.Field(typeof(ItemClass), nameof(ItemClass.Actions));
+            FieldInfo fld_actionData = AccessTools.Field(typeof(ItemInventoryData), nameof(ItemInventoryData.actionData));
             for (int i = 0; i < codes.Count; i++)
             {
                 var code = codes[i];
-                if (code.LoadsField(fld_action) && codes[i + 1].opcode == OpCodes.Ldc_I4_0)
+                if ((code.LoadsField(fld_action) || code.LoadsField(fld_actionData)) && codes[i + 1].opcode == OpCodes.Ldc_I4_0)
                 {
                     codes[i + 1].opcode = OpCodes.Ldloc_S;
                     codes[i + 1].operand = lbd_index;
@@ -2594,7 +2593,7 @@ namespace KFCommonUtilityLib.Harmony
                 AccessTools.Method(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.OnHoldingUpdate)),
                 AccessTools.Method(typeof(ItemActionDynamicMelee), nameof(ItemActionDynamicMelee.SetAttackFinished)),
                 AccessTools.Method(typeof(ItemActionMelee), nameof(ItemActionMelee.OnHoldingUpdate)),
-                AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.ExecuteAction)),
+                AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.TryExecuteAction)),
                 AccessTools.Method(typeof(ItemActionRanged), nameof(ItemActionRanged.fireShot)),
                 AccessTools.Method(typeof(ItemActionThrownWeapon), nameof(ItemActionThrownWeapon.throwAway)),
                 AccessTools.Method(typeof(ItemActionUseOther), nameof(ItemActionUseOther.ExecuteAction)),
@@ -2603,6 +2602,7 @@ namespace KFCommonUtilityLib.Harmony
         }
 
         [HarmonyTranspiler]
+        [HarmonyPriority(Priority.High)]
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();

@@ -1835,7 +1835,7 @@ static class AnimationRiggingPatches
     private static IEnumerable<CodeInstruction> Transpiler_SetVehicleAnimation_AvatarMultiBodyController(IEnumerable<CodeInstruction> instructions)
     {
         return instructions.MethodReplacer(
-                AccessTools.Method(typeof(Animator), nameof(Animator.SetInteger), new[] { typeof(string), typeof(int) }),
+                AccessTools.Method(typeof(Animator), nameof(Animator.SetInteger), new[] { typeof(int), typeof(int) }),
                 AccessTools.Method(typeof(KFExtensions), nameof(KFExtensions.SetWrappedInt)));
     }
     //BodyAnimator.LateUpdate

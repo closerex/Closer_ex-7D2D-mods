@@ -114,6 +114,14 @@ namespace CodeWriter.ExpressionParser
                 {
                     variableInfo = new ItemTierInfo();
                 }
+                else if (parsedStr.EqualsCaseInsensitive("meta"))
+                {
+                    variableInfo = new ItemMetaInfo();
+                }
+                else if (parsedStr.EqualsCaseInsensitive("PercentUsesLeft"))
+                {
+                    variableInfo = new ItemPercentUsesLeftInfo();
+                }
                 else if (parsedStr.StartsWith('^'))
                 {
                     variableInfo = new PassiveInfo();
@@ -593,6 +601,104 @@ namespace CodeWriter.ExpressionParser
 
             return false;
         }
+    }
+
+    public class ItemMetaInfo : VariableInfo
+    {
+        private bool useHoldingItem;
+
+        public override bool IsUnique => true;
+
+        private ItemValue ivCache;
+
+        protected override bool IsValidImpl(MinEventParams _params, EntityAlive _target, int _targetIndex)
+        {
+            ivCache = getItemValue(_params, _target);
+            return ivCache?.IsEmpty() == false;
+        }
+
+        protected override float DoEvaluate(MinEventParams _params, EntityAlive _target, int _targetIndex,
+            int _targetCount)
+        {
+            var iv = ivCache ?? getItemValue(_params, _target);
+            ivCache = null;
+            return iv?.IsEmpty() == false ? iv.Meta : DefaultValue;
+        }
+
+        private ItemValue getItemValue(MinEventParams _params, EntityAlive _target)
+        {
+            if (!useHoldingItem)
+                return _params.ItemValue;
+            var entity = getEntityTarget(_params, _target);
+            var holdingItemValue = entity ? entity.inventory?.holdingItemItemValue : null;
+            return holdingItemValue;
+        }
+
+        public override bool ParseAdditionalAttributes(XAttribute attr)
+        {
+            if (base.ParseAdditionalAttributes(attr))
+                return true;
+
+            switch (attr.Name.LocalName)
+            {
+                case "use_holding_item":
+                    useHoldingItem = bool.Parse(attr.Value);
+                    return true;
+            }
+
+            return false;
+        }
+
+        protected override bool TryParse(string parsedStr, Dictionary<string, VariableInfo> children) => true;
+    }
+
+    public class ItemPercentUsesLeftInfo : VariableInfo
+    {
+        private bool useHoldingItem;
+
+        public override bool IsUnique => true;
+
+        private ItemValue ivCache;
+
+        protected override bool IsValidImpl(MinEventParams _params, EntityAlive _target, int _targetIndex)
+        {
+            ivCache = getItemValue(_params, _target);
+            return ivCache?.IsEmpty() == false;
+        }
+
+        protected override float DoEvaluate(MinEventParams _params, EntityAlive _target, int _targetIndex,
+            int _targetCount)
+        {
+            var iv = ivCache ?? getItemValue(_params, _target);
+            ivCache = null;
+            return iv?.IsEmpty() == false ? iv.PercentUsesLeft : DefaultValue;
+        }
+
+        private ItemValue getItemValue(MinEventParams _params, EntityAlive _target)
+        {
+            if (!useHoldingItem)
+                return _params.ItemValue;
+            var entity = getEntityTarget(_params, _target);
+            var holdingItemValue = entity ? entity.inventory?.holdingItemItemValue : null;
+            return holdingItemValue;
+        }
+
+        public override bool ParseAdditionalAttributes(XAttribute attr)
+        {
+            if (base.ParseAdditionalAttributes(attr))
+                return true;
+
+            switch (attr.Name.LocalName)
+            {
+                case "use_holding_item":
+                    useHoldingItem = bool.Parse(attr.Value);
+                    return true;
+            }
+
+            return false;
+        }
+
+        protected override bool TryParse(string parsedStr, Dictionary<string, VariableInfo> children) => true;
     }
 
     public class StatInfo : VariableInfo
