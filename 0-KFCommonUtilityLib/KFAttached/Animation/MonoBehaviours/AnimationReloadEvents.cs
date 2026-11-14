@@ -1,4 +1,4 @@
-﻿#if NotEditor
+#if NotEditor
 using KFCommonUtilityLib;
 
 #endif
@@ -23,6 +23,10 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
         OnReloadAmmo();
         OnReloadEnd();
     }
+
+#if NotEditor
+    private bool reloadResultReported;
+#endif
 
     public void OnReloadAmmo()
     {
@@ -52,6 +56,7 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
             Log.Out($"ANIMATION RELOAD EVENT AMMO : {actionData.invData.item.Name}");
 #endif
         }
+        ReportReloadResult();
 #endif
     }
 
@@ -67,6 +72,8 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
         {
             return;
         }
+        // Some interrupt/disable paths never reach the ammo animation event.
+        ReportReloadResult();
         actionData.isReloading = false;
         actionData.isWeaponReloading = false;
         player.MinEventContext.ItemActionData = actionData;
@@ -257,6 +264,15 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
     //    reloadUpdatedThisFrame = false;
     //}
 
+    private void ReportReloadResult()
+    {
+        if (reloadResultReported)
+            return;
+        // Lock before dispatch: animation callbacks or triggered effects may re-enter.
+        reloadResultReported = true;
+        ReloadEventPatches.FireReloadResult(actionData);
+    }
+
     public void OnReloadStart(int actionIndex)
     {
         if (player == null)
@@ -270,6 +286,7 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
             return;
         }
 
+        reloadResultReported = false;
         string soundIdle = actionData.invData.item.Properties.GetValue(ItemClass.PropSoundIdle);
         if (soundIdle != null && actionData.invData.holdingEntitySoundID >= 0)
         {

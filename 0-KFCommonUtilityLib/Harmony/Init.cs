@@ -92,6 +92,8 @@ namespace KFCommonUtilityLib
         {
             CustomEnums.onSelfMagzineDeplete = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onSelfMagzineDeplete");
             CustomEnums.onReloadAboutToStart = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onReloadAboutToStart");
+            CustomEnums.onReloadSuccess = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onReloadSuccess");
+            CustomEnums.onReloadFail = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onReloadFail");
             CustomEnums.onPartialReloadAmmoSuccess = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onPartialReloadAmmoSuccess");
             CustomEnums.onPartialReloadAmmoFail = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onPartialReloadAmmoFail");
             CustomEnums.onRechargeValueUpdate = CustomEffectEnumManager.RegisterOrGetEnum<MinEventTypes>("onRechargeValueUpdate");

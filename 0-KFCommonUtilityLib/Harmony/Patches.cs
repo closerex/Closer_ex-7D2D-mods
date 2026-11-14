@@ -13,6 +13,33 @@ using UniLinq;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
+[HarmonyPatch(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.OnStateExit))]
+public static class ReloadEventPatches
+{
+    [HarmonyTranspiler]
+    public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    {
+        var codes = instructions.ToList();
+        int index = codes.FindIndex(code => code.LoadsConstant((int)MinEventTypes.onReloadStop));
+        if (index < 0 || codes.FindIndex(index + 1, code => code.LoadsConstant((int)MinEventTypes.onReloadStop)) >= 0)
+            throw new InvalidOperationException("Reload result injection requires exactly one native onReloadStop anchor.");
+        // Both cancellation and CompleteReload converge here; the cancellation flag is still intact.
+        codes.InsertRange(index, new[]
+        {
+            new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(codes[index]),
+            CodeInstruction.LoadField(typeof(AnimatorRangedReloadState), nameof(AnimatorRangedReloadState.actionData)),
+            CodeInstruction.Call(typeof(ReloadEventPatches), nameof(FireReloadResult))
+        });
+        return codes;
+    }
+
+    public static void FireReloadResult(ItemActionRanged.ItemActionDataRanged actionData)
+    {
+        actionData.invData.holdingEntity.FireEvent(
+            actionData.isReloadCancelled ? CustomEnums.onReloadFail : CustomEnums.onReloadSuccess);
+    }
+}
+
 [HarmonyPatch]
 public static class CommonUtilityPatch
 {

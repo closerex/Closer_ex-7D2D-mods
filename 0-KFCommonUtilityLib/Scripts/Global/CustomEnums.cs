@@ -3,6 +3,8 @@
     #region Triggers
     public static MinEventTypes onSelfMagzineDeplete;
     public static MinEventTypes onReloadAboutToStart;
+    public static MinEventTypes onReloadSuccess;
+    public static MinEventTypes onReloadFail;
     public static MinEventTypes onPartialReloadAmmoSuccess;
     public static MinEventTypes onPartialReloadAmmoFail;
     public static MinEventTypes onRechargeValueUpdate;

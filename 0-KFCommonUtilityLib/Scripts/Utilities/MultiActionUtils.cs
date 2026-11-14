@@ -111,10 +111,9 @@ namespace KFCommonUtilityLib.Scripts.Utilities
             projectileValue.SelectedAmmoTypeIndex = (byte)index;
             projectileValue.UseTimes = launcherValue.UseTimes;
             projectileValue.Quality = launcherValue.Quality;
-            projectileValue.modifications = new ItemValue[launcherValue.modifications.Length];
-            Array.Copy(launcherValue.modifications, projectileValue.modifications, launcherValue.modifications.Length);
-            projectileValue.cosmeticMods = new ItemValue[launcherValue.cosmeticMods.Length];
-            Array.Copy(launcherValue.cosmeticMods, projectileValue.cosmeticMods, launcherValue.cosmeticMods.Length);
+            // Native zero-slot values may have null arrays; copy only the slot containers.
+            projectileValue.modifications = (ItemValue[])launcherValue.modifications?.Clone();
+            projectileValue.cosmeticMods = (ItemValue[])launcherValue.cosmeticMods?.Clone();
             //shallow copy because original stats is reconstructed everytime it's touched
             projectileValue.Stats = launcherValue.Stats;
         }

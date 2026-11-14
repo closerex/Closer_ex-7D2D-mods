@@ -240,4 +240,76 @@
       </item_property_overrides>
     </item_modifier>
   </append>
+
+  <!-- FNFAL supported FPV counters. Parent item metadata; no polling or extra component.
+       Four Jaeger variants show ammo/hits; six Deep Sea variants show ammo only.
+       Counting/reset occurs only while one of these ten skins is installed. -->
+<append xpath="/item_modifiers/item_modifier[@name='modKFSkin_fnfal_SkinId_7801' or @name='modKFSkin_fnfal_SkinId_7802' or @name='modKFSkin_fnfal_SkinId_7803' or @name='modKFSkin_fnfal_SkinId_7831' or @name='modKFSkin_fnfal_SkinId_9304' or @name='modKFSkin_fnfal_SkinId_9305' or @name='modKFSkin_fnfal_SkinId_9306' or @name='modKFSkin_fnfal_SkinId_9307' or @name='modKFSkin_fnfal_SkinId_9308' or @name='modKFSkin_fnfal_SkinId_9309']">
+    <effect_group name="KF skin shot window">
+      <requirement name="IsLocalPlayer"/>
+      <triggered_effect trigger="onSelfRangedBurstShotStart" action="ModifyCVar" cvar=".kfSkinShotOpen" operation="set" value="1"/>
+      <triggered_effect trigger="onSelfRangedBurstShotStart" action="ModifyCVar" cvar=".kfSkinShotHit" operation="set" value="0"/>
+      <triggered_effect trigger="onSelfRangedBurstShotEnd,onSelfHoldingItemCreated,onSelfEquipStart,onSelfEquipStop" action="ModifyCVar" cvar=".kfSkinShotOpen" operation="set" value="0"/>
+      <triggered_effect trigger="onSelfHoldingItemCreated,onSelfEquipStart,onSelfEquipStop" action="ModifyCVar" cvar=".kfSkinShotHit" operation="set" value="0"/>
+      <triggered_effect trigger="onSelfHoldingItemCreated,onSelfEquipStart,onSelfEquipStop" action="ModifyCVar" cvar=".kfSkinCapacity" operation="set" value="0"/>
+      <triggered_effect trigger="onSelfHoldingItemCreated,onSelfEquipStart,onSelfEquipStop" action="ModifyCVar" cvar=".kfSkinExpression" operation="set" value="0"/>
+    </effect_group>
+    <effect_group name="KF skin surviving hit once">
+      <requirement name="IsLocalPlayer"/>
+      <requirement name="CVarCompare" cvar=".kfSkinShotOpen" operation="Equals" value="1"/>
+      <requirement name="CVarCompare" cvar=".kfSkinShotHit" operation="Equals" value="0"/>
+      <requirement name="IsAlive" target="other"/>
+      <triggered_effect trigger="onSelfAttackedOther" action="SetItemMetaFloat" key="kfSkinShotsHit" relative="true" change="1"/>
+      <triggered_effect trigger="onSelfAttackedOther" action="ModifyCVar" cvar=".kfSkinShotHit" operation="set" value="1"/>
+    </effect_group>
+    <effect_group name="KF skin lethal hit once">
+      <requirement name="IsLocalPlayer"/>
+      <requirement name="CVarCompare" cvar=".kfSkinShotOpen" operation="Equals" value="1"/>
+      <requirement name="CVarCompare" cvar=".kfSkinShotHit" operation="Equals" value="0"/>
+      <triggered_effect trigger="onSelfKilledOther" action="SetItemMetaFloat" key="kfSkinShotsHit" relative="true" change="1"/>
+      <triggered_effect trigger="onSelfKilledOther" action="ModifyCVar" cvar=".kfSkinShotHit" operation="set" value="1"/>
+    </effect_group>
+    <effect_group name="KF skin reset on reload success">
+      <requirement name="IsLocalPlayer"/>
+      <triggered_effect trigger="onReloadSuccess" action="SetItemMetaFloat" key="kfSkinShotsHit" relative="false" change="0"/>
+    </effect_group>
+    <effect_group name="KF skin capacity before display">
+      <requirement name="IsLocalPlayer"/>
+      <triggered_effect trigger="onSelfEquipStart,onSelfHoldingItemCreated,onSelfRangedBurstShotEnd,onReloadSuccess,onReloadFail" action="ModifyCVar" cvar=".kfSkinCapacity" operation="set" value="0"/>
+      <triggered_effect trigger="onSelfEquipStart,onSelfHoldingItemCreated,onSelfRangedBurstShotEnd,onReloadSuccess,onReloadFail" action="ModifyCVar" cvar=".kfSkinCapacity" operation="set" value="@.kfSkinExpression">
+        <mea_module module="ExpressionAsCVar,KFCommonUtilityLib" expression="FLOOR([^MagazineSize])">
+          <var name="[^MagazineSize]" validate="true" use_holding_item="false"/>
+        </mea_module>
+      </triggered_effect>
+    </effect_group>
+  </append>
+  <append xpath="/item_modifiers/item_modifier[@name='modKFSkin_fnfal_SkinId_7801' or @name='modKFSkin_fnfal_SkinId_7802' or @name='modKFSkin_fnfal_SkinId_7803' or @name='modKFSkin_fnfal_SkinId_7831']">
+    <effect_group name="KF skin dynamic FPV inputs">
+      <requirement name="IsLocalPlayer"/>
+      <requirement name="CVarCompare" cvar=".kfSkinCapacity" operation="GT" value="0"/>
+      <triggered_effect trigger="onSelfEquipStart,onSelfHoldingItemCreated,onSelfRangedBurstShotEnd,onReloadSuccess,onReloadFail" action="SetSkinMaterialProperty,KFCommonUtilityLib" use_holding_item="false" mat_index_fpv="0,1,3" mat_index_tpv="0,1,3" mat_prop="_AmmoCount" is_int="false" value="@.kfSkinExpression">
+        <mea_module module="ExpressionAsCVar,KFCommonUtilityLib" expression="1-[meta]/[@.kfSkinCapacity]">
+          <var name="[meta]" validate="true" use_holding_item="false"/>
+        </mea_module>
+      </triggered_effect>
+      <triggered_effect trigger="onSelfEquipStart,onSelfHoldingItemCreated,onSelfRangedBurstShotEnd,onReloadSuccess,onReloadFail" action="SetSkinMaterialProperty,KFCommonUtilityLib" use_holding_item="false" mat_index_fpv="0,1,3" mat_index_tpv="0,1,3" mat_prop="_ShotsHit" is_int="false" value="@.kfSkinExpression">
+        <mea_module module="ExpressionAsCVar,KFCommonUtilityLib" expression="[#kfSkinShotsHit]/[@.kfSkinCapacity]">
+          <!-- Missing H deliberately defaults to zero; do NOT require validation. -->
+          <var name="[#kfSkinShotsHit]" use_holding_item="false"/>
+        </mea_module>
+      </triggered_effect>
+    </effect_group>
+  </append>
+  <append xpath="/item_modifiers/item_modifier[@name='modKFSkin_fnfal_SkinId_9304' or @name='modKFSkin_fnfal_SkinId_9305' or @name='modKFSkin_fnfal_SkinId_9306' or @name='modKFSkin_fnfal_SkinId_9307' or @name='modKFSkin_fnfal_SkinId_9308' or @name='modKFSkin_fnfal_SkinId_9309']">
+    <effect_group name="KF skin toxic FPV inputs">
+      <requirement name="IsLocalPlayer"/>
+      <requirement name="CVarCompare" cvar=".kfSkinCapacity" operation="GT" value="0"/>
+      <triggered_effect trigger="onSelfEquipStart,onSelfHoldingItemCreated,onSelfRangedBurstShotEnd,onReloadSuccess,onReloadFail" action="SetSkinMaterialProperty,KFCommonUtilityLib" use_holding_item="false" mat_index_fpv="0,1" mat_index_tpv="0,1" mat_prop="_UE_AmmoCount" is_int="false" value="@.kfSkinExpression">
+        <mea_module module="ExpressionAsCVar,KFCommonUtilityLib" expression="1-[meta]/[@.kfSkinCapacity]">
+          <var name="[meta]" validate="true" use_holding_item="false"/>
+        </mea_module>
+      </triggered_effect>
+    </effect_group>
+  </append>
+
 </configs>
