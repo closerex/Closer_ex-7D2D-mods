@@ -70,7 +70,7 @@ public static class CommonUtilityPatch
                     {
                         if (!holdingEntity)
                             return;
-                        AnimationAmmoUpdateState.SetAmmoCountForEntity(holdingEntity, holdingEntity.Hand.Held.slotIdx);
+                        AnimationAmmoUpdateState.SetAmmoCountForEntity(holdingEntity.Hand.Held);
                     })
                 });
                 break;
@@ -1249,7 +1249,7 @@ public static class CommonUtilityPatch
     {
         if (!_actionData.invData.holdingEntity.isEntityRemote)
         {
-            AnimationAmmoUpdateState.SetAmmoCountForEntity(_actionData.invData.holdingEntity, _actionData.invData.slotIdx);
+            AnimationAmmoUpdateState.SetAmmoCountForEntity(_actionData.invData);
         }
     }
 
@@ -1375,7 +1375,7 @@ public static class CommonUtilityPatch
         bool local = equipment.m_entity is EntityPlayerLocal;
         for (int i = 0; i < types.Length; i++)
         {
-            var cosmetic = equipment.m_cosmeticSlots[i];
+            var cosmetic = equipment.GetCosmeticSlot(i, false);
             var item = equipment.GetSlotItem(i);
             types[i] = cosmetic != null && cosmetic != ItemClass.MissingItem
                 && (!local || equipment.HasCosmeticUnlocked(cosmetic).isUnlocked)

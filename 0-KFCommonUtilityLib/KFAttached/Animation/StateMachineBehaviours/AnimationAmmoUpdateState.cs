@@ -35,11 +35,23 @@ public class AnimationAmmoUpdateState : StateMachineBehaviour
         }
     }
 
+    // Slot callers resolve current hand state; event callers must pass their exact inventory data.
     public static void SetAmmoCountForEntity(EntityAlive entity, int slot)
     {
         if (entity)
         {
-            var invData = entity.inventory?.Hand?.slotDatas?[slot];
+            var hand = entity.inventory?.Hand;
+            var invData = slot == ItemInventoryData.NoSlot ? hand?.Held :
+                hand?.slotDatas != null ? hand.GetSlotData(slot) : null;
+            SetAmmoCountForEntity(invData);
+        }
+    }
+
+    public static void SetAmmoCountForEntity(ItemInventoryData invData)
+    {
+        var entity = invData?.holdingEntity;
+        if (entity)
+        {
             if (invData?.actionData != null)
             {
                 //var mapping = MultiActionManager.GetMappingForEntity(entity.entityId);

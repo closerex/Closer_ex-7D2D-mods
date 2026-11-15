@@ -236,14 +236,6 @@ namespace KFCommonUtilityLib.Harmony
             ___directories.AddRange(ModManager.GetLoadedMods().Select(mod => mod.Path));
         }
 
-        [HarmonyPatch(typeof(Logger), "Log")]
-        [HarmonyPostfix]
-        private static void Postfix_Log_Logger(Logger.LogChannel channel)
-        {
-            if (channel == Logger.LogChannel.Warn)
-                Log.Out($"Log stacktrace\n{StackTraceUtility.ExtractStackTrace()}");
-        }
-
         [HarmonyPatch(typeof(PatchManager), "GetRealMethod")]
         [HarmonyReversePatch]
         public static MethodBase GetRealMethod(MethodInfo method, bool useReplacement)

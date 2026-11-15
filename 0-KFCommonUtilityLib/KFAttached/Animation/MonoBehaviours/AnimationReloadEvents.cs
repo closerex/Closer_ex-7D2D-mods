@@ -83,7 +83,7 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
         player.FireEvent(MinEventTypes.onReloadStop);
         player.OnReloadEnd();
         player.inventory.CallOnToolbeltChangedInternal();
-        AnimationAmmoUpdateState.SetAmmoCountForEntity(player, actionData.invData.slotIdx);
+        AnimationAmmoUpdateState.SetAmmoCountForEntity(actionData.invData);
         actionData.isReloadCancelled = false;
         actionData.isWeaponReloadCancelled = false;
         actionData.isChangingAmmoType = false;
@@ -127,7 +127,7 @@ public class AnimationReloadEvents : MonoBehaviour, IPlayableGraphRelated
         {
             player.FireEvent(CustomEnums.onPartialReloadAmmoFail);
         }
-        AnimationAmmoUpdateState.SetAmmoCountForEntity(actionData.invData.holdingEntity, actionData.invData.slotIdx);
+        AnimationAmmoUpdateState.SetAmmoCountForEntity(actionData.invData);
 
         if (actionData.isReloadCancelled || actionData.isWeaponReloadCancelled || actionData.invData.itemValue.Meta >= magSize || player.GetItemCount(ammo) <= 0)
         {
