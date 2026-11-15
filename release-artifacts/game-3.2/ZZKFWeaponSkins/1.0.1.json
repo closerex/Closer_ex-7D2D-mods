@@ -1,0 +1,3511 @@
+{
+  "folder": "ZZKFWeaponSkins",
+  "version": "1.0.1",
+  "fileCount": 699,
+  "pinType": "artifact-digest-manifest",
+  "bytes": 10574922605,
+  "game": "3.2",
+  "zip": "ZZKFWeaponSkins_1.0.1.zip",
+  "sourceClaim": "Exact resource archive digest pinned; icon bytes materialized from verified game-3.4 file links. Existing resources retained; no logic or dependency rebuild.",
+  "files": [
+    {
+      "path": ".gitignore",
+      "size": 25,
+      "sha256": "27525F5980F13E2827823C5AA36055E7D23E5685696BC7E25BF38CB58B2E689D"
+    },
+    {
+      "path": "Config/9mm/item_modifiers.xml",
+      "size": 66478,
+      "sha256": "89CEBA61EF667B080A4C0100AD79D7BB8DE1E060F91A8216E75EF9A91E4C2C44"
+    },
+    {
+      "path": "Config/9mm/items.xml",
+      "size": 305,
+      "sha256": "BBE7245196E92D99E4E7FEBADFC69F115D2CABAB50CF37AF721CC138C04581ED"
+    },
+    {
+      "path": "Config/af2011/item_modifiers.xml",
+      "size": 10552,
+      "sha256": "C91B8D9404FDCB9D0D6ADE8CED0EB5650153139BDBE306F951879DE8A3B60A15"
+    },
+    {
+      "path": "Config/af2011/items.xml",
+      "size": 357,
+      "sha256": "B15B751448304BFD131B96F57843BE5E30EC28A1E1FCAE754205601214A7089B"
+    },
+    {
+      "path": "Config/c4/item_modifiers.xml",
+      "size": 6022,
+      "sha256": "F9E12946C87211ED744F0E0E132DC92EF1F6370CE3932041942AADB48757315D"
+    },
+    {
+      "path": "Config/c4/items.xml",
+      "size": 202,
+      "sha256": "B06B68DAEE5B144761E2317FE2F97098142589CD6E30E5BF61086C145BB7184F"
+    },
+    {
+      "path": "Config/centerfiremb464/item_modifiers.xml",
+      "size": 19627,
+      "sha256": "7675B8B0C2EBB90D1EB3D78EAFEBC03AB3BE36516B564CEAAC71208F3DBCAC9A"
+    },
+    {
+      "path": "Config/centerfiremb464/items.xml",
+      "size": 186,
+      "sha256": "399C7E07F158DF0990FC8873EF34B9CE1E9E7FE6E59B5FE3A46C47FDB101947E"
+    },
+    {
+      "path": "Config/eviscerator/item_modifiers.xml",
+      "size": 15064,
+      "sha256": "C16098384512A24DB06B0EC444D78D494DC0EEEE00DCDBD3F62684498353E9AD"
+    },
+    {
+      "path": "Config/eviscerator/items.xml",
+      "size": 222,
+      "sha256": "BCEFBCBFD7574C03271088C3538B4136D6FD70BB8787457DA95E3C4A78489E38"
+    },
+    {
+      "path": "Config/fnfal/item_modifiers.xml",
+      "size": 17010,
+      "sha256": "A8AD7E4C4388954191033572DD6AA8A16A98432EDB664FF6D8FF20D6ED0312F5"
+    },
+    {
+      "path": "Config/fnfal/items.xml",
+      "size": 184,
+      "sha256": "EB13FE0B9096EF0853D297AB7C84FCEA34B3EFE5DA85764799A80AEED2B2DC95"
+    },
+    {
+      "path": "Config/g18/item_modifiers.xml",
+      "size": 6124,
+      "sha256": "C142D49C31A70380F505034EF13CAC9044ADCA3098008752BDD0DB9D9C8F0605"
+    },
+    {
+      "path": "Config/g18/items.xml",
+      "size": 194,
+      "sha256": "19EE13AE0F71142A90C00B30E773C2CE546B623AB7A6066100207D91DF32E2C4"
+    },
+    {
+      "path": "Config/hrg_blastbrawlers/item_modifiers.xml",
+      "size": 2286,
+      "sha256": "64AA842CEE6B1076329F7AF7B7AC017F887DD178B02B399E4AF10E11953783C1"
+    },
+    {
+      "path": "Config/hrg_blastbrawlers/items.xml",
+      "size": 204,
+      "sha256": "7436BDB8C8E27BE35FBAD0D8779B19097795D402AB4A392E7B5A6FA183BF07CA"
+    },
+    {
+      "path": "Config/hrg_kaboomstick/item_modifiers.xml",
+      "size": 2228,
+      "sha256": "7D34C6B14126A8DBFBE3F24D9F12211FAF37ACA743758DA0FCF0DDA38D9DA57E"
+    },
+    {
+      "path": "Config/hrg_kaboomstick/items.xml",
+      "size": 192,
+      "sha256": "14CC194F2D2793F1D9E51D2727F5A8C5A5EF3DDE536C8684AD15EED35975E328"
+    },
+    {
+      "path": "Config/hz12/item_modifiers.xml",
+      "size": 17860,
+      "sha256": "E8E6601B274C3D9A3982B37E3A4BCBCBF818A40857522D68DA9504DE46BCBB97"
+    },
+    {
+      "path": "Config/hz12/items.xml",
+      "size": 182,
+      "sha256": "967EFABD4AAF16A6FCAAA0B0350D252E64FE8B68FE0165A0B868B937C6E319A8"
+    },
+    {
+      "path": "Config/ionthruster/item_modifiers.xml",
+      "size": 7588,
+      "sha256": "BCD202DA3BBC67E79504AFD90F78B66CF4A029E7D16BEA291415C5FE0E368916"
+    },
+    {
+      "path": "Config/ionthruster/items.xml",
+      "size": 222,
+      "sha256": "0C7310058F20DCE93EC75CBA4EF8455C6722C2683D261930F7BC9A9905815B57"
+    },
+    {
+      "path": "Config/item_modifiers.xml",
+      "size": 4638,
+      "sha256": "782E4707BDFB132E7FE1CC7029AA26EBE173129F7B377D43F1029A5E51A0270D"
+    },
+    {
+      "path": "Config/items.xml",
+      "size": 4413,
+      "sha256": "8D8AD60F86BDBDB6C5737A9B827B8DFDBE60C6AC53BC015F4EA8954885D43CF3"
+    },
+    {
+      "path": "Config/Localization.csv",
+      "size": 200195,
+      "sha256": "3A909AC50076808875F3F9F879B1595991DFD37B5F3B96D33DC9F584969D4CE3"
+    },
+    {
+      "path": "Config/m14ebr/item_modifiers.xml",
+      "size": 30172,
+      "sha256": "8E43BDE0AF9E1D529BB4065A1CE72B25D76816AB6B72AD939ADFB0007B2E1890"
+    },
+    {
+      "path": "Config/m14ebr/items.xml",
+      "size": 186,
+      "sha256": "1C04F93FF464969F74595C09E0B8C527A228DC52CD87CC4012A8A57DB407A5F5"
+    },
+    {
+      "path": "Config/m99/item_modifiers.xml",
+      "size": 22606,
+      "sha256": "36173781F0BFBA242050E9FAAD629E2744B48E63E29B77A348F79BB160DEE0DF"
+    },
+    {
+      "path": "Config/m99/items.xml",
+      "size": 180,
+      "sha256": "D4979096C9D6D378E76C2A76465100A3C68AA29CE0995229596C3950610E0EFB"
+    },
+    {
+      "path": "Config/maceandshield/item_modifiers.xml",
+      "size": 28478,
+      "sha256": "2C362F63F4EB83B59EBA84B54D889D00D843B57DBF8DD74B00B09A7F90563706"
+    },
+    {
+      "path": "Config/maceandshield/items.xml",
+      "size": 220,
+      "sha256": "C2DBE32C04F7D9A68BECE1F8B1A4335C04C49D4BF290D4A14313795E3C2C2C16"
+    },
+    {
+      "path": "Config/medicpistol/item_modifiers.xml",
+      "size": 47814,
+      "sha256": "76E21865225FB4F80B315F4881A2841AA7B38BA7933DC105590277D5FDEBC36C"
+    },
+    {
+      "path": "Config/medicpistol/items.xml",
+      "size": 192,
+      "sha256": "606F9A39BFB28195BB9CCCBE144C5FF13DC6C9A4B89224DB9C42889815F4F1C7"
+    },
+    {
+      "path": "Config/medicrifle/item_modifiers.xml",
+      "size": 37768,
+      "sha256": "397E8227CBCCF99DFE18A818D631460965262D10FC3E73AEFFC583BA7E82397B"
+    },
+    {
+      "path": "Config/medicrifle/items.xml",
+      "size": 210,
+      "sha256": "3DD137AF335661DB3C86AA86932B3FA679AC9AD4F58454F248A470ABEADBB714"
+    },
+    {
+      "path": "Config/medicshotgun/item_modifiers.xml",
+      "size": 19030,
+      "sha256": "C588BFC35C8E3542530E0BBD8CB91609BE8027974CBEB9ABA9F31DE9FC826304"
+    },
+    {
+      "path": "Config/medicshotgun/items.xml",
+      "size": 200,
+      "sha256": "F0090FCEE9EDB30B1AECA009C718A1D74A911536084727D1D65F27B2F791E64F"
+    },
+    {
+      "path": "Config/medicsmg/item_modifiers.xml",
+      "size": 21511,
+      "sha256": "665747A1FC05D4A5919D18E60E4195556D931A3189A6AAF20F60105C5D68E654"
+    },
+    {
+      "path": "Config/medicsmg/items.xml",
+      "size": 192,
+      "sha256": "E7121D93FED92FA5D4A2CEF293F38D557641B1BB99A7225A22F08F4E97B292C3"
+    },
+    {
+      "path": "Config/mosinnagant/item_modifiers.xml",
+      "size": 6256,
+      "sha256": "445030B66E08E3FE788A5E20EAE22FEB900662A0DA53CE85FFCA09BA4422853C"
+    },
+    {
+      "path": "Config/mosinnagant/items.xml",
+      "size": 184,
+      "sha256": "D8B5B5D1BC9D814B217F2EC1D50DA88FA81BD4588FBB3DE36B6755F33E3C4611"
+    },
+    {
+      "path": "Config/pistol_g18c/item_modifiers.xml",
+      "size": 7840,
+      "sha256": "949725E5DA4A096D2E40100F71C91EEE24A0D74A3336B76258342FC187682FB2"
+    },
+    {
+      "path": "Config/pistol_g18c/items.xml",
+      "size": 309,
+      "sha256": "1B93D74970E19645CC272A01AFB4CBB213131BE3331E937719EFC57F890976A9"
+    },
+    {
+      "path": "Config/pulverizer/item_modifiers.xml",
+      "size": 46576,
+      "sha256": "1E472AF79D64F0C2A4D17D3167BA72DC3A3B899BDDF0B79F87D75A872EF9B946"
+    },
+    {
+      "path": "Config/pulverizer/items.xml",
+      "size": 216,
+      "sha256": "F275D78E97EB0A900392AE4DE39CD0776A3179B924FD3256AB6E77CF6E4FFE91"
+    },
+    {
+      "path": "Config/sw500_hrg/item_modifiers.xml",
+      "size": 2716,
+      "sha256": "FB9BD5AF147EE3F84132E4031BAA738C749F3AF12159D476D3E711BE357A6B54"
+    },
+    {
+      "path": "Config/sw500_hrg/items.xml",
+      "size": 325,
+      "sha256": "17DBFA05275327DBD9637FBC9A06B027D911C1607EB96E4AB7A8D1D6C931CE77"
+    },
+    {
+      "path": "Config/sw500/item_modifiers.xml",
+      "size": 40240,
+      "sha256": "FE19222C4B41907D395E5979381D368F838732B33B679E0C97607B10BE3B903E"
+    },
+    {
+      "path": "Config/sw500/items.xml",
+      "size": 313,
+      "sha256": "269173CA59BA8E00C24A0A3EB858B11DB045B5991B3A9363399D35DFC64233FA"
+    },
+    {
+      "path": "Config/winchester1894/item_modifiers.xml",
+      "size": 41488,
+      "sha256": "9C90005E43016F87C4792331B83D224550D943D531EA39FADC2D54C059B759D4"
+    },
+    {
+      "path": "Config/winchester1894/items.xml",
+      "size": 182,
+      "sha256": "FF6AB5F9C19DDE7FE0EA81FF1FC09E7B2F485B60AF9A5D9A04D318A3A372F9F3"
+    },
+    {
+      "path": "Config/zweihander/item_modifiers.xml",
+      "size": 11772,
+      "sha256": "FE119FFD34A2D5F2E0C9CB73C75D27B8089E418562C57777237C1E57EDFB03B6"
+    },
+    {
+      "path": "Config/zweihander/items.xml",
+      "size": 220,
+      "sha256": "02D7C685BF2DC79C90EADF28BE8B449BBF9B92DB40370F5994BF4782428E92E6"
+    },
+    {
+      "path": "ModInfo.xml",
+      "size": 299,
+      "sha256": "0C187BD46583F080808B4E73AC0A4B064066327A9176E25C741F08B3C8CBFDB3"
+    },
+    {
+      "path": "README.md",
+      "size": 6648,
+      "sha256": "992295DBCDBEAB2B8DCF5089BE8413B79231C7CFD3612D28000256ACC9E0B76B"
+    },
+    {
+      "path": "Reports/DYNAMIC-PARAMETERS.md",
+      "size": 9261,
+      "sha256": "054CC8A6DF8A392931BE9DC1EB8EDC463476AC4E6636815D41DF212C24612FC1"
+    },
+    {
+      "path": "Resources/_Shaders/kf_standard_specular_dynamic/kf_skin_shader_kf_standard_specular_dynamic.unity3d",
+      "size": 7210997,
+      "sha256": "3419A9F7269D92F01CBA2028AFA7C6BC7E8D514EC9B1802582DA846D3AD41477"
+    },
+    {
+      "path": "Resources/_Shaders/kf_standard_specular_precious_skin/kf_skin_shader_kf_standard_specular_precious_skin.unity3d",
+      "size": 981198,
+      "sha256": "E6A5BA5B3878A53692329BEE0523D4A5E87533CB330A2A36B3B2093C95263B95"
+    },
+    {
+      "path": "Resources/_Shaders/kf_standard_specular_precious/kf_skin_shader_kf_standard_specular_precious.unity3d",
+      "size": 317339,
+      "sha256": "306D10740462274FE6358242E5C5389F209FEC970B5B1EFC993E625555C071A2"
+    },
+    {
+      "path": "Resources/_Shaders/kf_standard_specular_workshop/kf_skin_shader_kf_standard_specular_workshop.unity3d",
+      "size": 16549845,
+      "sha256": "34BDC09B83F1C66BA257AD9263AC68BE655863E87482CB68A1A4367C49E0C919"
+    },
+    {
+      "path": "Resources/_Shaders/kf_standard_specular/kf_skin_shader_kf_standard_specular.unity3d",
+      "size": 2503,
+      "sha256": "70275561FD0E0C092D5815E082E9297A382B3299DFCA56F59628DBA1F15B2443"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_items_gpitem/kf_skin_shader_kf2_items_gpitem.unity3d",
+      "size": 115951,
+      "sha256": "5A9E814E11BF88A7091FEEAB9CCF5ADAED8773AE841D3BEF222E64D50C503E06"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_items_precious/kf_skin_shader_kf2_items_precious.unity3d",
+      "size": 140527,
+      "sha256": "4167B48EED8D1E3909B87C7948A7FC44CB3530BEA9A0AB4E5FD8B9954AB21BCE"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_special_energyoptic/kf_skin_shader_kf2_special_energyoptic.unity3d",
+      "size": 114738,
+      "sha256": "95EB9DB86EE8457A4E8E5574FFAC115D99A063E0265F31EFA41C80E55706D500"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_special_envglass/kf_skin_shader_kf2_special_envglass.unity3d",
+      "size": 43392,
+      "sha256": "74EC2EB451BFB8526F367F5C862890B56E7F5882BBD6A50CE49A091570299777"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_special_kobraoptic/kf_skin_shader_kf2_special_kobraoptic.unity3d",
+      "size": 119246,
+      "sha256": "D7E8E9CAB63285BE35B66BA22CEA514AAA79C71D9D866AD00A9E4ED9F4892B6F"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_special_laserbeam/kf_skin_shader_kf2_special_laserbeam.unity3d",
+      "size": 37159,
+      "sha256": "307210473E7D70DA96453627F1C88308383B653D00462B6CB075C18F8FD09F1A"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_special_maskedmaster/kf_skin_shader_kf2_special_maskedmaster.unity3d",
+      "size": 123143,
+      "sha256": "49A00798A577C9C79B7DAD960A0F54F66D999812DCABAD433615095BF4B85756"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_special_medicoptic/kf_skin_shader_kf2_special_medicoptic.unity3d",
+      "size": 115515,
+      "sha256": "EA5DAC1B4114E7540E90817D972A5750D1376BDC01F7DEF00C27DF51881B71F9"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_special_riotglass/kf_skin_shader_kf2_special_riotglass.unity3d",
+      "size": 95075,
+      "sha256": "FFEB2ED9C16A8A2CC298366EF3C6FF04222CCE740CEB8F7E6CBB83C55C2EB197"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_special_turret1p/kf_skin_shader_kf2_special_turret1p.unity3d",
+      "size": 129120,
+      "sha256": "32E356CA3985761423F5EBD7CDC2B17A0474CA88655751C5617CE1E5A9A9BE9A"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_special_turret3p/kf_skin_shader_kf2_special_turret3p.unity3d",
+      "size": 139053,
+      "sha256": "BC0AB0F41D88DB1B94CB079AE76E291934E81CC409EBF0BB27506DA767480367"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_weapons_basic/kf_skin_shader_kf2_weapons_basic.unity3d",
+      "size": 1973,
+      "sha256": "40B26ADB656136714D36D0D1CED16B39B2D157C3D92CD852A458466D655F1DA3"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_weapons_dynamic2/kf_skin_shader_kf2_weapons_dynamic2.unity3d",
+      "size": 181634,
+      "sha256": "811D464158CCDECBDB8FE53572B07AB241FCD9967A36E7331630528AB9CA1A30"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_weapons_neon_3p/kf_skin_shader_kf2_weapons_neon_3p.unity3d",
+      "size": 187862,
+      "sha256": "6675B03A49C6151A7EDA8759247ED01BFCC57B6E307C0ACA33E7BB7E4D0A4E4D"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_weapons_neon/kf_skin_shader_kf2_weapons_neon.unity3d",
+      "size": 173646,
+      "sha256": "DAAF7F7B3B6A13ED74556CF3F15A32598C2BB735777200C0D8FA9E15C8B57226"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_weapons_preciousskin_3p/kf_skin_shader_kf2_weapons_preciousskin_3p.unity3d",
+      "size": 141256,
+      "sha256": "7F1969BC527817A71C555022A0CB87E3629BDB04BF4F7A88B8F1BAF58382A6A8"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_weapons_toxic/kf_skin_shader_kf2_weapons_toxic.unity3d",
+      "size": 197471,
+      "sha256": "F872621AB4FCBA95399EAF1B6380C279FE5824B64FB1AC7D6D13116BF0B180C4"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_weapons_workshop_3p/kf_skin_shader_kf2_weapons_workshop_3p.unity3d",
+      "size": 178840,
+      "sha256": "09F1D1F24335F1688ABA20EA7749ED4DD63DA6FC76796CBEC3D45FD1115C7481"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_workshop_chameleon/kf_skin_shader_kf2_workshop_chameleon.unity3d",
+      "size": 249300,
+      "sha256": "E218045D28E0DF472AD013183818379CD224648CE766F057995B13F746976AF8"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_workshop_chameleon3p/kf_skin_shader_kf2_workshop_chameleon3p.unity3d",
+      "size": 209400,
+      "sha256": "7FAAED174672EE0FCA14A418BFDE0BD2AF0610DF6A35762479C953C05983A93B"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_workshop_hellblade/kf_skin_shader_kf2_workshop_hellblade.unity3d",
+      "size": 200791,
+      "sha256": "04CCD368D07E089B560DD340F1887C12810B50A4F57CBA587E780C2CDEB123AE"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_workshop_spec_3p/kf_skin_shader_kf2_workshop_spec_3p.unity3d",
+      "size": 172563,
+      "sha256": "C17872F1CEE8A59E0172CFBEB0260D11C5D49F4F6AE431C49AA62DE73E514869"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_workshop_spec_glow_3p/kf_skin_shader_kf2_workshop_spec_glow_3p.unity3d",
+      "size": 176519,
+      "sha256": "4C6CC0D5CD5E451BDE9F33D8B557452936122F620C314B0BC679B9924A9DFA85"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_workshop_spec_glow/kf_skin_shader_kf2_workshop_spec_glow.unity3d",
+      "size": 204012,
+      "sha256": "C8BBFDB65A5C8DA29D8EC2A2102BFF1E2957C590A5EE20F3702F5AF1933A8697"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_workshop_spec/kf_skin_shader_kf2_workshop_spec.unity3d",
+      "size": 189332,
+      "sha256": "6F7F143F8B3FB253EDB83489A01B51E2E7487508D06FFA47361B70125C3B234B"
+    },
+    {
+      "path": "Resources/_Shaders/kf2_workshop_trans/kf_skin_shader_kf2_workshop_trans.unity3d",
+      "size": 198356,
+      "sha256": "DC4FEC95B6B31D23267684A9918E4B30AD2AD904F863A281CAF64EDE612BF5D1"
+    },
+    {
+      "path": "Resources/_Shared/kf_skin_shared_materials.unity3d",
+      "size": 11414,
+      "sha256": "7854950C3427E44F6941C133E4E868B675696A902C25EDD13C8B9CBB99DB3C57"
+    },
+    {
+      "path": "Resources/_Shared/kf_skin_shared_textures.unity3d",
+      "size": 338717175,
+      "sha256": "C8BEE13FA89F8286245D4117A909C9EEE833480EBFEBDD8E7357088A18EC7DB4"
+    },
+    {
+      "path": "Resources/9mm/kf_skin_9mm.unity3d",
+      "size": 71954055,
+      "sha256": "939D5240626B1330F28942E0ECB8F4FDDB57EF842D0796AB2CE5C2DAA2D00280"
+    },
+    {
+      "path": "Resources/aa12/kf_skin_aa12.unity3d",
+      "size": 187589907,
+      "sha256": "6BB5CF503D678C7D58F04CBC75600901E03BED9CE78414E52C06597645749007"
+    },
+    {
+      "path": "Resources/abominationaxe/kf_skin_abominationaxe.unity3d",
+      "size": 74894478,
+      "sha256": "04E77651F483D42F995C6E9A68AF6B441C75B08273F1541DA0A6F77D644C8759"
+    },
+    {
+      "path": "Resources/af2011/kf_skin_af2011.unity3d",
+      "size": 19209363,
+      "sha256": "C0D33E16E96AA28BAEDA11EF850A7F2F6E0FE640D6B1954FE7B986F47A2C321C"
+    },
+    {
+      "path": "Resources/ak12/kf_skin_ak12.unity3d",
+      "size": 190991290,
+      "sha256": "2506AFA7E1332E2E1201B9308DB95F98B114B6D83E65CB3D0A0967444EA3E549"
+    },
+    {
+      "path": "Resources/ar15/kf_skin_ar15.unity3d",
+      "size": 50815985,
+      "sha256": "DFE9151ED77C6725898A493968AD40A542C0410CB497A0B45221734D09054AFE"
+    },
+    {
+      "path": "Resources/autoturret/kf_skin_autoturret.unity3d",
+      "size": 213966473,
+      "sha256": "E611638B4C8A5AB44DDA5A4BB75D27FE99BF64D7E2866A992B66430B1DD45FDE"
+    },
+    {
+      "path": "Resources/bladedpistol/kf_skin_bladedpistol.unity3d",
+      "size": 210515686,
+      "sha256": "9DE9C3D4EE7F267729E4346F0C390AFF0FA3C9B7E5A11C8CBABE1D14148AD292"
+    },
+    {
+      "path": "Resources/blunderbuss/kf_skin_blunderbuss.unity3d",
+      "size": 61952964,
+      "sha256": "11749ADFC825E2BF7CC131698FE3DD4D60BD250059D4E23C58CCEBCE35E0545E"
+    },
+    {
+      "path": "Resources/bullpup/kf_skin_bullpup.unity3d",
+      "size": 60995408,
+      "sha256": "6AB65906B6207F801203F7AB43928EABDC60563336C0C58734038DB6EFF56BCD"
+    },
+    {
+      "path": "Resources/c4/kf_skin_c4.unity3d",
+      "size": 10865280,
+      "sha256": "14DDE27B88D0425B645429FFC08BABE8ACFB6202339FEBBF645648FA24AE90CF"
+    },
+    {
+      "path": "Resources/caulkburn/kf_skin_caulkburn.unity3d",
+      "size": 61524230,
+      "sha256": "DA52B5C0E4BB1F9E56200C067860D3206A8513483B43B4317AD6857C6B689CAC"
+    },
+    {
+      "path": "Resources/centerfiremb464/kf_skin_centerfiremb464.unity3d",
+      "size": 45695645,
+      "sha256": "1FD9D4B728BCDB8FBD7BA72BFCF2889035FC2834AC47B0893332D40F15479DC1"
+    },
+    {
+      "path": "Resources/chainbat/kf_skin_chainbat.unity3d",
+      "size": 19864298,
+      "sha256": "01319FC4FC5BDF7C842235AC32430B30536F08AAF25666A532CF65CA75332A8F"
+    },
+    {
+      "path": "Resources/chiapparhino/kf_skin_chiapparhino.unity3d",
+      "size": 84223862,
+      "sha256": "8E4BDB0AA0BF4607F6A93FDA37530A6F5DEAB774F9145E3B3B99247F31414DFC"
+    },
+    {
+      "path": "Resources/colt1911/kf_skin_colt1911.unity3d",
+      "size": 103294791,
+      "sha256": "BCEB39FAB426D79FA0F5371A6D57B777C12E7784A1F637D5C376A98A02FF7EC4"
+    },
+    {
+      "path": "Resources/compoundbow/kf_skin_compoundbow.unity3d",
+      "size": 57374799,
+      "sha256": "320889B0B8161F95E47C03838B5F4E474B69D85637469AC04DE3D239AD0A2275"
+    },
+    {
+      "path": "Resources/crossbow/kf_skin_crossbow.unity3d",
+      "size": 125920513,
+      "sha256": "1395AC270F5D4ABB88D7A7D0EEFF04A6442A6BBB850C78DD1D29B0A56929481D"
+    },
+    {
+      "path": "Resources/crovel/kf_skin_crovel.unity3d",
+      "size": 50896907,
+      "sha256": "B17B2248A4EFD147FD1B81EC082E81B722C6C5326D296B3B4B7154338FDE3E5D"
+    },
+    {
+      "path": "Resources/deagle/kf_skin_deagle.unity3d",
+      "size": 236961827,
+      "sha256": "944745AF2F04FF2BCFD7F7F2BE65F4A0AB3D875E403ED8EC2831BFA64EE6EFAC"
+    },
+    {
+      "path": "Resources/doshinegun/kf_skin_doshinegun.unity3d",
+      "size": 253512746,
+      "sha256": "C450D4106E0CF09211A5A7E51D2EE643A570C0234AFD3A5EA62F8AF7EC8FC99B"
+    },
+    {
+      "path": "Resources/doublebarrel/kf_skin_doublebarrel.unity3d",
+      "size": 135493333,
+      "sha256": "3D04C66A8815DE1D195C751ED918CD1B8AE7B6F07B4FBF9576F197DCE32CC8BA"
+    },
+    {
+      "path": "Resources/dragonsbreath/kf_skin_dragonsbreath.unity3d",
+      "size": 147972067,
+      "sha256": "90006A6581CB57C256E5B6B71184184B659A7554CA7260914FFB95FECAF93547"
+    },
+    {
+      "path": "Resources/elephantgun/kf_skin_elephantgun.unity3d",
+      "size": 197305214,
+      "sha256": "4631D705766A443DF60CEE15B8A479F9EC418F0E96A0D6AD63FB846A20729C10"
+    },
+    {
+      "path": "Resources/eviscerator/kf_skin_eviscerator.unity3d",
+      "size": 23562602,
+      "sha256": "43C4EF82816468B7C09CD8E15C8DD365409B1503E7CC06DD8B0C3467E626BEB8"
+    },
+    {
+      "path": "Resources/famas/kf_skin_famas.unity3d",
+      "size": 201091572,
+      "sha256": "A7207A39A5858B3710FC388E113AC549D8B2D29C29B43335640ADCC90BE53FB6"
+    },
+    {
+      "path": "Resources/fireaxe/kf_skin_fireaxe.unity3d",
+      "size": 42652502,
+      "sha256": "39B8E1D4203E9E8063DC2C4C95396D1A678026E6CF613FD7C081A7F1DFBF062B"
+    },
+    {
+      "path": "Resources/flamethrower/kf_skin_flamethrower.unity3d",
+      "size": 95485515,
+      "sha256": "198E6F7ECA22FAD9B39741F8991FA75CB1AC0570F036DF4752872E75BA6232D8"
+    },
+    {
+      "path": "Resources/flaregun/kf_skin_flaregun.unity3d",
+      "size": 60711341,
+      "sha256": "B1493E895D88F1A4C61BD1FEA08B86EA235FAE8396F726A4C75CD8DA80DF69C8"
+    },
+    {
+      "path": "Resources/fnfal/kf_skin_fnfal.unity3d",
+      "size": 131053183,
+      "sha256": "D448DDF134C7F2F6C0B222FFC0B6EEDA9F3C8DC72693C1EC6ECC0BFF4A3DEAFC"
+    },
+    {
+      "path": "Resources/freezethrower/kf_skin_freezethrower.unity3d",
+      "size": 62359092,
+      "sha256": "6651A31070F9D1A5D8A256965092FF3814E28098C49602F34942FF174A97B385"
+    },
+    {
+      "path": "Resources/g18/kf_skin_g18.unity3d",
+      "size": 39590667,
+      "sha256": "B447906F22C7891284491A69710486AF930C2129A6D340BD6BF4BA15B531B2FD"
+    },
+    {
+      "path": "Resources/g36c/kf_skin_g36c.unity3d",
+      "size": 247671149,
+      "sha256": "0D3E863EC07D5E767F2F3119DA0C3582327B6420C4E6CE29BBADCBFBAADBB157"
+    },
+    {
+      "path": "Resources/gravityimploder/kf_skin_gravityimploder.unity3d",
+      "size": 58697262,
+      "sha256": "D77E7840274A885BD2DE2ACC3FDA270DCAFEA55D42214748C54F0D8F1482CC9F"
+    },
+    {
+      "path": "Resources/healer/kf_skin_healer.unity3d",
+      "size": 41409989,
+      "sha256": "E46681366FB875AFA2A7E095A050AC76C1510661E3634F6C578D75570B0E7111"
+    },
+    {
+      "path": "Resources/healthrower_hrg/kf_skin_healthrower_hrg.unity3d",
+      "size": 11968664,
+      "sha256": "C8633B8E01DC13C78AB38F69D063181BBEB20B275EA6263DA7009E90C1C70CD2"
+    },
+    {
+      "path": "Resources/hemogoblin/kf_skin_hemogoblin.unity3d",
+      "size": 79049197,
+      "sha256": "D7CF4594846BB7AEE459BFAD9EA6E510A7F18ED86B73C58275D136437F31857F"
+    },
+    {
+      "path": "Resources/hk_ump/kf_skin_hk_ump.unity3d",
+      "size": 187691972,
+      "sha256": "C782B4FB4A3B97BD15E5C17078003F2FE13ADABB753EE18EF64F2BCCA1FEB7FB"
+    },
+    {
+      "path": "Resources/hrg_93r/kf_skin_hrg_93r.unity3d",
+      "size": 60255054,
+      "sha256": "81E927E19AB39AB9A1E5542848D800540998F4C0CE75B397EDF970105D6E19A8"
+    },
+    {
+      "path": "Resources/hrg_ballisticbouncer/kf_skin_hrg_ballisticbouncer.unity3d",
+      "size": 73350049,
+      "sha256": "A53C39217273003BDC2BB16F7E90228DF3F7A2676003D67FBAD6843D96FD798E"
+    },
+    {
+      "path": "Resources/hrg_barrierrifle/kf_skin_hrg_barrierrifle.unity3d",
+      "size": 84880196,
+      "sha256": "0EDDF594251951E767F2BE79A6A26E52949AF9AD6C499A98B74288B884FB2A2E"
+    },
+    {
+      "path": "Resources/hrg_blastbrawlers/kf_skin_hrg_blastbrawlers.unity3d",
+      "size": 17685131,
+      "sha256": "C3302D16506E7819D204D3FFA44A478FDD1F362143929043CF67609BEBA32414"
+    },
+    {
+      "path": "Resources/hrg_boomy/kf_skin_hrg_boomy.unity3d",
+      "size": 28473160,
+      "sha256": "D087E306F0B2CE9357217153922FBDB86565EFD6F23C4B7E6A6632A3CCC12FC8"
+    },
+    {
+      "path": "Resources/hrg_cranialpopper/kf_skin_hrg_cranialpopper.unity3d",
+      "size": 84300275,
+      "sha256": "223FB46797245BD434E114FB428639558AE96E4237CCA92EB5F3DD2F17D516B9"
+    },
+    {
+      "path": "Resources/hrg_crossboom/kf_skin_hrg_crossboom.unity3d",
+      "size": 56071985,
+      "sha256": "25346DFEF2E32A01572FB2DA928DADC2A2D3ADE49E3323150E38F5F21EB6711E"
+    },
+    {
+      "path": "Resources/hrg_dragonbreath/kf_skin_hrg_dragonbreath.unity3d",
+      "size": 99477050,
+      "sha256": "7879B01E8CC736E3384F421900058C8EAB7ABBAC4789C03CB5C54C59B461AA4B"
+    },
+    {
+      "path": "Resources/hrg_emp_arcgenerator/kf_skin_hrg_emp_arcgenerator.unity3d",
+      "size": 32636546,
+      "sha256": "8305F3309D385E2FB85140A2ECCDD67EDCA380401FA84FA21C3B99E9E84BE4B2"
+    },
+    {
+      "path": "Resources/hrg_energy/kf_skin_hrg_energy.unity3d",
+      "size": 46715877,
+      "sha256": "C1CB7CFE76D1E47664A7DD16FC2298047CC8487E3034B22D082E2051917A0A05"
+    },
+    {
+      "path": "Resources/hrg_kaboomstick/kf_skin_hrg_kaboomstick.unity3d",
+      "size": 6634479,
+      "sha256": "D613E59585D8B846D7E22CE19F5125E7077056095CEE5917D57CF7E4AD618398"
+    },
+    {
+      "path": "Resources/hrg_locust/kf_skin_hrg_locust.unity3d",
+      "size": 90080703,
+      "sha256": "519AD93BFE2661B5DCF09237B81A1D295298FB4A89CF636B2558C37F2FE79B8A"
+    },
+    {
+      "path": "Resources/hrg_medicmissile/kf_skin_hrg_medicmissile.unity3d",
+      "size": 44960625,
+      "sha256": "CE4BAA2C392B23BBA3938E0F140388C4C8074D8E8490EE31988A4DDA10D47EB2"
+    },
+    {
+      "path": "Resources/hrg_sonicgun/kf_skin_hrg_sonicgun.unity3d",
+      "size": 24049624,
+      "sha256": "7CD5B4B97E8E0DD15398004ECBF5A4BAB95656666269FECBD3A40533C2E495D4"
+    },
+    {
+      "path": "Resources/hrg_stunner/kf_skin_hrg_stunner.unity3d",
+      "size": 52773679,
+      "sha256": "19C8C32368F21ED67EE2E1831F8FFF6CBF0C138759EABB6061E068DC7E84FA00"
+    },
+    {
+      "path": "Resources/hrg_vampire/kf_skin_hrg_vampire.unity3d",
+      "size": 14371562,
+      "sha256": "90C4D1D82596B3CCC4ECB44DFF546E8F91741C9E30EC2A7B9DC8407782598F83"
+    },
+    {
+      "path": "Resources/hrgincendiaryrifle/kf_skin_hrgincendiaryrifle.unity3d",
+      "size": 46362183,
+      "sha256": "3C073A54F1DD7945753CBE19360A50C9E4EE2D63F0207549BF45C6BED416E716"
+    },
+    {
+      "path": "Resources/hrgincision/kf_skin_hrgincision.unity3d",
+      "size": 10868936,
+      "sha256": "163EC032A9C18CE6D93324D852736796DFABD3FD99B2F50EC51ED8B971492B4F"
+    },
+    {
+      "path": "Resources/hrgscorcher/kf_skin_hrgscorcher.unity3d",
+      "size": 6346225,
+      "sha256": "0A5E8D4BC920E29CDB048A3870AF0B34FC11216DD7F13E9808888FF14AAC1876"
+    },
+    {
+      "path": "Resources/hrgteslauncher/kf_skin_hrgteslauncher.unity3d",
+      "size": 7711049,
+      "sha256": "0111C3DAA9AD3C57612A5C77F11F1267E342F142DF4699A7E676429AF6D07E5E"
+    },
+    {
+      "path": "Resources/hrgwinterbite/kf_skin_hrgwinterbite.unity3d",
+      "size": 12482502,
+      "sha256": "0CC289E1669A37E3448F34C9B9E34268F025CD562CAC3C381469CA9A6A0BB3EC"
+    },
+    {
+      "path": "Resources/huskcannon/kf_skin_huskcannon.unity3d",
+      "size": 9411133,
+      "sha256": "A45E39BDC314A36CACD6383BBA7942206102B9E77F8255029E770CDC83927D38"
+    },
+    {
+      "path": "Resources/hvstormcannon/kf_skin_hvstormcannon.unity3d",
+      "size": 267213032,
+      "sha256": "E576E4C20771E55155923C49C0FCF80CEDBE3A5DABA190388E9B1542CE3C2B21"
+    },
+    {
+      "path": "Resources/hx25/kf_skin_hx25.unity3d",
+      "size": 13530250,
+      "sha256": "D0A1074F9C3534BEF924467A14A50FC69921838A7520FF8BD7A4099AED58D466"
+    },
+    {
+      "path": "Resources/hz12/kf_skin_hz12.unity3d",
+      "size": 59195823,
+      "sha256": "98E9BBE330C75D27A8347B60CF0CEC645E2812E220EE22B67A236EA4BECBA939"
+    },
+    {
+      "path": "Resources/ionthruster/kf_skin_ionthruster.unity3d",
+      "size": 17669495,
+      "sha256": "D5DC440F820D3A2C74C235C037531F94579C0C2996B0DF34192419EA0FD12439"
+    },
+    {
+      "path": "Resources/katana/kf_skin_katana.unity3d",
+      "size": 44323320,
+      "sha256": "CF6EFA47D805676D64E597F2239C0640EF4224FC1B8FA93DEEB62832F0528422"
+    },
+    {
+      "path": "Resources/knife_berserker/kf_skin_knife_berserker.unity3d",
+      "size": 23315990,
+      "sha256": "5AAED3788428DAD60499BE3E70FD4187E7B860B3CABFCAE17E8DBD6B2708ADBB"
+    },
+    {
+      "path": "Resources/knife_commando/kf_skin_knife_commando.unity3d",
+      "size": 17905753,
+      "sha256": "E996C7F37FB6CCEE63D3461EF3FAC108087F4AF310B3235E5415C9E171EB5471"
+    },
+    {
+      "path": "Resources/knife_demo/kf_skin_knife_demo.unity3d",
+      "size": 13937740,
+      "sha256": "829EABC60F0899B37E5C32F8BF73FFFB9A9AC300D2D19937D54C975FAAC22D47"
+    },
+    {
+      "path": "Resources/knife_firebug/kf_skin_knife_firebug.unity3d",
+      "size": 27983816,
+      "sha256": "3A18E50A339C14A4BFF9E37939FB1DF00802E73759D7D444723505616CB26036"
+    },
+    {
+      "path": "Resources/knife_gunslinger/kf_skin_knife_gunslinger.unity3d",
+      "size": 16316757,
+      "sha256": "CC883A622E0C97E9DA61308EFFBEFC0D0AE7C0C6F8C6CFCB4A7F0D1BC9293846"
+    },
+    {
+      "path": "Resources/knife_medic/kf_skin_knife_medic.unity3d",
+      "size": 13619328,
+      "sha256": "369CB49DD94F247B39BC798F035AE3E89CBE65B22FA6BB981EDA66532EE5E31D"
+    },
+    {
+      "path": "Resources/knife_sharpshooter/kf_skin_knife_sharpshooter.unity3d",
+      "size": 9382493,
+      "sha256": "1294FE3195292B6DB6A130FD9F311D49F638004CE8BD9BAAA3443E791B7FA90C"
+    },
+    {
+      "path": "Resources/knife_support/kf_skin_knife_support.unity3d",
+      "size": 17712743,
+      "sha256": "5B056607AC7CF1EEF4FCCBF80F4A1909ABCC55C6C6E63A4B3FD18C22C4D18908"
+    },
+    {
+      "path": "Resources/knife_survivalist/kf_skin_knife_survivalist.unity3d",
+      "size": 38040039,
+      "sha256": "63C85A04504276E6D728E27C616F15CABDE9AE972772B2A7FC2D311FE2C48370"
+    },
+    {
+      "path": "Resources/knife_swat/kf_skin_knife_swat.unity3d",
+      "size": 11592736,
+      "sha256": "E8C93FAEF64C7373A263C58984589A3CF41E068C72DB0FB625E1BCD0EA3B8C12"
+    },
+    {
+      "path": "Resources/kriss/kf_skin_kriss.unity3d",
+      "size": 198607872,
+      "sha256": "6F34611DD8FFF03D31A7D42D2CF50612A622F8262D394F23AE724F72DF797881"
+    },
+    {
+      "path": "Resources/lazercutter/kf_skin_lazercutter.unity3d",
+      "size": 104763306,
+      "sha256": "8A5ACFAFE979A918934F10AAABE3CF5BA24F87376FE5425C63E899CAEA871A39"
+    },
+    {
+      "path": "Resources/m14ebr/kf_skin_m14ebr.unity3d",
+      "size": 150912721,
+      "sha256": "27A5FAA041043C3BC4DD03B5665E740351C53B3C48A09F8E95CC803320272FDE"
+    },
+    {
+      "path": "Resources/m16m203/kf_skin_m16m203.unity3d",
+      "size": 88939220,
+      "sha256": "E7D6CF0F4CB5FA577BBB1332E6292CC7C048AA1B751EFC0DE717590352A4C7FD"
+    },
+    {
+      "path": "Resources/m32/kf_skin_m32.unity3d",
+      "size": 149327042,
+      "sha256": "18457B03E279951284068CEBC5ACBA5D2BDF19BAA2872A66A5C08561B43C868F"
+    },
+    {
+      "path": "Resources/m4/kf_skin_m4.unity3d",
+      "size": 102956767,
+      "sha256": "CD6CC72ABC2429F3F153AEFD5A94ED33882076E62CE3F6035F9B1E32739FE604"
+    },
+    {
+      "path": "Resources/m79/kf_skin_m79.unity3d",
+      "size": 153963304,
+      "sha256": "33AE2BCF88A59F03DD6E22947A0858D6C7ED8FB45CBF0ABB97A8D589DE7FF467"
+    },
+    {
+      "path": "Resources/m99/kf_skin_m99.unity3d",
+      "size": 164187369,
+      "sha256": "FFA3BFD9E19AED7316E4272709AA2880BC6C6135020DAE76DA395CD22C2AFD81"
+    },
+    {
+      "path": "Resources/mac10/kf_skin_mac10.unity3d",
+      "size": 111049731,
+      "sha256": "4C961C24DFCEA6AA8C841C6F8352D64D2BAB31CBD4D2A5D98D19AB04A849DB78"
+    },
+    {
+      "path": "Resources/maceandshield/kf_skin_maceandshield.unity3d",
+      "size": 103013628,
+      "sha256": "E3153CEDEBA9BA428A3728029B3E020D51D086B0BF4A2E1DB0CA8B82AD2B2940"
+    },
+    {
+      "path": "Resources/mb500/kf_skin_mb500.unity3d",
+      "size": 49620738,
+      "sha256": "D4F54E5A4C7D533CE3710C1F5B2B51E54A29AAFAE100D6ADB4F44E5CFC4CF24D"
+    },
+    {
+      "path": "Resources/medicbat/kf_skin_medicbat.unity3d",
+      "size": 134034857,
+      "sha256": "D1E2DAFF89CCAD3A680B39F0DFB05C656B839E932AB07B8C9CB5784A0DCCF0A3"
+    },
+    {
+      "path": "Resources/medicpistol/kf_skin_medicpistol.unity3d",
+      "size": 19558679,
+      "sha256": "A5662AA2A94663284CE299A3165C6C45EFE4151C1000ECCC7DD330563E42A423"
+    },
+    {
+      "path": "Resources/medicrifle/kf_skin_medicrifle.unity3d",
+      "size": 65505943,
+      "sha256": "B370F34D1A11F5919AC660B8C8A4F3BB229888D2E4E836FEC561CD9DF141D9AB"
+    },
+    {
+      "path": "Resources/medicriflegrenadelauncher/kf_skin_medicriflegrenadelauncher.unity3d",
+      "size": 58847559,
+      "sha256": "B6CF398AA10D1A0B9FA517A46DF441C40258D8A6565C28D799C4458150A1B0FE"
+    },
+    {
+      "path": "Resources/medicshotgun/kf_skin_medicshotgun.unity3d",
+      "size": 24448055,
+      "sha256": "43DBA9220D42E28D508EE5CF10C0D6015CCD877EBBAAFC73F1B770AA5E56504F"
+    },
+    {
+      "path": "Resources/medicsmg/kf_skin_medicsmg.unity3d",
+      "size": 23791173,
+      "sha256": "55582A02432FB67F1623938D8E00FB966CF1771F6BEEED9E91FCDECAA30F7BD9"
+    },
+    {
+      "path": "Resources/mg3/kf_skin_mg3.unity3d",
+      "size": 215875287,
+      "sha256": "11CFEBBCE762ECC369786C81A2812A4C9F0C7ED977439D39174F745903F65B46"
+    },
+    {
+      "path": "Resources/microwavegun/kf_skin_microwavegun.unity3d",
+      "size": 85534657,
+      "sha256": "E266B143226D0D3DB00B64655A58512FF6737AA3DCBD5260F3FAE4AB1E32AF2C"
+    },
+    {
+      "path": "Resources/microwaverifle/kf_skin_microwaverifle.unity3d",
+      "size": 93266499,
+      "sha256": "1F3F5A4EF0C8EADE6013AC0138AFAA01F67E1306E7526CC687DAE67B10D9C098"
+    },
+    {
+      "path": "Resources/mine_reconstructor/kf_skin_mine_reconstructor.unity3d",
+      "size": 71010283,
+      "sha256": "A02B06BDE7456367FE29967BBBFE99994D9DC4AF278BDC62F9F01E89F9A3352D"
+    },
+    {
+      "path": "Resources/minigun/kf_skin_minigun.unity3d",
+      "size": 63967191,
+      "sha256": "DA57888D843040B7BE2CDD06726EDCEA5548921EBA93B8C52A36C87C9E3F0871"
+    },
+    {
+      "path": "Resources/mkb42/kf_skin_mkb42.unity3d",
+      "size": 84025680,
+      "sha256": "1F21DFD1E0ABC2A62C589522D8292427B8DA45A709E32460E2F34A114C39B8B7"
+    },
+    {
+      "path": "Resources/mosinnagant/kf_skin_mosinnagant.unity3d",
+      "size": 12669670,
+      "sha256": "8E44A5A282401D788AAF4D8BB8133301A2ABE14AE48B6D2198EFFE98C92B826C"
+    },
+    {
+      "path": "Resources/mp5ras/kf_skin_mp5ras.unity3d",
+      "size": 157518623,
+      "sha256": "F8DBAB5A5793E60F41831D29C5016C874C8BECC82106205F7A3028CB7C2ED00C"
+    },
+    {
+      "path": "Resources/mp7/kf_skin_mp7.unity3d",
+      "size": 68986745,
+      "sha256": "6A2857F68438785CAA5CD88C4BDDE8DB9A93F942B893B2F75807CF9878A2952D"
+    },
+    {
+      "path": "Resources/nailgun_hrg/kf_skin_nailgun_hrg.unity3d",
+      "size": 6039746,
+      "sha256": "78C01904E6CBB1CD289C2BA703E763E46DEF3CE728E3AC49D4AC94EBF2FD3CB1"
+    },
+    {
+      "path": "Resources/nailgun/kf_skin_nailgun.unity3d",
+      "size": 30681186,
+      "sha256": "CDD790AEC3453134772190A0DFD3E235109B6214F5233607531BD30B0671A6C7"
+    },
+    {
+      "path": "Resources/p90/kf_skin_p90.unity3d",
+      "size": 213503252,
+      "sha256": "9BBB77EE79535BC2D6CD7472E5563BC6F28991529DC5FE08117AE4E19995BC66"
+    },
+    {
+      "path": "Resources/parasiteimplanter/kf_skin_parasiteimplanter.unity3d",
+      "size": 370773405,
+      "sha256": "D54C040749116A34CD155C4CC598FD0F05B2170060DAD0EF6DF2D5934FE4C883"
+    },
+    {
+      "path": "Resources/pistol_g18c/kf_skin_pistol_g18c.unity3d",
+      "size": 42357432,
+      "sha256": "369B6F514C13A1971C5B9FADA8AA0F56E2400DB9448FE639AE8D7DF707171032"
+    },
+    {
+      "path": "Resources/powergloves/kf_skin_powergloves.unity3d",
+      "size": 95425017,
+      "sha256": "72AA38472308048954795A10147FF0BF20419CFD87FEBF65C877055B6E5718E2"
+    },
+    {
+      "path": "Resources/pulverizer/kf_skin_pulverizer.unity3d",
+      "size": 128359716,
+      "sha256": "BDFB0D6A7233981894B2FE10B4800BB5E1BE31F2607A4F335926879A278A7FDB"
+    },
+    {
+      "path": "Resources/railgun/kf_skin_railgun.unity3d",
+      "size": 100752673,
+      "sha256": "D6BBBE5C27426FC27D9B2249B3B1045F9AB839D8A3D37B97C3716964F73E6C94"
+    },
+    {
+      "path": "Resources/remington1858/kf_skin_remington1858.unity3d",
+      "size": 66496414,
+      "sha256": "E315BFFEDE0F1A9F07C6C65CBD5898BF2EAA184A72D5340BED98D0329BDAB0B2"
+    },
+    {
+      "path": "Resources/rifle_frostshotgunaxe/kf_skin_rifle_frostshotgunaxe.unity3d",
+      "size": 135212484,
+      "sha256": "663C0E7DD13A6042AE097C705060B0FCBE80A96A3490B4166F1AF5DA926A60E1"
+    },
+    {
+      "path": "Resources/rpg7/kf_skin_rpg7.unity3d",
+      "size": 213312489,
+      "sha256": "2B5FFE212865F62535136076471D8FE30CA81123BFB8DDF37EDA9BC48362A707"
+    },
+    {
+      "path": "Resources/scar/kf_skin_scar.unity3d",
+      "size": 277704979,
+      "sha256": "C2B3F8DD77D05525E816C957D82D649A81F46FD03828F537174733D8E335645D"
+    },
+    {
+      "path": "Resources/scythe/kf_skin_scythe.unity3d",
+      "size": 298761028,
+      "sha256": "86DA3669E68211F8D5DE55D9EC50CE42769C2330066B753E895B426AA67D8EAB"
+    },
+    {
+      "path": "Resources/sealsqueal/kf_skin_sealsqueal.unity3d",
+      "size": 91453925,
+      "sha256": "51577168D016A69F6FD6BEE7989CE8059CFEF5DACEC5BC4E2859DB05F0BD22E0"
+    },
+    {
+      "path": "Resources/seeker6/kf_skin_seeker6.unity3d",
+      "size": 64748811,
+      "sha256": "9FB2CD30F62E30DCB6B4EC996D734C246B584F5CB167387712B174EC5C020928"
+    },
+    {
+      "path": "Resources/shotgun_s12/kf_skin_shotgun_s12.unity3d",
+      "size": 210414403,
+      "sha256": "B670D143C4E3DA434F8B704B9D07A146FBB8294CD03D657C16DB65D7A125C7C3"
+    },
+    {
+      "path": "Resources/shrinkraygun/kf_skin_shrinkraygun.unity3d",
+      "size": 185181707,
+      "sha256": "D4873891DB1AB25636846832B3C22CC67938E9C6AE21F0DD7CD3E22C13BFC264"
+    },
+    {
+      "path": "Resources/stoner63a/kf_skin_stoner63a.unity3d",
+      "size": 91906955,
+      "sha256": "B20BA6BF646C8B790BEA8D7095077F6F32B6B325DC589EA220420AEF6E1C1FB7"
+    },
+    {
+      "path": "Resources/sw500_hrg/kf_skin_sw500_hrg.unity3d",
+      "size": 6470312,
+      "sha256": "DC58B594B5F6B7833D480D78E18D00415DCAC1C0FA1FDB05B99D001B1AFF48DF"
+    },
+    {
+      "path": "Resources/sw500/kf_skin_sw500.unity3d",
+      "size": 70422600,
+      "sha256": "58566754EB437A6965B74508D4679A8A05F458477BD04CAAB1DDECE299F86FF1"
+    },
+    {
+      "path": "Resources/thermitebore/kf_skin_thermitebore.unity3d",
+      "size": 197268282,
+      "sha256": "16F107EDEB49D0F8B7CDBD06352E4331FFE8B4BF7AB517F9718FE93133B13416"
+    },
+    {
+      "path": "Resources/thompson/kf_skin_thompson.unity3d",
+      "size": 128252947,
+      "sha256": "411FA6B08B4ABB36F401922C92E73FFC084D81FAD1A6935D814D415FCEB1359A"
+    },
+    {
+      "path": "Resources/welder/kf_skin_welder.unity3d",
+      "size": 46927914,
+      "sha256": "E23698F00107A21E4BC73924A8E2FF11B8D0F33F40A9FA763FF4EA71DEE61B7A"
+    },
+    {
+      "path": "Resources/winchester1894/kf_skin_winchester1894.unity3d",
+      "size": 55398154,
+      "sha256": "EA9B21D9204414FB3BA5ECCF4208B074074740CA97B56A5C49D3D900D3E52589"
+    },
+    {
+      "path": "Resources/zedmkiii/kf_skin_zedmkiii.unity3d",
+      "size": 164839864,
+      "sha256": "77ACD9197590CBF69433DC38235DFAA1CCCBE66EAF0486064999E522AC6D259F"
+    },
+    {
+      "path": "Resources/zweihander/kf_skin_zweihander.unity3d",
+      "size": 25907285,
+      "sha256": "4001D75D3C5619E3018BA9F61CAC5252F2E33EA18FCE73EAD37DE3519B9EB65F"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_3004.png",
+      "size": 233118,
+      "sha256": "67D5A30297DFE7F5B41002DE094855EF176FB55BC4EE4CA89106FCAFA5A92F95"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_3005.png",
+      "size": 248673,
+      "sha256": "B723A3E56D90CE9864CC14A3B1BF6321559A6FD578A1010C51492AEC55D8A83F"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_3006.png",
+      "size": 262115,
+      "sha256": "5B2E647E1067AEF8DB6BA9D2BDF6B4C7747E36C2B924148CA6968AD6C2429D82"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_3025.png",
+      "size": 251587,
+      "sha256": "7359D695D477E92CA403F6076CB2BFC402145F412059E9F3A91D62642B0F1750"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_3026.png",
+      "size": 259201,
+      "sha256": "E07E187282D81206DE97B7FB7BCA3E9037590B32CCAF8329D0247A61A400FF47"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_3027.png",
+      "size": 269954,
+      "sha256": "999D30D2A65C4228A5D994D0DC8A498F456D248BF337F819E0EDE302EA5CE736"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_3362.png",
+      "size": 254929,
+      "sha256": "C6521223CF95973F269C957599B5D7CA247C9F143BB21722974341C744ECEA54"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_3363.png",
+      "size": 245756,
+      "sha256": "DB13BC9E753943F88A22E9153CD3F49890D4D92275DD25B3CB40BF2B35093F29"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_3364.png",
+      "size": 239864,
+      "sha256": "5777ACB41521D1A5B7417809D049C1BE6DA93A0F25BD99AF54180577EA476B25"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_3380.png",
+      "size": 255639,
+      "sha256": "CCE90E91B29191004517BCD167F8DF69E8405F7ABBFEDBF017181712B639A4FD"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_3381.png",
+      "size": 244447,
+      "sha256": "675681A5E4CB7E4AB7CA813D2A601CC27C07C9BE8C1E3A0F4D1248E8B5656C7F"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_3382.png",
+      "size": 232228,
+      "sha256": "CB27DC2C6AC1B946D36DD80D5DE41C56038E739BDFEB4D4F7A7C52B5EC964359"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_3389.png",
+      "size": 235175,
+      "sha256": "4B5D394871D270307E2EE15A358F954B396ECF3A1A88A49BE31DC627FD884421"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_3390.png",
+      "size": 235495,
+      "sha256": "19AB4431CB9437019D0F88046DFB346F653678BC728DF19BD685D083BBB6413D"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_3391.png",
+      "size": 229518,
+      "sha256": "42DF1F7FACC3F9E3699E4D7491C72261D4D69E6291F6E610D79A527FCA711CA3"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_3422.png",
+      "size": 240321,
+      "sha256": "35FA5B63B4AF97A0C9C887E5F0ED07B9E2B8B946B30860CFDFACCF73E75CEAB3"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_3982.png",
+      "size": 260830,
+      "sha256": "E2559BFABAF4F72E9F84009FDBE2DB89F3410FBEBB0626DCE1A1194A205C02BD"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_3983.png",
+      "size": 260742,
+      "sha256": "8C7B68A02E4361ABDE0FE90DFDD2CB6D305A87469531E85881A551E7156B0F3C"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_3984.png",
+      "size": 256776,
+      "sha256": "11BFA0B7A7F8966F5DF8EA83D37B0A1ECBEFC29D5B1A79371D941497140240FC"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_4003.png",
+      "size": 268547,
+      "sha256": "D3016BEAECA5ACB0948A072DB806563523B184596A80DC0ABE4CBBF7DC36AB7B"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_4004.png",
+      "size": 259505,
+      "sha256": "4208AAB4C4842600FE09A93CC089D617893D9216B1FB95747D416AFA5884FA90"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_4005.png",
+      "size": 252738,
+      "sha256": "7745C492B4F07A15BDD25401CAD617769FC3999663448B262C2D4A70BEF9C026"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_4006.png",
+      "size": 267713,
+      "sha256": "B54B98E69DCBA8B01059A746414E96AC68E05216C431EF5B2F5A5128F108CAFC"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_4007.png",
+      "size": 264342,
+      "sha256": "CA78EA06BFDA37597D67938FF39CC35A46143BA3B2B922C8BE44F3486880619B"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_4008.png",
+      "size": 261291,
+      "sha256": "44E398FA647767F919DF176CC1259F6BA1136D5754332AC2A4FBEFEB42F52B82"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_4308.png",
+      "size": 241290,
+      "sha256": "553112DAA0C6EED8BA2C3B88BE9F0D5D83A5F3CF5061B8C7E7D1112FDBB7B2D7"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_4309.png",
+      "size": 236477,
+      "sha256": "58E89FDFC687EE369A7A6E35A4F66537B4CE15519047B3673502D82D5F8DEE51"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_4310.png",
+      "size": 231028,
+      "sha256": "7101602ED9805759F1A740E5A563E01A3B5CDD13C28D4E7D39957B072CE8B79A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_4331.png",
+      "size": 250893,
+      "sha256": "205AA827261A90A8B5C046F7270F436EF7E3DA41F45246D8B56BAA07EF52092A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_4334.png",
+      "size": 253124,
+      "sha256": "4197CE3FFF2118B87F2C8B29C21CCEC2AD954E905692F5715052EF0197171A9F"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_4337.png",
+      "size": 241397,
+      "sha256": "CFFB414F62F327A66B378709AB8A740B2487FA3FFCDFF794BFD839725CA82799"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_4340.png",
+      "size": 244419,
+      "sha256": "1057E02DB39EB88E300BD5FC18680F431A4B012B2AF68B7B64BEAB461088A91B"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_4357.png",
+      "size": 255345,
+      "sha256": "57D5E29E49451B43000893F5D9916AE81A9AD9B72A5597B0BEE5E60D2DBE973E"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_4358.png",
+      "size": 248298,
+      "sha256": "5FC99F0098B377B36441EDDADC8638B22CAEAB8E0030BD13B75A84D4A57DB1F3"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_4359.png",
+      "size": 246557,
+      "sha256": "452320F27512885FBB1F09C6F3B74D2D537D9C17F198356B4823203E461D5EC4"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_5113.png",
+      "size": 253663,
+      "sha256": "0F0026562F9FD82AE07A47A28EF2B2646E078CFF4C6AFBFD4A55A1193D0B3D99"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_5114.png",
+      "size": 250118,
+      "sha256": "89765D47F5FBDF727E9ADCA1B6D5EC8DB24DA79C818917377F8E874849912E96"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_5115.png",
+      "size": 247146,
+      "sha256": "028A0764A77E73948E3F9E5E002AFD2D85E17D49A4D8C19740BF8A58C7ADD473"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_5379.png",
+      "size": 252110,
+      "sha256": "BB6CFDD4221DDEB0FCE5BD9A1118EB694CBF1EDAC175343738BE7E60CFF3F6A6"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_5927.png",
+      "size": 260324,
+      "sha256": "B134A042BE96E4413C438752E1C410438C607254B89C5114A98D209AC3E9B7E8"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_5928.png",
+      "size": 250233,
+      "sha256": "84216AD06B6320CAE79C57710E8B9F16C691808878FD89EF403CD5622CF5B484"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_5929.png",
+      "size": 249407,
+      "sha256": "AAB28C24B80558B8200E4B191376D7CB0074826954A41910A13472C4027D3E4A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_6294.png",
+      "size": 251775,
+      "sha256": "427364033D7ACDC2D6D88F1B80FF09969EEDCD11B9BACE2FD6014B1242819169"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_6295.png",
+      "size": 251915,
+      "sha256": "F4C744352805C6C5718FFE38125197956013AFA9B61FE01174CA39E928AE3F76"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_6296.png",
+      "size": 246324,
+      "sha256": "33A238D1774B9D03A763B5A3160CD392D3B4DFE52C02DED63DA26DEC30617878"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_6324.png",
+      "size": 249672,
+      "sha256": "65B85128F6C873AFBEB17A2D79B6FD41398DF7A807B979B7903B7CBAE5BFD070"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_6932.png",
+      "size": 230563,
+      "sha256": "CAFCEEF7887817F29F3701A3DBBA929137E0AE6DDAE543D04CEE4BB23971C080"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_6933.png",
+      "size": 229624,
+      "sha256": "1563A4AF74A67C56B870D2676DC5A9B325EB52E5FAB4EA91D30424E18343DB5A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_6934.png",
+      "size": 221412,
+      "sha256": "D24583CABECEABCEC3E2A1D9CCA516B524DA345D719B7CCB75C102D06B6DDDFF"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_7183.png",
+      "size": 241148,
+      "sha256": "BD3CCCB19B8418527CC27D6B1FBFA6B128028A72C9CBA8D7ABD549300D487268"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_9343.png",
+      "size": 223616,
+      "sha256": "E776A463A3227F49880F84318DB3FC4ED567F4E6E52739F2E90B375A3D1ED932"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_9347.png",
+      "size": 223616,
+      "sha256": "E776A463A3227F49880F84318DB3FC4ED567F4E6E52739F2E90B375A3D1ED932"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_9640.png",
+      "size": 222873,
+      "sha256": "DA54F812C0CF1EAA80F27822D2019A5D0F94BE1AB1DE0F9A563C811FA779BC58"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_9mm_SkinId_9644.png",
+      "size": 225850,
+      "sha256": "1B9D9632CC97B0EE59AABEECC77BC05FB206319A6BF96A936293028337B97541"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_af2011_SkinId_5955.png",
+      "size": 278968,
+      "sha256": "1D9F31A5AA4C7EF9107C33DD7385C889526DA6B1AE3AED50E32B727EFC843F91"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_af2011_SkinId_6297.png",
+      "size": 254058,
+      "sha256": "1358174EA4C6895BF74F5D50F3EACA6CF42DF2465106BD71431936EC64093EB0"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_af2011_SkinId_6298.png",
+      "size": 250385,
+      "sha256": "269B329FCF3F5822B8EBD6E9DBCCD12872B41329F89B7C629E8C16C8CD2965B1"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_af2011_SkinId_6299.png",
+      "size": 234988,
+      "sha256": "8D08714FFBBEE459D6200BEAB74956DBC72F21AF8C5BB1304AE50808B2B3EF34"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_af2011_SkinId_6325.png",
+      "size": 254439,
+      "sha256": "1FCB93F7C2A27F19D1A44141A8D9B52BD515C47B1F0ECAC1E691D9479ED086D4"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_af2011_SkinId_6891.png",
+      "size": 240339,
+      "sha256": "4E885FB05E6DAC6E8116456789D449C0927345D37D166D5AE09FCF97D3274CBB"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_af2011_SkinId_8089.png",
+      "size": 214168,
+      "sha256": "25D6B8C89C68DAB68D6ADF47D3E2A36E6657371B31F739F725FEA959F021E61E"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_af2011_SkinId_8100.png",
+      "size": 213708,
+      "sha256": "1B9F5FB2297E4728DC3EED91C3DF360FA77218647B0B481B0F1BB1ADE9DDC9DF"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_c4_SkinId_3463.png",
+      "size": 304323,
+      "sha256": "EB67323CFD73A018D8EC15F3095D66C3E48E1EEFA7253BF3122CCEA4A1C63FE0"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_c4_SkinId_6002.png",
+      "size": 253108,
+      "sha256": "FAA71E149377565F1F8CCA2A6C5905300063B7318E514DC912B50ECE445D78A3"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_c4_SkinId_6894.png",
+      "size": 207849,
+      "sha256": "7310FAB0FCE4DF2A041772005FBB3AA621315D3EDAE7A3629A88F373F704A509"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_c4_SkinId_6908.png",
+      "size": 202953,
+      "sha256": "DA00DA91332720C192A9BB60EA0363595D049F7A64BCEA8024B1459B96231450"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_c4_SkinId_6909.png",
+      "size": 203559,
+      "sha256": "13BE832128787FDE1714776824749252F73676FC57FEF4126C8A3781061CE3D0"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_c4_SkinId_6910.png",
+      "size": 202621,
+      "sha256": "E7FCEB97B9B08870AD71671AB65F8577210DB14FF330DCF5F163D445A7581630"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_centerfiremb464_SkinId_4933.png",
+      "size": 195983,
+      "sha256": "4AA1348771037CCC67EAD9D14B5E5D45965A019AC9FD4FED4EA79F3486AC7CC1"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_centerfiremb464_SkinId_6093.png",
+      "size": 248630,
+      "sha256": "F01E186CD4E99EAA1F17CDF621F4E514C470F6F3001A997FEB193E563AB1F4E3"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_centerfiremb464_SkinId_6094.png",
+      "size": 248570,
+      "sha256": "7A4F259186808B65CAEE111EE8ADB0A5C473B224C4A83AB419F383F56DAE2C2D"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_centerfiremb464_SkinId_6095.png",
+      "size": 242551,
+      "sha256": "546D5574AB29D395274F53998EB4A45A356829DAD42CB547C824B29D7C5D899F"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_centerfiremb464_SkinId_6129.png",
+      "size": 251372,
+      "sha256": "94EFB47D21F81C98B708381395745839E2EE50E7512A7220FAC371421AB5905C"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_centerfiremb464_SkinId_6130.png",
+      "size": 246939,
+      "sha256": "ABE8D500F161D8A3D6BDE126C216FEDF51EBFF6D2C2E82C9C9575E2D3FC719F5"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_centerfiremb464_SkinId_6131.png",
+      "size": 236655,
+      "sha256": "A946C185E84BA01F09DC6C3E7F8BE4D20E42B5CE7BD850AE0655077141C91EE7"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_centerfiremb464_SkinId_6220.png",
+      "size": 236260,
+      "sha256": "DCABED9E8F4C14260F6A0D5D9181D58F9C3A0A4AD0423C9CF4956AAFD015FCC7"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_centerfiremb464_SkinId_6303.png",
+      "size": 255155,
+      "sha256": "D83E9282A14E6C822B7E44C2AB2E8A7137DD6C5C37F2620F8AAA782FD7D32A35"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_centerfiremb464_SkinId_6304.png",
+      "size": 254041,
+      "sha256": "07EA00A474D16175CDEBFD02FA71BA34E5C4328D6AA18338B6A8F020AEA0A147"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_centerfiremb464_SkinId_6305.png",
+      "size": 248708,
+      "sha256": "82A7846F57B7532E371ED17ECFA4BB96FB1D63B9E0D86FEE583F5CF4280F2126"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_centerfiremb464_SkinId_6327.png",
+      "size": 250184,
+      "sha256": "C385B620AE5A5D2F11A40BD4270D7F5E08AAD6651AA235DACCF85ED0C83371FA"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_centerfiremb464_SkinId_6888.png",
+      "size": 237158,
+      "sha256": "E8D9D83E1F55F60F6C01691F7566A6DD7BEFCBF5079400BABDF3C24757C77687"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_centerfiremb464_SkinId_9427.png",
+      "size": 221391,
+      "sha256": "AD4575D594C1A765B26B1E8C7C2653399842CFAD5873EC8C6EA6ACCDB4B86A3C"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_centerfiremb464_SkinId_9431.png",
+      "size": 223839,
+      "sha256": "7A0E15B5A3B06BB9DD89DE613656D4E788573C6B3C6D267A7F3E9709F8A03C2A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_eviscerator_SkinId_3431.png",
+      "size": 284990,
+      "sha256": "233A928CC6466BF8B34E1EC7A7E6F76D359A5D50FCC1752559A42C2181D6E75F"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_eviscerator_SkinId_3464.png",
+      "size": 339068,
+      "sha256": "69999F84072811DA0D7F0C2C14A9927AA0C0EE72E83A64495D39D2C2EA84F109"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_eviscerator_SkinId_3465.png",
+      "size": 324932,
+      "sha256": "534EFA927DDF827F9EE5E791839BC80572D9D5F6BDC2F8F67E859D5B708B4814"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_eviscerator_SkinId_3466.png",
+      "size": 316086,
+      "sha256": "231F26C2A416191CBD897A72A80A9AF5F4D943618B98418CA09DABF1AB5242D6"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_eviscerator_SkinId_5915.png",
+      "size": 299146,
+      "sha256": "2C6E0E151CBD753C80CB9C77EEA8B053FC8CF4263CBCBD9AF1F632290A37C4BD"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_eviscerator_SkinId_5916.png",
+      "size": 291452,
+      "sha256": "9D56D68AB98657FE11D401BAC3BC176FDA36ED62E9F8ACA3F490430A7CCFCD7C"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_eviscerator_SkinId_5917.png",
+      "size": 290064,
+      "sha256": "9E17D950009980B52C624A1546B3BA9083DB9F0A5F4AE4E038B2B0E34534E43F"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_eviscerator_SkinId_6607.png",
+      "size": 270677,
+      "sha256": "ED646E24C7603268AA97D6BBE786060D322DC963EB8771086B2DC8C7A72CA31E"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_eviscerator_SkinId_7158.png",
+      "size": 280112,
+      "sha256": "B1ACAB231EC4C319F481DE81AB8B26EA46972414010817E0ADCD907C7A221254"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_eviscerator_SkinId_7509.png",
+      "size": 282391,
+      "sha256": "E69959E62E493700D626B3FE490EAEC576C05E0DC714AF53404C92AB9A9E234B"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_eviscerator_SkinId_8347.png",
+      "size": 306335,
+      "sha256": "01F60E04FC63ADB2E747ABAC0B1EB96EC75A0730FD8A32C0323A1E4476B878A1"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_eviscerator_SkinId_8357.png",
+      "size": 307445,
+      "sha256": "BCBB349C4C3E3F8ED5EC0FBCCDA42F9A5956EEF0F6589AF2B23D36CD353C97E2"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_eviscerator_SkinId_8659.png",
+      "size": 291776,
+      "sha256": "6374868AF5285A1764B19E382F5F7FD7A51467A5B4A03EA32AE0A92C1CFAFD12"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_eviscerator_SkinId_8675.png",
+      "size": 298842,
+      "sha256": "DB0DAE1F32A572007721094AB1ED6B6A94CE5A2391FE47637EDC0C9E86DB9175"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_fnfal_SkinId_6898.png",
+      "size": 263932,
+      "sha256": "8016D212B80DAE1F5B370615AE8F26AA4A8D5FE69DA76EA181F7E85E679305D5"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_fnfal_SkinId_6920.png",
+      "size": 290165,
+      "sha256": "EA17D6B92ED4C4E66DCF27E42285F6C2428542D43F92A5CCD061A2D9B1500C35"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_fnfal_SkinId_6921.png",
+      "size": 277702,
+      "sha256": "7C9DCDC7BEB5EC34D07C6C0DC091BF77D4D44B4718FCD722549DAF1E480970A3"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_fnfal_SkinId_6922.png",
+      "size": 275961,
+      "sha256": "E17A6061185322217C2ECAFED833CC11DA2B9F198D3BAC3FC9A417D20855BFD4"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_fnfal_SkinId_7169.png",
+      "size": 255524,
+      "sha256": "4834A61E8EA6AA59CB786C870D3719F05689E3FC6C910E9785F8CA2D5F8931C7"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_fnfal_SkinId_7801.png",
+      "size": 230683,
+      "sha256": "32DD792D35267B2FA0E1FE11EA7CE244853D7BD405883E8FD67972D3E815173C"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_fnfal_SkinId_7802.png",
+      "size": 224516,
+      "sha256": "010092943F7617B55A24C716783565432B1C164CA20CB486F9B9776B4CA656A9"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_fnfal_SkinId_7803.png",
+      "size": 224016,
+      "sha256": "1B5836C0DEB34934C2F64A80ED83F2641B1BFC1173282C2D88C3E84B62024098"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_fnfal_SkinId_7831.png",
+      "size": 231275,
+      "sha256": "9ED8878AB9F375DBEF407C979DFF45890291A0982FF7C375DE59D7E3CC6ECE88"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_fnfal_SkinId_9304.png",
+      "size": 259841,
+      "sha256": "765CFA5EACEA250C3F85423AE59BA05AA32A01EFA432DBE67BED6A0554EADDCC"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_fnfal_SkinId_9305.png",
+      "size": 255149,
+      "sha256": "F7D961C1B5E04884D1D3335A7FABFF1C479F8FB0B46E995723A69E4950577F36"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_fnfal_SkinId_9306.png",
+      "size": 261060,
+      "sha256": "8239E2725268586ACC6DE701C91362E2E2EAA154EB2A884F167DDD1FE326A2FE"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_fnfal_SkinId_9307.png",
+      "size": 256167,
+      "sha256": "E2F73056F4EC22A2BE0382891A347A0CC5BE457372D0E876E7F1CD1621A56192"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_fnfal_SkinId_9308.png",
+      "size": 247920,
+      "sha256": "FD417FC57B9D9ED8DA1246E431FF1DD1982A2C9EF7817B1A2A7ACF0B8B23ECE8"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_fnfal_SkinId_9309.png",
+      "size": 265595,
+      "sha256": "453D6993014D27B9C956D0348BECF7B724189900F6E397B69EE683A2C90A53DF"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_fnfal_SkinId_9593.png",
+      "size": 273843,
+      "sha256": "22D3A0D450A6D00019C9A5EDDCC4F29C38403633DBF49A54245D276CF4A1C57E"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_fnfal_SkinId_9597.png",
+      "size": 266247,
+      "sha256": "07EA33CF6F94980B1C1ED7E2AB0C044B9F703FBAF658938E3F105F074D6350FF"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_g18_SkinId_7850.png",
+      "size": 257116,
+      "sha256": "452E9530E326516B90BCE09BFD7C5A51FF34EE0787CA9A57BCB9376524CDB9AA"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_g18_SkinId_7851.png",
+      "size": 234401,
+      "sha256": "C3B33E01D4D16FB7B2F66F66ACE03D7B73F9C33BB78C9863EA68EAC4B0837B89"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_g18_SkinId_7852.png",
+      "size": 262084,
+      "sha256": "DC70AE390102EE4AC897151A4AA51131FF6679F7D611EFBFF31DDAFB0332D2F1"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_g18_SkinId_7853.png",
+      "size": 260016,
+      "sha256": "2AE0FA2BDC2A2CAFD22F7A350464102C78ECF2D945965A2E54D1188F1AE015B4"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_g18_SkinId_7854.png",
+      "size": 254169,
+      "sha256": "A7571ACABAFD985C62974F0B61A09FAE1B0E45ED8EA2EB2802A2FFA4FD1F0578"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_g18_SkinId_7855.png",
+      "size": 275416,
+      "sha256": "0F2A150A43EBB4F0BDE91F089C445CD851A3E3E60CF42CF57FBFDDB2F45F1E7D"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_hrg_blastbrawlers_SkinId_9686.png",
+      "size": 230970,
+      "sha256": "D8B0A74F93B518770F9B4AA00D6C25EBC2573F2BD917CD97C5DCE4E1AFA89A84"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_hrg_blastbrawlers_SkinId_9699.png",
+      "size": 233196,
+      "sha256": "571CD7634DA484E49762D0DBA11156EB4F743C91D621092F606E95E07BCFA118"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_hrg_kaboomstick_SkinId_8532.png",
+      "size": 254108,
+      "sha256": "3B7A5481658345BBD9F4D7ECF85876D9D1FA3911B1E0AC9F1B8CD50B72D969D8"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_hrg_kaboomstick_SkinId_8538.png",
+      "size": 253552,
+      "sha256": "6F3204DEBE6FC0808FF12EDD1E2ECA98CB61AEEB141E1C5E4F9CCE1CA8912F68"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_hz12_SkinId_5125.png",
+      "size": 298456,
+      "sha256": "41FC0B99AB1B3D6187022A367C5003426A5AA00B670CECBEF877C4249F41CE7A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_hz12_SkinId_5126.png",
+      "size": 281958,
+      "sha256": "2FFC714D26AA97CED24EDDB981B19F52FED05B7EC0F35EA0FA2DB19DC05F08C7"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_hz12_SkinId_5127.png",
+      "size": 281303,
+      "sha256": "AB6AE3FFDF26F01FF8518C57CC7D372C4F59B2B4835D01DC81BB532A5C0E0986"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_hz12_SkinId_5140.png",
+      "size": 300169,
+      "sha256": "FD0A469C23CC9D836BC2210354466C0B88E51596D89B276E45B3602CB5ACBCF0"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_hz12_SkinId_6138.png",
+      "size": 288720,
+      "sha256": "9D8816B8A338ED3522EA448379458442069520F7E13A97C167C3525E479654B2"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_hz12_SkinId_6139.png",
+      "size": 271800,
+      "sha256": "59E4C4488259B58960D38A47C33E271B77CDA52DC4A0B6199782E7D32712D2EE"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_hz12_SkinId_6140.png",
+      "size": 256597,
+      "sha256": "BE5A801F252DC71CFF5BEF9101C90658F216CBC82A83C4DC7D2D4BFB4C6E6C93"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_hz12_SkinId_6884.png",
+      "size": 254669,
+      "sha256": "759D1DB5B4CF97A4EE536DBEB5B78C30563EC5597D58E05F564C5ACB060363ED"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_hz12_SkinId_8092.png",
+      "size": 261439,
+      "sha256": "4965C778727CAC25F2325DE5AB26C25D9A5E6B7AA31C9CC5235EDADB5BAB5564"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_hz12_SkinId_8103.png",
+      "size": 260674,
+      "sha256": "AAA2A5313397BF8E7FB45C32B56A9022B28C76F68A40ADC0D581055F3AE0AC96"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_hz12_SkinId_9336.png",
+      "size": 305926,
+      "sha256": "134CA197FC2FBD91EBB7DE8C0F0F6BC1319CF90D56732DCBD24EAC6D1344FC4A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_hz12_SkinId_9340.png",
+      "size": 303092,
+      "sha256": "A81E165D0FB7E6141C084464333DAD75C24B5D69107A5EE097E9C944390AC598"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_hz12_SkinId_9516.png",
+      "size": 280466,
+      "sha256": "478010572B7A1D84219A1D179E8D4501328242893EDC026026CF95E8872FB995"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_hz12_SkinId_9517.png",
+      "size": 275332,
+      "sha256": "CDB0358F2B9C888F5F327A01C2D619A09707394F085F3D86E637C63660048524"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_hz12_SkinId_9518.png",
+      "size": 270825,
+      "sha256": "24EAB9590D4789298758D57EBAD32F1353A3BAE5C1CC01E1A848258F8DC25B1A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_hz12_SkinId_9519.png",
+      "size": 294746,
+      "sha256": "1F950701EEEC343EF7E8927F69E767E17244FC8EF243ECE0E6DDEB51C25D0C1A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_hz12_SkinId_9520.png",
+      "size": 275932,
+      "sha256": "A6CFC02D54BBDBA5F248E6B162E29B0D8FAEB2D0A0D3AA2AE09B277FAF896205"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_hz12_SkinId_9521.png",
+      "size": 301895,
+      "sha256": "3D0B841DA55773CD503810495EC4F7879C2B1AE07809E037CF6C981AD57CFE91"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_ionthruster_SkinId_7499.png",
+      "size": 196546,
+      "sha256": "3FC9644814C5DA3DC9679AE01D6AEEC8530EF101AD85B696D2CFA9D880ADC950"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_ionthruster_SkinId_7715.png",
+      "size": 196869,
+      "sha256": "7DB656671B77F238D120C3E2ECB5BDCFA9871667FA297BB061CAB015B795DDC6"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_ionthruster_SkinId_7716.png",
+      "size": 196412,
+      "sha256": "C5D78855DE5F777D2D5B90E9E855FFB573C12B8E1F2BE7E4C47BB70F3A6224BD"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_ionthruster_SkinId_7717.png",
+      "size": 193207,
+      "sha256": "C94FFA2BBFBD66045CFA7DD1E71204C2A9B85654911058D5E3D90978D4AAEC2B"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_ionthruster_SkinId_7718.png",
+      "size": 186742,
+      "sha256": "FC8F89449B9CB4CE2E7174D52A8FBA5EFBB43EC4A16F1314AB741EBEB29DD674"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_ionthruster_SkinId_7719.png",
+      "size": 188839,
+      "sha256": "2983F0B83103A6C2D216794624B2AF9EF80E42F92A3822A71C5A25B5335C9C01"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_ionthruster_SkinId_7720.png",
+      "size": 193014,
+      "sha256": "121CEBCEC59ABEEC2194DBD3A1DCC208BB593913E0569EA9E586E9A409722914"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_4636.png",
+      "size": 318731,
+      "sha256": "C874D1D5E510CB50222A1B6D24585428D71C96D48A8706DF1C5F2AD73B816A1E"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_4637.png",
+      "size": 317472,
+      "sha256": "71AA8522F2AACFEB8F59C37D64B8C8A3288CA9A4C45E697DF57EB5972F5684EA"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_4638.png",
+      "size": 316007,
+      "sha256": "E6751D650D67932053B441A22A44FE043E26B7ADD25C60953FB4C222C2AF1D2E"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_4724.png",
+      "size": 275430,
+      "sha256": "1D1D1F940A15DCDCE63F4C6E8E5A71F077C3FCFC987C75349587FF50683B3425"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_4725.png",
+      "size": 267886,
+      "sha256": "793104FEC3677FF23D6D852CF29BDD671F19C608905AEE99EC98735A8562A17B"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_4726.png",
+      "size": 265515,
+      "sha256": "539F8ED5A23B1A1379E60D58B64F63D0295E52CB58260822B8D12C6773D90481"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_4793.png",
+      "size": 265338,
+      "sha256": "C6306D8F89EBBC32A412C8B29F8221F99A965A8BF7AB857200DA47ED45CF90FB"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_4971.png",
+      "size": 278581,
+      "sha256": "817C8C9D3E1348CC067311AF4B64DA133BFEC286F1226B5BD80568741077B4FC"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_4972.png",
+      "size": 275132,
+      "sha256": "9B4E50F73E416EA225B42C0411F0B3500430948FCB315A9D514A81187EB1A210"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_4973.png",
+      "size": 276046,
+      "sha256": "BDDB4E4D2032E06B4D6509A54765D4DF763CF429BAA69727169CD3C86A7B6D5C"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_6060.png",
+      "size": 287885,
+      "sha256": "A19DAEFDD94042FBA8699CD873EAF7096D708C6F8CE9611EC68C1F9CB12F6422"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_6061.png",
+      "size": 276213,
+      "sha256": "440CD8305A9A02C3B0F6C385D97979F3082873813C2B58F5BFD4E6429DCE8A94"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_6062.png",
+      "size": 263346,
+      "sha256": "079FB99A40429E2DCFEB58E09F79DC61A450D32AF81D905E6C987A809AF934D5"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_6141.png",
+      "size": 264410,
+      "sha256": "08FAA84A96E7322908FE6EF33B6A3A1103B9BC384B9DDC8555A853D09899F0D0"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_6142.png",
+      "size": 249643,
+      "sha256": "2E63CDAC278F06ED1ED60F326DE0E59B5F768B71AE2AEBC874E8EB7167A7FB2A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_6143.png",
+      "size": 245915,
+      "sha256": "27A6FCDA4144C48274A9C455473CECDC51F008FE2EC9A4DB67A13AD1C2BB5B71"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_6180.png",
+      "size": 264823,
+      "sha256": "A84ABC2486E5079AE12DE1C7FB261FE8CF3758282AD24072A0685A666D96D535"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_6339.png",
+      "size": 268322,
+      "sha256": "13F248F632911E14C6EA51535478378E31742D183C1BDEC0909161A88B2C3787"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_6771.png",
+      "size": 265338,
+      "sha256": "C6306D8F89EBBC32A412C8B29F8221F99A965A8BF7AB857200DA47ED45CF90FB"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_7513.png",
+      "size": 249584,
+      "sha256": "7538AD82A92F37D67F3C86C43E3469F810E7ECBFEF8E0E367F1FA2E76F5BD652"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_9310.png",
+      "size": 262487,
+      "sha256": "B24D08B069A1BB33A83E90BF83463D80DD034B583100B556E9EE8365CE078BC6"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_9311.png",
+      "size": 240830,
+      "sha256": "E7A7AF143C8E4FD60292574855E94F5C8969C3B7C90546BAB4D651FF16560A8C"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_9312.png",
+      "size": 255666,
+      "sha256": "C9370205B3E8814A12058D45D65338212333466652918EABF689120DFF4C3DEF"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_9313.png",
+      "size": 258167,
+      "sha256": "05FB77A597BDDAEAEEB2903A7C5FBC11737E958B8823B289359905A6AD5E5F8D"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_9314.png",
+      "size": 248899,
+      "sha256": "A28FC58B9270BC959879EE6810EFCA839FBF0F594C05D7E2D3D9152B948B0CC1"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_9315.png",
+      "size": 269950,
+      "sha256": "5C4301901770A2DBE4CBE42125B0ABBFCC1C1D7B2CC2FE89E7A4BD6B5750BBB8"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_9435.png",
+      "size": 238327,
+      "sha256": "933406CFE8C0DFB08FEA1DF1ECCA783CBC81A46EF4652D3275EFE1773ABB6DB7"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_9439.png",
+      "size": 238327,
+      "sha256": "933406CFE8C0DFB08FEA1DF1ECCA783CBC81A46EF4652D3275EFE1773ABB6DB7"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_9582.png",
+      "size": 266942,
+      "sha256": "BE5B41F5D10ECC414CA719242552235CC8C2FF38CD48D36487BA8BB276F1A444"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m14ebr_SkinId_9586.png",
+      "size": 261869,
+      "sha256": "FFE3DA09ACF8A58C0E3CF10A1991C8A49F86AE9DCA229B37A59C3834B2554B2B"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_6315.png",
+      "size": 266051,
+      "sha256": "219818937FCB438B0E56DDA7E4744967EED3A9D5AB329422287627AE98E26C3F"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_6316.png",
+      "size": 271187,
+      "sha256": "9BE106B5A6DB2A08722A05DE18D8BCDA86DBC5A2AC52A142666106CFC01022EE"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_6317.png",
+      "size": 264239,
+      "sha256": "DF026F21C2756DFC4CE7E0004D62E83F3FF80F56539DAEEECDA8512691403CB8"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_6331.png",
+      "size": 260634,
+      "sha256": "715E4A8C125CFB4C03B4DF7C42AA5793B14AAB513FCA49E1A6E33A9DF67AA8B4"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_7221.png",
+      "size": 276890,
+      "sha256": "14D4F48452C91D62A4011CABBB393AD740A7FDA63F2ECFF438789579DE9A67E3"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_7222.png",
+      "size": 281466,
+      "sha256": "CB59D9E9E9802C811E4B88125236F50F7FA8C3B71F3C8CFD8E113B78E232D990"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_7223.png",
+      "size": 285237,
+      "sha256": "4A21A8A784774740B92A0CE611B4F2857FE47DE5E5D37A8E4F1DDDC200FDC6E0"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_7236.png",
+      "size": 285237,
+      "sha256": "4A21A8A784774740B92A0CE611B4F2857FE47DE5E5D37A8E4F1DDDC200FDC6E0"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_7457.png",
+      "size": 251046,
+      "sha256": "701BB5ACC215809B374189ABFB74FE2E7382633A45D8D69822DA18AF82B31346"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_7458.png",
+      "size": 246343,
+      "sha256": "B3ECEB36B6B3E76AA8F842E0C4E0585D8C9FFC30C28228024914B7A83686C317"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_7459.png",
+      "size": 238605,
+      "sha256": "9332BD13C769F7DE9A1E22EF5B3CCADAF0D641128CC4392DBA933A01AEC0AAAD"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_7486.png",
+      "size": 238605,
+      "sha256": "9332BD13C769F7DE9A1E22EF5B3CCADAF0D641128CC4392DBA933A01AEC0AAAD"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_8309.png",
+      "size": 298772,
+      "sha256": "C24390E1F8F78C34A032ED50BD8D3552AEA4EAF63136AE503043D49ADAA435D4"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_8344.png",
+      "size": 257778,
+      "sha256": "187C35D56AD3C18D4AD30BFB736FA76F14C959D1C8EAEC649C7B6DD743431A04"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_8354.png",
+      "size": 260067,
+      "sha256": "C1702EE269BFCAA574391B7E59692E30E0E3B8A3EF491F5F8E0C230CADAAF7A3"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_8517.png",
+      "size": 270109,
+      "sha256": "BAA7E5B10B6C46B738DEDF09FCF3F7DB072971B5E67C9F28B175B4BD749571EB"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_8527.png",
+      "size": 266748,
+      "sha256": "6F835063CAC30EE25BB7DB026E4ED1331E3D85CACD2CF117659D929569536090"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_9443.png",
+      "size": 260492,
+      "sha256": "4187B7D6E4A006E487F8541101B90EDA61B02BCC5BD00B49BAF19F3C38A2838B"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_9447.png",
+      "size": 277387,
+      "sha256": "6988A61EF0DCB398F8C0B29237DBB457FE7FB821DAF606F0D30FC37D75F71D39"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_9545.png",
+      "size": 256127,
+      "sha256": "D181655DA4DECC7627FE5E472FF88B87EA82462FF327EED0B61D76E4BFD9613B"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_9549.png",
+      "size": 262809,
+      "sha256": "3BA0CBD21AF521221B42BB81DE7B1A04F701B6FD553B9F189F403479B7CBAF36"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_9591.png",
+      "size": 230862,
+      "sha256": "C6DF6FCCF6AE628FDF85BFE720BCDFBD3EB12BE2482906CBD45E068E87637382"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_m99_SkinId_9595.png",
+      "size": 237571,
+      "sha256": "51C6F75C4BF602ECD0086B64E3F261377EF5CFD9FCE0DFD96BF148290301DB33"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_4542.png",
+      "size": 282077,
+      "sha256": "3BA32EED9955238025B91F68AB13510F594EB7B7C4DC74AF4E9DE3C16B1D090D"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_4543.png",
+      "size": 257695,
+      "sha256": "F4F588161C20A8B7DE2E55C731A2C046F0C7AFF59480FE3CC77FEDFDAE480721"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_4544.png",
+      "size": 247310,
+      "sha256": "A172216361C35EA9A3A0242ECE951D8CB3F3EDE63885115AD3A005F2F98AB512"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_4545.png",
+      "size": 276351,
+      "sha256": "D0962C30B89F85345003DFFE2A17C6BC23D921A72C95A3B4FAE51ACB7F06D12B"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_4546.png",
+      "size": 252908,
+      "sha256": "A69AC96AA6C2FD0763F182D3BBB6FAEDD679A850A193BB188D392EE7B2DFD03C"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_4547.png",
+      "size": 244067,
+      "sha256": "F7CABD0C7E73A30C993FA4B2A3EDA4ABF80C292ACC96F8F648F615372C65036C"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_4548.png",
+      "size": 248300,
+      "sha256": "51B34D80E18DC6478D2A06D409D5DF462DB89E45617C9772D17570A29D74D12C"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_4549.png",
+      "size": 208100,
+      "sha256": "0ED22A76EA4154FE417F5499D02C8A322B7639EF8E94DE11AE3BE6C9ED602DB4"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_4550.png",
+      "size": 199858,
+      "sha256": "5FB99F38CD027FBDA587AC4616BFA73DE88B9C59D26C5B97976AF4E56DAFFEA9"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_4551.png",
+      "size": 263593,
+      "sha256": "C17B060D42406FF865B28FFB929A749B3E6085EE7B614C732D96E70783137F21"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_4552.png",
+      "size": 231904,
+      "sha256": "4AD37421CDCB4F0A3CE75A78E097A79AC5214765A9032A5193478D4B823BD051"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_4553.png",
+      "size": 223277,
+      "sha256": "768A463F153AEA2B7F782B7C5D0CE66CB84F12BA177E9477E5C7BA36746800FC"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_4554.png",
+      "size": 261553,
+      "sha256": "603A119695F43E0D20C788D6204D55A4854B17AD9599755AEBCB3BBD0442FFB3"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_4555.png",
+      "size": 233110,
+      "sha256": "B76F5B39076134FB8DF60DA65038ADB15FF8D0A34BB2554D42B2525979414252"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_4556.png",
+      "size": 227355,
+      "sha256": "65E2E0599D6AC5585ECB5C4EBE8E500C00E51053FB0B3A45A5DEE59B58B34106"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_4557.png",
+      "size": 260438,
+      "sha256": "CE975188FD8C7EF04660C1AD88375F9A3334EC7E2B0FAAA09E06441B9AA3B8EA"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_4558.png",
+      "size": 232814,
+      "sha256": "9DAA9C211EA517481CD3BEA8CA51F06C481E986F85CD90213B58014C44A60581"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_4559.png",
+      "size": 228229,
+      "sha256": "BFE159A2397474CAE65E68D804A29002A9B1A2C67711DA3B0BD44FB6C1671F3C"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_4560.png",
+      "size": 256591,
+      "sha256": "1A545C0E194E4B257D8219AAD82B91ABD13AF798E7E4E232678CFA94CD62770C"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_6482.png",
+      "size": 291919,
+      "sha256": "E35703E0076F73B3C4C83ABA4E54BDA3C90B552ED414C385CBE886EAA4FFE168"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_6513.png",
+      "size": 284381,
+      "sha256": "A9C84798EBB23C12E2CB27814130F65E1546E99C6AAB65BABE2E088D5FFD712A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_6514.png",
+      "size": 286567,
+      "sha256": "372D5C09D3E870EEE910A8E3E8885F158B02927032DB6967B2A60C385C469C0C"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_6515.png",
+      "size": 272721,
+      "sha256": "5CD10286FF5B624CD8EB47669B7844C9A7358D3168C65EEC3D9898D66B8480F2"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_6889.png",
+      "size": 322824,
+      "sha256": "9C3076CEF93578CF75F57A0F1FCD4A8A49A889753AAB3D6D698838983FDFAB63"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_8994.png",
+      "size": 362119,
+      "sha256": "61092C7465DA548E7B8EC45D0EC4055EB06E96D11ED5AD8261B6881F2CEB5CEA"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_maceandshield_SkinId_9004.png",
+      "size": 339737,
+      "sha256": "C7187B14BE72CD78D615EC5D5E9C9DDA3F150C6AA3289C5CA8565E85A9D0DA35"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_3335.png",
+      "size": 234978,
+      "sha256": "A43EE5F47E94CC2A65ADB21119C60CF1F250A8DA3477D169CEDDEDDA507B1E2B"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_3336.png",
+      "size": 197681,
+      "sha256": "0D9EAB05D9845819B5A9509F676002066C23E74703F0C859D0FA30B2CEEB3B16"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_3337.png",
+      "size": 203822,
+      "sha256": "1BBF97D2268495EF56E53E1BB60A06B4EBD1F08802F93BA25D7119554C69B6B5"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_3338.png",
+      "size": 204353,
+      "sha256": "EA95EE04EE306F34448769C6AC231D5CCB5AF30BC2BCADF22BD174435255B35A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_3668.png",
+      "size": 247820,
+      "sha256": "3E757EC81C56250CE80F101DF8F137F81F78C5959D99033DD25C684D0CCC185E"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_3669.png",
+      "size": 228702,
+      "sha256": "63FE5C0AE1E99B5BE50E9D55135CDC056FF3BDC88AE1D53AC7638ACCB00FD371"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_3670.png",
+      "size": 237580,
+      "sha256": "23E871B6E5D7CACD78B1A69F5AF7E892747A52F8D4E194243ED2123AF4F9CD98"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_4188.png",
+      "size": 238106,
+      "sha256": "3BF5B87CBF82D3798C8950CF6419F542FC7C052991402E1AD061D983AC62B962"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_4189.png",
+      "size": 231937,
+      "sha256": "EA4F016784F68E9300A10CC539967B9524E47745826770F145028DA43E04EDDA"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_4190.png",
+      "size": 224240,
+      "sha256": "E9A7091D8D6BC00DF5C7D97DE77E9E41CA7FE8DE5E8C30AC0F38E21C584D91C7"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_5540.png",
+      "size": 267991,
+      "sha256": "8F7511E557E9A7156543159247DEC5BD031E6AD62859E7E7413487C361104608"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_5541.png",
+      "size": 254688,
+      "sha256": "BF0A0BC298755D138C921E7897C576FC52540F225531FFADC23B10FDD153A8E5"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_5542.png",
+      "size": 254399,
+      "sha256": "DBAC9522DC067139C24384323DB18913A7CFD4480EB80C9463597CEAA37A6C35"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_5543.png",
+      "size": 273938,
+      "sha256": "A1850FFC8D47C72B85879CBF4A84737FABC385EC05BA1633EF9B5D734173D05B"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_5544.png",
+      "size": 261820,
+      "sha256": "CCC82A835B08CEA33A340B5D573156AD64E10E432F841AD1CBF7DFD9E2A32D89"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_5545.png",
+      "size": 261337,
+      "sha256": "A1B35E3FF22606FFD2B53E1A91A646A2749AD89AEB80A1F535B16640AC712AD4"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_5546.png",
+      "size": 272044,
+      "sha256": "B291B89BD04F428747C84F941FFC8ED582C5986FE547F303D89B2F201D4A65ED"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_5547.png",
+      "size": 261468,
+      "sha256": "E25AE05AB1A923AF2A9A8CC6DAAC9BD6506C01A48BA144270D4257C9589D4190"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_5548.png",
+      "size": 260008,
+      "sha256": "E75DAAEE252574F7BCA83A9811B97CD3D7D3EDC60EA7FC4A027269A65DB5A043"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_5658.png",
+      "size": 268251,
+      "sha256": "10248729B19FF6003724237296F487F8DD33CB9A5A96DF8CBB6E72774B501C91"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_6162.png",
+      "size": 275184,
+      "sha256": "482D34BD4D10151E75DA2A45B4AD959A08CC67F010F5CE61654A65724DD0895B"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_6163.png",
+      "size": 266317,
+      "sha256": "16DC92D7065C60295F7B42AFD34F01FA22B0A5D55975EDEF363D9CC1476579EB"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_6164.png",
+      "size": 264774,
+      "sha256": "8B7EF7033D77519545AC4C5E0A2B1147F132CD2CC537D8FA7DE465B5E60F6056"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_6165.png",
+      "size": 280300,
+      "sha256": "56CBD2E861261693A0262713E91640C78213DCDF4F1C9CCEA02DA5B2229E2616"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_6166.png",
+      "size": 271995,
+      "sha256": "6365F330EB3AA5C3279EBBEF2C0BADE76CE4655E618F5E4F147206B18D25120A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_6167.png",
+      "size": 269289,
+      "sha256": "53C6DB09251C07D31CA895181CA5B7F6AAF87790B69F85119833973BF45BAAD4"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_6168.png",
+      "size": 281525,
+      "sha256": "0664B0C0D91BBEE6EA4FCE9146FC10A2DC81F2FBD41C44C5DD0E36C57840DD3A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_6169.png",
+      "size": 273544,
+      "sha256": "3893C95B5A40D9C3255289A8A88014803FB972A039BBC3A5B1E96A8E63D8B3A9"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_6170.png",
+      "size": 271546,
+      "sha256": "6EEC9B25335227E1399E208F148BBDEEA9C643B25464C6523034810CE07935DB"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_6171.png",
+      "size": 276452,
+      "sha256": "989552D581A513112ACBBA3D1C40FD25F2BC32F1BF7531CF8D95824B43C01D3B"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_6172.png",
+      "size": 268002,
+      "sha256": "02DC3A6409EC51B00EC78F7CDCADC39E856332D10E1F07887D39F616F2C82181"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_6173.png",
+      "size": 265406,
+      "sha256": "86A731CCDBF54CDB1B113BB1891F1773327C848CD129790643EBC7E55A86E701"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_6174.png",
+      "size": 275061,
+      "sha256": "17A5FA133AF6B42C384FD277850D218B475CDBE3744F771F03AE33FC41F2F80D"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_6175.png",
+      "size": 268057,
+      "sha256": "5465D0E86D7698DD223D60164B7B5CAD7C2D774558770A6E33676B28201BAACC"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_6176.png",
+      "size": 266570,
+      "sha256": "197E896AE6485F82527D9C08358C90CB6B3BC9A562CD3BC7599993D8D3C8A242"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_6289.png",
+      "size": 262704,
+      "sha256": "A96526F3DD9958CAD34A9B4045E75230C9A16DF325A46A4840DC400ED3E1A350"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_6473.png",
+      "size": 280870,
+      "sha256": "7BEDE16BF0EF37518AF0E3E917A28EBB3EAB9624F4BFD95B64C0C6C58ADAA59C"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_6483.png",
+      "size": 281777,
+      "sha256": "2B2A63596617C3A68E49D7E0351C45647759B6B4125B9E6A67F93B349F1940FE"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_6484.png",
+      "size": 278321,
+      "sha256": "30836E29F5BBFB87BA3BFE02F6BFB3B50CD4AD32202E34A729591CA4D89766F6"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_6485.png",
+      "size": 273103,
+      "sha256": "8E164716D2037400D3DEAADCE2766973E343489AA135D2EAFFD32D44F19130B0"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_7179.png",
+      "size": 252221,
+      "sha256": "DC6E7A09174481F82BC62EB89842008CF3DCAD4505847B725865E4908EFBBF69"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_7475.png",
+      "size": 266139,
+      "sha256": "81F1BB90C77B53B444CA65A418032EF16BA0EA5EB3F76C84A5BB98C15132DD15"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_7476.png",
+      "size": 241315,
+      "sha256": "A948B3E39ED2CE088FD82684ED5CA8549F78519410117A9C20F366DFAF4FFB58"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_7477.png",
+      "size": 229250,
+      "sha256": "C1A7F03817A24F97EDE766E1F1E9B73EE6183A0582E1263A2270969CA0257A87"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_7489.png",
+      "size": 229250,
+      "sha256": "C1A7F03817A24F97EDE766E1F1E9B73EE6183A0582E1263A2270969CA0257A87"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicpistol_SkinId_8305.png",
+      "size": 263068,
+      "sha256": "FDE9FB7F3A2A951C8D89A8BEAD9E32164ACD4DB99AB2B16126E896A16B9D3E7A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_3467.png",
+      "size": 223439,
+      "sha256": "6741D77B0385EF40C56CE53F8DFF733B7EEA3C11501571EC762BF7AA32B064DA"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_3677.png",
+      "size": 262908,
+      "sha256": "232B124C68E140381CDF38A35AE5EDF38FCBBAAE8C28429D79B00DA91CBDB7A0"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_3678.png",
+      "size": 240965,
+      "sha256": "C638277782B0C776D7EBF5434CCD464106AEF75C533B24F8C8F7EEF52B77FEDB"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_3679.png",
+      "size": 241824,
+      "sha256": "064D6393B93D2E8B3288C4E4026415B1C8F793DFD2EC4C18C6A33F8A6168586D"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_4197.png",
+      "size": 262065,
+      "sha256": "83A1DF33442B7388D87E1455697896C19FBAF6FF8EF82AB9D747F76CCF4A5C0C"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_4198.png",
+      "size": 242530,
+      "sha256": "94E4C2606984D1AFCBC801869FEB5EECDA6B001B397FD96712B243FAB0A21BDF"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_4199.png",
+      "size": 240058,
+      "sha256": "7657E7581268861B52B83B2BFAED47E1CB6190CFD6663864C8454E70508C9A41"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_4470.png",
+      "size": 244757,
+      "sha256": "3E737040D84BB2FE91573478401BD001E283CAE579C26BCFF0638923A1EE1E1D"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_4471.png",
+      "size": 235998,
+      "sha256": "61DF597577A3A0CD4A4FA27A106263E00A9DA18F6C74FC24D21E945D956EEAFE"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_4472.png",
+      "size": 234566,
+      "sha256": "F3D4F787C5C60E54B2AF55223CEEC7ACAB0B24503E27712062C3E34CD447A5A7"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_5963.png",
+      "size": 315005,
+      "sha256": "9664BD80404BA3E4775B2A799BD061C8B032711E8F1E8323A719A0A2BBFE4972"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_5964.png",
+      "size": 308087,
+      "sha256": "FF660281242246A48381B828E74B5985A999CD401235940CC5AB786CD959E1DD"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_5965.png",
+      "size": 307934,
+      "sha256": "2D35013FB42EF567872E3CE599FBCD529B2AC37261A37137BC5A1527821C7317"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_5966.png",
+      "size": 318328,
+      "sha256": "774F46EE7E6D784618E83CE99AD052474F384AF5E41AD01FAA9A3BE8AA84168E"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_5967.png",
+      "size": 310323,
+      "sha256": "394B8537269340EB2D97A028AA978375829F0ECBCD595BD219D99E2E03786724"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_5968.png",
+      "size": 309565,
+      "sha256": "6A0B591A38162EEB47AE03995708739F7D7D4EF0921B14311585C1721165DF95"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_5969.png",
+      "size": 319158,
+      "sha256": "2CFA18C0E5B70D3A758C945E71767823946CB59FC615D8C64ECB8A2C3E6DB2E2"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_5970.png",
+      "size": 315048,
+      "sha256": "E09CA0A8AE688631D1E4CBCC2F7D68F13DFFD4FECEDB8F209958E62C8BB8AFFC"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_5971.png",
+      "size": 314402,
+      "sha256": "63B05B4ADB66B4CD1F540C5E36E2B33C4AC684A8CDFFC00BC9A9021E6CD1206A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_5972.png",
+      "size": 320876,
+      "sha256": "2BEA8F5F4C7C68FC4A9871B0CDDDD4265655BA6B4B0594F7359F417829BBA888"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_5973.png",
+      "size": 317059,
+      "sha256": "72125F0FA765909ECF585FA13D4347FDFB00FD432C587F181E25E714D6E31297"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_5974.png",
+      "size": 314998,
+      "sha256": "3D1081A0E4D1EBC660E6531C98C66C26143C0B6AB5CE1F8D3328686135493ABA"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_5975.png",
+      "size": 315981,
+      "sha256": "7452F7A37AD0430E09F11C473C98F7E2BD005B64F6C7B728113592ADDF404458"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_5976.png",
+      "size": 309762,
+      "sha256": "28043FAFF669EB97609C5846BCBA75442B0DEEF65D0963164192FE6A7FF7C075"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_5977.png",
+      "size": 306885,
+      "sha256": "B84FE38F21B4B19538E7E48A04D015D2095456251B71802D307E3566988284B9"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_6476.png",
+      "size": 264352,
+      "sha256": "5C48A43A9BA55D3854F0459D09DD419BD5AD792EBBB902E2ED2CB15FCE16C150"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_6495.png",
+      "size": 259710,
+      "sha256": "68C54414F8CE51B7BC8DF378A1EF06CE9CBC31690BECE78C21B7E12FBF088DA4"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_6496.png",
+      "size": 257016,
+      "sha256": "838BD753453EF4913EC18291EA7DB235B5D1703F1C17DD464CF2B99025D26900"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_6497.png",
+      "size": 256363,
+      "sha256": "FACA6B12E28BB2825B3FBF10F6FBCFDBCE9F822E1DCD417A7CCD5098D970F68A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_6612.png",
+      "size": 271511,
+      "sha256": "7A13B9FF55FDE7814C291D72DB7AE617E487B7ECCCC583BA26AF220CFC32AFE7"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_7164.png",
+      "size": 273520,
+      "sha256": "62C7CEBA11B0C648E0E1FCEA3B31984B6277BB538553BCD7A6B4CB2E28A27C02"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_7466.png",
+      "size": 263516,
+      "sha256": "B84A6C6D11FAA27E494E7C92A3F743517E2089766A88541207E07E06142EBF9D"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_7467.png",
+      "size": 255565,
+      "sha256": "70CC22C316567D68835D7E6B893535F33A01F3F3D3CFED5CBA9752106A64EC15"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_7468.png",
+      "size": 245139,
+      "sha256": "82AEDF8E9EC6BF3697563611D22DF46628809D9DB6F94DD4B8346593D9D62C14"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_7492.png",
+      "size": 245139,
+      "sha256": "82AEDF8E9EC6BF3697563611D22DF46628809D9DB6F94DD4B8346593D9D62C14"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicrifle_SkinId_7505.png",
+      "size": 275689,
+      "sha256": "6F637B08C4607D24CB05FDF307569E0992DCDEAE119FBE9C78AE85386F3956F8"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicshotgun_SkinId_3450.png",
+      "size": 248030,
+      "sha256": "625F8F5781871F332232B3B24499F9357415031A8487E2E403AE26B466E1E108"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicshotgun_SkinId_3674.png",
+      "size": 269724,
+      "sha256": "03912975378461C51FF7C3CF0507E6C4752748B8045430CE60B0A6BB942914BD"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicshotgun_SkinId_3675.png",
+      "size": 251991,
+      "sha256": "49EE6F732C7BE4FB88C7716D20A1F08AED50F2C256B3F2B7F556B718B4F7E0A1"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicshotgun_SkinId_3676.png",
+      "size": 251359,
+      "sha256": "0F7C61A753B027DA87A9917B7F5AF5EF9D6C60AD9B690DB7DCDA94328F1E36C6"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicshotgun_SkinId_4194.png",
+      "size": 271053,
+      "sha256": "CE6C2EF5F4F66DB913385DE75425B84CDB71F0A7DD290A8F9A16373C64D94EC4"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicshotgun_SkinId_4195.png",
+      "size": 248895,
+      "sha256": "696846B4DEF52BA04BA2533F9123AB2A8BE60F5C649F22D7DE6D6AFDCCA88F18"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicshotgun_SkinId_4196.png",
+      "size": 243193,
+      "sha256": "2094F7D31E8367731FC35FB3489B61C204533F0AE908FB4762315FDA59E70E30"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicshotgun_SkinId_6338.png",
+      "size": 277617,
+      "sha256": "F2F190FA9F26177827B14294AC21EE96829F473A8DF01B0D5FD507A2C7DCA2D5"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicshotgun_SkinId_6475.png",
+      "size": 259376,
+      "sha256": "3BC6E6FB5E81FD7B0BB650A08C79EFC51E3EB6C07B24426EEE984613A94727C2"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicshotgun_SkinId_6489.png",
+      "size": 261288,
+      "sha256": "2299D2C0431A07F771F6DA6586268CEC50CA99348289368D34765C1FC6B7D2E3"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicshotgun_SkinId_6490.png",
+      "size": 252644,
+      "sha256": "A8499AF26B1CF4CA626B9482C98E4EFAB2F8B7F398D55826E0A58806FA9BD3DB"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicshotgun_SkinId_6491.png",
+      "size": 247503,
+      "sha256": "BCA96D6638A164EE13346AD13FA6D4F5C593931D88D163501449C85C40F945F7"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicshotgun_SkinId_6774.png",
+      "size": 248030,
+      "sha256": "625F8F5781871F332232B3B24499F9357415031A8487E2E403AE26B466E1E108"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicshotgun_SkinId_7469.png",
+      "size": 310304,
+      "sha256": "209B72F79A773A3777CBD54DFF8CC49393D278D8C45EAD8A8F202C3FDACE231A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicshotgun_SkinId_7470.png",
+      "size": 278940,
+      "sha256": "4E8332951D8959E041B4AA4E59F2F62D0EE592D7E2658E307FC6E27606E8D235"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicshotgun_SkinId_7471.png",
+      "size": 261033,
+      "sha256": "28D5CE79F2FA0BBD9340622DB48D54B628E3367762897B8BC146C26CD404D998"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicshotgun_SkinId_7491.png",
+      "size": 261033,
+      "sha256": "28D5CE79F2FA0BBD9340622DB48D54B628E3367762897B8BC146C26CD404D998"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicshotgun_SkinId_7514.png",
+      "size": 273731,
+      "sha256": "05D56121E4671D412EAD85EAE71C3645D1F9A11EAF0E34867BA5A6B89A96A86D"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicsmg_SkinId_3339.png",
+      "size": 223869,
+      "sha256": "875887EFE0727AF49ADA909EC5B555A25464E1EFBAD2419BE0715F514AE8E628"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicsmg_SkinId_3340.png",
+      "size": 227798,
+      "sha256": "BA97BAFE74E5F0D0B3202FE06F34BC3BA828020B4C2987FD588B29430512B4BE"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicsmg_SkinId_3341.png",
+      "size": 223777,
+      "sha256": "BB92DEA79B476791B36C5BA2D4CC0B178915B7A91FC6DD45E1C72205308E6CD1"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicsmg_SkinId_3448.png",
+      "size": 223939,
+      "sha256": "520CE2953063C45A97FFF0CA02AF6663DF09A15D84621DCCFEFD9C32A84774E2"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicsmg_SkinId_3671.png",
+      "size": 270474,
+      "sha256": "4909768CB2F3EE6F383020054A367F3048E444BB5C461FEA1B579B34DAFD3458"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicsmg_SkinId_3672.png",
+      "size": 240772,
+      "sha256": "F6E47D52D74BF587FFDD1C1555A63729716F26485C1C1D21872E8747A396A561"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicsmg_SkinId_3673.png",
+      "size": 237536,
+      "sha256": "4C8392F3ACD1560298ECBF3A37E46D47902F31C4D1F9B2A280673DA212A832A6"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicsmg_SkinId_4191.png",
+      "size": 271054,
+      "sha256": "391A2FA11B1FE210520BB52F23BA888E7CAC5AE3185B988D5800C68DA0BF898C"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicsmg_SkinId_4192.png",
+      "size": 243849,
+      "sha256": "8D58927EC054DFDAB88975CEFB28B3FF8D2F75D2E8B51F27722927AD09A44537"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicsmg_SkinId_4193.png",
+      "size": 239520,
+      "sha256": "CBD526A27FDAFB2A622D46AEEB04DEF31F7AF205007115894128C27DD2404139"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicsmg_SkinId_6008.png",
+      "size": 289525,
+      "sha256": "2519CC17CC28564FF289E08EB856E8BA041A924227CFF42ACB45AC6E86323598"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicsmg_SkinId_6468.png",
+      "size": 223939,
+      "sha256": "520CE2953063C45A97FFF0CA02AF6663DF09A15D84621DCCFEFD9C32A84774E2"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicsmg_SkinId_6474.png",
+      "size": 253470,
+      "sha256": "7F1A019AE9E41EE7F2A469C67053CADE8DC466BB5489A37182155A932293F678"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicsmg_SkinId_6486.png",
+      "size": 254627,
+      "sha256": "1A1E99AFF5257CD372AB5153628860A6C2BD99F69AFA9AC1A4D8D394DF40EFCC"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicsmg_SkinId_6487.png",
+      "size": 251536,
+      "sha256": "03A226759331612824BE5CBC71BADE09AFBDF480BC40D93F859BAB9FA5D7D7DE"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicsmg_SkinId_6488.png",
+      "size": 249434,
+      "sha256": "BC9EA2B0C6A0FD6C88E76F970ECCFBB802965B0CFD1ABC091A0D83306CC22B88"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicsmg_SkinId_7189.png",
+      "size": 261075,
+      "sha256": "914BA425FFF7E6B1DBDB04A85C7C78A6E17851D29BD3619F5E5F6081D73BBC83"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicsmg_SkinId_7472.png",
+      "size": 284327,
+      "sha256": "5D80330580D556F605E56FC147262185D697D56F4ABAFBC9CBE6A00738FEAD1F"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicsmg_SkinId_7473.png",
+      "size": 264093,
+      "sha256": "06A2825F2C6DBE56EBB6EA82F9AE5CA6E9EBA6CC69595FEA8C196EE9CB7D52E4"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicsmg_SkinId_7474.png",
+      "size": 249067,
+      "sha256": "342949EB243314321BD03AE49CBDA8FDA2A3936C395DBF52789A9C59B161C815"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_medicsmg_SkinId_7490.png",
+      "size": 249067,
+      "sha256": "342949EB243314321BD03AE49CBDA8FDA2A3936C395DBF52789A9C59B161C815"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_mosinnagant_SkinId_7856.png",
+      "size": 222792,
+      "sha256": "B1EA3C1F812CE054F57705849ADF0CD6008628E312635955782ED6FAD6F87362"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_mosinnagant_SkinId_7857.png",
+      "size": 205377,
+      "sha256": "6C5F6AFD24D408AAAD0AAFA20A427981807F56402BED4C8DF76A225625B57C8B"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_mosinnagant_SkinId_7858.png",
+      "size": 215365,
+      "sha256": "346F39C0EE05A9FD9D2232E3142510AFAF28A8DA3F8DC01A884F78A37D3783AB"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_mosinnagant_SkinId_7859.png",
+      "size": 228487,
+      "sha256": "CE73BD039B067D51F234D47D5FCC3704AFFABE6617099CB87D6192594208687B"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_mosinnagant_SkinId_7860.png",
+      "size": 224249,
+      "sha256": "EAC3CF7B1EC1193FAAEB9CD0848C2BC423ABAB4C2C909E8E71B46186927CF4DD"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_mosinnagant_SkinId_7861.png",
+      "size": 201461,
+      "sha256": "A706F3E5E2330190D31BA003AA39E206EDB0DB6698FA5B2176F87AA8D3043072"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pistol_g18c_SkinId_8293.png",
+      "size": 220781,
+      "sha256": "18AD1D4248D51CAE73CBB9849FA2D0789C3CCAE1A4AFB2AE00E87A2097DB4E48"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pistol_g18c_SkinId_8294.png",
+      "size": 259499,
+      "sha256": "5C62D30F4F3ED01E39C8C6279933CA029E6AAF63D524240D7C5634A8C4658BD8"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pistol_g18c_SkinId_8295.png",
+      "size": 221311,
+      "sha256": "AAF43039F6AE2EB196B1D17A209790ED432611E5A27CB8971E3FA9491C81F3BD"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pistol_g18c_SkinId_8296.png",
+      "size": 224903,
+      "sha256": "00A049A6053CF49700CBD176EB3AACF548C61D1E55D3EA99C04AB2D8BE035D15"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pistol_g18c_SkinId_8297.png",
+      "size": 229741,
+      "sha256": "A1708292EB28A0FA5A29EB695CC8113B7A9E99D4156D4A4AACFA9BE218496D4E"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pistol_g18c_SkinId_8298.png",
+      "size": 216653,
+      "sha256": "2946284630E415C88A9221B13E0D71839AF745DB10A9880EF523387310212C3E"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_3053.png",
+      "size": 275234,
+      "sha256": "95CCD7EA8FF2BFAAD49B4B29CE3F6BC7BF840FCBE30132E88F79A2E3DD1FFEB9"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_3054.png",
+      "size": 262051,
+      "sha256": "62EC062D78753A7337F31F3F17788ED605272688E77613E497D57C2A2042FF0B"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_3055.png",
+      "size": 256660,
+      "sha256": "08CC06B5B1C9F5F24EC32FF56E3583E437D24BB59CAB66F300CC29C81016C3EF"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_3430.png",
+      "size": 264050,
+      "sha256": "34DC1B714F6676C769BB06513779349CA416A47608B564411DA9F126134FDC6A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_3587.png",
+      "size": 322035,
+      "sha256": "351115B4D3BB701A47DD1C83A3EAFE88FEADE8A36707B6F8573AE383ED58C8B0"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_3588.png",
+      "size": 304467,
+      "sha256": "54108BC8262A72E0DEA0820C826DC68D4C54262A4D643882527FD381149F99EB"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_3589.png",
+      "size": 293943,
+      "sha256": "EEC1127C48B81B18BCDFA935D1010FB85BE79CA64F4986CD1972FFD6D0E86B14"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_3643.png",
+      "size": 289845,
+      "sha256": "5B105CED0583805D6F832B474107D0D1E4B7AA0424D3EE2D9256FD8EFC47154F"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_3644.png",
+      "size": 284863,
+      "sha256": "59EEB04D75D58BD0A5A30FCE618416D1C84F01BF223FD086B1BB8B2C7CE549BD"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_3645.png",
+      "size": 272360,
+      "sha256": "43000A145AC6B2FA5A0CB733CC90C37D29F9A2273D097683CEA7676995D3E928"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_4126.png",
+      "size": 294319,
+      "sha256": "8D70A8A5457AC868E0177D620C641F3BDBE300ACF0B66EA466843A3BC1CDFCD6"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_4127.png",
+      "size": 280513,
+      "sha256": "C5505C7F3C198A369CF6043440EA295C111C77FFE1AC4F97E98C24D468BBA5D6"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_4128.png",
+      "size": 270026,
+      "sha256": "7C71D465A495982038F4839514070679B51F204AF52E26EAE6A25BB7F53A3C7D"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_5921.png",
+      "size": 234048,
+      "sha256": "05A1A77F12E46C02541749620BB74F1B39066410646755CA06669F41E18D9304"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_5922.png",
+      "size": 227449,
+      "sha256": "3295DEC7E8516A98219418AED2E4FAFE8D8EA9E9E3465F9B4848AAFB68D6FF74"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_5923.png",
+      "size": 227446,
+      "sha256": "9B8866C0CE7C2389D64FF2D2B84CC2B02BF437B47B11DF1D60DBB12B80B8EC63"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_6343.png",
+      "size": 309807,
+      "sha256": "ED5F1388735B71DF7B15CAA4D277A1CC24569E6DF9678E15B5C98FEC24463483"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_6776.png",
+      "size": 264050,
+      "sha256": "34DC1B714F6676C769BB06513779349CA416A47608B564411DA9F126134FDC6A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_6947.png",
+      "size": 334168,
+      "sha256": "09CB3112037C6443F1BE3759CB5B4FCF6F7E3F74C560464BD1EC977A8C9FF42C"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_6948.png",
+      "size": 329500,
+      "sha256": "DC22CA843B919A2E9065605BDE71FD34A2E9F3B5B1B841E88CDC4C13E0784DA4"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_6949.png",
+      "size": 323487,
+      "sha256": "F1C9FE1796E1670417A38F5EECB10CF0D882D69DCCAC340902B3EF913891D7FE"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_7478.png",
+      "size": 331148,
+      "sha256": "87AD479B6AE7F250E4F1E4851BCF299D887909DD2789406F1F8A2E64F46175BC"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_7479.png",
+      "size": 311714,
+      "sha256": "DAF5871FD443DF6D65E6860D5A962C65C58388EA0808E95D87BA57D83FF48571"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_7480.png",
+      "size": 308553,
+      "sha256": "25329DB40D34FAA9DF834A80FDB2A6F5FCCDBA35BEBDD9F66CEAF87E6CE63813"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_7493.png",
+      "size": 308553,
+      "sha256": "25329DB40D34FAA9DF834A80FDB2A6F5FCCDBA35BEBDD9F66CEAF87E6CE63813"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_7519.png",
+      "size": 298781,
+      "sha256": "CFB6095F4486A4B9CF14D35DA4D4238F3A607CB09B3A2A13BBAACF38457DEAF2"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_7807.png",
+      "size": 248056,
+      "sha256": "912D84CA788EC1BAD95EE958E6EF4B3E8A39218F841FCEA9191A1EA99D133E64"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_7808.png",
+      "size": 237043,
+      "sha256": "78924DBDF3EFB3F4338752ADF0E7245AD0078C601FB626092FCD82C33C9217DA"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_7809.png",
+      "size": 212052,
+      "sha256": "32F72292DEAA83C0F235BA1E372041311C3123B9915F5A0A2E18720B9C0DF581"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_7833.png",
+      "size": 213390,
+      "sha256": "BF0B03CD21CF070F3CBF133A3950FADA47EF78B3B2F726B3578EE7440E86C93F"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_8198.png",
+      "size": 228514,
+      "sha256": "53828428957F85522F86F4449F0A73439A51E96224C03D8EB2E2DABC53F55F4D"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_8208.png",
+      "size": 234329,
+      "sha256": "BE86E7DA84B43321CD02928C3A1C9619601B0C9F7D674A8BB76E66AE6FE9C1DE"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_8518.png",
+      "size": 229087,
+      "sha256": "039FD8257CAA99D71D6CE74243565E742AD061BA34C8E4DDD85079E6CB2D67B2"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_8528.png",
+      "size": 228113,
+      "sha256": "0FB4731A0A43B41E378C98D9AE6F6EB0B7EA27C14918D77F67B57D17AA684C5E"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_8995.png",
+      "size": 186785,
+      "sha256": "778CA89EBDF6D3AA56FCA18E7619F49F260DB020C83F884394EB461F66A03055"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_9005.png",
+      "size": 174011,
+      "sha256": "7C67E066E459DCEE4815122C8232E1DEA391CAF3D626B8CD6C10457A0A64A9B1"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_9496.png",
+      "size": 268962,
+      "sha256": "12BE60C729A1F1D7613ADBCD4924122146D91B812D16BED2D42262ED9AE6CA78"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_9500.png",
+      "size": 268962,
+      "sha256": "12BE60C729A1F1D7613ADBCD4924122146D91B812D16BED2D42262ED9AE6CA78"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_9631.png",
+      "size": 194041,
+      "sha256": "E3D63105E493851803571F4F1FE22031E32CF454C06FA04F5F79AFE069BDD57D"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_9632.png",
+      "size": 188318,
+      "sha256": "CD60AFB8A4669AB9B470BB794F603CBED845772B66C213592944BB049EA294BD"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_9633.png",
+      "size": 190457,
+      "sha256": "B25B143BB6CC1498DA9A638C76BF77EA01E1E414110A9AF92701084BD55C77B7"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_9634.png",
+      "size": 193728,
+      "sha256": "3A616CF147DA16D2C59F1488E90FCE3F3847F3D986E9D7ADA8CFF5622E9948E0"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_9635.png",
+      "size": 193181,
+      "sha256": "3C7C8CFD043025CA6812F1DE71C1E1DF5FDB681734927DF40C2DDEA0667AD287"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_pulverizer_SkinId_9636.png",
+      "size": 264050,
+      "sha256": "34DC1B714F6676C769BB06513779349CA416A47608B564411DA9F126134FDC6A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_hrg_SkinId_8139.png",
+      "size": 233353,
+      "sha256": "29A729AE35D79E1763E41EB4524C2AC32FE0CD209A66B8EC23BF2E2B7DC42BD8"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_hrg_SkinId_8144.png",
+      "size": 233353,
+      "sha256": "29A729AE35D79E1763E41EB4524C2AC32FE0CD209A66B8EC23BF2E2B7DC42BD8"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_3316.png",
+      "size": 257827,
+      "sha256": "D6495BDE53B9B8B3396CE095472763347E81F0E4EBFBAC995E97F59F9DB62906"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_3317.png",
+      "size": 259570,
+      "sha256": "F8B95A095A5528E5898FDD0920682DA79D1C480026C71F6717224A5C2D73E4FD"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_3318.png",
+      "size": 260850,
+      "sha256": "38C49556A65AC374CE7F6C972A6E27B091FB0C559A9552B2063CF42A4CCBCCA8"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_3439.png",
+      "size": 219912,
+      "sha256": "FE3AE57E311EFEA000943053378246A8AE9FDDEE5D86470E3344B51FD3FF9FA1"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_3442.png",
+      "size": 252449,
+      "sha256": "4A94006906C6146F5AD3DAC5F49BD62299EDB4DDEA441B418D9309DE00BC8D74"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_3443.png",
+      "size": 244746,
+      "sha256": "ADEDDEFAF025C0B93C535F83055F224CB8444A672C0504FC89592A1FF019DDB9"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_3444.png",
+      "size": 224950,
+      "sha256": "90DCCF0F143B1B4B93D4A1C0FFCBB22618F676264515F134BCEABCD8BB3A49DB"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_4739.png",
+      "size": 240576,
+      "sha256": "25A3FA0A0B067A3194D4D2BFE78B62C8B91BFE57863A3431344222AC91A92187"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_4740.png",
+      "size": 230439,
+      "sha256": "509693E9C2B491F395F664918B4193C0164DA2442CA32D9548E3C1505835DA44"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_4741.png",
+      "size": 219593,
+      "sha256": "1528BBD6DE155F237EE40CA2E1B0AD89A5D6DC8F28C643EA5A7A072E842B2E10"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_6479.png",
+      "size": 219201,
+      "sha256": "6CB0A44C30658B23696BCB39FC18C51D2494BD00AC058F39E7AF4AC11D86DA4A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_6504.png",
+      "size": 224733,
+      "sha256": "7D17725628E4BE7799E531F1A2397551EC5542717156F0DBDE1F60EE2707A014"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_6505.png",
+      "size": 224875,
+      "sha256": "E7654207AE8D9721752039C32E701F65C90BE61FAA08B7DAFFA8A98FB62E1176"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_6506.png",
+      "size": 212540,
+      "sha256": "FF1163CABC218F38956A276C37F7AACDEEC7D72298DBD899B2953EAE7984F26D"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_6611.png",
+      "size": 211158,
+      "sha256": "62C9021B18CACA7CAD1146CF6A04941319177345E7AD6D995A15A5E060ABB3D7"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_6971.png",
+      "size": 221923,
+      "sha256": "95B0BA2A5B54ADD54514C94C113A8F61784009845511CFCD0058B865AEB5F5A3"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_6972.png",
+      "size": 223391,
+      "sha256": "40DA5879CF1E260A17E5B9725874A31CF7D06676895FCE49B01B55BC5EF411F1"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_6973.png",
+      "size": 220273,
+      "sha256": "8FA6F325AE5F3BE20DF75C542D61DD04D70264111B651725228CCA3EEFD1D535"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_7163.png",
+      "size": 212320,
+      "sha256": "553C3435E101C614ACB5CE01E6D5EF678700F978248F2BBF06EC2B066787B37B"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_7200.png",
+      "size": 241942,
+      "sha256": "9A033C3ED3D3EAA65D0CE8134DD1C4F01C26B123D8C25F6B24904621FC2E6FD3"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_7201.png",
+      "size": 239394,
+      "sha256": "2B6D0DC27659B9E588CC31D74ED79AE12D54FF6F59E789BC4D98A58DEA5FDC23"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_7202.png",
+      "size": 237523,
+      "sha256": "0ADF407CCD36994743B7B3062EC908828081A9BC8DF530371C4CA5C9A1817C82"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_7229.png",
+      "size": 237523,
+      "sha256": "0ADF407CCD36994743B7B3062EC908828081A9BC8DF530371C4CA5C9A1817C82"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_7503.png",
+      "size": 227236,
+      "sha256": "F097997C7D76004D95B591A8737530C398A60A7630CD5D7DC8EF57AB080EAE11"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_8097.png",
+      "size": 204338,
+      "sha256": "1252A1B58FF2E0C784A814BA83931C3B8BF5FD7D83A0E90D31D81F617FB7EA00"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_8108.png",
+      "size": 204376,
+      "sha256": "86F53B381486506B5AD11F31CB3CD320FC387DC5FEEC6E199878392104BD2AF2"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_8997.png",
+      "size": 255723,
+      "sha256": "20D78C94387560D2A258090EF5580938AEEFDCF8531253CA7195F96B33F1525D"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_9007.png",
+      "size": 253268,
+      "sha256": "0D07E8D9FB3B582924E834EA7EC72FEA7F9EE12D52607603C89713FEBA4FEB38"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_9674.png",
+      "size": 236269,
+      "sha256": "0FE1BBF2559AB16F78FA1FCC8846C470926AD5654F13CB57832C4443B4C8F13D"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_9678.png",
+      "size": 238776,
+      "sha256": "C9EF7FCB6728D267D054F5FF3DB80FF90AC546C8D436D83DB3EAC64AFD6F6BC4"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_9711.png",
+      "size": 232305,
+      "sha256": "83B2A2B3F99BF22E602233B5CD4396AF4D813B4F5C095A27D1A9D6B760419F14"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_sw500_SkinId_9712.png",
+      "size": 232305,
+      "sha256": "83B2A2B3F99BF22E602233B5CD4396AF4D813B4F5C095A27D1A9D6B760419F14"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_4000.png",
+      "size": 241709,
+      "sha256": "C252D1B4B12B0F8A01EF0B7F047E5665D89BAEA3E84DA5764D4C061123E29AE5"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_4001.png",
+      "size": 230239,
+      "sha256": "3868B76DD5A16F8176F3549A88B3F726061194213139639005463B2F1EDFABF8"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_4002.png",
+      "size": 226272,
+      "sha256": "4526AFA93A750D54F96F9A42A0B081C41F8A07025A684C30094983A7346ED79F"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_4317.png",
+      "size": 242306,
+      "sha256": "5CB7379A8A1C61233E9B6E84A70C8D9B4B0AF2994DF51A57EE8173C8701BB85D"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_4318.png",
+      "size": 233717,
+      "sha256": "D2C3E7E5D75BDADB3235121498B7FC65A5BF4AD3DD10851FF9531CD24166D35B"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_4319.png",
+      "size": 227118,
+      "sha256": "DBD7890445C2D99ADD91F0170B014A3BF93C5E44115B99E6F1CE9F216B9453E8"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_4366.png",
+      "size": 234486,
+      "sha256": "11D79EF8598737E34F8DF89F148AAE46B5D1407A6959A81CF9DD7EBD710CF639"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_4367.png",
+      "size": 227126,
+      "sha256": "BA83386BFEEE1FB28728770711475AE71CD58C5EA952518B98F298128054A30E"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_4368.png",
+      "size": 225530,
+      "sha256": "2A05E757BEF3B613ECF2427366DEB171CE4A4B0CBDC0EAE6DBE5194F3E074340"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_4597.png",
+      "size": 253832,
+      "sha256": "8F44E114D57472809D4B01B81977F83964B3FAB6C54118FF31283DE2DC53CEFB"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_4633.png",
+      "size": 274380,
+      "sha256": "5D0F3CDB4847D59E1F7851D639068E67A6F219FCF7E7E25EF0268CD5C26A983F"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_4634.png",
+      "size": 269744,
+      "sha256": "F88613B90B69E6AE183304AA25336F0E6F8BBA8E596DA7239D9047D161E6A316"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_4635.png",
+      "size": 268380,
+      "sha256": "D8A01A1B321CCC3F58524A37E5D7B5151B8124799E5AA82715D1F1A1C7C82B32"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_4953.png",
+      "size": 262710,
+      "sha256": "1B4674CECC0B42AA96B7201199B030CF217833C8F5D5C4BB991A0DBA605B4A70"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_4954.png",
+      "size": 255026,
+      "sha256": "A9E81610B389E887922018BE48581811C6E47085168D22557AA554C52EF1EA20"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_4955.png",
+      "size": 254155,
+      "sha256": "D2E46EF22DD4B60DF759FF0B50A9C97EA422A2E8E6EFB4E42AE29B5BB3731D98"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_5023.png",
+      "size": 254155,
+      "sha256": "D2E46EF22DD4B60DF759FF0B50A9C97EA422A2E8E6EFB4E42AE29B5BB3731D98"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_5528.png",
+      "size": 244521,
+      "sha256": "7161B76D01FB419C8A1886765577C1F9FC7D93B708A64E96C9475D214BC229A6"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_5529.png",
+      "size": 238378,
+      "sha256": "3B828D13908C0D20B6068478DE44252A40B09F5832CE174ED8464A12B0C32080"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_5530.png",
+      "size": 235634,
+      "sha256": "6DEC0E96C06CFB8BA624E42711FD5D5A3C89B1D2F61241B06C20A39F91788250"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_5662.png",
+      "size": 257006,
+      "sha256": "C849C48585DBF181ED440CDBE013673BCB1A364A781FD07C4FC0091FA4B1C345"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_5948.png",
+      "size": 238524,
+      "sha256": "A34853FE9B82D67C3DBA6FBF370B56D436F528905B29331130FAF7EE5F2A065E"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_5949.png",
+      "size": 235213,
+      "sha256": "272546448E7BF1FC78A0A91E8EA2E451967C3DDA1B98228B93BD13C2BF06C86B"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_5950.png",
+      "size": 237567,
+      "sha256": "B7A1FE663D623B5EDDB80DDA345ACBA1CBFD8643DDBDBDD68FD42BD54101C3FE"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_6290.png",
+      "size": 230701,
+      "sha256": "97CA178E03603A52F23D071CDCD02A6D7B58B65D4D5D7D50885971A0A5A11077"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_7180.png",
+      "size": 223289,
+      "sha256": "089AF138230E5E4603BDCF444BF40ED280290ECB04C54A4FE4CE19D933049147"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_7203.png",
+      "size": 254424,
+      "sha256": "550237CA79CC405E1F6E80FAAA3B747AFD302CB5D25DD6BC388D62C6425218FE"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_7204.png",
+      "size": 241908,
+      "sha256": "700C2AF14310489ABED0B29251B92769183ACCAA0AF7C45DBA3808C252367D73"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_7205.png",
+      "size": 236550,
+      "sha256": "1467E1CD1AA513F0B0F632B9970C85D6EC0B45BE68F1EBB52AC78F69D26C8AD0"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_7230.png",
+      "size": 236550,
+      "sha256": "1467E1CD1AA513F0B0F632B9970C85D6EC0B45BE68F1EBB52AC78F69D26C8AD0"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_8193.png",
+      "size": 243775,
+      "sha256": "A5A3F8A6CC83F2816326B854E5EF8941978C51A1018F67EA1B6580CAE28F8E3D"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_winchester1894_SkinId_8203.png",
+      "size": 251928,
+      "sha256": "CE11AA5A39AF9061A0339784C1BAC8E6FFAE81D4D0282D218EAB0B61FB30C675"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_zweihander_SkinId_5918.png",
+      "size": 196332,
+      "sha256": "1428358B6EC117DDCB96890046B78B9D36ACF5DCFF582F3059A216B716F6C4F8"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_zweihander_SkinId_5919.png",
+      "size": 196054,
+      "sha256": "95561B1F563C82D216D9AD3EF470EB61FD209B5ED005F1A5BB9BD9C52DF345C1"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_zweihander_SkinId_5920.png",
+      "size": 192187,
+      "sha256": "F39949285769D1B4DEC57CB13254F9670F86D6618BBE64A5A4A933E598129836"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_zweihander_SkinId_7209.png",
+      "size": 188509,
+      "sha256": "A1DDD9D4929D2C016AA450EC611ECDCDC3616B0940C88DB16BC3C80E4FC8FAB8"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_zweihander_SkinId_7210.png",
+      "size": 184635,
+      "sha256": "AEF457F7A877328D5F3C05660EC2CFD75617E1A54A93E3FA1691D8F86CFCCF22"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_zweihander_SkinId_7211.png",
+      "size": 182741,
+      "sha256": "CA22DEE296503421681C7E0B813A90FE0FF0F8C4763C5942DFE08A8347C35ED0"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_zweihander_SkinId_7232.png",
+      "size": 182741,
+      "sha256": "CA22DEE296503421681C7E0B813A90FE0FF0F8C4763C5942DFE08A8347C35ED0"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_zweihander_SkinId_8041.png",
+      "size": 153518,
+      "sha256": "FC4B942CA34971D6BB95BE7B7A56A5BEDD55FE293D00DECAB361B9520E3F84A4"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_zweihander_SkinId_8791.png",
+      "size": 178849,
+      "sha256": "C7AF4A109C4F0AE94A159C9F4C1E2DA01A9EBE33FB0FADC1B1E968C9568C7FE4"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_zweihander_SkinId_9338.png",
+      "size": 191126,
+      "sha256": "726DF1829206793B5FD2016BE8440D898EDD2C36490B52FF0BB5019E3A9B5FA4"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modKFSkin_zweihander_SkinId_9342.png",
+      "size": 188356,
+      "sha256": "52094DC7222E03287C212A3881858CE864AEAE57D8CEB98BC9ED55BD943D4DE5"
+    }
+  ],
+  "repositorySourceDirtyAtPackaging": true,
+  "zipSha256": "40A6559C7D003E43D7A5E68EE4BC5FF062A2B0B67BE7518636D71DBE6A555601",
+  "schemaVersion": 1,
+  "packagedFromRevision": "19bc86eee2c2553584346a9d37e359bc1c2dc807"
+}

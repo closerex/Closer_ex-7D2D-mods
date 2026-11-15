@@ -1,0 +1,506 @@
+{
+  "folder": "ZCLSWeaponPackEXP",
+  "version": "2.2.1",
+  "fileCount": 98,
+  "pinType": "artifact-digest-manifest",
+  "bytes": 132326240,
+  "game": "3.2",
+  "zip": "ZCLSWeaponPackEXP_2.2.1.zip",
+  "sourceClaim": "Exact resource archive digest pinned; icon bytes materialized from verified game-3.4 file links. Existing resources retained; no logic or dependency rebuild.",
+  "files": [
+    {
+      "path": ".gitignore",
+      "size": 1248,
+      "sha256": "1D4A6F62B71C0BC0E0D1CB26A2969164B1EE328BF243056791FEE158FF0324DC"
+    },
+    {
+      "path": "Config/af2011/buffs.xml",
+      "size": 673,
+      "sha256": "685565DD035BFF2E5BADF9FC7DA933AA5A8F0540D99C0A2D91F049990D6B83C8"
+    },
+    {
+      "path": "Config/af2011/item_modifiers.xml",
+      "size": 11064,
+      "sha256": "E6CFA63979C31F65E38BF7B0E3D58DC65ACF2FB874D6083D418A19971DDF5C4F"
+    },
+    {
+      "path": "Config/af2011/items.xml",
+      "size": 42303,
+      "sha256": "59DBFD33CD4E3D001C15A2A7EE5D743C5C1B04D1CB4A16CC532147DAAF5F7F1F"
+    },
+    {
+      "path": "Config/af2011/Localization.csv",
+      "size": 588,
+      "sha256": "0B314CB97FC52A425487E6FED0990852B04B50A700E62E2D43A6DCA54C63CECD"
+    },
+    {
+      "path": "Config/af2011/loot.xml",
+      "size": 4844,
+      "sha256": "D3E158B6C9EBF40F3E5AB3979261A58E5CBF0B1F513074DC69519B8926BB0EB8"
+    },
+    {
+      "path": "Config/af2011/progression.xml",
+      "size": 1647,
+      "sha256": "FDBC7C932D532757992F1BE14BB85CAB31F4288C754D6FF0E744D867D0E3300E"
+    },
+    {
+      "path": "Config/af2011/recipes.xml",
+      "size": 8509,
+      "sha256": "667376BFFFCFB51B6BC4D0309529903D9B9E095960BEBD2CFB9B9E6A786713DE"
+    },
+    {
+      "path": "Config/af2011/sounds.xml",
+      "size": 21,
+      "sha256": "DA29606CAD9D7748EFBB6BE2C17BA30B0B06CAB443A09B5D5AE7744750E1D428"
+    },
+    {
+      "path": "Config/af2011/traders.xml",
+      "size": 1183,
+      "sha256": "BA61C39F27CA716FEF663681C768E1F429C56DE497A63EB7A845408B78AC5F1E"
+    },
+    {
+      "path": "Config/buffs.xml",
+      "size": 326,
+      "sha256": "450C4366D2FB36967323A6B9D703EBE9CCE4244AE370FFD45C4EA65102D20598"
+    },
+    {
+      "path": "Config/common/sounds.xml",
+      "size": 21,
+      "sha256": "DA29606CAD9D7748EFBB6BE2C17BA30B0B06CAB443A09B5D5AE7744750E1D428"
+    },
+    {
+      "path": "Config/eviscerator/buffs.xml",
+      "size": 459,
+      "sha256": "C75B34C232B65A96B33EFA57FFD455D394ED8D645123828354EE4E005F2A12AB"
+    },
+    {
+      "path": "Config/eviscerator/items.xml",
+      "size": 26281,
+      "sha256": "A1284E0D28427CAD42155644743A035C41F70CDC79CE043455E2DC267A9F3A86"
+    },
+    {
+      "path": "Config/eviscerator/loot.xml",
+      "size": 4045,
+      "sha256": "9A7D0F6EC49E16E67F10A23CBE8F72F55FBF2AF4C187D49EFEB462B9E4F56838"
+    },
+    {
+      "path": "Config/eviscerator/progression.xml",
+      "size": 1125,
+      "sha256": "17A925E8CA08E02AD6A086347C4C9FDFE0DC7821B39B2170D9CDDA67D37DE55C"
+    },
+    {
+      "path": "Config/eviscerator/recipes.xml",
+      "size": 1852,
+      "sha256": "A860B139E8168AB61C5A02A2386C337C696616D0E9608813863AF080C8F8C937"
+    },
+    {
+      "path": "Config/eviscerator/sounds.xml",
+      "size": 21,
+      "sha256": "DA29606CAD9D7748EFBB6BE2C17BA30B0B06CAB443A09B5D5AE7744750E1D428"
+    },
+    {
+      "path": "Config/eviscerator/traders.xml",
+      "size": 476,
+      "sha256": "2206C3095D8165B6E77132EAFA7BADD935003F1C2A56A5057C83038456BF7F5B"
+    },
+    {
+      "path": "Config/gshg762/items.xml",
+      "size": 8901,
+      "sha256": "49E5CC7DED847D63CCA899FB7D355B51C8030867FEC82A70D8160FC6F5434D17"
+    },
+    {
+      "path": "Config/hrgblastbrawler/buffs.xml",
+      "size": 441,
+      "sha256": "23E13F6E01BC68A48E1EF05ACBA2E63872A7BFFBEBC68A7687FA04E357890C7C"
+    },
+    {
+      "path": "Config/hrgblastbrawler/items.xml",
+      "size": 27902,
+      "sha256": "D346BDE14B37C147DB86DAD503F9FE9C9C67968650E7D6F6866DF0236D29B428"
+    },
+    {
+      "path": "Config/hrgblastbrawler/loot.xml",
+      "size": 3543,
+      "sha256": "38A467E8450F52CA5880D424DA83D67C1773AD5A7603FD30D65B34E4326B3F11"
+    },
+    {
+      "path": "Config/hrgblastbrawler/progression.xml",
+      "size": 1425,
+      "sha256": "C4BB9565142B6EAD17734AAC8D46899D263C67C60BE5CA1D9127EEA1BCACE0F9"
+    },
+    {
+      "path": "Config/hrgblastbrawler/recipes.xml",
+      "size": 3129,
+      "sha256": "DC4D1BE9285D657EFE44A1C4D2A5F123CC352E8C23113CAD9FDF36EB0B8F3650"
+    },
+    {
+      "path": "Config/hrgblastbrawler/sounds.xml",
+      "size": 21,
+      "sha256": "DA29606CAD9D7748EFBB6BE2C17BA30B0B06CAB443A09B5D5AE7744750E1D428"
+    },
+    {
+      "path": "Config/hrgblastbrawler/traders.xml",
+      "size": 850,
+      "sha256": "EEBE7CA70875DAC1CA685F127BEEC4042DE3580970BE22E16B415F93E5876DAA"
+    },
+    {
+      "path": "Config/hz12/buffs.xml",
+      "size": 419,
+      "sha256": "6FD9E4B9BDCA56FF0A36D1ED433C8697AA35E6E3643B5EB2C2E004F996FBEB95"
+    },
+    {
+      "path": "Config/hz12/item_modifiers.xml",
+      "size": 1223,
+      "sha256": "7EC1C26BF34A41C63A8DDBEC2813283D1F7F2F60D3ADDC838BB71A80A0F14DF0"
+    },
+    {
+      "path": "Config/hz12/items.xml",
+      "size": 21885,
+      "sha256": "EBB9F7C804B252265686BE0CB628CB1FAE1EFC65015E0B502574EE7C542C2ADF"
+    },
+    {
+      "path": "Config/hz12/loot.xml",
+      "size": 4767,
+      "sha256": "D9DA5941F5FB5C826EF289E9F04A7966C7653564187674779D249F1C20254CD1"
+    },
+    {
+      "path": "Config/hz12/progression.xml",
+      "size": 1345,
+      "sha256": "EBB015F010736FE4EB8D5F0872DED75D8E00BFEADE70B679012F30AC38E7BAD3"
+    },
+    {
+      "path": "Config/hz12/recipes.xml",
+      "size": 3071,
+      "sha256": "FB8B235E95EC5E4CB964A5CA7129DA2127BC38A92BBDCDAAFF7BDDFDBE794C8F"
+    },
+    {
+      "path": "Config/hz12/sounds.xml",
+      "size": 21,
+      "sha256": "DA29606CAD9D7748EFBB6BE2C17BA30B0B06CAB443A09B5D5AE7744750E1D428"
+    },
+    {
+      "path": "Config/hz12/traders.xml",
+      "size": 806,
+      "sha256": "70F5E2E47275597EEFF48EABC8866AA3896C96D211C9E4F47AA2B889B6215A87"
+    },
+    {
+      "path": "Config/item_modifiers.xml",
+      "size": 172,
+      "sha256": "81D223EFA48012D70BA1D4B7F6F7743A89DEA4A72F28DC9FE08702D4366F7AD0"
+    },
+    {
+      "path": "Config/items.xml",
+      "size": 375,
+      "sha256": "37FC67DA5ADF4786013ED21EDEAA45FFAB73B3C917EE90D601316D368D413B84"
+    },
+    {
+      "path": "Config/kaboomstick/buffs.xml",
+      "size": 429,
+      "sha256": "B5D012BAF18CF056C6C75C79F0AD875528CA5B8E24502FEE32900996F6977B4C"
+    },
+    {
+      "path": "Config/kaboomstick/items.xml",
+      "size": 29090,
+      "sha256": "D2E603D95C5717D3C675FFF6DA313E3CFBF8C082693EBAC20268F7A34ACB2663"
+    },
+    {
+      "path": "Config/kaboomstick/Localization.csv",
+      "size": 396,
+      "sha256": "342765E15DAFD451483242FF756A56BC038DC41BF7B6E70F4D1550ED04CC323A"
+    },
+    {
+      "path": "Config/kaboomstick/loot.xml",
+      "size": 3914,
+      "sha256": "B74F4220D40AA034B4EC3F613F6685F7B5C2138DB1350015F7A03A7BDB353850"
+    },
+    {
+      "path": "Config/kaboomstick/progression.xml",
+      "size": 2369,
+      "sha256": "145551C35F42CF960EC6663A177799BB4D06F149DAAB772F76CEC8BD20ADAB05"
+    },
+    {
+      "path": "Config/kaboomstick/recipes.xml",
+      "size": 5297,
+      "sha256": "807CCE5DF8F6BA968C21D100A5894B94F37B353DB713DB8801035A5F8FB48C68"
+    },
+    {
+      "path": "Config/kaboomstick/sounds.xml",
+      "size": 21,
+      "sha256": "DA29606CAD9D7748EFBB6BE2C17BA30B0B06CAB443A09B5D5AE7744750E1D428"
+    },
+    {
+      "path": "Config/kaboomstick/traders.xml",
+      "size": 1654,
+      "sha256": "EFACD7017BD7DE5C45F68FB636FEAAE07E9497F5F804D9A1AC6F40412718F113"
+    },
+    {
+      "path": "Config/katana/buffs.xml",
+      "size": 449,
+      "sha256": "B1001CBE4E0E731DDAB6799943B0879011F9AF66414992FE97BFC96B32009D9A"
+    },
+    {
+      "path": "Config/katana/items.xml",
+      "size": 23531,
+      "sha256": "7B37D8744264202F62A91A8DA0221F2B5DF9C3E7313B37D4C688A8C08A14AD76"
+    },
+    {
+      "path": "Config/katana/Localization.csv",
+      "size": 1078,
+      "sha256": "0985662B57877A1B777DAA22C048CB3173B35424BB8FA1699FF72108556A4650"
+    },
+    {
+      "path": "Config/katana/loot.xml",
+      "size": 718,
+      "sha256": "338FD71077399B186C267F814E7DF7F0D7A25412F27BD3374AE28C2E7E372E13"
+    },
+    {
+      "path": "Config/katana/progression.xml",
+      "size": 859,
+      "sha256": "F30AA1387352974C536CBA614F63D1A59F5DD4EDA96D492D5D6E8295B2FFDA0D"
+    },
+    {
+      "path": "Config/katana/recipes.xml",
+      "size": 1139,
+      "sha256": "938454EEA0B795A08CD2C5E9EE5502D3ABCA0D5B0DA5A304ECFF006D5FE100C2"
+    },
+    {
+      "path": "Config/katana/sounds.xml",
+      "size": 21,
+      "sha256": "DA29606CAD9D7748EFBB6BE2C17BA30B0B06CAB443A09B5D5AE7744750E1D428"
+    },
+    {
+      "path": "Config/katana/traders.xml",
+      "size": 210,
+      "sha256": "C554E7EBDCE9ACA2C914FABB05744F9200B90A721DDD6642D4EFBA5D9BE43112"
+    },
+    {
+      "path": "Config/Localization.csv",
+      "size": 6986,
+      "sha256": "4920DEB636DDFAA9CB4490FD564E452ED2B2B1F52A81BB470EB58CDB23664DEE"
+    },
+    {
+      "path": "Config/loot.xml",
+      "size": 321,
+      "sha256": "3E41E00827CF1BD1338B295FF0D0CE32B6FE500AA5BB1AE09845245EFCE51661"
+    },
+    {
+      "path": "Config/m4benelli/buffs.xml",
+      "size": 429,
+      "sha256": "6379B4C31D047D0166FDDAFF620A5D7A0A5772BA2BE02F32D4A0574D760E8985"
+    },
+    {
+      "path": "Config/m4benelli/item_modifiers.xml",
+      "size": 2754,
+      "sha256": "5F21B818344A89DC9E84CDDFC7973BFB89F480A71ABDEC3F078C3C2B5F3FF3F2"
+    },
+    {
+      "path": "Config/m4benelli/items.xml",
+      "size": 23780,
+      "sha256": "5615FCB7A4AB1F3B9CB4C15156FE6D9E915DD2FC24BB25846ECC7875A18D4C1D"
+    },
+    {
+      "path": "Config/m4benelli/Localization.csv",
+      "size": 508,
+      "sha256": "FDAB449EA5AFC9E13735A13FE5BC4B3487C83D1E05C560A8BF0F3618917E451B"
+    },
+    {
+      "path": "Config/m4benelli/loot.xml",
+      "size": 4892,
+      "sha256": "B4B001A1CA0476B6AABC4E51CB95CA629EF33A14A0CF86347ADFCF4F9D59DF54"
+    },
+    {
+      "path": "Config/m4benelli/progression.xml",
+      "size": 1389,
+      "sha256": "55149CAFADC8F8A74056070AE6C0B08F7A773CE798F2DA0983C38D462ECD0F3D"
+    },
+    {
+      "path": "Config/m4benelli/recipes.xml",
+      "size": 3097,
+      "sha256": "7BB378DEAE2B4F883881C42675D878E614DBD7ADE138655F4B37E432DDD43390"
+    },
+    {
+      "path": "Config/m4benelli/sounds.xml",
+      "size": 21,
+      "sha256": "DA29606CAD9D7748EFBB6BE2C17BA30B0B06CAB443A09B5D5AE7744750E1D428"
+    },
+    {
+      "path": "Config/m4benelli/traders.xml",
+      "size": 826,
+      "sha256": "C064EA69DB2E3F065EF6B32B320E08E7B34D223082C6BA1C89B784105AD722E8"
+    },
+    {
+      "path": "Config/progression.xml",
+      "size": 370,
+      "sha256": "1F483536349AB6873F739C1449662ED3F4C6F3A0A9F9CC9E2207C43896D233C7"
+    },
+    {
+      "path": "Config/recipes.xml",
+      "size": 342,
+      "sha256": "A834E1A36972B963B9BCD92AA9D40D2F48D8F2D348D0275BFAC16C4393341A58"
+    },
+    {
+      "path": "Config/sounds.xml",
+      "size": 21,
+      "sha256": "DA29606CAD9D7748EFBB6BE2C17BA30B0B06CAB443A09B5D5AE7744750E1D428"
+    },
+    {
+      "path": "Config/traders.xml",
+      "size": 344,
+      "sha256": "241D04630E34C6DA960DA3C2302AD2720E5D2B40B1AADF9BFC595A5BE3AA347E"
+    },
+    {
+      "path": "ModInfo.xml",
+      "size": 248,
+      "sha256": "EAE17A3EADBE2C812150872A3C6AB22326F664BE3E3FE8850E4A7BF30F79E3A1"
+    },
+    {
+      "path": "Resources/af2011a1s.unity3d",
+      "size": 7544325,
+      "sha256": "33552DC7A703BA0E14CA7D714E14539808515AC224D5E10EE35E459FFAD30BE5"
+    },
+    {
+      "path": "Resources/eviscerator.unity3d",
+      "size": 9189223,
+      "sha256": "859D9CCBBB73ECFB4173B0A78FC8B998DE04FA72FFDCCCA67DE9C279FDFE0FF4"
+    },
+    {
+      "path": "Resources/GshG762.unity3d",
+      "size": 22984786,
+      "sha256": "68AF9A64533DA6FDDB7BD17A6E6AF3C4B77DB3E664CA76180F3C9AC464ADDF7D"
+    },
+    {
+      "path": "Resources/hrgblastbrawler.unity3d",
+      "size": 45217541,
+      "sha256": "86E66EC18BA6265C968ACFFB1F385DB3D4FAF3E8426DAFB814D276D7FE915FC2"
+    },
+    {
+      "path": "Resources/hz12.unity3d",
+      "size": 24066034,
+      "sha256": "AFEFEC00BA00417BD9EF7DAF45D0B935B6C61EEB8E6012EBCEA8F32EC1AFC223"
+    },
+    {
+      "path": "Resources/kaboomstick_explosion.unity3d",
+      "size": 478396,
+      "sha256": "B4DEB866AE208BFFD3B5E26B6637276B9BEF857800CF508B4C387099275BA960"
+    },
+    {
+      "path": "Resources/kaboomstick_prefab.unity3d",
+      "size": 5971843,
+      "sha256": "BAC7549B3C32960F9A681A34CDF39EBAE144A30D7BF227B70D85E9F86BE9F70B"
+    },
+    {
+      "path": "Resources/katana.unity3d",
+      "size": 6588695,
+      "sha256": "4120F3363F2D2667604640B7E7FCF2CF83E4C1F4DDB0DEB0ADFE41F1D4AD10C6"
+    },
+    {
+      "path": "Resources/m4benelli.unity3d",
+      "size": 17441020,
+      "sha256": "FAA86FAD9915AB08E831F0305333F699EC3E07C5ED213662EEB443020C09DB68"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/AF2011_MuzzleBrake_Dual.png",
+      "size": 14653,
+      "sha256": "915717A7D6564A6B7DEE6D8F2DC2C11D79DB03E7C018990211A2118596FB26C3"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/AF2011_MuzzleBrake.png",
+      "size": 30059,
+      "sha256": "E08FC2132AE498255D28F186363193045040A976EAB61DF80300C8EECCB9FD8C"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/AF2011_Reddot_Dual.png",
+      "size": 10943,
+      "sha256": "615834A4D698CD5D8BFF3599C8DB057132715AC9BE03252AFB21DBC031053874"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/AF2011_Reddot.png",
+      "size": 21412,
+      "sha256": "DEA404EB08EEE80023B41F888AC07276D3941E337CE23298E203BA2BC9A7E5CC"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/AF2011_Silencer_Dual.png",
+      "size": 8882,
+      "sha256": "B6EF89C60210FB639DD1FAD72DB4BB512B1351CB9370F3B63AECBEF83DF8F2BC"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/AF2011_Silencer.png",
+      "size": 19376,
+      "sha256": "71D33FC8BE4A3C843412DCBED3DB1E97634C1E8D4F558B629F274BF539122BA9"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/ammoEvisceratorSawBlade.png",
+      "size": 128938,
+      "sha256": "5DDD0098323DED0548A7C05D9A1816690A35B53667F0F774ABAE2DBC6B7706EE"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/BenelliM4.png",
+      "size": 97873,
+      "sha256": "6348BD85A68329DBCF313A043F7FA80D42F5D23530B3A89540F8B352F5EDAC31"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/gunHandgunT3AF2011A1S.png",
+      "size": 17253,
+      "sha256": "9A1274303B20B7ABE92918F7EEC1A561DFBC0B4C7FD2EE8553D107000E753BC8"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/gunHandgunT3DualAF2011A1S.png",
+      "size": 20266,
+      "sha256": "96DB7A11A1635FA403BC3F80885D1BB21335729B5DB8D855FCDDD8CEBACD8029"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/HRGBlastBrawler.png",
+      "size": 107247,
+      "sha256": "B253E287856544358A71FD89E4D885A8E5DD58DB57E9E12258EBE87CAFEBA5CC"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/HZ12.png",
+      "size": 198181,
+      "sha256": "6B85FD1BE68CB58E91ED5B1E6AF2D1D8A230B9D70864FDDB4C88770BB2CD0763"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/meleeWpnBladeT3KF2Eviscerator.png",
+      "size": 107037,
+      "sha256": "A2CF8B2E98DD058C827747761846E8DFB62DB149A9BD82E648678C82910DEC28"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/meleeWpnBladeT3KF2Katana.png",
+      "size": 13520,
+      "sha256": "3FB243DA8214DB9375270A0C866D0CF58160BA8C4AD7E5CDA7049E995FBD37D9"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modDualGunFlashlight.png",
+      "size": 8781,
+      "sha256": "BAF7DF9CE3ED731EA9C02BDD74D5B506553AE30691D3F0216B21A38FC2ADF456"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modDualGunLaserSight.png",
+      "size": 11767,
+      "sha256": "E018321DC1ABB0739882EBB35A5744043BBAF9A1FE592222E739FD7003D7D69C"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/resourceEvisceratorRepairKit.png",
+      "size": 42151,
+      "sha256": "5165B116D47DFFD23FA7067AF960B8BB513C743DB55638B90B1E9B731E1FC947"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/UI_HRG_Kaboomstick_Ammo_Frag.png",
+      "size": 37496,
+      "sha256": "E008E0A17C0791FAE5DA1B18F04681A4FF34F4CB74A81ED9E6E9B7504A53C383"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/UI_HRG_Kaboomstick_Ammo_HE.png",
+      "size": 35753,
+      "sha256": "8658ED12C1BA68FECD055667A0CC23B70F08661F85A93DEBFC1B6F8655C45AA2"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/UI_WeaponSelect_HRG_Kaboomstick.png",
+      "size": 11360,
+      "sha256": "4000E302AC93E0FBDD3742D68EE493136AB3921DE0418B9C4940F598D5A74C99"
+    }
+  ],
+  "repositorySourceDirtyAtPackaging": true,
+  "zipSha256": "BEADABE9085D5F18983DB900742ED7A1DF972077D08204BB8BE3ED407316A12E",
+  "schemaVersion": 1,
+  "packagedFromRevision": "19bc86eee2c2553584346a9d37e359bc1c2dc807"
+}

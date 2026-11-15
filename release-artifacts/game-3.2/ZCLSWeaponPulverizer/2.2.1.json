@@ -1,0 +1,76 @@
+{
+  "folder": "ZCLSWeaponPulverizer",
+  "version": "2.2.1",
+  "fileCount": 12,
+  "pinType": "artifact-digest-manifest",
+  "bytes": 11474153,
+  "game": "3.2",
+  "zip": "ZCLSWeaponPulverizer_2.2.1.zip",
+  "sourceClaim": "Exact resource archive digest pinned; icon bytes materialized from verified game-3.4 file links. Existing resources retained; no logic or dependency rebuild.",
+  "files": [
+    {
+      "path": "Config/buffs.xml",
+      "size": 857,
+      "sha256": "DF7C2F747B8807D33C39D96FEEC8B9BFD5F42129C3886B2D04FEF8E5378DF3DF"
+    },
+    {
+      "path": "Config/items.xml",
+      "size": 36258,
+      "sha256": "10650A1E393264386AFD275673A02AF21C3777200BC31BD6794F51C17D5C12CE"
+    },
+    {
+      "path": "Config/Localization.csv",
+      "size": 900,
+      "sha256": "EE8B14A7A49CB91160A260973488B4A18005C73B119E37AD1EF48807557B7083"
+    },
+    {
+      "path": "Config/loot.xml",
+      "size": 3293,
+      "sha256": "E253421DD89B117BA2E9315ABF2F8C4EED0E165EE9EDCDE4B6F0DF2CBFE668C9"
+    },
+    {
+      "path": "Config/progression.xml",
+      "size": 1971,
+      "sha256": "81B0B236E3ECBBC6DA73B49544B457A34C89E342C880013CE5D8F3CB1B2406B3"
+    },
+    {
+      "path": "Config/recipes.xml",
+      "size": 2527,
+      "sha256": "BB8DB1545453C0B56D4DE7182767FE469DAFB97FC73FB3174860DD7DC75FF022"
+    },
+    {
+      "path": "Config/traders.xml",
+      "size": 974,
+      "sha256": "62F6928DAF0123D4D728BD75E71FAB8305E3818FEA2803E0E375124B2CA8BCC8"
+    },
+    {
+      "path": "Config/ui_display.xml",
+      "size": 921,
+      "sha256": "814FD34F9BBD303F7F487955012F57569BD6E6AAE027E576B8D0A7B97D9693EE"
+    },
+    {
+      "path": "ModInfo.xml",
+      "size": 233,
+      "sha256": "FCFEDE86CAC9F024F113515BEA86F7F90D59AC88A1C1CC43B641AC3B27D1DB96"
+    },
+    {
+      "path": "Resources/pulverizer.unity3d",
+      "size": 12379473,
+      "sha256": "3601FFECA17018668A14AB233F8A162ECBF0A50E24F4197E5EF388AC043B3027"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/ammoPulverizer.png",
+      "size": 42279,
+      "sha256": "B1C7518EF1E334B970A41DE9BB40E7DAA13D6DC5E45826BFA0A0805C60F9FA6C"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/meleeWpnSledgeT3Pulverizer.png",
+      "size": 60072,
+      "sha256": "8987E6EE32FEBE620F4DA0B2B0234D0EB14EAD489A53D830A12DE0B548DC0DB6"
+    }
+  ],
+  "repositorySourceDirtyAtPackaging": true,
+  "zipSha256": "FDA803F596ED8F40084FBF7B2BC29DF8FEE48B4C39BC562E60673B7D7E0456A4",
+  "schemaVersion": 1,
+  "packagedFromRevision": "19bc86eee2c2553584346a9d37e359bc1c2dc807"
+}

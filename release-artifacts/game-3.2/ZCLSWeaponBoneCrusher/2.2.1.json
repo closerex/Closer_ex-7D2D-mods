@@ -1,0 +1,66 @@
+{
+  "folder": "ZCLSWeaponBoneCrusher",
+  "version": "2.2.1",
+  "fileCount": 10,
+  "pinType": "artifact-digest-manifest",
+  "bytes": 26563910,
+  "game": "3.2",
+  "zip": "ZCLSWeaponBoneCrusher_2.2.1.zip",
+  "sourceClaim": "Exact resource archive digest pinned; icon bytes materialized from verified game-3.4 file links. Existing resources retained; no logic or dependency rebuild.",
+  "files": [
+    {
+      "path": "Config/buffs.xml",
+      "size": 1653,
+      "sha256": "E9C7C9E3FD1E97D295BD1B4039444EF064DEA88CB5FD36DC9BB49B177DB6426A"
+    },
+    {
+      "path": "Config/items.xml",
+      "size": 25694,
+      "sha256": "29C220DEF799D000FCEE61B2C1D9C3BB273C1D18686294BCC95866F796945612"
+    },
+    {
+      "path": "Config/Localization.csv",
+      "size": 844,
+      "sha256": "BB7BF0F5D7162121D3A257A96D177BDD79D93CC8B926681DCB9354428D08173A"
+    },
+    {
+      "path": "Config/loot.xml",
+      "size": 703,
+      "sha256": "9142622B898BA726B0AF70C8CEC5D230417DA85A69F40AD87890F33DC785C257"
+    },
+    {
+      "path": "Config/progression.xml",
+      "size": 866,
+      "sha256": "E199FD0960021F531CACDD263B470891CE65FC46D4B2D19BB6094A53829D32DA"
+    },
+    {
+      "path": "Config/recipes.xml",
+      "size": 1228,
+      "sha256": "9597CC940FD5FB3DB2F03A131CAC0DD0C46AC046B8010ADF39B3DBABFE0C4E53"
+    },
+    {
+      "path": "Config/traders.xml",
+      "size": 210,
+      "sha256": "1C81EB481046B8041E7A39CCA0365F36AC2590633EE98E2123C6787650AECF60"
+    },
+    {
+      "path": "ModInfo.xml",
+      "size": 241,
+      "sha256": "8E9FD36322A55B97A8F6C8910E5AF8DEB32B911BA6D197107C87767AAF54D65E"
+    },
+    {
+      "path": "Resources/bonecrusher.unity3d",
+      "size": 28356599,
+      "sha256": "127942BBC9CC394905C8FB0DC789F3B2D658317EEF3B638FABB0C906689FA664"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/meleeWpnClubT3KF2BoneCrusher.png",
+      "size": 95676,
+      "sha256": "125E63158F980CC3363EC2295AA60D97F79ED41E45545A79AD774B4AB09DB042"
+    }
+  ],
+  "repositorySourceDirtyAtPackaging": true,
+  "zipSha256": "FE688F2815E58A9A9875914496F295A2F3339704BCDFC718E071290E11BC20E4",
+  "schemaVersion": 1,
+  "packagedFromRevision": "19bc86eee2c2553584346a9d37e359bc1c2dc807"
+}

@@ -1,0 +1,66 @@
+{
+  "folder": "ZCLSWeaponZweihander",
+  "version": "2.2.1",
+  "fileCount": 10,
+  "pinType": "artifact-digest-manifest",
+  "bytes": 9675392,
+  "game": "3.2",
+  "zip": "ZCLSWeaponZweihander_2.2.1.zip",
+  "sourceClaim": "Exact resource archive digest pinned; icon bytes materialized from verified game-3.4 file links. Existing resources retained; no logic or dependency rebuild.",
+  "files": [
+    {
+      "path": "Config/buffs.xml",
+      "size": 1631,
+      "sha256": "9EFBD4DD2D57DFE2EF256D11302FCB3F413E240D65A9FD8EFDEBE7FB185293BF"
+    },
+    {
+      "path": "Config/items.xml",
+      "size": 32356,
+      "sha256": "E32DE18DC38892E021F582BC926DE1006218028EB5EB864E241DD936DC267F18"
+    },
+    {
+      "path": "Config/Localization.csv",
+      "size": 907,
+      "sha256": "DBD1DEB1E9AF7830C8C9E2059CA55589AF4493D08C3F704C31C9AAEBBA89AA76"
+    },
+    {
+      "path": "Config/loot.xml",
+      "size": 732,
+      "sha256": "1C051EF8514704AE1876825FBE1570C91CD0F5583B87FFE49C04457CB7869CCE"
+    },
+    {
+      "path": "Config/progression.xml",
+      "size": 869,
+      "sha256": "ECFE52BDE31D00A4887B2F0B5776CD6717D4D42541A9319A5726BD591A4A5194"
+    },
+    {
+      "path": "Config/recipes.xml",
+      "size": 1229,
+      "sha256": "F926801C30CE207EEE0E80F49F3BA811EBE8EEEC85B908C5ABB79E9BCED87861"
+    },
+    {
+      "path": "Config/traders.xml",
+      "size": 210,
+      "sha256": "0C9CC2AA9C0D2F070A8D11812586975EE84E44764CF0C75A6EC0A59091406F8C"
+    },
+    {
+      "path": "ModInfo.xml",
+      "size": 244,
+      "sha256": "79B8BB81B297DD204BED299220EF0B5D55E5441CC9D765C8073F18595E8637C8"
+    },
+    {
+      "path": "Resources/zweihander.unity3d",
+      "size": 10445339,
+      "sha256": "42390E3E1EEC0B0991C18FA7CFD5EFE41E345CFBE6D8BD9F2BC81FD0150ACFC1"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/meleeWpnBladeT3KF2Zweihander.png",
+      "size": 50745,
+      "sha256": "329D96F7CF5A765BB2F35EE7DDBEDA90442A43499066B0F173287F545AA6184C"
+    }
+  ],
+  "repositorySourceDirtyAtPackaging": true,
+  "zipSha256": "132387F492B43327291A47E1DF8207D30DAB9C9FAAFD48DF247F843A039405A3",
+  "schemaVersion": 1,
+  "packagedFromRevision": "19bc86eee2c2553584346a9d37e359bc1c2dc807"
+}

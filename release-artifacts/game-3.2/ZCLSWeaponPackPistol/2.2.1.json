@@ -1,0 +1,131 @@
+{
+  "folder": "ZCLSWeaponPackPistol",
+  "version": "2.2.1",
+  "fileCount": 23,
+  "pinType": "artifact-digest-manifest",
+  "bytes": 91457032,
+  "game": "3.2",
+  "zip": "ZCLSWeaponPackPistol_2.2.1.zip",
+  "sourceClaim": "Exact resource archive digest pinned; icon bytes materialized from verified game-3.4 file links. Existing resources retained; no logic or dependency rebuild.",
+  "files": [
+    {
+      "path": "Config/buffs.xml",
+      "size": 2063,
+      "sha256": "C23111B52E66C37118B2EAEA83EEF8A263AE28B552A0CBD34722F95E85F16C9B"
+    },
+    {
+      "path": "Config/item_modifiers.xml",
+      "size": 9728,
+      "sha256": "DCFF7012C46866CBD17EDEBCF9939CAB7C876F2B534E9E1028E79D863E99C61D"
+    },
+    {
+      "path": "Config/items.xml",
+      "size": 178139,
+      "sha256": "97015BE025F54AF19F13B7517815A67561C7C307709AAF1453CAB641A312C273"
+    },
+    {
+      "path": "Config/Localization.csv",
+      "size": 5569,
+      "sha256": "9AD6C7D0179B5D1C9086C7346BD105EB5F71459811C935A4105079F870EC4CDD"
+    },
+    {
+      "path": "Config/loot.xml",
+      "size": 12869,
+      "sha256": "B24DE1E0E53A7F0750E56164A3D285BBA31FDBD5D54EA637813722C6E426788C"
+    },
+    {
+      "path": "Config/progression.xml",
+      "size": 4853,
+      "sha256": "B0CA47D1DD265405291AAA51D7B5C469C0C0209734B7D32B712A2FBCDF1243DD"
+    },
+    {
+      "path": "Config/recipes.xml",
+      "size": 23128,
+      "sha256": "725C4C0289CABFE7B6B3485FDA81C6370C0973934803D447E6414543A6CCD5F0"
+    },
+    {
+      "path": "Config/sounds.xml",
+      "size": 19,
+      "sha256": "117F0466D4E38D1248C309DCB8EE5BA5E0899632DCBE2FAF741B16890A4A1F20"
+    },
+    {
+      "path": "Config/traders.xml",
+      "size": 1639,
+      "sha256": "B6E3421807184E82F92ED030407D8DC2187A654B0A99C6FFB38AC07335F99CBB"
+    },
+    {
+      "path": "ModInfo.xml",
+      "size": 241,
+      "sha256": "357829F9B218B13DFB5BB02D7663B79F8B0DDEE883269FEFCBDC8A7BBA587E05"
+    },
+    {
+      "path": "Resources/9mm.unity3d",
+      "size": 70842422,
+      "sha256": "8C63B23AE3D2813BC6C3F7506AD90C2080EAE09DF2F8747CAD9D933317C77C8F"
+    },
+    {
+      "path": "Resources/sw500.unity3d",
+      "size": 29236895,
+      "sha256": "DA59B59D90FC67DBAD589CFBE7B75246CC0C8FAD338AAC5E049C4099491FF82A"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/gunKF9mm.png",
+      "size": 73143,
+      "sha256": "83307D2F6980FAD1C4C51E946E6137BE8CCBEE85CF29D6D5FF04EE280BCC4A1B"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/gunKFDual9mm.png",
+      "size": 54549,
+      "sha256": "EFE3DFD1DEFB2E381EEA3A8A9A6018D8224B4D077003EA02EE7160E469599DB1"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/gunKFDualG18C.png",
+      "size": 39342,
+      "sha256": "65965FA0F81FD28FBD075D2BBA6BB6CEC06EA11A89B069C615390557F792AD5B"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/gunKFDualHRGSW500.png",
+      "size": 69351,
+      "sha256": "50B82C50D30D07A24E4B6F3BC7DD94A1C3562B766223B0040412CFC901BEBA15"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/gunKFDualSW500.png",
+      "size": 162279,
+      "sha256": "B6EE6AF473547A66315EFE2477CAAE84169FF5C453BCA4E322EEB1380561EE01"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/gunKFG18C.png",
+      "size": 52461,
+      "sha256": "8B7EA6F2BF95FAC9EEA60AA9C94423C057E871DCE31FD33CB6AC7A15269A7A5D"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/gunKFG18CShield.png",
+      "size": 105533,
+      "sha256": "A46BB5A58FA476E05AF416FAC861119D1DC92F1AA9B7588732E139DFDBA07714"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/gunKFHRGSW500.png",
+      "size": 45798,
+      "sha256": "88DB86481FA24F59A47D68DE20514B2CEB6AC4590ACEF0CCF761A8B2D64FB644"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/gunKFSW500.png",
+      "size": 111395,
+      "sha256": "C898E6D9F404E47B6BE60811FB3F5B61363BE485788B3414C24E633916BD2A8F"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modGunDualWieldMuzzleBrake.png",
+      "size": 32564,
+      "sha256": "6B2F121C901F5DB236D1195F89CA01EEB5984C4344D8FAAA0F26E5947CD7287E"
+    },
+    {
+      "path": "UIAtlases/ItemIconAtlas/modGunDualWieldSilencer.png",
+      "size": 34456,
+      "sha256": "466B27454A3AC38320E88E001B89862855F4061C4C297393CBFB14E7713FC6FB"
+    }
+  ],
+  "repositorySourceDirtyAtPackaging": true,
+  "zipSha256": "777F97253B7380FF72C5AD75294558F9124C17F5A44492DA8817FA13CEB802DF",
+  "schemaVersion": 1,
+  "packagedFromRevision": "19bc86eee2c2553584346a9d37e359bc1c2dc807"
+}
