@@ -390,7 +390,7 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
             {
                 return;
             }
-            item = player.inventory?.Hand?.slotDatas?[targets.SlotIndex]?.item;
+            item = targets.InventoryData?.item;
         }
         
         if (string.IsNullOrEmpty(item?.Name))
@@ -497,19 +497,12 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
 #if NotEditor
         if (weightHolder == null && !weightHolderChecked)
         {
-            weightHolderChecked = true;
             var targets = AnimationRiggingManager.GetActiveRigTargetsFromPlayer(player);
-            if (targets == null)
+            var itemName = targets?.InventoryData?.item?.Name;
+            if (!string.IsNullOrEmpty(itemName))
             {
-                Log.Warning("CameraAnimationEvents: No active rig targets found.");
-            }
-            else
-            {
-                var itemName = player.inventory?.Hand?.slotDatas?[targets.SlotIndex]?.item?.Name;
-                if (!string.IsNullOrEmpty(itemName))
-                {
-                    dict_user_weights.TryGetValue(itemName, out weightHolder);
-                }
+                weightHolderChecked = true;
+                dict_user_weights.TryGetValue(itemName, out weightHolder);
             }
         }
 #endif
@@ -573,6 +566,11 @@ public class CameraAnimationEvents : MonoBehaviour, IPlayableGraphRelated
         var copy = playerAnimatorTrans.AddMissingComponent<CameraAnimationEvents>();
         copy.cameraAnimWeight = cameraAnimWeight;
         copy.cameraOffsetTrans = cameraOffsetTrans;
+#if NotEditor
+        copy.weightHolder = null;
+        copy.weightHolderChecked = false;
+#endif
+        copy.enabled = true;
 #if !NotEditor
         copy.debugCamera = debugCamera;
         copy.initialDebugCameraLocalPos = initialDebugCameraLocalPos;

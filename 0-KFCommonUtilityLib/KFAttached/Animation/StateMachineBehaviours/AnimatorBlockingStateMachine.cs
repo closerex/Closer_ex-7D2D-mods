@@ -1,4 +1,6 @@
+#if NotEditor
 using KFCommonUtilityLib;
+#endif
 using UnityEngine;
 
 public class AnimatorBlockingStateMachine : StateMachineBehaviour
@@ -14,9 +16,8 @@ public class AnimatorBlockingStateMachine : StateMachineBehaviour
 
     public void CheckAction(Animator animator)
     {
-        if (player)
-            return;
-        
+        multiInvData = null;
+        blockingData = null;
         player = animator.GetLocalPlayerInParent();
         if (!player)
             return;
@@ -25,7 +26,7 @@ public class AnimatorBlockingStateMachine : StateMachineBehaviour
         if (!targets)
             return;
         
-        if (ItemClassModuleProcessor.IsDataModuleContainerFor(player.inventory.Hand.slotDatas[targets.SlotIndex], out multiInvData))
+        if (ItemClassModuleProcessor.IsDataModuleContainerFor(targets.InventoryData, out multiInvData))
         {
             blockingData = multiInvData.boundInvData?.actionData?[2] as ItemActionBlocking.ItemActionBlockingData;
         }
@@ -92,7 +93,7 @@ public class AnimatorBlockingStateMachine : StateMachineBehaviour
     {
         ItemActionData prevData = player.MinEventContext.ItemActionData;
         multiInvData.SetBoundParams();
-        player.MinEventContext.ItemActionData = player.inventory.holdingItemData.actionData[2];
+        player.MinEventContext.ItemActionData = blockingData;
         return prevData;
     }
 

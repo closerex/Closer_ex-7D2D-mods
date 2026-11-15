@@ -30,7 +30,10 @@ public class AnimationAmmoUpdateState : StateMachineBehaviour
             var targets = AnimationRiggingManager.GetActiveRigTargetsFromPlayer(player);
             if (targets)
             {
-                SetAmmoCountForEntity(player, targets.SlotIndex);
+                var invData = targets.InventoryData;
+                if (MultiItemPatches.TryGetBoundData(invData, out var boundData))
+                    invData = boundData;
+                SetAmmoCountForEntity(invData);
             }
         }
     }

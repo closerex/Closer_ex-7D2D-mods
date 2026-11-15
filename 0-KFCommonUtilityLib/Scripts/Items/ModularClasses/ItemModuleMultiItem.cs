@@ -486,7 +486,7 @@ public class ItemModuleMultiItem
 [HarmonyPatch]
 public static class MultiItemPatches
 {
-    private static bool TryGetBoundData(ItemInventoryData originalData, out ItemInventoryData boundData)
+    public static bool TryGetBoundData(ItemInventoryData originalData, out ItemInventoryData boundData)
     {
         if (ItemClassModuleProcessor.IsDataModuleContainerFor(originalData, out MultiItemInvData multiInvData) && multiInvData.useBound && multiInvData.boundInvData != null)
         {

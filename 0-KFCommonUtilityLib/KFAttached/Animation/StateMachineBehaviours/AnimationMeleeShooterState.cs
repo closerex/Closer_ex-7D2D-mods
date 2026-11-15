@@ -1,4 +1,6 @@
+#if NotEditor
 using KFCommonUtilityLib;
+#endif
 using UnityEngine;
 #if UNITY_EDITOR
 using System;
@@ -58,6 +60,9 @@ public class AnimationMeleeShooterState : StateMachineBehaviour
 #if NotEditor
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        data?.ResetRequest();
+        data = null;
+        requestReset = false;
         if (player == null)
         {
             player = animator.GetLocalPlayerInParent();
@@ -77,11 +82,13 @@ public class AnimationMeleeShooterState : StateMachineBehaviour
         var activeRig = AnimationRiggingManager.GetActiveRigTargetsFromPlayer(player);
         if (activeRig)
         {
-            var invData = player.inventory?.Hand?.slotDatas?[activeRig.SlotIndex];
+            var invData = activeRig.InventoryData;
             if (invData != null)
             {
-                actionIndex = MultiActionManager.GetActionIndexForEntity(player);
-                data = player.inventory?.Hand?.GetSlotData(activeRig.SlotIndex)?.actionData?[actionIndex].LoadModule<ActionModuleMeleeShooter.MeleeShooterData>();
+                if (MultiItemPatches.TryGetBoundData(invData, out var boundData))
+                    invData = boundData;
+                actionIndex = invData.actionData[0].LoadModule<ActionModuleAlternative.AlternativeData>()?.mapping?.CurActionIndex ?? 0;
+                data = invData.actionData?[actionIndex].LoadModule<ActionModuleMeleeShooter.MeleeShooterData>();
                 if (data != null)
                 {
                     data.animationRequested = true;
@@ -125,6 +132,7 @@ public class AnimationMeleeShooterState : StateMachineBehaviour
         {
             data.ResetRequest();
         }
+        data = null;
         requestReset = false;
         currentPerc = 0;
     }

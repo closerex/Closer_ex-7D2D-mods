@@ -1,4 +1,6 @@
+#if NotEditor
 using KFCommonUtilityLib;
+#endif
 using UnityEngine;
 #if NotEditor
 #endif
@@ -17,6 +19,7 @@ public class AnimationHolsterState : StateMachineBehaviour
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        ClearHolsterState();
         if (player == null)
         {
             player = animator.GetLocalPlayerInParent();
@@ -28,11 +31,12 @@ public class AnimationHolsterState : StateMachineBehaviour
         }
         //holsterData = ((isHolstering ? player.inventory?.lastdrawnHoldingItemData : player.inventory?.holdingItemData) as IModuleContainerFor<ItemModuleTrueHolster.TrueHolsterData>)?.Instance;
         var activeRig = AnimationRiggingManager.GetActiveRigTargetsFromPlayer(player);
-        ItemInventoryData invData = player.inventory?.Hand?.GetSlotData(activeRig.SlotIndex);
-        if (activeRig)
-        {
-            holsterData = ItemClassModuleProcessor.LoadDataModule<ItemModuleTrueHolster.TrueHolsterData>(invData);
-        }
+        if (!activeRig)
+            return;
+        var invData = activeRig.InventoryData;
+        if (MultiItemPatches.TryGetBoundData(invData, out var boundData))
+            invData = boundData;
+        holsterData = ItemClassModuleProcessor.LoadDataModule<ItemModuleTrueHolster.TrueHolsterData>(invData);
         if (holsterData != null)
         {
             if (isHolstering && holsterData.module.holsterDelayActive)
@@ -74,6 +78,11 @@ public class AnimationHolsterState : StateMachineBehaviour
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        ClearHolsterState();
+    }
+
+    private void ClearHolsterState()
+    {
         if (holsterData != null)
         {
             if (isHolstering)
@@ -85,6 +94,7 @@ public class AnimationHolsterState : StateMachineBehaviour
                 holsterData.IsUnholstering = false;
             }
         }
+        holsterData = null;
     }
 #endif
 }

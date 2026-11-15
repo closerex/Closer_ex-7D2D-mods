@@ -385,15 +385,14 @@ static class AnimationRiggingPatches
             }
             else
             {
-                int _idx = __instance.slotIdx;
                 if (player is EntityPlayerLocal localPlayer)
                 {
-                    targets.Init(localPlayer.emodel.avatarController.GetActiveModelRoot(), localPlayer.bFirstPersonView, _idx);
+                    targets.Init(localPlayer.emodel.avatarController.GetActiveModelRoot(), localPlayer.bFirstPersonView, __instance);
                 }
                 else
                 {
                     targets.DestroyFpv();
-                    targets.Init(player.emodel.avatarController.GetActiveModelRoot(), false, _idx);
+                    targets.Init(player.emodel.avatarController.GetActiveModelRoot(), false, __instance);
                 }
             }
         }
@@ -774,7 +773,7 @@ static class AnimationRiggingPatches
                 if (animator && (targets.PlayerAnimatorTrans != animator.transform || targets.IsFpv != player.bFirstPersonView))
                 {
                     targets.GraphBuilder.SetCurrentTarget(null);
-                    targets.Init(root, player.bFirstPersonView, targets.SlotIndex);
+                    targets.Init(root, player.bFirstPersonView, targets.InventoryData);
                 }
             }
             targets.GraphBuilder.SetCurrentTarget(targets);
@@ -1014,10 +1013,11 @@ static class AnimationRiggingPatches
         {
             for (int i = 0; i < player.inventory.SlotCount; i++)
             {
-                Transform model = player.inventory.GetItemDataInSlot(i)?.model;
+                var invData = player.inventory.Hand.slotDatas[i];
+                Transform model = invData?.model;
                 if (model && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && targets.IsValid())
                 {
-                    targets.Init(player.emodel.avatarController.GetActiveModelRoot(), player.bFirstPersonView, i);
+                    targets.Init(player.emodel.avatarController.GetActiveModelRoot(), player.bFirstPersonView, invData);
                 }
             }
         }
@@ -1065,7 +1065,8 @@ static class AnimationRiggingPatches
         {
             for (int i = 0; i < __instance.inventory.SlotCount; i++)
             {
-                Transform model = __instance.inventory.GetItemDataInSlot(i)?.model;
+                var invData = __instance.inventory.Hand.slotDatas[i];
+                Transform model = invData?.model;
                 if (model && model.TryGetComponent<AnimationTargetsAbs>(out var targets) && targets.IsValid())
                 {
                     targets.Init(__instance.emodel.avatarController.GetActiveModelRoot(),
@@ -1073,7 +1074,7 @@ static class AnimationRiggingPatches
                         {
                             bFirstPersonView: true
                         }, 
-                        i);
+                        invData);
                 }
             }
         }

@@ -69,25 +69,26 @@ public class ActionModuleCustomAnimationDelay
     }
 
     [HarmonyPatch(typeof(ItemActionEat), nameof(ItemAction.OnHoldingUpdate)), MethodTargetPrefix]
-    public void Prefix_ItemActionEat_OnHoldingUpdate(ItemActionData _actionData, out (bool, float) __state, bool __runOriginal)
+    public void Prefix_ItemActionEat_OnHoldingUpdate(ItemActionData _actionData, out (bool exec, int holdType, float delay) __state, bool __runOriginal)
     {
         if (__runOriginal)
         {
-            __state = (true, AnimationDelay[_actionData.invData.item.HoldType.Value].RayCast);
-            AnimationDelay[_actionData.invData.item.HoldType.Value].RayCast = customDelay;
+            int holdType = _actionData.invData.item.HoldType.Value;
+            __state = (true, holdType, AnimationDelay[holdType].RayCast);
+            AnimationDelay[holdType].RayCast = customDelay;
         }
         else
         {
-            __state = (false, 0);
+            __state = (false, 0, 0f);
         }
     }
 
     [HarmonyPatch(typeof(ItemActionEat), nameof(ItemAction.OnHoldingUpdate)), MethodTargetPostfix]
-    public void Postfix_ItemActionEat_OnHoldingUpdate(ItemActionData _actionData, (bool exec, float delay) __state)
+    public void Postfix_ItemActionEat_OnHoldingUpdate(ItemActionData _actionData, (bool exec, int holdType, float delay) __state)
     {
         if (__state.exec)
         {
-            AnimationDelay[_actionData.invData.item.HoldType.Value].RayCast = __state.delay;
+            AnimationDelay[__state.holdType].RayCast = __state.delay;
         }
     }
 

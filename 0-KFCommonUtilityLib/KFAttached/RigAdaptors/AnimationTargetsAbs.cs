@@ -65,7 +65,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
     public abstract Transform PlayerOriginTransform { get; protected set; }
     public abstract bool IsRiggedWeapon { get; }
 #if NotEditor
-    public int SlotIndex { get; private set; } = -1;
+    public ItemInventoryData InventoryData { get; private set; }
 #endif
 
     protected abstract Animator ItemAnimatorFpv { get; }
@@ -186,11 +186,16 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
 
     public void Init(Transform playerAnimatorTrans, bool isFpv
 #if NotEditor
-        , int idx
+        , ItemInventoryData inventoryData
 #endif
         )
     {
-        if (Destroyed || (isFpv && fpvSet) || (!isFpv && tpvSet))
+        if (Destroyed)
+            return;
+#if NotEditor
+        InventoryData = inventoryData ?? throw new ArgumentNullException(nameof(inventoryData));
+#endif
+        if ((isFpv && fpvSet) || (!isFpv && tpvSet))
         {
             return;
         }
@@ -205,9 +210,6 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
             Destroy();
             return;
         }
-#if NotEditor
-        SlotIndex = idx;
-#endif
         fpvSet = false;
         tpvSet = false;
         playerAnimatorTrans = animator.transform;
@@ -494,6 +496,7 @@ public abstract class AnimationTargetsAbs : MonoBehaviour
         DestroyFpv();
         DestroyTpv();
 #if NotEditor
+        InventoryData = null;
         Destroyed = true;
 #endif
         PlayerAnimatorTrans = null;

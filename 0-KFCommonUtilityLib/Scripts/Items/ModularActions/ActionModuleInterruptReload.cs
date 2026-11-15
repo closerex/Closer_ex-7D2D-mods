@@ -170,8 +170,8 @@ internal static class ReloadInterruptionPatches
         if (curAction is ItemActionRanged or ItemActionZoom)
         {
             int curActionIndex = MultiActionManager.GetActionIndexForEntity(_data.holdingEntity);
-            var rangedAction = (ItemActionRanged)__instance.Actions[curActionIndex];
-            if (_data.actionData[curActionIndex] is ItemActionRanged.ItemActionDataRanged rangedData &&
+            if (__instance.Actions[curActionIndex] is ItemActionRanged rangedAction &&
+                _data.actionData[curActionIndex] is ItemActionRanged.ItemActionDataRanged rangedData &&
                 rangedData.IsModuleContainerFor(out ActionModuleInterruptReload.InterruptData dataModule) &&
                 rangedAction.IsModuleContainerFor(out ActionModuleInterruptReload actionModule) &&
                 !actionModule.internalCancelOnly)
