@@ -1,0 +1,42 @@
+{
+  "volumes": [
+    {
+      "size": 1887436800,
+      "name": "ZZKFWeaponSkins_1.0.1.zip.001",
+      "sha256": "79512C68BB0088D1E668184B1FA93FCFE7ABBE3C65DE6CDCDA0E121C0F2310FF"
+    },
+    {
+      "size": 1887436800,
+      "name": "ZZKFWeaponSkins_1.0.1.zip.002",
+      "sha256": "FA24A313243163C6A381807F743F41C716880AB407EE6ACA458809C39F117919"
+    },
+    {
+      "size": 1887436800,
+      "name": "ZZKFWeaponSkins_1.0.1.zip.003",
+      "sha256": "77C0A5DA201492E29392A364156398D551D28B82D125130BE76A84A803DB31A4"
+    },
+    {
+      "size": 1887436800,
+      "name": "ZZKFWeaponSkins_1.0.1.zip.004",
+      "sha256": "89C2E01AFC12656016E5BED63CFE5D28CE835CAADF309B3AE5E021E4B5E729D6"
+    },
+    {
+      "size": 1887436800,
+      "name": "ZZKFWeaponSkins_1.0.1.zip.005",
+      "sha256": "3EC93896DA6A36315C6F80E328EDDDAE6395049FA01EF838D040FB37F492F2D5"
+    },
+    {
+      "size": 1137738605,
+      "name": "ZZKFWeaponSkins_1.0.1.zip.006",
+      "sha256": "0C0069FA2604001EC02896AA1F6C895648150AB85744A10AE1E3B4860DC5F82C"
+    }
+  ],
+  "zipSha256": "40A6559C7D003E43D7A5E68EE4BC5FF062A2B0B67BE7518636D71DBE6A555601",
+  "usage": "Download all .zip.001 through .zip.006 into one folder. Open .zip.001 with 7-Zip and extract. These are byte-split volumes of the complete original ZIP, not separate mods. The package includes all original runtime resources plus restored icons.",
+  "folder": "ZZKFWeaponSkins",
+  "version": "1.0.1",
+  "schemaVersion": 1,
+  "zipBytes": 10574922605,
+  "zip": "ZZKFWeaponSkins_1.0.1.zip",
+  "game": "3.2"
+}
