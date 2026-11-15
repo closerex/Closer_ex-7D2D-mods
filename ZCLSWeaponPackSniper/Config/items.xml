@@ -1006,6 +1006,8 @@
 						<requirement name="!HasBuff" buff="buffBoomerang"/>
 					</triggered_effect>
 					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" buff="buffBoomerang"/>
+					<triggered_effect trigger="onSelfAttackedOther" action="AddRoundsToMagazine,KFCommonUtilityLib" count="1"/>
+					<triggered_effect trigger="onSelfAttackedOther" action="PlaySound" soundGroup="tctd_high_velocity_ammo_pickup" play_at_self="true" play_in_head="true"/>
 					<!-- <triggered_effect trigger="onSelfAttackedOther" action="LogMessage" message="== Item Proc Boomerang Attack Other Head"/> -->
 			</effect_group>
 			<effect_group>
@@ -1017,6 +1019,8 @@
 						<requirement name="!HasBuff" buff="buffBoomerang"/>
 					</triggered_effect>
 					<triggered_effect trigger="onSelfAttackedOther" action="AddBuff" buff="buffBoomerang"/>
+					<triggered_effect trigger="onSelfAttackedOther" action="AddRoundsToMagazine,KFCommonUtilityLib" count="1"/>
+					<triggered_effect trigger="onSelfAttackedOther" action="PlaySound" soundGroup="tctd_high_velocity_ammo_pickup" play_at_self="true" play_in_head="true"/>
 					<!-- <triggered_effect trigger="onSelfAttackedOther" action="LogMessage" message="== Item Proc Boomerang Attack Other Body"/> -->
 			</effect_group>
 			<effect_group>
@@ -1027,6 +1031,8 @@
 						<requirement name="!HasBuff" buff="buffBoomerang"/>
 					</triggered_effect>
 					<triggered_effect trigger="onSelfKilledOther" action="AddBuff" buff="buffBoomerang"/>
+					<triggered_effect trigger="onSelfKilledOther" action="AddRoundsToMagazine,KFCommonUtilityLib" count="1"/>
+					<triggered_effect trigger="onSelfKilledOther" action="PlaySound" soundGroup="tctd_high_velocity_ammo_pickup" play_at_self="true" play_in_head="true"/>
 					<!-- <triggered_effect trigger="onSelfKilledOther" action="LogMessage" message="== Item Proc Boomerang Kill Other Head"/> -->
 			</effect_group>
 			<effect_group>
@@ -1037,6 +1043,8 @@
 						<requirement name="!HasBuff" buff="buffBoomerang"/>
 					</triggered_effect>
 					<triggered_effect trigger="onSelfKilledOther" action="AddBuff" buff="buffBoomerang"/>
+					<triggered_effect trigger="onSelfKilledOther" action="AddRoundsToMagazine,KFCommonUtilityLib" count="1"/>
+					<triggered_effect trigger="onSelfKilledOther" action="PlaySound" soundGroup="tctd_high_velocity_ammo_pickup" play_at_self="true" play_in_head="true"/>
 					<!-- <triggered_effect trigger="onSelfKilledOther" action="LogMessage" message="== Item Proc Boomerang Kill Other Body"/> -->
 			</effect_group>
 			<effect_group>

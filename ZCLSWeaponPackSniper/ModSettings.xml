@@ -1,9 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ModSettings>
+<ModSettings version="2">
   <Global>
     <Tab name="ModeSetting" displayKey="KFSniperModSettingsMainKey" tooltipKey="">
       <Category name="Main" displayKey="" tooltipKey="">
-        <Switch name="UseAltReticle" displayKey="KFSniperModUseAltReticleKey" tooltipKey="KFSniperModUseAltReticleDesc" defaultValue="No" leftValue="No" rightValue="Yes" />
+        <Switch name="UseAltReticle" displayKey="KFSniperModUseAltReticleKey" tooltipKey="KFSniperModUseAltReticleDesc" defaultValue="No" leftValue="No" rightValue="Yes" type="string">
+          <Description key="KFSniperModUseAltReticleDesc" />
+          <Buttons left="No" right="Yes" />
+        </Switch>
       </Category>
     </Tab>
   </Global>
