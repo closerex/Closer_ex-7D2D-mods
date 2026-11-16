@@ -521,13 +521,19 @@ namespace KFCommonUtilityLib.Harmony
         {
             MethodInfo mtd_addcomponent = AccessTools.Method(typeof(GameObject), nameof(GameObject.AddComponent), Type.EmptyTypes);
             MethodInfo mtd_addcomponentprev = mtd_addcomponent.MakeGenericMethod(typeof(ProjectileMoveScript));
-            MethodInfo mtd_addcomponentnew = mtd_addcomponent.MakeGenericMethod(typeof(CustomProjectileMoveScript));
             foreach (var code in instructions)
             {
                 if (code.Calls(mtd_addcomponentprev))
                 {
                     Log.Out("replacing launcher projectile script...");
-                    code.operand = mtd_addcomponentnew;
+                    code.opcode = OpCodes.Ldarg_1;
+                    code.operand = null;
+                    yield return code;
+                    yield return CodeInstruction.CallClosure<Func<GameObject, ItemActionData, ProjectileMoveScript>>(static (gameObject, actionData)
+                        => actionData.invData.holdingEntity is EntityPlayer
+                        ? gameObject.AddComponent<CustomProjectileMoveScript>()
+                        : gameObject.AddComponent<ProjectileMoveScript>());
+                    continue;
                 }
                 yield return code;
             }
