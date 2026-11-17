@@ -97,6 +97,8 @@ namespace CustomFPVFov
 
         [HarmonyPatch(typeof(vp_FPWeapon), nameof(vp_FPWeapon.Refresh))]
         [HarmonyTranspiler]
+        // Run before aim correction inserts a call and shifts the SmoothStep operand window.
+        [HarmonyPriority(Priority.First)]
         private static IEnumerable<CodeInstruction> Transpiler_vp_FPWeapon_Refresh(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();

@@ -101,8 +101,8 @@ namespace KFCommonUtilityLib.Scripts.Utilities
         public static bool EqualsForRebuild(ItemValue value, ItemValue other)
         {
             return other != null && value.type == other.type
-                && ItemValue.Equals(value.cosmeticMods, other.cosmeticMods)
-                && ItemValue.Equals(value.modifications, other.modifications);
+                && MultiActionReversePatches.EqualsForRebuild(value.cosmeticMods, other.cosmeticMods)
+                && MultiActionReversePatches.EqualsForRebuild(value.modifications, other.modifications);
         }
 
         public static void CopyLauncherValueToProjectile(ItemValue launcherValue, ItemValue projectileValue, int index)

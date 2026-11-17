@@ -9,6 +9,24 @@ using UnityEngine;
 [HarmonyPatch]
 public static class MultiActionReversePatches
 {
+    [HarmonyReversePatch(HarmonyReversePatchType.Original)]
+    [HarmonyPatch(typeof(ItemValue), nameof(ItemValue.Equals), new[] { typeof(ItemValue[]), typeof(ItemValue[]) })]
+    public static bool EqualsForRebuild(ItemValue[] _a, ItemValue[] _b)
+    {
+        IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            if (instructions == null)
+                return null;
+
+            return instructions.MethodReplacer(
+                AccessTools.Method(typeof(ItemValue), nameof(ItemValue.Equals), new[] { typeof(ItemValue) }),
+                AccessTools.Method(typeof(MultiActionUtils), nameof(MultiActionUtils.EqualsForRebuild)));
+        }
+
+        _ = Transpiler(null);
+        throw new System.NotImplementedException("Original ItemValue array equality reverse patch was not applied.");
+    }
+
     [HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
     [HarmonyPatch(typeof(EffectManager), nameof(EffectManager.GetValue))]
     public static float ProjectileGetValue(PassiveEffects _passiveEffect, ItemValue _originalItemValue = null, float _originalValue = 0f, EntityAlive _entity = null, Recipe _recipe = null, FastTags<TagGroup.Global> tags = default(FastTags<TagGroup.Global>), bool calcEquipment = true, bool calcHoldingItem = true, bool calcProgression = true, bool calcBuffs = true, bool calcChallenges = true, int craftingTier = 1, bool useMods = true, bool _useDurability = false)

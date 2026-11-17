@@ -193,7 +193,8 @@ namespace KFCommonUtilityLib.Harmony
 
                             if (xElementCache.Count > 0)
                             {
-                                string moduleNames = string.Join(',', xElementCache.Select(element => element.Attribute("module").Value));
+                                // Commas belong to assembly-qualified names; modules use semicolons.
+                                string moduleNames = string.Join(';', xElementCache.Select(element => element.Attribute("module").Value));
                                 if (ModuleManagers.PatchType<MinEventActionModuleProcessor>(originalType,
                                         typeof(MinEventActionBase), null, moduleNames, out Type result))
                                 {
