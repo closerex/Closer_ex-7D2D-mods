@@ -637,7 +637,8 @@ namespace KFCommonUtilityLib
                 generator.Emit(OpCodes.Initobj, info.OriginalMethod.ReturnType);
             }
 
-            foreach (var workingOverrideInfo in info.Prefixes)
+            // Explicit priorities can wrap other modules without changing their XML/parser order.
+            foreach (var workingOverrideInfo in info.Prefixes.OrderByDescending(p => p.mtdinf_target.GetCustomAttribute<HarmonyPriority>()?.info.priority ?? Priority.Normal))
             {
                 //insert invocation
                 var mtddef_target = workingOverrideInfo.mtdinf_target;
@@ -683,7 +684,7 @@ namespace KFCommonUtilityLib
             }
 
             bool postfixLabelApplied = lbl == null;
-            foreach (var workingOverrideInfo in info.Postfixes)
+            foreach (var workingOverrideInfo in info.Postfixes.OrderByDescending(p => p.mtdinf_target.GetCustomAttribute<HarmonyPriority>()?.info.priority ?? Priority.Normal))
             {
                 if (!postfixLabelApplied)
                 {

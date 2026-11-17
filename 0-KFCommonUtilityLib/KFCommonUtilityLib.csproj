@@ -447,6 +447,7 @@
     <Compile Include="Harmony\HideMarkerOnAimPatch.cs" />
     <Compile Include="Harmony\DisplayMetaAsBuffPatch.cs" />
     <Compile Include="Harmony\ModularPatches.cs" />
+    <Compile Include="Harmony\ItemEventSourcePatches.cs" />
     <Compile Include="Harmony\MultiActionPatches.cs" />
     <Compile Include="Harmony\MultiActionReversePatches.cs" />
     <Compile Include="Harmony\RecoilPatch.cs" />
@@ -654,6 +655,7 @@
     <Compile Include="Scripts\MinEventActions\Modular\CVarReplacer.cs" />
     <Compile Include="Scripts\MinEventActions\Modular\MEAModuleComplexCondition.cs" />
     <Compile Include="Scripts\MinEventActions\Modular\MEAModuleExpressionAsCVar.cs" />
+    <Compile Include="Scripts\MinEventActions\Modular\MEAModuleOwnItemValue.cs" />
     <Compile Include="Scripts\MinEventActions\Modular\MEAModuleVariableAsCVar.cs" />
     <Compile Include="Scripts\Utilities\BodyPartSortingOrder.cs" />
     <Compile Include="Scripts\Items\ModularActions\MetadataAsHUDStatAbs.cs" />
